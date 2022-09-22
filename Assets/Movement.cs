@@ -6,15 +6,48 @@ public class Movement : MonoBehaviour
 {
     private float Horizontal;
     [SerializeField] float CharacterSpeed=10f;
+    [SerializeField] SpriteRenderer sr;
+    [SerializeField] LayerMask Ground;
+    private float jumpingSpeed = 5f;
+    private BoxCollider2D col;
     private Rigidbody2D rb;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
+        col = GetComponent<BoxCollider2D>();
     }
     void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
         rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
+
+        if(Input.GetButtonDown("Jump") && isOntheGround())
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
+        }
+
+
+
+        checkforFlip();
+    }
+
+    bool isOntheGround()
+    {
+        return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .3f, Ground);
+    }
+
+
+    void checkforFlip()
+    {
+        if(Horizontal<0f)
+        {
+            sr.flipX = true;
+        }
+        else
+        {
+            sr.flipX = false;
+        }
     }
 }
