@@ -374,7 +374,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharacterSpeed: 10
-  sr: {fileID: 0}
+  sr: {fileID: 1492395860}
+  Ground:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!50 &1492395864
 Rigidbody2D:
   serializedVersion: 4
@@ -413,7 +416,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 4, y: 4}
+    oldSize: {x: 8, y: 8}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -616,7 +619,7 @@ GameObject:
   - component: {fileID: 1857319252}
   - component: {fileID: 1857319251}
   - component: {fileID: 1857319250}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Detailing
   m_TagString: Untagged
   m_Icon: {fileID: 0}

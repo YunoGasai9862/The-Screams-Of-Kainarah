@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    private float Horizontal;
     [SerializeField] float CharacterSpeed=10f;
     [SerializeField] SpriteRenderer sr;
     [SerializeField] LayerMask Ground;
+
+
+    private Animator anim;
+    private float Horizontal;
     private float jumpingSpeed = 5f;
     private BoxCollider2D col;
     private Rigidbody2D rb;
@@ -17,6 +20,7 @@ public class Movement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         col = GetComponent<BoxCollider2D>();
+        anim = GetComponent<Animator>();
     }
     void Update()
     {
@@ -41,13 +45,25 @@ public class Movement : MonoBehaviour
 
     void checkforFlip()
     {
-        if(Horizontal<0f)
+        if(Horizontal<0f && isOntheGround())
         {
             sr.flipX = true;
         }
-        else
+        else if(Horizontal >0f && isOntheGround())
         {
             sr.flipX = false;
+        }
+    }
+
+    void CheckForAnimation()
+    {
+        if(Horizontal >0f || Horizontal <0f)
+        {
+            anim.SetInteger("State", 1);
+        }else
+        {
+            anim.SetInteger("State", 0);
+
         }
     }
 }
