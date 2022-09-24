@@ -35,6 +35,8 @@ public class Movement : MonoBehaviour
 
 
         checkforFlip();
+
+        CheckForAnimation();
     }
 
     bool isOntheGround()
@@ -64,6 +66,15 @@ public class Movement : MonoBehaviour
         {
             anim.SetInteger("State", 0);
 
+        }
+
+        if(rb.velocity.y >=.1f)
+        {
+            anim.SetInteger("State", 2);
+
+        }else if(rb.velocity.y <=-.1f)
+        {
+            anim.SetInteger("State", 3);
         }
     }
 }
