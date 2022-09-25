@@ -25,6 +25,7 @@ public class Movement : MonoBehaviour
     void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
+
         rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
 
         if(Input.GetButtonDown("Jump") && isOntheGround())
@@ -32,8 +33,9 @@ public class Movement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
         }
 
-
-
+     
+               
+        
         checkforFlip();
 
         CheckForAnimation();
@@ -76,5 +78,17 @@ public class Movement : MonoBehaviour
         {
             anim.SetInteger("State", 3);
         }
+    }
+
+    bool CheckforSliding()
+    {
+       
+        if(Horizontal > 0f || Horizontal <0f)
+        {
+            return true;
+        }
+
+
+        return false;
     }
 }
