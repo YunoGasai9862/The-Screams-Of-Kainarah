@@ -34,8 +34,17 @@ public class Movement : MonoBehaviour
         }
 
      
-               
-        
+
+         if(Input.GetMouseButtonDown(0))
+        {
+            anim.SetBool("Attack", true);
+        }
+        if(Input.GetMouseButtonUp(0))
+        {
+            anim.SetBool("Attack", false);
+
+        }
+
         checkforFlip();
 
         CheckForAnimation();
@@ -78,17 +87,5 @@ public class Movement : MonoBehaviour
         {
             anim.SetInteger("State", 3);
         }
-    }
-
-    bool CheckforSliding()
-    {
-       
-        if(Horizontal > 0f || Horizontal <0f)
-        {
-            return true;
-        }
-
-
-        return false;
     }
 }
