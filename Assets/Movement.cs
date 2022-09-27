@@ -14,6 +14,7 @@ public class Movement : MonoBehaviour
     private float jumpingSpeed = 5f;
     private BoxCollider2D col;
     private Rigidbody2D rb;
+    private bool flip = true;
 
     private void Start()
     {
@@ -58,13 +59,21 @@ public class Movement : MonoBehaviour
 
     void checkforFlip()
     {
-        if(Horizontal<0f && isOntheGround())
+        if(Horizontal<0f && isOntheGround() && flip)
         {
             sr.flipX = true;
+            Vector2 offset = col.offset;
+            offset.x += +1;
+            col.offset = offset;
+            flip = false;
         }
-        else if(Horizontal >0f && isOntheGround())
+        else if(Horizontal >0f && isOntheGround() && !flip)
         {
             sr.flipX = false;
+            Vector2 offset = col.offset;
+            offset.x += -1;
+            col.offset = offset;
+            flip = true;
         }
     }
 
