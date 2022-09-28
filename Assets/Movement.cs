@@ -7,6 +7,7 @@ public class Movement : MonoBehaviour
     [SerializeField] float CharacterSpeed=10f;
     [SerializeField] SpriteRenderer sr;
     [SerializeField] LayerMask Ground;
+    [SerializeField] GameObject Enemy;
 
 
     private Animator anim;
@@ -39,6 +40,12 @@ public class Movement : MonoBehaviour
          if(Input.GetMouseButtonDown(0))
         {
             anim.SetBool("Attack", true);
+            if(CheckRangeForDestroyEnemy())
+            {
+                Destroy(Enemy.gameObject);
+            }
+
+
         }
         if(Input.GetMouseButtonUp(0))
         {
@@ -96,5 +103,15 @@ public class Movement : MonoBehaviour
         {
             anim.SetInteger("State", 3);
         }
+    }
+
+    bool CheckRangeForDestroyEnemy()
+    {
+        if(Vector2.Distance(transform.position, Enemy.transform.position) <=2)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
