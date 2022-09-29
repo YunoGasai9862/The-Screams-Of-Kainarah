@@ -8,6 +8,7 @@ public class Movement : MonoBehaviour
     [SerializeField] SpriteRenderer sr;
     [SerializeField] LayerMask Ground;
     [SerializeField] GameObject Enemy;
+    [SerializeField] GameObject EnemyHitAnimation;
 
 
     private Animator anim;
@@ -29,7 +30,6 @@ public class Movement : MonoBehaviour
         Horizontal = Input.GetAxisRaw("Horizontal");
 
         rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
-
         if(Input.GetButtonDown("Jump") && isOntheGround())
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
@@ -42,7 +42,9 @@ public class Movement : MonoBehaviour
             anim.SetBool("Attack", true);
             if(CheckRangeForDestroyEnemy())
             {
+                GameObject HitAnim = Instantiate(EnemyHitAnimation, Enemy.transform.position, Quaternion.identity);
                 Destroy(Enemy.gameObject);
+                Destroy(HitAnim, 3f);
             }
 
 
@@ -107,9 +109,13 @@ public class Movement : MonoBehaviour
 
     bool CheckRangeForDestroyEnemy()
     {
-        if(Vector2.Distance(transform.position, Enemy.transform.position) <=2)
+        if(Enemy!=null)
         {
-            return true;
+            if (Vector2.Distance(transform.position, Enemy.transform.position) <= 1.5f)
+            {
+                return true;
+            }
+
         }
 
         return false;
