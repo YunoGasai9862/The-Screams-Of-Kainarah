@@ -27,9 +27,11 @@ public class Movement : MonoBehaviour
     }
     void Update()
     {
+
         Horizontal = Input.GetAxisRaw("Horizontal");
 
-        rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
+        rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
+
         if(Input.GetButtonDown("Jump") && isOntheGround())
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
@@ -111,7 +113,7 @@ public class Movement : MonoBehaviour
     {
         if(Enemy!=null)
         {
-            if (Vector2.Distance(transform.position, Enemy.transform.position) <= 1.5f)
+            if (Vector2.Distance(transform.position, Enemy.transform.position)<=1.5f)
             {
                 return true;
             }
@@ -119,5 +121,14 @@ public class Movement : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.collider.CompareTag("Enemy"))
+        {
+            rb.bodyType = RigidbodyType2D.Static;
+            anim.SetBool("Death", true);
+        }
     }
 }
