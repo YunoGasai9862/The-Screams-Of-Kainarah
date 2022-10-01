@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Movement : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class Movement : MonoBehaviour
     private BoxCollider2D col;
     private Rigidbody2D rb;
     private bool flip = true;
+    private bool Death = false;
 
     private void Start()
     {
@@ -28,9 +30,10 @@ public class Movement : MonoBehaviour
     void Update()
     {
 
+
         Horizontal = Input.GetAxisRaw("Horizontal");
 
-        rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
 
         if(Input.GetButtonDown("Jump") && isOntheGround())
         {
@@ -56,10 +59,18 @@ public class Movement : MonoBehaviour
             anim.SetBool("Attack", false);
 
         }
+        if(Death)
+        {
+            rb.bodyType = RigidbodyType2D.Static;
+        }
 
         checkforFlip();
 
         CheckForAnimation();
+
+       
+          
+        
     }
 
     bool isOntheGround()
@@ -70,22 +81,26 @@ public class Movement : MonoBehaviour
 
     void checkforFlip()
     {
-        if(Horizontal<0f && isOntheGround() && flip)
+        if(!Death)
         {
-            sr.flipX = true;
-            Vector2 offset = col.offset;
-            offset.x += +1;
-            col.offset = offset;
-            flip = false;
+            if (Horizontal < 0f && isOntheGround() && flip)
+            {
+                sr.flipX = true;
+                Vector2 offset = col.offset;
+                offset.x += +1;
+                col.offset = offset;
+                flip = false;
+            }
+            else if (Horizontal > 0f && isOntheGround() && !flip)
+            {
+                sr.flipX = false;
+                Vector2 offset = col.offset;
+                offset.x += -1;
+                col.offset = offset;
+                flip = true;
+            }
         }
-        else if(Horizontal >0f && isOntheGround() && !flip)
-        {
-            sr.flipX = false;
-            Vector2 offset = col.offset;
-            offset.x += -1;
-            col.offset = offset;
-            flip = true;
-        }
+  
     }
 
     void CheckForAnimation()
@@ -123,11 +138,21 @@ public class Movement : MonoBehaviour
         return false;
     }
 
+
+   
+    void Restart()
+    {
+      
+        rb.bodyType = RigidbodyType2D.Static;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.collider.CompareTag("Enemy"))
         {
-            rb.bodyType = RigidbodyType2D.Static;
+            Death = true;
             anim.SetBool("Death", true);
         }
     }

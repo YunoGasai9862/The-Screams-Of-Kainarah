@@ -126,6 +126,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   Enemy: {fileID: 0}
+  EnemyHitAnimation: {fileID: 4717814802917708382, guid: c0a87c586e2dd414096605da33f2961c, type: 3}
 --- !u!50 &2357857119552702234
 Rigidbody2D:
   serializedVersion: 4
