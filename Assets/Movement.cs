@@ -31,6 +31,7 @@ public class Movement : MonoBehaviour
     {
 
         Horizontal = Input.GetAxisRaw("Horizontal");
+
         rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
 
         if(Input.GetButtonDown("Jump") && isOntheGround())
@@ -39,6 +40,14 @@ public class Movement : MonoBehaviour
         }
 
      
+        if(!isOntheGround() && Input.GetMouseButtonDown(0))
+        {
+            anim.SetBool("AttackJ", true);
+        }
+        else
+        {
+            anim.SetBool("AttackJ", false);
+        }
 
          if(Input.GetMouseButtonDown(0))
         {
@@ -85,7 +94,7 @@ public class Movement : MonoBehaviour
             {
                 sr.flipX = true;
                 Vector2 offset = col.offset;
-                offset.x += +1;
+                offset.x += 1;
                 col.offset = offset;
                 flip = false;
             }
