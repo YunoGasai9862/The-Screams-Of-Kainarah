@@ -1,3 +1,4 @@
+using Mono.CompilerServices.SymbolWriter;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,7 @@ public class Movement : MonoBehaviour
     private Rigidbody2D rb;
     private bool flip = true;
     private bool Death = false;
+    private int AttackCount = 0;
 
     private void Start()
     {
@@ -32,7 +34,7 @@ public class Movement : MonoBehaviour
 
         Horizontal = Input.GetAxisRaw("Horizontal");
 
-        rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
+        rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
 
         if(Input.GetButtonDown("Jump") && isOntheGround())
         {
@@ -51,8 +53,10 @@ public class Movement : MonoBehaviour
 
          if(Input.GetMouseButtonDown(0))
         {
+            AttackCount++;
             anim.SetBool("Attack", true);
-            if(CheckRangeForDestroyEnemy())
+            anim.SetInteger("AttackCount", AttackCount);
+            if (CheckRangeForDestroyEnemy())
             {
                 GameObject HitAnim = Instantiate(EnemyHitAnimation, Enemy.transform.position, Quaternion.identity);
                 Destroy(Enemy.gameObject);
@@ -102,7 +106,7 @@ public class Movement : MonoBehaviour
             {
                 sr.flipX = false;
                 Vector2 offset = col.offset;
-                offset.x += -1;
+                offset.x -= 1;
                 col.offset = offset;
                 flip = true;
             }
