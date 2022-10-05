@@ -34,7 +34,7 @@ public class Movement : MonoBehaviour
 
         Horizontal = Input.GetAxisRaw("Horizontal");
 
-        rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
 
         if(Input.GetButtonDown("Jump") && isOntheGround())
         {
