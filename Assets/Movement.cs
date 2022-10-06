@@ -20,7 +20,7 @@ public class Movement : MonoBehaviour
     private Rigidbody2D rb;
     private bool flip = true;
     private bool Death = false;
-    private int AttackCount = 0;
+    private int AttackCount = 1;
 
     private void Start()
     {
@@ -34,7 +34,7 @@ public class Movement : MonoBehaviour
 
         Horizontal = Input.GetAxisRaw("Horizontal");
 
-        rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
+        rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
 
         if(Input.GetButtonDown("Jump") && isOntheGround())
         {
@@ -53,9 +53,23 @@ public class Movement : MonoBehaviour
 
          if(Input.GetMouseButtonDown(0))
         {
-            AttackCount++;
             anim.SetBool("Attack", true);
             anim.SetInteger("AttackCount", AttackCount);
+
+            if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime>.3f && !anim.IsInTransition(0)) //this code line checks if the current animation has finished, and is on its second loop.
+                //basically to check if the animation has reached completion for the firs time.
+                //checking !anim.IsInTransition(0) is a must for it checks if its during the transitioning period.
+                //if its not, the condition will be satisfied, so its a must to use it
+            {
+                AttackCount++;
+
+            }
+
+            if(AttackCount>4)
+            {
+                AttackCount = 0;
+            }
+
             if (CheckRangeForDestroyEnemy())
             {
                 GameObject HitAnim = Instantiate(EnemyHitAnimation, Enemy.transform.position, Quaternion.identity);
@@ -86,7 +100,7 @@ public class Movement : MonoBehaviour
 
     bool isOntheGround()
     {
-        return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .3f, Ground);
+        return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, Ground);
     }
 
 
