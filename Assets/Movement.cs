@@ -21,6 +21,7 @@ public class Movement : MonoBehaviour
     private bool flip = true;
     private bool Death = false;
     private int AttackCount = 1;
+    private float slidingspeed=20f;
 
     private void Start()
     {
@@ -41,49 +42,11 @@ public class Movement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
         }
 
-     
-        if(!isOntheGround() && Input.GetMouseButtonDown(0))
+        if(Input.GetKey(KeyCode.LeftShift))
         {
-            anim.SetBool("AttackJ", true);
+            Sliding();
         }
-        else
-        {
-            anim.SetBool("AttackJ", false);
-        }
-
-         if(Input.GetMouseButtonDown(0))
-        {
-            anim.SetBool("Attack", true);
-            anim.SetInteger("AttackCount", AttackCount);
-
-            if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime>.3f && !anim.IsInTransition(0)) //this code line checks if the current animation has finished, and is on its second loop.
-                //basically to check if the animation has reached completion for the firs time.
-                //checking !anim.IsInTransition(0) is a must for it checks if its during the transitioning period.
-                //if its not, the condition will be satisfied, so its a must to use it
-            {
-                AttackCount++;
-
-            }
-
-            if(AttackCount>4)
-            {
-                AttackCount = 0;
-            }
-
-            if (CheckRangeForDestroyEnemy())
-            {
-                GameObject HitAnim = Instantiate(EnemyHitAnimation, Enemy.transform.position, Quaternion.identity);
-                Destroy(Enemy.gameObject);
-                Destroy(HitAnim, 3f);
-            }
-
-
-        }
-        if(Input.GetMouseButtonUp(0))
-        {
-            anim.SetBool("Attack", false);
-
-        }
+    
         if(Death)
         {
             rb.bodyType = RigidbodyType2D.Static;
@@ -93,11 +56,15 @@ public class Movement : MonoBehaviour
 
         CheckForAnimation();
 
-       
+        AttackingMechanism();
           
         
     }
-
+    void Sliding()
+    {
+        anim.SetBool("Sliding", true);
+        rb.velocity = new Vector2(slidingspeed, rb.velocity.y);
+    }
     bool isOntheGround()
     {
         return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, Ground);
@@ -128,6 +95,52 @@ public class Movement : MonoBehaviour
   
     }
 
+    void AttackingMechanism()
+    {
+
+        if (!isOntheGround() && Input.GetMouseButtonDown(0))
+        {
+            anim.SetBool("AttackJ", true);
+        }
+        else
+        {
+            anim.SetBool("AttackJ", false);
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            anim.SetBool("Attack", true);
+            anim.SetInteger("AttackCount", AttackCount);
+
+            if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > .3f && !anim.IsInTransition(0)) //this code line checks if the current animation has finished, and is on its second loop.
+                                                                                                     //basically to check if the animation has reached completion for the firs time.
+                                                                                                     //checking !anim.IsInTransition(0) is a must for it checks if its during the transitioning period.
+                                                                                                     //if its not, the condition will be satisfied, so its a must to use it
+            {
+                AttackCount++;
+
+            }
+
+            if (AttackCount > 4)
+            {
+                AttackCount = 1;
+            }
+
+            if (CheckRangeForDestroyEnemy())
+            {
+                GameObject HitAnim = Instantiate(EnemyHitAnimation, Enemy.transform.position, Quaternion.identity);
+                Destroy(Enemy.gameObject);
+                Destroy(HitAnim, 3f);
+            }
+
+
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            anim.SetBool("Attack", false);
+
+        }
+    }
     void CheckForAnimation()
     {
         if(Horizontal >0f || Horizontal <0f)
@@ -153,7 +166,7 @@ public class Movement : MonoBehaviour
     {
         if(Enemy!=null)
         {
-            if (Vector2.Distance(transform.position, Enemy.transform.position)<=1.5f)
+            if (Vector2.Distance(transform.position, Enemy.transform.position)<=2f)
             {
                 return true;
             }
