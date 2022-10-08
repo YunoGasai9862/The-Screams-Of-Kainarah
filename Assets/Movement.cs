@@ -21,7 +21,7 @@ public class Movement : MonoBehaviour
     private bool flip = true;
     private bool Death = false;
     private int AttackCount = 1;
-    private float slidingspeed=20f;
+    private float slidingspeed=5f;
 
     private void Start()
     {
@@ -34,7 +34,6 @@ public class Movement : MonoBehaviour
     {
 
         Horizontal = Input.GetAxisRaw("Horizontal");
-
         rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
 
         if(Input.GetButtonDown("Jump") && isOntheGround())
@@ -42,15 +41,14 @@ public class Movement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
         }
 
-        if(Input.GetKey(KeyCode.LeftShift))
-        {
-            Sliding();
-        }
+         
     
         if(Death)
         {
             rb.bodyType = RigidbodyType2D.Static;
         }
+
+        Sliding();
 
         checkforFlip();
 
@@ -62,8 +60,19 @@ public class Movement : MonoBehaviour
     }
     void Sliding()
     {
-        anim.SetBool("Sliding", true);
-        rb.velocity = new Vector2(slidingspeed, rb.velocity.y);
+     
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            anim.SetBool("Sliding", true);
+            rb.velocity = new Vector2(slidingspeed, rb.velocity.y);
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            anim.SetBool("Sliding", false);
+
+        }
     }
     bool isOntheGround()
     {
@@ -115,7 +124,7 @@ public class Movement : MonoBehaviour
             if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > .3f && !anim.IsInTransition(0)) //this code line checks if the current animation has finished, and is on its second loop.
                                                                                                      //basically to check if the animation has reached completion for the firs time.
                                                                                                      //checking !anim.IsInTransition(0) is a must for it checks if its during the transitioning period.
-                                                                                                     //if its not, the condition will be satisfied, so its a must to use it
+                                                                                                    //if its not, the condition will be satisfied, so its a must to use it
             {
                 AttackCount++;
 
