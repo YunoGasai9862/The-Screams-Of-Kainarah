@@ -34,6 +34,7 @@ public class Movement : MonoBehaviour
     {
 
         Horizontal = Input.GetAxisRaw("Horizontal");
+
         rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
 
         if(Input.GetButtonDown("Jump") && isOntheGround())
@@ -118,17 +119,11 @@ public class Movement : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            anim.SetBool("Attack", true);
+    
             anim.SetInteger("AttackCount", AttackCount);
+            AttackCount++;
 
-            if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > .3f && !anim.IsInTransition(0)) //this code line checks if the current animation has finished, and is on its second loop.
-                                                                                                     //basically to check if the animation has reached completion for the firs time.
-                                                                                                     //checking !anim.IsInTransition(0) is a must for it checks if its during the transitioning period.
-                                                                                                    //if its not, the condition will be satisfied, so its a must to use it
-            {
-                AttackCount++;
-
-            }
+            
 
             if (AttackCount > 4)
             {
@@ -144,11 +139,7 @@ public class Movement : MonoBehaviour
 
 
         }
-        if (Input.GetMouseButtonUp(0))
-        {
-            anim.SetBool("Attack", false);
-
-        }
+    
     }
     void CheckForAnimation()
     {
