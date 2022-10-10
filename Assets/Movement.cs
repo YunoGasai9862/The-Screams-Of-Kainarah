@@ -119,17 +119,25 @@ public class Movement : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-    
+
+            anim.SetBool("Attack", true);
+              
             anim.SetInteger("AttackCount", AttackCount);
             AttackCount++;
 
             
+            if(anim.GetCurrentAnimatorStateInfo(0).normalizedTime>1)
+            {
+
+            }
 
             if (AttackCount > 4)
             {
+                anim.SetBool("Attack", false);
                 AttackCount = 1;
             }
 
+            
             if (CheckRangeForDestroyEnemy())
             {
                 GameObject HitAnim = Instantiate(EnemyHitAnimation, Enemy.transform.position, Quaternion.identity);
