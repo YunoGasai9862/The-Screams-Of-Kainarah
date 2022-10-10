@@ -22,6 +22,7 @@ public class Movement : MonoBehaviour
     private bool Death = false;
     private int AttackCount = 1;
     private float slidingspeed=5f;
+    private float elapsedTime = 0;
 
     private void Start()
     {
@@ -126,9 +127,24 @@ public class Movement : MonoBehaviour
             AttackCount++;
 
             
-            if(anim.GetCurrentAnimatorStateInfo(0).normalizedTime>1)
+            if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+            {
+                elapsedTime += .1f;
+                if(elapsedTime>1f)
+                {
+                    anim.SetBool("Attack", false);
+                    AttackCount = 0;
+                }
+
+            }else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
             {
 
+            }else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
+            {
+
+            }else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack4"))
+            {
+               
             }
 
             if (AttackCount > 4)
