@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class Movement : MonoBehaviour
 {
-    [SerializeField] float CharacterSpeed=10f;
+    [SerializeField] float CharacterSpeed = 10f;
     [SerializeField] SpriteRenderer sr;
     [SerializeField] LayerMask Ground;
     [SerializeField] GameObject Enemy;
@@ -21,8 +21,9 @@ public class Movement : MonoBehaviour
     private bool flip = true;
     private bool Death = false;
     private int AttackCount = 1;
-    private float slidingspeed=5f;
+    private float slidingspeed = 5f;
     private float elapsedTime = 0;
+    private bool kickoffElapsedTime;
 
     private void Start()
     {
@@ -35,19 +36,24 @@ public class Movement : MonoBehaviour
     {
 
         Horizontal = Input.GetAxisRaw("Horizontal");
-
         rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
 
-        if(Input.GetButtonDown("Jump") && isOntheGround())
+        if (Input.GetButtonDown("Jump") && isOntheGround())
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
         }
 
-         
-    
-        if(Death)
+
+
+        if (Death)
         {
             rb.bodyType = RigidbodyType2D.Static;
+        }
+
+        if(kickoffElapsedTime)
+        {
+            elapsedTime += Time.deltaTime;
+            Debug.Log(elapsedTime);
         }
 
         Sliding();
@@ -57,12 +63,12 @@ public class Movement : MonoBehaviour
         CheckForAnimation();
 
         AttackingMechanism();
-          
-        
+
+
     }
     void Sliding()
     {
-     
+
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
@@ -84,7 +90,7 @@ public class Movement : MonoBehaviour
 
     void checkforFlip()
     {
-        if(!Death)
+        if (!Death)
         {
             if (Horizontal < 0f && isOntheGround() && flip)
             {
@@ -103,7 +109,7 @@ public class Movement : MonoBehaviour
                 flip = true;
             }
         }
-  
+
     }
 
     void AttackingMechanism()
@@ -120,32 +126,12 @@ public class Movement : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            kickoffElapsedTime = true;
 
             anim.SetBool("Attack", true);
-              
+
             anim.SetInteger("AttackCount", AttackCount);
             AttackCount++;
-
-            
-            if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-            {
-                elapsedTime += .1f;
-                if(elapsedTime>1f)
-                {
-                    anim.SetBool("Attack", false);
-                    AttackCount = 0;
-                }
-
-            }else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
-            {
-
-            }else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
-            {
-
-            }else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack4"))
-            {
-               
-            }
 
             if (AttackCount > 4)
             {
@@ -153,7 +139,6 @@ public class Movement : MonoBehaviour
                 AttackCount = 1;
             }
 
-            
             if (CheckRangeForDestroyEnemy())
             {
                 GameObject HitAnim = Instantiate(EnemyHitAnimation, Enemy.transform.position, Quaternion.identity);
@@ -163,59 +148,103 @@ public class Movement : MonoBehaviour
 
 
         }
-    
-    }
-    void CheckForAnimation()
-    {
-        if(Horizontal >0f || Horizontal <0f)
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
         {
-            anim.SetInteger("State", 1);
-        }else
-        {
-            anim.SetInteger("State", 0);
+            //fix with new elapsedTime thingy
 
-        }
-
-        if(rb.velocity.y >=.1f)
-        {
-            anim.SetInteger("State", 2);
-
-        }else if(rb.velocity.y <=-.1f)
-        {
-            anim.SetInteger("State", 3);
-        }
-    }
-
-    bool CheckRangeForDestroyEnemy()
-    {
-        if(Enemy!=null)
-        {
-            if (Vector2.Distance(transform.position, Enemy.transform.position)<=2f)
+            if (elapsedTime > 1f)
             {
-                return true;
+                //anim.SetBool("Attack", false);
+                AttackCount = 0;
+                elapsedTime = 0;
+                kickoffElapsedTime = false;
+            }
+          
+
+        }else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
+        {
+
+            if (elapsedTime > 1f)
+            {
+               // anim.SetBool("Attack", false);
+                AttackCount = 0;
+                elapsedTime = 0;
+                kickoffElapsedTime = false;
+            }
+        }else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
+        {
+            if (elapsedTime > 1f)
+            {
+                //anim.SetBool("Attack", false);
+                AttackCount = 0;
+                elapsedTime = 0;
+                kickoffElapsedTime = false;
             }
 
         }
-
-        return false;
-    }
-
-
-   
-    void Restart()
-    {
-      
-        rb.bodyType = RigidbodyType2D.Static;
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.collider.CompareTag("Enemy"))
+        else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack4"))
         {
-            Death = true;
-            anim.SetBool("Death", true);
+            if (elapsedTime > 1f)
+            {
+               // anim.SetBool("Attack", false);
+                AttackCount = 0;
+                elapsedTime = 0;
+                kickoffElapsedTime = false;
+            }
         }
     }
+        void CheckForAnimation()
+        {
+            if (Horizontal > 0f || Horizontal < 0f)
+            {
+                anim.SetInteger("State", 1);
+            } else
+            {
+                anim.SetInteger("State", 0);
+
+            }
+
+            if (rb.velocity.y >= .1f)
+            {
+                anim.SetInteger("State", 2);
+
+            } else if (rb.velocity.y <= -.1f)
+            {
+                anim.SetInteger("State", 3);
+            }
+        }
+
+        bool CheckRangeForDestroyEnemy()
+        {
+            if (Enemy != null)
+            {
+                if (Vector2.Distance(transform.position, Enemy.transform.position) <= 2f)
+                {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+
+
+        void Restart()
+        {
+
+            rb.bodyType = RigidbodyType2D.Static;
+
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.collider.CompareTag("Enemy"))
+            {
+                Death = true;
+                anim.SetBool("Death", true);
+            }
+        }
+    
 }
