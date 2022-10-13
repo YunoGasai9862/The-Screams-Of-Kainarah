@@ -20,7 +20,7 @@ public class Movement : MonoBehaviour
     private Rigidbody2D rb;
     private bool flip = true;
     private bool Death = false;
-    private int AttackCount = 1;
+    private int AttackCount = 0;
     private float slidingspeed = 5f;
     private float elapsedTime = 0;
     private bool kickoffElapsedTime;
@@ -114,6 +114,7 @@ public class Movement : MonoBehaviour
 
     void AttackingMechanism()
     {
+        if(anim.GetCurrentAnimatorStateInfo(0).IsName(""))
 
         if (!isOntheGround() && Input.GetMouseButtonDown(0))
         {
@@ -128,24 +129,11 @@ public class Movement : MonoBehaviour
         {
             kickoffElapsedTime = true;
 
-            anim.SetBool("Attack", true);
-
-            anim.SetInteger("AttackCount", AttackCount);
             AttackCount++;
+            anim.SetInteger("AttackCount", AttackCount);
 
-            if (AttackCount > 4)
-            {
-                anim.SetBool("Attack", false);
-                AttackCount = 1;
-            }
-
-            if (CheckRangeForDestroyEnemy())
-            {
-                GameObject HitAnim = Instantiate(EnemyHitAnimation, Enemy.transform.position, Quaternion.identity);
-                Destroy(Enemy.gameObject);
-                Destroy(HitAnim, 3f);
-            }
-
+            anim.SetBool("Attack", true);
+            elapsedTime = 0;  // YAYAY SOLVED IT!!!
 
         }
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
@@ -154,43 +142,90 @@ public class Movement : MonoBehaviour
 
             if (elapsedTime > 1f)
             {
-                //anim.SetBool("Attack", false);
+              
                 AttackCount = 0;
                 elapsedTime = 0;
+                anim.SetBool("Attack", false);
                 kickoffElapsedTime = false;
+            }else
+            {
+                anim.SetFloat("ElapsedTime", elapsedTime);
+              
             }
           
 
         }else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
         {
-
+            
             if (elapsedTime > 1f)
             {
-               // anim.SetBool("Attack", false);
+
                 AttackCount = 0;
                 elapsedTime = 0;
+                anim.SetBool("Attack", false);
                 kickoffElapsedTime = false;
             }
-        }else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
+            else
+            {
+                anim.SetFloat("ElapsedTime", elapsedTime);
+
+            }
+
+
+
+
+
+        }
+        else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
         {
             if (elapsedTime > 1f)
             {
-                //anim.SetBool("Attack", false);
+
                 AttackCount = 0;
                 elapsedTime = 0;
+                anim.SetBool("Attack", false);
                 kickoffElapsedTime = false;
             }
+            else
+            {
+                anim.SetFloat("ElapsedTime", elapsedTime);
+
+            }
+
 
         }
         else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack4"))
         {
             if (elapsedTime > 1f)
             {
-               // anim.SetBool("Attack", false);
+
                 AttackCount = 0;
                 elapsedTime = 0;
+                anim.SetBool("Attack", false);
                 kickoffElapsedTime = false;
             }
+            else
+            {
+                anim.SetFloat("ElapsedTime", elapsedTime);
+
+            }
+
+        }
+
+        if (AttackCount > 4)
+        {
+            anim.SetBool("Attack", false);
+            AttackCount = 0;
+            
+        }
+
+      
+
+        if (CheckRangeForDestroyEnemy())
+        {
+            GameObject HitAnim = Instantiate(EnemyHitAnimation, Enemy.transform.position, Quaternion.identity);
+            Destroy(Enemy.gameObject);
+            Destroy(HitAnim, 3f);
         }
     }
         void CheckForAnimation()
@@ -218,7 +253,7 @@ public class Movement : MonoBehaviour
         {
             if (Enemy != null)
             {
-                if (Vector2.Distance(transform.position, Enemy.transform.position) <= 2f)
+                if (Vector2.Distance(transform.position, Enemy.transform.position) <= 1f)
                 {
                     return true;
                 }
