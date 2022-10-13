@@ -114,8 +114,7 @@ public class Movement : MonoBehaviour
 
     void AttackingMechanism()
     {
-        if(anim.GetCurrentAnimatorStateInfo(0).IsName(""))
-
+      
         if (!isOntheGround() && Input.GetMouseButtonDown(0))
         {
             anim.SetBool("AttackJ", true);
