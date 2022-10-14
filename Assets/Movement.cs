@@ -9,7 +9,6 @@ public class Movement : MonoBehaviour
     [SerializeField] float CharacterSpeed = 10f;
     [SerializeField] SpriteRenderer sr;
     [SerializeField] LayerMask Ground;
-    [SerializeField] GameObject Enemy;
     [SerializeField] GameObject EnemyHitAnimation;
 
 
@@ -24,6 +23,7 @@ public class Movement : MonoBehaviour
     private float slidingspeed = 5f;
     private float elapsedTime = 0;
     private bool kickoffElapsedTime;
+    private bool EnemyDied = false;
 
     private void Start()
     {
@@ -36,7 +36,8 @@ public class Movement : MonoBehaviour
     {
 
         Horizontal = Input.GetAxisRaw("Horizontal");
-        rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
+
+        rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
 
         if (Input.GetButtonDown("Jump") && isOntheGround())
         {
@@ -139,23 +140,21 @@ public class Movement : MonoBehaviour
         {
             //fix with new elapsedTime thingy
 
-            if (elapsedTime > 1f)
+            anim.SetFloat("ElapsedTime", elapsedTime);
+
+            if (elapsedTime > .5f)
             {
               
                 AttackCount = 0;
                 elapsedTime = 0;
                 anim.SetBool("Attack", false);
                 kickoffElapsedTime = false;
-            }else
-            {
-                anim.SetFloat("ElapsedTime", elapsedTime);
-              
             }
           
 
         }else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
         {
-            
+            anim.SetFloat("ElapsedTime", elapsedTime);
             if (elapsedTime > 1f)
             {
 
@@ -164,12 +163,7 @@ public class Movement : MonoBehaviour
                 anim.SetBool("Attack", false);
                 kickoffElapsedTime = false;
             }
-            else
-            {
-                anim.SetFloat("ElapsedTime", elapsedTime);
-
-            }
-
+           
 
 
 
@@ -177,6 +171,7 @@ public class Movement : MonoBehaviour
         }
         else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
         {
+            anim.SetFloat("ElapsedTime", elapsedTime);
             if (elapsedTime > 1f)
             {
 
@@ -185,16 +180,13 @@ public class Movement : MonoBehaviour
                 anim.SetBool("Attack", false);
                 kickoffElapsedTime = false;
             }
-            else
-            {
-                anim.SetFloat("ElapsedTime", elapsedTime);
-
-            }
+          
 
 
         }
         else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack4"))
         {
+            anim.SetFloat("ElapsedTime", elapsedTime);
             if (elapsedTime > 1f)
             {
 
@@ -203,12 +195,7 @@ public class Movement : MonoBehaviour
                 anim.SetBool("Attack", false);
                 kickoffElapsedTime = false;
             }
-            else
-            {
-                anim.SetFloat("ElapsedTime", elapsedTime);
-
-            }
-
+          
         }
 
         if (AttackCount > 4)
@@ -218,14 +205,7 @@ public class Movement : MonoBehaviour
             
         }
 
-      
-
-        if (CheckRangeForDestroyEnemy())
-        {
-            GameObject HitAnim = Instantiate(EnemyHitAnimation, Enemy.transform.position, Quaternion.identity);
-            Destroy(Enemy.gameObject);
-            Destroy(HitAnim, 3f);
-        }
+     
     }
         void CheckForAnimation()
         {
@@ -248,23 +228,21 @@ public class Movement : MonoBehaviour
             }
         }
 
-        bool CheckRangeForDestroyEnemy()
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Enemy"))
         {
-            if (Enemy != null)
-            {
-                if (Vector2.Distance(transform.position, Enemy.transform.position) <= 1f)
-                {
-                    return true;
-                }
 
-            }
-
-            return false;
+            GameObject HitAnim = Instantiate(EnemyHitAnimation, collision.transform.position, Quaternion.identity);
+            Destroy(collision.gameObject);
+            Destroy(HitAnim, 3f);
         }
+    }
 
 
 
-        void Restart()
+    void Restart()
         {
 
             rb.bodyType = RigidbodyType2D.Static;
