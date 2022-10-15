@@ -34,10 +34,9 @@ public class Movement : MonoBehaviour
     }
     void Update()
     {
-
         Horizontal = Input.GetAxisRaw("Horizontal");
 
-        rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
+        rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
 
         if (Input.GetButtonDown("Jump") && isOntheGround())
         {
@@ -164,9 +163,6 @@ public class Movement : MonoBehaviour
                 kickoffElapsedTime = false;
             }
            
-
-
-
 
         }
         else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
