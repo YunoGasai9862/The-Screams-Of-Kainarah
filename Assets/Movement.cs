@@ -19,11 +19,8 @@ public class Movement : MonoBehaviour
     private Rigidbody2D rb;
     private bool flip = true;
     private bool Death = false;
-    private int AttackCount = 0;
     private float slidingspeed = 5f;
-    private float elapsedTime = 0;
-    private bool kickoffElapsedTime;
-    private bool EnemyDied = false;
+
 
     private void Start()
     {
@@ -44,25 +41,17 @@ public class Movement : MonoBehaviour
         }
 
 
-
         if (Death)
         {
             rb.bodyType = RigidbodyType2D.Static;
         }
 
-        if(kickoffElapsedTime)
-        {
-            elapsedTime += Time.deltaTime;
-            Debug.Log(elapsedTime);
-        }
-
+       
         Sliding();
 
         checkforFlip();
 
         CheckForAnimation();
-
-        AttackingMechanism();
 
 
     }
@@ -74,7 +63,7 @@ public class Movement : MonoBehaviour
         {
             anim.SetBool("Sliding", true);
             rb.velocity = new Vector2(slidingspeed, rb.velocity.y);
-        }
+         }
 
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
@@ -112,97 +101,7 @@ public class Movement : MonoBehaviour
 
     }
 
-    void AttackingMechanism()
-    {
-      
-        if (!isOntheGround() && Input.GetMouseButtonDown(0))
-        {
-            anim.SetBool("AttackJ", true);
-        }
-        else
-        {
-            anim.SetBool("AttackJ", false);
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            kickoffElapsedTime = true;
-
-            AttackCount++;
-            anim.SetInteger("AttackCount", AttackCount);
-
-            anim.SetBool("Attack", true);
-            elapsedTime = 0;  // YAYAY SOLVED IT!!!
-
-        }
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-        {
-            //fix with new elapsedTime thingy
-
-            anim.SetFloat("ElapsedTime", elapsedTime);
-
-            if (elapsedTime > .5f)
-            {
-              
-                AttackCount = 0;
-                elapsedTime = 0;
-                anim.SetBool("Attack", false);
-                kickoffElapsedTime = false;
-            }
-          
-
-        }else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
-        {
-            anim.SetFloat("ElapsedTime", elapsedTime);
-            if (elapsedTime > 1f)
-            {
-
-                AttackCount = 0;
-                elapsedTime = 0;
-                anim.SetBool("Attack", false);
-                kickoffElapsedTime = false;
-            }
-           
-
-        }
-        else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
-        {
-            anim.SetFloat("ElapsedTime", elapsedTime);
-            if (elapsedTime > 1f)
-            {
-
-                AttackCount = 0;
-                elapsedTime = 0;
-                anim.SetBool("Attack", false);
-                kickoffElapsedTime = false;
-            }
-          
-
-
-        }
-        else if(anim.GetCurrentAnimatorStateInfo(0).IsName("Attack4"))
-        {
-            anim.SetFloat("ElapsedTime", elapsedTime);
-            if (elapsedTime > 1f)
-            {
-
-                AttackCount = 0;
-                elapsedTime = 0;
-                anim.SetBool("Attack", false);
-                kickoffElapsedTime = false;
-            }
-          
-        }
-
-        if (AttackCount > 4)
-        {
-            anim.SetBool("Attack", false);
-            AttackCount = 0;
-            
-        }
-
-     
-    }
+   
         void CheckForAnimation()
         {
             if (Horizontal > 0f || Horizontal < 0f)

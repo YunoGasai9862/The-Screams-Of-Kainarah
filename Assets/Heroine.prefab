@@ -224,10 +224,17 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.5, y: 0.5}
-      - {x: -0.5, y: -0.5}
-      - {x: 0.5, y: -0.5}
-      - {x: 0.5, y: 0.5}
+    - - {x: 1.9565268, y: 4.338498}
+      - {x: 1.6593044, y: 2.2308679}
+      - {x: 1.4663905, y: 0.551187}
+      - {x: 0.44175798, y: 0.009994328}
+      - {x: -0.252874, y: -0.14947006}
+      - {x: -1.3390219, y: -0.80625224}
+      - {x: 1.5787412, y: 0.23500496}
+      - {x: 1.7827377, y: 2.218822}
+      - {x: 1.8992037, y: 3.2114086}
+      - {x: 2.1961598, y: 3.7529314}
+      - {x: 1.8698303, y: 7.1763177}
 --- !u!1 &1478819943
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,6 +486,7 @@ GameObject:
   - component: {fileID: 2357857119552702229}
   - component: {fileID: 2357857119552702234}
   - component: {fileID: 2357857119552702235}
+  - component: {fileID: 3387488181997499512}
   m_Layer: 0
   m_Name: Heroine
   m_TagString: Player
@@ -643,6 +651,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.89291406, y: 0.84060097}
   m_EdgeRadius: 0
+--- !u!114 &3387488181997499512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e412240ce6b30f439fffde879a0576b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Ground:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &3485019726026848876
 GameObject:
   m_ObjectHideFlags: 0
