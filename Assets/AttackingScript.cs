@@ -9,9 +9,10 @@ public class AttackingScript : MonoBehaviour
     private bool kickoffElapsedTime;
     private int AttackCount = 0;
     private BoxCollider2D col;
+    private GameObject dag;
 
     [SerializeField] LayerMask Ground;
-
+    [SerializeField] GameObject Dagger;
 
     void Start()
     {
@@ -121,6 +122,11 @@ public class AttackingScript : MonoBehaviour
             anim.SetBool("Attack", false);
             AttackCount = 0;
 
+        }
+
+        if(Input.GetKeyDown(KeyCode.F))
+        {
+          dag = Instantiate(Dagger, transform.position, Quaternion.identity);
         }
 
 
