@@ -139,7 +139,7 @@ PolygonCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -174,5 +174,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ba6d419177378844a08f478b5842664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 2357857119552702225, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-  Enemy: {fileID: 613478252915356505, guid: aaa7a0367a1ca144e8d5d870d46392c1, type: 3}

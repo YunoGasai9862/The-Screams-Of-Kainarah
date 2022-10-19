@@ -126,7 +126,9 @@ public class AttackingScript : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.F))
         {
-          dag = Instantiate(Dagger, transform.position, Quaternion.identity);
+            Vector3 position = transform.position;
+            position.y = transform.position.y -1f;
+          dag = Instantiate(Dagger, position, Quaternion.identity);
         }
 
 
