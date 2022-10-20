@@ -9,6 +9,7 @@ public class AttackEnemy : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     private float elapsedTime=0;
+    private bool checker = true;
 
     private void Start()
     {
@@ -20,14 +21,23 @@ public class AttackEnemy : MonoBehaviour
     {
 
         rb.velocity = new Vector2(DaggerSpeed, 0);
-        if(transform!=null)
+        
+        if(checker)
         {
             elapsedTime += Time.deltaTime;
+
         }
 
-        if(elapsedTime > 3f)
+
+
+
+        if (elapsedTime > 3f)
         {
-            Destroy(gameObject);
+            checker = false;
+            anim.SetBool("HitEnemy", true);
+            Destroy(gameObject,2f);
+            elapsedTime = 0;
+
         }
     }
 
@@ -39,6 +49,11 @@ public class AttackEnemy : MonoBehaviour
             Destroy(collision.gameObject);
             anim.SetBool("HitEnemy", true);
             Destroy(gameObject, 2f);
+
+           
         }
+
+
+
     }
 }

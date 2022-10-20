@@ -86,7 +86,6 @@ public class AttackingScript : MonoBehaviour
                 kickoffElapsedTime = false;
             }
 
-
         }
         else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
         {
@@ -126,9 +125,12 @@ public class AttackingScript : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.F))
         {
+
+            anim.SetBool("ThrowDagger", true);
+
             Vector3 position = transform.position;
             position.y = transform.position.y -1f;
-          dag = Instantiate(Dagger, position, Quaternion.identity);
+            dag = Instantiate(Dagger, position, Quaternion.identity);
         }
 
 
