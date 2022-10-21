@@ -554,7 +554,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 0331df4a51cc53f489941339676b5159, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -604,6 +604,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   EnemyHitAnimation: {fileID: 4717814802917708382, guid: c0a87c586e2dd414096605da33f2961c, type: 3}
+  Enemy: {fileID: 1608095778, guid: f56de393cd630934e8c8c9cd19ec01bf, type: 3}
 --- !u!50 &2357857119552702234
 Rigidbody2D:
   serializedVersion: 4
@@ -666,6 +667,7 @@ MonoBehaviour:
   Ground:
     serializedVersion: 2
     m_Bits: 64
+  Dagger: {fileID: 8025573198793576023, guid: f56de393cd630934e8c8c9cd19ec01bf, type: 3}
 --- !u!1 &3485019726026848876
 GameObject:
   m_ObjectHideFlags: 0

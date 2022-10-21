@@ -126,13 +126,17 @@ public class AttackingScript : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.F))
         {
 
-            anim.SetBool("ThrowDagger", true);
+            anim.SetBool("ThrowDagger", true);  
 
             Vector3 position = transform.position;
             position.y = transform.position.y -1f;
             dag = Instantiate(Dagger, position, Quaternion.identity);
         }
 
+        if(Input.GetKeyUp(KeyCode.F))
+        {
+            anim.SetBool("ThrowDagger", false);
+        }
 
     }
 

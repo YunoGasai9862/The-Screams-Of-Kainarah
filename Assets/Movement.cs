@@ -10,7 +10,7 @@ public class Movement : MonoBehaviour
     [SerializeField] SpriteRenderer sr;
     [SerializeField] LayerMask Ground;
     [SerializeField] GameObject EnemyHitAnimation;
-
+    [SerializeField] AttackEnemy Enemy;
 
     private Animator anim;
     private float Horizontal;
@@ -28,6 +28,7 @@ public class Movement : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         col = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
+     
     }
     void Update()
     {
@@ -83,6 +84,7 @@ public class Movement : MonoBehaviour
             if (Horizontal < 0f && isOntheGround() && flip)
             {
                 sr.flipX = true;
+                Enemy.HeroineFlipped = true;
                 Vector2 offset = col.offset;
                 offset.x += 1;
                 col.offset = offset;
@@ -91,6 +93,7 @@ public class Movement : MonoBehaviour
             else if (Horizontal > 0f && isOntheGround() && !flip)
             {
                 sr.flipX = false;
+                Enemy.HeroineFlipped = false;
                 Vector2 offset = col.offset;
                 offset.x -= 1;
                 col.offset = offset;

@@ -10,26 +10,26 @@ public class AttackEnemy : MonoBehaviour
     private Animator anim;
     private float elapsedTime=0;
     private bool checker = true;
+    public bool HeroineFlipped = false;
 
+ 
+    private SpriteRenderer _daggerrenderer;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        _daggerrenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
     {
 
-        rb.velocity = new Vector2(DaggerSpeed, 0);
         
         if(checker)
         {
             elapsedTime += Time.deltaTime;
 
         }
-
-
-
 
         if (elapsedTime > 3f)
         {
@@ -39,6 +39,23 @@ public class AttackEnemy : MonoBehaviour
             elapsedTime = 0;
 
         }
+
+        if(HeroineFlipped)
+        {
+            _daggerrenderer.flipX = true;
+            rb.velocity = new Vector2(-DaggerSpeed, 0);
+
+
+        }
+        else
+        {
+            _daggerrenderer.flipX = false;
+            rb.velocity = new Vector2(DaggerSpeed, 0);
+
+
+
+        }
+
     }
 
 
