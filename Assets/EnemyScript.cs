@@ -23,6 +23,13 @@ public class EnemyScript : MonoBehaviour
             anim.SetBool("EnemyAttack", false);
 
         }
+
+
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("EnemyAttacked"))
+        {
+            
+
+        }
     }
 
 
@@ -35,4 +42,14 @@ public class EnemyScript : MonoBehaviour
 
         return false;
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Dagger"))
+        {
+            anim.SetBool("Hit", true);
+
+        }
+    }
+  
 }

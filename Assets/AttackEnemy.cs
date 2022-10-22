@@ -63,7 +63,7 @@ public class AttackEnemy : MonoBehaviour
     {
         if(collision.CompareTag("Enemy"))
         {
-            Destroy(collision.gameObject);
+           // Destroy(collision.gameObject);
             anim.SetBool("HitEnemy", true);
             Destroy(gameObject, 2f);
 
