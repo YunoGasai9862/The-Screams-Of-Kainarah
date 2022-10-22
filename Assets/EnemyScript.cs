@@ -25,11 +25,7 @@ public class EnemyScript : MonoBehaviour
         }
 
 
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("EnemyAttacked"))
-        {
-            
-
-        }
+    
     }
 
 
@@ -51,5 +47,13 @@ public class EnemyScript : MonoBehaviour
 
         }
     }
-  
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Dagger"))
+        {
+            anim.SetBool("Hit", false);
+
+        }
+    }
+
 }
