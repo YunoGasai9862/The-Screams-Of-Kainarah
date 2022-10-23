@@ -6,6 +6,8 @@ public class EnemyScript : MonoBehaviour
 {
     [SerializeField] GameObject Heroine;
     private Animator anim;
+    private int lifeCounter = 0;
+    private bool isNotdead = true;
     void Start()
     {
         Heroine = GameObject.FindGameObjectWithTag("Player");
@@ -24,6 +26,11 @@ public class EnemyScript : MonoBehaviour
 
         }
 
+        if(lifeCounter>3)
+        {
+            isNotdead = false;
+            Destroy(gameObject);
+        }
 
     
     }
@@ -31,7 +38,7 @@ public class EnemyScript : MonoBehaviour
 
     bool CanAttack()
     {
-        if(Vector2.Distance(transform.position, Heroine.transform.position)<=3.0f)
+        if(Vector2.Distance(transform.position, Heroine.transform.position) <=3.0f)
         {
             return true;
         }
@@ -43,7 +50,12 @@ public class EnemyScript : MonoBehaviour
     {
         if (collision.CompareTag("Dagger"))
         {
-            anim.SetBool("Hit", true);
+            if(isNotdead)
+            {
+                anim.SetBool("Hit", true);
+                lifeCounter++;
+            }
+          
 
         }
     }
@@ -51,7 +63,7 @@ public class EnemyScript : MonoBehaviour
     {
         if (collision.CompareTag("Dagger"))
         {
-            anim.SetBool("Hit", false);
+            anim.SetBool("Hit", false );
 
         }
     }

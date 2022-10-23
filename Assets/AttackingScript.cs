@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AttackingScript : MonoBehaviour
@@ -10,6 +11,7 @@ public class AttackingScript : MonoBehaviour
     private int AttackCount = 0;
     private BoxCollider2D col;
     private GameObject dag;
+    private bool canthrowDagger = false;
 
     [SerializeField] LayerMask Ground;
     [SerializeField] GameObject Dagger;
@@ -123,26 +125,34 @@ public class AttackingScript : MonoBehaviour
 
         }
 
-        if(Input.GetKeyDown(KeyCode.F))
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("ThrowDagger") && !(anim.GetCurrentAnimatorStateInfo(0).normalizedTime>1f))
         {
-
-            anim.SetBool("ThrowDagger", true);  
-
-            Vector3 position = transform.position;
-            position.y = transform.position.y -1f;
-            dag = Instantiate(Dagger, position, Quaternion.identity);
-        }
-
-        if(Input.GetKeyUp(KeyCode.F))
-        {
+            canthrowDagger = false;
             anim.SetBool("ThrowDagger", false);
+
+
+        }
+        else 
+        {
+            canthrowDagger = true;
         }
 
-    }
+        if (Input.GetKeyDown(KeyCode.F) && canthrowDagger)
+            {
 
-    bool isOntheGround()
-    {
-        return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, Ground);
-    }
+                anim.SetBool("ThrowDagger", true);
 
+                Vector3 position = transform.position;
+                position.y = transform.position.y - 1f;
+                dag = Instantiate(Dagger, position, Quaternion.identity);
+       
+            }
+
+        
+
+        bool isOntheGround()
+        {
+            return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, Ground);
+        }
+    }
 }
