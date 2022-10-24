@@ -26,10 +26,10 @@ public class EnemyScript : MonoBehaviour
 
         }
 
-        if(lifeCounter>3)
+        if(lifeCounter>=3)
         {
             isNotdead = false;
-            Destroy(gameObject);
+            Destroy(gameObject,.3f);
         }
 
     
@@ -38,7 +38,7 @@ public class EnemyScript : MonoBehaviour
 
     bool CanAttack()
     {
-        if(Vector2.Distance(transform.position, Heroine.transform.position) <=3.0f)
+        if(Vector2.Distance(transform.position, Heroine.transform.position)<=3.0f)
         {
             return true;
         }
