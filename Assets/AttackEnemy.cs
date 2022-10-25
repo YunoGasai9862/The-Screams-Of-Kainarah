@@ -45,14 +45,11 @@ public class AttackEnemy : MonoBehaviour
             _daggerrenderer.flipX = true;
             rb.velocity = new Vector2(-DaggerSpeed, 0);
 
-
         }
         else
         {
             _daggerrenderer.flipX = false;
             rb.velocity = new Vector2(DaggerSpeed, 0);
-
-
 
         }
 
@@ -69,8 +66,6 @@ public class AttackEnemy : MonoBehaviour
 
            
         }
-
-
 
     }
 }

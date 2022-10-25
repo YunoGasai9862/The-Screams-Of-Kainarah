@@ -12,7 +12,8 @@ public class AttackingScript : MonoBehaviour
     private BoxCollider2D col;
     private GameObject dag;
     private bool canthrowDagger = true;
-
+    private int counter = 0;
+    private float throwdaggerTime=0;
     [SerializeField] LayerMask Ground;
     [SerializeField] GameObject Dagger;
 
@@ -125,28 +126,40 @@ public class AttackingScript : MonoBehaviour
 
         }
 
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("ThrowDagger") && (anim.GetCurrentAnimatorStateInfo(0).normalizedTime>1f))
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("ThrowDagger"))
         {
-            anim.SetBool("ThrowDagger", false);
-            canthrowDagger = true;
+            throwdaggerTime += Time.deltaTime;
+            Debug.Log(throwdaggerTime);
+            if (throwdaggerTime>.5f)
+            {
+                canthrowDagger = true;
+                anim.SetBool("ThrowDagger", false);
+                throwdaggerTime = 0f;
+            }
+            
+          
+
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.F) && canthrowDagger)
+            {
+                    anim.SetBool("ThrowDagger", true);
+                    canthrowDagger = false;
+
+                    Vector3 position = transform.position;
+                  position.y = transform.position.y - 1f;
+           
+               
+                  dag = Instantiate(Dagger, position, Quaternion.identity);
+               
+
+
 
 
         }
-       
-    
-        if (Input.GetKeyDown(KeyCode.F) && canthrowDagger)
-            {
 
-                anim.SetBool("ThrowDagger", true);
-                 canthrowDagger = false;
 
-                 Vector3 position = transform.position;
-                position.y = transform.position.y - 1f;
-                dag = Instantiate(Dagger, position, Quaternion.identity);
-       
-            }
-
-        
 
         bool isOntheGround()
         {
