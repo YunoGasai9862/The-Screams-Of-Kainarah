@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class AttackingScript : MonoBehaviour
 {
@@ -12,7 +13,6 @@ public class AttackingScript : MonoBehaviour
     private BoxCollider2D col;
     private GameObject dag;
     private bool canthrowDagger = true;
-    private int counter = 0;
     private float throwdaggerTime=0;
     [SerializeField] LayerMask Ground;
     [SerializeField] GameObject Dagger;
@@ -129,35 +129,29 @@ public class AttackingScript : MonoBehaviour
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("ThrowDagger"))
         {
             throwdaggerTime += Time.deltaTime;
-            Debug.Log(throwdaggerTime);
             if (throwdaggerTime>.5f)
             {
-                canthrowDagger = true;
                 anim.SetBool("ThrowDagger", false);
                 throwdaggerTime = 0f;
+                canthrowDagger = true;
+
             }
-            
-          
+
+
+
 
         }
 
 
-        if (Input.GetKeyDown(KeyCode.F) && canthrowDagger)
+        if (!(anim.GetCurrentAnimatorStateInfo(0).IsName("Running")) && Input.GetKeyDown(KeyCode.F) && canthrowDagger)
             {
                     anim.SetBool("ThrowDagger", true);
                     canthrowDagger = false;
 
-                    Vector3 position = transform.position;
-                  position.y = transform.position.y - 1f;
-           
-               
-                  dag = Instantiate(Dagger, position, Quaternion.identity);
-               
 
+                    Invoke("instantiateDag", .4f);
 
-
-
-        }
+              }
 
 
 
@@ -165,5 +159,15 @@ public class AttackingScript : MonoBehaviour
         {
             return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, Ground);
         }
+
+    }
+
+    void instantiateDag()
+    {
+        Vector3 position = transform.position;
+        position.y = transform.position.y - 1f;
+
+        dag = Instantiate(Dagger, position, Quaternion.identity);
+
     }
 }
