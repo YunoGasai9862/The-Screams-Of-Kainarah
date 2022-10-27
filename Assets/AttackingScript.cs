@@ -80,7 +80,7 @@ public class AttackingScript : MonoBehaviour
         else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
         {
             anim.SetFloat("ElapsedTime", elapsedTime);
-            if (elapsedTime > 1f)
+            if (elapsedTime > .8f)
             {
 
                 AttackCount = 0;
@@ -93,7 +93,7 @@ public class AttackingScript : MonoBehaviour
         else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
         {
             anim.SetFloat("ElapsedTime", elapsedTime);
-            if (elapsedTime > 1f)
+            if (elapsedTime > .8f)
             {
 
                 AttackCount = 0;
@@ -108,7 +108,7 @@ public class AttackingScript : MonoBehaviour
         else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack4"))
         {
             anim.SetFloat("ElapsedTime", elapsedTime);
-            if (elapsedTime > 1f)
+            if (elapsedTime > .8f)
             {
 
                 AttackCount = 0;
