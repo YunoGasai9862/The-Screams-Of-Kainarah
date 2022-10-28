@@ -1,6 +1,7 @@
 using Mono.CompilerServices.SymbolWriter;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,7 +34,6 @@ public class Movement : MonoBehaviour
     void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
-
         rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
 
 

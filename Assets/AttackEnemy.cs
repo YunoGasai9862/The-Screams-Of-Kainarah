@@ -31,7 +31,7 @@ public class AttackEnemy : MonoBehaviour
 
         }
 
-        if (elapsedTime > 3f)
+        if (elapsedTime > 2.5f)
         {
             checker = false;
             anim.SetBool("HitEnemy", true);
