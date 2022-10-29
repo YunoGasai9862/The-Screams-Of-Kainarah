@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 454730942}
   - component: {fileID: 454730944}
   - component: {fileID: 454730943}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ledges
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2207,6 +2207,10 @@ PrefabInstance:
     - target: {fileID: 2357857119552702225, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_Name
       value: Heroine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: Ledge.m_Bits
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2357857119552702231, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_RootOrder

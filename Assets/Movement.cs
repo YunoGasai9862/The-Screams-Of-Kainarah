@@ -12,6 +12,7 @@ public class Movement : MonoBehaviour
     [SerializeField] LayerMask Ground;
     [SerializeField] GameObject EnemyHitAnimation;
     [SerializeField] AttackEnemy Enemy;
+    [SerializeField] LayerMask Ledge;
 
     private Animator anim;
     private float Horizontal;
@@ -21,6 +22,7 @@ public class Movement : MonoBehaviour
     private bool flip = true;
     private bool Death = false;
     private float slidingspeed = 5f;
+    
 
 
     private void Start()
@@ -55,8 +57,16 @@ public class Movement : MonoBehaviour
 
         CheckForAnimation();
 
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, 3f, Ledge);
+        Debug.DrawRay(transform.position, transform.right, Color.green);
+
+        if(hit.collider)
+        {
+            Debug.Log("HIT");
+        }
 
     }
+   
     void Sliding()
     {
 
@@ -157,5 +167,8 @@ public class Movement : MonoBehaviour
                 anim.SetBool("Death", true);
             }
         }
+
+
+    
     
 }

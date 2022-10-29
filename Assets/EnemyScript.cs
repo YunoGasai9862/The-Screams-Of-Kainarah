@@ -38,7 +38,7 @@ public class EnemyScript : MonoBehaviour
 
     bool CanAttack()
     {
-        if(Vector2.Distance(transform.position, Heroine.transform.position)<=3.0f)
+        if (Vector2.Distance(transform.position, Heroine.transform.position)<=3.0f)
         {
             return true;
         }
