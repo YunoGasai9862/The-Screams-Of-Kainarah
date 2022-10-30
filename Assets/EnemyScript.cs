@@ -5,13 +5,20 @@ using UnityEngine;
 public class EnemyScript : MonoBehaviour
 {
     [SerializeField] GameObject Heroine;
+    [SerializeField] Transform[] Waypoints;
+    private int Index=0;
     private Animator anim;
     private int lifeCounter = 0;
     private bool isNotdead = true;
+    private float Speed = 5f;
+    private Rigidbody2D rb;
+    private SpriteRenderer sr;
     void Start()
     {
         Heroine = GameObject.FindGameObjectWithTag("Player");
         anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -32,7 +39,29 @@ public class EnemyScript : MonoBehaviour
             Destroy(gameObject,.3f);
         }
 
-    
+
+        if(Vector2.Distance(transform.position, Waypoints[Index].transform.position)<=.1f)
+        {
+            Index++;
+
+            if(Index>=Waypoints.Length)
+            {
+                Index = 0;
+            }
+
+        }
+            transform.position=Vector3.MoveTowards(transform.position, Waypoints[Index].position, Speed * Time.deltaTime);
+
+        if (Waypoints[Index].CompareTag("WP1"))
+        {
+            sr.flipX = true;
+        }
+        else
+        {
+            sr.flipX = false;
+        }
+       
+
     }
 
 

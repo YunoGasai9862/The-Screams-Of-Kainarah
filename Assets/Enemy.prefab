@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 613478252915356510}
   - component: {fileID: 613478252915356509}
   - component: {fileID: 613478252915356482}
+  - component: {fileID: 1546601297}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -75,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -595256821, guid: cf7ff2c53746cff44924cd3d48be6077, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
@@ -141,7 +142,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.01058656, y: 0.03175968}
+  m_Offset: {x: 0.019664645, y: -0.36768168}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -152,5 +153,21 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.7913269, y: 1.3739806}
+  m_Size: {x: 1.7368574, y: 0.5750979}
   m_EdgeRadius: 0
+--- !u!114 &1546601297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 613478252915356505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe72db2a50c0dc245a0facaba6e43147, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Heroine: {fileID: 0}
+  Waypoints:
+  - {fileID: 0}
+  - {fileID: 0}
