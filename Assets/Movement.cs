@@ -36,6 +36,7 @@ public class Movement : MonoBehaviour
     void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
+
         rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
 
 
@@ -57,13 +58,9 @@ public class Movement : MonoBehaviour
 
         CheckForAnimation();
 
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, 3f, Ledge);
-        Debug.DrawRay(transform.position, transform.right, Color.green);
+        RayCastGenerator();
 
-        if(hit.collider)
-        {
-            Debug.Log("HIT");
-        }
+
 
     }
    
@@ -169,6 +166,22 @@ public class Movement : MonoBehaviour
         }
 
 
-    
-    
-}
+    void RayCastGenerator()
+    {
+        RaycastHit2D hit;
+        if (sr.flipX)
+        {
+            hit = Physics2D.Raycast(transform.position, -transform.right, 5f, Ledge);
+            Debug.DrawRay(transform.position, -transform.right * 5, Color.red);
+        }
+        else
+        {
+            hit = Physics2D.Raycast(transform.position, transform.right, 5f, Ledge);
+            Debug.DrawRay(transform.position, transform.right * 5, Color.red);
+        }
+         //5 is how long the raycast should be
+    }
+
+
+
+    }
