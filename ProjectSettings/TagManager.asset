@@ -9,6 +9,7 @@ TagManager:
   - Dagger
   - WP1
   - WP2
+  - Ledge
   layers:
   - Default
   - TransparentFX

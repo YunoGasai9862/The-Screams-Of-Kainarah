@@ -22,7 +22,7 @@ public class Movement : MonoBehaviour
     private bool flip = true;
     private bool Death = false;
     private float slidingspeed = 5f;
-    
+ 
 
 
     private void Start()
@@ -166,20 +166,34 @@ public class Movement : MonoBehaviour
         }
 
 
-    void RayCastGenerator()
+     void RayCastGenerator()
     {
-        RaycastHit2D hit;
         if (sr.flipX)
         {
-            hit = Physics2D.Raycast(transform.position, -transform.right, 5f, Ledge);
-            Debug.DrawRay(transform.position, -transform.right * 5, Color.red);
+             if(Physics2D.Raycast(transform.position, -transform.right, 2f, Ledge))
+            {
+                rb.AddForce(transform.up * 25f * Time.deltaTime,ForceMode2D.Impulse);
+                rb.AddForce(-transform.right * 20f * Time.deltaTime, ForceMode2D.Impulse);
+            }
+              Debug.DrawRay(transform.position, -transform.right * 2, Color.red);
+
+  
         }
         else
         {
-            hit = Physics2D.Raycast(transform.position, transform.right, 5f, Ledge);
-            Debug.DrawRay(transform.position, transform.right * 5, Color.red);
+           if (Physics2D.Raycast(transform.position, transform.right, 2f, Ledge))
+            {
+                rb.AddForce(transform.up * 25f * Time.deltaTime, ForceMode2D.Impulse);
+                rb.AddForce(transform.right * 20f * Time.deltaTime, ForceMode2D.Impulse);
+
+            }
+            Debug.DrawRay(transform.position, transform.right * 2, Color.red);
+
         }
-         //5 is how long the raycast should be
+        //5 is how long the raycast should be
+
+       
+        
     }
 
 

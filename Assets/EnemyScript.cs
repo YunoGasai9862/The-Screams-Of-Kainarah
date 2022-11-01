@@ -40,7 +40,7 @@ public class EnemyScript : MonoBehaviour
         }
 
 
-        if(Vector2.Distance(transform.position, Waypoints[Index].position)<=.1f)
+        if(Vector2.Distance(transform.position, Waypoints[Index].position)<=.1)
         {
             Index++;
 

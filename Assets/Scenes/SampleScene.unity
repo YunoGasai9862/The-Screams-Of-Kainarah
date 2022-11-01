@@ -144,7 +144,7 @@ GameObject:
   - component: {fileID: 454730943}
   m_Layer: 3
   m_Name: Ledges
-  m_TagString: Untagged
+  m_TagString: Ledge
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -222,7 +222,7 @@ Tilemap:
   m_GameObject: {fileID: 454730938}
   m_Enabled: 1
   m_Tiles:
-  - first: {x: -1, y: -1, z: 0}
+  - first: {x: -1, y: 0, z: 0}
     second:
       serializedVersion: 2
       m_TileIndex: 0
@@ -265,7 +265,7 @@ Tilemap:
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: -1, y: -1, z: 0}
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 2, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -321,20 +321,28 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 454730942}
     m_ColliderPaths:
-    - - X: 22500000
-        Y: 625000
-      - X: -32500000
-        Y: 625000
-      - X: -32500000
-        Y: -10625000
-      - X: 22500000
-        Y: -10625000
+    - - X: 22500041
+        Y: 625100
+      - X: 22500100
+        Y: 625041
+      - X: 22500100
+        Y: 10625041
+      - X: 22500041
+        Y: 10625100
+      - X: -32500041
+        Y: 10625100
+      - X: -32500100
+        Y: 10625041
+      - X: -32500100
+        Y: 625041
+      - X: -32500041
+        Y: 625100
   m_CompositePaths:
     m_Paths:
-    - - {x: 2.249971, y: -1.0625}
-      - {x: 2.249971, y: 0.0625}
-      - {x: -3.25, y: 0.0624707}
-      - {x: -3.249971, y: -1.0625}
+    - - {x: 2.2499747, y: 0.06251}
+      - {x: 2.2499747, y: 1.06251}
+      - {x: -3.25001, y: 1.0624748}
+      - {x: -3.2499747, y: 0.06251}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
 --- !u!50 &454730944
@@ -353,7 +361,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 20e27f28af61fef4abdfaeb4ae076985, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -694,7 +702,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 20e27f28af61fef4abdfaeb4ae076985, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -2139,7 +2147,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 20e27f28af61fef4abdfaeb4ae076985, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
