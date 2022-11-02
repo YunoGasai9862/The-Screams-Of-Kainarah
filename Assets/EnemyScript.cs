@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class EnemyScript : MonoBehaviour
 {
-    [SerializeField] GameObject Heroine;
     [SerializeField] Transform[] Waypoints;
     private int Index=0;
     private Animator anim;
@@ -13,9 +12,10 @@ public class EnemyScript : MonoBehaviour
     private float Speed = 5f;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
+    
+    [SerializeField] LayerMask Player;
     void Start()
     {
-        Heroine = GameObject.FindGameObjectWithTag("Player");
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
@@ -67,12 +67,16 @@ public class EnemyScript : MonoBehaviour
 
     bool CanAttack()
     {
-        if (Vector2.Distance(transform.position, Heroine.transform.position)<=3.0f)
+
+    
+       if(sr.flipX)
         {
-            return true;
+          return Physics2D.Raycast(transform.position, -transform.right, 3f, Player);
+          
         }
 
-        return false;
+        return Physics2D.Raycast(transform.position, transform.right, 3f, Player); ;
+      
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

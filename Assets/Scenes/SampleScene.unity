@@ -2233,6 +2233,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 62739067}
     - target: {fileID: 1546601297, guid: aaa7a0367a1ca144e8d5d870d46392c1, type: 3}
+      propertyPath: Player.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546601297, guid: aaa7a0367a1ca144e8d5d870d46392c1, type: 3}
       propertyPath: Waypoints.Array.data[0]
       value: 
       objectReference: {fileID: 962105248}
@@ -2292,6 +2296,10 @@ PrefabInstance:
       propertyPath: m_BodyType
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 613478252915356509, guid: aaa7a0367a1ca144e8d5d870d46392c1, type: 3}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 613478252915356511, guid: aaa7a0367a1ca144e8d5d870d46392c1, type: 3}
       propertyPath: m_FlipX
       value: 0
@@ -2308,10 +2316,6 @@ PrefabInstance:
     - target: {fileID: 2357857119552702225, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_Name
       value: Heroine
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: Ledge.m_Bits
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2357857119552702231, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_RootOrder
@@ -2357,17 +2361,5 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2357857119552702234, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 6200000, guid: 20e27f28af61fef4abdfaeb4ae076985, type: 2}
-    - target: {fileID: 2357857119552702234, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: m_Constraints
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857119552702235, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 6200000, guid: 20e27f28af61fef4abdfaeb4ae076985, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
