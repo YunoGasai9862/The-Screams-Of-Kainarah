@@ -12,6 +12,8 @@ public class EnemyScript : MonoBehaviour
     private float Speed = 5f;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
+    private GameObject Heroine;
+    [SerializeField] bool StopForAttack = false;
     
     [SerializeField] LayerMask Player;
     void Start()
@@ -19,17 +21,20 @@ public class EnemyScript : MonoBehaviour
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        Heroine = GameObject.FindWithTag("Player");
     }
 
     void Update()
     {
         if(CanAttack())
         {
+            StopForAttack = true;
             anim.SetBool("EnemyAttack", true);
         }
         else
         {
             anim.SetBool("EnemyAttack", false);
+            StopForAttack = false;
 
         }
 
@@ -50,7 +55,11 @@ public class EnemyScript : MonoBehaviour
             }
 
         }
-            transform.position=Vector3.MoveTowards(transform.position, Waypoints[Index].position, Speed * Time.deltaTime);
+        if(!StopForAttack) //continuing moving if the Player is not in the range
+        {
+            transform.position = Vector3.MoveTowards(transform.position, Waypoints[Index].position, Speed * Time.deltaTime);
+
+        }
 
         if (Waypoints[Index].CompareTag("WP1"))
         {
@@ -61,6 +70,10 @@ public class EnemyScript : MonoBehaviour
             sr.flipX = false;
         }
        
+        if(StopForAttack)
+        {
+            transform.position=Vector2.MoveTowards(transform.position, Heroine.transform.position, Speed * Time.deltaTime);
+        }
 
     }
 
@@ -68,15 +81,22 @@ public class EnemyScript : MonoBehaviour
     bool CanAttack()
     {
 
-    
-       if(sr.flipX)
+
+        if (sr.flipX)
         {
-          return Physics2D.Raycast(transform.position, -transform.right, 3f, Player);
-          
+
+            Debug.DrawRay(transform.position, -transform.right * 1.5f, Color.cyan);
+            return Physics2D.Raycast(transform.position, -transform.right, 1.5f, Player);
+
+        }
+        else
+        {
+            Debug.DrawRay(transform.position, transform.right * 1.5f, Color.cyan);
+
+            return Physics2D.Raycast(transform.position, transform.right, 1.5f, Player); ;
+
         }
 
-        return Physics2D.Raycast(transform.position, transform.right, 3f, Player); ;
-      
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
