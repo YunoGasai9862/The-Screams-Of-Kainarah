@@ -67,7 +67,7 @@ public class AttackingScript : MonoBehaviour
 
             anim.SetFloat("ElapsedTime", elapsedTime);
 
-            if (elapsedTime > .5f)
+            if (elapsedTime>.5f)
             {
 
                 AttackCount = 0;

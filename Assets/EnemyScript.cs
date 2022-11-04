@@ -45,7 +45,7 @@ public class EnemyScript : MonoBehaviour
         }
 
 
-        if(Vector2.Distance(transform.position, Waypoints[Index].position)<=.1)
+        if(Vector2.Distance(transform.position, Waypoints[Index].position)<=.1f)
         {
             Index++;
 
@@ -70,10 +70,7 @@ public class EnemyScript : MonoBehaviour
             sr.flipX = false;
         }
        
-        if(StopForAttack)
-        {
-            transform.position=Vector2.MoveTowards(transform.position, Heroine.transform.position, Speed * Time.deltaTime);
-        }
+  
 
     }
 
@@ -85,15 +82,15 @@ public class EnemyScript : MonoBehaviour
         if (sr.flipX)
         {
 
-            Debug.DrawRay(transform.position, -transform.right * 1.5f, Color.cyan);
-            return Physics2D.Raycast(transform.position, -transform.right, 1.5f, Player);
+            Debug.DrawRay(transform.position, -transform.right * 3f, Color.cyan);
+            return Physics2D.Raycast(transform.position, -transform.right, 3f, Player);
 
         }
         else
         {
-            Debug.DrawRay(transform.position, transform.right * 1.5f, Color.cyan);
+            Debug.DrawRay(transform.position, transform.right * 3f, Color.cyan);
 
-            return Physics2D.Raycast(transform.position, transform.right, 1.5f, Player); ;
+            return Physics2D.Raycast(transform.position, transform.right, 3f, Player); ;
 
         }
 

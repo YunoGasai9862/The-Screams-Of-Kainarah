@@ -13,6 +13,7 @@ public class Movement : MonoBehaviour
     [SerializeField] GameObject EnemyHitAnimation;
     [SerializeField] AttackEnemy Enemy;
     [SerializeField] LayerMask Ledge;
+   
 
     private Animator anim;
     private float Horizontal;
@@ -21,6 +22,7 @@ public class Movement : MonoBehaviour
     private Rigidbody2D rb;
     private bool flip = true;
     private bool Death = false;
+    private float ledgeTiming = 0f;
     private float slidingspeed = 5f;
  
 
@@ -36,7 +38,6 @@ public class Movement : MonoBehaviour
     void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
-
         rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
 
 
@@ -133,6 +134,19 @@ public class Movement : MonoBehaviour
             {
                 anim.SetInteger("State", 3);
             }
+
+            if(anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
+              {
+                     ledgeTiming += Time.deltaTime;
+
+                   if (ledgeTiming>.5f)
+                  {
+                         anim.SetBool("LedgeGrab", false);
+                         ledgeTiming = 0;
+
+                  }
+              }
+      
         }
 
 
@@ -184,6 +198,7 @@ public class Movement : MonoBehaviour
         {
            if (Physics2D.Raycast(transform.position, transform.right, 2f, Ledge))
             {
+                anim.SetBool("LedgeGrab", true);
                 rb.AddForce(transform.up * 25f * Time.deltaTime, ForceMode2D.Impulse);
                 rb.AddForce(transform.right * 20f * Time.deltaTime, ForceMode2D.Impulse);
 
