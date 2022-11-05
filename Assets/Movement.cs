@@ -13,6 +13,8 @@ public class Movement : MonoBehaviour
     [SerializeField] GameObject EnemyHitAnimation;
     [SerializeField] AttackEnemy Enemy;
     [SerializeField] LayerMask Ledge;
+    [SerializeField] GameObject Ceiling;
+    [SerializeField] BoxCollider2D CeilingCollider;
    
 
     private Animator anim;
@@ -33,20 +35,33 @@ public class Movement : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         col = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
+        CeilingCollider = Ceiling.GetComponent<BoxCollider2D>();
      
     }
     void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
-        rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
+        rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
 
 
 
         if (Input.GetButtonDown("Jump") && isOntheGround())
         {
+           
             rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
         }
 
+        if(isOntheGround())
+        {
+            CeilingCollider.enabled = true;
+            Ceiling.gameObject.SetActive(true);
+
+        }
+        if(!isOntheGround())
+        {
+            CeilingCollider.enabled = false;
+            Ceiling.gameObject.SetActive(false);
+        }
 
         if (Death)
         {
@@ -98,16 +113,32 @@ public class Movement : MonoBehaviour
                 Enemy.HeroineFlipped = true;
                 Vector2 offset = col.offset;
                 offset.x += 1;
+
+
                 col.offset = offset;
+
+
+
+                Vector2 ceilingoffset = CeilingCollider.offset;
+                ceilingoffset.x += 1.36f;
+                CeilingCollider.offset = ceilingoffset;
                 flip = false;
             }
             else if (Horizontal > 0f && isOntheGround() && !flip)
             {
                 sr.flipX = false;
                 Enemy.HeroineFlipped = false;
+
                 Vector2 offset = col.offset;
+           
                 offset.x -= 1;
+              
                 col.offset = offset;
+
+
+                Vector2 ceilingoffset = CeilingCollider.offset;
+                ceilingoffset.x -= 1.36f;
+                CeilingCollider.offset = ceilingoffset;
                 flip = true;
             }
         }
@@ -137,7 +168,7 @@ public class Movement : MonoBehaviour
 
             if(anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
               {
-                     ledgeTiming += Time.deltaTime;
+                 ledgeTiming += Time.deltaTime;
 
                    if (ledgeTiming>.5f)
                   {
@@ -185,25 +216,26 @@ public class Movement : MonoBehaviour
     {
         if (sr.flipX)
         {
-             if(Physics2D.Raycast(transform.position, -transform.right, 2f, Ledge))
+             if(Physics2D.Raycast(transform.position, -transform.right, .5f, Ledge))
             {
-                rb.AddForce(transform.up * 25f * Time.deltaTime,ForceMode2D.Impulse);
-                rb.AddForce(-transform.right * 20f * Time.deltaTime, ForceMode2D.Impulse);
+                anim.SetBool("LedgeGrab", true);
+                rb.AddForce(transform.up * 35f * Time.deltaTime,ForceMode2D.Impulse);
+                rb.AddForce(-transform.right * 30f * Time.deltaTime, ForceMode2D.Impulse);
             }
-              Debug.DrawRay(transform.position, -transform.right * 2, Color.red);
+              Debug.DrawRay(transform.position, -transform.right * .5f, Color.red);
 
   
         }
         else
         {
-           if (Physics2D.Raycast(transform.position, transform.right, 2f, Ledge))
+           if (Physics2D.Raycast(transform.position, transform.right, .5f, Ledge))
             {
                 anim.SetBool("LedgeGrab", true);
-                rb.AddForce(transform.up * 25f * Time.deltaTime, ForceMode2D.Impulse);
-                rb.AddForce(transform.right * 20f * Time.deltaTime, ForceMode2D.Impulse);
+                rb.AddForce(transform.up * 35f * Time.deltaTime, ForceMode2D.Impulse);
+                rb.AddForce(transform.right * 30f * Time.deltaTime, ForceMode2D.Impulse);
 
             }
-            Debug.DrawRay(transform.position, transform.right * 2, Color.red);
+            Debug.DrawRay(transform.position, transform.right * .5f, Color.red);
 
         }
         //5 is how long the raycast should be

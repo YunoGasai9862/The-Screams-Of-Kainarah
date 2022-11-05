@@ -321,28 +321,20 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 454730942}
     m_ColliderPaths:
-    - - X: 22500041
-        Y: 625100
-      - X: 22500100
-        Y: 625041
-      - X: 22500100
-        Y: 10625041
-      - X: 22500041
-        Y: 10625100
-      - X: -32500041
-        Y: 10625100
-      - X: -32500100
-        Y: 10625041
-      - X: -32500100
-        Y: 625041
-      - X: -32500041
-        Y: 625100
+    - - X: 22500000
+        Y: 10625000
+      - X: -32500000
+        Y: 10625000
+      - X: -32500000
+        Y: -625000
+      - X: 22500000
+        Y: -625000
   m_CompositePaths:
     m_Paths:
-    - - {x: 2.2499747, y: 0.06251}
-      - {x: 2.2499747, y: 1.06251}
-      - {x: -3.25001, y: 1.0624748}
-      - {x: -3.2499747, y: 0.06251}
+    - - {x: 2.249971, y: -0.0625}
+      - {x: 2.249971, y: 1.0625}
+      - {x: -3.25, y: 1.0624707}
+      - {x: -3.249971, y: -0.0625}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
 --- !u!50 &454730944
@@ -2168,6 +2160,16 @@ TilemapCollider2D:
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0.00001
+--- !u!1 &2037528101 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2037528101, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+  m_PrefabInstance: {fileID: 2357857118627078210}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &2037528103 stripped
+BoxCollider2D:
+  m_CorrespondingSourceObject: {fileID: 2037528103, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+  m_PrefabInstance: {fileID: 2357857118627078210}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2136561231
 GameObject:
   m_ObjectHideFlags: 0
@@ -2313,10 +2315,34 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2037528102, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037528103, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: m_Size.x
+      value: 1.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037528103, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: m_Size.y
+      value: 0.78
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037528104, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: m_FlipX
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2357857119552702225, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_Name
       value: Heroine
       objectReference: {fileID: 0}
+    - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: Ceiling
+      value: 
+      objectReference: {fileID: 2037528101}
+    - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: CeilingCollider
+      value: 
+      objectReference: {fileID: 2037528103}
     - target: {fileID: 2357857119552702231, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_RootOrder
       value: 2
