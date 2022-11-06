@@ -15,7 +15,7 @@ public class Movement : MonoBehaviour
     [SerializeField] LayerMask Ledge;
     [SerializeField] GameObject Ceiling;
     [SerializeField] BoxCollider2D CeilingCollider;
-   
+    [SerializeField] LedgeDetector _ledge;   
 
     private Animator anim;
     private float Horizontal;
@@ -26,6 +26,7 @@ public class Movement : MonoBehaviour
     private bool Death = false;
     private float ledgeTiming = 0f;
     private float slidingspeed = 5f;
+    [SerializeField] bool once=true;
  
 
 
@@ -41,6 +42,7 @@ public class Movement : MonoBehaviour
     void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
+
         rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
 
 
@@ -51,21 +53,30 @@ public class Movement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
         }
 
-        if(isOntheGround())
+        if(isOntheGround() && _ledge.Allowed)
         {
             CeilingCollider.enabled = true;
             Ceiling.gameObject.SetActive(true);
 
         }
-        if(!isOntheGround())
+        if(!isOntheGround() && !_ledge.Allowed)
         {
             CeilingCollider.enabled = false;
             Ceiling.gameObject.SetActive(false);
+            _ledge.Allowed = true;
         }
 
         if (Death)
         {
             rb.bodyType = RigidbodyType2D.Static;
+        }
+
+    
+        if(!once)
+        {
+            once = true;
+            rb.AddForce(transform.up * 35f * Time.deltaTime, ForceMode2D.Impulse);
+            rb.AddForce(-transform.right * 30f * Time.deltaTime, ForceMode2D.Impulse);
         }
 
        
@@ -109,16 +120,15 @@ public class Movement : MonoBehaviour
         {
             if (Horizontal < 0f && isOntheGround() && flip)
             {
+                //character flip
                 sr.flipX = true;
                 Enemy.HeroineFlipped = true;
                 Vector2 offset = col.offset;
                 offset.x += 1;
-
-
                 col.offset = offset;
 
 
-
+                //ceiling
                 Vector2 ceilingoffset = CeilingCollider.offset;
                 ceilingoffset.x += 1.36f;
                 CeilingCollider.offset = ceilingoffset;
@@ -216,26 +226,27 @@ public class Movement : MonoBehaviour
     {
         if (sr.flipX)
         {
-             if(Physics2D.Raycast(transform.position, -transform.right, .5f, Ledge))
+             if(Physics2D.Raycast(transform.position, -transform.right, .5f, Ledge) && once)
             {
-                anim.SetBool("LedgeGrab", true);
-                rb.AddForce(transform.up * 35f * Time.deltaTime,ForceMode2D.Impulse);
-                rb.AddForce(-transform.right * 30f * Time.deltaTime, ForceMode2D.Impulse);
+                anim.SetBool("LedgeGrab", true);  
+                once = false;
             }
               Debug.DrawRay(transform.position, -transform.right * .5f, Color.red);
+
+           
 
   
         }
         else
         {
-           if (Physics2D.Raycast(transform.position, transform.right, .5f, Ledge))
+           if (Physics2D.Raycast(transform.position, transform.right, .5f, Ledge) && once)
             {
                 anim.SetBool("LedgeGrab", true);
-                rb.AddForce(transform.up * 35f * Time.deltaTime, ForceMode2D.Impulse);
-                rb.AddForce(transform.right * 30f * Time.deltaTime, ForceMode2D.Impulse);
+                once = false;
 
             }
             Debug.DrawRay(transform.position, transform.right * .5f, Color.red);
+
 
         }
         //5 is how long the raycast should be
