@@ -42,7 +42,6 @@ public class Movement : MonoBehaviour
     void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
-
         rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
 
 
@@ -219,6 +218,12 @@ public class Movement : MonoBehaviour
                 Death = true;
                 anim.SetBool("Death", true);
             }
+
+            if(collision.collider.CompareTag("Ledge"))
+             {
+                 transform.parent = collision.transform;
+                    rb.bodyType = RigidbodyType2D.Static;
+             }
         }
 
 
@@ -255,6 +260,6 @@ public class Movement : MonoBehaviour
         
     }
 
-
+        
 
     }
