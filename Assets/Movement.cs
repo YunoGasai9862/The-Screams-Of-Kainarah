@@ -14,8 +14,6 @@ public class Movement : MonoBehaviour
     [SerializeField] AttackEnemy Enemy;
     [SerializeField] LayerMask Ledge;
     [SerializeField] GameObject Ceiling;
-    [SerializeField] BoxCollider2D CeilingCollider;
-    [SerializeField] LedgeDetector _ledge;   
 
     private Animator anim;
     private float Horizontal;
@@ -25,6 +23,7 @@ public class Movement : MonoBehaviour
     private bool flip = true;
     private bool Death = false;
     private float ledgeTiming = 0f;
+    private float stickTiming = 0f;
     private float slidingspeed = 5f;
     [SerializeField] bool once=true;
  
@@ -36,33 +35,25 @@ public class Movement : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         col = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
-        CeilingCollider = Ceiling.GetComponent<BoxCollider2D>();
      
     }
     void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
-        rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
+
+        if(rb.bodyType!=RigidbodyType2D.Static)
+        {
+            rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
+
+        }
+
 
 
 
         if (Input.GetButtonDown("Jump") && isOntheGround())
         {
-           
-            rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
-        }
-
-        if(isOntheGround() && _ledge.Allowed)
-        {
-            CeilingCollider.enabled = true;
-            Ceiling.gameObject.SetActive(true);
-
-        }
-        if(!isOntheGround() && !_ledge.Allowed)
-        {
-            CeilingCollider.enabled = false;
-            Ceiling.gameObject.SetActive(false);
-            _ledge.Allowed = true;
+            if (rb.bodyType != RigidbodyType2D.Static)
+                rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
         }
 
         if (Death)
@@ -74,8 +65,8 @@ public class Movement : MonoBehaviour
         if(!once)
         {
             once = true;
-            rb.AddForce(transform.up * 35f * Time.deltaTime, ForceMode2D.Impulse);
-            rb.AddForce(-transform.right * 30f * Time.deltaTime, ForceMode2D.Impulse);
+            rb.AddForce(transform.up * 5f * Time.deltaTime, ForceMode2D.Impulse);
+            rb.AddForce(-transform.right * 5f * Time.deltaTime, ForceMode2D.Impulse);
         }
 
        
@@ -127,10 +118,7 @@ public class Movement : MonoBehaviour
                 col.offset = offset;
 
 
-                //ceiling
-                Vector2 ceilingoffset = CeilingCollider.offset;
-                ceilingoffset.x += 1.36f;
-                CeilingCollider.offset = ceilingoffset;
+   
                 flip = false;
             }
             else if (Horizontal > 0f && isOntheGround() && !flip)
@@ -138,16 +126,10 @@ public class Movement : MonoBehaviour
                 sr.flipX = false;
                 Enemy.HeroineFlipped = false;
 
-                Vector2 offset = col.offset;
-           
+                Vector2 offset = col.offset;     
                 offset.x -= 1;
               
                 col.offset = offset;
-
-
-                Vector2 ceilingoffset = CeilingCollider.offset;
-                ceilingoffset.x -= 1.36f;
-                CeilingCollider.offset = ceilingoffset;
                 flip = true;
             }
         }
@@ -218,46 +200,53 @@ public class Movement : MonoBehaviour
                 Death = true;
                 anim.SetBool("Death", true);
             }
-
-            if(collision.collider.CompareTag("Ledge"))
-             {
-                 transform.parent = collision.transform;
-                    rb.bodyType = RigidbodyType2D.Static;
-             }
         }
 
 
      void RayCastGenerator()
     {
+        RaycastHit2D hit;
         if (sr.flipX)
         {
-             if(Physics2D.Raycast(transform.position, -transform.right, .5f, Ledge) && once)
+            hit = Physics2D.Raycast(transform.position, -transform.right, .2f, Ledge);
+             if (hit && once)
             {
                 anim.SetBool("LedgeGrab", true);  
                 once = false;
+                transform.parent = hit.collider.gameObject.transform;
+                rb.bodyType = RigidbodyType2D.Static;
+                stickTiming += Time.deltaTime;
+
+
             }
-              Debug.DrawRay(transform.position, -transform.right * .5f, Color.red);
-
-           
-
+            Debug.DrawRay(transform.position, -transform.right * .2f, Color.red);
   
         }
         else
         {
-           if (Physics2D.Raycast(transform.position, transform.right, .5f, Ledge) && once)
+            hit = Physics2D.Raycast(transform.position, transform.right, .2f, Ledge);
+           if (hit && once)
             {
                 anim.SetBool("LedgeGrab", true);
                 once = false;
+                transform.parent = hit.collider.gameObject.transform;
+                rb.bodyType = RigidbodyType2D.Static;
+                stickTiming += Time.deltaTime;
 
             }
-            Debug.DrawRay(transform.position, transform.right * .5f, Color.red);
+            Debug.DrawRay(transform.position, transform.right * .2f, Color.red);
 
 
         }
         //5 is how long the raycast should be
 
-       
-        
+
+        if (stickTiming > .5f)
+        {
+            transform.SetParent(null);
+            rb.bodyType = RigidbodyType2D.Dynamic;
+        }
+
     }
 
         
