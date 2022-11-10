@@ -130,7 +130,7 @@ public class AttackingScript : MonoBehaviour
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("ThrowDagger"))
         {
             throwdaggerTime += Time.deltaTime;
-            if (throwdaggerTime>.5f)
+            if (throwdaggerTime >.5f)
             {
                 anim.SetBool("ThrowDagger", false);
                 throwdaggerTime = 0f;

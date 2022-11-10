@@ -25,8 +25,7 @@ public class Movement : MonoBehaviour
     private float ledgeTiming = 0f;
     private float stickTiming = 0f;
     private float slidingspeed = 5f;
-    [SerializeField] bool once=true;
- 
+    
 
 
     private void Start()
@@ -43,7 +42,7 @@ public class Movement : MonoBehaviour
 
         if(rb.bodyType!=RigidbodyType2D.Static)
         {
-            rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
+            rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
 
         }
 
@@ -62,13 +61,7 @@ public class Movement : MonoBehaviour
         }
 
     
-        if(!once)
-        {
-            once = true;
-            rb.AddForce(transform.up * 5f * Time.deltaTime, ForceMode2D.Impulse);
-            rb.AddForce(-transform.right * 5f * Time.deltaTime, ForceMode2D.Impulse);
-        }
-
+    
        
         Sliding();
 
@@ -206,16 +199,30 @@ public class Movement : MonoBehaviour
      void RayCastGenerator()
     {
         RaycastHit2D hit;
+        Vector3 pos = transform.localPosition;
         if (sr.flipX)
         {
             hit = Physics2D.Raycast(transform.position, -transform.right, .2f, Ledge);
-             if (hit && once)
+
+            if (hit)
             {
-                anim.SetBool("LedgeGrab", true);  
-                once = false;
+                anim.SetBool("LedgeGrab", true);      
                 transform.parent = hit.collider.gameObject.transform;
                 rb.bodyType = RigidbodyType2D.Static;
                 stickTiming += Time.deltaTime;
+                if(stickTiming<.5f)
+                {
+                    pos.y += .1f;
+                    transform.position = pos;
+                }
+           
+
+            
+                if(stickTiming>1f)
+                {
+                    transform.SetParent(null);
+                    rb.bodyType=RigidbodyType2D.Dynamic;
+                }
 
 
             }
@@ -224,15 +231,33 @@ public class Movement : MonoBehaviour
         }
         else
         {
-            hit = Physics2D.Raycast(transform.position, transform.right, .2f, Ledge);
-           if (hit && once)
+           hit = Physics2D.Raycast(transform.position, transform.right, .2f, Ledge);
+           if (hit)
             {
                 anim.SetBool("LedgeGrab", true);
-                once = false;
+             
                 transform.parent = hit.collider.gameObject.transform;
                 rb.bodyType = RigidbodyType2D.Static;
                 stickTiming += Time.deltaTime;
+                if (stickTiming < .5f)
+                {
+                    pos.y += .05f;
+                    transform.position = pos;
+                }
 
+                if (stickTiming < .5f)
+                {
+                    pos.y += .1f;
+                    transform.position = pos;
+                }
+
+
+
+                if (stickTiming > 1f)
+                {
+                    transform.SetParent(null);
+                    rb.bodyType = RigidbodyType2D.Dynamic;
+                }
             }
             Debug.DrawRay(transform.position, transform.right * .2f, Color.red);
 
@@ -241,11 +266,7 @@ public class Movement : MonoBehaviour
         //5 is how long the raycast should be
 
 
-        if (stickTiming > .5f)
-        {
-            transform.SetParent(null);
-            rb.bodyType = RigidbodyType2D.Dynamic;
-        }
+     
 
     }
 
