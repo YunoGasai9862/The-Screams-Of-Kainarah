@@ -25,7 +25,7 @@ public class Movement : MonoBehaviour
     private float ledgeTiming = 0f;
     private float stickTiming = 0f;
     private float slidingspeed = 5f;
-    
+    private bool once = true;
 
 
     private void Start()
@@ -60,7 +60,12 @@ public class Movement : MonoBehaviour
             rb.bodyType = RigidbodyType2D.Static;
         }
 
-    
+        if(!once && isOntheGround())
+        {
+            once = true;
+        }
+
+      
     
        
         Sliding();
@@ -210,55 +215,53 @@ public class Movement : MonoBehaviour
                 transform.parent = hit.collider.gameObject.transform;
                 rb.bodyType = RigidbodyType2D.Static;
                 stickTiming += Time.deltaTime;
-                if(stickTiming<.5f)
+
+                if (stickTiming < .5f)
                 {
                     pos.y += .1f;
                     transform.position = pos;
                 }
-           
 
-            
-                if(stickTiming>1f)
-                {
-                    transform.SetParent(null);
-                    rb.bodyType=RigidbodyType2D.Dynamic;
-                }
-
-
+            }else
+            {
+                transform.SetParent(null);
+                rb.bodyType = RigidbodyType2D.Dynamic;
             }
+
+          
+
             Debug.DrawRay(transform.position, -transform.right * .2f, Color.red);
   
         }
         else
         {
            hit = Physics2D.Raycast(transform.position, transform.right, .2f, Ledge);
-           if (hit)
+           if (hit && once)
             {
                 anim.SetBool("LedgeGrab", true);
-             
                 transform.parent = hit.collider.gameObject.transform;
                 rb.bodyType = RigidbodyType2D.Static;
                 stickTiming += Time.deltaTime;
-                if (stickTiming < .5f)
-                {
-                    pos.y += .05f;
-                    transform.position = pos;
-                }
+                stickTiming += Time.deltaTime;
 
                 if (stickTiming < .5f)
                 {
-                    pos.y += .1f;
+                    pos.y += .08f;
+                  
                     transform.position = pos;
+
                 }
 
-
-
-                if (stickTiming > 1f)
-                {
-                    transform.SetParent(null);
-                    rb.bodyType = RigidbodyType2D.Dynamic;
-                }
             }
+            else
+            {
+                once = false;
+                transform.SetParent(null);
+                rb.bodyType = RigidbodyType2D.Dynamic;
+            }
+
+
+          
             Debug.DrawRay(transform.position, transform.right * .2f, Color.red);
 
 
