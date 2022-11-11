@@ -2,6 +2,7 @@ using Mono.CompilerServices.SymbolWriter;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.AnimatedValues;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,6 +15,7 @@ public class Movement : MonoBehaviour
     [SerializeField] AttackEnemy Enemy;
     [SerializeField] LayerMask Ledge;
     [SerializeField] GameObject Ceiling;
+    [SerializeField] GameObject hitPoint;
 
     private Animator anim;
     private float Horizontal;
@@ -25,7 +27,7 @@ public class Movement : MonoBehaviour
     private float ledgeTiming = 0f;
     private float stickTiming = 0f;
     private float slidingspeed = 5f;
-    private bool once = true;
+
 
 
     private void Start()
@@ -42,7 +44,7 @@ public class Movement : MonoBehaviour
 
         if(rb.bodyType!=RigidbodyType2D.Static)
         {
-            rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
+            rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
 
         }
 
@@ -60,11 +62,7 @@ public class Movement : MonoBehaviour
             rb.bodyType = RigidbodyType2D.Static;
         }
 
-        if(!once && isOntheGround())
-        {
-            once = true;
-        }
-
+        
       
     
        
@@ -157,7 +155,7 @@ public class Movement : MonoBehaviour
 
             if(anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
               {
-                 ledgeTiming += Time.deltaTime;
+            ledgeTiming += Time.deltaTime;
 
                    if (ledgeTiming>.5f)
                   {
@@ -236,32 +234,39 @@ public class Movement : MonoBehaviour
         else
         {
            hit = Physics2D.Raycast(transform.position, transform.right, .2f, Ledge);
-           if (hit && once)
+           if (hit)
             {
-                anim.SetBool("LedgeGrab", true);
-                transform.parent = hit.collider.gameObject.transform;
-                rb.bodyType = RigidbodyType2D.Static;
-                stickTiming += Time.deltaTime;
-                stickTiming += Time.deltaTime;
+                    anim.SetBool("LedgeGrab", true);
+                
+                    transform.parent = hit.collider.gameObject.transform;
+                    rb.bodyType = RigidbodyType2D.Static;
+                 
+                
+                    if(rb.bodyType==RigidbodyType2D.Static)
+                    {
+                        pos.y += .2f;
+                       transform.position = pos;
+                     }
 
-                if (stickTiming < .5f)
+             
+
+
+            }else
+            {
+
+                if((int)transform.position.y>=(int)hitPoint.transform.position.y)
                 {
-                    pos.y += .08f;
-                  
-                    transform.position = pos;
+                    transform.SetParent(null);
 
+                    rb.bodyType = RigidbodyType2D.Dynamic;
                 }
 
             }
-            else
-            {
-                once = false;
-                transform.SetParent(null);
-                rb.bodyType = RigidbodyType2D.Dynamic;
-            }
 
 
-          
+
+
+
             Debug.DrawRay(transform.position, transform.right * .2f, Color.red);
 
 
