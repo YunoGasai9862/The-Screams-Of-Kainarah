@@ -16,6 +16,7 @@ public class Movement : MonoBehaviour
     [SerializeField] LayerMask Ledge;
     [SerializeField] GameObject Ceiling;
     [SerializeField] GameObject hitPoint;
+    [SerializeField] LayerMask ledge;
 
     private Animator anim;
     private float Horizontal;
@@ -24,9 +25,8 @@ public class Movement : MonoBehaviour
     private Rigidbody2D rb;
     private bool flip = true;
     private bool Death = false;
-    private float ledgeTiming = 0f;
-    private float stickTiming = 0f;
     private float slidingspeed = 5f;
+    private bool once = true;
 
 
 
@@ -63,7 +63,10 @@ public class Movement : MonoBehaviour
         }
 
         
-      
+        if(isOntheGround())
+        {
+            once = true;
+        }
     
        
         Sliding();
@@ -99,12 +102,15 @@ public class Movement : MonoBehaviour
         return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, Ground);
     }
 
-
+    bool isontheLedge()
+    {
+        return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, ledge);
+    }
     void checkforFlip()
     {
         if (!Death)
         {
-            if (Horizontal < 0f && isOntheGround() && flip)
+            if (Horizontal < 0f && (isOntheGround()|| isontheLedge()) && flip)
             {
                 //character flip
                 sr.flipX = true;
@@ -117,7 +123,7 @@ public class Movement : MonoBehaviour
    
                 flip = false;
             }
-            else if (Horizontal > 0f && isOntheGround() && !flip)
+            else if (Horizontal > 0f && (isOntheGround() || isontheLedge()) && !flip)
             {
                 sr.flipX = false;
                 Enemy.HeroineFlipped = false;
@@ -152,19 +158,6 @@ public class Movement : MonoBehaviour
             {
                 anim.SetInteger("State", 3);
             }
-
-            if(anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
-              {
-            ledgeTiming += Time.deltaTime;
-
-                   if (ledgeTiming>.5f)
-                  {
-                         anim.SetBool("LedgeGrab", false);
-                         ledgeTiming = 0;
-
-                  }
-              }
-      
         }
 
 
@@ -212,20 +205,9 @@ public class Movement : MonoBehaviour
                 anim.SetBool("LedgeGrab", true);      
                 transform.parent = hit.collider.gameObject.transform;
                 rb.bodyType = RigidbodyType2D.Static;
-                stickTiming += Time.deltaTime;
+              
 
-                if (stickTiming < .5f)
-                {
-                    pos.y += .1f;
-                    transform.position = pos;
-                }
-
-            }else
-            {
-                transform.SetParent(null);
-                rb.bodyType = RigidbodyType2D.Dynamic;
             }
-
           
 
             Debug.DrawRay(transform.position, -transform.right * .2f, Color.red);
@@ -234,32 +216,30 @@ public class Movement : MonoBehaviour
         else
         {
            hit = Physics2D.Raycast(transform.position, transform.right, .2f, Ledge);
-           if (hit)
+            if (hit && once)
             {
-                    anim.SetBool("LedgeGrab", true);
-                
-                    transform.parent = hit.collider.gameObject.transform;
-                    rb.bodyType = RigidbodyType2D.Static;
-                 
-                
-                    if(rb.bodyType==RigidbodyType2D.Static)
-                    {
-                        pos.y += .2f;
-                       transform.position = pos;
-                     }
+                anim.SetBool("LedgeGrab", true);
 
-             
+                transform.parent = hit.collider.gameObject.transform;
+                rb.bodyType = RigidbodyType2D.Static;
 
-
-            }else
-            {
-
-                if((int)transform.position.y>=(int)hitPoint.transform.position.y)
+                if(anim.GetCurrentAnimatorStateInfo(0).normalizedTime>1f)
                 {
-                    transform.SetParent(null);
-
+                    anim.SetBool("LedgeGrab", false);
                     rb.bodyType = RigidbodyType2D.Dynamic;
+                    once = false;
+                }else
+                {
+                    pos.y += 2f;
+                    pos.x += 1f;
+                    transform.position = pos;
+                    rb.bodyType = RigidbodyType2D.Dynamic;
+                    anim.SetBool("LedgeGrab", false);
+
                 }
+
+
+
 
             }
 

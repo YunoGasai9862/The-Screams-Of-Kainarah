@@ -16,6 +16,7 @@ public class AttackingScript : MonoBehaviour
     private bool canthrowDagger = true;
     private float throwdaggerTime=0;
     [SerializeField] LayerMask Ground;
+    [SerializeField] LayerMask ledge;
     [SerializeField] GameObject Dagger;
 
     void Start()
@@ -50,7 +51,7 @@ public class AttackingScript : MonoBehaviour
 
         }
 
-        if (isOntheGround() && Input.GetMouseButtonDown(0))
+        if ((isOntheGround() || isontheLedge()) && Input.GetMouseButtonDown(0))
         {
             kickoffElapsedTime = true;
 
@@ -161,6 +162,10 @@ public class AttackingScript : MonoBehaviour
             return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, Ground);
         }
 
+        bool isontheLedge()
+        {
+            return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, ledge);
+        }
     }
 
     void instantiateDag()
