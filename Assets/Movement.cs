@@ -51,7 +51,7 @@ public class Movement : MonoBehaviour
 
 
 
-        if (Input.GetButtonDown("Jump") && isOntheGround())
+        if (Input.GetButtonDown("Jump") && (isOntheGround()||isontheLedge()))
         {
             if (rb.bodyType != RigidbodyType2D.Static)
                 rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
@@ -223,24 +223,38 @@ public class Movement : MonoBehaviour
                 transform.parent = hit.collider.gameObject.transform;
                 rb.bodyType = RigidbodyType2D.Static;
 
-                if(anim.GetCurrentAnimatorStateInfo(0).normalizedTime>1f)
+                if(anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
                 {
-                    anim.SetBool("LedgeGrab", false);
-                    rb.bodyType = RigidbodyType2D.Dynamic;
-                    once = false;
-                }else
-                {
-                    pos.y += 2f;
-                    pos.x += 1f;
-                    transform.position = pos;
-                    rb.bodyType = RigidbodyType2D.Dynamic;
-                    anim.SetBool("LedgeGrab", false);
+                    if(anim.GetCurrentAnimatorStateInfo(0).normalizedTime<1f)
+                    {
+                        pos.y += 2f;
+                        pos.x += 1f;
+                        transform.position = pos;
 
+                    }
+                    else
+                    {
+                        anim.SetBool("LedgeGrab", false);
+                        rb.bodyType = RigidbodyType2D.Dynamic;
+                        transform.SetParent(null);
+                        once = false;
+                    }
+              
+                
+                }
+
+                if(anim.GetCurrentAnimatorStateInfo(0).IsName("IdleAnim"))
+                {
+                    transform.SetParent(null);
                 }
 
 
-
-
+            }
+            else
+            {
+                anim.SetBool("LedgeGrab", false);
+                rb.bodyType = RigidbodyType2D.Dynamic;
+                transform.SetParent(null);
             }
 
 
