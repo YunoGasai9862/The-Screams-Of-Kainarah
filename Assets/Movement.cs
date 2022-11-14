@@ -17,7 +17,7 @@ public class Movement : MonoBehaviour
     [SerializeField] GameObject Ceiling;
     [SerializeField] GameObject hitPoint;
     [SerializeField] LayerMask ledge;
-
+    [SerializeField] LayerMask dummy;
     private Animator anim;
     private float Horizontal;
     private float jumpingSpeed = 5f;
@@ -243,9 +243,13 @@ public class Movement : MonoBehaviour
                 
                 }
 
-                if(anim.GetCurrentAnimatorStateInfo(0).IsName("IdleAnim"))
+                if (anim.GetCurrentAnimatorStateInfo(0).IsName("IdleAnim"))
                 {
+                    hit = Physics2D.Raycast(transform.position, transform.right, .2f, dummy); //some discarded dummy layer
+                    //do this tomorrow!!
                     transform.SetParent(null);
+                    rb.bodyType = RigidbodyType2D.Dynamic;
+
                 }
 
 
@@ -255,10 +259,15 @@ public class Movement : MonoBehaviour
                 anim.SetBool("LedgeGrab", false);
                 rb.bodyType = RigidbodyType2D.Dynamic;
                 transform.SetParent(null);
+
+
+              
             }
 
+        
 
 
+          
 
 
             Debug.DrawRay(transform.position, transform.right * .2f, Color.red);
