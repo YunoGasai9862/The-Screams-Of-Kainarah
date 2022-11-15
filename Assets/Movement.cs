@@ -14,10 +14,7 @@ public class Movement : MonoBehaviour
     [SerializeField] GameObject EnemyHitAnimation;
     [SerializeField] AttackEnemy Enemy;
     [SerializeField] LayerMask Ledge;
-    [SerializeField] GameObject Ceiling;
-    [SerializeField] GameObject hitPoint;
-    [SerializeField] LayerMask ledge;
-    [SerializeField] LayerMask dummy;
+
     private Animator anim;
     private float Horizontal;
     private float jumpingSpeed = 5f;
@@ -27,6 +24,7 @@ public class Movement : MonoBehaviour
     private bool Death = false;
     private float slidingspeed = 5f;
     private bool once = true;
+    private float ledgeTiming;
 
 
 
@@ -67,6 +65,11 @@ public class Movement : MonoBehaviour
         {
             once = true;
         }
+
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            transform.SetParent(null);
+            ledgeTiming = 0f;
+        
     
        
         Sliding();
@@ -104,7 +107,7 @@ public class Movement : MonoBehaviour
 
     bool isontheLedge()
     {
-        return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, ledge);
+        return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, Ledge);
     }
     void checkforFlip()
     {
@@ -225,10 +228,12 @@ public class Movement : MonoBehaviour
 
                 if(anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
                 {
-                    if(anim.GetCurrentAnimatorStateInfo(0).normalizedTime<1f)
+                    ledgeTiming += Time.deltaTime;
+                    if(ledgeTiming<.5f)
                     {
                         pos.y += 2f;
                         pos.x += 1f;
+                        pos.z = -6;
                         transform.position = pos;
 
                     }
@@ -238,20 +243,10 @@ public class Movement : MonoBehaviour
                         rb.bodyType = RigidbodyType2D.Dynamic;
                         transform.SetParent(null);
                         once = false;
-                    }
-              
+                        ledgeTiming = 0;
+                    }            
                 
                 }
-
-                if (anim.GetCurrentAnimatorStateInfo(0).IsName("IdleAnim"))
-                {
-                    hit = Physics2D.Raycast(transform.position, transform.right, .2f, dummy); //some discarded dummy layer
-                    //do this tomorrow!!
-                    transform.SetParent(null);
-                    rb.bodyType = RigidbodyType2D.Dynamic;
-
-                }
-
 
             }
             else
@@ -263,11 +258,6 @@ public class Movement : MonoBehaviour
 
               
             }
-
-        
-
-
-          
 
 
             Debug.DrawRay(transform.position, transform.right * .2f, Color.red);
