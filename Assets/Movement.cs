@@ -40,6 +40,8 @@ public class Movement : MonoBehaviour
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
 
+       
+
         if(rb.bodyType!=RigidbodyType2D.Static)
         {
             rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
@@ -66,9 +68,7 @@ public class Movement : MonoBehaviour
             once = true;
         }
 
-            rb.bodyType = RigidbodyType2D.Dynamic;
-            transform.SetParent(null);
-            ledgeTiming = 0f;
+         
         
     
        
@@ -203,15 +203,45 @@ public class Movement : MonoBehaviour
         {
             hit = Physics2D.Raycast(transform.position, -transform.right, .2f, Ledge);
 
-            if (hit)
+            if (hit && once)
             {
-                anim.SetBool("LedgeGrab", true);      
+                anim.SetBool("LedgeGrab", true);
+
                 transform.parent = hit.collider.gameObject.transform;
                 rb.bodyType = RigidbodyType2D.Static;
-              
+
+                if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
+                {
+                    ledgeTiming += Time.deltaTime;
+                    if (ledgeTiming < .5f)
+                    {
+                        pos.y += 2f;
+                        pos.x += 1f;
+                        pos.z = -6;
+                        transform.position = pos;
+
+                    }
+                    else
+                    {
+                        anim.SetBool("LedgeGrab", false);
+                        rb.bodyType = RigidbodyType2D.Dynamic;
+                        transform.SetParent(null);
+                        once = false;
+                        ledgeTiming = 0;
+                    }
+
+                }
+            }
+            else
+            {
+                anim.SetBool("LedgeGrab", false);
+                rb.bodyType = RigidbodyType2D.Dynamic;
+                transform.SetParent(null);
+
+
 
             }
-          
+
 
             Debug.DrawRay(transform.position, -transform.right * .2f, Color.red);
   
