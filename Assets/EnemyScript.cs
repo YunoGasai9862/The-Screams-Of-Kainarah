@@ -22,6 +22,7 @@ public class EnemyScript : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         Heroine = GameObject.FindWithTag("Player");
+        anim.SetBool("Destroyed", false);
     }
 
     void Update()
@@ -38,10 +39,11 @@ public class EnemyScript : MonoBehaviour
 
         }
 
-        if(lifeCounter>=3)
+        if(lifeCounter>3)
         {
             isNotdead = false;
-            Destroy(gameObject,.3f);
+            anim.SetBool("Destroyed", true);
+            Destroy(gameObject);
         }
 
 
@@ -98,7 +100,7 @@ public class EnemyScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Dagger"))
+        if (collision.CompareTag("Dagger") || collision.CompareTag("Sword"))
         {
             if(isNotdead)
             {

@@ -10,6 +10,7 @@ TagManager:
   - WP1
   - WP2
   - Ledge
+  - Sword
   layers:
   - Default
   - TransparentFX

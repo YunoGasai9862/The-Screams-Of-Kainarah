@@ -38,6 +38,8 @@ public class Movement : MonoBehaviour
     }
     void Update()
     {
+
+
         Horizontal = Input.GetAxisRaw("Horizontal");
 
        
@@ -170,9 +172,13 @@ public class Movement : MonoBehaviour
         {
 
             GameObject HitAnim = Instantiate(EnemyHitAnimation, collision.transform.position, Quaternion.identity);
-            Destroy(collision.gameObject);
             Destroy(HitAnim, 3f);
+            Destroy(collision.gameObject);
+
         }
+
+
+
     }
 
 
@@ -201,7 +207,7 @@ public class Movement : MonoBehaviour
         Vector3 pos = transform.localPosition;
         if (sr.flipX)
         {
-            hit = Physics2D.Raycast(transform.position, -transform.right, .2f, Ledge);
+            hit = Physics2D.Raycast(transform.position, -transform.right, .3f, Ledge);
 
             if (hit && once)
             {
@@ -216,7 +222,7 @@ public class Movement : MonoBehaviour
                     if (ledgeTiming < .5f)
                     {
                         pos.y += 2f;
-                        pos.x += 1f;
+                        pos.x -=1f;
                         pos.z = -6;
                         transform.position = pos;
 
@@ -243,12 +249,12 @@ public class Movement : MonoBehaviour
             }
 
 
-            Debug.DrawRay(transform.position, -transform.right * .2f, Color.red);
+            Debug.DrawRay(transform.position, -transform.right * .3f, Color.red);
   
         }
         else
         {
-           hit = Physics2D.Raycast(transform.position, transform.right, .2f, Ledge);
+           hit = Physics2D.Raycast(transform.position, transform.right, .3f, Ledge);
             if (hit && once)
             {
                 anim.SetBool("LedgeGrab", true);
@@ -290,7 +296,7 @@ public class Movement : MonoBehaviour
             }
 
 
-            Debug.DrawRay(transform.position, transform.right * .2f, Color.red);
+            Debug.DrawRay(transform.position, transform.right * .3f, Color.red);
 
 
         }
