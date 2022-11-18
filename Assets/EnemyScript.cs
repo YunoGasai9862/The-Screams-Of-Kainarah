@@ -43,7 +43,8 @@ public class EnemyScript : MonoBehaviour
         {
             isNotdead = false;
             anim.SetBool("Destroyed", true);
-            Destroy(gameObject);
+            Destroy(gameObject,1f);
+            lifeCounter = 0;
         }
 
 
@@ -59,7 +60,7 @@ public class EnemyScript : MonoBehaviour
         }
         if(!StopForAttack) //continuing moving if the Player is not in the range
         {
-            transform.position = Vector3.MoveTowards(transform.position, Waypoints[Index].position, Speed * Time.deltaTime);
+            transform.position =Vector3.MoveTowards(transform.position, Waypoints[Index].position, Speed * Time.deltaTime);
 
         }
 
@@ -71,8 +72,8 @@ public class EnemyScript : MonoBehaviour
         {
             sr.flipX = false;
         }
-       
-  
+
+        Debug.Log(lifeCounter);
 
     }
 
@@ -113,7 +114,7 @@ public class EnemyScript : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Dagger"))
+        if (collision.CompareTag("Dagger") || collision.CompareTag("Sword"))
         {
             anim.SetBool("Hit", false );
 

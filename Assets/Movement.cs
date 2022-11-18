@@ -11,7 +11,6 @@ public class Movement : MonoBehaviour
     [SerializeField] float CharacterSpeed = 10f;
     [SerializeField] SpriteRenderer sr;
     [SerializeField] LayerMask Ground;
-    [SerializeField] GameObject EnemyHitAnimation;
     [SerializeField] AttackEnemy Enemy;
     [SerializeField] LayerMask Ledge;
 
@@ -166,20 +165,6 @@ public class Movement : MonoBehaviour
         }
 
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.CompareTag("Enemy"))
-        {
-
-            GameObject HitAnim = Instantiate(EnemyHitAnimation, collision.transform.position, Quaternion.identity);
-            Destroy(HitAnim, 3f);
-            Destroy(collision.gameObject);
-
-        }
-
-
-
-    }
 
 
 

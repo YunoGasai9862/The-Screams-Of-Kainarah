@@ -34,7 +34,7 @@ public class RemoveChilds : MonoBehaviour
             timing += Time.deltaTime;
         }
 
-        if(timing>.1f)
+        if(timing>.35f)
         {
             tmc2d.enabled = true;
             timing = 0f;
