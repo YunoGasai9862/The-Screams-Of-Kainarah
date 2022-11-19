@@ -16,30 +16,30 @@ public class RemoveChilds : MonoBehaviour
     void Update()
     {
 
-        if(transform.childCount>0)
+        if (transform.childCount > 0)
         {
             timelapsedforthechild += Time.deltaTime;
         }
 
-        if(transform.childCount>0 && timelapsedforthechild>.2f)
+        if (transform.childCount > 0 && timelapsedforthechild > .2f)
         {
 
             tmc2d.enabled = false;
             timelapsedforthechild = 0f;
-           
+
         }
 
-        if(!tmc2d.enabled)
+        if (!tmc2d.enabled)
         {
             timing += Time.deltaTime;
         }
 
-        if(timing>.35f)
+        if (timing > .35f)
         {
             tmc2d.enabled = true;
             timing = 0f;
         }
-        
+
 
 
     }

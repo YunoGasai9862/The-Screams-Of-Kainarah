@@ -24,7 +24,7 @@ public class Movement : MonoBehaviour
     private float slidingspeed = 5f;
     private bool once = true;
     private float ledgeTiming;
-
+    private RaycastHit2D hit;
 
 
     private void Start()
@@ -69,22 +69,40 @@ public class Movement : MonoBehaviour
             once = true;
         }
 
-         
-        
-    
-       
+
+
+
+        RayCastGenerator();
+
         Sliding();
 
         checkforFlip();
 
         CheckForAnimation();
 
-        RayCastGenerator();
 
 
 
     }
-   
+
+    private void FixedUpdate()
+    {
+       
+
+        if(sr.flipX)
+        {
+            hit = Physics2D.Raycast(transform.position, -transform.right, .3f, Ledge);
+            Debug.DrawRay(transform.position, -transform.right * .3f, Color.red);
+
+        }
+        else
+        {
+            hit = Physics2D.Raycast(transform.position, transform.right, .3f, Ledge);
+            Debug.DrawRay(transform.position, transform.right * .3f, Color.red);
+
+        }
+    }
+
     void Sliding()
     {
 
@@ -168,7 +186,7 @@ public class Movement : MonoBehaviour
 
 
 
-    void Restart()
+        void Restart()
         {
 
             rb.bodyType = RigidbodyType2D.Static;
@@ -188,16 +206,14 @@ public class Movement : MonoBehaviour
 
      void RayCastGenerator()
     {
-        RaycastHit2D hit;
+       
         Vector3 pos = transform.localPosition;
         if (sr.flipX)
         {
-            hit = Physics2D.Raycast(transform.position, -transform.right, .3f, Ledge);
+           
 
             if (hit && once)
             {
-                anim.SetBool("LedgeGrab", true);
-
                 transform.parent = hit.collider.gameObject.transform;
                 rb.bodyType = RigidbodyType2D.Static;
 
@@ -234,54 +250,41 @@ public class Movement : MonoBehaviour
             }
 
 
-            Debug.DrawRay(transform.position, -transform.right * .3f, Color.red);
   
         }
         else
         {
-           hit = Physics2D.Raycast(transform.position, transform.right, .3f, Ledge);
-            if (hit && once)
+            if (hit)
             {
-                anim.SetBool("LedgeGrab", true);
-
                 transform.parent = hit.collider.gameObject.transform;
                 rb.bodyType = RigidbodyType2D.Static;
+                anim.SetBool("LedgeGrab", true);
 
-                if(anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
+                if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
                 {
-                    ledgeTiming += Time.deltaTime;
-                    if(ledgeTiming<.5f)
-                    {
-                        pos.y += 2f;
-                        pos.x += 1f;
+    
+                        pos.y += .4f;
+                        pos.x += .3f;
                         pos.z = -6;
                         transform.position = pos;
 
-                    }
-                    else
-                    {
-                        anim.SetBool("LedgeGrab", false);
-                        rb.bodyType = RigidbodyType2D.Dynamic;
-                        transform.SetParent(null);
-                        once = false;
-                        ledgeTiming = 0;
-                    }            
-                
+                }
+
+                if(anim.GetCurrentAnimatorStateInfo(0).normalizedTime>.5f)
+                {
+                    rb.bodyType = RigidbodyType2D.Dynamic;
+                    transform.SetParent(null);
                 }
 
             }
-            else
-            {
-                anim.SetBool("LedgeGrab", false);
-                rb.bodyType = RigidbodyType2D.Dynamic;
-                transform.SetParent(null);
+           
+        
 
 
               
             }
 
 
-            Debug.DrawRay(transform.position, transform.right * .3f, Color.red);
 
 
         }
@@ -294,4 +297,4 @@ public class Movement : MonoBehaviour
 
         
 
-    }
+    
