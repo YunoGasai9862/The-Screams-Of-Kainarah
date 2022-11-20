@@ -259,36 +259,50 @@ public class Movement : MonoBehaviour
                 transform.parent = hit.collider.gameObject.transform;
                 rb.bodyType = RigidbodyType2D.Static;
                 anim.SetBool("LedgeGrab", true);
-
                 if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
                 {
-    
-                        pos.y += .4f;
-                        pos.x += .3f;
+                    ledgeTiming += Time.deltaTime;
+                    if(anim.GetCurrentAnimatorStateInfo(0).normalizedTime<.3f)
+                    {
+
+                        
+                        pos.y += .7f;
+                        pos.x += .4f;
                         pos.z = -6;
                         transform.position = pos;
 
-                }
+                    }else
+                    {
+                        rb.bodyType = RigidbodyType2D.Dynamic;
+                        transform.SetParent(null);
 
-                if(anim.GetCurrentAnimatorStateInfo(0).normalizedTime>.5f)
+                    }
+
+                    anim.SetFloat("Timing", ledgeTiming);
+                }
+               
+                if(ledgeTiming>0f)
                 {
-                    rb.bodyType = RigidbodyType2D.Dynamic;
+                    anim.SetBool("LedgeGrab", false);
                     transform.SetParent(null);
                 }
+                ledgeTiming = 0f;
+               
+
 
             }
-           
+
         
-
-
-              
-            }
 
 
 
 
         }
-        //5 is how long the raycast should be
+
+
+
+
+     }
 
 
      
