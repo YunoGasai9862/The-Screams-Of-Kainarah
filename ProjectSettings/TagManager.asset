@@ -11,6 +11,7 @@ TagManager:
   - WP2
   - Ledge
   - Sword
+  - DaggerPickUp
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - UI
   - Ground
   - Player
-  - Dummy
+  - DaggerPickUp
   - 
   - 
   - 

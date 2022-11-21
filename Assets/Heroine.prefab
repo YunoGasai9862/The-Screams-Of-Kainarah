@@ -487,6 +487,7 @@ GameObject:
   - component: {fileID: 2357857119552702234}
   - component: {fileID: 2357857119552702235}
   - component: {fileID: 3387488181997499512}
+  - component: {fileID: 8744535595071973501}
   m_Layer: 7
   m_Name: Heroine
   m_TagString: Player
@@ -603,15 +604,10 @@ MonoBehaviour:
   Ground:
     serializedVersion: 2
     m_Bits: 64
-  EnemyHitAnimation: {fileID: 4717814802917708382, guid: c0a87c586e2dd414096605da33f2961c, type: 3}
   Enemy: {fileID: 1608095778, guid: f56de393cd630934e8c8c9cd19ec01bf, type: 3}
   Ledge:
     serializedVersion: 2
     m_Bits: 8
-  Ceiling: {fileID: 0}
-  CeilingCollider: {fileID: 0}
-  _ledge: {fileID: 0}
-  once: 1
 --- !u!50 &2357857119552702234
 Rigidbody2D:
   serializedVersion: 4
@@ -674,7 +670,22 @@ MonoBehaviour:
   Ground:
     serializedVersion: 2
     m_Bits: 64
+  ledge:
+    serializedVersion: 2
+    m_Bits: 0
   Dagger: {fileID: 8025573198793576023, guid: f56de393cd630934e8c8c9cd19ec01bf, type: 3}
+--- !u!114 &8744535595071973501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3761915aae53194e8fd04fdfbbea2f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3485019726026848876
 GameObject:
   m_ObjectHideFlags: 0

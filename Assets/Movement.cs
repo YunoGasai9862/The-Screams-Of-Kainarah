@@ -22,9 +22,6 @@ public class Movement : MonoBehaviour
     private bool flip = true;
     private bool Death = false;
     private float slidingspeed = 5f;
-    private bool once = true;
-    private float ledgeTiming;
-    private RaycastHit2D hit;
 
 
     private void Start()
@@ -33,17 +30,16 @@ public class Movement : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         col = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
-     
+
     }
     void Update()
     {
 
-
         Horizontal = Input.GetAxisRaw("Horizontal");
 
-       
 
-        if(rb.bodyType!=RigidbodyType2D.Static)
+
+        if (rb.bodyType != RigidbodyType2D.Static)
         {
             rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
 
@@ -52,7 +48,7 @@ public class Movement : MonoBehaviour
 
 
 
-        if (Input.GetButtonDown("Jump") && (isOntheGround()||isontheLedge()))
+        if (Input.GetButtonDown("Jump") && (isOntheGround() || isontheLedge()))
         {
             if (rb.bodyType != RigidbodyType2D.Static)
                 rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
@@ -63,16 +59,11 @@ public class Movement : MonoBehaviour
             rb.bodyType = RigidbodyType2D.Static;
         }
 
-        
-        if(isOntheGround())
-        {
-            once = true;
-        }
 
 
 
 
-        RayCastGenerator();
+
 
         Sliding();
 
@@ -85,23 +76,7 @@ public class Movement : MonoBehaviour
 
     }
 
-    private void FixedUpdate()
-    {
-       
-
-        if(sr.flipX)
-        {
-            hit = Physics2D.Raycast(transform.position, -transform.right, .3f, Ledge);
-            Debug.DrawRay(transform.position, -transform.right * .3f, Color.red);
-
-        }
-        else
-        {
-            hit = Physics2D.Raycast(transform.position, transform.right, .3f, Ledge);
-            Debug.DrawRay(transform.position, transform.right * .3f, Color.red);
-
-        }
-    }
+  
 
     void Sliding()
     {
@@ -111,7 +86,7 @@ public class Movement : MonoBehaviour
         {
             anim.SetBool("Sliding", true);
             rb.velocity = new Vector2(slidingspeed, rb.velocity.y);
-         }
+        }
 
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
@@ -132,7 +107,7 @@ public class Movement : MonoBehaviour
     {
         if (!Death)
         {
-            if (Horizontal < 0f && (isOntheGround()|| isontheLedge()) && flip)
+            if (Horizontal < 0f && (isOntheGround() || isontheLedge()) && flip)
             {
                 //character flip
                 sr.flipX = true;
@@ -142,7 +117,7 @@ public class Movement : MonoBehaviour
                 col.offset = offset;
 
 
-   
+
                 flip = false;
             }
             else if (Horizontal > 0f && (isOntheGround() || isontheLedge()) && !flip)
@@ -150,9 +125,9 @@ public class Movement : MonoBehaviour
                 sr.flipX = false;
                 Enemy.HeroineFlipped = false;
 
-                Vector2 offset = col.offset;     
+                Vector2 offset = col.offset;
                 offset.x -= 1;
-              
+
                 col.offset = offset;
                 flip = true;
             }
@@ -160,154 +135,65 @@ public class Movement : MonoBehaviour
 
     }
 
-   
-        void CheckForAnimation()
-        {
-            if (Horizontal > 0f || Horizontal < 0f)
-            {
-                anim.SetInteger("State", 1);
-            } else
-            {
-                anim.SetInteger("State", 0);
 
-            }
-
-            if (rb.velocity.y >= .1f)
-            {
-                anim.SetInteger("State", 2);
-
-            } else if (rb.velocity.y <= -.1f)
-            {
-                anim.SetInteger("State", 3);
-            }
-        }
-
-
-
-
-
-        void Restart()
-        {
-
-            rb.bodyType = RigidbodyType2D.Static;
-
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-            if (collision.collider.CompareTag("Enemy"))
-            {
-                Death = true;
-                anim.SetBool("Death", true);
-            }
-        }
-
-
-     void RayCastGenerator()
+    void CheckForAnimation()
     {
-       
-        Vector3 pos = transform.localPosition;
-        if (sr.flipX)
+        if (Horizontal > 0f || Horizontal < 0f)
         {
-           
-
-            if (hit && once)
-            {
-                transform.parent = hit.collider.gameObject.transform;
-                rb.bodyType = RigidbodyType2D.Static;
-
-                if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
-                {
-                    ledgeTiming += Time.deltaTime;
-                    if (ledgeTiming < .5f)
-                    {
-                        pos.y += 2f;
-                        pos.x -=1f;
-                        pos.z = -6;
-                        transform.position = pos;
-
-                    }
-                    else
-                    {
-                        anim.SetBool("LedgeGrab", false);
-                        rb.bodyType = RigidbodyType2D.Dynamic;
-                        transform.SetParent(null);
-                        once = false;
-                        ledgeTiming = 0;
-                    }
-
-                }
-            }
-            else
-            {
-                anim.SetBool("LedgeGrab", false);
-                rb.bodyType = RigidbodyType2D.Dynamic;
-                transform.SetParent(null);
-
-
-
-            }
-
-
-  
+            anim.SetInteger("State", 1);
         }
         else
         {
-            if (hit)
-            {
-                transform.parent = hit.collider.gameObject.transform;
-                rb.bodyType = RigidbodyType2D.Static;
-                anim.SetBool("LedgeGrab", true);
-                if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
-                {
-                    ledgeTiming += Time.deltaTime;
-                    if(anim.GetCurrentAnimatorStateInfo(0).normalizedTime<.3f)
-                    {
-
-                        
-                        pos.y += .7f;
-                        pos.x += .4f;
-                        pos.z = -6;
-                        transform.position = pos;
-
-                    }else
-                    {
-                        rb.bodyType = RigidbodyType2D.Dynamic;
-                        transform.SetParent(null);
-
-                    }
-
-                    anim.SetFloat("Timing", ledgeTiming);
-                }
-               
-                if(ledgeTiming>0f)
-                {
-                    anim.SetBool("LedgeGrab", false);
-                    transform.SetParent(null);
-                }
-                ledgeTiming = 0f;
-               
-
-
-            }
-
-        
-
-
-
+            anim.SetInteger("State", 0);
 
         }
 
+        if (rb.velocity.y >= .1f)
+        {
+            anim.SetInteger("State", 2);
+
+        }
+        else if (rb.velocity.y <= -.1f)
+        {
+            anim.SetInteger("State", 3);
+        }
+    }
 
 
 
-     }
+
+
+    void Restart()
+    {
+
+        rb.bodyType = RigidbodyType2D.Static;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Enemy"))
+        {
+            Death = true;
+            anim.SetBool("Death", true);
+        }
+    }
+
+
+   
+
+
+
+
+        
+    
+}
 
 
      
 
-    }
+    
 
         
 

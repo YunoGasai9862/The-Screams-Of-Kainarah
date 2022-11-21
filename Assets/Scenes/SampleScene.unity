@@ -142,7 +142,6 @@ GameObject:
   - component: {fileID: 454730942}
   - component: {fileID: 454730944}
   - component: {fileID: 454730943}
-  - component: {fileID: 454730945}
   m_Layer: 3
   m_Name: Ledges
   m_TagString: Ledge
@@ -381,18 +380,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &454730945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 454730938}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dab6c425965a548478281a1dabc2828a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1594,6 +1581,63 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1001 &1047267134
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7544466194396164622, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
+      propertyPath: m_Name
+      value: Dagger
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
 --- !u!1 &1336204060
 GameObject:
   m_ObjectHideFlags: 0
@@ -2474,68 +2518,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
---- !u!1001 &7544466195177449378
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 103058599716282524, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_RootOrder
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7544466194396164621, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7544466194396164622, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_Name
-      value: Dagger
-      objectReference: {fileID: 0}
-    - target: {fileID: 7544466194396164622, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
-      propertyPath: m_TagString
-      value: Dagger
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: f5006c4251e868640992bff5de9a13a9, type: 3}

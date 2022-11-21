@@ -145,14 +145,14 @@ public class AttackingScript : MonoBehaviour
 
              if (!(anim.GetCurrentAnimatorStateInfo(0).IsName("Running")) && Input.GetKeyDown(KeyCode.F) && canthrowDagger)
              {
-                    anim.SetBool("ThrowDagger", true);
-                  canthrowDagger = false;
+                       anim.SetBool("ThrowDagger", true);
+                 
+
+                         Invoke("instantiateDag",.4f);
+                          canthrowDagger = false;
 
 
-                 Invoke("instantiateDag", .4f);
-
-
-                 }
+              }
 
 
 
@@ -172,13 +172,13 @@ public class AttackingScript : MonoBehaviour
         Vector3 position = transform.position;
         position.y = transform.position.y - 1f;
 
-        dag = Instantiate(Dagger, position, Quaternion.identity);
+        Instantiate(Dagger, position, Quaternion.identity);
 
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Dagger"))
+        if(collision.CompareTag("DaggerPickUp"))
         {
             canthrowDagger = true;
             Destroy(collision.gameObject);
