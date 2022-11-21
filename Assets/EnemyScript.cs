@@ -73,7 +73,6 @@ public class EnemyScript : MonoBehaviour
             sr.flipX = false;
         }
 
-        Debug.Log(lifeCounter);
 
     }
 
