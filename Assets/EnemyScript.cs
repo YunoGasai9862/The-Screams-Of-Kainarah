@@ -92,7 +92,7 @@ public class EnemyScript : MonoBehaviour
         {
             Debug.DrawRay(transform.position, transform.right * 3f, Color.cyan);
 
-            return Physics2D.Raycast(transform.position, transform.right, 3f, Player); ;
+            return Physics2D.Raycast(transform.position, transform.right, 3f, Player);
 
         }
 

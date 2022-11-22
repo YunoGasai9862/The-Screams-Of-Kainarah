@@ -23,6 +23,8 @@ public class Movement : MonoBehaviour
     private bool Death = false;
     private float slidingspeed = 5f;
 
+    public static bool isGrabbing; //for the ledge grab script
+
 
     private void Start()
     {
@@ -38,10 +40,9 @@ public class Movement : MonoBehaviour
         Horizontal = Input.GetAxisRaw("Horizontal");
 
 
-
         if (rb.bodyType != RigidbodyType2D.Static)
         {
-            rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
+            rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
 
         }
 
