@@ -11,11 +11,14 @@ public class LedgeGrab : MonoBehaviour
     [SerializeField] LayerMask groundmask;
     [SerializeField] LayerMask ledge;
     private BoxCollider2D col;
+    private Animator anim;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        startingGrav = rb.gravityScale;
+
+        startingGrav = rb.gravityScale;  //the initially gravity is stored in the array
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -25,14 +28,18 @@ public class LedgeGrab : MonoBehaviour
             0, ledge);
         //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
 
-        RedBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize),
-            0, ledge);
+        RedBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0 ,ledge);
 
          //if the variable is public static and exists on the same object, you can access it with the name of the script!!
 
         if(greenBox && !RedBox && !Movement.isGrabbing && !isOntheGround())
         {
             Movement.isGrabbing = true;
+        }
+
+        if(Movement.isGrabbing)
+        {
+            anim.SetBool("LedgeGrab", true);
         }
     }
 
