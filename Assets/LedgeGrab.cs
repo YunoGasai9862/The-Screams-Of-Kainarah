@@ -16,7 +16,7 @@ public class LedgeGrab : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
+        col = GetComponent<BoxCollider2D>();
         startingGrav = rb.gravityScale;  //the initially gravity is stored in the array
         anim = GetComponent<Animator>();
     }
@@ -40,6 +40,14 @@ public class LedgeGrab : MonoBehaviour
         if(Movement.isGrabbing)
         {
             anim.SetBool("LedgeGrab", true);
+            rb.velocity = new Vector2(0f, 0f); //setting the x and y velocity to zero
+            rb.gravityScale = 0f;
+        }
+        if(anim.GetCurrentAnimatorStateInfo(0).normalizedTime>=1f)
+        {
+            anim.SetBool("LedgeGrab", false);  //this is for setting the animation to false
+            Movement.isGrabbing = false;
+
         }
     }
 

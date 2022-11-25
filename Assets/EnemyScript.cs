@@ -60,7 +60,7 @@ public class EnemyScript : MonoBehaviour
         }
         if(!StopForAttack) //continuing moving if the Player is not in the range
         {
-            transform.position =Vector3.MoveTowards(transform.position, Waypoints[Index].position, Speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, Waypoints[Index].position, Speed * Time.deltaTime);
 
         }
 

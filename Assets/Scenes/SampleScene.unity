@@ -2526,11 +2526,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8744535595071973501, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: greenXsize
-      value: 0.2
+      value: 0.38
       objectReference: {fileID: 0}
     - target: {fileID: 8744535595071973501, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: greenYSize
-      value: 0.2
+      value: 0.38
       objectReference: {fileID: 0}
     - target: {fileID: 8744535595071973501, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: redXOffset
@@ -2538,7 +2538,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8744535595071973501, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: redYoffset
-      value: 0.72
+      value: 0.87
       objectReference: {fileID: 0}
     - target: {fileID: 8744535595071973501, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: greenXOffset
@@ -2547,6 +2547,14 @@ PrefabInstance:
     - target: {fileID: 8744535595071973501, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: greenYOffset
       value: -0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 8744535595071973501, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: ledge.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8744535595071973501, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: groundmask.m_Bits
+      value: 64
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
