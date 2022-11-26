@@ -28,7 +28,7 @@ public class LedgeGrab : MonoBehaviour
             0, ledge);
         //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
 
-        RedBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0 ,ledge);
+        RedBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
 
          //if the variable is public static and exists on the same object, you can access it with the name of the script!!
 
@@ -40,18 +40,27 @@ public class LedgeGrab : MonoBehaviour
         if(Movement.isGrabbing)
         {
             anim.SetBool("LedgeGrab", true);
-            rb.velocity = new Vector2(0f, 0f); //setting the x and y velocity to zero
-            rb.gravityScale = 0f;
+            rb.velocity = new Vector2(0f, 0f); //setting the x and y velocity to zero  (even i was doing the same in my implementation!)
+            rb.gravityScale = 0f;  //and sets the gravity scale to zero
         }
-        if(anim.GetCurrentAnimatorStateInfo(0).normalizedTime>=1f)
+        if(anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime>=.5f) //it checks for the same animations normalziaed TIME!!
         {
-            anim.SetBool("LedgeGrab", false);  //this is for setting the animation to false
-            Movement.isGrabbing = false;
+            ChangePositionOfThePlayer();  //this is for setting the animation to false
+            anim.SetBool("LedgeGrab", false);
 
         }
     }
 
-    private void OnDrawGizmosSelected()  //drawing the boxes
+    public void ChangePositionOfThePlayer()
+    {
+        transform.position = new Vector2(transform.position.x + 5 * transform.localScale.x *Time.deltaTime, transform.position.y + 10 * Time.deltaTime) ;
+        Debug.Log("Ledge!");
+        rb.gravityScale = startingGrav;
+        Movement.isGrabbing = false;
+
+    }
+
+    private void OnDrawGizmosSelected()  //drawing the boxes (extras)
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize));

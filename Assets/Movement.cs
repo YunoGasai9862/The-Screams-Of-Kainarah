@@ -36,13 +36,15 @@ public class Movement : MonoBehaviour
     }
     void Update()
     {
-
-        Horizontal = Input.GetAxisRaw("Horizontal");
-
-
-        if (rb.bodyType != RigidbodyType2D.Static)
+        if(!isGrabbing)  //can only walk if the player is not grabbing
         {
-            rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
+            Horizontal = Input.GetAxisRaw("Horizontal");
+
+            if (rb.bodyType != RigidbodyType2D.Static)
+            {
+                rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
+
+            }
 
         }
 
