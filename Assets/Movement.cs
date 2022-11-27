@@ -23,7 +23,7 @@ public class Movement : MonoBehaviour
     private bool Death = false;
     private float slidingspeed = 5f;
 
-    public static bool isGrabbing; //for the ledge grab script
+    public static bool isGrabbing = false;//for the ledge grab script
 
 
     private void Start()
@@ -36,18 +36,20 @@ public class Movement : MonoBehaviour
     }
     void Update()
     {
-        if(!isGrabbing)  //can only walk if the player is not grabbing
+
+        if(!isGrabbing && !anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
         {
             Horizontal = Input.GetAxisRaw("Horizontal");
 
             if (rb.bodyType != RigidbodyType2D.Static)
             {
-                rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
+                rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
 
             }
 
         }
 
+       
 
 
 
