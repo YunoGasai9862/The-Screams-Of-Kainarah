@@ -232,7 +232,7 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
-  - first: {x: -7, y: 3, z: 0}
+  - first: {x: -8, y: 3, z: 0}
     second:
       serializedVersion: 2
       m_TileIndex: 0
@@ -274,8 +274,8 @@ Tilemap:
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: -7, y: -1, z: 0}
-  m_Size: {x: 7, y: 5, z: 1}
+  m_Origin: {x: -8, y: -1, z: 0}
+  m_Size: {x: 8, y: 5, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -331,14 +331,22 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 454730942}
     m_ColliderPaths:
-    - - X: -37500000
-        Y: 40725004
-      - X: -92500000
-        Y: 40725004
-      - X: -92500000
-        Y: 29475000
-      - X: -37500000
-        Y: 29475000
+    - - X: -47499900
+        Y: 29474959
+      - X: -47499900
+        Y: 40725045
+      - X: -47499959
+        Y: 40725104
+      - X: -102500041
+        Y: 40725104
+      - X: -102500100
+        Y: 40725045
+      - X: -102500100
+        Y: 29474959
+      - X: -102500041
+        Y: 29474900
+      - X: -47499959
+        Y: 29474900
     - - X: 22500000
         Y: 10725000
       - X: -32500000
@@ -349,10 +357,10 @@ CompositeCollider2D:
         Y: -525000
   m_CompositePaths:
     m_Paths:
-    - - {x: -3.7500293, y: 2.9475}
-      - {x: -3.7500293, y: 4.0725}
-      - {x: -9.25, y: 4.072471}
-      - {x: -9.24997, y: 2.9475}
+    - - {x: -4.7500253, y: 2.94749}
+      - {x: -4.7500253, y: 4.0725102}
+      - {x: -10.25001, y: 4.0724754}
+      - {x: -10.249974, y: 2.94749}
     - - {x: 2.249971, y: -0.052500002}
       - {x: 2.249971, y: 1.0725}
       - {x: -3.25, y: 1.0724707}
