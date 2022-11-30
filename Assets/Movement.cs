@@ -24,7 +24,7 @@ public class Movement : MonoBehaviour
     private float slidingspeed = 5f;
 
     public static bool isGrabbing = false;//for the ledge grab script
-
+    private bool isSliding = false;
 
     private void Start()
     {
@@ -37,7 +37,7 @@ public class Movement : MonoBehaviour
     void Update()
     {
 
-        if(!isGrabbing && !anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
+        if(!isGrabbing && !anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab") && !isSliding && !anim.GetCurrentAnimatorStateInfo(0).IsName("Sliding"))
         {
             Horizontal = Input.GetAxisRaw("Horizontal");
 
@@ -87,17 +87,26 @@ public class Movement : MonoBehaviour
     {
 
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && !isSliding)
         {
+            isSliding = true;
             anim.SetBool("Sliding", true);
+            if(sr.flipX)
+            {
+            }
+            else
+            {
+
+            }
             rb.velocity = new Vector2(slidingspeed, rb.velocity.y);
         }
 
-        if (Input.GetKeyUp(KeyCode.LeftShift))
+        if(anim.GetCurrentAnimatorStateInfo(0).IsName("Sliding") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime>=1f)
         {
             anim.SetBool("Sliding", false);
-
+            isSliding = false;
         }
+
     }
     bool isOntheGround()
     {
@@ -120,6 +129,7 @@ public class Movement : MonoBehaviour
                 Vector2 offset = col.offset;
                 offset.x += 1;
                 col.offset = offset;
+                slidingspeed = -1 * slidingspeed;
 
 
 
@@ -127,6 +137,8 @@ public class Movement : MonoBehaviour
             }
             else if (Horizontal > 0f && (isOntheGround() || isontheLedge()) && !flip)
             {
+                slidingspeed = 1 * slidingspeed;
+
                 sr.flipX = false;
                 Enemy.HeroineFlipped = false;
 
