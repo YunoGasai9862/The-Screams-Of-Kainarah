@@ -24,7 +24,6 @@ public class Movement : MonoBehaviour
     private float slidingspeed = 5f;
 
     public static bool isGrabbing = false;//for the ledge grab script
-    private bool isSliding = false;
 
     private void Start()
     {
@@ -37,20 +36,17 @@ public class Movement : MonoBehaviour
     void Update()
     {
 
-        if(!isGrabbing && !anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab") && !isSliding && !anim.GetCurrentAnimatorStateInfo(0).IsName("Sliding"))
+        if(!isGrabbing && !anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
         {
             Horizontal = Input.GetAxisRaw("Horizontal");
 
             if (rb.bodyType != RigidbodyType2D.Static)
             {
-                rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
+                rb.velocity = new Vector2(CharacterSpeed * Horizontal, rb.velocity.y);
 
             }
 
         }
-
-       
-
 
 
         if (Input.GetButtonDown("Jump") && (isOntheGround() || isontheLedge()))
@@ -68,11 +64,11 @@ public class Movement : MonoBehaviour
 
 
 
+        checkforFlip();
 
 
         Sliding();
 
-        checkforFlip();
 
         CheckForAnimation();
 
@@ -87,24 +83,26 @@ public class Movement : MonoBehaviour
     {
 
 
-        if (Input.GetKey(KeyCode.LeftShift) && !isSliding)
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            isSliding = true;
             anim.SetBool("Sliding", true);
+          
             if(sr.flipX)
             {
-            }
-            else
+                rb.velocity = new Vector2(-slidingspeed, rb.velocity.y);
+
+            }else
             {
+                rb.velocity = new Vector2(slidingspeed, rb.velocity.y);
 
             }
-            rb.velocity = new Vector2(slidingspeed, rb.velocity.y);
+
+
         }
 
-        if(anim.GetCurrentAnimatorStateInfo(0).IsName("Sliding") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime>=1f)
+        if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             anim.SetBool("Sliding", false);
-            isSliding = false;
         }
 
     }
@@ -124,12 +122,12 @@ public class Movement : MonoBehaviour
             if (Horizontal < 0f && (isOntheGround() || isontheLedge()) && flip)
             {
                 //character flip
+
                 sr.flipX = true;
                 Enemy.HeroineFlipped = true;
                 Vector2 offset = col.offset;
                 offset.x += 1;
                 col.offset = offset;
-                slidingspeed = -1 * slidingspeed;
 
 
 
@@ -137,7 +135,6 @@ public class Movement : MonoBehaviour
             }
             else if (Horizontal > 0f && (isOntheGround() || isontheLedge()) && !flip)
             {
-                slidingspeed = 1 * slidingspeed;
 
                 sr.flipX = false;
                 Enemy.HeroineFlipped = false;
