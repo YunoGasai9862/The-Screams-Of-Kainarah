@@ -83,7 +83,7 @@ public class Movement : MonoBehaviour
     {
 
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift) )
         {
             anim.SetBool("Sliding", true);
           
