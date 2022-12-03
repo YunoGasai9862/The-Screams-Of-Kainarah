@@ -45,8 +45,9 @@ public class LedgeGrab : MonoBehaviour
             //if the variable is public static and exists on the same object, you can access it with the name of the script!!
 
         }
+         
 
-       if(greenBox && !RedBox && !Movement.isGrabbing && !isOntheGround())
+        if(greenBox && !RedBox && !Movement.isGrabbing && !isOntheGround())
         {
             Movement.isGrabbing = true;
         }
