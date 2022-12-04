@@ -36,7 +36,7 @@ public class Movement : MonoBehaviour
     void Update()
     {
 
-        if(!isGrabbing && !anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
+        if (!isGrabbing && !anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab")) 
         {
             Horizontal = Input.GetAxisRaw("Horizontal");
 

@@ -14,6 +14,7 @@ public class EnemyScript : MonoBehaviour
     private SpriteRenderer sr;
     private GameObject Heroine;
     [SerializeField] bool StopForAttack = false;
+    public static RaycastHit2D[] hit;
     
     [SerializeField] LayerMask Player;
     void Start()
