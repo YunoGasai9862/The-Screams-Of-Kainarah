@@ -37,13 +37,13 @@ public class LedgeGrab : MonoBehaviour
            
 
         }
-        greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0f, ledge);
+        greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
         //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
 
         RedBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
         //if the variable is public static and exists on the same object, you can access it with the name of the script!!
 
-       if(greenBox && !RedBox && !Movement.isGrabbing && !isOntheGround())
+       if(greenBox && !RedBox &&!Movement.isGrabbing &&!isOntheGround())
         {
             Movement.isGrabbing = true;
         }

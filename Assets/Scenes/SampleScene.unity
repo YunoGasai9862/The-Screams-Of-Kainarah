@@ -515,6 +515,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5af10fa447dcb8843ba59b8aeabc575d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Player:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &962105247
 GameObject:
   m_ObjectHideFlags: 0
@@ -2655,6 +2658,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy2
       objectReference: {fileID: 0}
+    - target: {fileID: 6972185359054276944, guid: 746ff0e1006f85f49b3ba6c294f8a3e2, type: 3}
+      propertyPath: Player.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6972185359054276947, guid: 746ff0e1006f85f49b3ba6c294f8a3e2, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.8
@@ -2681,7 +2688,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6972185359054276975, guid: 746ff0e1006f85f49b3ba6c294f8a3e2, type: 3}
       propertyPath: m_BodyType
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6972185359099912429, guid: 746ff0e1006f85f49b3ba6c294f8a3e2, type: 3}
       propertyPath: m_LocalPosition.y

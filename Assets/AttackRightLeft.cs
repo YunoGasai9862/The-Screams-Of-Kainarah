@@ -7,6 +7,7 @@ public class AttackRightLeft : MonoBehaviour
     private Animator anim;
     private SpriteRenderer sr;
     [SerializeField] LayerMask Player;
+    private bool StopForAtack = false;
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -17,18 +18,32 @@ public class AttackRightLeft : MonoBehaviour
     void Update()
     {
 
+       
 
-
-        if(sr.flipX && Physics2D.Raycast(transform.position, -transform.right, 3f, Player))
+        if(sr.flipX)
         {
-            anim.SetBool("AL", true);
-            anim.SetBool("AR", false);
+            if(Physics2D.Raycast(transform.position, -transform.right, 3f, Player))
+            {
+                
+                anim.SetBool("AL", true);
+            }else
+            {
+                anim.SetBool("AL", false);
 
-        }else if(!sr.flipX && Physics2D.Raycast(transform.position, transform.right, 3f, Player))
+            }
+
+        }
+        else
         {
-            anim.SetBool("AR", true);
-            anim.SetBool("AL", false);
+            if (Physics2D.Raycast(transform.position, transform.right, 3f, Player))
+            {
+                anim.SetBool("AR", true);
+            }
+            else
+            {
+                anim.SetBool("AR", false);
 
+            }
         }
     }
 }
