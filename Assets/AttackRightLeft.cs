@@ -32,41 +32,18 @@ public class AttackRightLeft : MonoBehaviour
             }
 
 
-
-            if (Physics2D.Raycast(transform.position, transform.right, 3f, Player))
-            {
-                anim.SetBool("AR", true);
-
-            }
-            else
-            {
-                anim.SetBool("AR", false);
-
-            }
         }
         else
         {
-            if (Physics2D.Raycast(transform.position, -transform.right, 3f, Player))
-            {
 
+            if (Physics2D.Raycast(transform.position, transform.right, 3f, Player))
+            {
                 anim.SetBool("AR", true);
+
             }
             else
             {
                 anim.SetBool("AR", false);
-
-            }
-
-
-
-            if (Physics2D.Raycast(transform.position, transform.right, 3f, Player))
-            {
-                anim.SetBool("AL", true);
-
-            }
-            else
-            {
-                anim.SetBool("AL", false);
 
             }
         }
