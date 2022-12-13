@@ -12,6 +12,7 @@ TagManager:
   - Ledge
   - Sword
   - DaggerPickUp
+  - Jump
   layers:
   - Default
   - TransparentFX

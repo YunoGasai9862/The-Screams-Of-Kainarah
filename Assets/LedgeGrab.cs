@@ -45,11 +45,10 @@ public class LedgeGrab : MonoBehaviour
             new Vector2(redXSize, redYSize), 0, ledge);
         //if the variable is public static and exists on the same object, you can access it with the name of the script!!
 
-        if(greenBox && !RedBox && !Movement.isGrabbing && !isOntheGround())
+       if(greenBox && !RedBox && !Movement.isGrabbing && !isOntheGround())
         {
             Movement.isGrabbing = true;
         }
-
         if(Movement.isGrabbing)
         {
             anim.SetBool("LedgeGrab", true);
