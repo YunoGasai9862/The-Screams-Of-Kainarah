@@ -23,30 +23,39 @@ public class EnemyScript : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         Heroine = GameObject.FindWithTag("Player");
-        anim.SetBool("Destroyed", false);
+        if(transform.gameObject.name!="Enemy2")
+        {
+            anim.SetBool("Destroyed", false);
+        }
+       
     }
 
     void Update()
     {
-        if(CanAttack())
+        if(transform.gameObject.name!="Enemy2")
         {
-            StopForAttack = true;
-            anim.SetBool("EnemyAttack", true);
-        }
-        else
-        {
-            anim.SetBool("EnemyAttack", false);
-            StopForAttack = false;
+            if (CanAttack())
+            {
+                StopForAttack = true;
+                anim.SetBool("EnemyAttack", true);
+            }
+            else
+            {
+                anim.SetBool("EnemyAttack", false);
+                StopForAttack = false;
 
+            }
+
+            if (lifeCounter > 3)
+            {
+                isNotdead = false;
+                anim.SetBool("Destroyed", true);
+                Destroy(gameObject, 1f);
+                lifeCounter = 0;
+            }
         }
 
-        if(lifeCounter>3)
-        {
-            isNotdead = false;
-            anim.SetBool("Destroyed", true);
-            Destroy(gameObject,1f);
-            lifeCounter = 0;
-        }
+    
 
 
         if(Vector2.Distance(transform.position, Waypoints[Index].position)<.1f)
