@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class EnemyJumping : MonoBehaviour
@@ -10,6 +11,7 @@ public class EnemyJumping : MonoBehaviour
     private Animator anim;
     private RaycastHit2D hit;
     private bool JUMP = false;
+    private float count = 0;
     [SerializeField] LayerMask Jumping;
     void Start()
     {
@@ -26,21 +28,26 @@ public class EnemyJumping : MonoBehaviour
         {
             rb.velocity = new Vector2(0, 0);
             anim.SetBool("CanWalk", false);
-            JUMP = true;
+             JUMP = true;
             hit.collider.enabled = false;
            
         }
 
-        if(JUMP)
+        if (JUMP && count <= 1f)
         {
-            rb.velocity = new Vector2(rb.velocity.x + 20f * Time.deltaTime, rb.velocity.y + 30f * Time.deltaTime);
-            JUMP = false;
-         
-            
+            Debug.Log(count);
+            rb.velocity = new Vector2(rb.velocity.x + 10f * Time.deltaTime, rb.velocity.y + 12f * Time.deltaTime );
+            count += Time.deltaTime;
+
+
         }
 
-
-       
+        if(count>=1f)
+        {
+            count = 0f;
+            rb.velocity = new Vector2(0, 0);
+        }
+      
     }
 
     private void FixedUpdate()
