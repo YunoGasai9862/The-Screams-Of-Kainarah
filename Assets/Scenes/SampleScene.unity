@@ -1823,6 +1823,12 @@ MonoBehaviour:
   Jumping:
     serializedVersion: 2
     m_Bits: 512
+  Ledge:
+    serializedVersion: 2
+    m_Bits: 8
+  ground:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!50 &1481028411
 Rigidbody2D:
   serializedVersion: 4
@@ -2449,7 +2455,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1858552052}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.1, y: 3.96, z: 0}
+  m_LocalPosition: {x: -4.53, y: 3.96, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

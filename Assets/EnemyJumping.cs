@@ -13,10 +13,14 @@ public class EnemyJumping : MonoBehaviour
     private bool JUMP = false;
     private float count = 0;
     [SerializeField] LayerMask Jumping;
+    [SerializeField] LayerMask Ledge;
+    [SerializeField] LayerMask ground;
+    private BoxCollider2D box;
     void Start()
     {
         rb=GetComponent<Rigidbody2D>();
         anim=GetComponent<Animator>();
+        box = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -35,8 +39,8 @@ public class EnemyJumping : MonoBehaviour
 
         if (JUMP && count <= 1f)
         {
-            Debug.Log(count);
-            rb.velocity = new Vector2(rb.velocity.x + 10f * Time.deltaTime, rb.velocity.y + 12f * Time.deltaTime );
+            rb.AddForce(new Vector2(3f, 30f) * Time.deltaTime, ForceMode2D.Impulse);
+           
             count += Time.deltaTime;
 
 
@@ -45,14 +49,25 @@ public class EnemyJumping : MonoBehaviour
         if(count>=1f)
         {
             count = 0f;
-            rb.velocity = new Vector2(0, 0);
+            JUMP = false;
+            
+           
+         
         }
+
       
+        if(isOntheGround())
+        {
+            Destroy(gameObject);
+
+        }
+
+
     }
 
     private void FixedUpdate()
     {
-        if(!JUMP)
+        if(!JUMP && isOntheLedge())
         {
             rb.velocity = new Vector2(20 * Time.deltaTime, 0);
             if (rb.velocity.magnitude > .1f)
@@ -61,9 +76,22 @@ public class EnemyJumping : MonoBehaviour
             }
         }
 
+        
+
       
 
 
     }
+
+    public bool isOntheLedge()
+    {
+        return Physics2D.BoxCast(box.bounds.center, box.bounds.size, 0f, Vector2.down, 1f, Ledge);
+    }
+
+    bool isOntheGround()
+    {
+        return Physics2D.BoxCast(box.bounds.center, box.bounds.size, 0f, Vector2.down, .1f, ground);
+    }
+
 
 }
