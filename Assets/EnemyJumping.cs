@@ -16,22 +16,43 @@ public class EnemyJumping : MonoBehaviour
     [SerializeField] LayerMask Ledge;
     [SerializeField] LayerMask ground;
     private BoxCollider2D box;
+    private Vector3 Scale;
+    private float mulitplier = 1f;
+    private Vector3 pos;
     void Start()
     {
         rb=GetComponent<Rigidbody2D>();
         anim=GetComponent<Animator>();
         box = GetComponent<BoxCollider2D>();
+        Scale = transform.localScale;
     }
 
     // Update is called once per frame
     void Update()
     {
-        hit = Physics2D.Raycast(transform.position, transform.right, .5f, Jumping);
-        Debug.DrawRay(transform.position, transform.right * .5f, Color.red);
-        if(hit.collider!=null && hit.collider.isTrigger)
+
+        if (GetComponent<SpriteRenderer>().flipX)
         {
+            pos = transform.position;
+            pos.x = transform.position.x - .3f;
+            hit = Physics2D.Raycast(pos, -transform.right, .5f, Jumping);
+            Debug.DrawRay(pos, -transform.right * .5f, Color.red);
+        }
+        else
+        {
+            hit = Physics2D.Raycast(transform.position, transform.right, .5f, Jumping);
+            Debug.DrawRay(transform.position, transform.right * .5f, Color.red);
+        }
+
+       
+        if(hit.collider!=null && hit.collider.isTrigger && !hit.collider.CompareTag("Return"))
+        {
+            
+
             rb.velocity = new Vector2(0, 0);
             anim.SetBool("CanWalk", false);
+            Scale.y = .92f;
+            transform.localScale = Scale;
              JUMP = true;
             hit.collider.enabled = false;
            
@@ -39,9 +60,10 @@ public class EnemyJumping : MonoBehaviour
 
         if (JUMP && count <= 1f)
         {
-            rb.AddForce(new Vector2(3f, 30f) * Time.deltaTime, ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(3f, 31f) * Time.deltaTime, ForceMode2D.Impulse);
            
             count += Time.deltaTime;
+
 
 
         }
@@ -62,6 +84,14 @@ public class EnemyJumping : MonoBehaviour
 
         }
 
+        if (hit.collider != null && hit.collider.isTrigger && hit.collider.CompareTag("Return"))
+        {
+            rb.velocity = new Vector3(0, 0);
+            GetComponent<SpriteRenderer>().flipX = true;
+            mulitplier *= -1;
+        }
+
+       
 
     }
 
@@ -69,9 +99,11 @@ public class EnemyJumping : MonoBehaviour
     {
         if(!JUMP && isOntheLedge())
         {
-            rb.velocity = new Vector2(20 * Time.deltaTime, 0);
+            rb.velocity = new Vector2(mulitplier* 40 * Time.deltaTime, 0);
             if (rb.velocity.magnitude > .1f)
             {
+                Scale.y = 1f;
+                transform.localScale = Scale;
                 anim.SetBool("CanWalk", true);
             }
         }
@@ -85,12 +117,12 @@ public class EnemyJumping : MonoBehaviour
 
     public bool isOntheLedge()
     {
-        return Physics2D.BoxCast(box.bounds.center, box.bounds.size, 0f, Vector2.down, 1f, Ledge);
+        return Physics2D.BoxCast(box.bounds.center, box.bounds.size, 0f, Vector2.down, .2f, Ledge);
     }
 
     bool isOntheGround()
     {
-        return Physics2D.BoxCast(box.bounds.center, box.bounds.size, 0f, Vector2.down, .1f, ground);
+        return Physics2D.BoxCast(box.bounds.center, box.bounds.size, 0f, Vector2.down, .2f, ground);
     }
 
 

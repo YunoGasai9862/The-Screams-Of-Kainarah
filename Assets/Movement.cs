@@ -42,7 +42,7 @@ public class Movement : MonoBehaviour
 
             if (rb.bodyType != RigidbodyType2D.Static)
             {
-                rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
+                rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
 
             }
 
