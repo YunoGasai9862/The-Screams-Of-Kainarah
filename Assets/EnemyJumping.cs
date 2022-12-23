@@ -19,6 +19,7 @@ public class EnemyJumping : MonoBehaviour
     private Vector3 Scale;
     private float mulitplier = 1f;
     private Vector3 pos;
+    private bool Climb = false;
     void Start()
     {
         rb=GetComponent<Rigidbody2D>();
@@ -45,9 +46,9 @@ public class EnemyJumping : MonoBehaviour
         }
 
        
-        if(hit.collider!=null && hit.collider.isTrigger && !hit.collider.CompareTag("Return"))
+        if(hit.collider!=null && hit.collider.isTrigger && !hit.collider.CompareTag("Return") && !hit.collider.CompareTag("JumpBack"))
         {
-            
+
 
             rb.velocity = new Vector2(0, 0);
             anim.SetBool("CanWalk", false);
@@ -91,13 +92,32 @@ public class EnemyJumping : MonoBehaviour
             mulitplier *= -1;
         }
 
-       
+        if(hit.collider != null && hit.collider.isTrigger && hit.collider.CompareTag("JumpBack"))
+        {
+            Climb = true;
+            rb.velocity = new Vector2(0, 0);
+            anim.SetBool("CanWalk", false);
+            hit.collider.enabled = false;
+
+
+        }
+
+        if(Climb)
+        {
+            rb.AddForce(new Vector2(-3f, 300f) * Time.deltaTime, ForceMode2D.Impulse);
+
+        }
+
+
+
+
+
 
     }
 
     private void FixedUpdate()
     {
-        if(!JUMP && isOntheLedge())
+        if(!Climb && !JUMP && isOntheLedge())
         {
             rb.velocity = new Vector2(mulitplier* 40 * Time.deltaTime, 0);
             if (rb.velocity.magnitude > .1f)
