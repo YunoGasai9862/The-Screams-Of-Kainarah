@@ -98,14 +98,24 @@ public class EnemyJumping : MonoBehaviour
             rb.velocity = new Vector2(0, 0);
             anim.SetBool("CanWalk", false);
             hit.collider.enabled = false;
-
+            Scale.y = .92f;
+            transform.localScale = Scale;
 
         }
 
-        if(Climb)
+        if(Climb && count<=1f)
         {
-            rb.AddForce(new Vector2(-3f, 300f) * Time.deltaTime, ForceMode2D.Impulse);
+          
+            rb.AddForce(new Vector2(-3f,38f) * Time.deltaTime, ForceMode2D.Impulse);
+            count += Time.deltaTime;
 
+        }
+
+        if(count>=1f)
+        {
+            count = 0f;
+            Climb = false;
+          
         }
 
 
