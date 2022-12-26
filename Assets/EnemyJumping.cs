@@ -20,6 +20,10 @@ public class EnemyJumping : MonoBehaviour
     private float mulitplier = 1f;
     private Vector3 pos;
     private bool Climb = false;
+    [SerializeField] BoxCollider2D Jump1;
+    [SerializeField] BoxCollider2D Jump2;
+
+
     void Start()
     {
         rb=GetComponent<Rigidbody2D>();
@@ -46,10 +50,10 @@ public class EnemyJumping : MonoBehaviour
         }
 
        
-        if(hit.collider!=null && hit.collider.isTrigger && !hit.collider.CompareTag("Return") && !hit.collider.CompareTag("JumpBack"))
+        if(hit.collider!=null && hit.collider.isTrigger && !hit.collider.CompareTag("Return") && !hit.collider.CompareTag("JumpBack") &&!hit.collider.CompareTag("Return2"))
         {
 
-
+            
             rb.velocity = new Vector2(0, 0);
             anim.SetBool("CanWalk", false);
             Scale.y = .92f;
@@ -94,6 +98,7 @@ public class EnemyJumping : MonoBehaviour
 
         if(hit.collider != null && hit.collider.isTrigger && hit.collider.CompareTag("JumpBack"))
         {
+            
             Climb = true;
             rb.velocity = new Vector2(0, 0);
             anim.SetBool("CanWalk", false);
@@ -106,7 +111,7 @@ public class EnemyJumping : MonoBehaviour
         if(Climb && count<=1f)
         {
           
-            rb.AddForce(new Vector2(-3f,38f) * Time.deltaTime, ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(-3f,37f) * Time.deltaTime, ForceMode2D.Impulse);
             count += Time.deltaTime;
 
         }
@@ -118,10 +123,15 @@ public class EnemyJumping : MonoBehaviour
           
         }
 
-
-
-
-
+        if(hit.collider!=null && hit.collider.isTrigger && hit.collider.CompareTag("Return2"))
+        {
+            Jump1.enabled = true;
+            Jump2.enabled = true;
+            rb.velocity = new Vector3(0, 0);
+            GetComponent<SpriteRenderer>().flipX = false;
+            mulitplier *= -1;
+            
+        }
 
     }
 

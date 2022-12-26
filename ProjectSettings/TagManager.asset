@@ -15,6 +15,7 @@ TagManager:
   - Jump
   - Return
   - JumpBack
+  - Return2
   layers:
   - Default
   - TransparentFX
