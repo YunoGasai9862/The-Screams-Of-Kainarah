@@ -8,6 +8,7 @@ public class AttackPlayer : MonoBehaviour
     [SerializeField] LayerMask player;
     private Animator anim;
     private int multiplier = -1;
+    
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -32,7 +33,15 @@ public class AttackPlayer : MonoBehaviour
         if (Physics2D.Raycast(transform.position, (multiplier) * transform.right, 1f, player))
         {
             EnemyJumping.Attacking = true;
-            anim.SetBool("Attack", true);
+            if(GetComponent<SpriteRenderer>().flipX)
+            {
+                anim.SetBool("AttackL", true);
+
+            }else
+            {
+                anim.SetBool("Attack", true);
+
+            }
             anim.SetBool("CanWalk", false);
 
         }
@@ -40,7 +49,16 @@ public class AttackPlayer : MonoBehaviour
         {
             EnemyJumping.Attacking = false;
 
-            anim.SetBool("Attack", false);
+            if (GetComponent<SpriteRenderer>().flipX)
+            {
+                anim.SetBool("AttackL", false);
+
+            }
+            else
+            {
+                anim.SetBool("Attack", false);
+
+            }
             anim.SetBool("CanWalk", true);
         }
 

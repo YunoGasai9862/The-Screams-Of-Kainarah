@@ -81,14 +81,15 @@ public class LedgeGrab : MonoBehaviour
 
     }
 
-    private void OnDrawGizmosSelected()  //drawing the boxes (extras)
+    private void OnDrawGizmosSelected()//drawing the boxes (extras)
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize));
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize));
+        
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize));
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireCube(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize));
+        
     }
-
     bool isOntheGround()
     {
         return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, groundmask);
