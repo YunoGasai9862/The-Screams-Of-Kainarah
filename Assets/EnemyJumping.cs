@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyJumping : MonoBehaviour
@@ -24,6 +25,8 @@ public class EnemyJumping : MonoBehaviour
     [SerializeField] BoxCollider2D Jump2;
 
     public static bool Attacking = false;
+    private int HitCount = 0;
+    
 
 
     void Start()
@@ -32,11 +35,16 @@ public class EnemyJumping : MonoBehaviour
         anim=GetComponent<Animator>();
         box = GetComponent<BoxCollider2D>();
         Scale = transform.localScale;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(HitCount>=3)
+        {
+            Destroy(gameObject, 1f);
+        }
         if(!Attacking)
         {
             if (GetComponent<SpriteRenderer>().flipX)
@@ -170,5 +178,21 @@ public class EnemyJumping : MonoBehaviour
         return Physics2D.BoxCast(box.bounds.center, box.bounds.size, 0f, Vector2.down, .2f, ground);
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Dagger"))
+        {
+            HitCount++;
+            anim.SetBool("Dagger", true);
+        }
+    }
 
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Dagger"))
+        {
+            anim.SetBool("Dagger", false);
+
+        }
+    }
 }

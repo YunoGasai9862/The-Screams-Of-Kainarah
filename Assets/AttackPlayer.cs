@@ -28,9 +28,9 @@ public class AttackPlayer : MonoBehaviour
 
         }
 
-        Debug.DrawRay(transform.position, (multiplier)*transform.right * 1f, Color.black);
+        Debug.DrawRay(transform.position, (multiplier)*transform.right * 1.5f, Color.black);
 
-        if (Physics2D.Raycast(transform.position, (multiplier) * transform.right, 1f, player))
+        if (Physics2D.Raycast(transform.position, (multiplier) * transform.right, 1.5f, player))
         {
             EnemyJumping.Attacking = true;
             if(GetComponent<SpriteRenderer>().flipX)
