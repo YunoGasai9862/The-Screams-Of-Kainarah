@@ -37,6 +37,8 @@ public class EnemyScript : MonoBehaviour
             if (CanAttack())
             {
                 StopForAttack = true;
+                rb.velocity = new Vector2(0, 0);
+
                 anim.SetBool("EnemyAttack", true);
             }
             else

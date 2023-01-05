@@ -22,6 +22,8 @@ public class Movement : MonoBehaviour
     private bool flip = true;
     private bool Death = false;
     private float slidingspeed = 5f;
+    public static double MAXHEALTH=100f;
+    public static double ENEMYATTACK = 10f;
 
     public static bool isGrabbing = false;//for the ledge grab script
 
@@ -189,8 +191,19 @@ public class Movement : MonoBehaviour
     {
         if (collision.collider.CompareTag("Enemy"))
         {
-            Death = true;
-            anim.SetBool("Death", true);
+            if(MAXHEALTH==0)
+            {
+                Death = true;
+                anim.SetBool("Death", true);
+            }
+            else
+            {
+                MAXHEALTH -= ENEMYATTACK;
+                Debug.Log(MAXHEALTH);
+            }
+
+
+           
         }
     }
 
