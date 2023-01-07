@@ -33,6 +33,7 @@ public class Movement : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         col = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
+        MAXHEALTH = 100f;
 
     }
     void Update()
