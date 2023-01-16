@@ -39,11 +39,32 @@ public class EnemyScript : MonoBehaviour
                 StopForAttack = true;
                 rb.velocity = new Vector2(0, 0);
 
-                anim.SetBool("EnemyAttack", true);
+                if(sr.flipX)
+                {
+                    anim.SetBool("EnemyAttack2", true);
+
+                }
+                else
+                {
+                    anim.SetBool("EnemyAttack", true);
+
+                }
+
+
             }
             else
             {
-                anim.SetBool("EnemyAttack", false);
+                if (sr.flipX)
+                {
+                    anim.SetBool("EnemyAttack2", false);
+
+                }
+                else
+                {
+                    anim.SetBool("EnemyAttack", false);
+
+                }
+
                 StopForAttack = false;
 
             }

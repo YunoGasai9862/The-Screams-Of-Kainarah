@@ -41,11 +41,12 @@ public class Movement : MonoBehaviour
 
         if (!isGrabbing && !anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab")) 
         {
+
             Horizontal = Input.GetAxisRaw("Horizontal");
 
             if (rb.bodyType != RigidbodyType2D.Static)
             {
-                rb.velocity = new Vector3(Horizontal * CharacterSpeed, rb.velocity.y);
+                rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
 
             }
 
