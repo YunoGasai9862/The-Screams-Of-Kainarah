@@ -18,6 +18,6 @@ public class HealthBar : MonoBehaviour
     void Update()
     {
         slide.value = (float)Movement.MAXHEALTH;
-        Fill.color = gr.Evaluate(slide.value/100f);
+        Fill.color = gr.Evaluate(slide.value / 100.0f);
     }
 }
