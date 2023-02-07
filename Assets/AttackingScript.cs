@@ -18,7 +18,8 @@ public class AttackingScript : MonoBehaviour
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
     [SerializeField] GameObject Dagger;
-
+    [SerializeField] GameObject IceTrail;
+    [SerializeField] GameObject IceTrail2;
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -183,5 +184,19 @@ public class AttackingScript : MonoBehaviour
             canthrowDagger = true;
             Destroy(collision.gameObject);
         }
+    }
+
+    public void Icetail()
+    {
+      
+          Instantiate(IceTrail, transform.position, Quaternion.identity);
+      
+    }
+
+    public void Icetail2()
+    {
+
+        Instantiate(IceTrail2, transform.position, Quaternion.identity);
+
     }
 }

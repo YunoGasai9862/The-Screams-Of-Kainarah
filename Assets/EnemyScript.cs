@@ -17,6 +17,7 @@ public class EnemyScript : MonoBehaviour
     public static RaycastHit2D[] hit;
     
     [SerializeField] LayerMask Player;
+    [SerializeField] GameObject Hit;
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -72,8 +73,9 @@ public class EnemyScript : MonoBehaviour
             if (lifeCounter > 3)
             {
                 isNotdead = false;
-                anim.SetBool("Destroyed", true);
-                Destroy(gameObject, 1f);
+                GameObject endofLife= Instantiate(Hit, transform.position, Quaternion.identity);
+                Destroy(gameObject, .5f);
+                Destroy(endofLife, 1f);
                 lifeCounter = 0;
             }
         }

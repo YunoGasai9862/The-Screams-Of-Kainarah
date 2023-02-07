@@ -16,6 +16,8 @@ TagManager:
   - Return
   - JumpBack
   - Return2
+  - FxTemporaire
+  - Ice
   layers:
   - Default
   - TransparentFX

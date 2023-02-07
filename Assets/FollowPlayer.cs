@@ -17,10 +17,6 @@ public class FollowPlayer : MonoBehaviour
     }
     void Update()
     {
-
-
-
-        if (transform.position.x < Player.transform.position.x || transform.position.x > CameraMinSize)
                  transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 15,transform.position.z);
 
     }
