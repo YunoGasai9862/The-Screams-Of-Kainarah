@@ -13,7 +13,7 @@ public class AttackingScript : MonoBehaviour
     private int AttackCount = 0;
     private BoxCollider2D col;
     private GameObject dag;
-    private bool canthrowDagger = true;
+    public static bool canthrowDagger = true;
     private float throwdaggerTime=0;
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
@@ -147,7 +147,7 @@ public class AttackingScript : MonoBehaviour
              if (!(anim.GetCurrentAnimatorStateInfo(0).IsName("Running")) && Input.GetKeyDown(KeyCode.F) && canthrowDagger)
              {
                        anim.SetBool("ThrowDagger", true);
-                 
+                        AttackEnemy.ThrowDagger = true;
 
                          Invoke("instantiateDag",.4f);
                           canthrowDagger = false;
@@ -185,7 +185,7 @@ public class AttackingScript : MonoBehaviour
             Destroy(collision.gameObject);
         }
     }
-
+  
     public void Icetail()
     {
       

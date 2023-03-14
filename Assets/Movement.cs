@@ -11,7 +11,6 @@ public class Movement : MonoBehaviour
     [SerializeField] float CharacterSpeed = 10f;
     [SerializeField] SpriteRenderer sr;
     [SerializeField] LayerMask Ground;
-    [SerializeField] AttackEnemy Enemy;
     [SerializeField] LayerMask Ledge;
 
     private Animator anim;
@@ -128,7 +127,6 @@ public class Movement : MonoBehaviour
                 //character flip
 
                 sr.flipX = true;
-                Enemy.HeroineFlipped = true;
                 Vector2 offset = col.offset;
                 offset.x += 1;
                 col.offset = offset;
@@ -141,7 +139,6 @@ public class Movement : MonoBehaviour
             {
 
                 sr.flipX = false;
-                Enemy.HeroineFlipped = false;
 
                 Vector2 offset = col.offset;
                 offset.x -= 1;

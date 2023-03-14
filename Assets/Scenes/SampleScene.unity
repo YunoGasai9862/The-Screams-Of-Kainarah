@@ -4115,7 +4115,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 613478252915356505, guid: aaa7a0367a1ca144e8d5d870d46392c1, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 613478252915356508, guid: aaa7a0367a1ca144e8d5d870d46392c1, type: 3}
       propertyPath: m_RootOrder
@@ -4269,10 +4269,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Heroine
       objectReference: {fileID: 0}
-    - target: {fileID: 3387488181997499512, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: IceTrail2
-      value: 
-      objectReference: {fileID: 6942044088278875987, guid: 05dace05c5d30104880353dab19e2674, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

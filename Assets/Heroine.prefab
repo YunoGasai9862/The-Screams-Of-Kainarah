@@ -593,7 +593,7 @@ RectTransform:
   - {fileID: 1478819944}
   - {fileID: 1360148642}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -785,6 +785,7 @@ MonoBehaviour:
     m_Bits: 8
   Dagger: {fileID: 8025573198793576023, guid: f56de393cd630934e8c8c9cd19ec01bf, type: 3}
   IceTrail: {fileID: 1326094510711206718, guid: f87dcd0b34fb626439aac4d24529af72, type: 3}
+  IceTrail2: {fileID: 6942044088278875987, guid: 05dace05c5d30104880353dab19e2674, type: 3}
 --- !u!114 &8744535595071973501
 MonoBehaviour:
   m_ObjectHideFlags: 0

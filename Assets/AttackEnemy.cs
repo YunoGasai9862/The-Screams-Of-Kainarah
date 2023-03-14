@@ -10,51 +10,57 @@ public class AttackEnemy : MonoBehaviour
     private Animator anim;
     private float elapsedTime=0;
     private bool checker = true;
-    public bool HeroineFlipped = false;
+    private GameObject Heroine;
 
  
     private SpriteRenderer _daggerrenderer;
+    public static bool ThrowDagger;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         _daggerrenderer = GetComponent<SpriteRenderer>();
+        Heroine = GameObject.FindWithTag("Player");
     }
 
     void Update()
     {
 
-        
-        if(checker)
+
+        if (checker)
         {
             elapsedTime += Time.deltaTime;
 
         }
 
-        if (elapsedTime > 2.5f)
+        if (elapsedTime > 1f)
         {
             checker = false;
             anim.SetBool("HitEnemy", true);
-            Destroy(gameObject,2f);
+            Destroy(gameObject, .4f);
             elapsedTime = 0;
 
         }
 
-        if(HeroineFlipped)
+        if (Heroine.GetComponent<SpriteRenderer>().flipX && ThrowDagger)
         {
             _daggerrenderer.flipX = true;
             rb.velocity = new Vector2(-DaggerSpeed, 0);
+            ThrowDagger = false;
+              
+           
 
         }
-        else
+       
+        if (!Heroine.GetComponent<SpriteRenderer>().flipX && ThrowDagger)
         {
             _daggerrenderer.flipX = false;
             rb.velocity = new Vector2(DaggerSpeed, 0);
+            ThrowDagger = false;
+
 
         }
-
     }
-
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -62,7 +68,7 @@ public class AttackEnemy : MonoBehaviour
         {
            // Destroy(collision.gameObject);
             anim.SetBool("HitEnemy", true);
-            Destroy(gameObject, 2f);
+            Destroy(gameObject, .4f);
 
            
         }
