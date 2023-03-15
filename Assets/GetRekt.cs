@@ -7,6 +7,7 @@ public class GetRekt : MonoBehaviour
     private int HitCount = 0;
     private Animator anim;
     private int SwordHit = 0;
+    [SerializeField] GameObject HitEffect;
 
     private void Start()
     {
@@ -40,16 +41,25 @@ public class GetRekt : MonoBehaviour
         }
     }
 
+    private void HitEffectFun()
+    {
+        GameObject _hitEffect = Instantiate(HitEffect, transform.position, HitEffect.transform.rotation);
+        Destroy(_hitEffect, 1f);
+
+    }
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Dagger"))
         {
+            HitEffectFun();
             anim.SetBool("Hit", false);
 
         }
 
         if (collision.CompareTag("Sword"))
         {
+            HitEffectFun();
+
             anim.SetBool("Hit", false);
 
         }

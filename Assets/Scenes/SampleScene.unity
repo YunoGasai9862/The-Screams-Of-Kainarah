@@ -806,6 +806,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2673045c89a71c84da202dce6edc24f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tiles: {fileID: 454730941}
 --- !u!4 &625219369
 Transform:
   m_ObjectHideFlags: 0
@@ -2785,7 +2786,7 @@ GameObject:
   - component: {fileID: 1481028414}
   m_Layer: 0
   m_Name: Enemy3
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3000,6 +3001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4fb4a35a85c8174b808b9a459b5ea56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HitEffect: {fileID: 3285503076644769960, guid: 15b81b06a58e6014a92f09a4bef3dee3, type: 3}
 --- !u!1 &1625480865
 GameObject:
   m_ObjectHideFlags: 0

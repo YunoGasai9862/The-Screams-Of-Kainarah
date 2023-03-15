@@ -73,9 +73,7 @@ public class EnemyScript : MonoBehaviour
             if (lifeCounter > 3)
             {
                 isNotdead = false;
-                GameObject endofLife= Instantiate(Hit, transform.position, Quaternion.identity);
                 Destroy(gameObject, .5f);
-                Destroy(endofLife, 1f);
                 lifeCounter = 0;
             }
         }
@@ -139,10 +137,14 @@ public class EnemyScript : MonoBehaviour
         {
             if(isNotdead)
             {
+                GameObject endofLife = Instantiate(Hit, transform.position, Quaternion.identity);
+
                 anim.SetBool("Hit", true);
                 lifeCounter++;
+                Destroy(endofLife, 1f);
+
             }
-          
+
 
         }
     }
@@ -150,6 +152,7 @@ public class EnemyScript : MonoBehaviour
     {
         if (collision.CompareTag("Dagger") || collision.CompareTag("Sword"))
         {
+
             anim.SetBool("Hit", false );
 
         }
