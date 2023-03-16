@@ -189,14 +189,17 @@ public class AttackingScript : MonoBehaviour
     public void Icetail()
     {
       
-          Instantiate(IceTrail, transform.position, Quaternion.identity);
+        GameObject Ice=  Instantiate(IceTrail, transform.position, Quaternion.identity);
+        Ice.transform.parent = transform;
+        
       
     }
 
     public void Icetail2()
     {
 
-        Instantiate(IceTrail2, transform.position, Quaternion.identity);
+        GameObject Ice= Instantiate(IceTrail2, transform.position, Quaternion.identity);
+        Ice.transform.parent = transform;
 
     }
 }

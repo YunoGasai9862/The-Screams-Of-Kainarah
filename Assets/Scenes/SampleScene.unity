@@ -807,6 +807,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tiles: {fileID: 454730941}
+  Crystals: {fileID: 6985490835736572203, guid: b52968afaccb289438b3fdcd569e985b, type: 3}
 --- !u!4 &625219369
 Transform:
   m_ObjectHideFlags: 0
@@ -4276,6 +4277,67 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+--- !u!1001 &4697998807912485758
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2661038635046551759, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+      propertyPath: m_RootOrder
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661038635046551759, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661038635046551759, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661038635046551759, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661038635046551759, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661038635046551759, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661038635046551759, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661038635046551759, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661038635046551759, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661038635046551759, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661038635046551759, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661038635046788335, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+      propertyPath: m_Name
+      value: CFX2_PickupDiamond2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
 --- !u!1001 &6972185359741247887
 PrefabInstance:
   m_ObjectHideFlags: 0

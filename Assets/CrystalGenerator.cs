@@ -6,33 +6,35 @@ public class CrystalGenerator : MonoBehaviour
 {
     [SerializeField] Tilemap _tiles;
     private List<Vector3> _ledgePositions;
+    [SerializeField] GameObject Crystals;
     void Start()
     {
         _ledgePositions= new List<Vector3>();
-        for(int x=_tiles.cellBounds.xMin; x<_tiles.cellBounds.xMax; x++)
+        for(int x=_tiles.cellBounds.xMin; x<_tiles.cellBounds.xMax; x++)  //I learned this new thing
         {
 
             for(int y= _tiles.cellBounds.yMin; y<_tiles.cellBounds.yMax; y++)
             {
                 Vector3Int LocationOnTile = new Vector3Int(x, y, (int)_tiles.transform.position.y);//i dont know why are we using the y Position
                 //now convert the Tile world Pos to World Pos
+                Vector3 localSpace = _tiles.WorldToLocal(LocationOnTile);
 
-                Vector3 WorldLocation=_tiles.WorldToLocal(LocationOnTile);
-                if(_tiles.HasTile(LocationOnTile)) //if that tile exists, and is not a blank tile
+                if(_tiles.HasTile(LocationOnTile))
                 {
-                    _ledgePositions.Add(WorldLocation);  //OMG this work because there are only 5 tiles so far!
-                    Debug.Log(WorldLocation);
-                }else
-                {
-                    //the tile is empty
+                    //has tile
+                    _ledgePositions.Add(localSpace);
+                    Vector3 AdjustedPosition = new Vector3(localSpace.x - 1f, localSpace.y + 1f, localSpace.z);
+                    Instantiate(Crystals, AdjustedPosition, Quaternion.identity);
                 }
+               
             }
         }
+
+     
+
+
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

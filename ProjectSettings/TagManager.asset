@@ -18,6 +18,7 @@ TagManager:
   - Return2
   - FxTemporaire
   - Ice
+  - Crystal
   layers:
   - Default
   - TransparentFX

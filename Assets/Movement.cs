@@ -12,6 +12,7 @@ public class Movement : MonoBehaviour
     [SerializeField] SpriteRenderer sr;
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask Ledge;
+    [SerializeField] GameObject DiamondHitEffect;
 
     private Animator anim;
     private float Horizontal;
@@ -23,6 +24,7 @@ public class Movement : MonoBehaviour
     private float slidingspeed = 5f;
     public static double MAXHEALTH=100f;
     public static double ENEMYATTACK = 10f;
+    
 
     public static bool isGrabbing = false;//for the ledge grab script
 
@@ -86,7 +88,7 @@ public class Movement : MonoBehaviour
     {
 
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) )
+        if (Input.GetKeyDown(KeyCode. LeftShift) )
         {
             anim.SetBool("Sliding", true);
           
@@ -206,14 +208,22 @@ public class Movement : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Crystal"))
+        {
 
-   
+        }
+    }
 
 
 
 
-        
-    
+
+
+
+
+
 }
 
 
