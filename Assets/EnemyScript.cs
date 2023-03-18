@@ -70,18 +70,20 @@ public class EnemyScript : MonoBehaviour
 
             }
 
-            if (lifeCounter > 3)
-            {
-                isNotdead = false;
-                Destroy(gameObject, .5f);
-                lifeCounter = 0;
-            }
+            
         }
 
-    
+        if (lifeCounter > 3)
+        {
+            isNotdead = false;
+            Destroy(gameObject, .5f);
+            lifeCounter = 0;
+        }
 
 
-        if(Vector2.Distance(transform.position, Waypoints[Index].position)<.1f)
+
+
+        if (Vector2.Distance(transform.position, Waypoints[Index].position)<.1f)
         {
             Index++;
 
@@ -139,7 +141,11 @@ public class EnemyScript : MonoBehaviour
             {
                 GameObject endofLife = Instantiate(Hit, transform.position, Quaternion.identity);
 
-                anim.SetBool("Hit", true);
+                if (transform.gameObject.name != "Enemy2")
+                {
+                    anim.SetBool("Hit", true);
+                }
+
                 lifeCounter++;
                 Destroy(endofLife, 1f);
 
@@ -153,7 +159,10 @@ public class EnemyScript : MonoBehaviour
         if (collision.CompareTag("Dagger") || collision.CompareTag("Sword"))
         {
 
-            anim.SetBool("Hit", false );
+            if (transform.gameObject.name != "Enemy2")
+            {
+                anim.SetBool("Hit", false);
+            }
 
         }
     }

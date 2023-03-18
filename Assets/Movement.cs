@@ -212,7 +212,9 @@ public class Movement : MonoBehaviour
     {
         if (collision.CompareTag("Crystal"))
         {
-
+            GameObject DHE = Instantiate(DiamondHitEffect, collision.transform.position, Quaternion.identity);
+            Destroy(DHE, 2f);
+            Destroy(collision.gameObject);
         }
     }
 
