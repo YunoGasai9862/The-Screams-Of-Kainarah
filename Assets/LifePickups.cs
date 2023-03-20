@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,8 +15,18 @@ public class LifePickups : MonoBehaviour
         {
             for(int y=_ground.cellBounds.yMin; y<_ground.cellBounds.yMax; y++)
             {
-
                 Vector3Int GroundPos = new Vector3Int(x, y, (int)_ground.transform.position.y);
+                Vector3 localSpace= _ground.WorldToLocal(GroundPos);
+
+                if(_ground.HasTile(GroundPos))
+                {
+                    if(x%2==0)
+                    {
+                        Vector2 LifeLocation = new Vector2(localSpace.x, localSpace.y + 2.5f);
+                        Instantiate(LifePickup, LifeLocation, Quaternion.identity);
+                    }
+                    
+                }
                  
             }
         }
