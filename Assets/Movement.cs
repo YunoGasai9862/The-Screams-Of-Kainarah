@@ -13,6 +13,7 @@ public class Movement : MonoBehaviour
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask Ledge;
     [SerializeField] GameObject DiamondHitEffect;
+    [SerializeField] GameObject pickupEffect;
 
     private Animator anim;
     private float Horizontal;
@@ -200,7 +201,6 @@ public class Movement : MonoBehaviour
             else
             {
                 MAXHEALTH -= ENEMYATTACK;
-                Debug.Log(MAXHEALTH);
             }
 
 
@@ -223,7 +223,13 @@ public class Movement : MonoBehaviour
 
         if (collision.CompareTag("Health"))
         {
-            Debug.Log("Pickup");
+            if(MAXHEALTH<100)
+            {
+                MAXHEALTH += 10;
+            }
+           GameObject temp= Instantiate(pickupEffect, collision.gameObject.transform.position, Quaternion.identity);
+            Destroy(collision.gameObject);
+            Destroy(temp, 1f);
         }
     }
 
