@@ -12,13 +12,11 @@ public class MonsterFollow : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         Player = GameObject.FindGameObjectWithTag("Player");
-        Flipping(animator);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Flipping(animator);
 
         if (Player != null && checkDistance(animator))
         {
@@ -39,7 +37,6 @@ public class MonsterFollow : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Flipping(animator);
 
     }
 
@@ -60,20 +57,6 @@ public class MonsterFollow : StateMachineBehaviour
         return (Vector3.Distance(Player.transform.position, animator.transform.position) <= 15f && Vector3.Distance(Player.transform.position, animator.transform.position) >= 3);
     }
 
-    public static void Flipping(Animator animator)
-    {
-        if (Player.GetComponent<Rigidbody2D>().velocity.x < 0 && animator.transform.position.x > Player.transform.position.x)
-        {
-            animator.transform.rotation = Quaternion.Euler(0, 0, 0);
-
-        }
-
-        if (Player.GetComponent<Rigidbody2D>().velocity.x > 0 && animator.transform.position.x < Player.transform.position.x)
-
-        {
-            animator.transform.rotation = Quaternion.Euler(0, 180, 0);
-
-
-        }
-    }
+   
+    
 }

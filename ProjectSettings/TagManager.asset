@@ -20,6 +20,7 @@ TagManager:
   - Ice
   - Crystal
   - Health
+  - Boss
   layers:
   - Default
   - TransparentFX

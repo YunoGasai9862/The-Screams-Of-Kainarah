@@ -8,19 +8,21 @@ public class FollowPlayerMonster : StateMachineBehaviour
 {
     //OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 
+    
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        MonsterFollow.Flipping(animator);
 
     }
 
     //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        MonsterFollow.Flipping(animator);
 
-        if (MonsterFollow.Player!=null && MonsterFollow.checkDistance(animator))
-        {
+
+
+            if (MonsterFollow.Player != null && MonsterFollow.checkDistance(animator))
+            {
+         
 
 
             //   float crossProduct = Vector3.Dot(animator.transform.position, MonsterFollow.Player.transform.position);
@@ -34,10 +36,21 @@ public class FollowPlayerMonster : StateMachineBehaviour
             // animator.transform.rotation = Quaternion.AngleAxis((float)angleinDegrees, Vector3.up);
 
 
-            Vector3 newPos = MonsterFollow.Player.transform.position;
-            newPos.y = MonsterFollow.Player.transform.position.y - 1.5f;
-            animator.transform.position = Vector3.MoveTowards(animator.transform.position, newPos, 4f * Time.deltaTime);
-        }
+                  Vector3 newPos = MonsterFollow.Player.transform.position;
+                  newPos.y = MonsterFollow.Player.transform.position.y - 1.5f;
+
+          
+
+
+                  animator.transform.position = Vector3.MoveTowards(animator.transform.position, newPos, 4f * Time.deltaTime);
+            }
+
+
+        
+         
+           
+
+        
 
         if(!MonsterFollow.checkDistance(animator))
         {
@@ -51,9 +64,10 @@ public class FollowPlayerMonster : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        MonsterFollow.Flipping(animator);
 
     }
+
+   
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
     //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
