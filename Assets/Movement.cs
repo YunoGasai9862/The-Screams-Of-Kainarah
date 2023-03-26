@@ -192,8 +192,8 @@ public class Movement : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Enemy") || (collision.collider.CompareTag("Boss") &&
-            (collision.collider.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack") ||
-            collision.collider.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack_02"))))
+            (collision.collider.transform.root.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack") ||
+            collision.collider.transform.root.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack_02"))))
         {
             if(MAXHEALTH==0)
             {

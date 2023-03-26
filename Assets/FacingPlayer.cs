@@ -18,11 +18,11 @@ public class FacingPlayer : MonoBehaviour
 
         if(!anim.GetCurrentAnimatorStateInfo(0).IsName("attack") && !anim.GetCurrentAnimatorStateInfo(0).IsName("attack_02"))
         {
-            if (Player.GetComponent<Rigidbody2D>().velocity.x < 0 && transform.position.x > Player.transform.position.x)
+            if (transform.position.x > Player.transform.position.x)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 0);
             }
-            if (Player.GetComponent<Rigidbody2D>().velocity.x > 0 && transform.position.x < Player.transform.position.x)
+            if ( transform.position.x < Player.transform.position.x)
             {
                 transform.rotation = Quaternion.Euler(0, 180, 0);
             }
