@@ -7,7 +7,9 @@ public class MonsterFollow : StateMachineBehaviour
 
 {
 
+
     public static GameObject Player;
+   static float  timeSpanbetweenEachAttack = 0f;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -28,7 +30,8 @@ public class MonsterFollow : StateMachineBehaviour
       
         if(Vector3.Distance(Player.transform.position, animator.transform.position)<=3)
         {
-            animator.SetTrigger("attack");
+            DelayAttack(animator);
+
         }
 
 
@@ -55,6 +58,17 @@ public class MonsterFollow : StateMachineBehaviour
     public static bool checkDistance(Animator animator)
     {
         return (Vector3.Distance(Player.transform.position, animator.transform.position) <= 15f && Vector3.Distance(Player.transform.position, animator.transform.position) >= 3);
+    }
+
+    public static void DelayAttack(Animator animator)
+    {
+        timeSpanbetweenEachAttack += Time.deltaTime;
+        if (timeSpanbetweenEachAttack > .5f)
+        {
+            animator.SetTrigger("attack");
+            timeSpanbetweenEachAttack = 0f;
+
+        }
     }
 
    

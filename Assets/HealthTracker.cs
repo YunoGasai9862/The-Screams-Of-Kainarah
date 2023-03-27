@@ -13,6 +13,6 @@ public class HealthTracker : MonoBehaviour
     public static float ReturnBossHealth()
     {
         // return (float)Movement.MAXHEALTH;
-        return .0f;
+        return (float)BossScript.MAXHEALTH;
     }
 }

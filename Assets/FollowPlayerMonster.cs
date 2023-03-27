@@ -39,9 +39,6 @@ public class FollowPlayerMonster : StateMachineBehaviour
                   Vector3 newPos = MonsterFollow.Player.transform.position;
                   newPos.y = MonsterFollow.Player.transform.position.y - 1.5f;
 
-          
-
-
                   animator.transform.position = Vector3.MoveTowards(animator.transform.position, newPos, 4f * Time.deltaTime);
             }
 
@@ -56,7 +53,7 @@ public class FollowPlayerMonster : StateMachineBehaviour
         {
 
             animator.SetBool("walk", false);
-            animator.SetTrigger("attack");
+            MonsterFollow.DelayAttack(animator);
         }
     
     }
