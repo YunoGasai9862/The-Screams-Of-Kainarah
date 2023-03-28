@@ -63,7 +63,7 @@ public class MonsterFollow : StateMachineBehaviour
     public static void DelayAttack(Animator animator)
     {
         timeSpanbetweenEachAttack += Time.deltaTime;
-        if (timeSpanbetweenEachAttack > .5f)
+        if (timeSpanbetweenEachAttack > 1f)
         {
             animator.SetTrigger("attack");
             timeSpanbetweenEachAttack = 0f;

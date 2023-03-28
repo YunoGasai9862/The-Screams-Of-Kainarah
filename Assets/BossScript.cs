@@ -13,13 +13,13 @@ public class BossScript : MonoBehaviour
     private float TimeoverBody = 0f;
     private BoxCollider2D _bC2;
     private bool onTopBossBool = false;
+    [SerializeField] GameObject BossDead;
     void Start()
     {
         Player = GameObject.FindWithTag("Player");
         anim = GetComponent<Animator>();
         MAXHEALTH = 100;
         _bC2= GetComponent<BoxCollider2D>();
-
     }
 
     // Update is called once per frame
@@ -28,6 +28,32 @@ public class BossScript : MonoBehaviour
         CheckRotation();
 
  
+         if(onTopBossBool)
+        {
+            TimeoverBody += Time.deltaTime;
+        }
+
+         if(TimeoverBody>.5f)
+        {
+            _bC2.enabled = false;
+            onTopBossBool = false;
+            StartCoroutine(TimeElapse());
+
+        }
+
+
+
+
+
+
+    }
+
+    IEnumerator TimeElapse()
+    {
+        yield return new WaitForSeconds(.5f);
+        _bC2.enabled = true;
+        TimeoverBody = 0f;
+
     }
 
     void CheckRotation()
@@ -53,13 +79,20 @@ public class BossScript : MonoBehaviour
             MAXHEALTH -= 10;
 
         }
+
+        if(MAXHEALTH==0)
+        {
+            GameObject dead = Instantiate(BossDead, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+            Destroy(dead, 1f);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.collider.CompareTag("Player"))
+        if(collision.collider.CompareTag("Player") && onTopBossBool==false)
         {
-            // _bC2.enabled = false;
+         
             onTopBossBool = true;
 
         }
@@ -68,7 +101,6 @@ public class BossScript : MonoBehaviour
     {
         if(collision.collider.CompareTag("Player"))
         {
-            //_bC2.enabled = true;
             onTopBossBool = false;
 
         }

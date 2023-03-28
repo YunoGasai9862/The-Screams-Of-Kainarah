@@ -131,21 +131,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1177047595, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
+      propertyPath: BossDead
+      value: 
+      objectReference: {fileID: 7294662482550770413, guid: 8df7eb68a2313664fb8aa8f93f7bf27f, type: 3}
     - target: {fileID: 1177047596, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1177047597, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
-      propertyPath: m_Mass
-      value: 1000
+    - target: {fileID: 1177047596, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.93
       objectReference: {fileID: 0}
     - target: {fileID: 1177047597, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
       propertyPath: m_BodyType
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1177047597, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
-      propertyPath: m_Constraints
-      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1929744653485327771, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
       propertyPath: m_RootOrder

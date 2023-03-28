@@ -24,7 +24,7 @@ public class Movement : MonoBehaviour
     private bool Death = false;
     private float slidingspeed = 5f;
     public static double MAXHEALTH=100f;
-    public static double ENEMYATTACK = 10f;
+    public static double ENEMYATTACK = 5f;
     
 
     public static bool isGrabbing = false;//for the ledge grab script
@@ -227,13 +227,16 @@ public class Movement : MonoBehaviour
 
         if (collision.CompareTag("Health"))
         {
+           
             if(MAXHEALTH<100)
             {
                 MAXHEALTH += 10;
+                GameObject temp = Instantiate(pickupEffect, collision.gameObject.transform.position, Quaternion.identity);
+                Destroy(collision.gameObject);
+                Destroy(temp, 1f);
             }
-           GameObject temp= Instantiate(pickupEffect, collision.gameObject.transform.position, Quaternion.identity);
-            Destroy(collision.gameObject);
-            Destroy(temp, 1f);
+
+        
         }
     }
 
