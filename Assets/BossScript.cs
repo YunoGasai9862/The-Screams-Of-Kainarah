@@ -82,7 +82,9 @@ public class BossScript : MonoBehaviour
 
         if(MAXHEALTH==0)
         {
-            GameObject dead = Instantiate(BossDead, transform.position, Quaternion.identity);
+            Vector2 pos = transform.position;
+            pos.y = transform.position.y + .5f;
+            GameObject dead = Instantiate(BossDead, pos, Quaternion.identity);
             Destroy(gameObject);
             Destroy(dead, 1f);
         }

@@ -15,8 +15,8 @@ public class CrystalGenerator : MonoBehaviour
 
             for(int y= _tiles.cellBounds.yMin; y<_tiles.cellBounds.yMax; y++)
             {
-                Vector3Int LocationOnTile = new Vector3Int(x, y, (int)_tiles.transform.position.y);//i dont know why are we using the y Position
-                //now convert the Tile world Pos to World Pos
+                Vector3Int LocationOnTile = new Vector3Int(x, y, (int)_tiles.transform.position.y); //i dont know why are we using the y Position
+                                                                                             //now convert the Tile world Pos to World Pos
                 Vector3 localSpace = _tiles.WorldToLocal(LocationOnTile);
 
                 if(_tiles.HasTile(LocationOnTile))

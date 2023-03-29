@@ -222,7 +222,7 @@ public class Movement : MonoBehaviour
         {
             GameObject DHE = Instantiate(DiamondHitEffect, collision.transform.position, Quaternion.identity);
             Destroy(DHE, 2f);
-            Destroy(collision.gameObject);
+            
         }
 
         if (collision.CompareTag("Health"))

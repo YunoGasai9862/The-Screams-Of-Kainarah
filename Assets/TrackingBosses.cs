@@ -18,13 +18,23 @@ public class TrackingBosses : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Vector2.Distance(transform.position, Boss.transform.position) <= CamWidth / 2)
+        if(Boss!=null)
         {
-            openHealthBar = true;
+            if (Vector2.Distance(transform.position, Boss.transform.position) <= CamWidth / 2)
+            {
+                openHealthBar = true;
+            }
+            if (openHealthBar)
+            {
+                Health.gameObject.SetActive(true);
+            }
         }
-        if(openHealthBar)
+        else
         {
-            Health.gameObject.SetActive(true);
+            Health.gameObject.SetActive(false);
+
         }
+
+
     }
 }
