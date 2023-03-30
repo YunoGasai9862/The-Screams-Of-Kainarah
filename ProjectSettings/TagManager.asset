@@ -21,6 +21,7 @@ TagManager:
   - Crystal
   - Health
   - Boss
+  - Diamond
   layers:
   - Default
   - TransparentFX
