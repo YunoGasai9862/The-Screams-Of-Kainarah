@@ -248,7 +248,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -689,10 +689,11 @@ MonoBehaviour:
   Ground:
     serializedVersion: 2
     m_Bits: 64
-  Enemy: {fileID: 1608095778, guid: f56de393cd630934e8c8c9cd19ec01bf, type: 3}
   Ledge:
     serializedVersion: 2
     m_Bits: 8
+  DiamondHitEffect: {fileID: 2661038635046788335, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+  pickupEffect: {fileID: 2214392910240599192, guid: a0a1f9649d5a494488d827aedb80a555, type: 3}
 --- !u!50 &2357857119552702234
 Rigidbody2D:
   serializedVersion: 4
@@ -718,7 +719,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &2357857119552702235
 BoxCollider2D:

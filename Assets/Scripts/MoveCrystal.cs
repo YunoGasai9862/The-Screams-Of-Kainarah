@@ -27,16 +27,13 @@ public class MoveCrystal : MonoBehaviour
             LocalPos= _diamondUILocaitonConverted;
             LocalPos.z = 0;
             LocalPos.x = LocalPos.x - 1f;
-            transform.DOMove(LocalPos, 1f).SetEase(Ease.InFlash);
+            transform.DOMove(LocalPos, .090f).SetEase(Ease.InFlash);
             transform.GetComponent<BoxCollider2D>().enabled = false;
-            _isMoving = false;
+           
         }
 
-        if((int)transform.position.x==(int)LocalPos.x)
-        {
-            Destroy(gameObject);
-            increaseValue = true;
-        }
+        OnDestroy();
+       
     }
 
 
@@ -45,6 +42,16 @@ public class MoveCrystal : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             _isMoving= true;
+        }
+    }
+
+
+    private void OnDestroy()
+    {
+        if ((int)transform.position.x == (int)LocalPos.x)
+        {
+            Destroy(gameObject);
+            increaseValue = true;
         }
     }
 }
