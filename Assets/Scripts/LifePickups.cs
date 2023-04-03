@@ -16,7 +16,7 @@ public class LifePickups : MonoBehaviour
             for(int y=_ground.cellBounds.yMin; y<_ground.cellBounds.yMax; y++)
             {
                 Vector3Int GroundPos = new Vector3Int(x, y, (int)_ground.transform.position.y);
-                Vector3 localSpace= _ground.WorldToLocal(GroundPos);
+                Vector3 localSpace= _ground.CellToWorld(GroundPos);
 
                 if(_ground.HasTile(GroundPos))
                 {

@@ -17,7 +17,7 @@ public class IncreaseDiamond : MonoBehaviour
         if(MoveCrystal.increaseValue)
         {
             _diamondText.text = IncreaseCount().ToString("0");
-            Debug.Log(count);
+          
             MoveCrystal.increaseValue = false;
         }
     }

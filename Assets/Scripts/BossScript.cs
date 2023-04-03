@@ -73,7 +73,7 @@ public class BossScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Sword"))
+        if(collision.CompareTag("Sword")  || collision.CompareTag("Dagger"))
         {
             anim.SetTrigger("damage");
             MAXHEALTH -= 10;
