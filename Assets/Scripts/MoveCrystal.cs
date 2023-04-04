@@ -21,7 +21,7 @@ public class MoveCrystal : MonoBehaviour
     {
        
 
-        if (_isMoving)
+        if (transform!=null &&_isMoving)
         {
             _diamondUILocaitonConverted = Camera.main.ScreenToWorldPoint(_diamondUILocation.position); //converts UI position to world position
             LocalPos= _diamondUILocaitonConverted;
@@ -30,10 +30,11 @@ public class MoveCrystal : MonoBehaviour
             transform.DOMove(LocalPos, .090f).SetEase(Ease.InFlash);
             transform.GetComponent<BoxCollider2D>().enabled = false;
            
+
         }
 
         OnDestroy();
-       
+
     }
 
 
@@ -48,10 +49,10 @@ public class MoveCrystal : MonoBehaviour
 
     private void OnDestroy()
     {
-        if ((int)transform.position.x == (int)LocalPos.x)
+        if (transform!=null && ((int)transform.position.x == (int)LocalPos.x))
         {
-            Destroy(gameObject);
             increaseValue = true;
+            Destroy(gameObject);
         }
     }
 }

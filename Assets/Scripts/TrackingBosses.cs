@@ -9,6 +9,7 @@ public class TrackingBosses : MonoBehaviour
     [SerializeField] GameObject Boss;
     [SerializeField] GameObject Health;
     private bool openHealthBar = false;
+    public static bool BossExists = true;
     void Start()
     {
         camHeight = 2 * (Camera.main.orthographicSize);  //gives you half the height
@@ -23,6 +24,7 @@ public class TrackingBosses : MonoBehaviour
             if (Vector2.Distance(transform.position, Boss.transform.position) <= CamWidth / 2)
             {
                 openHealthBar = true;
+                BossExists = true;
             }
             if (openHealthBar)
             {
@@ -32,6 +34,7 @@ public class TrackingBosses : MonoBehaviour
         else
         {
             Health.gameObject.SetActive(false);
+            BossExists = false;
 
         }
 

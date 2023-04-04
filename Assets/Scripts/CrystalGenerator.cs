@@ -15,7 +15,7 @@ public class CrystalGenerator : MonoBehaviour
 
             for(int y= _tiles.cellBounds.yMin; y<_tiles.cellBounds.yMax; y++)
             {
-                Vector3Int LocationOnTile = new Vector3Int(x, y, (int)_tiles.transform.position.z); //i dont know why are we using the y Position
+                Vector3Int LocationOnTile = new Vector3Int(x, y, (int)_tiles.transform.position.y); //i dont know why are we using the y Position
                                                                                              //now convert the Tile world Pos to World Pos
                 Vector3 localSpace = _tiles.CellToWorld(LocationOnTile);
 
@@ -24,7 +24,7 @@ public class CrystalGenerator : MonoBehaviour
                     //has tile
                     _ledgePositions.Add(LocationOnTile);
                     Debug.Log(localSpace);
-                    Vector3 AdjustedPosition = new Vector3(localSpace.x, localSpace.y+1.5f, localSpace.z);
+                    Vector3 AdjustedPosition = new Vector3(localSpace.x-.5f, localSpace.y+1.5f, localSpace.z);
                     Instantiate(Crystals, AdjustedPosition, Quaternion.identity);
                 }
                

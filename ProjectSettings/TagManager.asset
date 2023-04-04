@@ -22,6 +22,7 @@ TagManager:
   - Health
   - Boss
   - Diamond
+  - DText
   layers:
   - Default
   - TransparentFX
