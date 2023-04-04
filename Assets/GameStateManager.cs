@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameStateManager : MonoBehaviour
 {
 
-    public enum{
+    public enum GameState{
 
         BEGAN, PLAYING,EXIT
     }
