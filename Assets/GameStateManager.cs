@@ -1,26 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class GameStateManager : MonoBehaviour
 {
+  
 
-    public enum GameState{
-
-        BEGAN, PLAYING,EXIT
-    }
-
-
-    public static bool GAMEBEGAN;
-    private float timepassedforpreviousstate = 0f;
-    void Start()
+    public static void RestartGame()
     {
-        GAMEBEGAN = true;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    // Update is called once per frame
-    void Update()
+    public static void RestartGame(Rigidbody2D rb)
     {
-        
+        rb.bodyType = RigidbodyType2D.Static;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+
 }

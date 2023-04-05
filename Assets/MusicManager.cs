@@ -4,13 +4,22 @@ using UnityEngine;
 
 public class MusicManager : MonoBehaviour
 {
+
+    public enum GameState
+    {
+
+        BACKGROUNDMUSIC = 0, BOSSMUSIC=1
+    }
+
     [SerializeField] AudioSource _bgGameMusic;
     [SerializeField] AudioSource _BossMusic;
-    private bool _isPlaying = false;
+    GameState _gameState;
 
     void Start()
     {
-        _bgGameMusic.Play();
+        _gameState = GameState.BACKGROUNDMUSIC;
+        ChannelMusic(_gameState);
+
     }
 
     // Update is called once per frame
@@ -18,37 +27,52 @@ public class MusicManager : MonoBehaviour
     {
         if (TrackingBosses.BossExists)
         {
-            PlayBossMusic(_isPlaying);
-            _isPlaying = true;
+            _gameState = GameState.BOSSMUSIC;
 
-        }else
+        }
+        else
         {
-            _isPlaying = false;
-            PlayBGMusic(_isPlaying);
-            _isPlaying = true;
-        } 
+            _gameState = GameState.BACKGROUNDMUSIC;
+
+        }
+
+        ChannelMusic(_gameState);
+      
+
+
+    }
+
+
+    public void ChannelMusic(GameState state)
+    {
+       switch(state)
+        {
+            case GameState.BACKGROUNDMUSIC:
+                if(!_bgGameMusic.isPlaying && _bgGameMusic.time == 0f)
+                {
+                    _bgGameMusic.Play();
+
+                }
+                _BossMusic.Stop();
+
+                break;
+
+
+            case GameState.BOSSMUSIC:
+                if (!_BossMusic.isPlaying && _BossMusic.time == 0f) //makes sure the same music is not playedagain
+                {
+                    _BossMusic.Play();
+
+                }
+
+                _bgGameMusic.Stop();
+
+                break;
+        }
+
+
         
-       
-
     }
 
-
-    public void PlayBossMusic(bool isPlaying)
-    {
-        if (!isPlaying)
-        {
-            _BossMusic.Play();
-            _bgGameMusic.Stop();
-        }
-    }
-
-    public void PlayBGMusic(bool isPlaying)
-    {
-        if(!isPlaying) {
-            _BossMusic.Stop();
-            _bgGameMusic.Play();
-
-        }
-       
-    }
+   
 }

@@ -41,7 +41,7 @@ public class Movement : MonoBehaviour
     void Update()
     {
 
-        if (!isGrabbing && !anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab")) 
+        if (!isGrabbing && !anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
         {
 
             Horizontal = Input.GetAxisRaw("Horizontal");
@@ -66,9 +66,14 @@ public class Movement : MonoBehaviour
             rb.bodyType = RigidbodyType2D.Static;
         }
 
+        Debug.Log(rb.velocity.y);
 
+        if (rb.velocity.y < -10f) //freefalling into an abyss. Not a good solution, i know
+        {
+            GameStateManager.RestartGame();
+        }
 
-
+  
 
         checkforFlip();
 
@@ -181,13 +186,7 @@ public class Movement : MonoBehaviour
 
 
 
-    void Restart()
-    {
-
-        rb.bodyType = RigidbodyType2D.Static;
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
+  
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

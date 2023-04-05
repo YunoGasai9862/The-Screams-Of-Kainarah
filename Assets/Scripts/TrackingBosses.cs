@@ -9,7 +9,7 @@ public class TrackingBosses : MonoBehaviour
     [SerializeField] GameObject Boss;
     [SerializeField] GameObject Health;
     private bool openHealthBar = false;
-    public static bool BossExists = true;
+    public static bool BossExists = false;
     void Start()
     {
         camHeight = 2 * (Camera.main.orthographicSize);  //gives you half the height
