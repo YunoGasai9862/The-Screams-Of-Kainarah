@@ -249,22 +249,27 @@ public class Movement : MonoBehaviour
     public bool checkForExistenceOfPortal(SpriteRenderer sr)
     {
         RaycastHit2D hit;
+        Vector2 pos=transform.position;
         if(sr.flipX)
         {
-            Debug.DrawRay(transform.position, transform.right *1, Color.red);
-            hit= Physics2D.Raycast(transform.position, transform.right,1f);
+            pos.x = transform.position.x - 1f;
+            Debug.DrawRay(pos, -transform.right *1, Color.red);
+            hit= Physics2D.Raycast(transform.position, -transform.right,1f);
 
         }
         else
         {
-            Debug.DrawRay(transform.position, -transform.right * 1, Color.red);
+            pos.x = transform.position.x + 1f;
 
-            hit = Physics2D.Raycast(transform.position, -transform.right,1f);
+            Debug.DrawRay(transform.position, transform.right * 1, Color.red);
+
+            hit = Physics2D.Raycast(transform.position, transform.right,1f);
 
         }
-        if(hit.collider.isTrigger && hit.collider.CompareTag("Portal"))
-        {
+        if(hit.collider!=null)
             Debug.Log(hit.collider.name);
+        if (hit.collider!=null && hit.collider.isTrigger && hit.collider.CompareTag("Portal"))
+        {
 
             return true;
         }
