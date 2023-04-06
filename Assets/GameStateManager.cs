@@ -18,5 +18,12 @@ public class GameStateManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public static void ChangeLevel(int buildIndex)
+    {
+        SceneManager.LoadScene(buildIndex + 1);
+    }
+
+
+
 
 }

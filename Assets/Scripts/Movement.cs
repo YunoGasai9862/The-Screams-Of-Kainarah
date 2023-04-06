@@ -66,9 +66,8 @@ public class Movement : MonoBehaviour
             rb.bodyType = RigidbodyType2D.Static;
         }
 
-        Debug.Log(rb.velocity.y);
 
-        if (rb.velocity.y < -10f) //freefalling into an abyss. Not a good solution, i know
+        if (rb.velocity.y < -15f && (!isOntheGround() || !isontheLedge())) //freefalling into an abyss. Not a good solution, i know
         {
             GameStateManager.RestartGame();
         }
@@ -87,8 +86,15 @@ public class Movement : MonoBehaviour
 
 
     }
+    private void FixedUpdate()
+    {
+        if(checkForExistenceOfPortal(sr))
+        {
+            GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
 
-  
+
 
     void Sliding()
     {
@@ -119,6 +125,7 @@ public class Movement : MonoBehaviour
     }
     bool isOntheGround()
     {
+       
         return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, Ground);
     }
 
@@ -237,6 +244,34 @@ public class Movement : MonoBehaviour
 
         
         }
+    }
+
+    public bool checkForExistenceOfPortal(SpriteRenderer sr)
+    {
+        RaycastHit2D hit;
+        if(sr.flipX)
+        {
+            Debug.DrawRay(transform.position, transform.right *1, Color.red);
+            hit= Physics2D.Raycast(transform.position, transform.right,1f);
+
+        }
+        else
+        {
+            Debug.DrawRay(transform.position, -transform.right * 1, Color.red);
+
+            hit = Physics2D.Raycast(transform.position, -transform.right,1f);
+
+        }
+        if(hit.collider.isTrigger && hit.collider.CompareTag("Portal"))
+        {
+            Debug.Log(hit.collider.name);
+
+            return true;
+        }
+
+        return false;
+
+
     }
 
 

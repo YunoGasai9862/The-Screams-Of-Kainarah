@@ -23,6 +23,7 @@ TagManager:
   - Boss
   - Diamond
   - DText
+  - Portal
   layers:
   - Default
   - TransparentFX
