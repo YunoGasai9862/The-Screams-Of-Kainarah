@@ -25,7 +25,7 @@ public class Movement : MonoBehaviour
     private float slidingspeed = 5f;
     public static double MAXHEALTH=100f;
     public static double ENEMYATTACK = 5f;
-    
+    [SerializeField] GameObject TeleportTransition;
 
     public static bool isGrabbing = false;//for the ledge grab script
 
@@ -81,7 +81,8 @@ public class Movement : MonoBehaviour
 
 
         CheckForAnimation();
-
+        
+       
 
 
 
@@ -90,6 +91,9 @@ public class Movement : MonoBehaviour
     {
         if(checkForExistenceOfPortal(sr))
         {
+
+            Instantiate(TeleportTransition, transform.position, Quaternion.identity);
+            StartCoroutine(WaiterFunction());
             GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
     }
@@ -248,13 +252,15 @@ public class Movement : MonoBehaviour
 
     public bool checkForExistenceOfPortal(SpriteRenderer sr)
     {
-        RaycastHit2D hit;
+        RaycastHit hit; //using 3D raycast because of 3D object, portal
         Vector2 pos=transform.position;
         if(sr.flipX)
         {
             pos.x = transform.position.x - 1f;
             Debug.DrawRay(pos, -transform.right *1, Color.red);
-            hit= Physics2D.Raycast(transform.position, -transform.right,1f);
+            Physics.Raycast(transform.position, -transform.right, out hit, 1f);
+          
+          
 
         }
         else
@@ -263,20 +269,28 @@ public class Movement : MonoBehaviour
 
             Debug.DrawRay(transform.position, transform.right * 1, Color.red);
 
-            hit = Physics2D.Raycast(transform.position, transform.right,1f);
+            Physics.Raycast(transform.position, -transform.right, out hit, 1f);
+
 
         }
         if(hit.collider!=null)
+
             Debug.Log(hit.collider.name);
+      
+
         if (hit.collider!=null && hit.collider.isTrigger && hit.collider.CompareTag("Portal"))
         {
-
             return true;
         }
 
         return false;
 
 
+    }
+
+    IEnumerator WaiterFunction()
+    {
+        yield return new WaitForSeconds(1f);
     }
 
 
