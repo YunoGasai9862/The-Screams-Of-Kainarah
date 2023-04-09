@@ -30,12 +30,16 @@ public class AttackingScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (kickoffElapsedTime)
+        if(!DialogueManager.IsOpen)
         {
-            elapsedTime += Time.deltaTime;
-        }
+            if (kickoffElapsedTime)
+            {
+                elapsedTime += Time.deltaTime;
+            }
 
-        AttackingMechanism();
+            AttackingMechanism();
+        }
+      
 
     }
 

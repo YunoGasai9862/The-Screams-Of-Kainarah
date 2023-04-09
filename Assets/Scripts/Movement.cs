@@ -14,7 +14,8 @@ public class Movement : MonoBehaviour
     [SerializeField] LayerMask Ledge;
     [SerializeField] GameObject DiamondHitEffect;
     [SerializeField] GameObject pickupEffect;
-
+    [SerializeField] Interactable dialogue;
+    [SerializeField] TrackingEntities trackingEntities;
     private Animator anim;
     private float Horizontal;
     private float jumpingSpeed = 5f;
@@ -40,49 +41,50 @@ public class Movement : MonoBehaviour
     }
     void Update()
     {
-
-        if (!isGrabbing && !anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
+        if (!DialogueManager.IsOpen)
         {
-
-            Horizontal = Input.GetAxisRaw("Horizontal");
-
-            if (rb.bodyType != RigidbodyType2D.Static)
+            if (!isGrabbing && !anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
             {
-                rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
+
+                Horizontal = Input.GetAxisRaw("Horizontal");
+
+                if (rb.bodyType != RigidbodyType2D.Static)
+                {
+                    rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
+
+                }
 
             }
 
+
+            if (Input.GetButtonDown("Jump") && (isOntheGround() || isontheLedge()))
+            {
+                if (rb.bodyType != RigidbodyType2D.Static)
+                    rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
+            }
+
+            if (Death)
+            {
+                rb.bodyType = RigidbodyType2D.Static;
+            }
+
+
+            if (rb.velocity.y < -15f && (!isOntheGround() || !isontheLedge())) //freefalling into an abyss. Not a good solution, i know
+            {
+                GameStateManager.RestartGame();
+            }
+
+
+
+            checkforFlip();
+
+
+            Sliding();
+
+
+            CheckForAnimation();
+
         }
-
-
-        if (Input.GetButtonDown("Jump") && (isOntheGround() || isontheLedge()))
-        {
-            if (rb.bodyType != RigidbodyType2D.Static)
-                rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
-        }
-
-        if (Death)
-        {
-            rb.bodyType = RigidbodyType2D.Static;
-        }
-
-
-        if (rb.velocity.y < -15f && (!isOntheGround() || !isontheLedge())) //freefalling into an abyss. Not a good solution, i know
-        {
-            GameStateManager.RestartGame();
-        }
-
-  
-
-        checkforFlip();
-
-
-        Sliding();
-
-
-        CheckForAnimation();
-        
-       
 
 
 
@@ -96,6 +98,8 @@ public class Movement : MonoBehaviour
             StartCoroutine(WaiterFunction());
             GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
+
+        StartCoroutine(dialogue.TriggerDialogue(dialogue.BossDialogue, gameObject, trackingEntities.Boss, "Boss"));
     }
 
 

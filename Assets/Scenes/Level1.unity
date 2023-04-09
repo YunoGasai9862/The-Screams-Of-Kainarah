@@ -258,6 +258,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 142851599}
   m_CullTransparentMesh: 1
+--- !u!1 &220448023
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 220448024}
+  - component: {fileID: 220448025}
+  m_Layer: 0
+  m_Name: TrackingEntities
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &220448024
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220448023}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 22
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &220448025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220448023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b48099fb88f97c1488e852f1a8dfa3fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Heroine: {fileID: 0}
+  Boss: {fileID: 1177047590}
 --- !u!1001 &224570435
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2197,6 +2243,11 @@ MonoBehaviour:
     - Ugh!
     - Where on Earth, am I!
     - I have to get out of here, as soon as possible.
+  BossDialogue:
+    playername: Rakash
+    sentences:
+    - You dare enter my dungeon!
+    - Your transgressions will be punished...
 --- !u!1 &1044945611
 GameObject:
   m_ObjectHideFlags: 0
@@ -5555,6 +5606,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Heroine
       objectReference: {fileID: 0}
+    - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: dialogue
+      value: 
+      objectReference: {fileID: 989729090}
+    - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: trackingEntities
+      value: 
+      objectReference: {fileID: 220448025}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

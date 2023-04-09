@@ -8,6 +8,7 @@ public class DialogueManager : MonoBehaviour
     public TextMeshProUGUI myname;
     public TextMeshProUGUI maindialogue;
     public Animator myanimator;
+    public static bool IsOpen = false;
     void Start()
     {
         _storylineSentences= new Queue<string>();
@@ -17,6 +18,7 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(Dialogues dialogue)
     {
+        IsOpen = true;
         myanimator.SetBool("IsOpen", true);
         _storylineSentences.Clear();  //clears the previous dialogues, if there are any
 
@@ -55,7 +57,7 @@ public class DialogueManager : MonoBehaviour
 
         string sentence = _storylineSentences.Dequeue();
 
-        StopAllCoroutines(); //if the user clicks on the continue earlier, it will stop all the coroutines and start with the new one
+        StopAllCoroutines(); //if the user clicks on the continue earlier, it will stop all the coroutines and start with the new one=>new text
 
         StartCoroutine(AnimateLetters(sentence));
 
@@ -63,8 +65,11 @@ public class DialogueManager : MonoBehaviour
 
     void EndDialogue()
     {
+
         myanimator.SetBool("IsOpen", false);
+        IsOpen = false;
+
     }
 
-    
+
 }
