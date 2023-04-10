@@ -19,18 +19,22 @@ public class MonsterFollow : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-
-        if (Player != null && checkDistance(animator))
+        if(!DialogueManager.IsOpen)
         {
-            
-            animator.SetBool("walk", true);
+            if (Player != null && checkDistance(animator))
+            {
 
-        }
+                animator.SetBool("walk", true);
 
-      
-        if(Vector3.Distance(Player.transform.position, animator.transform.position)<=3)
-        {
-            DelayAttack(animator);
+            }
+
+
+            if (Vector3.Distance(Player.transform.position, animator.transform.position) <= 3)
+            {
+                DelayAttack(animator);
+
+            }
+
 
         }
 

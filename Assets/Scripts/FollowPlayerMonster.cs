@@ -18,11 +18,12 @@ public class FollowPlayerMonster : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
-
+        if (!DialogueManager.IsOpen)
+        {
 
             if (MonsterFollow.Player != null && MonsterFollow.checkDistance(animator))
             {
-         
+
 
 
             //   float crossProduct = Vector3.Dot(animator.transform.position, MonsterFollow.Player.transform.position);
@@ -35,11 +36,15 @@ public class FollowPlayerMonster : StateMachineBehaviour
 
             // animator.transform.rotation = Quaternion.AngleAxis((float)angleinDegrees, Vector3.up);
 
+                 
+                        Vector3 newPos = MonsterFollow.Player.transform.position;
+                        newPos.y = MonsterFollow.Player.transform.position.y - 1.5f;
 
-                  Vector3 newPos = MonsterFollow.Player.transform.position;
-                  newPos.y = MonsterFollow.Player.transform.position.y - 1.5f;
+                        animator.transform.position = Vector3.MoveTowards(animator.transform.position, newPos, 4f * Time.deltaTime);
 
-                  animator.transform.position = Vector3.MoveTowards(animator.transform.position, newPos, 4f * Time.deltaTime);
+                    
+
+                 
             }
 
 
@@ -49,13 +54,15 @@ public class FollowPlayerMonster : StateMachineBehaviour
 
         
 
-        if(!MonsterFollow.checkDistance(animator))
-        {
+                if(!MonsterFollow.checkDistance(animator))
+                {
 
-            animator.SetBool("walk", false);
-            MonsterFollow.DelayAttack(animator);
+                    animator.SetBool("walk", false);
+                    MonsterFollow.DelayAttack(animator);
+                }
+
         }
-    
+
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state

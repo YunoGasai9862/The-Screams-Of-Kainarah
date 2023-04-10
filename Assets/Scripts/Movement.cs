@@ -86,6 +86,11 @@ public class Movement : MonoBehaviour
 
         }
 
+        if(DialogueManager.IsOpen)
+        {
+            anim.SetInteger("State", 0);
+        }
+
 
 
     }
@@ -94,12 +99,17 @@ public class Movement : MonoBehaviour
         if(checkForExistenceOfPortal(sr))
         {
 
-            Instantiate(TeleportTransition, transform.position, Quaternion.identity);
+            //Instantiate(TeleportTransition, transform.position, Quaternion.identity);
             StartCoroutine(WaiterFunction());
             GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
 
-        StartCoroutine(dialogue.TriggerDialogue(dialogue.BossDialogue, gameObject, trackingEntities.Boss, "Boss"));
+        if(trackingEntities.Boss!=null)
+        {
+            StartCoroutine(dialogue.TriggerDialogue(dialogue.BossDialogue, gameObject, trackingEntities.Boss, "Boss"));
+        }       
+
+
     }
 
 

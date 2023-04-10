@@ -60,7 +60,6 @@ public class DialogueManager : MonoBehaviour
         StopAllCoroutines(); //if the user clicks on the continue earlier, it will stop all the coroutines and start with the new one=>new text
 
         StartCoroutine(AnimateLetters(sentence));
-
     }
 
     void EndDialogue()

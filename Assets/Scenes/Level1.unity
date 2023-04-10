@@ -2244,7 +2244,7 @@ MonoBehaviour:
     - Where on Earth, am I!
     - I have to get out of here, as soon as possible.
   BossDialogue:
-    playername: Rakash
+    playername: 'Rakash:'
     sentences:
     - You dare enter my dungeon!
     - Your transgressions will be punished...
@@ -5641,7 +5641,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8910893184434186403, guid: da6fb7f3ec754e94298ecec9c0dfd16c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.37
+      value: 7.02
       objectReference: {fileID: 0}
     - target: {fileID: 8910893184434186403, guid: da6fb7f3ec754e94298ecec9c0dfd16c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5673,6 +5673,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8910893184434186403, guid: da6fb7f3ec754e94298ecec9c0dfd16c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8910893184444175448, guid: da6fb7f3ec754e94298ecec9c0dfd16c, type: 3}
+      propertyPath: m_Intensity
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

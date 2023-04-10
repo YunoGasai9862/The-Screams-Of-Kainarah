@@ -28,6 +28,10 @@ public class BossScript : MonoBehaviour
         CheckRotation();
 
  
+         if(DialogueManager.IsOpen)
+        {
+            anim.SetBool("walk", false);
+        }
          if(onTopBossBool)
         {
             TimeoverBody += Time.deltaTime;
