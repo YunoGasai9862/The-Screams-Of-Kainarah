@@ -1,8 +1,4 @@
-using Mono.CompilerServices.SymbolWriter;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEditor.AnimatedValues;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -104,10 +100,9 @@ public class Movement : MonoBehaviour
             GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
 
-        if(trackingEntities.Boss!=null)
-        {
-            StartCoroutine(dialogue.TriggerDialogue(dialogue.BossDialogue, gameObject, trackingEntities.Boss, "Boss"));
-        }       
+      
+          StartCoroutine(dialogue.TriggerDialogue(dialogue.BossDialogue, gameObject, "Boss"));
+              
 
 
     }

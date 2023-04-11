@@ -22,13 +22,14 @@ public class Interactable : MonoBehaviour
     }
 
 
-   public IEnumerator TriggerDialogue(Dialogues dialogue, GameObject source, GameObject target, string tag)
+   public IEnumerator TriggerDialogue(Dialogues dialogue, GameObject source, string tag)
     {
 
         if(!FoundTheObject)
         {
             RaycastHit2D ray;
-            ray = Physics2D.Raycast(source.transform.position, target.transform.position, 5f);
+            ray = Physics2D.Raycast(source.transform.position, transform.right, 10f);
+            Debug.DrawRay(source.transform.position, transform.right * 10f, Color.blue);
             if (ray.collider != null && ray.collider.CompareTag(tag))
             {
                 FoundTheObject = true;
