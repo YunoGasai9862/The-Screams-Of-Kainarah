@@ -4709,7 +4709,15 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1715171986}
+    - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 1715171986}
     - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
@@ -4717,15 +4725,31 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OpenInventory
+      value: HandleInventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: CloseInventory
       objectReference: {fileID: 0}
     - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: InventoryOpenCloseManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: InventoryOpenCloseManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 172251639562576635, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}

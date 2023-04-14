@@ -18,18 +18,22 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(Dialogues dialogue)
     {
+    
+
         IsOpen = true;
         myanimator.SetBool("IsOpen", true);
         _storylineSentences.Clear();  //clears the previous dialogues, if there are any
 
         myname.text = dialogue.playername;
 
-        foreach(string sentence in dialogue.sentences) //adds all the sentences into the queue
+        foreach(string sentence in dialogue.sentences)
         {
+
             _storylineSentences.Enqueue(sentence);
         }
 
         DisplayNextSentence();
+       
     }
 
     IEnumerator AnimateLetters(string sentence)

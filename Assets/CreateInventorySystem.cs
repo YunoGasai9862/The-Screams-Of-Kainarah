@@ -1,13 +1,17 @@
+using Microsoft.Unity.VisualStudio.Editor;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CreateInventorySystem : MonoBehaviour
 {
     [SerializeField] GameObject PanelObject;
     [SerializeField] GameObject InventoryBox;
+    [SerializeField] Canvas canvas;
+    private static Queue<GameObject> inventoryList;
+   
 
     private int SizeOftheInventory=6;
 
@@ -27,6 +31,7 @@ public class CreateInventorySystem : MonoBehaviour
 
     void Start()
     {
+        inventoryList=new Queue<GameObject>();
         _spriteLocation=PanelObject.GetComponent<RectTransform>();
 
         if(startX==0 && startY==0 && increment==0 && decrement==0)
@@ -49,6 +54,7 @@ public class CreateInventorySystem : MonoBehaviour
                 Debug.Log(_spriteLocation.position);
                 Vector3 IncrementalSize = new Vector3(increment, decrement);
                 GameObject _temp= Instantiate(InventoryBox, IncrementalSize, Quaternion.identity);
+                inventoryList.Enqueue(_temp);
                 _temp.transform.SetParent(PanelObject.transform,false);
                 increment += _increment;
 
@@ -59,6 +65,28 @@ public class CreateInventorySystem : MonoBehaviour
 
 
         yield return null;
+    }
+
+    public static bool AddToInventory(Sprite itemTobeAdded)
+    {
+        GameObject _temp=new GameObject();
+
+        if (inventoryList.Count==0)
+           {
+               return false;
+           }
+
+        GameObject ItemBox = inventoryList.Dequeue();
+        RectTransform RT= _temp.AddComponent<RectTransform>();
+        _temp.transform.SetParent(ItemBox.transform);
+        UnityEngine.UI.Image image = _temp.AddComponent<UnityEngine.UI.Image>();
+        image.sprite = itemTobeAdded;
+        _temp.GetComponent<SpriteRenderer>().sprite=itemTobeAdded;
+
+
+        return true;
+
+
     }
 
 }
