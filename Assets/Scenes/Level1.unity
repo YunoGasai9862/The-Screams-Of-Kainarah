@@ -1435,6 +1435,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PanelObject: {fileID: 740290528}
   InventoryBox: {fileID: 4750955524795244500, guid: 09e668a61c01c2342976746087fd3563, type: 3}
+  canvas: {fileID: 0}
   startX: -250
   startY: 150
   increment: 100
