@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -70,25 +72,37 @@ public class CreateInventorySystem : MonoBehaviour
         yield return null;
     }
 
-    public static bool AddToInventory(Sprite itemTobeAdded)
+    public static void AddToInventory(Sprite itemTobeAdded, string Tag)
     {
         GameObject _temp = new GameObject("Item" + i);
         _temp.transform.localScale = new Vector3(.35f, .35f, .35f);
 
-        if (inventoryList.Count == 0)
-        {
-            return false;
-        }
-
+      
 
         GameObject ItemBox = inventoryList.Dequeue();
-        if(inventoryCheck.Count!=0)
+        if (inventoryCheck.Count!=0)
         {
             while (inventoryCheck.Count != 0 && !_alreadyExist)
             {
+         
                 GameObject ExistingInventory = inventoryCheck.Dequeue();
-                if (ExistingInventory.GetComponent<UnityEngine.UI.Image>().sprite == itemTobeAdded)
+                GameObject TextBox = new GameObject("Numeical");
+                if (ExistingInventory.GetComponent<UnityEngine.UI.Image>().sprite == itemTobeAdded || ExistingInventory.CompareTag(Tag))
                 {
+                    if (ExistingInventory.transform.parent.Find("Numerical") == null)
+                    {
+                        TextBox.transform.SetParent(ExistingInventory.transform.parent, false);
+                        TextBox.AddComponent<TextMeshProUGUI>();
+                        TextBox.GetComponent<TextMeshProUGUI>().text = "2" ;
+
+                    }
+                    else
+                    {
+                        TextMeshProUGUI _T = ExistingInventory.transform.parent.Find("Numerical").GetComponent<TextMeshProUGUI>();
+                        int count = Int32.Parse(_T.text) + 1;
+                        _T.text = count.ToString("0");
+
+                    }
                     _alreadyExist = true;
                     inventoryTemp.Enqueue(ExistingInventory);
                     break;
@@ -108,16 +122,18 @@ public class CreateInventorySystem : MonoBehaviour
         if(!_alreadyExist)
         {
 
-            RectTransform RT = _temp.AddComponent<RectTransform>();
+            _temp.AddComponent<RectTransform>();
             _temp.transform.SetParent(ItemBox.transform, false);
             UnityEngine.UI.Image image = _temp.AddComponent<UnityEngine.UI.Image>();
             image.sprite = itemTobeAdded;
+            _temp.tag = Tag;
             i++;
             inventoryCheck.Enqueue(_temp);
 
         }
 
-        return true;
+        inventoryList.Enqueue(ItemBox);
+
 
 
     }
@@ -139,6 +155,11 @@ public class CreateInventorySystem : MonoBehaviour
         {
             queue2.Enqueue(queue1.Dequeue());
         }
+    }
+
+    public static void IncrementValue()
+    {
+
     }
 
 }

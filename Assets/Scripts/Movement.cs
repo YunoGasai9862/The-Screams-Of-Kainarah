@@ -240,7 +240,6 @@ public class Movement : MonoBehaviour
         if (collision.CompareTag("Crystal"))
         {
             GameObject DHE = Instantiate(DiamondHitEffect, collision.transform.position, Quaternion.identity);
-            CreateInventorySystem.AddToInventory(collision.gameObject.GetComponent<SpriteRenderer>().sprite);
 
             Destroy(DHE, 2f);
             

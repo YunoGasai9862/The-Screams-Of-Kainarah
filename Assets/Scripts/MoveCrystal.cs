@@ -40,9 +40,17 @@ public class MoveCrystal : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && !collision.CompareTag("Sword"))
         {
-            _isMoving= true;
+            _isMoving = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player") && !collision.CompareTag("Sword"))
+        {
+            CreateInventorySystem.AddToInventory(gameObject.GetComponent<SpriteRenderer>().sprite, gameObject.tag);
         }
     }
 
