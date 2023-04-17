@@ -25,10 +25,8 @@ public class DialogueManager : MonoBehaviour
         _storylineSentences.Clear();  //clears the previous dialogues, if there are any
 
         myname.text = dialogue.playername;
-
         foreach(string sentence in dialogue.sentences)
         {
-
             _storylineSentences.Enqueue(sentence);
         }
 

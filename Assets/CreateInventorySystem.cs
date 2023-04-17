@@ -76,35 +76,37 @@ public class CreateInventorySystem : MonoBehaviour
     {
         GameObject _temp = new GameObject("Item" + i);
         _temp.transform.localScale = new Vector3(.35f, .35f, .35f);
-
-      
-
         GameObject ItemBox = inventoryList.Dequeue();
         if (inventoryCheck.Count!=0)
         {
-            while (inventoryCheck.Count != 0 && !_alreadyExist)
+            while (inventoryCheck.Count != 0 && _alreadyExist)
             {
-         
+                Debug.Log("Executed");
                 GameObject ExistingInventory = inventoryCheck.Dequeue();
-                GameObject TextBox = new GameObject("Numeical");
+                inventoryTemp.Enqueue(ExistingInventory);
+                GameObject TextBox = new GameObject("Numerical");
+                TextBox.AddComponent<RectTransform>();
                 if (ExistingInventory.GetComponent<UnityEngine.UI.Image>().sprite == itemTobeAdded || ExistingInventory.CompareTag(Tag))
                 {
-                    if (ExistingInventory.transform.parent.Find("Numerical") == null)
+                    Transform Numerical = ExistingInventory.transform.parent.Find("Numerical");
+
+                    if (Numerical == null)
                     {
                         TextBox.transform.SetParent(ExistingInventory.transform.parent, false);
                         TextBox.AddComponent<TextMeshProUGUI>();
-                        TextBox.GetComponent<TextMeshProUGUI>().text = "2" ;
+                        TextMeshProUGUI _T = TextBox.GetComponent<TextMeshProUGUI>();
+                        _T.alignment = TextAlignmentOptions.BottomRight;
+                        Debug.Log(TextBox.GetComponent<RectTransform>().sizeDelta);
+                        _T.text = "2" ;
 
-                    }
-                    else
+                    }else
                     {
-                        TextMeshProUGUI _T = ExistingInventory.transform.parent.Find("Numerical").GetComponent<TextMeshProUGUI>();
+                        TextMeshProUGUI _T = Numerical.GetComponent<TextMeshProUGUI>();
                         int count = Int32.Parse(_T.text) + 1;
                         _T.text = count.ToString("0");
 
                     }
                     _alreadyExist = true;
-                    inventoryTemp.Enqueue(ExistingInventory);
                     break;
                 }
                 else
@@ -113,10 +115,13 @@ public class CreateInventorySystem : MonoBehaviour
 
                 }
 
-
             }
             TransferTheItemsToQueue(inventoryCheck, inventoryTemp);
 
+        }
+        else
+        {
+            _alreadyExist = false;
         }
         
         if(!_alreadyExist)
@@ -129,6 +134,7 @@ public class CreateInventorySystem : MonoBehaviour
             _temp.tag = Tag;
             i++;
             inventoryCheck.Enqueue(_temp);
+            _alreadyExist = true;
 
         }
 
