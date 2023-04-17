@@ -23,7 +23,6 @@ public class CrystalGenerator : MonoBehaviour
                 {
                     //has tile
                     _ledgePositions.Add(LocationOnTile);
-                    Debug.Log(localSpace);
                     Vector3 AdjustedPosition = new Vector3(localSpace.x-.5f, localSpace.y+1.5f, localSpace.z);
                     Instantiate(Crystals, AdjustedPosition, Quaternion.identity);
                 }

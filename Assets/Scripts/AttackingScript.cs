@@ -182,6 +182,7 @@ public class AttackingScript : MonoBehaviour
         if(collision.CompareTag("DaggerPickUp"))
         {
             canthrowDagger = true;
+            CreateInventorySystem.AddToInventory(collision.gameObject.GetComponent<SpriteRenderer>().sprite, collision.gameObject.tag);
             Destroy(collision.gameObject);
         }
     }

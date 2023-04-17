@@ -56,7 +56,6 @@ public class CreateInventorySystem : MonoBehaviour
         {
             for(int j=0; j<_Size; j++)
             {
-                Debug.Log(_spriteLocation.position);
                 Vector3 IncrementalSize = new Vector3(increment, decrement);
                 GameObject _temp= Instantiate(InventoryBox, IncrementalSize, Quaternion.identity);
                 inventoryList.Enqueue(_temp);
@@ -72,7 +71,7 @@ public class CreateInventorySystem : MonoBehaviour
         yield return null;
     }
 
-    public static void AddToInventory(Sprite itemTobeAdded, string Tag)
+    public static void AddToInventory(Sprite itemTobeAdded, string Tag)  //fix this tomorrow ->Only collectively addds if its the first slot.
     {
         GameObject _temp = new GameObject("Item" + i);
         _temp.transform.localScale = new Vector3(.35f, .35f, .35f);
@@ -81,11 +80,12 @@ public class CreateInventorySystem : MonoBehaviour
         {
             while (inventoryCheck.Count != 0 && _alreadyExist)
             {
-                Debug.Log("Executed");
                 GameObject ExistingInventory = inventoryCheck.Dequeue();
                 inventoryTemp.Enqueue(ExistingInventory);
-                GameObject TextBox = new GameObject("Numerical");
-                TextBox.AddComponent<RectTransform>();
+
+
+               GameObject TextBox= InstantiateTextObject();
+
                 if (ExistingInventory.GetComponent<UnityEngine.UI.Image>().sprite == itemTobeAdded || ExistingInventory.CompareTag(Tag))
                 {
                     Transform Numerical = ExistingInventory.transform.parent.Find("Numerical");
@@ -93,18 +93,12 @@ public class CreateInventorySystem : MonoBehaviour
                     if (Numerical == null)
                     {
                         TextBox.transform.SetParent(ExistingInventory.transform.parent, false);
-                        TextBox.AddComponent<TextMeshProUGUI>();
-                        TextMeshProUGUI _T = TextBox.GetComponent<TextMeshProUGUI>();
-                        _T.alignment = TextAlignmentOptions.BottomRight;
-                        Debug.Log(TextBox.GetComponent<RectTransform>().sizeDelta);
-                        _T.text = "2" ;
+                       
 
                     }else
                     {
-                        TextMeshProUGUI _T = Numerical.GetComponent<TextMeshProUGUI>();
-                        int count = Int32.Parse(_T.text) + 1;
-                        _T.text = count.ToString("0");
 
+                        Increment(Numerical);
                     }
                     _alreadyExist = true;
                     break;
@@ -144,6 +138,11 @@ public class CreateInventorySystem : MonoBehaviour
 
     }
 
+    public static bool findEmptySlot()
+    {
+
+    }
+
     public static void TransferTheItemsToQueue(Queue<GameObject> queue1, Queue<GameObject> queue2)
     {
         if(queue1.Count==0)
@@ -163,9 +162,21 @@ public class CreateInventorySystem : MonoBehaviour
         }
     }
 
-    public static void IncrementValue()
+    public static void Increment(Transform Numerical)
     {
+        TextMeshProUGUI _T = Numerical.GetComponent<TextMeshProUGUI>();
+        int count = Int32.Parse(_T.text) + 1;
+        _T.text = count.ToString("0");
+    }
+    public static GameObject InstantiateTextObject()
+    {
+        GameObject TextBox = new GameObject("Numerical");
+        TextBox.AddComponent<TextMeshProUGUI>();
+        TextBox.GetComponent<RectTransform>().sizeDelta = new Vector2(100f, 100f);
+        TextBox.GetComponent<TextMeshProUGUI>().text = "2";
+        TextBox.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.BottomRight;
 
+        return TextBox;
     }
 
 }

@@ -180,6 +180,7 @@ public class Movement : MonoBehaviour
 
 
     void CheckForAnimation()
+    
     {
         if (Horizontal > 0f || Horizontal < 0f)
         {
