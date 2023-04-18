@@ -60,7 +60,7 @@ public class CreateInventorySystem : MonoBehaviour
                 Vector3 IncrementalSize = new Vector3(increment, decrement);
                 GameObject _temp= Instantiate(InventoryBox, IncrementalSize, Quaternion.identity);
                 _temp.name = ("item" + _count);
-                _temp.tag= ("item" + _count);   
+             
                 inventoryList.Enqueue(_temp);
                 _temp.transform.SetParent(PanelObject.transform,false);
                 increment += _increment;
@@ -82,11 +82,14 @@ public class CreateInventorySystem : MonoBehaviour
         GameObject ItemBox=null;
         int _count=0;
 
+        //finding empty slot
         while (inventoryList.Count!=0)
         {
             ItemBox= inventoryList.Dequeue();
             _count++;
-            if(ItemBox.transform.childCount==0)
+      
+
+            if (ItemBox.transform.childCount==0)
             {
                 inventoryList.Enqueue(ItemBox);
 
@@ -95,8 +98,9 @@ public class CreateInventorySystem : MonoBehaviour
 
             inventoryList.Enqueue(ItemBox);
 
-
         }
+        
+        FindCorrectPosition(_count);
 
 
         if (inventoryCheck.Count!=0)
@@ -135,12 +139,14 @@ public class CreateInventorySystem : MonoBehaviour
             }
             TransferTheItemsToQueue(inventoryCheck, inventoryTemp);
 
+
         }
         else
         {
             _alreadyExist = false;
 
         }
+
 
         if (!_alreadyExist)
         {
@@ -156,10 +162,17 @@ public class CreateInventorySystem : MonoBehaviour
 
         }
 
-        inventoryList.Enqueue(ItemBox);
 
 
+    
+    }
 
+    public static void PrintQueue(Queue<GameObject> q)
+    {
+        for(int i=0; i<q.Count; i++)
+        {
+            Debug.Log(q.Dequeue().name);
+        }
     }
 
     public static bool findEmptySlot()
@@ -167,22 +180,23 @@ public class CreateInventorySystem : MonoBehaviour
         return false;
     }
 
-    public static void FindCorrectPosition(Queue<GameObject> _object, int Count)
+    public static void FindCorrectPosition( int Count)
     {
-        int Size = _object.Count - Count;
+        int Size = inventoryList.Count - Count;
+        Debug.Log(Size);
         GameObject temp;
         while (Size>0)
         {
-            temp=_object.Dequeue();
-            _object.Enqueue(temp);
+            temp=inventoryList.Dequeue();
+            inventoryList.Enqueue(temp);
+         
             Size--;
-
         }
-        
+
 
     }
-    
-    
+
+
 
     public static void TransferTheItemsToQueue(Queue<GameObject> queue1, Queue<GameObject> queue2)
     {
@@ -199,7 +213,9 @@ public class CreateInventorySystem : MonoBehaviour
     {
         while(queue1.Count != 0)
         {
-            queue2.Enqueue(queue1.Dequeue());
+            GameObject temp=queue1.Dequeue();
+            Debug.Log(temp);
+            queue2.Enqueue(temp);
         }
     }
 

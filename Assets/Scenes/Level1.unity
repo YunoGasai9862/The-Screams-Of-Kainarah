@@ -4720,7 +4720,7 @@ PrefabInstance:
     - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1715171986}
+      objectReference: {fileID: 0}
     - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -4735,7 +4735,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: CloseInventory
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -4751,7 +4751,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 689347596, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 172251639562576635, guid: 357ffd9ed19acdb4d8682c4c01dd91a2, type: 3}
       propertyPath: m_Pivot.x
