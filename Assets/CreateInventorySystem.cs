@@ -100,46 +100,12 @@ public class CreateInventorySystem : MonoBehaviour
 
         }
         
-        FindCorrectPosition(_count);
+        FindCorrectPosition(_count); //brings the inventory position back to its former state
 
 
-        if (inventoryCheck.Count!=0)
+        if (inventoryCheck.Count!=0)  //if already exists, then check through the previously stored items for increment
         {
-            while (inventoryCheck.Count != 0 && _alreadyExist)
-            {
-                GameObject ExistingInventory = inventoryCheck.Dequeue();
-                inventoryTemp.Enqueue(ExistingInventory);
-
-
-               GameObject TextBox= InstantiateTextObject();
-
-                if (ExistingInventory.GetComponent<UnityEngine.UI.Image>().sprite == itemTobeAdded || ExistingInventory.CompareTag(Tag))
-                {
-                    Transform Numerical = ExistingInventory.transform.parent.Find("Numerical");
-
-                    if (Numerical == null)
-                    {
-                        TextBox.transform.SetParent(ExistingInventory.transform.parent, false);
-                       
-
-                    }else
-                    {
-
-                        Increment(Numerical);
-                    }
-                    _alreadyExist = true;
-                    break;
-                }
-                else
-                {
-                    _alreadyExist = false;
-
-                }
-
-            }
-            TransferTheItemsToQueue(inventoryCheck, inventoryTemp);
-
-
+            CheckPreviousItems(itemTobeAdded, Tag);
         }
         else
         {
@@ -167,6 +133,44 @@ public class CreateInventorySystem : MonoBehaviour
     
     }
 
+    public static void CheckPreviousItems(Sprite itemTobeAdded, string Tag)
+    {
+        while (inventoryCheck.Count != 0 && _alreadyExist)
+        {
+            GameObject ExistingInventory = inventoryCheck.Dequeue();
+            inventoryTemp.Enqueue(ExistingInventory);
+
+            GameObject TextBox = InstantiateTextObject();
+
+            if (ExistingInventory.GetComponent<UnityEngine.UI.Image>().sprite == itemTobeAdded || ExistingInventory.CompareTag(Tag))
+            {
+                Transform Numerical = ExistingInventory.transform.parent.Find("Numerical");
+
+                if (Numerical == null)
+                {
+                    TextBox.transform.SetParent(ExistingInventory.transform.parent, false);
+
+
+                }
+                else
+                {
+
+                    Increment(Numerical);
+                }
+                _alreadyExist = true;
+                break;
+            }
+
+            if (inventoryCheck.Count == 0)
+            {
+                _alreadyExist = false;
+            }
+
+        }
+        TransferTheItemsToQueue(inventoryCheck, inventoryTemp);
+
+
+    }
     public static void PrintQueue(Queue<GameObject> q)
     {
         for(int i=0; i<q.Count; i++)
@@ -175,15 +179,10 @@ public class CreateInventorySystem : MonoBehaviour
         }
     }
 
-    public static bool findEmptySlot()
-    {
-        return false;
-    }
 
     public static void FindCorrectPosition( int Count)
     {
         int Size = inventoryList.Count - Count;
-        Debug.Log(Size);
         GameObject temp;
         while (Size>0)
         {
@@ -214,7 +213,6 @@ public class CreateInventorySystem : MonoBehaviour
         while(queue1.Count != 0)
         {
             GameObject temp=queue1.Dequeue();
-            Debug.Log(temp);
             queue2.Enqueue(temp);
         }
     }
