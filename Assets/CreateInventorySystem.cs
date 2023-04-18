@@ -15,6 +15,7 @@ public class CreateInventorySystem : MonoBehaviour
     private static Queue<GameObject> inventoryCheck;
     private static Queue<GameObject> inventoryTemp;
     private static int i = 0;
+    private static int _count = 0;
     private static bool _alreadyExist=false;
     private int SizeOftheInventory=6;
 
@@ -58,9 +59,12 @@ public class CreateInventorySystem : MonoBehaviour
             {
                 Vector3 IncrementalSize = new Vector3(increment, decrement);
                 GameObject _temp= Instantiate(InventoryBox, IncrementalSize, Quaternion.identity);
+                _temp.name = ("item" + _count);
+                _temp.tag= ("item" + _count);   
                 inventoryList.Enqueue(_temp);
                 _temp.transform.SetParent(PanelObject.transform,false);
                 increment += _increment;
+                _count++;
 
             }
             decrement -= _decrement;
@@ -75,7 +79,26 @@ public class CreateInventorySystem : MonoBehaviour
     {
         GameObject _temp = new GameObject("Item" + i);
         _temp.transform.localScale = new Vector3(.35f, .35f, .35f);
-        GameObject ItemBox = inventoryList.Dequeue();
+        GameObject ItemBox=null;
+        int _count=0;
+
+        while (inventoryList.Count!=0)
+        {
+            ItemBox= inventoryList.Dequeue();
+            _count++;
+            if(ItemBox.transform.childCount==0)
+            {
+                inventoryList.Enqueue(ItemBox);
+
+                break;
+            }
+
+            inventoryList.Enqueue(ItemBox);
+
+
+        }
+
+
         if (inventoryCheck.Count!=0)
         {
             while (inventoryCheck.Count != 0 && _alreadyExist)
@@ -116,9 +139,10 @@ public class CreateInventorySystem : MonoBehaviour
         else
         {
             _alreadyExist = false;
+
         }
-        
-        if(!_alreadyExist)
+
+        if (!_alreadyExist)
         {
 
             _temp.AddComponent<RectTransform>();
@@ -140,8 +164,25 @@ public class CreateInventorySystem : MonoBehaviour
 
     public static bool findEmptySlot()
     {
+        return false;
+    }
+
+    public static void FindCorrectPosition(Queue<GameObject> _object, int Count)
+    {
+        int Size = _object.Count - Count;
+        GameObject temp;
+        while (Size>0)
+        {
+            temp=_object.Dequeue();
+            _object.Enqueue(temp);
+            Size--;
+
+        }
+        
 
     }
+    
+    
 
     public static void TransferTheItemsToQueue(Queue<GameObject> queue1, Queue<GameObject> queue2)
     {
