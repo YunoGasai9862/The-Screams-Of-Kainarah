@@ -12,6 +12,8 @@ public class Movement : MonoBehaviour
     [SerializeField] GameObject pickupEffect;
     [SerializeField] Interactable dialogue;
     [SerializeField] TrackingEntities trackingEntities;
+    public static bool AudioPickUp;
+
     private Animator anim;
     private float Horizontal;
     private float jumpingSpeed = 5f;
@@ -241,7 +243,7 @@ public class Movement : MonoBehaviour
         if (collision.CompareTag("Crystal"))
         {
             GameObject DHE = Instantiate(DiamondHitEffect, collision.transform.position, Quaternion.identity);
-
+            AudioPickUp = true;
             Destroy(DHE, 2f);
             
         }

@@ -18,6 +18,7 @@ public class CreateInventorySystem : MonoBehaviour
     private static int _count = 0;
     private static bool _alreadyExist=false;
     private int SizeOftheInventory=6;
+    private static GameObject _temp;
 
     [Space]
     [Header("Enter the start value of the grid: Default values=> -250, 150")]
@@ -77,7 +78,7 @@ public class CreateInventorySystem : MonoBehaviour
 
     public static void AddToInventory(Sprite itemTobeAdded, string Tag)  //fix this tomorrow ->Only collectively addds if its the first slot.
     {
-        GameObject _temp = new GameObject("Item" + i);
+         _temp = new GameObject("Item" + i);
         _temp.transform.localScale = new Vector3(.35f, .35f, .35f);
         GameObject ItemBox=null;
         int _count=0;
@@ -102,13 +103,13 @@ public class CreateInventorySystem : MonoBehaviour
         
         FindCorrectPosition(_count); //brings the inventory position back to its former state
 
-
         if (inventoryCheck.Count!=0)  //if already exists, then check through the previously stored items for increment
         {
             CheckPreviousItems(itemTobeAdded, Tag);
         }
         else
         {
+            
             _alreadyExist = false;
 
         }
@@ -139,23 +140,23 @@ public class CreateInventorySystem : MonoBehaviour
         {
             GameObject ExistingInventory = inventoryCheck.Dequeue();
             inventoryTemp.Enqueue(ExistingInventory);
+            Debug.Log(ExistingInventory.name);
 
             GameObject TextBox = InstantiateTextObject();
 
             if (ExistingInventory.GetComponent<UnityEngine.UI.Image>().sprite == itemTobeAdded || ExistingInventory.CompareTag(Tag))
             {
                 Transform Numerical = ExistingInventory.transform.parent.Find("Numerical");
-
+                Destroy(_temp);
                 if (Numerical == null)
                 {
                     TextBox.transform.SetParent(ExistingInventory.transform.parent, false);
-
-
                 }
                 else
                 {
-
                     Increment(Numerical);
+                    Destroy(TextBox);
+                    
                 }
                 _alreadyExist = true;
                 break;
@@ -163,11 +164,17 @@ public class CreateInventorySystem : MonoBehaviour
 
             if (inventoryCheck.Count == 0)
             {
+                Destroy(TextBox);
                 _alreadyExist = false;
             }
 
         }
-        TransferTheItemsToQueue(inventoryCheck, inventoryTemp);
+
+        while (inventoryTemp.Count != 0)
+        {
+            GameObject temp = inventoryTemp.Dequeue();
+            inventoryCheck.Enqueue(temp);
+        }
 
 
     }
@@ -195,27 +202,6 @@ public class CreateInventorySystem : MonoBehaviour
 
     }
 
-
-
-    public static void TransferTheItemsToQueue(Queue<GameObject> queue1, Queue<GameObject> queue2)
-    {
-        if(queue1.Count==0)
-        {
-            Exchange(queue2, queue1);
-        }else
-        {
-            Exchange(queue1, queue2);
-        }
-    }
-
-    public static void Exchange(Queue<GameObject> queue1, Queue<GameObject> queue2)
-    {
-        while(queue1.Count != 0)
-        {
-            GameObject temp=queue1.Dequeue();
-            queue2.Enqueue(temp);
-        }
-    }
 
     public static void Increment(Transform Numerical)
     {

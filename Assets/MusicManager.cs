@@ -8,11 +8,12 @@ public class MusicManager : MonoBehaviour
     public enum GameState
     {
 
-        BACKGROUNDMUSIC = 0, BOSSMUSIC=1
+        BACKGROUNDMUSIC = 0, BOSSMUSIC=1, PICKUP=2
     }
 
     [SerializeField] AudioSource _bgGameMusic;
     [SerializeField] AudioSource _BossMusic;
+    [SerializeField] AudioSource _Pickup;
     GameState _gameState;
 
     void Start()
@@ -34,6 +35,11 @@ public class MusicManager : MonoBehaviour
         {
             _gameState = GameState.BACKGROUNDMUSIC;
 
+        }
+
+        if(Movement.AudioPickUp)
+        {
+            _gameState = GameState.PICKUP;
         }
 
         ChannelMusic(_gameState);
@@ -67,6 +73,11 @@ public class MusicManager : MonoBehaviour
 
                 _bgGameMusic.Stop();
 
+                break;
+
+            case GameState.PICKUP:
+                _Pickup.Play();
+                Movement.AudioPickUp = false;
                 break;
         }
 
