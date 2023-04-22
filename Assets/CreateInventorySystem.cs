@@ -1,16 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
-using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine;
 
 public class CreateInventorySystem : MonoBehaviour
 {
     [SerializeField] GameObject PanelObject;
     [SerializeField] GameObject InventoryBox;
     [SerializeField] Canvas canvas;
+    [SerializeField] string ScriptTobeAddedForItems;
+
     private static Queue<GameObject> inventoryList;
     private static Queue<GameObject> inventoryCheck;
     private static Queue<GameObject> inventoryTemp;
@@ -32,10 +33,14 @@ public class CreateInventorySystem : MonoBehaviour
 
     private RectTransform _spriteLocation;
 
-    
+    public static Queue<GameObject> GetInventoryList()
+    {
+        return inventoryList;
+    }
 
     void Start()
     {
+        
         inventoryList=new Queue<GameObject>();
         inventoryCheck=new Queue<GameObject>();
         inventoryTemp=new Queue<GameObject>();
@@ -49,7 +54,7 @@ public class CreateInventorySystem : MonoBehaviour
 
 
 
-    IEnumerator GenerateInventory(int _Size, int _startX, int _startY, int _increment, int _decrement)
+    IEnumerator GenerateInventory(int _Size, int _startX, int _startY, int _increment, int _decrement )
     {
         int increment = _startX;
         int decrement = _startY;
@@ -60,6 +65,7 @@ public class CreateInventorySystem : MonoBehaviour
             {
                 Vector3 IncrementalSize = new Vector3(increment, decrement);
                 GameObject _temp= Instantiate(InventoryBox, IncrementalSize, Quaternion.identity);
+                _temp.AddComponent(Type.GetType(ScriptTobeAddedForItems)); //adds the script
                 _temp.name = ("item" + _count);
              
                 inventoryList.Enqueue(_temp);
@@ -120,7 +126,7 @@ public class CreateInventorySystem : MonoBehaviour
 
             _temp.AddComponent<RectTransform>();
             _temp.transform.SetParent(ItemBox.transform, false);
-            UnityEngine.UI.Image image = _temp.AddComponent<UnityEngine.UI.Image>();
+            Image image = _temp.AddComponent<Image>();
             image.sprite = itemTobeAdded;
             _temp.tag = Tag;
             i++;
@@ -209,6 +215,13 @@ public class CreateInventorySystem : MonoBehaviour
         int count = Int32.Parse(_T.text) + 1;
         _T.text = count.ToString("0");
     }
+
+    public static void Decrement(GameObject Numerical)
+    {
+        TextMeshProUGUI _T = Numerical.GetComponent<TextMeshProUGUI>();
+        int count = Int32.Parse(_T.text) -1;
+        _T.text = count.ToString("0");
+    }
     public static GameObject InstantiateTextObject()
     {
         GameObject TextBox = new GameObject("Numerical");
@@ -218,6 +231,30 @@ public class CreateInventorySystem : MonoBehaviour
         TextBox.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.BottomRight;
 
         return TextBox;
+    }
+
+    public static void ReduceItem(GameObject item)
+    {
+            if(item.transform.childCount!=0)
+            {
+                     GameObject TextBox = item.transform.Find("Numerical")? item.transform.Find("Numerical").gameObject : null;
+                     if(TextBox != null)
+                       {
+                         Debug.Log("This");
+                             Decrement(TextBox);
+                        }else
+                        {
+                           Destroy(TextBox);
+                          Destroy(item.transform.GetChild(0).gameObject);
+                        }
+                
+                     
+                
+            }else
+            {
+                  return;
+            }
+
     }
 
 }

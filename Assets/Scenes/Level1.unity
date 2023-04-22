@@ -1334,7 +1334,6 @@ GameObject:
   - component: {fileID: 740290529}
   - component: {fileID: 740290531}
   - component: {fileID: 740290530}
-  - component: {fileID: 740290532}
   m_Layer: 5
   m_Name: Inventory
   m_TagString: Untagged
@@ -1400,18 +1399,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 740290528}
   m_CullTransparentMesh: 1
---- !u!114 &740290532
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 740290528}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31754df21b51b6947af5c31c23b2ade0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &836311649
 GameObject:
   m_ObjectHideFlags: 0
@@ -1422,7 +1409,6 @@ GameObject:
   m_Component:
   - component: {fileID: 836311650}
   - component: {fileID: 836311651}
-  - component: {fileID: 836311652}
   m_Layer: 0
   m_Name: InventorySystem
   m_TagString: Untagged
@@ -1460,23 +1446,11 @@ MonoBehaviour:
   PanelObject: {fileID: 740290528}
   InventoryBox: {fileID: 4750955524795244500, guid: 09e668a61c01c2342976746087fd3563, type: 3}
   canvas: {fileID: 0}
+  ScriptTobeAddedForItems: ClickFeedbackOnItem
   startX: -250
   startY: 150
   increment: 100
   decrement: 50
---- !u!114 &836311652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 836311649}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72f691617ad07284eb788289fa9061a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Panel: {fileID: 740290528}
 --- !u!1 &854717425
 GameObject:
   m_ObjectHideFlags: 0
