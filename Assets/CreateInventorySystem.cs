@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class CreateInventorySystem : MonoBehaviour
 {
@@ -146,11 +147,10 @@ public class CreateInventorySystem : MonoBehaviour
         {
             GameObject ExistingInventory = inventoryCheck.Dequeue();
             inventoryTemp.Enqueue(ExistingInventory);
-            Debug.Log(ExistingInventory.name);
 
             GameObject TextBox = InstantiateTextObject();
 
-            if (ExistingInventory.GetComponent<UnityEngine.UI.Image>().sprite == itemTobeAdded || ExistingInventory.CompareTag(Tag))
+            if (ExistingInventory.GetComponent<Image>().sprite == itemTobeAdded || ExistingInventory.CompareTag(Tag))
             {
                 Transform Numerical = ExistingInventory.transform.parent.Find("Numerical");
                 Destroy(_temp);
@@ -176,13 +176,30 @@ public class CreateInventorySystem : MonoBehaviour
 
         }
 
-        while (inventoryTemp.Count != 0)
+        TransferTheItemsToQueue(ref inventoryCheck, ref inventoryTemp);
+
+
+    }
+
+    public static void TransferTheItemsToQueue(ref Queue<GameObject> queue1, ref Queue<GameObject> queue2)
+    {
+        if (queue1.Count == 0)
         {
-            GameObject temp = inventoryTemp.Dequeue();
-            inventoryCheck.Enqueue(temp);
+            Exchange(ref queue2, ref queue1);
         }
+        else
+        {
+            Exchange(ref queue1, ref queue2);
+        }
+    }
 
-
+    public static void Exchange(ref Queue<GameObject> queue1, ref Queue<GameObject> queue2)
+    {
+        while (queue1.Count != 0)
+        {
+            GameObject temp = queue1.Dequeue();
+            queue2.Enqueue(temp);
+        }
     }
     public static void PrintQueue(Queue<GameObject> q)
     {
@@ -233,24 +250,45 @@ public class CreateInventorySystem : MonoBehaviour
         return TextBox;
     }
 
+    public static void CheckItem(ref GameObject item)
+    {
+        while(inventoryCheck.Count!=0)
+        {
+            GameObject _item= inventoryCheck.Dequeue();
+            if (_item != item)
+            {
+                inventoryTemp.Enqueue(item);
+            }
+
+        }
+
+        while(inventoryTemp.Count!=0)
+        {
+            inventoryCheck.Enqueue(inventoryTemp.Dequeue());
+        }
+    }
     public static void ReduceItem(GameObject item)
     {
             if(item.transform.childCount!=0)
             {
-                     GameObject TextBox = item.transform.Find("Numerical")? item.transform.Find("Numerical").gameObject : null;
-                     if(TextBox != null)
-                       {
-                         Debug.Log("This");
-                             Decrement(TextBox);
-                        }else
-                        {
-                           Destroy(TextBox);
-                          Destroy(item.transform.GetChild(0).gameObject);
-                        }
-                
-                     
-                
-            }else
+
+                GameObject TextBox = item.transform.Find("Numerical") ? item.transform.Find("Numerical").gameObject : null;
+                if (TextBox != null)
+                {
+
+                    Decrement(TextBox);
+                }
+                else
+                {
+
+                    Destroy(TextBox);
+                    CheckItem(ref item);
+                    Destroy(item.transform.GetChild(0).gameObject);
+                }
+
+
+            }
+            else
             {
                   return;
             }

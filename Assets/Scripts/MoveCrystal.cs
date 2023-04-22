@@ -28,7 +28,7 @@ public class MoveCrystal : MonoBehaviour
             LocalPos.z = 0;
             LocalPos.x = LocalPos.x - 1f;
             transform.DOMove(LocalPos, .050f).SetEase(Ease.InFlash);
-            transform.GetComponent<BoxCollider2D>().enabled = false;
+           // transform.GetComponent<BoxCollider2D>().enabled = false;
            
 
         }
