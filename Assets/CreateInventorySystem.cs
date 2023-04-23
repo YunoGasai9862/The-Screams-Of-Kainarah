@@ -67,7 +67,7 @@ public class CreateInventorySystem : MonoBehaviour
                 Vector3 IncrementalSize = new Vector3(increment, decrement);
                 GameObject _temp= Instantiate(InventoryBox, IncrementalSize, Quaternion.identity);
                 _temp.AddComponent(Type.GetType(ScriptTobeAddedForItems)); //adds the script
-                _temp.name = ("item" + _count);
+                _temp.name = (_count).ToString("0");
              
                 inventoryList.Enqueue(_temp);
                 _temp.transform.SetParent(PanelObject.transform,false);
@@ -95,15 +95,25 @@ public class CreateInventorySystem : MonoBehaviour
         {
 
             ItemBox= inventoryList.Dequeue();
-            GameObject temp = ItemBox.transform.parent.Find(ItemBox.name).gameObject;
+            int Counttemp = Int32.Parse(ItemBox.transform.parent.Find(ItemBox.name).name);
+
             //find sibling
 
             _count++;
-      
-
+     
             if (ItemBox.transform.childCount==0) 
             {
-                inventoryList.Enqueue(ItemBox);
+                if(ItemBox.transform.parent.GetChild(Counttemp + 1).childCount != 0 && ItemBox.transform.parent.GetChild(Counttemp+1).GetChild(0).tag==Tag)
+                {
+                    Debug.Log("This");
+                    break;
+
+                }
+                else
+                {
+                    inventoryList.Enqueue(ItemBox);
+
+                }
 
                 break;
             }
@@ -202,7 +212,6 @@ public class CreateInventorySystem : MonoBehaviour
         while (queue1.Count != 0)
         {
             GameObject temp = queue1.Dequeue();
-            Debug.Log(temp.name);
             queue2.Enqueue(temp);
         }
     }
