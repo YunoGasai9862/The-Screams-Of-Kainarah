@@ -93,11 +93,15 @@ public class CreateInventorySystem : MonoBehaviour
         //finding empty slot
         while (inventoryList.Count!=0)
         {
+
             ItemBox= inventoryList.Dequeue();
+            GameObject temp = ItemBox.transform.parent.Find(ItemBox.name).gameObject;
+            //find sibling
+
             _count++;
       
 
-            if (ItemBox.transform.childCount==0)
+            if (ItemBox.transform.childCount==0) 
             {
                 inventoryList.Enqueue(ItemBox);
 
@@ -160,7 +164,7 @@ public class CreateInventorySystem : MonoBehaviour
                 }
                 else
                 {
-                    Increment(Numerical);
+                    Increment(ref Numerical);
                     Destroy(TextBox);
                     
                 }
@@ -198,6 +202,7 @@ public class CreateInventorySystem : MonoBehaviour
         while (queue1.Count != 0)
         {
             GameObject temp = queue1.Dequeue();
+            Debug.Log(temp.name);
             queue2.Enqueue(temp);
         }
     }
@@ -226,18 +231,19 @@ public class CreateInventorySystem : MonoBehaviour
     }
 
 
-    public static void Increment(Transform Numerical)
+    public static void Increment(ref Transform Numerical)
     {
         TextMeshProUGUI _T = Numerical.GetComponent<TextMeshProUGUI>();
         int count = Int32.Parse(_T.text) + 1;
         _T.text = count.ToString("0");
     }
 
-    public static void Decrement(GameObject Numerical)
+    public static void Decrement(ref Transform Numerical)
     {
         TextMeshProUGUI _T = Numerical.GetComponent<TextMeshProUGUI>();
         int count = Int32.Parse(_T.text) -1;
         _T.text = count.ToString("0");
+
     }
     public static GameObject InstantiateTextObject()
     {
@@ -262,37 +268,50 @@ public class CreateInventorySystem : MonoBehaviour
 
         }
 
-        while(inventoryTemp.Count!=0)
-        {
-            inventoryCheck.Enqueue(inventoryTemp.Dequeue());
-        }
+        TransferTheItemsToQueue(ref inventoryCheck, ref inventoryTemp);
     }
-    public static void ReduceItem(GameObject item)
+    public static void ReduceItem(ref GameObject item)
     {
-            if(item.transform.childCount!=0)
+        if(CheckIfNumericalExists(ref item))
+        {
+
+            Transform TextBox = item.transform;
+            if(TextBox.GetComponent<TextMeshProUGUI>().text=="2")
             {
+                Destroy(TextBox.gameObject);
+            }else
+            {
+                Decrement(ref TextBox);
 
-                GameObject TextBox = item.transform.Find("Numerical") ? item.transform.Find("Numerical").gameObject : null;
-                if (TextBox != null)
-                {
-
-                    Decrement(TextBox);
-                }
-                else
-                {
-
-                    Destroy(TextBox);
+            }
+        }
+        else
+        {
+            if (item.transform.childCount != 0)
+            {  
                     CheckItem(ref item);
                     Destroy(item.transform.GetChild(0).gameObject);
-                }
-
 
             }
             else
             {
-                  return;
-            }
 
+                return;
+            }
+        }
+
+            
+
+    }
+
+    public static bool CheckIfNumericalExists(ref GameObject item)
+    {
+        if(item.transform.name=="Numerical")
+        {
+            return true;
+        }
+
+        return false;
     }
 
 }

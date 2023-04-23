@@ -9,6 +9,7 @@ public class ClickFeedbackOnItem : MonoBehaviour, IPointerUpHandler
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        CreateInventorySystem.ReduceItem(eventData.pointerEnter.transform.gameObject);
+        GameObject item = eventData.pointerEnter.transform.gameObject;
+        CreateInventorySystem.ReduceItem(ref item);
     }
 }
