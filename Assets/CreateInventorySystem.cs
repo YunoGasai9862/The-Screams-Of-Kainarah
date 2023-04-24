@@ -83,6 +83,7 @@ public class CreateInventorySystem : MonoBehaviour
         yield return null;
     }
 
+   
     public static void AddToInventory(Sprite itemTobeAdded, string Tag)  //fix this tomorrow ->Only collectively addds if its the first slot.
     {
          _temp = new GameObject("Item" + i);
@@ -90,81 +91,57 @@ public class CreateInventorySystem : MonoBehaviour
         GameObject ItemBox=null;
         int _count=0;
 
-        //finding empty slot
-        while (inventoryList.Count!=0)
+        if(CheckPreviousItems(itemTobeAdded, Tag))
         {
-
-            ItemBox= inventoryList.Dequeue();
-            int Counttemp = Int32.Parse(ItemBox.transform.parent.Find(ItemBox.name).name);
-
-            //find sibling
-
-            _count++;
-     
-            if (ItemBox.transform.childCount==0) 
-            {
-                if(ItemBox.transform.parent.GetChild(Counttemp + 1).childCount != 0 && ItemBox.transform.parent.GetChild(Counttemp+1).GetChild(0).tag==Tag)
-                {
-                    Debug.Log("This");
-                    break;
-
-                }
-                else
-                {
-                    inventoryList.Enqueue(ItemBox);
-
-                }
-
-                break;
-            }
-
-            inventoryList.Enqueue(ItemBox);
-
-        }
-        
-        FindCorrectPosition(_count); //brings the inventory position back to its former state
-
-        if (inventoryCheck.Count!=0)  //if already exists, then check through the previously stored items for increment
-        {
-            CheckPreviousItems(itemTobeAdded, Tag);
+            TransferTheItemsToQueue(ref inventoryCheck, ref inventoryTemp);  //FIXED IT!!!
         }
         else
         {
-            
-            _alreadyExist = false;
+            while (inventoryList.Count != 0)
+            {
+                ItemBox = inventoryList.Dequeue();
+               //find sibling
+                _count++;
 
+                if (ItemBox.transform.childCount == 0)
+                {
+                    inventoryList.Enqueue(ItemBox);
+
+                    break;
+                }
+
+                inventoryList.Enqueue(ItemBox);
+
+            }
+
+                 FindCorrectPosition(_count); //brings the inventory position back to its former state
+                _temp.AddComponent<RectTransform>();
+                _temp.transform.SetParent(ItemBox.transform, false);
+                Image image = _temp.AddComponent<Image>();
+                image.sprite = itemTobeAdded;
+                _temp.tag = Tag;
+                i++;
+                inventoryCheck.Enqueue(_temp);
+                _alreadyExist = true;
+
+          
         }
 
-
-        if (!_alreadyExist)
-        {
-
-            _temp.AddComponent<RectTransform>();
-            _temp.transform.SetParent(ItemBox.transform, false);
-            Image image = _temp.AddComponent<Image>();
-            image.sprite = itemTobeAdded;
-            _temp.tag = Tag;
-            i++;
-            inventoryCheck.Enqueue(_temp);
-            _alreadyExist = true;
-
-        }
-
-
-
-    
+ 
     }
 
-    public static void CheckPreviousItems(Sprite itemTobeAdded, string Tag)
+    public static bool CheckPreviousItems(Sprite itemTobeAdded, string Tag)
     {
+    
+
         while (inventoryCheck.Count != 0 && _alreadyExist)
         {
             GameObject ExistingInventory = inventoryCheck.Dequeue();
-            inventoryTemp.Enqueue(ExistingInventory);
-
+            if(ExistingInventory!=null)
+                inventoryTemp.Enqueue(ExistingInventory);
             GameObject TextBox = InstantiateTextObject();
 
-            if (ExistingInventory.GetComponent<Image>().sprite == itemTobeAdded || ExistingInventory.CompareTag(Tag))
+            if (ExistingInventory!=null && (ExistingInventory.GetComponent<Image>().sprite == itemTobeAdded || ExistingInventory.CompareTag(Tag)))
             {
                 Transform Numerical = ExistingInventory.transform.parent.Find("Numerical");
                 Destroy(_temp);
@@ -179,18 +156,21 @@ public class CreateInventorySystem : MonoBehaviour
                     
                 }
                 _alreadyExist = true;
-                break;
+                return true;
+              
             }
 
             if (inventoryCheck.Count == 0)
             {
                 Destroy(TextBox);
                 _alreadyExist = false;
+              
             }
 
         }
-
         TransferTheItemsToQueue(ref inventoryCheck, ref inventoryTemp);
+
+        return false;
 
 
     }
@@ -272,7 +252,7 @@ public class CreateInventorySystem : MonoBehaviour
             GameObject _item= inventoryCheck.Dequeue();
             if (_item != item)
             {
-                inventoryTemp.Enqueue(item);
+                inventoryTemp.Enqueue(_item);
             }
 
         }
