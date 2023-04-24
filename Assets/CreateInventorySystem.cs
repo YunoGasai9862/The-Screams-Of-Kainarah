@@ -93,7 +93,9 @@ public class CreateInventorySystem : MonoBehaviour
 
         if(CheckPreviousItems(itemTobeAdded, Tag))
         {
-            TransferTheItemsToQueue(ref inventoryCheck, ref inventoryTemp);  //FIXED IT!!!
+            Exchange(ref inventoryTemp, ref inventoryCheck);
+            Destroy(_temp);
+
         }
         else
         {
@@ -132,7 +134,8 @@ public class CreateInventorySystem : MonoBehaviour
 
     public static bool CheckPreviousItems(Sprite itemTobeAdded, string Tag)
     {
-    
+       // Debug.Log("Count: "+ inventoryCheck.Count);
+        //Debug.Log("Already Exist: " + _alreadyExist);
 
         while (inventoryCheck.Count != 0 && _alreadyExist)
         {
@@ -144,7 +147,6 @@ public class CreateInventorySystem : MonoBehaviour
             if (ExistingInventory!=null && (ExistingInventory.GetComponent<Image>().sprite == itemTobeAdded || ExistingInventory.CompareTag(Tag)))
             {
                 Transform Numerical = ExistingInventory.transform.parent.Find("Numerical");
-                Destroy(_temp);
                 if (Numerical == null)
                 {
                     TextBox.transform.SetParent(ExistingInventory.transform.parent, false);
@@ -168,7 +170,7 @@ public class CreateInventorySystem : MonoBehaviour
             }
 
         }
-        TransferTheItemsToQueue(ref inventoryCheck, ref inventoryTemp);
+        Exchange(ref inventoryTemp, ref inventoryCheck);
 
         return false;
 
@@ -192,8 +194,9 @@ public class CreateInventorySystem : MonoBehaviour
         while (queue1.Count != 0)
         {
             GameObject temp = queue1.Dequeue();
-            queue2.Enqueue(temp);
-        }
+            if(temp!=null)
+                 queue2.Enqueue(temp);
+        } 
     }
     public static void PrintQueue(Queue<GameObject> q)
     {
