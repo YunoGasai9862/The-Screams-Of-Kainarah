@@ -7,7 +7,11 @@ public class Interactable : MonoBehaviour
     public Dialogues dialogue;
     public Dialogues BossDialogue;
 
-    private bool FoundTheObject = false;
+
+    [Header("Conversation between Vendor and the Player")]
+    public Dialogues[] WizardPlayerConvo;
+
+
 
     private void Start()
     {
@@ -17,31 +21,25 @@ public class Interactable : MonoBehaviour
    public IEnumerator TriggerDialogue(Dialogues dialogue)
     {
         yield return new WaitForSeconds(.1f);
-        FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
+       
+            FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
+
 
     }
 
-
-   public IEnumerator TriggerDialogue(Dialogues dialogue, GameObject source, string tag)
+    public IEnumerator TriggerDialogue(Dialogues[] dialogue)
     {
-
-        if(!FoundTheObject)
-        {
-            RaycastHit2D ray;
-            ray = Physics2D.Raycast(source.transform.position, transform.right, 10f);
-            Debug.DrawRay(source.transform.position, transform.right * 10f, Color.blue);
-            if (ray.collider != null && ray.collider.CompareTag(tag))
+      
+            foreach (Dialogues WPC in dialogue) //a converstaion
             {
-                FoundTheObject = true;
-                FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
+                FindObjectOfType<DialogueManager>().StartDialogue(WPC);
             }
 
-           
-        }
-       
         yield return null;
 
     }
+ 
+
 
 
 }

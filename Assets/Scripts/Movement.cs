@@ -101,10 +101,16 @@ public class Movement : MonoBehaviour
             StartCoroutine(WaiterFunction());
             GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
+        if(FindingObjects.FindObject(gameObject, "Boss"))
+        {
+            StartCoroutine(dialogue.TriggerDialogue(dialogue.BossDialogue));
 
-      
-          StartCoroutine(dialogue.TriggerDialogue(dialogue.BossDialogue, gameObject, "Boss"));
-              
+        }
+        if(FindingObjects.FindObject(gameObject, "Vendor"))
+        {
+            StartCoroutine(dialogue.TriggerDialogue(dialogue.WizardPlayerConvo));
+
+        }
 
 
     }
@@ -230,10 +236,6 @@ public class Movement : MonoBehaviour
 
            
         }
-
-        
-
-      
 
         
     }

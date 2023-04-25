@@ -25,6 +25,7 @@ TagManager:
   - DText
   - Portal
   - OtherCamera
+  - Vendor
   layers:
   - Default
   - TransparentFX
