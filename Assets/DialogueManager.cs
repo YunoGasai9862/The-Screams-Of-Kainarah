@@ -9,6 +9,7 @@ public class DialogueManager : MonoBehaviour
     public TextMeshProUGUI maindialogue;
     public Animator myanimator;
     public static bool IsOpen = false;
+    public static bool EndofDialogue = false;
     void Start()
     {
         _storylineSentences= new Queue<string>();
@@ -69,7 +70,7 @@ public class DialogueManager : MonoBehaviour
 
         myanimator.SetBool("IsOpen", false);
         IsOpen = false;
-
+        EndofDialogue = true;
     }
 
 
