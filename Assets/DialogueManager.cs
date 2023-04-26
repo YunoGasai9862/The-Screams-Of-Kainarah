@@ -9,13 +9,12 @@ public class DialogueManager : MonoBehaviour
     public TextMeshProUGUI maindialogue;
     public Animator myanimator;
     public static bool IsOpen = false;
-    public static bool EndofDialogue = false;
+
+    [SerializeField] Interactable myinteractable;
     void Start()
     {
         _storylineSentences= new Queue<string>();
     }
-
-
 
     public void StartDialogue(Dialogues dialogue)
     {
@@ -44,18 +43,18 @@ public class DialogueManager : MonoBehaviour
             yield return new WaitForSeconds(.04f);
             maindialogue.text += sentence[i];
         }
-
-
-
-          
     }
     public void DisplayNextSentence()
     {
 
         if(_storylineSentences.Count==0) //if there's nothing in the queue
         {
-            EndDialogue();
-            return;  //exits function
+         
+              EndDialogue();
+                return;  //exits function
+
+
+
         }
 
         string sentence = _storylineSentences.Dequeue();
@@ -70,7 +69,7 @@ public class DialogueManager : MonoBehaviour
 
         myanimator.SetBool("IsOpen", false);
         IsOpen = false;
-        EndofDialogue = true;
+
     }
 
 

@@ -27,7 +27,7 @@ public class Movement : MonoBehaviour
     [SerializeField] GameObject TeleportTransition;
 
     public static bool isGrabbing = false;//for the ledge grab script
-
+    private bool once = true;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -106,10 +106,10 @@ public class Movement : MonoBehaviour
             StartCoroutine(dialogue.TriggerDialogue(dialogue.BossDialogue));
 
         }
-        if(FindingObjects.FindObject(gameObject, "Vendor"))
+        if(FindingObjects.FindObject(gameObject, "Vendor") && once)
         {
             StartCoroutine(dialogue.TriggerDialogue(dialogue.WizardPlayerConvo));
-
+            once = false;
         }
 
 

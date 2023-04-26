@@ -2991,7 +2991,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1142779308}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 143.6, y: -5.55, z: 0}
+  m_LocalPosition: {x: 2.6, y: -2.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5836,6 +5836,10 @@ PrefabInstance:
       propertyPath: maindialogue
       value: 
       objectReference: {fileID: 1622764820}
+    - target: {fileID: 3411736711016420481, guid: e723d316729677642b873a6b6cd23d00, type: 3}
+      propertyPath: myinteractable
+      value: 
+      objectReference: {fileID: 989729090}
     - target: {fileID: 3411736711016420483, guid: e723d316729677642b873a6b6cd23d00, type: 3}
       propertyPath: m_Name
       value: DialogueManager

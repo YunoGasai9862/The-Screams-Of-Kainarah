@@ -14,6 +14,7 @@ public class Interactable : MonoBehaviour
     public static Dictionary<Dialogues, bool> dialogueDictionary;
     public static Dictionary<Dialogues[], bool> MultipleDialogues;
 
+    public static int Dialoguecounter = 0;
   
     private void Start()
     {
@@ -37,29 +38,27 @@ public class Interactable : MonoBehaviour
             FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
             dialogueDictionary[dialogue] = true; //already played
         }
-           
-
-
+          
     }
+
 
     public IEnumerator TriggerDialogue(Dialogues[] dialogue)
     {
-        if (MultipleDialogues[dialogue]==false)
+        if (MultipleDialogues[dialogue] == false)
         {
-            foreach (Dialogues WPC in dialogue) //a converstaion
-            {
-                FindObjectOfType<DialogueManager>().StartDialogue(WPC);
+            FindObjectOfType<DialogueManager>().StartDialogue(dialogue[Dialoguecounter]);
+            Dialoguecounter++;
+          
 
-             
-
-            }
         }
-        MultipleDialogues[dialogue] = true;
-        yield return null;
+        if (dialogue.Length==Dialoguecounter)
+        {
+            MultipleDialogues[dialogue] = true;
+            Dialoguecounter = 0;
+        }
 
+        yield return null;
     }
 
-
-
-
+ 
 }
