@@ -30,7 +30,7 @@ public class Interactable : MonoBehaviour
         StartCoroutine(TriggerDialogue(dialogue));//because queue is already empty, thats why using Invoke to give some time to the queue
     }
 
-   public IEnumerator TriggerDialogue(Dialogues dialogue)
+   public static IEnumerator TriggerDialogue(Dialogues dialogue)
     {
         yield return new WaitForSeconds(.1f);
         if (dialogueDictionary[dialogue] == false)
@@ -42,22 +42,27 @@ public class Interactable : MonoBehaviour
     }
 
 
-    public IEnumerator TriggerDialogue(Dialogues[] dialogue)
+    public static IEnumerator TriggerDialogue(Dialogues[] dialogue)
     {
         if (MultipleDialogues[dialogue] == false)
         {
-            FindObjectOfType<DialogueManager>().StartDialogue(dialogue[Dialoguecounter]);
-            Dialoguecounter++;
-          
+            Debug.Log(Dialoguecounter);
+            if (dialogue.Length == Dialoguecounter)
+            {
+                MultipleDialogues[dialogue] = true;
+                Dialoguecounter = 0;
+                yield return null;
+
+            }
+            else
+            {
+                FindObjectOfType<DialogueManager>().StartDialogue(dialogue[Dialoguecounter], dialogue);
+                Dialoguecounter++;
+            }
 
         }
-        if (dialogue.Length==Dialoguecounter)
-        {
-            MultipleDialogues[dialogue] = true;
-            Dialoguecounter = 0;
-        }
+        
 
-        yield return null;
     }
 
  

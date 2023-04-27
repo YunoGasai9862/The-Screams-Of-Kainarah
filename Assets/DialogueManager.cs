@@ -10,16 +10,22 @@ public class DialogueManager : MonoBehaviour
     public Animator myanimator;
     public static bool IsOpen = false;
 
-    [SerializeField] Interactable myinteractable;
+    private static Dialogues[] _dialogues = null;
+
     void Start()
     {
+       
         _storylineSentences= new Queue<string>();
     }
 
-    public void StartDialogue(Dialogues dialogue)
+    public void StartDialogue(Dialogues dialogue,Dialogues[] dialogues=null)
     {
     
-
+             if(dialogues!=null)
+             {
+                 _dialogues = dialogues;
+               
+             }
         IsOpen = true;
         myanimator.SetBool("IsOpen", true);
         _storylineSentences.Clear();  //clears the previous dialogues, if there are any
@@ -46,20 +52,22 @@ public class DialogueManager : MonoBehaviour
     }
     public void DisplayNextSentence()
     {
-
-        if(_storylineSentences.Count==0) //if there's nothing in the queue
+        if (_storylineSentences.Count==0) //if there's nothing in the queue
         {
-         
-              EndDialogue();
+            if (_dialogues != null && Interactable.MultipleDialogues[_dialogues] == false)
+            {
+                StartCoroutine(Interactable.TriggerDialogue(_dialogues));
+            }
+            else
+            {
+                EndDialogue();
                 return;  //exits function
-
-
-
+            }
+              
         }
-
         string sentence = _storylineSentences.Dequeue();
-
-        StopAllCoroutines(); //if the user clicks on the continue earlier, it will stop all the coroutines and start with the new one=>new text
+        //if the user clicks on the continue earlier, it will stop all the coroutines and start with the new one=>new text
+        StopAllCoroutines();
 
         StartCoroutine(AnimateLetters(sentence));
     }
@@ -69,7 +77,6 @@ public class DialogueManager : MonoBehaviour
 
         myanimator.SetBool("IsOpen", false);
         IsOpen = false;
-
     }
 
 

@@ -103,12 +103,12 @@ public class Movement : MonoBehaviour
         }
         if(FindingObjects.FindObject(gameObject, "Boss"))
         {
-            StartCoroutine(dialogue.TriggerDialogue(dialogue.BossDialogue));
+            StartCoroutine(Interactable.TriggerDialogue(dialogue.BossDialogue));
 
         }
         if(FindingObjects.FindObject(gameObject, "Vendor") && once)
         {
-            StartCoroutine(dialogue.TriggerDialogue(dialogue.WizardPlayerConvo));
+            StartCoroutine(Interactable.TriggerDialogue(dialogue.WizardPlayerConvo));
             once = false;
         }
 
