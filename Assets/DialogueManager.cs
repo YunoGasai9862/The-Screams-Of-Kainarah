@@ -11,6 +11,7 @@ public class DialogueManager : MonoBehaviour
     public static bool IsOpen = false;
 
     private static Dialogues[] _dialogues = null;
+    [SerializeField] Interactable myinteractable;
 
     void Start()
     {
@@ -42,6 +43,7 @@ public class DialogueManager : MonoBehaviour
 
     IEnumerator AnimateLetters(string sentence)
     {
+
         maindialogue.text = string.Empty;
 
         for (int i = 0; i < sentence.Length; i++)
@@ -52,24 +54,32 @@ public class DialogueManager : MonoBehaviour
     }
     public void DisplayNextSentence()
     {
-        if (_storylineSentences.Count==0) //if there's nothing in the queue
+        if (_storylineSentences.Count == 0) //if there's nothing in the queue
         {
+
             if (_dialogues != null && Interactable.MultipleDialogues[_dialogues] == false)
             {
-                StartCoroutine(Interactable.TriggerDialogue(_dialogues));
+
+                StartCoroutine(myinteractable.TriggerDialogue(_dialogues));
+                return;  //THIS WAS ALL I NEEDED, OMG!
+                //it fixed the issue, oh lord. 
+                //the problem was: it was trying to execute the rest of the code without exiting the function
             }
             else
             {
                 EndDialogue();
                 return;  //exits function
             }
-              
+
         }
+
         string sentence = _storylineSentences.Dequeue();
         //if the user clicks on the continue earlier, it will stop all the coroutines and start with the new one=>new text
         StopAllCoroutines();
-
+       
         StartCoroutine(AnimateLetters(sentence));
+
+       
     }
 
     void EndDialogue()

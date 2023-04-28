@@ -12,6 +12,7 @@ public class Movement : MonoBehaviour
     [SerializeField] GameObject pickupEffect;
     [SerializeField] Interactable dialogue;
     [SerializeField] TrackingEntities trackingEntities;
+
     public static bool AudioPickUp;
 
     private Animator anim;
@@ -103,12 +104,12 @@ public class Movement : MonoBehaviour
         }
         if(FindingObjects.FindObject(gameObject, "Boss"))
         {
-            StartCoroutine(Interactable.TriggerDialogue(dialogue.BossDialogue));
+            StartCoroutine(dialogue.TriggerDialogue(dialogue.BossDialogue));
 
         }
         if(FindingObjects.FindObject(gameObject, "Vendor") && once)
         {
-            StartCoroutine(Interactable.TriggerDialogue(dialogue.WizardPlayerConvo));
+            StartCoroutine(dialogue.TriggerDialogue(dialogue.WizardPlayerConvo));
             once = false;
         }
 

@@ -14,6 +14,8 @@ public class Interactable : MonoBehaviour
     public static Dictionary<Dialogues, bool> dialogueDictionary;
     public static Dictionary<Dialogues[], bool> MultipleDialogues;
 
+    
+
     public static int Dialoguecounter = 0;
   
     private void Start()
@@ -30,7 +32,7 @@ public class Interactable : MonoBehaviour
         StartCoroutine(TriggerDialogue(dialogue));//because queue is already empty, thats why using Invoke to give some time to the queue
     }
 
-   public static IEnumerator TriggerDialogue(Dialogues dialogue)
+   public IEnumerator TriggerDialogue(Dialogues dialogue)
     {
         yield return new WaitForSeconds(.1f);
         if (dialogueDictionary[dialogue] == false)
@@ -42,11 +44,10 @@ public class Interactable : MonoBehaviour
     }
 
 
-    public static IEnumerator TriggerDialogue(Dialogues[] dialogue)
+    public  IEnumerator TriggerDialogue(Dialogues[] dialogue)
     {
         if (MultipleDialogues[dialogue] == false)
         {
-            Debug.Log(Dialoguecounter);
             if (dialogue.Length == Dialoguecounter)
             {
                 MultipleDialogues[dialogue] = true;
@@ -56,6 +57,7 @@ public class Interactable : MonoBehaviour
             }
             else
             {
+               
                 FindObjectOfType<DialogueManager>().StartDialogue(dialogue[Dialoguecounter], dialogue);
                 Dialoguecounter++;
             }

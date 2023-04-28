@@ -2904,6 +2904,7 @@ GameObject:
   - component: {fileID: 1142779309}
   - component: {fileID: 1142779312}
   - component: {fileID: 1142779313}
+  - component: {fileID: 1142779314}
   m_Layer: 0
   m_Name: WizardSeller
   m_TagString: Vendor
@@ -2991,7 +2992,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1142779308}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.6, y: -2.3, z: 0}
+  m_LocalPosition: {x: 166.4, y: 0.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3070,6 +3071,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.655838, y: 2.5081422}
   m_EdgeRadius: 0
+--- !u!114 &1142779314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142779308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1371ee5f7df60ac4094b63a3e74b7926, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1147994802
 GameObject:
   m_ObjectHideFlags: 0
@@ -5592,19 +5605,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1199068578472266375, guid: ddb5d48c3192b824897d88cb414c7e97, type: 3}
       propertyPath: WizardPlayerConvo.Array.data[0].playername
-      value: Rahbar
+      value: 'Rahbar:'
       objectReference: {fileID: 0}
     - target: {fileID: 1199068578472266375, guid: ddb5d48c3192b824897d88cb414c7e97, type: 3}
       propertyPath: WizardPlayerConvo.Array.data[1].playername
-      value: Alisha
+      value: 'Alisha:'
       objectReference: {fileID: 0}
     - target: {fileID: 1199068578472266375, guid: ddb5d48c3192b824897d88cb414c7e97, type: 3}
       propertyPath: WizardPlayerConvo.Array.data[2].playername
-      value: Rahbar
+      value: 'Rahbar:'
       objectReference: {fileID: 0}
     - target: {fileID: 1199068578472266375, guid: ddb5d48c3192b824897d88cb414c7e97, type: 3}
       propertyPath: WizardPlayerConvo.Array.data[3].playername
-      value: Alisha
+      value: 'Alisha:'
       objectReference: {fileID: 0}
     - target: {fileID: 1199068578472266375, guid: ddb5d48c3192b824897d88cb414c7e97, type: 3}
       propertyPath: WizardPlayerConvo.Array.data[0].sentences.Array.size
@@ -6449,7 +6462,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8190782401318503981, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
       propertyPath: m_fontSize
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8190782401318503981, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
       propertyPath: m_margin.z
@@ -6457,7 +6470,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8190782401318503981, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
       propertyPath: m_fontSizeBase
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8190782401318503981, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
       propertyPath: m_VerticalAlignment
@@ -6593,11 +6606,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8190782402356136502, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
       propertyPath: m_fontSize
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8190782402356136502, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
       propertyPath: m_fontSizeBase
-      value: 15
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8190782402356136502, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8190782402483861945, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
       propertyPath: m_SizeDelta.x
@@ -6625,7 +6642,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8190782403064010024, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
       propertyPath: m_fontSize
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8190782403064010024, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
       propertyPath: m_margin.w
@@ -6637,7 +6654,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8190782403064010024, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
       propertyPath: m_fontSizeBase
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8190782403064010024, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
       propertyPath: m_VerticalAlignment
