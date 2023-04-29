@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 public class DialogueManager : MonoBehaviour
 {
     private Queue<string> _storylineSentences;
     public TextMeshProUGUI myname;
-    public TextMeshProUGUI maindialogue;
+    public Text maindialogue;
     public Animator myanimator;
     public static bool IsOpen = false;
 
