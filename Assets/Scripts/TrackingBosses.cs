@@ -25,6 +25,12 @@ public class TrackingBosses : MonoBehaviour
             {
                 openHealthBar = true;
                 BossExists = true;
+            }else
+            {
+                openHealthBar = false;
+                 BossExists = false;
+
+                Health.gameObject.SetActive(false);
             }
             if (openHealthBar)
             {

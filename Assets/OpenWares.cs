@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class OpenWares : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [SerializeField] GameObject MagicCircle;
+    [SerializeField] Interactable checkingDialogue;
     void Start()
     {
         
@@ -13,6 +14,10 @@ public class OpenWares : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Interactable.MultipleDialogues[checkingDialogue.WizardPlayerConvo])
+        {
+            MagicCircle.SetActive(true);
+        }
 
         if (Camera.main.WorldToScreenPoint(Input.mousePosition) == transform.position)
         {

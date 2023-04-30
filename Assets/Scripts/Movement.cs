@@ -88,6 +88,8 @@ public class Movement : MonoBehaviour
         if(DialogueManager.IsOpen)
         {
             anim.SetInteger("State", 0);
+            rb.velocity = Vector2.zero;
+
         }
 
 
