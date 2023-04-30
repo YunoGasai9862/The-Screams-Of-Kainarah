@@ -19,9 +19,12 @@ public class OpenWares : MonoBehaviour
             MagicCircle.SetActive(true);
         }
 
-        if (Camera.main.WorldToScreenPoint(Input.mousePosition) == transform.position)
-        {
-            Debug.Log("Yes, clicked");
-        }
+   
+
+
+    }
+    private void OnMouseDown()
+    {
+       //open Wares
     }
 }
