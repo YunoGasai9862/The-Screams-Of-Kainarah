@@ -12,6 +12,7 @@ public class CreateInventorySystem : MonoBehaviour
     [SerializeField] GameObject InventoryBox;
     [SerializeField] Canvas canvas;
     [SerializeField] string ScriptTobeAddedForItems;
+    [SerializeField] int SizeOftheInventory = 6;
 
     private static Queue<GameObject> inventoryList;
     private static Queue<GameObject> inventoryCheck;
@@ -19,7 +20,6 @@ public class CreateInventorySystem : MonoBehaviour
     private static int i = 0;
     private static int _count = 0;
     private static bool _alreadyExist=false;
-    private int SizeOftheInventory=6;
     private static GameObject _temp;
 
     [Space]
@@ -66,11 +66,12 @@ public class CreateInventorySystem : MonoBehaviour
             {
                 Vector3 IncrementalSize = new Vector3(increment, decrement);
                 GameObject _temp= Instantiate(InventoryBox, IncrementalSize, Quaternion.identity);
-                _temp.AddComponent(Type.GetType(ScriptTobeAddedForItems)); //adds the script
+                if(ScriptTobeAddedForItems!="")
+                  _temp.AddComponent(Type.GetType(ScriptTobeAddedForItems)); //adds the script
                 _temp.name = (_count).ToString("0");
              
                 inventoryList.Enqueue(_temp);
-                _temp.transform.SetParent(PanelObject.transform,false);
+                _temp.transform.SetParent(PanelObject.transform, false);
                 increment += _increment;
                 _count++;
 
@@ -78,6 +79,8 @@ public class CreateInventorySystem : MonoBehaviour
             decrement -= _decrement;
             increment = _startX;
         }
+
+        _count = 0;
 
 
         yield return null;
