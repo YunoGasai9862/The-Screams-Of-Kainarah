@@ -283,6 +283,7 @@ GameObject:
   - component: {fileID: 715154898}
   - component: {fileID: 715154897}
   - component: {fileID: 715154899}
+  - component: {fileID: 715154900}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -299,16 +300,16 @@ RectTransform:
   m_GameObject: {fileID: 715154895}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.09, y: 0.03, z: 0.09}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6676636840848666234}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 2.04}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -0.7900009, y: 1.5200005}
+  m_SizeDelta: {x: 0.5, y: -1.04}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &715154898
 CanvasRenderer:
@@ -363,12 +364,25 @@ MonoBehaviour:
   PanelObject: {fileID: 715154895}
   InventoryBox: {fileID: 4750955524795244500, guid: 09e668a61c01c2342976746087fd3563, type: 3}
   canvas: {fileID: 6676636842483726181}
-  ScriptTobeAddedForItems: 
+  ScriptTobeAddedForItems: ClickFeedbackOnItem
   SizeOftheInventory: 3
-  startX: 10
-  startY: -10
-  increment: 100
-  decrement: 50
+  startX: -30
+  startY: 30
+  increment: 50
+  decrement: 40
+--- !u!114 &715154900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 715154895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5af7bdeff620cb24eb6d91ad85c8c944, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Wares: []
 --- !u!1 &463966938229774560
 GameObject:
   m_ObjectHideFlags: 0
@@ -596,7 +610,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
+    m_Mode: -1
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}

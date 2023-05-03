@@ -26,6 +26,7 @@ TagManager:
   - Portal
   - OtherCamera
   - Vendor
+  - Scythe
   layers:
   - Default
   - TransparentFX
