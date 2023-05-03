@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class FillWares : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class FillWares : MonoBehaviour
     private List<GameObject> freeslots;
     private int wareCounter = 0;
     [SerializeField] GameObject panel;
+    private float scaleSize = .9f;
     void Start()
     {
         freeslots=new List<GameObject>();
@@ -26,17 +28,14 @@ public class FillWares : MonoBehaviour
 
     IEnumerator FillUpWares()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(.7f);
         for (int i=0; i<freeslots.Count; i++)
         {
             if (Possible(i))
             {
-                GameObject _temp = new GameObject(wareObjects[wareCounter].tag);
                 Sprite _sprite = wareObjects[wareCounter].GetComponent<Image>().sprite;
-                _temp.AddComponent<Image>();
-                _temp.GetComponent<Image>().sprite = _sprite;
+                AssignTagsandSprite(freeslots[i], scaleSize, _sprite, wareObjects[wareCounter].tag);
                 wareCounter++;
-                _temp.transform.SetParent(freeslots[i].transform, false);
             }
         }
 
@@ -55,5 +54,16 @@ public class FillWares : MonoBehaviour
     public bool Possible(int index)
     {
         return wareObjects.Count!= wareCounter && freeslots[index].transform.childCount==0;
+    }
+
+    public GameObject AssignTagsandSprite(GameObject _freeslot,float scaleSize, Sprite sprite, string name)
+    {
+        GameObject temp=new GameObject(name);
+        temp.transform.localScale = new Vector3(scaleSize, scaleSize, scaleSize);
+        temp.transform.tag = _freeslot.transform.tag;
+        temp.AddComponent<Image>();
+        temp.GetComponent<Image>().sprite = sprite;
+        temp.transform.SetParent(_freeslot.transform, false);
+        return temp;
     }
 }
