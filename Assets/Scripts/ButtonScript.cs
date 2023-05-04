@@ -11,6 +11,12 @@ public class ButtonScript : MonoBehaviour
     }
     public void ClosePanel()
     {
+        OpenWares.Buying = false;
         panelHandler.ClosePanel();
+    }
+
+    public void BuyWares()
+    {
+
     }
 }

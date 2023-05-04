@@ -7,6 +7,8 @@ public class OpenWares : MonoBehaviour
     [SerializeField] GameObject MagicCircle;
     [SerializeField] Interactable checkingDialogue;
     [SerializeField] GameObject WaresPanel;
+    public static bool Buying = false;
+
     void Start()
     {
         
@@ -25,5 +27,6 @@ public class OpenWares : MonoBehaviour
     private void OnMouseDown()
     {
         WaresPanel.SetActive(true);
+        Buying = true;
     }
 }
