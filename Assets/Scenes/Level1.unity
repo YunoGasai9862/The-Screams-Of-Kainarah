@@ -1515,10 +1515,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PanelObject: {fileID: 740290528}
-  InventoryBox: {fileID: 4750955524795244500, guid: 09e668a61c01c2342976746087fd3563, type: 3}
-  canvas: {fileID: 0}
+  canvas: {fileID: 1984711702}
   ScriptTobeAddedForItems: ClickFeedbackOnItem
   SizeOftheInventory: 6
+  _boxes: {fileID: 1646742885}
   startX: -250
   startY: 150
   increment: 100
@@ -4009,6 +4009,51 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &1646742883
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1646742884}
+  - component: {fileID: 1646742885}
+  m_Layer: 0
+  m_Name: InventoryHelper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1646742884
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1646742883}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 32
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1646742885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1646742883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bb0df91755c40848be29ef8a23c8873, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InventoryBox: {fileID: 4750955524795244500, guid: 09e668a61c01c2342976746087fd3563, type: 3}
 --- !u!1 &1715171985
 GameObject:
   m_ObjectHideFlags: 0
@@ -5970,6 +6015,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 715154899, guid: 530a6e8c04e35c745bfef6d83d77c956, type: 3}
+      propertyPath: _boxes
+      value: 
+      objectReference: {fileID: 1646742885}
     - target: {fileID: 1686548875978337197, guid: 530a6e8c04e35c745bfef6d83d77c956, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0.12

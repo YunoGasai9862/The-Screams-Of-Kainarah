@@ -282,7 +282,6 @@ GameObject:
   - component: {fileID: 715154896}
   - component: {fileID: 715154898}
   - component: {fileID: 715154897}
-  - component: {fileID: 715154899}
   - component: {fileID: 715154900}
   m_Layer: 5
   m_Name: Panel
@@ -349,27 +348,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &715154899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 715154895}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b484586bb6b78f446a2c93540a8fa6e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PanelObject: {fileID: 715154895}
-  InventoryBox: {fileID: 4750955524795244500, guid: 09e668a61c01c2342976746087fd3563, type: 3}
-  canvas: {fileID: 6676636842483726181}
-  ScriptTobeAddedForItems: ClickFeedbackOnItem
-  SizeOftheInventory: 3
-  startX: -30
-  startY: 30
-  increment: 50
-  decrement: 40
 --- !u!114 &715154900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1186,7 +1164,7 @@ RectTransform:
   m_Children:
   - {fileID: 6676636840783403516}
   m_Father: {fileID: 0}
-  m_RootOrder: 31
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

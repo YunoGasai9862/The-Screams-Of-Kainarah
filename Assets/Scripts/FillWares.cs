@@ -12,10 +12,12 @@ public class FillWares : MonoBehaviour
     private List<GameObject> freeslots;
     private int wareCounter = 0;
     [SerializeField] GameObject panel;
+    [SerializeField] GenerateBoxes _boxes;
     private float scaleSize = .9f;
     void Start()
     {
         freeslots=new List<GameObject>();
+        _boxes.GenerateInventory(3, -30, -30, 40, 50, ref panel, "ClickFeedbackOnItem");
         StartCoroutine(FillSlots(panel));
         StartCoroutine(FillUpWares());
     }

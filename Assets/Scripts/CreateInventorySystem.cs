@@ -12,6 +12,7 @@ public class CreateInventorySystem : MonoBehaviour
     [SerializeField] Canvas canvas;
     [SerializeField] string ScriptTobeAddedForItems;
     [SerializeField] int SizeOftheInventory = 6;
+    [SerializeField] GenerateBoxes _boxes;
 
     private static Queue<GameObject> inventoryList;
     private static Queue<GameObject> inventoryCheck;
@@ -40,22 +41,23 @@ public class CreateInventorySystem : MonoBehaviour
 
     void Start()
     {
-        
+       
         inventoryList=new Queue<GameObject>();
         inventoryCheck=new Queue<GameObject>();
         inventoryTemp=new Queue<GameObject>();
         _spriteLocation=PanelObject.GetComponent<RectTransform>();
 
         if(startX==0 && startY==0 && increment==0 && decrement==0)
-            StartCoroutine(GenerateInventory(SizeOftheInventory, -250, 150, 100, -50));
-        else
-            StartCoroutine(GenerateInventory(SizeOftheInventory, startX, startY, increment,decrement));
+            _boxes.GenerateInventory(SizeOftheInventory, -250, 150, 100, -50, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems);
+         else
+            _boxes.GenerateInventory(SizeOftheInventory, startX, startY, increment,decrement, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems);
     }
 
+    private void StartCoroutine(object v)
+    {
+        throw new NotImplementedException();
+    }
 
-
-   
-   
     public static void AddToInventory(Sprite itemTobeAdded, string Tag)  //fix this tomorrow ->Only collectively addds if its the first slot.
     {
          _temp = new GameObject("Item" + i);
