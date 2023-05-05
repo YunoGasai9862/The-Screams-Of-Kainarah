@@ -7,6 +7,8 @@ public class GenerateBoxes : MonoBehaviour
     private int _count = 0;
     [SerializeField] GameObject InventoryBox;
 
+
+
     public void GenerateInventory(int _Size, int _startX, int _startY, int _increment, int _decrement,   ref Queue<GameObject> inventoryList, ref GameObject PanelObject, string ScriptTobeAddedForItems)
     {
         int increment = _startX;
@@ -38,7 +40,7 @@ public class GenerateBoxes : MonoBehaviour
        
     }
 
-    public void GenerateInventory(int _Size, int _startX, int _startY, int _increment, int _decrement, ref GameObject PanelObject, string ScriptTobeAddedForItems)
+    public void GenerateInventory(int _Size, int _startX, int _startY, int _increment, int _decrement,  GameObject PanelObject, string ScriptTobeAddedForItems)
     {
         int increment = _startX;
         int decrement = _startY;

@@ -11,14 +11,13 @@ public class FillWares : MonoBehaviour
     [SerializeField] List<GameObject> wareObjects;
     private List<GameObject> freeslots;
     private int wareCounter = 0;
-    [SerializeField] GameObject panel;
     [SerializeField] GenerateBoxes _boxes;
     private float scaleSize = .9f;
     void Start()
     {
-        freeslots=new List<GameObject>();
-        _boxes.GenerateInventory(3, -30, -30, 40, 50, ref panel, "ClickFeedbackOnItem");
-        StartCoroutine(FillSlots(panel));
+        _boxes.GenerateInventory(3, 0, 35, 40, 50, gameObject, "ClickFeedbackOnItem");
+        freeslots = new List<GameObject>();
+        StartCoroutine(FillSlots(gameObject));
         StartCoroutine(FillUpWares());
     }
 
@@ -45,6 +44,7 @@ public class FillWares : MonoBehaviour
 
     IEnumerator  FillSlots(GameObject panel)
     {
+
         yield return new WaitForSeconds(.5f);
         for(int i=0; i<panel.transform.childCount; i++)
         {

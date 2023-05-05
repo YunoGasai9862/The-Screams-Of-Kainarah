@@ -9,7 +9,6 @@ using static UnityEditor.Progress;
 public class CreateInventorySystem : MonoBehaviour
 {
     [SerializeField] GameObject PanelObject;
-    [SerializeField] Canvas canvas;
     [SerializeField] string ScriptTobeAddedForItems;
     [SerializeField] int SizeOftheInventory = 6;
     [SerializeField] GenerateBoxes _boxes;
@@ -53,10 +52,7 @@ public class CreateInventorySystem : MonoBehaviour
             _boxes.GenerateInventory(SizeOftheInventory, startX, startY, increment,decrement, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems);
     }
 
-    private void StartCoroutine(object v)
-    {
-        throw new NotImplementedException();
-    }
+ 
 
     public static void AddToInventory(Sprite itemTobeAdded, string Tag)  //fix this tomorrow ->Only collectively addds if its the first slot.
     {
