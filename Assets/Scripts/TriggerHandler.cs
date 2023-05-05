@@ -12,7 +12,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if(OpenWares.Buying)
         {
-            _insideObject = eventData.pointerClick.transform.gameObject;
+            _insideObject = eventData.pointerClick.transform.GetChild(0).gameObject;
             _insideObjectSprite= _insideObject.GetComponent<Image>().sprite;
             CreateInventorySystem.AddToInventory(_insideObjectSprite, _insideObject.tag); //the rest of the process is automated in that function
         }

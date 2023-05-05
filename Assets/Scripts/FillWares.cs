@@ -61,8 +61,9 @@ public class FillWares : MonoBehaviour
     public GameObject AssignTagsandSprite(GameObject _freeslot,float scaleSize, Sprite sprite, string name)
     {
         GameObject temp=new GameObject(name);
+      
         temp.transform.localScale = new Vector3(scaleSize, scaleSize, scaleSize);
-        temp.transform.tag = _freeslot.transform.tag;
+        temp.transform.tag = name;
         temp.AddComponent<Image>();
         temp.GetComponent<Image>().sprite = sprite;
         temp.transform.SetParent(_freeslot.transform, false);
