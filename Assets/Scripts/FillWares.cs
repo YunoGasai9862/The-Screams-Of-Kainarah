@@ -13,9 +13,17 @@ public class FillWares : MonoBehaviour
     private int wareCounter = 0;
     [SerializeField] GenerateBoxes _boxes;
     private float scaleSize = .9f;
+
+    [Header("Position of the Grid")]
+    
+    [SerializeField] int StartX;
+    [SerializeField] int StartY;
+    [SerializeField] int IncrementX;
+    [SerializeField] int  IncrementY;
+
     void Start()
     {
-        _boxes.GenerateInventory(3, 0, 35, 40, 50, gameObject, "ClickFeedbackOnItem");
+        _boxes.GenerateInventory(3,StartX, StartY, IncrementX, IncrementY, gameObject, "ClickFeedbackOnItem");
         freeslots = new List<GameObject>();
         StartCoroutine(FillSlots(gameObject));
         StartCoroutine(FillUpWares());
