@@ -252,44 +252,59 @@ public class CreateInventorySystem : MonoBehaviour
 
         TransferTheItemsToQueue(ref inventoryCheck, ref inventoryTemp);
     }
-    public static void ReduceItem(ref GameObject item)
+    public static void ReduceItem(ref GameObject item, bool buying)
     {
-        if(CheckIfNumericalExists(ref item))
-        {
-
-            Transform TextBox = item.transform;
-            if(TextBox.GetComponent<TextMeshProUGUI>().text=="2")
+       
+            if (CheckIfNumericalExists(ref item))
             {
-                Destroy(TextBox.gameObject);
-            }else
-            {
-                Decrement(ref TextBox);
+                 Transform TextBox;
+                if(buying)
+                {
+                 TextBox = item.transform.Find("Numerical").gameObject.transform;
 
-            }
-        }
-        else
-        {
-            if (item.transform.childCount != 0)
-            {  
-                    CheckItem(ref item);
-                    Destroy(item.transform.GetChild(0).gameObject);
+                }
+                 else
+                 {
+                     TextBox = item.transform;
 
+                  }
+                 if (TextBox.GetComponent<TextMeshProUGUI>().text == "2")
+                {
+                    Destroy(TextBox.gameObject);
+                }
+                else
+                {
+                    Decrement(ref TextBox);
+
+                }
             }
             else
             {
+                if (item.transform.childCount != 0)
+                {
+                    CheckItem(ref item);
+                    Destroy(item.transform.GetChild(0).gameObject);
 
-                return;
+                }
+                else
+                {
+
+                    return;
+                }
             }
-        }
 
-            
+        
+
+
 
     }
 
-  
+
+
+
     public static bool CheckIfNumericalExists(ref GameObject item)
     {
-        if(item.transform.name=="Numerical")
+        if(item.transform.name=="Numerical" || item.transform.Find("Numerical"))
         {
             return true;
         }
