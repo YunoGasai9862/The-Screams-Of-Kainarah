@@ -9,7 +9,6 @@ public class PanelHandler
     public PanelHandler(ref GameObject panel)
     {
         this.Panel = panel;
-        Debug.Log(Panel);
     }
 
     public void OpenPanel()

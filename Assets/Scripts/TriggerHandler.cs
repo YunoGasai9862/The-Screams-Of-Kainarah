@@ -12,28 +12,26 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private Sprite _insideObjectSprite;
     [SerializeField] TMPro.TextMeshProUGUI Funds;
 
-    public static bool Failure;
+    public static bool Failure=true;
     private void Start()
     {
-       
+        Funds = GameObject.FindGameObjectWithTag("DText").GetComponent<TMPro.TextMeshProUGUI>();
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(OpenWares.Buying)
+        if (OpenWares.Buying)
         {
             _insideObject = eventData.pointerClick.transform.gameObject;
-            if (_insideObject.transform.childCount>0)
+            if (_insideObject.transform.childCount > 0)
             {
-                if(CheckIfFundsExists(Funds))
+                if (CheckIfFundsExists(Funds))
                 {
                     _insideObject = _insideObject.transform.GetChild(0).gameObject;
                     _insideObjectSprite = _insideObject.GetComponent<Image>().sprite;
                     CreateInventorySystem.AddToInventory(_insideObjectSprite, _insideObject.tag); //the rest of the process is automated in that function
-                }else
-                {
-                    //_anim.SetBool("")
-                }
-                
+                    DecreaseFunds(ref Funds);
+                } 
+
 
             }
 
@@ -53,13 +51,37 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public bool CheckIfFundsExists(TMPro.TextMeshProUGUI _text)
     {
-        int funds = Int32.Parse(_text.text);
-        if(funds==0)
-        {
-            Failure = false;
-            return false;
-        }
+       
+            int funds = Int32.Parse(_text.text);
+            if (funds == 0)
+            {
+
+                Failure = false;
+                 return false;
+            }
+
 
         return true;
+
+    }
+    public void DecreaseFunds(ref TMPro.TextMeshProUGUI _text)
+    {
+        int funds= Int32.Parse(_text.text);
+        funds--;
+        IncreaseDiamond.count--;
+        _text.text=funds.ToString("0");
+        DecreaseDiamondsFromInventory();
+    }
+
+    public void DecreaseDiamondsFromInventory()
+    {
+        GameObject _diamondObject = CreateInventorySystem.CheckForObject("Crystal");
+        if (_diamondObject != null)
+        {
+            GameObject _diamondObjectParent = _diamondObject.transform.parent.gameObject;
+            CreateInventorySystem.ReduceItem(ref _diamondObjectParent);
+
+        }
+
     }
 }

@@ -26,7 +26,7 @@ public class AttackingScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!DialogueManager.IsOpen)
+        if(PrerequisitesChecker())
         {
             if (kickoffElapsedTime)
             {
@@ -39,6 +39,10 @@ public class AttackingScript : MonoBehaviour
 
     }
 
+    public bool PrerequisitesChecker()
+    {
+        return !DialogueManager.IsOpen && !OpenWares.Buying && !InventoryOpenCloseManager.isOpenInventory;
+    }
     void AttackingMechanism()
     {
 

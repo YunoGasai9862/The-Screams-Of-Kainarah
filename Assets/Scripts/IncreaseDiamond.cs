@@ -5,7 +5,7 @@ using TMPro;
 public class IncreaseDiamond : MonoBehaviour
 {
     private TextMeshProUGUI _diamondText;
-    private static  int count = 0;
+    public static  int count = 0;
     void Start()
     {
         _diamondText= GetComponent<TextMeshProUGUI>();
@@ -25,6 +25,6 @@ public class IncreaseDiamond : MonoBehaviour
     int IncreaseCount()
     {
         count++;
-       return count;
+         return count;
     }
 }

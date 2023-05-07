@@ -6,10 +6,10 @@ public class InventoryOpenCloseManager : MonoBehaviour
 {
     [SerializeField] GameObject InventoryPanel;
 
-    private bool isOpenInventory=false;
+    public static bool isOpenInventory=false;
     public void HandleInventory()
     {
-        if(!isOpenInventory)
+        if(!isOpenInventory && !OpenWares.Buying)
         {
             InventoryPanel.SetActive(true);
             isOpenInventory = true;

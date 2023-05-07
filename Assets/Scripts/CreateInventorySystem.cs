@@ -146,7 +146,7 @@ public class CreateInventorySystem : MonoBehaviour
 
 
     }
-
+   // public static
     public static void TransferTheItemsToQueue(ref Queue<GameObject> queue1, ref Queue<GameObject> queue2)
     {
         if (queue1.Count == 0)
@@ -174,6 +174,26 @@ public class CreateInventorySystem : MonoBehaviour
         {
             Debug.Log(q.Dequeue().name);
         }
+    }
+
+    public static GameObject CheckForObject(string tag)
+    {
+        GameObject _obj = null;
+        while(inventoryCheck.Count!=0)
+        {
+            GameObject _item = inventoryCheck.Dequeue();
+            if(tag==_item.transform.tag)
+            {
+                _obj = _item;
+                inventoryTemp.Enqueue(_item);
+                Exchange(ref inventoryCheck, ref inventoryTemp);
+                return _obj;
+            }
+            inventoryTemp.Enqueue(_item);
+        }
+        Exchange(ref inventoryTemp, ref inventoryCheck);
+
+        return _obj;
     }
 
 
@@ -266,6 +286,7 @@ public class CreateInventorySystem : MonoBehaviour
 
     }
 
+  
     public static bool CheckIfNumericalExists(ref GameObject item)
     {
         if(item.transform.name=="Numerical")

@@ -26,7 +26,7 @@ public class OpenWares : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        if (!DialogueManager.IsOpen)
+        if (!DialogueManager.IsOpen && !InventoryOpenCloseManager.isOpenInventory)
         {
             WaresPanel.SetActive(true);
             Buying = true;
