@@ -11,11 +11,20 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private GameObject _insideObject;
     private Sprite _insideObjectSprite;
     [SerializeField] TMPro.TextMeshProUGUI Funds;
+    private AudioSource transact;
 
     public static bool Failure=true;
     private void Start()
     {
         Funds = GameObject.FindGameObjectWithTag("DText").GetComponent<TMPro.TextMeshProUGUI>();
+    }
+
+    private void Update()
+    {
+        if(transact== null && OpenWares.Buying)
+        {
+            transact = GameObject.FindWithTag("Transact").GetComponent<AudioSource>();
+        }
     }
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -29,6 +38,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                     _insideObject = _insideObject.transform.GetChild(0).gameObject;
                     _insideObjectSprite = _insideObject.GetComponent<Image>().sprite;
                     CreateInventorySystem.AddToInventory(_insideObjectSprite, _insideObject.tag); //the rest of the process is automated in that function
+                    transact.Play();
                     DecreaseFunds(ref Funds);
                 } 
 

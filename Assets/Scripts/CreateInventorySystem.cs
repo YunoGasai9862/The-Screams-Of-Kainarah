@@ -57,7 +57,7 @@ public class CreateInventorySystem : MonoBehaviour
     public static void AddToInventory(Sprite itemTobeAdded, string Tag)  //fix this tomorrow ->Only collectively addds if its the first slot.
     {
          _temp = new GameObject("Item" + i);
-        _temp.transform.localScale = new Vector3(.35f, .35f, .35f);
+        _temp.transform.localScale = new Vector3(1, 1, 1);
         GameObject ItemBox=null;
         int _count=0;
 

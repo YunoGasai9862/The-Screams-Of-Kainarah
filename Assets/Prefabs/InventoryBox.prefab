@@ -155,3 +155,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9043a2e82e3316541a711eb2bf840f83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Funds: {fileID: 0}
+  transact: {fileID: 2668144598599883127, guid: 6d801208a49b7b5469a6b99afc620b85, type: 3}
