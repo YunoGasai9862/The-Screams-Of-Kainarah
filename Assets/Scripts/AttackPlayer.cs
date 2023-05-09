@@ -28,16 +28,25 @@ public class AttackPlayer : MonoBehaviour
 
         }
 
-        Debug.DrawRay(transform.position, (multiplier)*transform.right * 1.5f, Color.black);
 
+        AttackPlayerFun();
+
+
+
+
+    }
+
+    public void AttackPlayerFun()
+    {
         if (Physics2D.Raycast(transform.position, (multiplier) * transform.right, 1.5f, player))
         {
             EnemyJumping.Attacking = true;
-            if(GetComponent<SpriteRenderer>().flipX)
+            if (GetComponent<SpriteRenderer>().flipX)
             {
                 anim.SetBool("AttackL", true);
 
-            }else
+            }
+            else
             {
                 anim.SetBool("Attack", true);
 
@@ -61,7 +70,5 @@ public class AttackPlayer : MonoBehaviour
             }
             anim.SetBool("CanWalk", true);
         }
-
-
     }
 }
