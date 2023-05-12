@@ -9,33 +9,81 @@ public class ColorChangeAnimation : MonoBehaviour
     private Color _Color;
     [SerializeField] int ColorMin;
     [SerializeField] int ColorMax;
+    private bool r, g, b;
     void Start()
     {
-        _PanelImage= GetComponent<Image>();
-        _Color.a = 255;
-        StartCoroutine(GenerateColor( _PanelImage));
+        r = true;
+        g = false;
+        b = false;
+        _PanelImage = GetComponent<Image>();
+        _Color.a = 255/255.0f;
+        //StartCoroutine(GenerateColor( _PanelImage));
     }
 
     // Update is called once per frame
     void Update()
     {
 
-
+        ColorIncrement(ref r, ref g, ref b);
 
     }
-    public int GenerateRandomNumber(int min, int max)
+
+    public void ColorIncrement(ref bool r,ref bool g,ref bool b)
     {
-        return Random.Range(min, max);
+        if(r)
+        {
+            if (_Color.r >= 1.0f)
+            {
+                Initialize();
+
+                r = false;
+                g = true;
+                b = false;
+              
+
+            }
+
+            _Color.r+= 0.001f;
+            _Color.g += 0.0006f;
+            _Color.b += 0.0009f;
+
+        }
+
+        if (g)
+        {
+            if (_Color.g >= 1.0f)
+            {
+                Initialize();
+                r = false;
+                g = false;
+                b = true;
+
+            }
+
+            _Color.g += 0.001f;
+        }
+        if (b)
+        {
+            if (_Color.b >= 1.0f)
+            {
+                Initialize();
+                r = true;
+                b = false;
+                g = false;
+
+            }
+
+            _Color.b += 0.001f;
+        }
+        _PanelImage.color = new Color(_Color.r, _Color.g, _Color.b, _Color.a);
+
     }
 
-    IEnumerator GenerateColor( Image _PanelImage)
+    public void Initialize()
     {
-         yield return new WaitForSecondsRealtime(3f);
-        _Color.r = GenerateRandomNumber(ColorMin, ColorMax);
-        _Color.g = GenerateRandomNumber(ColorMin, ColorMax);
-        _Color.b = GenerateRandomNumber(ColorMin, ColorMax);
-        _PanelImage.color = new Color(_Color.r, _Color.g, _Color.b, 255);
-        Debug.Log(_Color);
-        StartCoroutine(GenerateColor(_PanelImage));
+        _Color.r = 0.0f;
+        _Color.g = 0.0f;
+        _Color.b = 0.0f;
     }
+
 }

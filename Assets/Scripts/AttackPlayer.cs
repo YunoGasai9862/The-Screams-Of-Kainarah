@@ -27,12 +27,7 @@ public class AttackPlayer : MonoBehaviour
             multiplier =-1;
 
         }
-
-
         AttackPlayerFun();
-
-
-
 
     }
 

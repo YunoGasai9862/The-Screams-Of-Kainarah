@@ -11,7 +11,6 @@ public class PauseManager : MonoBehaviour
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape))
@@ -22,7 +21,6 @@ public class PauseManager : MonoBehaviour
 
 
     }
-
     public void PauseGame()
     {
         if(pausedGame)
@@ -36,10 +34,7 @@ public class PauseManager : MonoBehaviour
             ResumeGame();
         }
        
-    
-
     }
-
     public void ResumeGame()
     {
         Time.timeScale = 1f;
@@ -51,7 +46,6 @@ public class PauseManager : MonoBehaviour
         PausePanel.SetActive(true);
 
     }
-
     public void closeMenu()
     {
         PausePanel.SetActive(false);
@@ -61,4 +55,5 @@ public class PauseManager : MonoBehaviour
     {
         return pausedGame;
     }
+
 }
