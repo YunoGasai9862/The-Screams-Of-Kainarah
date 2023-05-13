@@ -16,7 +16,7 @@ public class ColorChangeAnimation : MonoBehaviour
         g = false;
         b = false;
         _PanelImage = GetComponent<Image>();
-        _Color.a = 255/255.0f;
+        _Color.a = 100/255.0f;
         //StartCoroutine(GenerateColor( _PanelImage));
     }
 
@@ -32,31 +32,25 @@ public class ColorChangeAnimation : MonoBehaviour
     {
         if(r)
         {
-            if (_Color.r >= 1.0f)
+            if (CheckCondition(_Color.r, .1f))
             {
-                Initialize();
+                Initialize(0f, 0f, 0f);
+                ChangeBoolValues(false, true, false);
 
-                r = false;
-                g = true;
-                b = false;
-              
+
 
             }
 
             _Color.r+= 0.001f;
-            _Color.g += 0.0006f;
-            _Color.b += 0.0009f;
 
         }
 
         if (g)
         {
-            if (_Color.g >= 1.0f)
+            if (CheckCondition(_Color.g, .1f))
             {
-                Initialize();
-                r = false;
-                g = false;
-                b = true;
+                Initialize(0f, 0f,0f);
+                ChangeBoolValues(false, false, true);
 
             }
 
@@ -64,12 +58,10 @@ public class ColorChangeAnimation : MonoBehaviour
         }
         if (b)
         {
-            if (_Color.b >= 1.0f)
+            if (CheckCondition(_Color.b, .1f))
             {
-                Initialize();
-                r = true;
-                b = false;
-                g = false;
+                Initialize(0,0,0);
+                ChangeBoolValues(true, false, false);
 
             }
 
@@ -79,11 +71,21 @@ public class ColorChangeAnimation : MonoBehaviour
 
     }
 
-    public void Initialize()
+    public void ChangeBoolValues(bool r,  bool g,  bool b)
     {
-        _Color.r = 0.0f;
-        _Color.g = 0.0f;
-        _Color.b = 0.0f;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
+    public void Initialize(float r, float g, float b)
+    {
+        this._Color.r = r;
+        this._Color.g = g;
+        this._Color.b = b;
     }
 
+    public bool CheckCondition(float value, float checkAgainst)
+    {
+        return value >= checkAgainst;
+    }
 }

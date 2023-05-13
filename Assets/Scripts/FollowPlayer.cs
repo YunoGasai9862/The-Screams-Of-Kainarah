@@ -5,19 +5,18 @@ using UnityEngine;
 
 public class FollowPlayer : MonoBehaviour
 {
-    private GameObject Player;
+    private static GameObject Player;
  
      private void Start()
     {
         Player = GameObject.FindWithTag("Player");
-        
-
-    }
-    void Update()
-    {
-            transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 15,transform.position.z);
-         
        
+    }
+
+    public static void TrackPlayer(Transform Follower, float xOffset, float yOffset, float zOffset)
+    {
+        Follower.transform.position = new Vector3(Player.transform.position.x + xOffset, Player.transform.position.y + yOffset, Follower.transform.position.z + zOffset);
 
     }
+
 }
