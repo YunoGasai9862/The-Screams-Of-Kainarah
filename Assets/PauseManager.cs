@@ -5,7 +5,7 @@ using UnityEngine;
 public class PauseManager : MonoBehaviour
 {
     [SerializeField] GameObject PausePanel;
-    private bool pausedGame = false;
+    public static bool pausedGame = false;
     void Start()
     {
         
