@@ -5,6 +5,7 @@ using UnityEngine;
 public class PauseManager : MonoBehaviour
 {
     [SerializeField] GameObject PausePanel;
+    [SerializeField] GameObject SettingsPanel;
     public static bool pausedGame = false;
     void Start()
     {
@@ -49,11 +50,23 @@ public class PauseManager : MonoBehaviour
     public void closeMenu()
     {
         PausePanel.SetActive(false);
+        pausedGame = false;
 
     }
     public bool isGamePaused()
     {
         return pausedGame;
+    }
+    public void Settings()
+    {
+        SettingsPanel.SetActive(true);
+        PausePanel.SetActive(false);
+    }
+    public void ReturnBackToPause()
+    {
+
+        SettingsPanel.SetActive(false);
+        PausePanel.SetActive(true);
     }
 
 }
