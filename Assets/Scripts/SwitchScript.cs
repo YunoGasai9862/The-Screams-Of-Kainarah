@@ -32,13 +32,16 @@ public class SwitchScript : MonoBehaviour
             //when false, it automatically delegates the false one
         }
     }
+
     // Update is called once per frame
-  
+
     public void ChangeToggle(bool isOn)
     {
-        _uiHandler.DOAnchorPos(isOn ? AnchorPoint * -1 : AnchorPoint,.4f).SetEase(Ease.InFlash);
-        BG.DOColor(isOn ? _transitionBackground : _background, .4f).SetEase(Ease.InFlash);
-        HandlerColor.DOColor(isOn ? _transitionHandler : HandleColor, .4f).SetEase(Ease.InFlash);
+        _uiHandler.DOAnchorPos(isOn ? AnchorPoint * -1 : AnchorPoint,.4f).SetEase(Ease.InFlash).SetUpdate(true);
+        BG.DOColor(isOn ? _transitionBackground : _background, .4f).SetEase(Ease.InFlash).SetUpdate(true);
+        HandlerColor.DOColor(isOn ? _transitionHandler : HandleColor, .4f).SetEase(Ease.InFlash).SetUpdate(true);
 
+        //setUpdate helps with unsacled time -> if the game is paused
     }
+
 }

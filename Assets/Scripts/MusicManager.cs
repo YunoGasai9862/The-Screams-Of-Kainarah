@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MusicManager : MonoBehaviour
 {
-
+    [SerializeField] Toggle menuToggleSound;
     public enum GameState
     {
 
-        BACKGROUNDMUSIC = 0, BOSSMUSIC=1, PICKUP=2
+        BACKGROUNDMUSIC = 0, BOSSMUSIC=1, PICKUP=2, STOP=3
     }
 
     [SerializeField] AudioSource _bgGameMusic;
@@ -26,25 +27,30 @@ public class MusicManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (TrackingBosses.BossExists)
+        if(menuToggleSound.isOn)
         {
-            _gameState = GameState.BOSSMUSIC;
+            if (TrackingBosses.BossExists)
+            {
+                _gameState = GameState.BOSSMUSIC;
 
-        }
-        else
+            }
+            else
+            {
+                _gameState = GameState.BACKGROUNDMUSIC;
+
+            }
+
+            if (Movement.AudioPickUp)
+            {
+                _gameState = GameState.PICKUP;
+            }
+
+            ChannelMusic(_gameState);
+        }else
         {
-            _gameState = GameState.BACKGROUNDMUSIC;
-
+            _gameState= GameState.STOP;
+            ChannelMusic(_gameState);
         }
-
-        if(Movement.AudioPickUp)
-        {
-            _gameState = GameState.PICKUP;
-        }
-
-        ChannelMusic(_gameState);
-      
-
 
     }
 
@@ -78,6 +84,12 @@ public class MusicManager : MonoBehaviour
             case GameState.PICKUP:
                 _Pickup.Play();
                 Movement.AudioPickUp = false;
+                break;
+
+            case GameState.STOP:
+                _bgGameMusic.Stop();
+                _BossMusic.Stop();
+                _Pickup.Stop();
                 break;
         }
 
