@@ -6,11 +6,13 @@ public class PauseManager : MonoBehaviour
 {
     [SerializeField] GameObject PausePanel;
     [SerializeField] GameObject SettingsPanel;
+    private OpenClose OC;
+
    
     public static bool pausedGame = false;
     void Start()
     {
-        
+        OC = new OpenClose(PausePanel, SettingsPanel);
     }
 
     void Update()
@@ -61,14 +63,14 @@ public class PauseManager : MonoBehaviour
     }
     public void Settings()
     {
-        SettingsPanel.SetActive(true);
-        PausePanel.SetActive(false);
+        OC.ToggleSecondPanelOn(); //makes setting panel On
     }
     public void ReturnBackToPause()
     {
 
-        SettingsPanel.SetActive(false);
-        PausePanel.SetActive(true);
+        OC.ToggleFirstPanelOn();  //makes First Panel On
     }
+    
+
 
 }
