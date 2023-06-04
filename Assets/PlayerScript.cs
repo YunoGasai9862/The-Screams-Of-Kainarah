@@ -7,38 +7,63 @@ public class PlayerScript : MonoBehaviour
 {
 
     private Rigidbody2D rb;
-    // private PlayerInput playerInput;
+    private PlayerInput playerInput;
+    private Rocky2DGamePlayerInput rocky2dgameplayerinput; //member fields
 
     private void Awake()
     {
-        Rocky2DGamePlayerInput rocky2dgameplayerinput= new Rocky2DGamePlayerInput(); //creative the script object
+        playerInput = GetComponent<PlayerInput>();
+
+
+        rocky2dgameplayerinput = new Rocky2DGamePlayerInput(); //creative the script object
         rocky2dgameplayerinput.PlayerInput.Enable();
       
         rocky2dgameplayerinput.PlayerInput.Jump.performed += Jump;
 
-        rocky2dgameplayerinput.PlayerInput.Movement.performed += MovingtheWizard;
+      // rocky2dgameplayerinput.PlayerInput.Movement.performed += MovingtheWizard;
     }
 
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-       // playerInput = GetComponent<PlayerInput>();
 
        // playerInput.onActionTriggered += PlayerInput_onActionTriggeredWizard;
         //fires an event
     }
 
-    public void MovingtheWizard(InputAction.CallbackContext context)
+    private void Update()
     {
+        if(Keyboard.current.tKey.wasPressedThisFrame)  //for debugging!
+        {
 
-        Vector2 input = context.ReadValue<Vector2>();
-        float speed = 5f;
+            playerInput.SwitchCurrentActionMap("UI");//when t is presssed, it switches the action mapping!
+            rocky2dgameplayerinput.PlayerInput.Disable();
+            Debug.Log("UI");
+            //clicked
+        }
 
-        rb.AddForce(new Vector2(input.x, input.y) * speed, ForceMode2D.Impulse);
+        if (Keyboard.current.yKey.wasPressedThisFrame)  //for debugging!
+        {
+
+            playerInput.SwitchCurrentActionMap("PlayerInput");//when y is presssed, it switches the action mapping!
+            rocky2dgameplayerinput.UI.Disable();
 
 
+            Debug.Log("PlayerInput");
+            //clicked
+        }
     }
+    private void FixedUpdate()
+    {
+        Vector2 input=  rocky2dgameplayerinput.PlayerInput.Movement.ReadValue<Vector2>();
+       // Debug.Log(input);
+        float speed = 10f;
+        
+        rb.AddForce(new Vector2(input.x, input.y) * speed, ForceMode2D.Force);
+    }
+
+
 
     /**
     private void PlayerInput_onActionTriggeredWizard(InputAction.CallbackContext context)
@@ -49,12 +74,18 @@ public class PlayerScript : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        Debug.Log(context);
         if(context.performed)
         {
             rb.AddForce(Vector3.up * 5f, ForceMode2D.Impulse);
             Debug.Log("Jumping..." + context.phase);
         }
       
-    } 
+    }
+
+    public void Submit(InputAction.CallbackContext context)
+    {
+       Debug.Log("Submit" + context);
+
+    }
+
 }
