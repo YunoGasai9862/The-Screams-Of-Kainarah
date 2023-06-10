@@ -20,6 +20,21 @@ public class PlayerScript : MonoBehaviour
       
         rocky2dgameplayerinput.PlayerInput.Jump.performed += Jump;
 
+        rocky2dgameplayerinput.PlayerInput.Disable();
+        rocky2dgameplayerinput.PlayerInput.Jump.PerformInteractiveRebinding().
+            WithControlsExcluding("Mouse").
+            OnComplete(callback=>{
+
+            Debug.Log(callback);
+              
+             var rebinds= playerInput.actions.SaveBindingOverridesAsJson();
+
+            callback.Dispose(); //to avoid memory leaks
+            rocky2dgameplayerinput.PlayerInput.Enable();
+
+
+        }).Start(); //starts listening
+
       // rocky2dgameplayerinput.PlayerInput.Movement.performed += MovingtheWizard;
     }
 
