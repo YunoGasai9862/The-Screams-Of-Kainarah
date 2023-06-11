@@ -6486,6 +6486,10 @@ PrefabInstance:
       propertyPath: trackingEntities
       value: 
       objectReference: {fileID: 220448025}
+    - target: {fileID: 2357857119552702230, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: m_FlipX
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6544,6 +6548,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ba7c44513390474d97e023c8824ab9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _characterSpeed: 10
+  JumpSpeed: 10
 --- !u!1001 &3411736709899530786
 PrefabInstance:
   m_ObjectHideFlags: 0
