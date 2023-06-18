@@ -5,8 +5,7 @@ using UnityEngine;
 public class AnimationConstants 
 {
 
-    public const string IDLE = "State";
-    public const string RUNNING = "State";
+    public const string MOVEMENT = "State";
     public const string SLIDING = "Sliding";
     public const string LEDGEGRAB = "LedgeGrab";
 

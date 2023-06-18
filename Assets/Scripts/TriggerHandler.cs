@@ -66,7 +66,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             if (funds == 0)
             {
 
-                Failure = false;
+                 Failure = false;
                  return false;
             }
 

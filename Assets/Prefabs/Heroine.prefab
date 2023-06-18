@@ -568,6 +568,8 @@ GameObject:
   - component: {fileID: 2357857119552702235}
   - component: {fileID: 3387488181997499512}
   - component: {fileID: 8744535595071973501}
+  - component: {fileID: 2357857118627078221}
+  - component: {fileID: 2357857118627078230}
   m_Layer: 7
   m_Name: Heroine
   m_TagString: Player
@@ -679,7 +681,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2357857119552702225}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c868b2ccd683da049b2b355d8a748e36, type: 3}
   m_Name: 
@@ -694,6 +696,9 @@ MonoBehaviour:
     m_Bits: 8
   DiamondHitEffect: {fileID: 2661038635046788335, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
   pickupEffect: {fileID: 2214392910240599192, guid: a0a1f9649d5a494488d827aedb80a555, type: 3}
+  dialogue: {fileID: 0}
+  trackingEntities: {fileID: 0}
+  TeleportTransition: {fileID: 0}
 --- !u!50 &2357857119552702234
 Rigidbody2D:
   serializedVersion: 4
@@ -813,6 +818,32 @@ MonoBehaviour:
   ledge:
     serializedVersion: 2
     m_Bits: 8
+--- !u!114 &2357857118627078221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba7c44513390474d97e023c8824ab9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterSpeed: 10
+  JumpSpeed: 50
+--- !u!114 &2357857118627078230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d81b7b552cbb1b64e81bde3d5e620083, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3485019726026848876
 GameObject:
   m_ObjectHideFlags: 0

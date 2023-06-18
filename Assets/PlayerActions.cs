@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static AnimationStateKeeper;
 
 public class PlayerActions : MonoBehaviour
 {
@@ -11,44 +11,49 @@ public class PlayerActions : MonoBehaviour
     private Rocky2DActions _rocky2DActions;
     private Rigidbody2D _rb;
     private SpriteRenderer _spriteRenderer;
+    private AnimationHandler _animationHandler;
     private Vector2 _keystrokeTrack;
 
-    private AnimationStateMachine _stateMachine;
-    private AnimationConstants _animConstants;
+    private bool _allowJumping =false;
 
-    private Animator _anim;
     [SerializeField] float _characterSpeed = 10f;
-    [SerializeField] float JumpSpeed = 10f;
+    [SerializeField] float JumpSpeed = 50f;
 
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
-        _anim = GetComponent<Animator>();
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _stateMachine = new AnimationStateMachine(_anim); //initializing the object
-        _animConstants= new AnimationConstants();
+        _animationHandler = GetComponent<AnimationHandler>();
+
         //have the actionMappings
         _rb = GetComponent<Rigidbody2D>();
 
         _rocky2DActions.PlayerMovement.Jump.performed += Jump;
-    }
+        _rocky2DActions.PlayerMovement.Jump.canceled += JumpCancelled;
 
-  
+    }
 
     private void Start()
     {
-        _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap
+        _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
 
     }
+  
 
     private void FixedUpdate()
     {
         //Movement
 
-        _keystrokeTrack = PlayerMovement();
+        _keystrokeTrack=PlayerMovement();
 
-        
+        if (_allowJumping)
+            _rb.AddForce(Vector3.up * JumpSpeed, ForceMode2D.Impulse);
+        else
+            _rb.AddForce(Vector3.up * -JumpSpeed, ForceMode2D.Impulse);
+        //Jumping
+
+
     }
 
     private void Update()
@@ -62,7 +67,7 @@ public class PlayerActions : MonoBehaviour
 
         _rb.velocity = new Vector2(keystroke.x, 0) * _characterSpeed;
 
-        HandleAnimation(keystroke.x);
+        _animationHandler.RunningWalkingAnimation(keystroke.x);  //for movement, plays the animation
 
         return keystroke;
     }
@@ -75,32 +80,22 @@ public class PlayerActions : MonoBehaviour
 
     private void Jump(InputAction.CallbackContext context)
     {
-        Debug.Log(context);
+
         if(context.performed)
         {
-            _rb.AddForce(Vector3.up * JumpSpeed, ForceMode2D.Impulse);
+            AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.JUMP;
+
+            _allowJumping = true;
+
+            //_rb.velocity = new Vector2(_rb.velocity.x, JumpSpeed);
         }
     }
 
-    private bool VectorChecker(float CompositionX)
+    private void JumpCancelled(InputAction.CallbackContext context)
     {
-        return (CompositionX > 0f || CompositionX < 0f);
-    }
-
-    private void PlayAnimation(string Name, int State)
-    {
-        _stateMachine.AnimationPlayMachine(Name, State);
-
-    }
-    private void HandleAnimation(float keystroke)
-    {
-        if (VectorChecker(keystroke))
+        if (context.canceled)
         {
-            PlayAnimation(AnimationConstants.RUNNING, (int)StateKeeper.RUNNING);
-        }
-        else
-        {
-            PlayAnimation(AnimationConstants.IDLE, (int)StateKeeper.IDLE);
+            _allowJumping = false;
         }
     }
 

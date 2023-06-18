@@ -48,7 +48,7 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Jump"",
                     ""type"": ""Button"",
-                    ""id"": ""aad84f1b-880e-464b-bac4-28e31183dc60"",
+                    ""id"": ""30c5967d-a3d9-47af-8a45-868042606d2b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -115,7 +115,7 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""ac1be4bd-eb36-46c1-bdc7-da6a37d1f4eb"",
                     ""path"": ""<Keyboard>/f"",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Interaction"",
@@ -124,7 +124,7 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""c5ce2849-2773-4f22-83d9-f13a40e687bf"",
+                    ""id"": ""4327da59-5030-4a16-9579-e6587c2647cc"",
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
