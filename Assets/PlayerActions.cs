@@ -13,11 +13,11 @@ public class PlayerActions : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private AnimationHandler _animationHandler;
     private Vector2 _keystrokeTrack;
+    private float _jumpValue;
 
-    private bool _allowJumping =false;
 
     [SerializeField] float _characterSpeed = 10f;
-    [SerializeField] float JumpSpeed = 50f;
+    [SerializeField] float JumpSpeed;
 
     private void Awake()
     {
@@ -30,7 +30,7 @@ public class PlayerActions : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
 
         _rocky2DActions.PlayerMovement.Jump.performed += Jump;
-        _rocky2DActions.PlayerMovement.Jump.canceled += JumpCancelled;
+        _rocky2DActions.PlayerMovement.Jump.canceled += JumpCancel;
 
     }
 
@@ -45,14 +45,11 @@ public class PlayerActions : MonoBehaviour
     {
         //Movement
 
-        _keystrokeTrack=PlayerMovement();
+        _keystrokeTrack = PlayerMovement();
 
-        if (_allowJumping)
-            _rb.AddForce(Vector3.up * JumpSpeed, ForceMode2D.Impulse);
-        else
-            _rb.AddForce(Vector3.up * -JumpSpeed, ForceMode2D.Impulse);
-        //Jumping
 
+        _= (_jumpValue==1) ? _rb.velocity = new Vector2(_rb.velocity.x, JumpSpeed) : _rb.velocity = new Vector2(_rb.velocity.x, -JumpSpeed/100);
+      
 
     }
 
@@ -83,23 +80,24 @@ public class PlayerActions : MonoBehaviour
 
         if(context.performed)
         {
-            AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.JUMP;
+            _jumpValue = context.ReadValue<float>();
 
-            _allowJumping = true;
+            _animationHandler.JumpingFalling(_jumpValue);
 
-            //_rb.velocity = new Vector2(_rb.velocity.x, JumpSpeed);
         }
     }
 
-    private void JumpCancelled(InputAction.CallbackContext context)
+    private void JumpCancel(InputAction.CallbackContext context)
     {
+
         if (context.canceled)
         {
-            _allowJumping = false;
+            _jumpValue = context.ReadValue<float>();
+
+            _animationHandler.JumpingFalling(_jumpValue);
+
         }
     }
-
-
 
 
 

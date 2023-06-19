@@ -6474,6 +6474,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: JumpSpeed
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2357857118627078222, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: m_GravityScale
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 2357857119552702225, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_Name
       value: Heroine
@@ -7405,6 +7413,10 @@ PrefabInstance:
     - target: {fileID: 980010540, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
       propertyPath: m_AnchorMin.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 493172232945449568, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 22.817871
       objectReference: {fileID: 0}
     - target: {fileID: 8190782401536440242, guid: 84bfc31cb8bb835498097e7848dd3f8e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

@@ -10,12 +10,17 @@ public class AnimationHandler : MonoBehaviour
 
     private void Awake()
     {
-        _anim= GetComponent<Animator>();
+        _anim = GetComponent<Animator>();
         _stateMachine = new AnimationStateMachine(_anim); //initializing the object
     }
     private bool VectorChecker(float CompositionX)
     {
         return (CompositionX > 0f || CompositionX < 0f);
+    }
+
+    private bool JumpFallingHelper (float keystroke)
+    {
+        return (keystroke == 1);
     }
 
     private void PlayAnimation(string Name, int State)
@@ -32,6 +37,14 @@ public class AnimationHandler : MonoBehaviour
 
             PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.currentPlayerState);
       
+    }
+
+    public void JumpingFalling(float keystroke)
+    {
+        _=  JumpFallingHelper(keystroke)? AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.JUMP : AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.FALL;
+
+          PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.currentPlayerState);
+
     }
 
 
