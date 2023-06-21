@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,11 +14,27 @@ public class PlayerActions : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private AnimationHandler _animationHandler;
     private Vector2 _keystrokeTrack;
-    private float _jumpValue;
+    private bool _isJumping;
 
 
     [SerializeField] float _characterSpeed = 10f;
-    [SerializeField] float JumpSpeed;
+
+  
+
+    //jumping
+    private double initialJumpingSpeed;
+    [SerializeField] double maxJumpHeight;
+    [SerializeField] double maxJumpTime;
+
+
+
+    private double _gravity = -9.81f;
+    private float groundedgravity = -.05f;
+
+    private Vector2 _temp = Vector2.zero;
+
+    //gravity -2H/t2
+    //v0= -g * peakHeight or 2h/time for peak height
 
     private void Awake()
     {
@@ -31,6 +48,15 @@ public class PlayerActions : MonoBehaviour
 
         _rocky2DActions.PlayerMovement.Jump.performed += Jump;
         _rocky2DActions.PlayerMovement.Jump.canceled += JumpCancel;
+
+        initializingJumpVariables(); 
+    }
+
+    private void initializingJumpVariables()
+    {
+        double timeforApex = maxJumpTime / 2;
+        _gravity = ((-2 * maxJumpHeight) / Math.Pow(timeforApex, 2)); //till half
+        initialJumpingSpeed = (2 * maxJumpHeight) / timeforApex; 
 
     }
 
@@ -47,8 +73,9 @@ public class PlayerActions : MonoBehaviour
 
         _keystrokeTrack = PlayerMovement();
 
+        //_= (_jumpValue==1) ? _rb.velocity = new Vector2(_rb.velocity.x, JumpSpeed) : _rb.velocity = new Vector2(_rb.velocity.x, -JumpSpeed/100);
 
-        _= (_jumpValue==1) ? _rb.velocity = new Vector2(_rb.velocity.x, JumpSpeed) : _rb.velocity = new Vector2(_rb.velocity.x, -JumpSpeed/100);
+     
       
 
     }
@@ -57,6 +84,13 @@ public class PlayerActions : MonoBehaviour
     {
         FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
 
+        if (_isJumping)
+        {
+            _temp.y = (float)initialJumpingSpeed;
+            _rb.velocity = _temp;
+                
+        }
+       
     }
     private Vector2 PlayerMovement()
     {
@@ -80,9 +114,9 @@ public class PlayerActions : MonoBehaviour
 
         if(context.performed)
         {
-            _jumpValue = context.ReadValue<float>();
+            _isJumping = context.ReadValueAsButton();
 
-            _animationHandler.JumpingFalling(_jumpValue);
+            _animationHandler.JumpingFalling(_isJumping);
 
         }
     }
@@ -92,9 +126,9 @@ public class PlayerActions : MonoBehaviour
 
         if (context.canceled)
         {
-            _jumpValue = context.ReadValue<float>();
+            _isJumping = context.ReadValueAsButton();
 
-            _animationHandler.JumpingFalling(_jumpValue);
+            _animationHandler.JumpingFalling(_isJumping);
 
         }
     }

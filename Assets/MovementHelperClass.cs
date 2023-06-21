@@ -2,15 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovementHelperClass : IGroundChecker
+public class MovementHelperClass : IOverlapChecker
 {
-    public override bool IsOnTheGround()
+    public override bool overlapAgainstLayerMaskChecker(ref Collider2D gameObject, float size, LayerMask colliderLayerMask) //default is .2f
     {
-        throw new System.NotImplementedException();
+        return Physics2D.BoxCast(gameObject.bounds.center, gameObject.bounds.size, 0f, Vector2.down, .2f, colliderLayerMask);
     }
 
-    public override bool IsOnTheLedge()
-    {
-        throw new System.NotImplementedException();
-    }
+  
 }
