@@ -6478,6 +6478,14 @@ PrefabInstance:
       propertyPath: JumpSpeed
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: maxJumpTime
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: maxJumpHeight
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2357857118627078222, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_GravityScale
       value: 50
