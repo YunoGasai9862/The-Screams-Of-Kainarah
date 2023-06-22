@@ -15,26 +15,19 @@ public class PlayerActions : MonoBehaviour
     private AnimationHandler _animationHandler;
     private Vector2 _keystrokeTrack;
     private bool _isJumping;
-
+    private IOverlapChecker _movementHelperClass;
+    private BoxCollider2D _boxCollider;
 
     [SerializeField] float _characterSpeed = 10f;
-
-  
-
-    //jumping
-    private double initialJumpingSpeed;
+    [SerializeField] LayerMask jumpLayer;
     [SerializeField] double maxJumpHeight;
     [SerializeField] double maxJumpTime;
-
-
 
     private double _gravity = -9.81f;
     private float groundedgravity = -.05f;
 
-    private Vector2 _temp = Vector2.zero;
-
-    //gravity -2H/t2
-    //v0= -g * peakHeight or 2h/time for peak height
+    //gravity 2H/(t square)
+    //jumpSpeed= sqrt(2Hg)
 
     private void Awake()
     {
@@ -42,6 +35,8 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animationHandler = GetComponent<AnimationHandler>();
+        _movementHelperClass= new MovementHelperClass();
+        _boxCollider = GetComponent<BoxCollider2D>();
 
         //have the actionMappings
         _rb = GetComponent<Rigidbody2D>();
@@ -49,16 +44,16 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerMovement.Jump.performed += Jump;
         _rocky2DActions.PlayerMovement.Jump.canceled += JumpCancel;
 
-        initializingJumpVariables(); 
+        initializeJumpVariables();
+
     }
 
-    private void initializingJumpVariables()
+    public void initializeJumpVariables()
     {
-        double timeforApex = maxJumpTime / 2;
-        _gravity = ((-2 * maxJumpHeight) / Math.Pow(timeforApex, 2)); //till half
-        initialJumpingSpeed = (2 * maxJumpHeight) / timeforApex; 
-
+        double apexTime = maxJumpTime / 2;
+        _gravity = 2 * maxJumpHeight / apexTime ;
     }
+
 
     private void Start()
     {
@@ -73,10 +68,25 @@ public class PlayerActions : MonoBehaviour
 
         _keystrokeTrack = PlayerMovement();
 
-        //_= (_jumpValue==1) ? _rb.velocity = new Vector2(_rb.velocity.x, JumpSpeed) : _rb.velocity = new Vector2(_rb.velocity.x, -JumpSpeed/100);
+
+        //Jumping
+
+        HandleJumping();
+
+        if(!_isJumping)
+        {
+            initializeJumpVariables();
+        }
 
      
-      
+    }
+
+    public void HandleJumping()
+    {
+        _gravity = 2 * maxJumpHeight / Time.deltaTime;
+
+        if (_isJumping && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, jumpLayer))
+            _rb.velocity += new Vector2(_rb.velocity.x, (float)Math.Sqrt(2 * maxJumpHeight * _gravity));
 
     }
 
@@ -84,13 +94,6 @@ public class PlayerActions : MonoBehaviour
     {
         FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
 
-        if (_isJumping)
-        {
-            _temp.y = (float)initialJumpingSpeed;
-            _rb.velocity = _temp;
-                
-        }
-       
     }
     private Vector2 PlayerMovement()
     {

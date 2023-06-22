@@ -6480,11 +6480,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: maxJumpTime
-      value: 0.4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: maxJumpHeight
-      value: 2
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: _initialJumpingSpeed
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2357857118627078222, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_GravityScale
