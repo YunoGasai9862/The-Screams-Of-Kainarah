@@ -6475,24 +6475,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: JumpSpeed
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: maxJumpTime
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: maxJumpHeight
-      value: 3
+      value: 120
       objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: _initialJumpingSpeed
-      value: 5
+    - target: {fileID: 2357857118627078222, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2357857118627078222, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: m_Interpolate
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2357857118627078222, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_GravityScale
-      value: 50
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2357857119552702225, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_Name
@@ -6506,6 +6506,18 @@ PrefabInstance:
       propertyPath: trackingEntities
       value: 
       objectReference: {fileID: 220448025}
+    - target: {fileID: 2357857119552702235, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2357857119552702235, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8468629046130634944, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

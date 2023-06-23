@@ -21,13 +21,12 @@ public class PlayerActions : MonoBehaviour
     [SerializeField] float _characterSpeed = 10f;
     [SerializeField] LayerMask jumpLayer;
     [SerializeField] double maxJumpHeight;
-    [SerializeField] double maxJumpTime;
 
-    private double _gravity = -9.81f;
-    private float groundedgravity = -.05f;
 
-    //gravity 2H/(t square)
-    //jumpSpeed= sqrt(2Hg)
+    private double _gravityScale = 6;
+    private double _jumpForce;
+
+    //Force = -2m * sqrt (g * h)
 
     private void Awake()
     {
@@ -44,16 +43,8 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerMovement.Jump.performed += Jump;
         _rocky2DActions.PlayerMovement.Jump.canceled += JumpCancel;
 
-        initializeJumpVariables();
 
     }
-
-    public void initializeJumpVariables()
-    {
-        double apexTime = maxJumpTime / 2;
-        _gravity = 2 * maxJumpHeight / apexTime ;
-    }
-
 
     private void Start()
     {
@@ -68,27 +59,36 @@ public class PlayerActions : MonoBehaviour
 
         _keystrokeTrack = PlayerMovement();
 
-
         //Jumping
-
-        HandleJumping();
-
-        if(!_isJumping)
+        if (_isJumping && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, jumpLayer))
         {
-            initializeJumpVariables();
+            HandleJumping();
+           
         }
 
-     
+        if(!_isJumping && !_movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, jumpLayer))
+        {
+            _rb.gravityScale += (float)_gravityScale;
+
+        }
+
+        if(_movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, jumpLayer))
+        {
+            _rb.gravityScale = 1f;
+        }
+
     }
 
     public void HandleJumping()
     {
-        _gravity = 2 * maxJumpHeight / Time.deltaTime;
+        _rb.gravityScale -=(float)_gravityScale;
+        _jumpForce = Math.Sqrt(maxJumpHeight * (Physics2D.gravity.y * Math.Abs(_gravityScale) * -2)) * _rb.mass;
+        _rb.velocity += new Vector2(_rb.velocity.x, (float)_jumpForce);
+        _isJumping = false;
 
-        if (_isJumping && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, jumpLayer))
-            _rb.velocity += new Vector2(_rb.velocity.x, (float)Math.Sqrt(2 * maxJumpHeight * _gravity));
 
     }
+
 
     private void Update()
     {
