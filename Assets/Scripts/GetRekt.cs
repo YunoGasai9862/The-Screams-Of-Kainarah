@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GetRekt : MonoBehaviour
@@ -16,7 +14,7 @@ public class GetRekt : MonoBehaviour
 
     private void Update()
     {
-        if (HitCount >= 3 || SwordHit>=3)
+        if (HitCount >= 3 || SwordHit >= 3)
         {
             Destroy(gameObject, 1f);
             HitCount = 0;

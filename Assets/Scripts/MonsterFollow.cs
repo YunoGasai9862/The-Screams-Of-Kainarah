@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MonsterFollow : StateMachineBehaviour
@@ -9,7 +7,7 @@ public class MonsterFollow : StateMachineBehaviour
 
 
     public static GameObject Player;
-   static float  timeSpanbetweenEachAttack = 0f;
+    static float timeSpanbetweenEachAttack = 0f;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -19,7 +17,7 @@ public class MonsterFollow : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if(!DialogueManager.IsOpen)
+        if (!DialogueManager.IsOpen)
         {
             if (Player != null && checkDistance(animator))
             {
@@ -75,6 +73,6 @@ public class MonsterFollow : StateMachineBehaviour
         }
     }
 
-   
-    
+
+
 }

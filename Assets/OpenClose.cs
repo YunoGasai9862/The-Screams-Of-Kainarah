@@ -1,17 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class OpenClose 
+public class OpenClose
 {
     private GameObject FirstPanel;
     private GameObject SecondPanel;
-    
+
 
     public OpenClose(GameObject _fp, GameObject _sp)
     {
         this.FirstPanel = _fp;
-        this.SecondPanel = _sp; 
+        this.SecondPanel = _sp;
     }
 
     public void ToggleFirstPanelOn()
@@ -23,6 +21,6 @@ public class OpenClose
     public void ToggleSecondPanelOn()
     {
         this.SecondPanel.SetActive(true);
-        this.FirstPanel.SetActive(false);   
+        this.FirstPanel.SetActive(false);
     }
 }

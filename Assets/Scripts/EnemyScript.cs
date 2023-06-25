@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyScript : MonoBehaviour
 {
     [SerializeField] Transform[] Waypoints;
-    private int Index=0;
+    private int Index = 0;
     private Animator anim;
     private int lifeCounter = 0;
     private bool isNotdead = true;
@@ -15,7 +13,7 @@ public class EnemyScript : MonoBehaviour
     private GameObject Heroine;
     [SerializeField] bool StopForAttack = false;
     public static RaycastHit2D[] hit;
-    
+
     [SerializeField] LayerMask Player;
     [SerializeField] GameObject Hit;
     void Start()
@@ -24,23 +22,23 @@ public class EnemyScript : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         Heroine = GameObject.FindWithTag("Player");
-        if(transform.gameObject.name!="Enemy2")
+        if (transform.gameObject.name != "Enemy2")
         {
             anim.SetBool("Destroyed", false);
         }
-       
+
     }
 
     void Update()
     {
-        if(transform.gameObject.name!="Enemy2")
+        if (transform.gameObject.name != "Enemy2")
         {
             if (CanAttack())
             {
                 StopForAttack = true;
                 rb.velocity = new Vector2(0, 0);
 
-                if(sr.flipX)
+                if (sr.flipX)
                 {
                     anim.SetBool("EnemyAttack2", true);
 
@@ -70,7 +68,7 @@ public class EnemyScript : MonoBehaviour
 
             }
 
-            
+
         }
 
         if (lifeCounter > 3)
@@ -83,17 +81,17 @@ public class EnemyScript : MonoBehaviour
 
 
 
-        if (Vector2.Distance(transform.position, Waypoints[Index].position)<.1f)
+        if (Vector2.Distance(transform.position, Waypoints[Index].position) < .1f)
         {
             Index++;
 
-            if(Index>=Waypoints.Length)
+            if (Index >= Waypoints.Length)
             {
                 Index = 0;
             }
 
         }
-        if(!StopForAttack) //continuing moving if the Player is not in the range
+        if (!StopForAttack) //continuing moving if the Player is not in the range
         {
             transform.position = Vector3.MoveTowards(transform.position, Waypoints[Index].position, Speed * Time.deltaTime);
 
@@ -137,7 +135,7 @@ public class EnemyScript : MonoBehaviour
     {
         if (collision.CompareTag("Dagger") || collision.CompareTag("Sword"))
         {
-            if(isNotdead)
+            if (isNotdead)
             {
                 GameObject endofLife = Instantiate(Hit, transform.position, Quaternion.identity);
 

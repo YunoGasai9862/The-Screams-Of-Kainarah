@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class ButtonScript : MonoBehaviour
 {
-      [SerializeField] GameObject Panel;
-      private PanelHandler panelHandler;
+    [SerializeField] GameObject Panel;
+    private PanelHandler panelHandler;
     void Start()
     {
         panelHandler = new PanelHandler(ref Panel);

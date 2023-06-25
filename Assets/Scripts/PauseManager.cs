@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PauseManager : MonoBehaviour
@@ -8,7 +6,7 @@ public class PauseManager : MonoBehaviour
     [SerializeField] GameObject SettingsPanel;
     private OpenClose OC;
 
-   
+
     public static bool pausedGame = false;
     void Start()
     {
@@ -17,9 +15,9 @@ public class PauseManager : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            pausedGame=!pausedGame;
+            pausedGame = !pausedGame;
             PauseGame();
         }
 
@@ -27,7 +25,7 @@ public class PauseManager : MonoBehaviour
     }
     public void PauseGame()
     {
-        if(pausedGame)
+        if (pausedGame)
         {
             Time.timeScale = 0f;
             BringUpMenu();
@@ -37,7 +35,7 @@ public class PauseManager : MonoBehaviour
         {
             ResumeGame();
         }
-       
+
     }
     public void ResumeGame()
     {
@@ -70,7 +68,7 @@ public class PauseManager : MonoBehaviour
 
         OC.ToggleFirstPanelOn();  //makes First Panel On
     }
-    
+
 
 
 }

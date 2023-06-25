@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using DG.Tweening;
+using UnityEngine;
 
 public class MoveCrystal : MonoBehaviour
 {
@@ -12,24 +10,24 @@ public class MoveCrystal : MonoBehaviour
     public static bool increaseValue = false;
     void Start()
     {
-        _diamondUILocation=GameObject.FindWithTag("Diamond").GetComponent<RectTransform>(); 
+        _diamondUILocation = GameObject.FindWithTag("Diamond").GetComponent<RectTransform>();
 
     }
 
     // Update is called once per frame
     void Update()
     {
-       
 
-        if (transform!=null &&_isMoving)
+
+        if (transform != null && _isMoving)
         {
             _diamondUILocaitonConverted = Camera.main.ScreenToWorldPoint(_diamondUILocation.position); //converts UI position to world position
-            LocalPos= _diamondUILocaitonConverted;
+            LocalPos = _diamondUILocaitonConverted;
             LocalPos.z = 0;
             LocalPos.x = LocalPos.x - 1f;
             transform.DOMove(LocalPos, .050f).SetEase(Ease.InFlash);
-           // transform.GetComponent<BoxCollider2D>().enabled = false;
-           
+            // transform.GetComponent<BoxCollider2D>().enabled = false;
+
 
         }
 
@@ -57,7 +55,7 @@ public class MoveCrystal : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (transform!=null && ((int)transform.position.x == (int)LocalPos.x))
+        if (transform != null && ((int)transform.position.x == (int)LocalPos.x))
         {
             increaseValue = true;
             Destroy(gameObject);

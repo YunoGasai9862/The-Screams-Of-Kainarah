@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TrackingBosses : MonoBehaviour
@@ -19,16 +17,17 @@ public class TrackingBosses : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Boss!=null)
+        if (Boss != null)
         {
             if (Vector2.Distance(transform.position, Boss.transform.position) <= CamWidth / 2)
             {
                 openHealthBar = true;
                 BossExists = true;
-            }else
+            }
+            else
             {
                 openHealthBar = false;
-                 BossExists = false;
+                BossExists = false;
 
                 Health.gameObject.SetActive(false);
             }

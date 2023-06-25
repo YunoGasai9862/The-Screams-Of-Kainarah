@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackPlayer : MonoBehaviour
 {
-   
+
     [SerializeField] LayerMask player;
     private Animator anim;
     private int multiplier = -1;
-    
+
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -20,11 +18,11 @@ public class AttackPlayer : MonoBehaviour
 
         if (GetComponent<SpriteRenderer>().flipX == false)
         {
-            multiplier=1;
+            multiplier = 1;
         }
         else
         {
-            multiplier =-1;
+            multiplier = -1;
 
         }
         AttackPlayerFun();

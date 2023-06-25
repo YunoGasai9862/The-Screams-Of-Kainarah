@@ -1,23 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 public class IncreaseDiamond : MonoBehaviour
 {
     private TextMeshProUGUI _diamondText;
-    public static  int count = 0;
+    public static int count = 0;
     void Start()
     {
-        _diamondText= GetComponent<TextMeshProUGUI>();
+        _diamondText = GetComponent<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(MoveCrystal.increaseValue)
+        if (MoveCrystal.increaseValue)
         {
             _diamondText.text = IncreaseCount().ToString("0");
-          
+
             MoveCrystal.increaseValue = false;
         }
     }
@@ -25,6 +23,6 @@ public class IncreaseDiamond : MonoBehaviour
     int IncreaseCount()
     {
         count++;
-         return count;
+        return count;
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimationHandler : MonoBehaviour
@@ -18,7 +16,7 @@ public class AnimationHandler : MonoBehaviour
         return (CompositionX > 0f || CompositionX < 0f);
     }
 
-    private bool JumpFallingHelper (bool keystroke)
+    private bool JumpFallingHelper(bool keystroke)
     {
         return keystroke;
     }
@@ -35,15 +33,15 @@ public class AnimationHandler : MonoBehaviour
             AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.RUNNING :
             AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.IDLE;
 
-            PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.currentPlayerState);
-      
+        PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.currentPlayerState);
+
     }
 
     public void JumpingFalling(bool keystroke)
     {
-        _=  JumpFallingHelper(keystroke)? AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.JUMP : AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.FALL;
+        _ = JumpFallingHelper(keystroke) ? AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.JUMP : AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.FALL;
 
-          PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.currentPlayerState);
+        PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.currentPlayerState);
 
     }
 

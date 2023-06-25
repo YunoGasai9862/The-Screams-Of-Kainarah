@@ -6,7 +6,7 @@ public class Interactable : MonoBehaviour
 {
     public Dialogues dialogue;
     public Dialogues BossDialogue;
-   
+
     [Header("Conversation between Vendor and the Player")]
     public Dialogues[] WizardPlayerConvo;
 
@@ -14,14 +14,14 @@ public class Interactable : MonoBehaviour
     public static Dictionary<Dialogues, bool> dialogueDictionary;
     public static Dictionary<Dialogues[], bool> MultipleDialogues;
 
-    
+
 
     public static int Dialoguecounter = 0;
-  
+
     private void Start()
     {
-        dialogueDictionary= new Dictionary<Dialogues, bool>();
-        MultipleDialogues=new Dictionary<Dialogues[], bool>();
+        dialogueDictionary = new Dictionary<Dialogues, bool>();
+        MultipleDialogues = new Dictionary<Dialogues[], bool>();
         dialogueDictionary.Add(dialogue, false);
         dialogueDictionary.Add(BossDialogue, false);
         MultipleDialogues.Add(WizardPlayerConvo, false);
@@ -32,7 +32,7 @@ public class Interactable : MonoBehaviour
         StartCoroutine(TriggerDialogue(dialogue));//because queue is already empty, thats why using Invoke to give some time to the queue
     }
 
-   public IEnumerator TriggerDialogue(Dialogues dialogue)
+    public IEnumerator TriggerDialogue(Dialogues dialogue)
     {
         yield return new WaitForSeconds(.1f);
         if (dialogueDictionary[dialogue] == false)
@@ -40,11 +40,11 @@ public class Interactable : MonoBehaviour
             FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
             dialogueDictionary[dialogue] = true; //already played
         }
-          
+
     }
 
 
-    public  IEnumerator TriggerDialogue(Dialogues[] dialogue)
+    public IEnumerator TriggerDialogue(Dialogues[] dialogue)
     {
         if (MultipleDialogues[dialogue] == false)
         {
@@ -57,15 +57,15 @@ public class Interactable : MonoBehaviour
             }
             else
             {
-               
+
                 FindObjectOfType<DialogueManager>().StartDialogue(dialogue[Dialoguecounter], dialogue);
                 Dialoguecounter++;
             }
 
         }
-        
+
 
     }
 
- 
+
 }

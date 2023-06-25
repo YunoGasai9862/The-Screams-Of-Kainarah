@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerScript : MonoBehaviour
@@ -17,25 +14,26 @@ public class PlayerScript : MonoBehaviour
 
         rocky2dgameplayerinput = new Rocky2DGamePlayerInput(); //creative the script object
         rocky2dgameplayerinput.PlayerInput.Enable();
-      
+
         rocky2dgameplayerinput.PlayerInput.Jump.performed += Jump;
 
         rocky2dgameplayerinput.PlayerInput.Disable();
         rocky2dgameplayerinput.PlayerInput.Jump.PerformInteractiveRebinding().
             WithControlsExcluding("Mouse").
-            OnComplete(callback=>{
+            OnComplete(callback =>
+            {
 
-            Debug.Log(callback);
-              
-             var rebinds= playerInput.actions.SaveBindingOverridesAsJson();
+                Debug.Log(callback);
 
-            callback.Dispose(); //to avoid memory leaks
-            rocky2dgameplayerinput.PlayerInput.Enable();
+                var rebinds = playerInput.actions.SaveBindingOverridesAsJson();
+
+                callback.Dispose(); //to avoid memory leaks
+                rocky2dgameplayerinput.PlayerInput.Enable();
 
 
-        }).Start(); //starts listening
+            }).Start(); //starts listening
 
-      // rocky2dgameplayerinput.PlayerInput.Movement.performed += MovingtheWizard;
+        // rocky2dgameplayerinput.PlayerInput.Movement.performed += MovingtheWizard;
     }
 
 
@@ -43,13 +41,13 @@ public class PlayerScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
 
-       // playerInput.onActionTriggered += PlayerInput_onActionTriggeredWizard;
+        // playerInput.onActionTriggered += PlayerInput_onActionTriggeredWizard;
         //fires an event
     }
 
     private void Update()
     {
-        if(Keyboard.current.tKey.wasPressedThisFrame)  //for debugging!
+        if (Keyboard.current.tKey.wasPressedThisFrame)  //for debugging!
         {
 
             playerInput.SwitchCurrentActionMap("UI");//when t is presssed, it switches the action mapping!
@@ -71,10 +69,10 @@ public class PlayerScript : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        Vector2 input=  rocky2dgameplayerinput.PlayerInput.Movement.ReadValue<Vector2>();
-       // Debug.Log(input);
+        Vector2 input = rocky2dgameplayerinput.PlayerInput.Movement.ReadValue<Vector2>();
+        // Debug.Log(input);
         float speed = 10f;
-        
+
         rb.AddForce(new Vector2(input.x, input.y) * speed, ForceMode2D.Force);
     }
 
@@ -89,17 +87,17 @@ public class PlayerScript : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if(context.performed)
+        if (context.performed)
         {
             rb.AddForce(Vector3.up * 5f, ForceMode2D.Impulse);
             Debug.Log("Jumping..." + context.phase);
         }
-      
+
     }
 
     public void Submit(InputAction.CallbackContext context)
     {
-       Debug.Log("Submit" + context);
+        Debug.Log("Submit" + context);
 
     }
 

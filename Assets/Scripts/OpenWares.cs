@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class OpenWares : MonoBehaviour
@@ -11,7 +9,7 @@ public class OpenWares : MonoBehaviour
 
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -22,7 +20,7 @@ public class OpenWares : MonoBehaviour
             MagicCircle.SetActive(true);
         }
 
-  
+
     }
     private void OnMouseDown()
     {

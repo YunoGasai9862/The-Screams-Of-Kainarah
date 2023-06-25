@@ -23,7 +23,7 @@ public class Movement : MonoBehaviour
     private bool flip = true;
     private bool Death = false;
     private float slidingspeed = 5f;
-    public static double MAXHEALTH=100f;
+    public static double MAXHEALTH = 100f;
     public static double ENEMYATTACK = 5f;
     [SerializeField] GameObject TeleportTransition;
 
@@ -85,7 +85,7 @@ public class Movement : MonoBehaviour
 
         }
 
-        if(DialogueManager.IsOpen)
+        if (DialogueManager.IsOpen)
         {
             anim.SetInteger("State", 0);
             rb.velocity = Vector2.zero;
@@ -97,19 +97,19 @@ public class Movement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if(checkForExistenceOfPortal(sr))
+        if (checkForExistenceOfPortal(sr))
         {
 
             //Instantiate(TeleportTransition, transform.position, Quaternion.identity);
             StartCoroutine(WaiterFunction());
             GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
-        if(FindingObjects.FindObject(gameObject, "Boss"))
+        if (FindingObjects.FindObject(gameObject, "Boss"))
         {
             StartCoroutine(dialogue.TriggerDialogue(dialogue.BossDialogue));
 
         }
-        if(FindingObjects.FindObject(gameObject, "Vendor") && once)
+        if (FindingObjects.FindObject(gameObject, "Vendor") && once)
         {
             StartCoroutine(dialogue.TriggerDialogue(dialogue.WizardPlayerConvo));
             once = false;
@@ -124,15 +124,16 @@ public class Movement : MonoBehaviour
     {
 
 
-        if (Input.GetKeyDown(KeyCode. LeftShift) )
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             anim.SetBool("Sliding", true);
-          
-            if(sr.flipX)
+
+            if (sr.flipX)
             {
                 rb.velocity = new Vector2(-slidingspeed, rb.velocity.y);
 
-            }else
+            }
+            else
             {
                 rb.velocity = new Vector2(slidingspeed, rb.velocity.y);
 
@@ -149,7 +150,7 @@ public class Movement : MonoBehaviour
     }
     bool isOntheGround()
     {
-       
+
         return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, Ground);
     }
 
@@ -191,7 +192,7 @@ public class Movement : MonoBehaviour
 
 
     void CheckForAnimation()
-    
+
     {
         if (Horizontal > 0f || Horizontal < 0f)
         {
@@ -218,7 +219,7 @@ public class Movement : MonoBehaviour
 
 
 
-  
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -226,7 +227,7 @@ public class Movement : MonoBehaviour
             (collision.collider.transform.root.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack") ||
             collision.collider.transform.root.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack_02"))))
         {
-            if(MAXHEALTH==0)
+            if (MAXHEALTH == 0)
             {
                 Death = true;
                 anim.SetBool("Death", true);
@@ -237,10 +238,10 @@ public class Movement : MonoBehaviour
             }
 
 
-           
+
         }
 
-        
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -250,13 +251,13 @@ public class Movement : MonoBehaviour
             GameObject DHE = Instantiate(DiamondHitEffect, collision.transform.position, Quaternion.identity);
             AudioPickUp = true;
             Destroy(DHE, 2f);
-            
+
         }
 
         if (collision.CompareTag("Health"))
         {
-           
-            if(MAXHEALTH<100)
+
+            if (MAXHEALTH < 100)
             {
                 MAXHEALTH += 10;
                 GameObject temp = Instantiate(pickupEffect, collision.gameObject.transform.position, Quaternion.identity);
@@ -264,21 +265,21 @@ public class Movement : MonoBehaviour
                 Destroy(temp, 1f);
             }
 
-        
+
         }
     }
 
     public bool checkForExistenceOfPortal(SpriteRenderer sr)
     {
         RaycastHit hit; //using 3D raycast because of 3D object, portal
-        Vector2 pos=transform.position;
-        if(sr.flipX)
+        Vector2 pos = transform.position;
+        if (sr.flipX)
         {
             pos.x = transform.position.x - 1f;
-            Debug.DrawRay(pos, -transform.right *1, Color.red);
+            Debug.DrawRay(pos, -transform.right * 1, Color.red);
             Physics.Raycast(transform.position, -transform.right, out hit, 1f);
-          
-          
+
+
 
         }
         else
@@ -291,12 +292,12 @@ public class Movement : MonoBehaviour
 
 
         }
-        if(hit.collider!=null)
+        if (hit.collider != null)
 
             Debug.Log(hit.collider.name);
-      
 
-        if (hit.collider!=null && hit.collider.isTrigger && hit.collider.CompareTag("Portal"))
+
+        if (hit.collider != null && hit.collider.isTrigger && hit.collider.CompareTag("Portal"))
         {
             return true;
         }
@@ -324,10 +325,10 @@ public class Movement : MonoBehaviour
 }
 
 
-     
 
-    
 
-        
 
-    
+
+
+
+

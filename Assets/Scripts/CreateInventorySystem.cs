@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
-using static UnityEditor.Progress;
+using UnityEngine.UI;
 
 public class CreateInventorySystem : MonoBehaviour
 {
@@ -18,7 +16,7 @@ public class CreateInventorySystem : MonoBehaviour
     private static Queue<GameObject> inventoryTemp;
     private static int i = 0;
     private static int _count = 0;
-    private static bool _alreadyExist=false;
+    private static bool _alreadyExist = false;
     private static GameObject _temp;
 
     [Space]
@@ -40,28 +38,28 @@ public class CreateInventorySystem : MonoBehaviour
 
     void Start()
     {
-       
-        inventoryList=new Queue<GameObject>();
-        inventoryCheck=new Queue<GameObject>();
-        inventoryTemp=new Queue<GameObject>();
-        _spriteLocation=PanelObject.GetComponent<RectTransform>();
 
-        if(startX==0 && startY==0 && increment==0 && decrement==0)
+        inventoryList = new Queue<GameObject>();
+        inventoryCheck = new Queue<GameObject>();
+        inventoryTemp = new Queue<GameObject>();
+        _spriteLocation = PanelObject.GetComponent<RectTransform>();
+
+        if (startX == 0 && startY == 0 && increment == 0 && decrement == 0)
             _boxes.GenerateInventory(SizeOftheInventory, -250, 150, 100, -50, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems);
-         else
-            _boxes.GenerateInventory(SizeOftheInventory, startX, startY, increment,decrement, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems);
+        else
+            _boxes.GenerateInventory(SizeOftheInventory, startX, startY, increment, decrement, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems);
     }
 
- 
+
 
     public static void AddToInventory(Sprite itemTobeAdded, string Tag)  //fix this tomorrow ->Only collectively addds if its the first slot.
     {
-         _temp = new GameObject("Item" + i);
+        _temp = new GameObject("Item" + i);
         _temp.transform.localScale = new Vector3(.6f, .6f, .6f);
-        GameObject ItemBox=null;
-        int _count=0;
+        GameObject ItemBox = null;
+        int _count = 0;
 
-        if(CheckPreviousItems(itemTobeAdded, Tag))
+        if (CheckPreviousItems(itemTobeAdded, Tag))
         {
             Exchange(ref inventoryTemp, ref inventoryCheck);
             Destroy(_temp);
@@ -72,7 +70,7 @@ public class CreateInventorySystem : MonoBehaviour
             while (inventoryList.Count != 0)
             {
                 ItemBox = inventoryList.Dequeue();
-               //find sibling
+                //find sibling
                 _count++;
 
                 if (ItemBox.transform.childCount == 0)
@@ -86,35 +84,35 @@ public class CreateInventorySystem : MonoBehaviour
 
             }
 
-                 FindCorrectPosition(_count); //brings the inventory position back to its former state
-                _temp.AddComponent<RectTransform>();
-                _temp.transform.SetParent(ItemBox.transform, false);
-                Image image = _temp.AddComponent<Image>();
-                image.sprite = itemTobeAdded;
-                _temp.tag = Tag;
-                i++;
-                inventoryCheck.Enqueue(_temp);
-                _alreadyExist = true;
+            FindCorrectPosition(_count); //brings the inventory position back to its former state
+            _temp.AddComponent<RectTransform>();
+            _temp.transform.SetParent(ItemBox.transform, false);
+            Image image = _temp.AddComponent<Image>();
+            image.sprite = itemTobeAdded;
+            _temp.tag = Tag;
+            i++;
+            inventoryCheck.Enqueue(_temp);
+            _alreadyExist = true;
 
-          
+
         }
 
- 
+
     }
 
     public static bool CheckPreviousItems(Sprite itemTobeAdded, string Tag)
     {
-       // Debug.Log("Count: "+ inventoryCheck.Count);
+        // Debug.Log("Count: "+ inventoryCheck.Count);
         //Debug.Log("Already Exist: " + _alreadyExist);
 
         while (inventoryCheck.Count != 0 && _alreadyExist)
         {
             GameObject ExistingInventory = inventoryCheck.Dequeue();
-            if(ExistingInventory!=null)
+            if (ExistingInventory != null)
                 inventoryTemp.Enqueue(ExistingInventory);
             GameObject TextBox = InstantiateTextObject();
 
-            if (ExistingInventory!=null && (ExistingInventory.GetComponent<Image>().sprite == itemTobeAdded || ExistingInventory.CompareTag(Tag)))
+            if (ExistingInventory != null && (ExistingInventory.GetComponent<Image>().sprite == itemTobeAdded || ExistingInventory.CompareTag(Tag)))
             {
                 Transform Numerical = ExistingInventory.transform.parent.Find("Numerical");
                 if (Numerical == null)
@@ -125,18 +123,18 @@ public class CreateInventorySystem : MonoBehaviour
                 {
                     Increment(ref Numerical);
                     Destroy(TextBox);
-                    
+
                 }
                 _alreadyExist = true;
                 return true;
-              
+
             }
 
             if (inventoryCheck.Count == 0)
             {
                 Destroy(TextBox);
                 _alreadyExist = false;
-              
+
             }
 
         }
@@ -146,7 +144,7 @@ public class CreateInventorySystem : MonoBehaviour
 
 
     }
-   // public static
+    // public static
     public static void TransferTheItemsToQueue(ref Queue<GameObject> queue1, ref Queue<GameObject> queue2)
     {
         if (queue1.Count == 0)
@@ -164,13 +162,13 @@ public class CreateInventorySystem : MonoBehaviour
         while (queue1.Count != 0)
         {
             GameObject temp = queue1.Dequeue();
-            if(temp!=null)
-                 queue2.Enqueue(temp);
-        } 
+            if (temp != null)
+                queue2.Enqueue(temp);
+        }
     }
     public static void PrintQueue(Queue<GameObject> q)
     {
-        for(int i=0; i<q.Count; i++)
+        for (int i = 0; i < q.Count; i++)
         {
             Debug.Log(q.Dequeue().name);
         }
@@ -179,10 +177,10 @@ public class CreateInventorySystem : MonoBehaviour
     public static GameObject CheckForObject(string tag)
     {
         GameObject _obj = null;
-        while(inventoryCheck.Count!=0)
+        while (inventoryCheck.Count != 0)
         {
             GameObject _item = inventoryCheck.Dequeue();
-            if(tag==_item.transform.tag)
+            if (tag == _item.transform.tag)
             {
                 _obj = _item;
                 inventoryTemp.Enqueue(_item);
@@ -197,15 +195,15 @@ public class CreateInventorySystem : MonoBehaviour
     }
 
 
-    public static void FindCorrectPosition( int Count)
+    public static void FindCorrectPosition(int Count)
     {
         int Size = inventoryList.Count - Count;
         GameObject temp;
-        while (Size>0)
+        while (Size > 0)
         {
-            temp=inventoryList.Dequeue();
+            temp = inventoryList.Dequeue();
             inventoryList.Enqueue(temp);
-         
+
             Size--;
         }
 
@@ -223,7 +221,7 @@ public class CreateInventorySystem : MonoBehaviour
     public static void Decrement(ref Transform Numerical)
     {
         TextMeshProUGUI _T = Numerical.GetComponent<TextMeshProUGUI>();
-        int count = Int32.Parse(_T.text) -1;
+        int count = Int32.Parse(_T.text) - 1;
         _T.text = count.ToString("0");
 
     }
@@ -240,9 +238,9 @@ public class CreateInventorySystem : MonoBehaviour
 
     public static void CheckItem(ref GameObject item)
     {
-        while(inventoryCheck.Count!=0)
+        while (inventoryCheck.Count != 0)
         {
-            GameObject _item= inventoryCheck.Dequeue();
+            GameObject _item = inventoryCheck.Dequeue();
             if (_item != item)
             {
                 inventoryTemp.Enqueue(_item);
@@ -254,46 +252,46 @@ public class CreateInventorySystem : MonoBehaviour
     }
     public static void ReduceItem(ref GameObject item, bool buying)
     {
-       
-            if (CheckIfNumericalExists(ref item))
+
+        if (CheckIfNumericalExists(ref item))
+        {
+            Transform TextBox;
+            if (buying)
             {
-                 Transform TextBox;
-                if(buying)
-                {
-                 TextBox = item.transform.Find("Numerical").gameObject.transform;
+                TextBox = item.transform.Find("Numerical").gameObject.transform;
 
-                }
-                 else
-                 {
-                     TextBox = item.transform;
-
-                  }
-                 if (TextBox.GetComponent<TextMeshProUGUI>().text == "2")
-                {
-                    Destroy(TextBox.gameObject);
-                }
-                else
-                {
-                    Decrement(ref TextBox);
-
-                }
             }
             else
             {
-                if (item.transform.childCount != 0)
-                {
-                    CheckItem(ref item);
-                    Destroy(item.transform.GetChild(0).gameObject);
+                TextBox = item.transform;
 
-                }
-                else
-                {
-
-                    return;
-                }
             }
+            if (TextBox.GetComponent<TextMeshProUGUI>().text == "2")
+            {
+                Destroy(TextBox.gameObject);
+            }
+            else
+            {
+                Decrement(ref TextBox);
 
-        
+            }
+        }
+        else
+        {
+            if (item.transform.childCount != 0)
+            {
+                CheckItem(ref item);
+                Destroy(item.transform.GetChild(0).gameObject);
+
+            }
+            else
+            {
+
+                return;
+            }
+        }
+
+
 
 
 
@@ -304,7 +302,7 @@ public class CreateInventorySystem : MonoBehaviour
 
     public static bool CheckIfNumericalExists(ref GameObject item)
     {
-        if(item.transform.name=="Numerical" || item.transform.Find("Numerical"))
+        if (item.transform.name == "Numerical" || item.transform.Find("Numerical"))
         {
             return true;
         }

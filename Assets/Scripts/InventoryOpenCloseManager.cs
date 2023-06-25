@@ -1,15 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryOpenCloseManager : MonoBehaviour
 {
     [SerializeField] GameObject InventoryPanel;
 
-    public static bool isOpenInventory=false;
+    public static bool isOpenInventory = false;
     public void HandleInventory()
     {
-        if(!isOpenInventory && !OpenWares.Buying)
+        if (!isOpenInventory && !OpenWares.Buying)
         {
             InventoryPanel.SetActive(true);
             isOpenInventory = true;
@@ -19,8 +17,8 @@ public class InventoryOpenCloseManager : MonoBehaviour
             InventoryPanel.SetActive(false);
             isOpenInventory = false;
         }
-       
+
     }
 
-   
+
 }

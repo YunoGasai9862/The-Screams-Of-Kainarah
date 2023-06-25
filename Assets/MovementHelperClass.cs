@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MovementHelperClass : IOverlapChecker
@@ -9,5 +7,5 @@ public class MovementHelperClass : IOverlapChecker
         return Physics2D.BoxCast(gameObject.bounds.center, gameObject.bounds.size, 0f, Vector2.down, .1f, colliderLayerMask);
     }
 
-  
+
 }

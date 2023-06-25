@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 public class DialogueManager : MonoBehaviour
 {
@@ -16,30 +16,30 @@ public class DialogueManager : MonoBehaviour
 
     void Start()
     {
-       
-        _storylineSentences= new Queue<string>();
+
+        _storylineSentences = new Queue<string>();
     }
 
-    public void StartDialogue(Dialogues dialogue,Dialogues[] dialogues=null)
+    public void StartDialogue(Dialogues dialogue, Dialogues[] dialogues = null)
     {
-    
-             if(dialogues!=null)
-             {
-                 _dialogues = dialogues;
-               
-             }
+
+        if (dialogues != null)
+        {
+            _dialogues = dialogues;
+
+        }
         IsOpen = true;
         myanimator.SetBool("IsOpen", true);
         _storylineSentences.Clear();  //clears the previous dialogues, if there are any
 
         myname.text = dialogue.playername;
-        foreach(string sentence in dialogue.sentences)
+        foreach (string sentence in dialogue.sentences)
         {
             _storylineSentences.Enqueue(sentence);
         }
 
         DisplayNextSentence();
-       
+
     }
 
     IEnumerator AnimateLetters(string sentence)
@@ -77,10 +77,10 @@ public class DialogueManager : MonoBehaviour
         string sentence = _storylineSentences.Dequeue();
         //if the user clicks on the continue earlier, it will stop all the coroutines and start with the new one=>new text
         StopAllCoroutines();
-       
+
         StartCoroutine(AnimateLetters(sentence));
 
-       
+
     }
 
     void EndDialogue()

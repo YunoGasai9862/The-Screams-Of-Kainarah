@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BossScript : MonoBehaviour
@@ -19,7 +18,7 @@ public class BossScript : MonoBehaviour
         Player = GameObject.FindWithTag("Player");
         anim = GetComponent<Animator>();
         MAXHEALTH = 100;
-        _bC2= GetComponent<BoxCollider2D>();
+        _bC2 = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -27,17 +26,17 @@ public class BossScript : MonoBehaviour
     {
         CheckRotation();
 
- 
-         if(DialogueManager.IsOpen)
+
+        if (DialogueManager.IsOpen)
         {
             anim.SetBool("walk", false);
         }
-         if(onTopBossBool)
+        if (onTopBossBool)
         {
             TimeoverBody += Time.deltaTime;
         }
 
-         if(TimeoverBody>.5f)
+        if (TimeoverBody > .5f)
         {
             _bC2.enabled = false;
             onTopBossBool = false;
@@ -77,14 +76,14 @@ public class BossScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Sword")  || collision.CompareTag("Dagger"))
+        if (collision.CompareTag("Sword") || collision.CompareTag("Dagger"))
         {
             anim.SetTrigger("damage");
             MAXHEALTH -= 10;
 
         }
 
-        if(MAXHEALTH==0)
+        if (MAXHEALTH == 0)
         {
             Vector2 pos = transform.position;
             pos.y = transform.position.y + .5f;
@@ -96,16 +95,16 @@ public class BossScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.collider.CompareTag("Player") && onTopBossBool==false)
+        if (collision.collider.CompareTag("Player") && onTopBossBool == false)
         {
-         
+
             onTopBossBool = true;
 
         }
     }
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if(collision.collider.CompareTag("Player"))
+        if (collision.collider.CompareTag("Player"))
         {
             onTopBossBool = false;
 
@@ -113,6 +112,6 @@ public class BossScript : MonoBehaviour
 
     }
 
-   
+
 
 }

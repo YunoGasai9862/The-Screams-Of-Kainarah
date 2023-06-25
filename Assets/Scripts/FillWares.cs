@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class FillWares : MonoBehaviour
 {
@@ -15,15 +13,15 @@ public class FillWares : MonoBehaviour
     private float scaleSize = .9f;
 
     [Header("Position of the Grid")]
-    
+
     [SerializeField] int StartX;
     [SerializeField] int StartY;
     [SerializeField] int IncrementX;
-    [SerializeField] int  IncrementY;
+    [SerializeField] int IncrementY;
 
     void Start()
     {
-        _boxes.GenerateInventory(3,StartX, StartY, IncrementX, IncrementY, gameObject, "ClickFeedbackOnItem");
+        _boxes.GenerateInventory(3, StartX, StartY, IncrementX, IncrementY, gameObject, "ClickFeedbackOnItem");
         freeslots = new List<GameObject>();
         StartCoroutine(FillSlots(gameObject));
         StartCoroutine(FillUpWares());
@@ -32,13 +30,13 @@ public class FillWares : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     IEnumerator FillUpWares()
     {
         yield return new WaitForSeconds(.7f);
-        for (int i=0; i<freeslots.Count; i++)
+        for (int i = 0; i < freeslots.Count; i++)
         {
             if (Possible(i))
             {
@@ -50,26 +48,26 @@ public class FillWares : MonoBehaviour
 
     }
 
-    IEnumerator  FillSlots(GameObject panel)
+    IEnumerator FillSlots(GameObject panel)
     {
 
         yield return new WaitForSeconds(.5f);
-        for(int i=0; i<panel.transform.childCount; i++)
+        for (int i = 0; i < panel.transform.childCount; i++)
         {
             freeslots.Add(panel.transform.GetChild(i).gameObject);
         }
-       
+
     }
 
     public bool Possible(int index)
     {
-        return wareObjects.Count!= wareCounter && freeslots[index].transform.childCount==0;
+        return wareObjects.Count != wareCounter && freeslots[index].transform.childCount == 0;
     }
 
-    public GameObject AssignTagsandSprite(GameObject _freeslot,float scaleSize, Sprite sprite, string name)
+    public GameObject AssignTagsandSprite(GameObject _freeslot, float scaleSize, Sprite sprite, string name)
     {
-        GameObject temp=new GameObject(name);
-      
+        GameObject temp = new GameObject(name);
+
         temp.transform.localScale = new Vector3(scaleSize, scaleSize, scaleSize);
         temp.transform.tag = name;
         temp.AddComponent<Image>();

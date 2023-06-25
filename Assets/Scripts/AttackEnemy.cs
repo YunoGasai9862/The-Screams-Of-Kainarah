@@ -1,18 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackEnemy : MonoBehaviour
 {
-  
+
     private float DaggerSpeed = 20f;
     private Rigidbody2D rb;
     private Animator anim;
-    private float elapsedTime=0;
+    private float elapsedTime = 0;
     private bool checker = true;
     private GameObject Heroine;
 
- 
+
     private SpriteRenderer _daggerrenderer;
     public static bool ThrowDagger;
     private void Start()
@@ -47,11 +45,11 @@ public class AttackEnemy : MonoBehaviour
             _daggerrenderer.flipX = true;
             rb.velocity = new Vector2(-DaggerSpeed, 0);
             ThrowDagger = false;
-              
-           
+
+
 
         }
-       
+
         if (!Heroine.GetComponent<SpriteRenderer>().flipX && ThrowDagger)
         {
             _daggerrenderer.flipX = false;
@@ -64,13 +62,13 @@ public class AttackEnemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Enemy"))
+        if (collision.CompareTag("Enemy"))
         {
-           // Destroy(collision.gameObject);
+            // Destroy(collision.gameObject);
             anim.SetBool("HitEnemy", true);
             Destroy(gameObject, .4f);
 
-           
+
         }
 
     }

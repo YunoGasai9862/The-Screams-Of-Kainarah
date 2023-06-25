@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ControlPanelTrigger : MonoBehaviour
@@ -13,7 +11,7 @@ public class ControlPanelTrigger : MonoBehaviour
     }
 
     // Update is called once per frame
-     public void OpenControlPanel()
+    public void OpenControlPanel()
     {
         OC.ToggleSecondPanelOn();
     }

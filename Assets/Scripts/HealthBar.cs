@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,9 +10,9 @@ public class HealthBar : MonoBehaviour
     [SerializeField] string TargetHealth;
     private void Start()
     {
-      
+
         Fill.color = gr.Evaluate(slide.value);
-        
+
     }
     void Update()
     {
@@ -25,8 +23,8 @@ public class HealthBar : MonoBehaviour
 
     private void TrackHealth(string TH)
     {
-     
-         switch(TH)
+
+        switch (TH)
         {
             case "Player":
                 slide.value = HealthTracker.ReturnMainPlayerHealth();

@@ -10,7 +10,7 @@ public class AttackingScript : MonoBehaviour
     private BoxCollider2D col;
     private GameObject dag;
     public static bool canthrowDagger = true;
-    private float throwdaggerTime=0;
+    private float throwdaggerTime = 0;
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
     [SerializeField] GameObject Dagger;
@@ -26,7 +26,7 @@ public class AttackingScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(PrerequisitesChecker())
+        if (PrerequisitesChecker())
         {
             if (kickoffElapsedTime)
             {
@@ -35,7 +35,7 @@ public class AttackingScript : MonoBehaviour
 
             AttackingMechanism();
         }
-      
+
 
     }
 
@@ -73,7 +73,7 @@ public class AttackingScript : MonoBehaviour
 
             anim.SetFloat("ElapsedTime", elapsedTime);
 
-            if (elapsedTime>.5f)
+            if (elapsedTime > .5f)
             {
 
                 AttackCount = 0;
@@ -136,7 +136,7 @@ public class AttackingScript : MonoBehaviour
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("ThrowDagger"))
         {
             throwdaggerTime += Time.deltaTime;
-            if (throwdaggerTime >.5f)
+            if (throwdaggerTime > .5f)
             {
                 anim.SetBool("ThrowDagger", false);
                 throwdaggerTime = 0f;
@@ -148,16 +148,16 @@ public class AttackingScript : MonoBehaviour
 
         }
 
-             if (!(anim.GetCurrentAnimatorStateInfo(0).IsName("Running")) && Input.GetKeyDown(KeyCode.F) && canthrowDagger)
-             {
-                       anim.SetBool("ThrowDagger", true);
-                        AttackEnemy.ThrowDagger = true;
+        if (!(anim.GetCurrentAnimatorStateInfo(0).IsName("Running")) && Input.GetKeyDown(KeyCode.F) && canthrowDagger)
+        {
+            anim.SetBool("ThrowDagger", true);
+            AttackEnemy.ThrowDagger = true;
 
-                         Invoke("instantiateDag",.4f);
-                          canthrowDagger = false;
+            Invoke("instantiateDag", .4f);
+            canthrowDagger = false;
 
 
-              }
+        }
 
 
 
@@ -183,27 +183,27 @@ public class AttackingScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("DaggerPickUp"))
+        if (collision.CompareTag("DaggerPickUp"))
         {
             canthrowDagger = true;
             CreateInventorySystem.AddToInventory(collision.gameObject.GetComponent<SpriteRenderer>().sprite, collision.gameObject.tag);
             Destroy(collision.gameObject);
         }
     }
-  
+
     public void Icetail()
     {
-      
-        GameObject Ice=  Instantiate(IceTrail, transform.position, Quaternion.identity);
+
+        GameObject Ice = Instantiate(IceTrail, transform.position, Quaternion.identity);
         Ice.transform.parent = transform;
-        
-      
+
+
     }
 
     public void Icetail2()
     {
 
-        GameObject Ice= Instantiate(IceTrail2, transform.position, Quaternion.identity);
+        GameObject Ice = Instantiate(IceTrail2, transform.position, Quaternion.identity);
         Ice.transform.parent = transform;
 
     }

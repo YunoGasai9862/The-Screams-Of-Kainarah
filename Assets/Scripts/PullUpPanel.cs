@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PullUpPanel : MonoBehaviour
@@ -9,13 +8,13 @@ public class PullUpPanel : MonoBehaviour
 
     void Start()
     {
-        _anim= GetComponent<Animator>();
+        _anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!TriggerHandler.Failure && !_closePanel)
+        if (!TriggerHandler.Failure && !_closePanel)
         {
             _anim.SetBool("SufficientFunds", false);
             _closePanel = true;
@@ -28,6 +27,6 @@ public class PullUpPanel : MonoBehaviour
         yield return new WaitForSeconds(1f);
         _closePanel = false;
         _anim.SetBool("SufficientFunds", true);
-        TriggerHandler.Failure = true;  
+        TriggerHandler.Failure = true;
     }
 }
