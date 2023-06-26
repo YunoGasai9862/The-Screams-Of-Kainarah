@@ -6498,6 +6498,14 @@ PrefabInstance:
       propertyPath: maxJumpHeight
       value: 120
       objectReference: {fileID: 0}
+    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: ledgeLayer.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 2357857118627078222, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_Mass
       value: 1

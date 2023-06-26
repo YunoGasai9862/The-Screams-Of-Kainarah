@@ -9,10 +9,14 @@ public class AnimationStateMachine
         this.animator = animator;
     }
 
-    public void AnimationPlayMachine(string constName, int state)
+    public void AnimationPlayMachineInt(string constName, int state)
     {
         this.animator.SetInteger(constName, state);
 
+    }
+    public void AnimationPlayMachineBool(string constName, bool state)
+    {
+        this.animator.SetBool(constName, state);
     }
 
 }

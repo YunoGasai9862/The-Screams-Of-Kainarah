@@ -16,14 +16,14 @@ public class AnimationHandler : MonoBehaviour
         return (CompositionX > 0f || CompositionX < 0f);
     }
 
-    private bool JumpFallingHelper(bool keystroke)
+    private bool keystrokeChecker(bool keystroke)
     {
         return keystroke;
     }
 
     private void PlayAnimation(string Name, int State)
     {
-        _stateMachine.AnimationPlayMachine(Name, State);
+        _stateMachine.AnimationPlayMachineInt(Name, State);
 
     }
     public void RunningWalkingAnimation(float keystroke)
@@ -39,10 +39,17 @@ public class AnimationHandler : MonoBehaviour
 
     public void JumpingFalling(bool keystroke)
     {
-        _ = JumpFallingHelper(keystroke) ? AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.JUMP : AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.FALL;
+        _ = keystrokeChecker(keystroke) ? AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.JUMP : AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.FALL;
 
         PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.currentPlayerState);
 
+    }
+
+    public void Sliding(bool keystroke)
+    {
+        _ = keystrokeChecker(keystroke) ? AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.SLIDING : AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.RUNNING;
+
+        PlayAnimation(AnimationConstants.SLIDING, AnimationStateKeeper.currentPlayerState);
     }
 
 

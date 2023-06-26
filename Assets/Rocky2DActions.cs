@@ -53,6 +53,15 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Slide"",
+                    ""type"": ""Button"",
+                    ""id"": ""3235472f-f652-45f9-bc92-6b8acfcd5b7d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -132,6 +141,17 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""afceb909-7681-44c0-b01e-1aee236bf789"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Slide"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -143,6 +163,7 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
         m_PlayerMovement_Movement = m_PlayerMovement.FindAction("Movement", throwIfNotFound: true);
         m_PlayerMovement_Interaction = m_PlayerMovement.FindAction("Interaction", throwIfNotFound: true);
         m_PlayerMovement_Jump = m_PlayerMovement.FindAction("Jump", throwIfNotFound: true);
+        m_PlayerMovement_Slide = m_PlayerMovement.FindAction("Slide", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -205,6 +226,7 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerMovement_Movement;
     private readonly InputAction m_PlayerMovement_Interaction;
     private readonly InputAction m_PlayerMovement_Jump;
+    private readonly InputAction m_PlayerMovement_Slide;
     public struct PlayerMovementActions
     {
         private @Rocky2DActions m_Wrapper;
@@ -212,6 +234,7 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_PlayerMovement_Movement;
         public InputAction @Interaction => m_Wrapper.m_PlayerMovement_Interaction;
         public InputAction @Jump => m_Wrapper.m_PlayerMovement_Jump;
+        public InputAction @Slide => m_Wrapper.m_PlayerMovement_Slide;
         public InputActionMap Get() { return m_Wrapper.m_PlayerMovement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -230,6 +253,9 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                 @Jump.started -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnJump;
+                @Slide.started -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnSlide;
+                @Slide.performed -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnSlide;
+                @Slide.canceled -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnSlide;
             }
             m_Wrapper.m_PlayerMovementActionsCallbackInterface = instance;
             if (instance != null)
@@ -243,6 +269,9 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @Slide.started += instance.OnSlide;
+                @Slide.performed += instance.OnSlide;
+                @Slide.canceled += instance.OnSlide;
             }
         }
     }
@@ -252,5 +281,6 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnInteraction(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnSlide(InputAction.CallbackContext context);
     }
 }

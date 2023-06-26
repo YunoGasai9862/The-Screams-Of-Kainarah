@@ -12,11 +12,10 @@ public class PlayerActions : MonoBehaviour
     private bool _isJumping = false;
     private IOverlapChecker _movementHelperClass;
     private BoxCollider2D _boxCollider;
-    private Vector2 _gravity;
-    private float jumpCounter;
 
     [SerializeField] float _characterSpeed = 10f;
-    [SerializeField] LayerMask jumpLayer;
+    [SerializeField] LayerMask groundLayer;
+    [SerializeField] LayerMask ledgeLayer;
     [SerializeField] float JumpSpeed;
     [SerializeField] float maxTimeJump;
 
@@ -40,9 +39,11 @@ public class PlayerActions : MonoBehaviour
 
         _rocky2DActions.PlayerMovement.Jump.started += Jump; //i can add the same function
         _rocky2DActions.PlayerMovement.Jump.canceled += Jump;
+        _rocky2DActions.PlayerMovement.Slide.started += Slide;
 
 
     }
+
 
     private void Start()
     {
@@ -53,46 +54,58 @@ public class PlayerActions : MonoBehaviour
     public void HandleJumping()
     {
 
-        if (!_isJumping && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, jumpLayer) && isJumpPressed)
+        if (!_isJumping && LedgeGroundChecker(groundLayer, ledgeLayer) && isJumpPressed)
         {
             _isJumping = true;
             characterVelocityY = JumpSpeed * .5f;
 
         }
 
-        if (_isJumping && !_movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, jumpLayer) && !isJumpPressed || MaxJumpTimeChecker())
+        if ((_isJumping && !(LedgeGroundChecker(groundLayer, ledgeLayer)) && !isJumpPressed) || MaxJumpTimeChecker())
         {
-
             _isJumping = false;
             characterVelocityY = -JumpSpeed * .8f;
 
         }
 
-        if (!_isJumping && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, jumpLayer) && !isJumpPressed)
+        if (!_isJumping && LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed)
         {
             characterVelocityY = 0f;
             _timeCounter = 0;
         }
 
+        if (_rb.velocity.y > 0f)
+        {
+            _timeCounter += Time.deltaTime;
+        }
 
+        if (!_isJumping && !_movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
+        {
+            characterVelocityY = -JumpSpeed * .8f; //extra check
+
+        }
+
+    }
+
+    private bool LedgeGroundChecker(LayerMask ground, LayerMask ledge)
+    {
+        return (_movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, ground)
+            || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, ledge));
     }
 
 
     private void Update()
     {
+        //movement
         _keystrokeTrack = PlayerMovement();
+
+        //flipping
 
         FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
 
+        //jumpining
+
         HandleJumping();
-
-        if (_rb.velocity.y > 0f)
-        {
-            _timeCounter += Time.deltaTime;
-            Debug.Log(_timeCounter);
-        }
-
-
 
 
     }
@@ -132,6 +145,15 @@ public class PlayerActions : MonoBehaviour
         _animationHandler.JumpingFalling(isJumpPressed);
 
     }
+
+    private void Slide(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            Debug.Log("Sliding");
+        }
+    }
+
 
 
 

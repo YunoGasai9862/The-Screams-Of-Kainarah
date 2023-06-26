@@ -4,7 +4,7 @@ public class AnimationStateKeeper
 
     public enum StateKeeper
     {
-        IDLE = 0, RUNNING = 1, JUMP = 2, FALL = 3
+        IDLE = 0, RUNNING = 1, JUMP = 2, FALL = 3, SLIDING = 4
     }
 
 
