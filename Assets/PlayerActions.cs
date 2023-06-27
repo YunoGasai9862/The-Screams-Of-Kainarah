@@ -12,6 +12,7 @@ public class PlayerActions : MonoBehaviour
     private bool _isJumping = false;
     private IOverlapChecker _movementHelperClass;
     private BoxCollider2D _boxCollider;
+    private bool _isSlidingPressed;
 
     [SerializeField] float _characterSpeed = 10f;
     [SerializeField] LayerMask groundLayer;
@@ -40,6 +41,8 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerMovement.Jump.started += Jump; //i can add the same function
         _rocky2DActions.PlayerMovement.Jump.canceled += Jump;
         _rocky2DActions.PlayerMovement.Slide.started += Slide;
+        _rocky2DActions.PlayerMovement.Slide.canceled += Slide;
+
 
 
     }
@@ -148,16 +151,10 @@ public class PlayerActions : MonoBehaviour
 
     private void Slide(InputAction.CallbackContext context)
     {
-        if (context.started)
-        {
-            Debug.Log("Sliding");
-        }
+        _isSlidingPressed = context.ReadValueAsButton();
+
+        _animationHandler.Sliding(_isSlidingPressed);
     }
-
-
-
-
-
 
 
 }

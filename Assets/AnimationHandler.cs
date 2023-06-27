@@ -4,54 +4,67 @@ public class AnimationHandler : MonoBehaviour
 {
     private AnimationStateMachine _stateMachine;
     private Animator _anim;
-
+    private float maxSlideTime = 0.4f;
 
     private void Awake()
     {
         _anim = GetComponent<Animator>();
-        _stateMachine = new AnimationStateMachine(_anim); //initializing the object
-    }
-    private bool VectorChecker(float CompositionX)
-    {
-        return (CompositionX > 0f || CompositionX < 0f);
+
+        if (_anim != null)
+            _stateMachine = new AnimationStateMachine(_anim); // initializing the object
     }
 
-    private bool keystrokeChecker(bool keystroke)
+    private void Update()
     {
-        return keystroke;
+        if (this._anim.GetCurrentAnimatorStateInfo(0).IsName(AnimationConstants.SLIDING) &&
+            returnCurrentAnimation() > maxSlideTime)
+        {
+            PlayAnimation(AnimationConstants.SLIDING, false);  //for fixing the Sliding Issue
+        }
     }
 
-    private void PlayAnimation(string Name, int State)
+    private bool VectorChecker(float compositionX)
     {
-        _stateMachine.AnimationPlayMachineInt(Name, State);
-
+        return compositionX != 0f;
     }
+
+    private void PlayAnimation(string name, int state)
+    {
+        _stateMachine.AnimationPlayMachineInt(name, state);
+    }
+
+    private void PlayAnimation(string name, bool state)
+    {
+        _stateMachine.AnimationPlayMachineBool(name, state);
+    }
+
     public void RunningWalkingAnimation(float keystroke)
     {
+        AnimationStateKeeper.StateKeeper state = VectorChecker(keystroke)
+            ? AnimationStateKeeper.StateKeeper.RUNNING
+            : AnimationStateKeeper.StateKeeper.IDLE;
 
-        _ = VectorChecker(keystroke) ?
-            AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.RUNNING :
-            AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.IDLE;
-
-        PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.currentPlayerState);
-
+        PlayAnimation(AnimationConstants.MOVEMENT, (int)state);
     }
 
     public void JumpingFalling(bool keystroke)
     {
-        _ = keystrokeChecker(keystroke) ? AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.JUMP : AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.FALL;
+        AnimationStateKeeper.StateKeeper state = keystroke
+            ? AnimationStateKeeper.StateKeeper.JUMP
+            : AnimationStateKeeper.StateKeeper.FALL;
 
-        PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.currentPlayerState);
-
+        PlayAnimation(AnimationConstants.MOVEMENT, (int)state);
     }
 
     public void Sliding(bool keystroke)
     {
-        _ = keystrokeChecker(keystroke) ? AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.SLIDING : AnimationStateKeeper.currentPlayerState = (int)AnimationStateKeeper.StateKeeper.RUNNING;
-
-        PlayAnimation(AnimationConstants.SLIDING, AnimationStateKeeper.currentPlayerState);
+        PlayAnimation(AnimationConstants.SLIDING, keystroke);
     }
 
+    public float returnCurrentAnimation()
+    {
+        return this._anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
+    }
 
 
 }
