@@ -4,10 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class Movement : MonoBehaviour
 {
-    [SerializeField] float CharacterSpeed = 10f;
     [SerializeField] SpriteRenderer sr;
-    [SerializeField] LayerMask Ground;
-    [SerializeField] LayerMask Ledge;
     [SerializeField] GameObject DiamondHitEffect;
     [SerializeField] GameObject pickupEffect;
     [SerializeField] Interactable dialogue;
@@ -16,9 +13,6 @@ public class Movement : MonoBehaviour
     public static bool AudioPickUp;
 
     private Animator anim;
-    private float Horizontal;
-    private float jumpingSpeed = 5f;
-    private BoxCollider2D col;
     private Rigidbody2D rb;
     private bool flip = true;
     private bool Death = false;
@@ -33,7 +27,6 @@ public class Movement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
-        col = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
         MAXHEALTH = 100f;
 
@@ -42,25 +35,6 @@ public class Movement : MonoBehaviour
     {
         if (!DialogueManager.IsOpen)
         {
-            if (!isGrabbing && !anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab"))
-            {
-
-                Horizontal = Input.GetAxisRaw("Horizontal");
-
-                if (rb.bodyType != RigidbodyType2D.Static)
-                {
-                    rb.velocity = new Vector2(Horizontal * CharacterSpeed, rb.velocity.y);
-
-                }
-
-            }
-
-
-            if (Input.GetButtonDown("Jump") && (isOntheGround() || isontheLedge()))
-            {
-                if (rb.bodyType != RigidbodyType2D.Static)
-                    rb.velocity = new Vector2(rb.velocity.x, jumpingSpeed);
-            }
 
             if (Death)
             {
@@ -68,20 +42,13 @@ public class Movement : MonoBehaviour
             }
 
 
-            if (rb.velocity.y < -15f && (!isOntheGround() || !isontheLedge())) //freefalling into an abyss. Not a good solution, i know
+            if (rb.velocity.y < -15f) //freefalling into an abyss. Not a good solution, i know
             {
                 GameStateManager.RestartGame();
             }
 
 
 
-            checkforFlip();
-
-
-            Sliding();
-
-
-            CheckForAnimation();
 
         }
 
@@ -117,107 +84,6 @@ public class Movement : MonoBehaviour
 
 
     }
-
-
-
-    void Sliding()
-    {
-
-
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            anim.SetBool("Sliding", true);
-
-            if (sr.flipX)
-            {
-                rb.velocity = new Vector2(-slidingspeed, rb.velocity.y);
-
-            }
-            else
-            {
-                rb.velocity = new Vector2(slidingspeed, rb.velocity.y);
-
-            }
-
-
-        }
-
-        if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            anim.SetBool("Sliding", false);
-        }
-
-    }
-    bool isOntheGround()
-    {
-
-        return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, Ground);
-    }
-
-    bool isontheLedge()
-    {
-        return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, Ledge);
-    }
-    void checkforFlip()
-    {
-        if (!Death)
-        {
-            if (Horizontal < 0f && (isOntheGround() || isontheLedge()) && flip)
-            {
-                //character flip
-
-                sr.flipX = true;
-                Vector2 offset = col.offset;
-                offset.x += 1;
-                col.offset = offset;
-
-
-
-                flip = false;
-            }
-            else if (Horizontal > 0f && (isOntheGround() || isontheLedge()) && !flip)
-            {
-
-                sr.flipX = false;
-
-                Vector2 offset = col.offset;
-                offset.x -= 1;
-
-                col.offset = offset;
-                flip = true;
-            }
-        }
-
-    }
-
-
-    void CheckForAnimation()
-
-    {
-        if (Horizontal > 0f || Horizontal < 0f)
-        {
-            anim.SetInteger("State", 1);
-        }
-        else
-        {
-            anim.SetInteger("State", 0);
-
-        }
-
-        if (rb.velocity.y >= .1f)
-        {
-            anim.SetInteger("State", 2);
-
-        }
-        else if (rb.velocity.y <= -.1f)
-        {
-            anim.SetInteger("State", 3);
-        }
-    }
-
-
-
-
 
 
 
@@ -311,15 +177,6 @@ public class Movement : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
     }
-
-
-
-
-
-
-
-
-
 
 
 }

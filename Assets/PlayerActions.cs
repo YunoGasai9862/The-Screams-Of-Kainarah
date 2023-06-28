@@ -19,8 +19,10 @@ public class PlayerActions : MonoBehaviour
     [SerializeField] LayerMask ledgeLayer;
     [SerializeField] float JumpSpeed;
     [SerializeField] float maxTimeJump;
+    [SerializeField] float slidingSpeed;
 
     private float characterVelocityY;
+    private float characterVelocityX;
     private bool isJumpPressed;
     private float _timeCounter;
 
@@ -102,13 +104,20 @@ public class PlayerActions : MonoBehaviour
         //movement
         _keystrokeTrack = PlayerMovement();
 
-        //flipping
-
-        FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
-
+        //Flipping
+        if (keystrokeMagnitudeChecker(_keystrokeTrack))
+            FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
         //jumpining
 
         HandleJumping();
+
+        //sliding
+
+        if (_isSlidingPressed && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
+        {
+            CharacterControllerMove(characterVelocityX * slidingSpeed, characterVelocityY);
+
+        }
 
 
     }
@@ -121,7 +130,9 @@ public class PlayerActions : MonoBehaviour
     {
         Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>(); //reads the value
 
-        CharacterControllerMove(keystroke.x * _characterSpeed, characterVelocityY);
+        characterVelocityX = keystroke.x;
+
+        CharacterControllerMove(characterVelocityX * _characterSpeed, characterVelocityY);
 
         _animationHandler.RunningWalkingAnimation(keystroke.x);  //for movement, plays the animation
 
@@ -133,6 +144,11 @@ public class PlayerActions : MonoBehaviour
 
         _rb.velocity = new Vector2(CharacterPositionX, CharacterPositionY);
 
+    }
+
+    private bool keystrokeMagnitudeChecker(Vector2 _keystrokeTrack)
+    {
+        return _keystrokeTrack.magnitude != 0;
     }
 
     private bool FlipCharacter(Vector2 keystroke, ref SpriteRenderer _sr)
@@ -153,7 +169,13 @@ public class PlayerActions : MonoBehaviour
     {
         _isSlidingPressed = context.ReadValueAsButton();
 
-        _animationHandler.Sliding(_isSlidingPressed);
+        if (!getJumpRessed())
+            _animationHandler.Sliding(_isSlidingPressed);
+    }
+
+    private bool getJumpRessed()
+    {
+        return isJumpPressed;
     }
 
 
