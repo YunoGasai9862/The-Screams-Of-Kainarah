@@ -33,7 +33,7 @@ public class Movement : MonoBehaviour
     }
     void Update()
     {
-        if (!DialogueManager.IsOpen)
+        if (!SingletonForDialogueManager.getDialogueManager().getIsOpen())
         {
 
             if (Death)
@@ -46,16 +46,6 @@ public class Movement : MonoBehaviour
             {
                 GameStateManager.RestartGame();
             }
-
-
-
-
-        }
-
-        if (DialogueManager.IsOpen)
-        {
-            anim.SetInteger("State", 0);
-            rb.velocity = Vector2.zero;
 
         }
 

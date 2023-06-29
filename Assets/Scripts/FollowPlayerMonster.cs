@@ -14,7 +14,7 @@ public class FollowPlayerMonster : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
-        if (!DialogueManager.IsOpen)
+        if (!SingletonForDialogueManager.getDialogueManager().getIsOpen())
         {
 
             if (MonsterFollow.Player != null && MonsterFollow.checkDistance(animator))

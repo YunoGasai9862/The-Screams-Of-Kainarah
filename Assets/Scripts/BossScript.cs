@@ -27,7 +27,7 @@ public class BossScript : MonoBehaviour
         CheckRotation();
 
 
-        if (DialogueManager.IsOpen)
+        if (SingletonForDialogueManager.getDialogueManager().getIsOpen())
         {
             anim.SetBool("walk", false);
         }

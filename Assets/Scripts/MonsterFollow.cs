@@ -17,7 +17,7 @@ public class MonsterFollow : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (!DialogueManager.IsOpen)
+        if (!SingletonForDialogueManager.getDialogueManager().getIsOpen())
         {
             if (Player != null && checkDistance(animator))
             {

@@ -2462,7 +2462,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -12.813484, y: 6.5}
+  m_Offset: {x: -12.66, y: 7.2}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2474,7 +2474,7 @@ BoxCollider2D:
   m_AutoTiling: 0
   serializedVersion: 2
   m_Size: {x: 0.28688335, y: 17.26}
-  m_EdgeRadius: 0.52
+  m_EdgeRadius: 1.16
 --- !u!20 &987303150 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 5803765632311059283, guid: 3d53eef10f4683740a9508ec7415baba, type: 3}
@@ -6645,6 +6645,10 @@ PrefabInstance:
       objectReference: {fileID: 989729090}
     - target: {fileID: 3411736711016420483, guid: e723d316729677642b873a6b6cd23d00, type: 3}
       propertyPath: m_Name
+      value: DialogueManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 3411736711016420483, guid: e723d316729677642b873a6b6cd23d00, type: 3}
+      propertyPath: m_TagString
       value: DialogueManager
       objectReference: {fileID: 0}
     m_RemovedComponents: []

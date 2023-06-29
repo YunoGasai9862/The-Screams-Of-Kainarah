@@ -41,7 +41,7 @@ public class AttackingScript : MonoBehaviour
 
     public bool PrerequisitesChecker()
     {
-        return !DialogueManager.IsOpen && !OpenWares.Buying && !InventoryOpenCloseManager.isOpenInventory;
+        return !SingletonForDialogueManager.getDialogueManager().getIsOpen() && !OpenWares.Buying && !InventoryOpenCloseManager.isOpenInventory;
     }
     void AttackingMechanism()
     {

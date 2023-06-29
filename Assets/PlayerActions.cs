@@ -101,24 +101,27 @@ public class PlayerActions : MonoBehaviour
 
     private void Update()
     {
-        //movement
-        _keystrokeTrack = PlayerMovement();
-
-        //Flipping
-        if (keystrokeMagnitudeChecker(_keystrokeTrack))
-            FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
-        //jumpining
-
-        HandleJumping();
-
-        //sliding
-
-        if (_isSlidingPressed && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
+        if (SingletonForDialogueManager.getDialogueManager().getIsOpen())
         {
-            CharacterControllerMove(characterVelocityX * slidingSpeed, characterVelocityY);
+            //movement
+            _keystrokeTrack = PlayerMovement();
+
+            //Flipping
+            if (keystrokeMagnitudeChecker(_keystrokeTrack))
+                FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
+            //jumpining
+
+            HandleJumping();
+
+            //sliding
+
+            if (_isSlidingPressed && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
+            {
+                CharacterControllerMove(characterVelocityX * slidingSpeed, characterVelocityY);
+
+            }
 
         }
-
 
     }
 

@@ -9,7 +9,7 @@ public class DialogueManager : MonoBehaviour
     public TextMeshProUGUI myname;
     public Text maindialogue;
     public Animator myanimator;
-    public static bool IsOpen = false;
+    public bool IsOpen = false;
 
     private static Dialogues[] _dialogues = null;
     [SerializeField] Interactable myinteractable;
@@ -41,7 +41,10 @@ public class DialogueManager : MonoBehaviour
         DisplayNextSentence();
 
     }
-
+    public bool getIsOpen()
+    {
+        return IsOpen;
+    }
     IEnumerator AnimateLetters(string sentence)
     {
 

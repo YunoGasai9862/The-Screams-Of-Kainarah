@@ -28,6 +28,7 @@ TagManager:
   - Vendor
   - Scythe
   - Transact
+  - DialogueManager
   layers:
   - Default
   - TransparentFX
