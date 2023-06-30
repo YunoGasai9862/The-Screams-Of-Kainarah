@@ -15,7 +15,6 @@ public class CreateInventorySystem : MonoBehaviour
     private static Queue<GameObject> inventoryCheck;
     private static Queue<GameObject> inventoryTemp;
     private static int i = 0;
-    private static int _count = 0;
     private static bool _alreadyExist = false;
     private static GameObject _temp;
 

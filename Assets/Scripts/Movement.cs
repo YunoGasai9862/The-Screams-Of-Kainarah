@@ -14,9 +14,7 @@ public class Movement : MonoBehaviour
 
     private Animator anim;
     private Rigidbody2D rb;
-    private bool flip = true;
     private bool Death = false;
-    private float slidingspeed = 5f;
     public static double MAXHEALTH = 100f;
     public static double ENEMYATTACK = 5f;
     [SerializeField] GameObject TeleportTransition;
@@ -33,7 +31,7 @@ public class Movement : MonoBehaviour
     }
     void Update()
     {
-        if (!SingletonForDialogueManager.getDialogueManager().getIsOpen())
+        if (!SingletonForObjects.getDialogueManager().getIsOpen())
         {
 
             if (Death)
@@ -93,10 +91,7 @@ public class Movement : MonoBehaviour
                 MAXHEALTH -= ENEMYATTACK;
             }
 
-
-
         }
-
 
     }
 

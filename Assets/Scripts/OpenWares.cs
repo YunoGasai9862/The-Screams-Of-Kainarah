@@ -7,11 +7,6 @@ public class OpenWares : MonoBehaviour
     [SerializeField] GameObject WaresPanel;
     public static bool Buying = false;
 
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -24,7 +19,7 @@ public class OpenWares : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        if (SingletonForDialogueManager.getDialogueManager().getIsOpen() && !InventoryOpenCloseManager.isOpenInventory)
+        if (SingletonForObjects.getDialogueManager().getIsOpen() && !SingletonForObjects.getInventoryOpenCloseManager().isOpenInventory)
         {
             WaresPanel.SetActive(true);
             Buying = true;

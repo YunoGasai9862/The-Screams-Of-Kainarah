@@ -37,15 +37,6 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Interaction"",
-                    ""type"": ""Button"",
-                    ""id"": ""7c7b68a2-3c6d-45c7-993b-e96c1f84613e"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Jump"",
                     ""type"": ""Button"",
                     ""id"": ""30c5967d-a3d9-47af-8a45-868042606d2b"",
@@ -122,17 +113,6 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""ac1be4bd-eb36-46c1-bdc7-da6a37d1f4eb"",
-                    ""path"": ""<Keyboard>/f"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Interaction"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""4327da59-5030-4a16-9579-e6587c2647cc"",
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
@@ -154,6 +134,34 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""PlayerAttack"",
+            ""id"": ""7945f9ad-32b1-4104-b6f2-7b329c790fb5"",
+            ""actions"": [
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""cd15e88e-79c3-4d2e-a950-a51647a5ee48"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""fb7622f0-af47-4779-a9d3-b4094ceba04b"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -161,9 +169,11 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
         // PlayerMovement
         m_PlayerMovement = asset.FindActionMap("PlayerMovement", throwIfNotFound: true);
         m_PlayerMovement_Movement = m_PlayerMovement.FindAction("Movement", throwIfNotFound: true);
-        m_PlayerMovement_Interaction = m_PlayerMovement.FindAction("Interaction", throwIfNotFound: true);
         m_PlayerMovement_Jump = m_PlayerMovement.FindAction("Jump", throwIfNotFound: true);
         m_PlayerMovement_Slide = m_PlayerMovement.FindAction("Slide", throwIfNotFound: true);
+        // PlayerAttack
+        m_PlayerAttack = asset.FindActionMap("PlayerAttack", throwIfNotFound: true);
+        m_PlayerAttack_Attack = m_PlayerAttack.FindAction("Attack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -224,7 +234,6 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_PlayerMovement;
     private IPlayerMovementActions m_PlayerMovementActionsCallbackInterface;
     private readonly InputAction m_PlayerMovement_Movement;
-    private readonly InputAction m_PlayerMovement_Interaction;
     private readonly InputAction m_PlayerMovement_Jump;
     private readonly InputAction m_PlayerMovement_Slide;
     public struct PlayerMovementActions
@@ -232,7 +241,6 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
         private @Rocky2DActions m_Wrapper;
         public PlayerMovementActions(@Rocky2DActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_PlayerMovement_Movement;
-        public InputAction @Interaction => m_Wrapper.m_PlayerMovement_Interaction;
         public InputAction @Jump => m_Wrapper.m_PlayerMovement_Jump;
         public InputAction @Slide => m_Wrapper.m_PlayerMovement_Slide;
         public InputActionMap Get() { return m_Wrapper.m_PlayerMovement; }
@@ -247,9 +255,6 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                 @Movement.started -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnMovement;
-                @Interaction.started -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnInteraction;
-                @Interaction.performed -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnInteraction;
-                @Interaction.canceled -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnInteraction;
                 @Jump.started -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_PlayerMovementActionsCallbackInterface.OnJump;
@@ -263,9 +268,6 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
-                @Interaction.started += instance.OnInteraction;
-                @Interaction.performed += instance.OnInteraction;
-                @Interaction.canceled += instance.OnInteraction;
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
@@ -276,11 +278,47 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
         }
     }
     public PlayerMovementActions @PlayerMovement => new PlayerMovementActions(this);
+
+    // PlayerAttack
+    private readonly InputActionMap m_PlayerAttack;
+    private IPlayerAttackActions m_PlayerAttackActionsCallbackInterface;
+    private readonly InputAction m_PlayerAttack_Attack;
+    public struct PlayerAttackActions
+    {
+        private @Rocky2DActions m_Wrapper;
+        public PlayerAttackActions(@Rocky2DActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Attack => m_Wrapper.m_PlayerAttack_Attack;
+        public InputActionMap Get() { return m_Wrapper.m_PlayerAttack; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PlayerAttackActions set) { return set.Get(); }
+        public void SetCallbacks(IPlayerAttackActions instance)
+        {
+            if (m_Wrapper.m_PlayerAttackActionsCallbackInterface != null)
+            {
+                @Attack.started -= m_Wrapper.m_PlayerAttackActionsCallbackInterface.OnAttack;
+                @Attack.performed -= m_Wrapper.m_PlayerAttackActionsCallbackInterface.OnAttack;
+                @Attack.canceled -= m_Wrapper.m_PlayerAttackActionsCallbackInterface.OnAttack;
+            }
+            m_Wrapper.m_PlayerAttackActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Attack.started += instance.OnAttack;
+                @Attack.performed += instance.OnAttack;
+                @Attack.canceled += instance.OnAttack;
+            }
+        }
+    }
+    public PlayerAttackActions @PlayerAttack => new PlayerAttackActions(this);
     public interface IPlayerMovementActions
     {
         void OnMovement(InputAction.CallbackContext context);
-        void OnInteraction(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnSlide(InputAction.CallbackContext context);
+    }
+    public interface IPlayerAttackActions
+    {
+        void OnAttack(InputAction.CallbackContext context);
     }
 }

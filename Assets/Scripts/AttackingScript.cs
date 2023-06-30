@@ -1,5 +1,5 @@
-
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class AttackingScript : MonoBehaviour
 {
@@ -11,15 +11,39 @@ public class AttackingScript : MonoBehaviour
     private GameObject dag;
     public static bool canthrowDagger = true;
     private float throwdaggerTime = 0;
+    private MovementHelperClass _movementHelper;
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
     [SerializeField] GameObject Dagger;
     [SerializeField] GameObject IceTrail;
     [SerializeField] GameObject IceTrail2;
+
+
+    private Rocky2DActions _rocky2DActions;
+    private PlayerInput _playerInput;
+    private bool leftMouseButtonPressed;
+
+    private void Awake()
+    {
+        _rocky2DActions = new Rocky2DActions();
+        _playerInput = GetComponent<PlayerInput>();
+
+
+        _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
+        _rocky2DActions.PlayerAttack.Attack.started += PlayerAttack;
+        _rocky2DActions.PlayerAttack.Attack.canceled += PlayerAttack;
+    }
+
+    private void PlayerAttack(InputAction.CallbackContext context)
+    {
+        leftMouseButtonPressed = context.ReadValueAsButton();
+    }
+
     void Start()
     {
         anim = GetComponent<Animator>();
         col = GetComponent<BoxCollider2D>();
+        _movementHelper = new MovementHelperClass();
 
     }
 
@@ -41,12 +65,13 @@ public class AttackingScript : MonoBehaviour
 
     public bool PrerequisitesChecker()
     {
-        return !SingletonForDialogueManager.getDialogueManager().getIsOpen() && !OpenWares.Buying && !InventoryOpenCloseManager.isOpenInventory;
+        return !SingletonForObjects.getDialogueManager().getIsOpen() &&
+            !OpenWares.Buying && !SingletonForObjects.getInventoryOpenCloseManager().isOpenInventory;
     }
     void AttackingMechanism()
     {
 
-        if (!isOntheGround() && Input.GetMouseButtonDown(0))
+        if (_movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground) && Input.GetMouseButtonDown(0))
         {
             anim.SetBool("AttackJ", true);
         }
@@ -56,7 +81,8 @@ public class AttackingScript : MonoBehaviour
 
         }
 
-        if ((isOntheGround() || isontheLedge()) && Input.GetMouseButtonDown(0))
+        if ((_movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground) ||
+            _movementHelper.overlapAgainstLayerMaskChecker(ref col, ledge)) && Input.GetMouseButtonDown(0))
         {
             kickoffElapsedTime = true;
 
@@ -144,8 +170,6 @@ public class AttackingScript : MonoBehaviour
             }
 
 
-
-
         }
 
         if (!(anim.GetCurrentAnimatorStateInfo(0).IsName("Running")) && Input.GetKeyDown(KeyCode.F) && canthrowDagger)
@@ -159,17 +183,6 @@ public class AttackingScript : MonoBehaviour
 
         }
 
-
-
-        bool isOntheGround()
-        {
-            return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, Ground);
-        }
-
-        bool isontheLedge()
-        {
-            return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, ledge);
-        }
     }
 
     void instantiateDag()

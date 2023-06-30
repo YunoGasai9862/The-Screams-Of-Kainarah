@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3411736711016420481}
   m_Layer: 0
   m_Name: DialogueManager
-  m_TagString: Untagged
+  m_TagString: DialogueManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -47,3 +47,5 @@ MonoBehaviour:
   myname: {fileID: 0}
   maindialogue: {fileID: 0}
   myanimator: {fileID: 0}
+  IsOpen: 0
+  myinteractable: {fileID: 0}

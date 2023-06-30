@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackRightLeft : MonoBehaviour
@@ -7,7 +5,6 @@ public class AttackRightLeft : MonoBehaviour
     private Animator anim;
     private SpriteRenderer sr;
     [SerializeField] LayerMask Player;
-    private bool StopForAtack = false;
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -18,7 +15,7 @@ public class AttackRightLeft : MonoBehaviour
     void Update()
     {
 
-        if(sr.flipX)
+        if (sr.flipX)
         {
             if (Physics2D.Raycast(transform.position, -transform.right, 3f, Player))
             {
@@ -48,9 +45,9 @@ public class AttackRightLeft : MonoBehaviour
             }
         }
 
-       
-            
-        
-         
+
+
+
+
     }
 }

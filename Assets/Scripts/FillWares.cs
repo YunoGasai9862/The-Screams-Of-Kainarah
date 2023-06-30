@@ -27,12 +27,6 @@ public class FillWares : MonoBehaviour
         StartCoroutine(FillUpWares());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     IEnumerator FillUpWares()
     {
         yield return new WaitForSeconds(.7f);

@@ -101,7 +101,7 @@ public class PlayerActions : MonoBehaviour
 
     private void Update()
     {
-        if (SingletonForDialogueManager.getDialogueManager().getIsOpen())
+        if (!SingletonForObjects.getDialogueManager().getIsOpen())
         {
             //movement
             _keystrokeTrack = PlayerMovement();

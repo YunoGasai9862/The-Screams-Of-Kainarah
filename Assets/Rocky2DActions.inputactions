@@ -15,15 +15,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Interaction",
-                    "type": "Button",
-                    "id": "7c7b68a2-3c6d-45c7-993b-e96c1f84613e",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Jump",
                     "type": "Button",
                     "id": "30c5967d-a3d9-47af-8a45-868042606d2b",
@@ -100,17 +91,6 @@
                 },
                 {
                     "name": "",
-                    "id": "ac1be4bd-eb36-46c1-bdc7-da6a37d1f4eb",
-                    "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Interaction",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "4327da59-5030-4a16-9579-e6587c2647cc",
                     "path": "<Keyboard>/space",
                     "interactions": "",
@@ -128,6 +108,34 @@
                     "processors": "",
                     "groups": "",
                     "action": "Slide",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "PlayerAttack",
+            "id": "7945f9ad-32b1-4104-b6f2-7b329c790fb5",
+            "actions": [
+                {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "cd15e88e-79c3-4d2e-a950-a51647a5ee48",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "fb7622f0-af47-4779-a9d3-b4094ceba04b",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
