@@ -163,7 +163,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 6
-    m_ConditionEvent: AttackCount
+    m_ConditionEvent: PlayerAttack
     m_EventTreshold: 4
   - m_ConditionMode: 4
     m_ConditionEvent: ElapsedTime
@@ -378,7 +378,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 6
-    m_ConditionEvent: AttackCount
+    m_ConditionEvent: PlayerAttack
     m_EventTreshold: 3
   - m_ConditionMode: 4
     m_ConditionEvent: ElapsedTime
@@ -505,7 +505,7 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: AttackCount
+  - m_Name: PlayerAttack
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -569,7 +569,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 6
-    m_ConditionEvent: AttackCount
+    m_ConditionEvent: PlayerAttack
     m_EventTreshold: 2
   - m_ConditionMode: 4
     m_ConditionEvent: ElapsedTime
@@ -753,7 +753,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 6
-    m_ConditionEvent: AttackCount
+    m_ConditionEvent: PlayerAttack
     m_EventTreshold: 1
   - m_ConditionMode: 1
     m_ConditionEvent: Attack
@@ -1248,7 +1248,7 @@ AnimatorStateTransition:
     m_ConditionEvent: Attack
     m_EventTreshold: 0
   - m_ConditionMode: 6
-    m_ConditionEvent: AttackCount
+    m_ConditionEvent: PlayerAttack
     m_EventTreshold: 1
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -1423219879816258009}

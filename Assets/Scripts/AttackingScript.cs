@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,6 +12,8 @@ public class AttackingScript : MonoBehaviour
     private GameObject dag;
     public static bool canthrowDagger = true;
     private float throwdaggerTime = 0;
+    private double _timeForMouseClickStart = 0;
+    private double _timeForMouseClickEnd = 0;
     private MovementHelperClass _movementHelper;
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
@@ -22,6 +25,7 @@ public class AttackingScript : MonoBehaviour
     private Rocky2DActions _rocky2DActions;
     private PlayerInput _playerInput;
     private bool leftMouseButtonPressed;
+    private int _playerAttackState = 0;
 
     private void Awake()
     {
@@ -30,13 +34,57 @@ public class AttackingScript : MonoBehaviour
 
 
         _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
-        _rocky2DActions.PlayerAttack.Attack.started += PlayerAttack;
-        _rocky2DActions.PlayerAttack.Attack.canceled += PlayerAttack;
+        _rocky2DActions.PlayerAttack.Attack.started += PlayerAttackStart;
+        _rocky2DActions.PlayerAttack.Attack.canceled += PlayerAttackCancel;
+
+        _playerAttackState = (int)PlayerAttackEnum.PlayerAttackSlash.Attack; //always the first attack
     }
 
-    private void PlayerAttack(InputAction.CallbackContext context)
+
+    private void PlayerAttackStart(InputAction.CallbackContext context)
     {
         leftMouseButtonPressed = context.ReadValueAsButton();
+        _timeForMouseClickStart = context.time;
+
+    }
+
+    private void PlayerAttackCancel(InputAction.CallbackContext context)
+    {
+        leftMouseButtonPressed = context.ReadValueAsButton();
+        _timeForMouseClickEnd = context.time;
+
+
+    }
+
+    private bool enumStateManipulator<T>(ref int PlayerAttackState, int InitialStateOfTheEnum)
+    {
+        int EnumSize = Enum.GetNames(typeof(T)).Length; //returns the length of the Enum
+        foreach (T PAS in Enum.GetValues(typeof(T)))
+        {
+            int _dummy = Convert.ToInt32(PAS); //converts to INT
+            if (PlayerAttackState == _dummy)
+            {
+                _dummy++;
+                PlayerAttackState = _dummy <= EnumSize ? _dummy : InitialStateOfTheEnum; //sets to the initial State of the Enum
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void PlayerAttackMechanism()
+    {
+        if (enumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack)) //cast Type <T>
+        {
+
+        }
+    }
+
+
+    private double timeDifference(double EndTime, double StartTime)
+    {
+        return EndTime - StartTime;
     }
 
     void Start()
@@ -71,7 +119,7 @@ public class AttackingScript : MonoBehaviour
     void AttackingMechanism()
     {
 
-        if (_movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground) && Input.GetMouseButtonDown(0))
+        if (!_movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground) && Input.GetMouseButtonDown(0))
         {
             anim.SetBool("AttackJ", true);
         }
@@ -87,7 +135,7 @@ public class AttackingScript : MonoBehaviour
             kickoffElapsedTime = true;
 
             AttackCount++;
-            anim.SetInteger("AttackCount", AttackCount);
+            anim.SetInteger("PlayerAttack", AttackCount);
 
             anim.SetBool("Attack", true);
             elapsedTime = 0;  // YAYAY SOLVED IT!!!
