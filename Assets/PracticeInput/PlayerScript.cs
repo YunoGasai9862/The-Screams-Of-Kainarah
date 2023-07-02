@@ -76,15 +76,6 @@ public class PlayerScript : MonoBehaviour
         rb.AddForce(new Vector2(input.x, input.y) * speed, ForceMode2D.Force);
     }
 
-
-
-    /**
-    private void PlayerInput_onActionTriggeredWizard(InputAction.CallbackContext context)
-    {
-        Debug.Log(context); //all the actions will fire
-    }
-    **/
-
     public void Jump(InputAction.CallbackContext context)
     {
         if (context.performed)

@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class AttackingScript : MonoBehaviour
 {
-    private Animator anim;
+    private Animator _anim;
     private float elapsedTime = 0;
     private bool kickoffElapsedTime;
     private int AttackCount = 0;
@@ -12,60 +12,86 @@ public class AttackingScript : MonoBehaviour
     private GameObject dag;
     public static bool canthrowDagger = true;
     private float throwdaggerTime = 0;
-    private double _timeForMouseClickStart = 0;
-    private double _timeForMouseClickEnd = 0;
+    private float _timeForMouseClickStart = 0;
+    private float _timeForMouseClickEnd = 0;
     private MovementHelperClass _movementHelper;
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
     [SerializeField] GameObject Dagger;
     [SerializeField] GameObject IceTrail;
     [SerializeField] GameObject IceTrail2;
+    [SerializeField] string canAttackStateName;
+    [SerializeField] string attackStateName;
+    [SerializeField] string timeDifferenceStateName;
 
 
     private Rocky2DActions _rocky2DActions;
     private PlayerInput _playerInput;
     private bool leftMouseButtonPressed;
     private int _playerAttackState = 0;
+    private string _playerAttackStateName;
+    private PlayerAttackStateMachine _playerAttackStateMachine;
+    private bool _isPlayerEligibleForStartingAttack = false;
 
     private void Awake()
     {
+        _anim = GetComponent<Animator>();
         _rocky2DActions = new Rocky2DActions();
         _playerInput = GetComponent<PlayerInput>();
+        _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
 
 
         _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
         _rocky2DActions.PlayerAttack.Attack.started += PlayerAttackStart;
         _rocky2DActions.PlayerAttack.Attack.canceled += PlayerAttackCancel;
 
-        _playerAttackState = (int)PlayerAttackEnum.PlayerAttackSlash.Attack; //always the first attack
+        _playerAttackState = 0;
     }
 
 
     private void PlayerAttackStart(InputAction.CallbackContext context)
     {
         leftMouseButtonPressed = context.ReadValueAsButton();
-        _timeForMouseClickStart = context.time;
+
+        _timeForMouseClickStart = (float)context.time;
+
+        //keeps track of attacking states
+        _isPlayerEligibleForStartingAttack = enumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
+
+        //sets the initial configuration for the attacking system
+        settingInitialAttackConfiguration();
+
+        PlayerAttackMechanism();
+
 
     }
 
     private void PlayerAttackCancel(InputAction.CallbackContext context)
     {
         leftMouseButtonPressed = context.ReadValueAsButton();
-        _timeForMouseClickEnd = context.time;
 
+        _timeForMouseClickEnd = (float)context.time;
+
+        _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
     }
 
     private bool enumStateManipulator<T>(ref int PlayerAttackState, int InitialStateOfTheEnum)
     {
         int EnumSize = Enum.GetNames(typeof(T)).Length; //returns the length of the Enum
+
         foreach (T PAS in Enum.GetValues(typeof(T)))
         {
-            int _dummy = Convert.ToInt32(PAS); //converts to INT
+            int _dummy = Convert.ToInt32(PAS) - 1; //converts to INT
+
             if (PlayerAttackState == _dummy)
             {
                 _dummy++;
+
                 PlayerAttackState = _dummy <= EnumSize ? _dummy : InitialStateOfTheEnum; //sets to the initial State of the Enum
+
+                _playerAttackStateName = Enum.GetName(typeof(T), PlayerAttackState);
+
                 return true;
             }
         }
@@ -73,23 +99,37 @@ public class AttackingScript : MonoBehaviour
         return false;
     }
 
+    private void settingInitialAttackConfiguration()
+    {
+        if (_playerAttackState == (int)PlayerAttackEnum.PlayerAttackSlash.Attack)
+        {
+            _playerAttackStateMachine.canAttack(canAttackStateName, leftMouseButtonPressed);
+
+        }
+    }
     private void PlayerAttackMechanism()
     {
-        if (enumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack)) //cast Type <T>
+        if (_isPlayerEligibleForStartingAttack) //cast Type <T>
         {
+            _playerAttackStateMachine.setAttackState(attackStateName, _playerAttackState, _playerAttackStateName); //toggles state
 
+            float timeDifferencebetweenStates = timeDifference(_timeForMouseClickEnd, _timeForMouseClickStart);
+
+            Debug.Log(timeDifferencebetweenStates);
+
+            _playerAttackStateMachine.timeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName,     //keeps track of time elapsed
+               timeDifferencebetweenStates);
         }
     }
 
 
-    private double timeDifference(double EndTime, double StartTime)
+    private float timeDifference(float EndTime, float StartTime)
     {
-        return EndTime - StartTime;
+        return Math.Abs(EndTime - StartTime);
     }
 
     void Start()
     {
-        anim = GetComponent<Animator>();
         col = GetComponent<BoxCollider2D>();
         _movementHelper = new MovementHelperClass();
 
@@ -108,7 +148,6 @@ public class AttackingScript : MonoBehaviour
             AttackingMechanism();
         }
 
-
     }
 
     public bool PrerequisitesChecker()
@@ -121,11 +160,11 @@ public class AttackingScript : MonoBehaviour
 
         if (!_movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground) && Input.GetMouseButtonDown(0))
         {
-            anim.SetBool("AttackJ", true);
+            _anim.SetBool("AttackJ", true);
         }
         else
         {
-            anim.SetBool("AttackJ", false);
+            _anim.SetBool("AttackJ", false);
 
         }
 
@@ -135,66 +174,66 @@ public class AttackingScript : MonoBehaviour
             kickoffElapsedTime = true;
 
             AttackCount++;
-            anim.SetInteger("PlayerAttack", AttackCount);
+            _anim.SetInteger("PlayerAttack", AttackCount);
 
-            anim.SetBool("Attack", true);
+            _anim.SetBool("Attack", true);
             elapsedTime = 0;  // YAYAY SOLVED IT!!!
 
         }
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+        if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
         {
             //fix with new elapsedTime thingy
 
-            anim.SetFloat("ElapsedTime", elapsedTime);
+            _anim.SetFloat("ElapsedTime", elapsedTime);
 
             if (elapsedTime > .5f)
             {
 
                 AttackCount = 0;
                 elapsedTime = 0;
-                anim.SetBool("Attack", false);
+                _anim.SetBool("Attack", false);
                 kickoffElapsedTime = false;
             }
 
 
         }
-        else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
+        else if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
         {
-            anim.SetFloat("ElapsedTime", elapsedTime);
+            _anim.SetFloat("ElapsedTime", elapsedTime);
             if (elapsedTime > .8f)
             {
 
                 AttackCount = 0;
                 elapsedTime = 0;
-                anim.SetBool("Attack", false);
+                _anim.SetBool("Attack", false);
                 kickoffElapsedTime = false;
             }
 
         }
-        else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
+        else if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
         {
-            anim.SetFloat("ElapsedTime", elapsedTime);
+            _anim.SetFloat("ElapsedTime", elapsedTime);
             if (elapsedTime > .8f)
             {
 
                 AttackCount = 0;
                 elapsedTime = 0;
-                anim.SetBool("Attack", false);
+                _anim.SetBool("Attack", false);
                 kickoffElapsedTime = false;
             }
 
 
 
         }
-        else if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack4"))
+        else if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack4"))
         {
-            anim.SetFloat("ElapsedTime", elapsedTime);
+            _anim.SetFloat("ElapsedTime", elapsedTime);
             if (elapsedTime > .8f)
             {
 
                 AttackCount = 0;
                 elapsedTime = 0;
-                anim.SetBool("Attack", false);
+                _anim.SetBool("Attack", false);
                 kickoffElapsedTime = false;
             }
 
@@ -202,17 +241,17 @@ public class AttackingScript : MonoBehaviour
 
         if (AttackCount > 4)
         {
-            anim.SetBool("Attack", false);
+            _anim.SetBool("Attack", false);
             AttackCount = 0;
 
         }
 
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("ThrowDagger"))
+        if (_anim.GetCurrentAnimatorStateInfo(0).IsName("ThrowDagger"))
         {
             throwdaggerTime += Time.deltaTime;
             if (throwdaggerTime > .5f)
             {
-                anim.SetBool("ThrowDagger", false);
+                _anim.SetBool("ThrowDagger", false);
                 throwdaggerTime = 0f;
 
             }
@@ -220,9 +259,9 @@ public class AttackingScript : MonoBehaviour
 
         }
 
-        if (!(anim.GetCurrentAnimatorStateInfo(0).IsName("Running")) && Input.GetKeyDown(KeyCode.F) && canthrowDagger)
+        if (!(_anim.GetCurrentAnimatorStateInfo(0).IsName("Running")) && Input.GetKeyDown(KeyCode.F) && canthrowDagger)
         {
-            anim.SetBool("ThrowDagger", true);
+            _anim.SetBool("ThrowDagger", true);
             AttackEnemy.ThrowDagger = true;
 
             Invoke("instantiateDag", .4f);

@@ -20,34 +20,13 @@ public class FollowPlayerMonster : StateMachineBehaviour
             if (MonsterFollow.Player != null && MonsterFollow.checkDistance(animator))
             {
 
-
-
-                //   float crossProduct = Vector3.Dot(animator.transform.position, MonsterFollow.Player.transform.position);
-                // crossProduct = crossProduct / (animator.transform.position.magnitude * MonsterFollow.Player.transform.position.magnitude);
-
-
-                //converting to degrees
-                // double angleinDegrees = crossProduct * (180.0f / (Math.PI));
-
-
-                // animator.transform.rotation = Quaternion.AngleAxis((float)angleinDegrees, Vector3.up);
-
-
                 Vector3 newPos = MonsterFollow.Player.transform.position;
                 newPos.y = MonsterFollow.Player.transform.position.y - 1.5f;
 
                 animator.transform.position = Vector3.MoveTowards(animator.transform.position, newPos, 4f * Time.deltaTime);
 
 
-
-
             }
-
-
-
-
-
-
 
 
             if (!MonsterFollow.checkDistance(animator))

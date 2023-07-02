@@ -6591,6 +6591,18 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3387488181997499512, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: attackStateName
+      value: PlayerAttack
+      objectReference: {fileID: 0}
+    - target: {fileID: 3387488181997499512, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: canAttackStateName
+      value: Attack
+      objectReference: {fileID: 0}
+    - target: {fileID: 3387488181997499512, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: timeDifferenceStateName
+      value: ElapsedTime
+      objectReference: {fileID: 0}
     - target: {fileID: 8468629046130634944, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_Enabled
       value: 0
