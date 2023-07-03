@@ -3,7 +3,6 @@ using UnityEngine;
 public class PlayerAttackStateMachine
 {
     private Animator _animator;
-    private string currentStateName;
 
     public PlayerAttackStateMachine(Animator _animator)
     {
@@ -20,9 +19,8 @@ public class PlayerAttackStateMachine
         this._animator = _animator;
     }
 
-    public void setAttackState(string parameterName, int currentStateInt, string currentStateName)
+    public void setAttackState(string parameterName, int currentStateInt)
     {
-        this.currentStateName = currentStateName;
         this._animator.SetInteger(parameterName, currentStateInt);
     }
 
@@ -35,6 +33,12 @@ public class PlayerAttackStateMachine
     {
         this._animator.SetBool(parameterName, canAttack);
     }
+
+    public bool istheCurrentAnimationPlaying()
+    {
+        return this._animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f; //if its playing or not
+    }
+
 
 
 }

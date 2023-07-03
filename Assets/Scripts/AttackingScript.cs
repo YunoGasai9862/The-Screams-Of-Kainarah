@@ -24,7 +24,6 @@ public class AttackingScript : MonoBehaviour
     [SerializeField] string attackStateName;
     [SerializeField] string timeDifferenceStateName;
 
-
     private Rocky2DActions _rocky2DActions;
     private PlayerInput _playerInput;
     private bool leftMouseButtonPressed;
@@ -59,9 +58,9 @@ public class AttackingScript : MonoBehaviour
         _isPlayerEligibleForStartingAttack = enumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
 
         //sets the initial configuration for the attacking system
-        settingInitialAttackConfiguration();
+        settingInitialAttackConfiguration(canAttackStateName, leftMouseButtonPressed);
 
-        PlayerAttackMechanism();
+        PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>();
 
 
     }
@@ -78,7 +77,7 @@ public class AttackingScript : MonoBehaviour
 
     private bool enumStateManipulator<T>(ref int PlayerAttackState, int InitialStateOfTheEnum)
     {
-        int EnumSize = Enum.GetNames(typeof(T)).Length; //returns the length of the Enum
+        int EnumSize = getLenthofEnum<T>(); //returns the length of the Enum
 
         foreach (T PAS in Enum.GetValues(typeof(T)))
         {
@@ -92,6 +91,7 @@ public class AttackingScript : MonoBehaviour
 
                 _playerAttackStateName = Enum.GetName(typeof(T), PlayerAttackState);
 
+
                 return true;
             }
         }
@@ -99,7 +99,7 @@ public class AttackingScript : MonoBehaviour
         return false;
     }
 
-    private void settingInitialAttackConfiguration()
+    private void settingInitialAttackConfiguration(string canAttackStateName, bool leftMouseButtonPressed)
     {
         if (_playerAttackState == (int)PlayerAttackEnum.PlayerAttackSlash.Attack)
         {
@@ -107,25 +107,40 @@ public class AttackingScript : MonoBehaviour
 
         }
     }
-    private void PlayerAttackMechanism()
+    private void PlayerAttackMechanism<T>()
     {
         if (_isPlayerEligibleForStartingAttack) //cast Type <T>
         {
-            _playerAttackStateMachine.setAttackState(attackStateName, _playerAttackState, _playerAttackStateName); //toggles state
+            _playerAttackStateMachine.setAttackState(attackStateName, _playerAttackState); //toggles state
 
             float timeDifferencebetweenStates = timeDifference(_timeForMouseClickEnd, _timeForMouseClickStart);
-
-            Debug.Log(timeDifferencebetweenStates);
 
             _playerAttackStateMachine.timeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName,     //keeps track of time elapsed
                timeDifferencebetweenStates);
         }
+
+        if (isEnumValueEqualToLengthOfEnum<T>(_playerAttackStateName))
+        {
+            _playerAttackStateMachine.canAttack(canAttackStateName, false);
+            _playerAttackState = 0; //resets the attackingstate
+        }
+
+
     }
 
 
     private float timeDifference(float EndTime, float StartTime)
     {
         return Math.Abs(EndTime - StartTime);
+    }
+    private bool isEnumValueEqualToLengthOfEnum<T>(string _playerAttackStateName)
+    {
+        return (int)Enum.Parse(typeof(T), _playerAttackStateName) == getLenthofEnum<T>();
+    }
+
+    private int getLenthofEnum<T>()
+    {
+        return Enum.GetNames(typeof(T)).Length;
     }
 
     void Start()
@@ -134,6 +149,7 @@ public class AttackingScript : MonoBehaviour
         _movementHelper = new MovementHelperClass();
 
     }
+
 
     // Update is called once per frame
     void Update()
