@@ -24,6 +24,12 @@ public class PlayerAttackStateMachine
         this._animator.SetInteger(parameterName, currentStateInt);
     }
 
+    public void setAttackState(string parameterName, bool currentStateInt)
+    {
+        this._animator.SetBool(parameterName, currentStateInt);
+    }
+
+
     public void timeDifferenceRequiredBetweenTwoStates(string parameterName, float timePassed)
     {
         this._animator.SetFloat(parameterName, timePassed);

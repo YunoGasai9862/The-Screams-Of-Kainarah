@@ -23,6 +23,7 @@ public class AttackingScript : MonoBehaviour
     [SerializeField] string canAttackStateName;
     [SerializeField] string attackStateName;
     [SerializeField] string timeDifferenceStateName;
+    [SerializeField] string jumpAttackStateName;
 
     private Rocky2DActions _rocky2DActions;
     private PlayerInput _playerInput;
@@ -61,14 +62,30 @@ public class AttackingScript : MonoBehaviour
         //sets the initial configuration for the attacking system
         settingInitialAttackConfiguration(canAttackStateName, leftMouseButtonPressed);
 
-        if (PrerequisitesChecker())
+        if (IsAttackPrerequisiteMet())
         {
             globalVariablesAccess.ISATTACKING = true;
             PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>();
         }
 
+    }
 
+    private void jumpAttackMechanism()
+    {
 
+        if (isJumpPrequisitesMet())
+        {
+            _playerAttackStateMachine.setAttackState(jumpAttackStateName, true);
+        }
+
+    }
+
+    private bool isJumpPrequisitesMet()
+    {
+        bool isJumping = globalVariablesAccess.ISJUMPING;
+        bool isOnTheGround = _movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground);
+
+        return isJumping && !isOnTheGround;
     }
 
     private void PlayerAttackCancel(InputAction.CallbackContext context)
@@ -167,7 +184,7 @@ public class AttackingScript : MonoBehaviour
     void Update()
     {
 
-        if (PrerequisitesChecker())
+        if (IsAttackPrerequisiteMet())
         {
             if (_playerAttackStateMachine.istheAttackCancelConditionTrue(_playerAttackStateName, "Attack")) //for the first status only
             {
@@ -177,10 +194,14 @@ public class AttackingScript : MonoBehaviour
 
     }
 
-    public bool PrerequisitesChecker()
+    public bool IsAttackPrerequisiteMet()
     {
-        return !SingletonForObjects.getDialogueManager().getIsOpen() &&
-            !OpenWares.Buying && !SingletonForObjects.getInventoryOpenCloseManager().isOpenInventory;
+        bool isDialogueOpen = SingletonForObjects.getDialogueManager().getIsOpen();
+        bool isBuying = OpenWares.Buying;
+        bool isInventoryOpen = SingletonForObjects.getInventoryOpenCloseManager().isOpenInventory;
+        bool isSliding = globalVariablesAccess.ISSLIDING;
+
+        return !isDialogueOpen && !isBuying && !isInventoryOpen && !isSliding;
     }
     void AttackingMechanism()
     {
