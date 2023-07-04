@@ -34,11 +34,15 @@ public class PlayerAttackStateMachine
         this._animator.SetBool(parameterName, canAttack);
     }
 
-    public bool istheCurrentAnimationPlaying()
+    public bool istheAttackCancelConditionTrue(string stateName, string expectedStateName)
     {
-        return this._animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f; //if its playing or not
+        if (stateName == expectedStateName)
+        {
+            return this._animator.GetCurrentAnimatorStateInfo(0).IsName(stateName) && this._animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f;
+        }
+
+        return false;
+
     }
-
-
 
 }

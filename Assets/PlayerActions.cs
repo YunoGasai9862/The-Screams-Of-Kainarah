@@ -9,10 +9,8 @@ public class PlayerActions : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private AnimationHandler _animationHandler;
     private Vector2 _keystrokeTrack;
-    private bool _isJumping = false;
     private IOverlapChecker _movementHelperClass;
     private BoxCollider2D _boxCollider;
-    private bool _isSlidingPressed;
 
     [SerializeField] float _characterSpeed = 10f;
     [SerializeField] LayerMask groundLayer;
@@ -59,21 +57,21 @@ public class PlayerActions : MonoBehaviour
     public void HandleJumping()
     {
 
-        if (!_isJumping && LedgeGroundChecker(groundLayer, ledgeLayer) && isJumpPressed)
+        if (!globalVariablesAccess.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && isJumpPressed)
         {
-            _isJumping = true;
+            globalVariablesAccess.ISJUMPING = true;
             characterVelocityY = JumpSpeed * .5f;
 
         }
 
-        if ((_isJumping && !(LedgeGroundChecker(groundLayer, ledgeLayer)) && !isJumpPressed) || MaxJumpTimeChecker())
+        if ((globalVariablesAccess.ISJUMPING && !(LedgeGroundChecker(groundLayer, ledgeLayer)) && !isJumpPressed) || MaxJumpTimeChecker())
         {
-            _isJumping = false;
+            globalVariablesAccess.ISJUMPING = false;
             characterVelocityY = -JumpSpeed * .8f;
 
         }
 
-        if (!_isJumping && LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed)
+        if (!globalVariablesAccess.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed)
         {
             characterVelocityY = 0f;
             _timeCounter = 0;
@@ -84,7 +82,7 @@ public class PlayerActions : MonoBehaviour
             _timeCounter += Time.deltaTime;
         }
 
-        if (!_isJumping && !_movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
+        if (!globalVariablesAccess.ISJUMPING && !_movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
         {
             characterVelocityY = -JumpSpeed * .8f; //extra check
 
@@ -115,11 +113,12 @@ public class PlayerActions : MonoBehaviour
 
             //sliding
 
-            if (_isSlidingPressed && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
+            if (globalVariablesAccess.ISSLIDING && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
             {
                 CharacterControllerMove(characterVelocityX * slidingSpeed, characterVelocityY);
 
             }
+
 
         }
 
@@ -170,10 +169,10 @@ public class PlayerActions : MonoBehaviour
 
     private void Slide(InputAction.CallbackContext context)
     {
-        _isSlidingPressed = context.ReadValueAsButton();
+        globalVariablesAccess.ISSLIDING = context.ReadValueAsButton();
 
         if (!getJumpRessed())
-            _animationHandler.Sliding(_isSlidingPressed);
+            _animationHandler.Sliding(globalVariablesAccess.ISSLIDING);
     }
 
     private bool getJumpRessed()

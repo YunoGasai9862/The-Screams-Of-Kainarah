@@ -31,6 +31,7 @@ public class AttackingScript : MonoBehaviour
     private string _playerAttackStateName;
     private PlayerAttackStateMachine _playerAttackStateMachine;
     private bool _isPlayerEligibleForStartingAttack = false;
+    private float timeDifferencebetweenStates;
 
     private void Awake()
     {
@@ -60,7 +61,12 @@ public class AttackingScript : MonoBehaviour
         //sets the initial configuration for the attacking system
         settingInitialAttackConfiguration(canAttackStateName, leftMouseButtonPressed);
 
-        PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>();
+        if (PrerequisitesChecker())
+        {
+            globalVariablesAccess.ISATTACKING = true;
+            PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>();
+        }
+
 
 
     }
@@ -113,19 +119,25 @@ public class AttackingScript : MonoBehaviour
         {
             _playerAttackStateMachine.setAttackState(attackStateName, _playerAttackState); //toggles state
 
-            float timeDifferencebetweenStates = timeDifference(_timeForMouseClickEnd, _timeForMouseClickStart);
+            timeDifferencebetweenStates = timeDifference(_timeForMouseClickEnd, _timeForMouseClickStart);
 
             _playerAttackStateMachine.timeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName,     //keeps track of time elapsed
                timeDifferencebetweenStates);
+
         }
 
         if (isEnumValueEqualToLengthOfEnum<T>(_playerAttackStateName))
         {
-            _playerAttackStateMachine.canAttack(canAttackStateName, false);
-            _playerAttackState = 0; //resets the attackingstate
+            ResetAttackStatuses();
         }
 
+    }
 
+    private void ResetAttackStatuses()
+    {
+        _playerAttackStateMachine.canAttack(canAttackStateName, false);
+        _playerAttackState = 0; //resets the attackingstate
+        globalVariablesAccess.ISATTACKING = false;
     }
 
 
@@ -154,14 +166,13 @@ public class AttackingScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (PrerequisitesChecker())
         {
-            if (kickoffElapsedTime)
+            if (_playerAttackStateMachine.istheAttackCancelConditionTrue(_playerAttackStateName, "Attack")) //for the first status only
             {
-                elapsedTime += Time.deltaTime;
+                ResetAttackStatuses();
             }
-
-            AttackingMechanism();
         }
 
     }
@@ -181,84 +192,6 @@ public class AttackingScript : MonoBehaviour
         else
         {
             _anim.SetBool("AttackJ", false);
-
-        }
-
-        if ((_movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground) ||
-            _movementHelper.overlapAgainstLayerMaskChecker(ref col, ledge)) && Input.GetMouseButtonDown(0))
-        {
-            kickoffElapsedTime = true;
-
-            AttackCount++;
-            _anim.SetInteger("PlayerAttack", AttackCount);
-
-            _anim.SetBool("Attack", true);
-            elapsedTime = 0;  // YAYAY SOLVED IT!!!
-
-        }
-        if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-        {
-            //fix with new elapsedTime thingy
-
-            _anim.SetFloat("ElapsedTime", elapsedTime);
-
-            if (elapsedTime > .5f)
-            {
-
-                AttackCount = 0;
-                elapsedTime = 0;
-                _anim.SetBool("Attack", false);
-                kickoffElapsedTime = false;
-            }
-
-
-        }
-        else if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
-        {
-            _anim.SetFloat("ElapsedTime", elapsedTime);
-            if (elapsedTime > .8f)
-            {
-
-                AttackCount = 0;
-                elapsedTime = 0;
-                _anim.SetBool("Attack", false);
-                kickoffElapsedTime = false;
-            }
-
-        }
-        else if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
-        {
-            _anim.SetFloat("ElapsedTime", elapsedTime);
-            if (elapsedTime > .8f)
-            {
-
-                AttackCount = 0;
-                elapsedTime = 0;
-                _anim.SetBool("Attack", false);
-                kickoffElapsedTime = false;
-            }
-
-
-
-        }
-        else if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack4"))
-        {
-            _anim.SetFloat("ElapsedTime", elapsedTime);
-            if (elapsedTime > .8f)
-            {
-
-                AttackCount = 0;
-                elapsedTime = 0;
-                _anim.SetBool("Attack", false);
-                kickoffElapsedTime = false;
-            }
-
-        }
-
-        if (AttackCount > 4)
-        {
-            _anim.SetBool("Attack", false);
-            AttackCount = 0;
 
         }
 
