@@ -113,7 +113,8 @@ public class PlayerActions : MonoBehaviour
 
             //sliding
 
-            if (globalVariablesAccess.ISSLIDING && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
+            if (globalVariablesAccess.boolConditionAndTester(globalVariablesAccess.ISSLIDING, !globalVariablesAccess.ISATTACKING) &&
+                _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
             {
                 CharacterControllerMove(characterVelocityX * slidingSpeed, characterVelocityY);
 
@@ -123,6 +124,7 @@ public class PlayerActions : MonoBehaviour
         }
 
     }
+
 
     public bool MaxJumpTimeChecker()
     {
@@ -138,6 +140,7 @@ public class PlayerActions : MonoBehaviour
 
         _animationHandler.RunningWalkingAnimation(keystroke.x);  //for movement, plays the animation
 
+
         return keystroke;
     }
 
@@ -147,6 +150,7 @@ public class PlayerActions : MonoBehaviour
         _rb.velocity = new Vector2(CharacterPositionX, CharacterPositionY);
 
     }
+
 
     private bool keystrokeMagnitudeChecker(Vector2 _keystrokeTrack)
     {
@@ -172,7 +176,9 @@ public class PlayerActions : MonoBehaviour
         globalVariablesAccess.ISSLIDING = context.ReadValueAsButton();
 
         if (!getJumpRessed())
+        {
             _animationHandler.Sliding(globalVariablesAccess.ISSLIDING);
+        }
     }
 
     private bool getJumpRessed()

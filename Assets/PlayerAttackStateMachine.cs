@@ -40,11 +40,16 @@ public class PlayerAttackStateMachine
         this._animator.SetBool(parameterName, canAttack);
     }
 
-    public bool istheAttackCancelConditionTrue(string stateName, string expectedStateName)
+    public bool istheAttackCancelConditionTrue(string stateName, string[] expectedStateName)
     {
-        if (stateName == expectedStateName)
+        foreach (string expectedStateNames in expectedStateName)
         {
-            return this._animator.GetCurrentAnimatorStateInfo(0).IsName(stateName) && this._animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f;
+
+            if (stateName == expectedStateNames)
+            {
+                return this._animator.GetCurrentAnimatorStateInfo(0).IsName(stateName) && this._animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f;
+            }
+
         }
 
         return false;

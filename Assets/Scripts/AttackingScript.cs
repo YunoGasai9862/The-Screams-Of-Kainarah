@@ -52,24 +52,22 @@ public class AttackingScript : MonoBehaviour
 
     private void PlayerAttackStart(InputAction.CallbackContext context)
     {
-        leftMouseButtonPressed = context.ReadValueAsButton();
-
-        _timeForMouseClickStart = (float)context.time;
-
-        //keeps track of attacking states
-        _isPlayerEligibleForStartingAttack = enumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
-
-        //sets the initial configuration for the attacking system
-        settingInitialAttackConfiguration(canAttackStateName, leftMouseButtonPressed);
-
         if (IsAttackPrerequisiteMet())
         {
+            leftMouseButtonPressed = context.ReadValueAsButton();
+
+            _timeForMouseClickStart = (float)context.time;
+
+            //keeps track of attacking states
+            _isPlayerEligibleForStartingAttack = enumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
+
+            //sets the initial configuration for the attacking system
+            settingInitialAttackConfiguration(canAttackStateName, leftMouseButtonPressed);
             globalVariablesAccess.ISATTACKING = true;
             PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>();
         }
 
     }
-
     private void jumpAttackMechanism()
     {
 
@@ -90,11 +88,16 @@ public class AttackingScript : MonoBehaviour
 
     private void PlayerAttackCancel(InputAction.CallbackContext context)
     {
-        leftMouseButtonPressed = context.ReadValueAsButton();
+        if (IsAttackPrerequisiteMet())
+        {
+            leftMouseButtonPressed = context.ReadValueAsButton();
 
-        _timeForMouseClickEnd = (float)context.time;
+            _timeForMouseClickEnd = (float)context.time;
 
-        _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
+            _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
+
+            globalVariablesAccess.ISATTACKING = false; //once the user stops clicking, it should be set to false
+        }
 
     }
 
@@ -186,7 +189,7 @@ public class AttackingScript : MonoBehaviour
 
         if (IsAttackPrerequisiteMet())
         {
-            if (_playerAttackStateMachine.istheAttackCancelConditionTrue(_playerAttackStateName, "Attack")) //for the first status only
+            if (_playerAttackStateMachine.istheAttackCancelConditionTrue(_playerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
             {
                 ResetAttackStatuses();
             }
@@ -201,7 +204,8 @@ public class AttackingScript : MonoBehaviour
         bool isInventoryOpen = SingletonForObjects.getInventoryOpenCloseManager().isOpenInventory;
         bool isSliding = globalVariablesAccess.ISSLIDING;
 
-        return !isDialogueOpen && !isBuying && !isInventoryOpen && !isSliding;
+        return globalVariablesAccess.boolConditionAndTester(!isDialogueOpen, !isBuying, !isInventoryOpen, !isSliding);
+
     }
     void AttackingMechanism()
     {

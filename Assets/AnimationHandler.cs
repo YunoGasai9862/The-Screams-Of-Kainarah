@@ -23,7 +23,7 @@ public class AnimationHandler : MonoBehaviour
         }
     }
 
-    private bool VectorChecker(float compositionX)
+    public bool VectorChecker(float compositionX)
     {
         return compositionX != 0f;
     }
@@ -40,9 +40,21 @@ public class AnimationHandler : MonoBehaviour
 
     public void RunningWalkingAnimation(float keystroke)
     {
-        AnimationStateKeeper.StateKeeper state = VectorChecker(keystroke)
-            ? AnimationStateKeeper.StateKeeper.RUNNING
-            : AnimationStateKeeper.StateKeeper.IDLE;
+        AnimationStateKeeper.StateKeeper state;
+
+        if (VectorChecker(keystroke))
+        {
+            state = AnimationStateKeeper.StateKeeper.RUNNING;
+            globalVariablesAccess.ISRUNNING = true;
+            globalVariablesAccess.ISWALKING = false;
+        }
+        else
+        {
+            state = AnimationStateKeeper.StateKeeper.IDLE;
+            globalVariablesAccess.ISRUNNING = false;
+            globalVariablesAccess.ISWALKING = true;
+        }
+
 
         PlayAnimation(AnimationConstants.MOVEMENT, (int)state);
     }
