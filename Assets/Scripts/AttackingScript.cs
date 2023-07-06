@@ -58,12 +58,14 @@ public class AttackingScript : MonoBehaviour
 
             _timeForMouseClickStart = (float)context.time;
 
+            globalVariablesAccess.ISATTACKING = true;
+
             //keeps track of attacking states
             _isPlayerEligibleForStartingAttack = enumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
 
             //sets the initial configuration for the attacking system
             settingInitialAttackConfiguration(canAttackStateName, leftMouseButtonPressed);
-            globalVariablesAccess.ISATTACKING = true;
+
             PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>();
         }
 
@@ -127,22 +129,27 @@ public class AttackingScript : MonoBehaviour
 
     private void settingInitialAttackConfiguration(string canAttackStateName, bool leftMouseButtonPressed)
     {
-        if (_playerAttackState == (int)PlayerAttackEnum.PlayerAttackSlash.Attack)
-        {
-            _playerAttackStateMachine.canAttack(canAttackStateName, leftMouseButtonPressed);
 
-        }
+        _playerAttackStateMachine.canAttack(canAttackStateName, leftMouseButtonPressed);
     }
     private void PlayerAttackMechanism<T>()
     {
         if (_isPlayerEligibleForStartingAttack) //cast Type <T>
         {
+
             _playerAttackStateMachine.setAttackState(attackStateName, _playerAttackState); //toggles state
 
             timeDifferencebetweenStates = timeDifference(_timeForMouseClickEnd, _timeForMouseClickStart);
 
             _playerAttackStateMachine.timeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName,     //keeps track of time elapsed
-               timeDifferencebetweenStates);
+         timeDifferencebetweenStates);
+
+            if (isTimeDifferenceWithinRange(timeDifferencebetweenStates, 1.5f))
+            {
+                ResetAttackStatuses();
+                return;
+            }
+
 
         }
 
@@ -153,6 +160,10 @@ public class AttackingScript : MonoBehaviour
 
     }
 
+    private bool isTimeDifferenceWithinRange(float value, float upperBoundary)
+    {
+        return value > upperBoundary;
+    }
     private void ResetAttackStatuses()
     {
         _playerAttackStateMachine.canAttack(canAttackStateName, false);
