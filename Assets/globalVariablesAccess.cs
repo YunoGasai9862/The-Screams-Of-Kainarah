@@ -40,4 +40,28 @@ public static class globalVariablesAccess
 
         return finalBoolValue;
     }
+
+    public static void setSliding(bool value)
+    {
+        ISSLIDING = value;
+    }
+
+    public static void setAttacking(bool value)
+    {
+        ISATTACKING = value;
+    }
+
+    public static void initializeAllVariablesTo(params bool[] boolsToInitialize)
+    {
+        if (boolsToInitialize.Length == 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < boolsToInitialize.Length; i++)
+        {
+            boolsToInitialize[i] = false;
+        }
+    }
+
 }

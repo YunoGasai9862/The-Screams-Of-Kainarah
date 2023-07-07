@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerAttackStateMachine
@@ -54,6 +55,16 @@ public class PlayerAttackStateMachine
 
         return false;
 
+    }
+
+    public bool getCurrentState(string state)
+    {
+        return this._animator.GetCurrentAnimatorStateInfo(0).IsName(state);
+    }
+
+    public string getStateNameThroughEnum(int state)
+    {
+        return Enum.GetName(typeof(PlayerAttackEnum.PlayerAttackSlash), state);
     }
 
 }

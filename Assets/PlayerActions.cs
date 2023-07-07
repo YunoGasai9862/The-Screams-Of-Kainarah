@@ -11,6 +11,7 @@ public class PlayerActions : MonoBehaviour
     private Vector2 _keystrokeTrack;
     private IOverlapChecker _movementHelperClass;
     private BoxCollider2D _boxCollider;
+    private Animator _anim;
 
     [SerializeField] float _characterSpeed = 10f;
     [SerializeField] LayerMask groundLayer;
@@ -23,18 +24,20 @@ public class PlayerActions : MonoBehaviour
     private float characterVelocityX;
     private bool isJumpPressed;
     private float _timeCounter;
+    private PlayerAttackStateMachine _playerAttackStateMachine;
 
     //Force = -2m * sqrt (g * h)
 
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
+        _anim = GetComponent<Animator>();
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animationHandler = GetComponent<AnimationHandler>();
         _movementHelperClass = new MovementHelperClass();
         _boxCollider = GetComponent<BoxCollider2D>();
-
+        _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
         //have the actionMappings
         _rb = GetComponent<Rigidbody2D>();
 
@@ -116,8 +119,14 @@ public class PlayerActions : MonoBehaviour
             if (globalVariablesAccess.boolConditionAndTester(globalVariablesAccess.ISSLIDING, !globalVariablesAccess.ISATTACKING) &&
                 _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
             {
+                ForceDisableAttacking();
                 CharacterControllerMove(characterVelocityX * slidingSpeed, characterVelocityY);
 
+            }
+
+            if (_animationHandler.returnCurrentAnimation() > .6f && _animationHandler.isNameOfTheCurrentAnimation(AnimationConstants.SLIDING))
+            {
+                globalVariablesAccess.setSliding(false);
             }
 
 
@@ -177,6 +186,7 @@ public class PlayerActions : MonoBehaviour
 
         if (!getJumpRessed())
         {
+            globalVariablesAccess.setAttacking(false); //for some minor fixes
             _animationHandler.Sliding(globalVariablesAccess.ISSLIDING);
         }
     }
@@ -184,6 +194,12 @@ public class PlayerActions : MonoBehaviour
     private bool getJumpRessed()
     {
         return isJumpPressed;
+    }
+
+    private void ForceDisableAttacking()
+    {
+        string stateName = _playerAttackStateMachine.getStateNameThroughEnum(1);
+        _playerAttackStateMachine.setAttackState(stateName, false);
     }
 
 

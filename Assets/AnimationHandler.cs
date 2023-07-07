@@ -78,5 +78,15 @@ public class AnimationHandler : MonoBehaviour
         return this._anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
     }
 
+    public bool isNameOfTheCurrentAnimation(string name)
+    {
+        return this._anim.GetCurrentAnimatorStateInfo(0).IsName(name);
+    }
+
+    public Animator getAnimator()
+    {
+        return this._anim;
+    }
+
 
 }
