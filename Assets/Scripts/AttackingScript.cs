@@ -24,7 +24,6 @@ public class AttackingScript : MonoBehaviour
     [SerializeField] string attackStateName;
     [SerializeField] string timeDifferenceStateName;
     [SerializeField] string jumpAttackStateName;
-
     private Rocky2DActions _rocky2DActions;
     private PlayerInput _playerInput;
     private bool leftMouseButtonPressed;
@@ -40,6 +39,8 @@ public class AttackingScript : MonoBehaviour
         _rocky2DActions = new Rocky2DActions();
         _playerInput = GetComponent<PlayerInput>();
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
+        col = GetComponent<BoxCollider2D>();
+        _movementHelper = new MovementHelperClass();
 
 
         _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
@@ -49,10 +50,25 @@ public class AttackingScript : MonoBehaviour
         _playerAttackState = 0;
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+
+        if (IsAttackPrerequisiteMet())
+        {
+            if (_playerAttackStateMachine.istheAttackCancelConditionTrue(_playerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
+            {
+                ResetAttackStatuses();
+            }
+
+        }
+
+    }
+
 
     private void PlayerAttackStart(InputAction.CallbackContext context)
     {
-        if (IsAttackPrerequisiteMet())
+        if (IsAttackPrerequisiteMet()) //ground attack
         {
             leftMouseButtonPressed = context.ReadValueAsButton();
 
@@ -67,20 +83,18 @@ public class AttackingScript : MonoBehaviour
             settingInitialAttackConfiguration(canAttackStateName, leftMouseButtonPressed);
 
             PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>();
+
         }
 
-    }
-    private void jumpAttackMechanism()
-    {
-
-        if (isJumpPrequisitesMet())
+        if (isJumpAttackPrequisitesMet()) // jump attack
         {
             _playerAttackStateMachine.setAttackState(jumpAttackStateName, true);
         }
 
+
     }
 
-    private bool isJumpPrequisitesMet()
+    private bool isJumpAttackPrequisitesMet()
     {
         bool isJumping = globalVariablesAccess.ISJUMPING;
         bool isOnTheGround = _movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground);
@@ -144,18 +158,17 @@ public class AttackingScript : MonoBehaviour
             _playerAttackStateMachine.timeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName,     //keeps track of time elapsed
          timeDifferencebetweenStates);
 
-            if (isTimeDifferenceWithinRange(timeDifferencebetweenStates, 1.5f))
+
+
+            if (isEnumValueEqualToLengthOfEnum<T>(_playerAttackStateName) ||
+                (isTimeDifferenceWithinRange(timeDifferencebetweenStates, 1.5f) &&
+                _playerAttackStateName != _playerAttackStateMachine.getStateNameThroughEnum(1))) //dont do it for the first attackState
             {
                 ResetAttackStatuses();
                 return;
             }
 
 
-        }
-
-        if (isEnumValueEqualToLengthOfEnum<T>(_playerAttackStateName))
-        {
-            ResetAttackStatuses();
         }
 
     }
@@ -186,37 +199,15 @@ public class AttackingScript : MonoBehaviour
         return Enum.GetNames(typeof(T)).Length;
     }
 
-    void Start()
-    {
-        col = GetComponent<BoxCollider2D>();
-        _movementHelper = new MovementHelperClass();
-
-    }
-
-
-    // Update is called once per frame
-    void Update()
-    {
-
-        if (IsAttackPrerequisiteMet())
-        {
-            if (_playerAttackStateMachine.istheAttackCancelConditionTrue(_playerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
-            {
-                ResetAttackStatuses();
-            }
-
-        }
-
-    }
-
     public bool IsAttackPrerequisiteMet()
     {
         bool isDialogueOpen = SingletonForObjects.getDialogueManager().getIsOpen();
+        bool isJumping = globalVariablesAccess.ISJUMPING;
         bool isBuying = OpenWares.Buying;
         bool isInventoryOpen = SingletonForObjects.getInventoryOpenCloseManager().isOpenInventory;
         bool isSliding = globalVariablesAccess.ISSLIDING;
 
-        return globalVariablesAccess.boolConditionAndTester(!isDialogueOpen, !isBuying, !isInventoryOpen, !isSliding);
+        return globalVariablesAccess.boolConditionAndTester(!isDialogueOpen, !isBuying, !isInventoryOpen, !isSliding, !isJumping);
 
     }
     void AttackingMechanism()

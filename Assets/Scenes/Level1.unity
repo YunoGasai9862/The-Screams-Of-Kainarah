@@ -6600,6 +6600,10 @@ PrefabInstance:
       value: Attack
       objectReference: {fileID: 0}
     - target: {fileID: 3387488181997499512, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: jumpAttackStateName
+      value: AttackJ
+      objectReference: {fileID: 0}
+    - target: {fileID: 3387488181997499512, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: timeDifferenceStateName
       value: ElapsedTime
       objectReference: {fileID: 0}

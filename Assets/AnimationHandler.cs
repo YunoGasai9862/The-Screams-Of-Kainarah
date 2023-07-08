@@ -64,7 +64,6 @@ public class AnimationHandler : MonoBehaviour
         AnimationStateKeeper.StateKeeper state = keystroke
             ? AnimationStateKeeper.StateKeeper.JUMP
             : AnimationStateKeeper.StateKeeper.FALL;
-
         PlayAnimation(AnimationConstants.MOVEMENT, (int)state);
     }
 
