@@ -15,6 +15,15 @@ public class AttackingScript : MonoBehaviour
     private float _timeForMouseClickStart = 0;
     private float _timeForMouseClickEnd = 0;
     private MovementHelperClass _movementHelper;
+    private Rocky2DActions _rocky2DActions;
+    private PlayerInput _playerInput;
+    private bool leftMouseButtonPressed;
+    private int _playerAttackState = 0;
+    private string _playerAttackStateName;
+    private PlayerAttackStateMachine _playerAttackStateMachine;
+    private bool _isPlayerEligibleForStartingAttack = false;
+    private float timeDifferencebetweenStates;
+
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
     [SerializeField] GameObject Dagger;
@@ -24,14 +33,7 @@ public class AttackingScript : MonoBehaviour
     [SerializeField] string attackStateName;
     [SerializeField] string timeDifferenceStateName;
     [SerializeField] string jumpAttackStateName;
-    private Rocky2DActions _rocky2DActions;
-    private PlayerInput _playerInput;
-    private bool leftMouseButtonPressed;
-    private int _playerAttackState = 0;
-    private string _playerAttackStateName;
-    private PlayerAttackStateMachine _playerAttackStateMachine;
-    private bool _isPlayerEligibleForStartingAttack = false;
-    private float timeDifferencebetweenStates;
+    [SerializeField] string daggerAttackName;
 
     private void Awake()
     {
@@ -53,7 +55,6 @@ public class AttackingScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (IsAttackPrerequisiteMet())
         {
             if (_playerAttackStateMachine.istheAttackCancelConditionTrue(_playerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
@@ -62,16 +63,15 @@ public class AttackingScript : MonoBehaviour
             }
 
         }
-
     }
 
 
     private void PlayerAttackStart(InputAction.CallbackContext context)
     {
+        leftMouseButtonPressed = context.ReadValueAsButton();
+
         if (IsAttackPrerequisiteMet()) //ground attack
         {
-            leftMouseButtonPressed = context.ReadValueAsButton();
-
             _timeForMouseClickStart = (float)context.time;
 
             globalVariablesAccess.setAttacking(true);
@@ -86,11 +86,11 @@ public class AttackingScript : MonoBehaviour
 
         }
 
-        if (isJumpAttackPrequisitesMet()) // jump attack
+        if (isJumpAttackPrequisitesMet())
         {
-            _playerAttackStateMachine.setAttackState(jumpAttackStateName, true);
-        }
+            _playerAttackStateMachine.setAttackState(jumpAttackStateName, leftMouseButtonPressed);
 
+        }
 
     }
 
@@ -104,9 +104,10 @@ public class AttackingScript : MonoBehaviour
 
     private void PlayerAttackCancel(InputAction.CallbackContext context)
     {
+        leftMouseButtonPressed = context.ReadValueAsButton();
+
         if (IsAttackPrerequisiteMet())
         {
-            leftMouseButtonPressed = context.ReadValueAsButton();
 
             _timeForMouseClickEnd = (float)context.time;
 
@@ -114,6 +115,11 @@ public class AttackingScript : MonoBehaviour
 
             globalVariablesAccess.setAttacking(false); //once the user stops clicking, it should be set to false
         }
+
+
+        _playerAttackStateMachine.setAttackState(jumpAttackStateName, leftMouseButtonPressed); //no jump attack
+
+
 
     }
 
@@ -158,8 +164,6 @@ public class AttackingScript : MonoBehaviour
             _playerAttackStateMachine.timeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName,     //keeps track of time elapsed
          timeDifferencebetweenStates);
 
-
-
             if (isEnumValueEqualToLengthOfEnum<T>(_playerAttackStateName) ||
                 (isTimeDifferenceWithinRange(timeDifferencebetweenStates, 1.5f) &&
                 _playerAttackStateName != _playerAttackStateMachine.getStateNameThroughEnum(1))) //dont do it for the first attackState
@@ -168,9 +172,7 @@ public class AttackingScript : MonoBehaviour
                 return;
             }
 
-
         }
-
     }
 
     private bool isTimeDifferenceWithinRange(float value, float upperBoundary)
