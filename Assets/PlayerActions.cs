@@ -63,20 +63,28 @@ public class PlayerActions : MonoBehaviour
         if (!globalVariablesAccess.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && isJumpPressed)
         {
             globalVariablesAccess.ISJUMPING = true;
+
             characterVelocityY = JumpSpeed * .5f;
+
+            _animationHandler.JumpingFalling(globalVariablesAccess.ISJUMPING); //jumping animation
+
 
         }
 
         if ((globalVariablesAccess.ISJUMPING && !(LedgeGroundChecker(groundLayer, ledgeLayer)) && !isJumpPressed) || MaxJumpTimeChecker())
         {
             globalVariablesAccess.ISJUMPING = false;
+
             characterVelocityY = -JumpSpeed * .8f;
+
+            _animationHandler.JumpingFalling(globalVariablesAccess.ISJUMPING); //falling naimation
 
         }
 
         if (!globalVariablesAccess.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed)
         {
             characterVelocityY = 0f;
+
             _timeCounter = 0;
         }
 
@@ -149,7 +157,6 @@ public class PlayerActions : MonoBehaviour
 
         _animationHandler.RunningWalkingAnimation(keystroke.x);  //for movement, plays the animation
 
-
         return keystroke;
     }
 
@@ -175,9 +182,6 @@ public class PlayerActions : MonoBehaviour
     private void Jump(InputAction.CallbackContext context)
     {
         isJumpPressed = context.ReadValueAsButton();
-
-        _animationHandler.JumpingFalling(isJumpPressed);
-
     }
 
     private void Slide(InputAction.CallbackContext context)

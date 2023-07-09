@@ -213,16 +213,6 @@ public class AttackingScript : MonoBehaviour
     void AttackingMechanism()
     {
 
-        if (!_movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground) && Input.GetMouseButtonDown(0))
-        {
-            _anim.SetBool("AttackJ", true);
-        }
-        else
-        {
-            _anim.SetBool("AttackJ", false);
-
-        }
-
         if (_anim.GetCurrentAnimatorStateInfo(0).IsName("ThrowDagger"))
         {
             throwdaggerTime += Time.deltaTime;
