@@ -147,6 +147,15 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ThrowProjectile"",
+                    ""type"": ""Button"",
+                    ""id"": ""a44fead3-29f3-4dd8-b662-9a35b646e5ba"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -158,6 +167,17 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""02c49b99-7115-402c-9fc9-e86747005d3b"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ThrowProjectile"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -174,6 +194,7 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
         // PlayerAttack
         m_PlayerAttack = asset.FindActionMap("PlayerAttack", throwIfNotFound: true);
         m_PlayerAttack_Attack = m_PlayerAttack.FindAction("Attack", throwIfNotFound: true);
+        m_PlayerAttack_ThrowProjectile = m_PlayerAttack.FindAction("ThrowProjectile", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -283,11 +304,13 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_PlayerAttack;
     private IPlayerAttackActions m_PlayerAttackActionsCallbackInterface;
     private readonly InputAction m_PlayerAttack_Attack;
+    private readonly InputAction m_PlayerAttack_ThrowProjectile;
     public struct PlayerAttackActions
     {
         private @Rocky2DActions m_Wrapper;
         public PlayerAttackActions(@Rocky2DActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Attack => m_Wrapper.m_PlayerAttack_Attack;
+        public InputAction @ThrowProjectile => m_Wrapper.m_PlayerAttack_ThrowProjectile;
         public InputActionMap Get() { return m_Wrapper.m_PlayerAttack; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -300,6 +323,9 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                 @Attack.started -= m_Wrapper.m_PlayerAttackActionsCallbackInterface.OnAttack;
                 @Attack.performed -= m_Wrapper.m_PlayerAttackActionsCallbackInterface.OnAttack;
                 @Attack.canceled -= m_Wrapper.m_PlayerAttackActionsCallbackInterface.OnAttack;
+                @ThrowProjectile.started -= m_Wrapper.m_PlayerAttackActionsCallbackInterface.OnThrowProjectile;
+                @ThrowProjectile.performed -= m_Wrapper.m_PlayerAttackActionsCallbackInterface.OnThrowProjectile;
+                @ThrowProjectile.canceled -= m_Wrapper.m_PlayerAttackActionsCallbackInterface.OnThrowProjectile;
             }
             m_Wrapper.m_PlayerAttackActionsCallbackInterface = instance;
             if (instance != null)
@@ -307,6 +333,9 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
                 @Attack.started += instance.OnAttack;
                 @Attack.performed += instance.OnAttack;
                 @Attack.canceled += instance.OnAttack;
+                @ThrowProjectile.started += instance.OnThrowProjectile;
+                @ThrowProjectile.performed += instance.OnThrowProjectile;
+                @ThrowProjectile.canceled += instance.OnThrowProjectile;
             }
         }
     }
@@ -320,5 +349,6 @@ public partial class @Rocky2DActions : IInputActionCollection2, IDisposable
     public interface IPlayerAttackActions
     {
         void OnAttack(InputAction.CallbackContext context);
+        void OnThrowProjectile(InputAction.CallbackContext context);
     }
 }

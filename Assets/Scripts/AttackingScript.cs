@@ -1,13 +1,9 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
 public class AttackingScript : MonoBehaviour
 {
     private Animator _anim;
-    private float elapsedTime = 0;
-    private bool kickoffElapsedTime;
-    private int AttackCount = 0;
     private BoxCollider2D col;
     private GameObject dag;
     public static bool canthrowDagger = true;
@@ -23,6 +19,7 @@ public class AttackingScript : MonoBehaviour
     private PlayerAttackStateMachine _playerAttackStateMachine;
     private bool _isPlayerEligibleForStartingAttack = false;
     private float timeDifferencebetweenStates;
+    private bool throwDagger = false;
 
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
@@ -46,11 +43,21 @@ public class AttackingScript : MonoBehaviour
 
 
         _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
+
+        _rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
+
         _rocky2DActions.PlayerAttack.Attack.started += PlayerAttackStart;
+
         _rocky2DActions.PlayerAttack.Attack.canceled += PlayerAttackCancel;
+
+        _rocky2DActions.PlayerAttack.ThrowProjectile.started += Throwdagger;
+
+        _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += Throwdagger;
 
         _playerAttackState = 0;
     }
+
+
 
     // Update is called once per frame
     void Update()
@@ -65,6 +72,10 @@ public class AttackingScript : MonoBehaviour
         }
     }
 
+    private void Throwdagger(InputAction.CallbackContext context)
+    {
+        throwDagger = context.ReadValueAsButton();
+    }
 
     private void PlayerAttackStart(InputAction.CallbackContext context)
     {
@@ -119,10 +130,7 @@ public class AttackingScript : MonoBehaviour
 
         _playerAttackStateMachine.setAttackState(jumpAttackStateName, leftMouseButtonPressed); //no jump attack
 
-
-
     }
-
     private bool enumStateManipulator<T>(ref int PlayerAttackState, int InitialStateOfTheEnum)
     {
         int EnumSize = getLenthofEnum<T>(); //returns the length of the Enum
@@ -200,7 +208,6 @@ public class AttackingScript : MonoBehaviour
     {
         return Enum.GetNames(typeof(T)).Length;
     }
-
     public bool IsAttackPrerequisiteMet()
     {
         bool isDialogueOpen = SingletonForObjects.getDialogueManager().getIsOpen();
@@ -263,8 +270,9 @@ public class AttackingScript : MonoBehaviour
     public void Icetail()
     {
 
-        GameObject Ice = Instantiate(IceTrail, transform.position, Quaternion.identity);
-        Ice.transform.parent = transform;
+        GameObjectInstantiator iceTrail = new GameObjectInstantiator(IceTrail);
+        iceTrail.InstantiateGameObject(transform.position, Quaternion.identity);
+        iceTrail.setGameObjectParent(transform);
 
 
     }
@@ -272,8 +280,10 @@ public class AttackingScript : MonoBehaviour
     public void Icetail2()
     {
 
-        GameObject Ice = Instantiate(IceTrail2, transform.position, Quaternion.identity);
-        Ice.transform.parent = transform;
+        GameObjectInstantiator iceTrail = new GameObjectInstantiator(IceTrail2);
+        iceTrail.InstantiateGameObject(transform.position, Quaternion.identity);
+        iceTrail.setGameObjectParent(transform);
+
 
     }
 }

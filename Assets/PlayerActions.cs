@@ -77,7 +77,6 @@ public class PlayerActions : MonoBehaviour
 
             characterVelocityY = -JumpSpeed * .8f;
 
-            _animationHandler.JumpingFalling(globalVariablesAccess.ISJUMPING); //falling naimation
 
         }
 
@@ -96,6 +95,7 @@ public class PlayerActions : MonoBehaviour
         if (!globalVariablesAccess.ISJUMPING && !_movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
         {
             characterVelocityY = -JumpSpeed * .8f; //extra check
+            _animationHandler.JumpingFalling(globalVariablesAccess.ISJUMPING); //falling naimation
 
         }
 
@@ -136,7 +136,6 @@ public class PlayerActions : MonoBehaviour
             {
                 globalVariablesAccess.setSliding(false);
             }
-
 
         }
 
