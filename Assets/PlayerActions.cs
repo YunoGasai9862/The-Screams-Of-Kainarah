@@ -56,11 +56,11 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
 
     }
-
     public void HandleJumping()
     {
 
-        if (!globalVariablesAccess.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && isJumpPressed)
+
+        if (canPlayerJump()) //jumping
         {
             globalVariablesAccess.ISJUMPING = true;
 
@@ -71,34 +71,57 @@ public class PlayerActions : MonoBehaviour
 
         }
 
-        if ((globalVariablesAccess.ISJUMPING && !(LedgeGroundChecker(groundLayer, ledgeLayer)) && !isJumpPressed) || MaxJumpTimeChecker())
+        if (canPlayerFall() || MaxJumpTimeChecker()) //peak reached
         {
             globalVariablesAccess.ISJUMPING = false;
 
             characterVelocityY = -JumpSpeed * .8f;
 
+            isJumpPressed = false; //fixed the issue of eternally looping at jump on JUMP HOLD
 
         }
 
-        if (!globalVariablesAccess.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed)
-        {
-            characterVelocityY = 0f;
 
-            _timeCounter = 0;
-        }
-
-        if (_rb.velocity.y > 0f)
-        {
-            _timeCounter += Time.deltaTime;
-        }
-
-        if (!globalVariablesAccess.ISJUMPING && !_movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
+        if (!globalVariablesAccess.ISJUMPING && !_movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer)) //falling
         {
             characterVelocityY = -JumpSpeed * .8f; //extra check
             _animationHandler.JumpingFalling(globalVariablesAccess.ISJUMPING); //falling naimation
 
         }
 
+        if (_rb.velocity.y > 0f) //how high the player can jump
+        {
+            _timeCounter += Time.deltaTime;
+        }
+
+
+
+        if (!globalVariablesAccess.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed) //on the ground
+        {
+            characterVelocityY = 0f;
+
+            _timeCounter = 0;
+        }
+
+
+    }
+
+    private bool canPlayerJump()
+    {
+        bool _isJumping = globalVariablesAccess.ISJUMPING;
+        bool _isOntheLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
+        bool _isJumpPressed = isJumpPressed;
+
+        return globalVariablesAccess.boolConditionAndTester(!_isJumping, _isOntheLedgeOrGround, _isJumpPressed);
+    }
+
+    private bool canPlayerFall()
+    {
+        bool _isJumping = globalVariablesAccess.ISJUMPING;
+        bool _isOntheLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
+        bool _isJumpPressed = isJumpPressed;
+
+        return globalVariablesAccess.boolConditionAndTester(_isJumping, !_isOntheLedgeOrGround, !_isJumpPressed);
     }
 
     private bool LedgeGroundChecker(LayerMask ground, LayerMask ledge)

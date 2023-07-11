@@ -50,9 +50,9 @@ public class AttackingScript : MonoBehaviour
 
         _rocky2DActions.PlayerAttack.Attack.canceled += PlayerAttackCancel;
 
-        _rocky2DActions.PlayerAttack.ThrowProjectile.started += Throwdagger;
+        _rocky2DActions.PlayerAttack.ThrowProjectile.started += ThrowdaggerInput;
 
-        _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += Throwdagger;
+        _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += ThrowdaggerInput;
 
         _playerAttackState = 0;
     }
@@ -72,9 +72,20 @@ public class AttackingScript : MonoBehaviour
         }
     }
 
-    private void Throwdagger(InputAction.CallbackContext context)
+    private void ThrowdaggerInput(InputAction.CallbackContext context)
     {
         throwDagger = context.ReadValueAsButton();
+
+        ThrowDagger(throwDagger);
+    }
+
+    private void ThrowDagger(bool throwDagger)
+    {
+        if (throwDagger)
+        {
+            GameObjectInstantiator _dagger = new GameObjectInstantiator(Dagger);
+            _dagger.InstantiateGameObject(transform.position, Quaternion.identity);
+        }
     }
 
     private void PlayerAttackStart(InputAction.CallbackContext context)

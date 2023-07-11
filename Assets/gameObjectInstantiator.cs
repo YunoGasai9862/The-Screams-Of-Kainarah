@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GameObjectInstantiator : MonoBehaviour
+public class GameObjectInstantiator
 {
     GameObject _prefab;
     GameObject _gameObject;
@@ -11,13 +11,13 @@ public class GameObjectInstantiator : MonoBehaviour
 
     public GameObject InstantiateGameObject(Vector3 _gameObjectPosition, Quaternion _rotationType)
     {
-        _gameObject = Instantiate(_prefab, _gameObjectPosition, _rotationType);
+        _gameObject = Object.Instantiate(_prefab, _gameObjectPosition, _rotationType);
         return _gameObject;
     }
 
     public void DestroyGameObject()
     {
-        Destroy(_gameObject);
+        Object.Destroy(_gameObject);
     }
 
     public GameObject getGameObject()
