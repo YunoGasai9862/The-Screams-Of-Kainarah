@@ -21,6 +21,7 @@ public class Movement : MonoBehaviour
 
     public static bool isGrabbing = false;//for the ledge grab script
     private bool once = true;
+    public Collider2D collidedObject;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -97,6 +98,7 @@ public class Movement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        collidedObject = collision;
         if (collision.CompareTag("Crystal"))
         {
             GameObject DHE = Instantiate(DiamondHitEffect, collision.transform.position, Quaternion.identity);
@@ -118,6 +120,11 @@ public class Movement : MonoBehaviour
 
 
         }
+    }
+
+    public Collider2D getColliderObject()
+    {
+        return collidedObject;
     }
 
     public bool checkForExistenceOfPortal(SpriteRenderer sr)

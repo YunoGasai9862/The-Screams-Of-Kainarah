@@ -66,5 +66,27 @@ public class PlayerAttackStateMachine
     {
         return Enum.GetName(typeof(PlayerAttackEnum.PlayerAttackSlash), state);
     }
+    public void ForceDisableAttacking(int state)
+    {
+        string stateName = getStateNameThroughEnum(state);
+        setAttackState(stateName, false);
+
+    }
+
+    public bool isInEitherOfTheAttackingStates<T>()
+    {
+        bool result = false;
+
+        for (int i = 0; i < Enum.GetNames(typeof(T)).Length - 1; i++)
+        {
+            string stateName = getStateNameThroughEnum(i + 1);
+
+            result = result || this._animator.GetCurrentAnimatorStateInfo(0).IsName(stateName);
+
+        }
+
+        return result;
+
+    }
 
 }

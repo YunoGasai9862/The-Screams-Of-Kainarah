@@ -147,10 +147,11 @@ public class PlayerActions : MonoBehaviour
 
             //sliding
 
-            if (globalVariablesAccess.boolConditionAndTester(globalVariablesAccess.ISSLIDING, !globalVariablesAccess.ISATTACKING) &&
-                _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer))
+            if (globalVariablesAccess.boolConditionAndTester(globalVariablesAccess.ISSLIDING, !globalVariablesAccess.ISATTACKING,
+                 _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer),
+                 !_playerAttackStateMachine.isInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>()))
             {
-                ForceDisableAttacking();
+                _playerAttackStateMachine.ForceDisableAttacking(1);
                 CharacterControllerMove(characterVelocityX * slidingSpeed, characterVelocityY);
 
             }
@@ -208,11 +209,13 @@ public class PlayerActions : MonoBehaviour
 
     private void Slide(InputAction.CallbackContext context)
     {
-        globalVariablesAccess.ISSLIDING = context.ReadValueAsButton();
-
-        if (!getJumpRessed())
+        if (globalVariablesAccess.boolConditionAndTester(!getJumpRessed(),
+            !_playerAttackStateMachine.isInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())) //conditions for sliding
         {
+            globalVariablesAccess.ISSLIDING = context.ReadValueAsButton();
+
             globalVariablesAccess.setAttacking(false); //for some minor fixes
+
             _animationHandler.Sliding(globalVariablesAccess.ISSLIDING);
         }
     }
@@ -220,12 +223,6 @@ public class PlayerActions : MonoBehaviour
     private bool getJumpRessed()
     {
         return isJumpPressed;
-    }
-
-    private void ForceDisableAttacking()
-    {
-        string stateName = _playerAttackStateMachine.getStateNameThroughEnum(1);
-        _playerAttackStateMachine.setAttackState(stateName, false);
     }
 
 

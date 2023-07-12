@@ -83,9 +83,17 @@ public class AttackingScript : MonoBehaviour
     {
         if (throwDagger)
         {
+
             GameObjectInstantiator _dagger = new GameObjectInstantiator(Dagger);
-            _dagger.InstantiateGameObject(transform.position, Quaternion.identity);
+            _dagger.InstantiateGameObject(getDaggerPositionwithOffset(1, 0), Quaternion.identity);
+            AttackEnemy.ThrowDagger = true; //will change this logic too
+
         }
+    }
+
+    public Vector2 getDaggerPositionwithOffset(float xOffset, float yOffset)
+    {
+        return new Vector2(transform.position.x + xOffset, transform.position.y + yOffset);
     }
 
     private void PlayerAttackStart(InputAction.CallbackContext context)
