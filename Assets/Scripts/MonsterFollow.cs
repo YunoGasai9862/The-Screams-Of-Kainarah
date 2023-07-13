@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public class MonsterFollow : StateMachineBehaviour
 
 
@@ -17,7 +16,7 @@ public class MonsterFollow : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (!SingletonForObjects.getDialogueManager().getIsOpen())
+        if (!GameObjectCreator.getDialogueManager().getIsOpen())
         {
             if (Player != null && checkDistance(animator))
             {

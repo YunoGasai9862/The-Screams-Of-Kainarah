@@ -1,6 +1,9 @@
+using CoreCode;
+using GlobalAccessAndGameHelper;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using GVA = GlobalAccessAndGameHelper.globalVariablesAccess;
 public class AttackingScript : MonoBehaviour
 {
     private Animator _anim;
@@ -20,6 +23,8 @@ public class AttackingScript : MonoBehaviour
     private bool _isPlayerEligibleForStartingAttack = false;
     private float timeDifferencebetweenStates;
     private bool throwDagger = false;
+    private PlayerHelperClassForOtherPurposes _PlayerHelperClass;
+    private Collider2D _playerCollider;
 
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
@@ -40,7 +45,6 @@ public class AttackingScript : MonoBehaviour
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
         col = GetComponent<BoxCollider2D>();
         _movementHelper = new MovementHelperClass();
-
 
         _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
 
@@ -83,12 +87,23 @@ public class AttackingScript : MonoBehaviour
     {
         if (throwDagger)
         {
+            _playerCollider = pollPlayerHelperClassForCollider();
+            Debug.Log(_playerCollider);
+
 
             GameObjectInstantiator _dagger = new GameObjectInstantiator(Dagger);
+            _dagger = new GameObjectInstantiator(Dagger);
             _dagger.InstantiateGameObject(getDaggerPositionwithOffset(1, 0), Quaternion.identity);
             AttackEnemy.ThrowDagger = true; //will change this logic too
 
         }
+    }
+
+    private Collider2D pollPlayerHelperClassForCollider()
+    {
+        _PlayerHelperClass = GameObjectCreator.getPlayerHelperClassObject();
+        return _PlayerHelperClass.getColliderObject();
+
     }
 
     public Vector2 getDaggerPositionwithOffset(float xOffset, float yOffset)
@@ -104,7 +119,7 @@ public class AttackingScript : MonoBehaviour
         {
             _timeForMouseClickStart = (float)context.time;
 
-            globalVariablesAccess.setAttacking(true);
+            GVA.setAttacking(true);
 
             //keeps track of attacking states
             _isPlayerEligibleForStartingAttack = enumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
@@ -126,7 +141,7 @@ public class AttackingScript : MonoBehaviour
 
     private bool isJumpAttackPrequisitesMet()
     {
-        bool isJumping = globalVariablesAccess.ISJUMPING;
+        bool isJumping = GVA.ISJUMPING;
         bool isOnTheGround = _movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground);
 
         return isJumping && !isOnTheGround;
@@ -143,7 +158,7 @@ public class AttackingScript : MonoBehaviour
 
             _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
-            globalVariablesAccess.setAttacking(false); //once the user stops clicking, it should be set to false
+            GVA.setAttacking(false); //once the user stops clicking, it should be set to false
         }
 
 
@@ -210,7 +225,7 @@ public class AttackingScript : MonoBehaviour
     {
         _playerAttackStateMachine.canAttack(canAttackStateName, false);
         _playerAttackState = 0; //resets the attackingstate
-        globalVariablesAccess.setAttacking(false);
+        GVA.setAttacking(false);
     }
 
 
@@ -229,13 +244,13 @@ public class AttackingScript : MonoBehaviour
     }
     public bool IsAttackPrerequisiteMet()
     {
-        bool isDialogueOpen = SingletonForObjects.getDialogueManager().getIsOpen();
-        bool isJumping = globalVariablesAccess.ISJUMPING;
+        bool isDialogueOpen = GameObjectCreator.getDialogueManager().getIsOpen();
+        bool isJumping = GVA.ISJUMPING;
         bool isBuying = OpenWares.Buying;
-        bool isInventoryOpen = SingletonForObjects.getInventoryOpenCloseManager().isOpenInventory;
-        bool isSliding = globalVariablesAccess.ISSLIDING;
+        bool isInventoryOpen = GameObjectCreator.getInventoryOpenCloseManager().isOpenInventory;
+        bool isSliding = GVA.ISSLIDING;
 
-        return globalVariablesAccess.boolConditionAndTester(!isDialogueOpen, !isBuying, !isInventoryOpen, !isSliding, !isJumping);
+        return GVA.boolConditionAndTester(!isDialogueOpen, !isBuying, !isInventoryOpen, !isSliding, !isJumping);
 
     }
     void AttackingMechanism()

@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public class OpenWares : MonoBehaviour
 {
     [SerializeField] GameObject MagicCircle;
@@ -19,7 +18,7 @@ public class OpenWares : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        if (SingletonForObjects.getDialogueManager().getIsOpen() && !SingletonForObjects.getInventoryOpenCloseManager().isOpenInventory)
+        if (GameObjectCreator.getDialogueManager().getIsOpen() && !GameObjectCreator.getInventoryOpenCloseManager().isOpenInventory)
         {
             WaresPanel.SetActive(true);
             Buying = true;

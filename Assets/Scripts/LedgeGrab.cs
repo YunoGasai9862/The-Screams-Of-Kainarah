@@ -43,12 +43,12 @@ public class LedgeGrab : MonoBehaviour
         //if the variable is public static and exists on the same object, you can access it with the name of the script!!
 
 
-        if (greenBox && !RedBox && !isOntheGround() && !Movement.isGrabbing)
+        if (greenBox && !RedBox && !isOntheGround() && !PlayerHelperClassForOtherPurposes.isGrabbing)
         {
-            Movement.isGrabbing = true;
+            PlayerHelperClassForOtherPurposes.isGrabbing = true;
         }
 
-        if (Movement.isGrabbing)
+        if (PlayerHelperClassForOtherPurposes.isGrabbing)
         {
             anim.SetBool("LedgeGrab", true);
             rb.velocity = new Vector2(0, 0);//setting the x and y velocity to zero  (even i was doing the same in my implementation!)
@@ -76,7 +76,7 @@ public class LedgeGrab : MonoBehaviour
         }
 
         rb.gravityScale = startingGrav;
-        Movement.isGrabbing = false;
+        PlayerHelperClassForOtherPurposes.isGrabbing = false;
 
     }
 

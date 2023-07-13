@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public class FollowPlayerMonster : StateMachineBehaviour
 {
     //OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -14,7 +13,7 @@ public class FollowPlayerMonster : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
-        if (!SingletonForObjects.getDialogueManager().getIsOpen())
+        if (!GameObjectCreator.getDialogueManager().getIsOpen())
         {
 
             if (MonsterFollow.Player != null && MonsterFollow.checkDistance(animator))

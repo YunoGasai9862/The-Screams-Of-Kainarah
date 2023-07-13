@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-
 public class BossScript : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -27,7 +26,7 @@ public class BossScript : MonoBehaviour
         CheckRotation();
 
 
-        if (SingletonForObjects.getDialogueManager().getIsOpen())
+        if (GameObjectCreator.getDialogueManager().getIsOpen())
         {
             anim.SetBool("walk", false);
         }
@@ -43,11 +42,6 @@ public class BossScript : MonoBehaviour
             StartCoroutine(TimeElapse());
 
         }
-
-
-
-
-
 
     }
 

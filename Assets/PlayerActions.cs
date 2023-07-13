@@ -1,6 +1,8 @@
+using CoreCode;
+using GlobalAccessAndGameHelper;
+using PlayerAnimationHandler;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
 public class PlayerActions : MonoBehaviour
 {
     private PlayerInput _playerInput;
@@ -133,7 +135,7 @@ public class PlayerActions : MonoBehaviour
 
     private void Update()
     {
-        if (!SingletonForObjects.getDialogueManager().getIsOpen())
+        if (!GameObjectCreator.getDialogueManager().getIsOpen())
         {
             //movement
             _keystrokeTrack = PlayerMovement();

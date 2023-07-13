@@ -1,8 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-public class Movement : MonoBehaviour
+public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 {
     [SerializeField] SpriteRenderer sr;
     [SerializeField] GameObject DiamondHitEffect;
@@ -32,7 +31,7 @@ public class Movement : MonoBehaviour
     }
     void Update()
     {
-        if (!SingletonForObjects.getDialogueManager().getIsOpen())
+        if (!GameObjectCreator.getDialogueManager().getIsOpen())
         {
 
             if (Death)

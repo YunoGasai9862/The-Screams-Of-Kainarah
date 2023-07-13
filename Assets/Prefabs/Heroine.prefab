@@ -570,6 +570,7 @@ GameObject:
   - component: {fileID: 8744535595071973501}
   - component: {fileID: 2357857118627078221}
   - component: {fileID: 2357857118627078230}
+  - component: {fileID: 4196288680751230460}
   m_Layer: 7
   m_Name: Heroine
   m_TagString: Player
@@ -689,7 +690,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 50
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -697,7 +698,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
@@ -758,19 +759,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c868b2ccd683da049b2b355d8a748e36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CharacterSpeed: 10
-  sr: {fileID: 2357857119552702230}
-  Ground:
-    serializedVersion: 2
-    m_Bits: 64
-  Ledge:
-    serializedVersion: 2
-    m_Bits: 8
-  DiamondHitEffect: {fileID: 2661038635046788335, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
-  pickupEffect: {fileID: 2214392910240599192, guid: a0a1f9649d5a494488d827aedb80a555, type: 3}
-  dialogue: {fileID: 0}
-  trackingEntities: {fileID: 0}
-  TeleportTransition: {fileID: 0}
 --- !u!114 &3387488181997499512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -792,6 +780,11 @@ MonoBehaviour:
   Dagger: {fileID: 8025573198793576023, guid: f56de393cd630934e8c8c9cd19ec01bf, type: 3}
   IceTrail: {fileID: 1326094510711206718, guid: f87dcd0b34fb626439aac4d24529af72, type: 3}
   IceTrail2: {fileID: 6942044088278875987, guid: 05dace05c5d30104880353dab19e2674, type: 3}
+  canAttackStateName: Attack
+  attackStateName: PlayerAttack
+  timeDifferenceStateName: ElapsedTime
+  jumpAttackStateName: AttackJ
+  daggerAttackName: 
 --- !u!114 &8744535595071973501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -831,11 +824,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterSpeed: 10
-  jumpLayer:
+  groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  maxJumpHeight: 3
-  maxJumpTime: 1
+  ledgeLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  JumpSpeed: 20
+  maxTimeJump: 0.3
+  slidingSpeed: 18
 --- !u!114 &2357857118627078230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -846,6 +843,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d81b7b552cbb1b64e81bde3d5e620083, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4196288680751230460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfcd2735284f62d43a8d8a06fb03d652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &3485019726026848876

@@ -38,7 +38,7 @@ public class MusicManager : MonoBehaviour
 
             }
 
-            if (Movement.AudioPickUp)
+            if (PlayerHelperClassForOtherPurposes.AudioPickUp)
             {
                 _gameState = GameState.PICKUP;
             }
@@ -82,7 +82,7 @@ public class MusicManager : MonoBehaviour
 
             case GameState.PICKUP:
                 _Pickup.Play();
-                Movement.AudioPickUp = false;
+                PlayerHelperClassForOtherPurposes.AudioPickUp = false;
                 break;
 
             case GameState.STOP:
