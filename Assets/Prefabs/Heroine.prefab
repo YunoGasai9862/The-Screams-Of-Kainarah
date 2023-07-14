@@ -569,8 +569,8 @@ GameObject:
   - component: {fileID: 3387488181997499512}
   - component: {fileID: 8744535595071973501}
   - component: {fileID: 2357857118627078221}
-  - component: {fileID: 2357857118627078230}
-  - component: {fileID: 4196288680751230460}
+  - component: {fileID: 6549680331415743501}
+  - component: {fileID: 2357857118627078234}
   m_Layer: 7
   m_Name: Heroine
   m_TagString: Player
@@ -759,6 +759,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c868b2ccd683da049b2b355d8a748e36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sr: {fileID: 0}
+  DiamondHitEffect: {fileID: 0}
+  pickupEffect: {fileID: 0}
+  dialogue: {fileID: 0}
+  trackingEntities: {fileID: 0}
+  TeleportTransition: {fileID: 0}
+  collidedObject: {fileID: 0}
 --- !u!114 &3387488181997499512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -833,19 +840,7 @@ MonoBehaviour:
   JumpSpeed: 20
   maxTimeJump: 0.3
   slidingSpeed: 18
---- !u!114 &2357857118627078230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2357857119552702225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d81b7b552cbb1b64e81bde3d5e620083, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4196288680751230460
+--- !u!114 &6549680331415743501
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -855,6 +850,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bfcd2735284f62d43a8d8a06fb03d652, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2357857118627078234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95945d8dacdeea34db44ccfc9e49a407, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &3485019726026848876

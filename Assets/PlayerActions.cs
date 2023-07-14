@@ -167,7 +167,6 @@ public class PlayerActions : MonoBehaviour
 
     }
 
-
     public bool MaxJumpTimeChecker()
     {
         return _timeCounter > maxTimeJump;

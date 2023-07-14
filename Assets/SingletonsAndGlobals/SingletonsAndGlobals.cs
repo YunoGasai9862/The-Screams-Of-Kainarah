@@ -98,6 +98,14 @@ namespace GlobalAccessAndGameHelper
             }
         }
 
+        public static Collider2D pollPlayerHelperClassForCollider()
+        {
+            PlayerHelperClassForOtherPurposes _PlayerHelperClass = GameObjectCreator.getPlayerHelperClassObject();
+            return _PlayerHelperClass.getColliderObject();
+
+        }
+
+
     }
 
 

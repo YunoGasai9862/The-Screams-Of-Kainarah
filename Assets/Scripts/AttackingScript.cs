@@ -66,6 +66,8 @@ public class AttackingScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
         if (IsAttackPrerequisiteMet())
         {
             if (_playerAttackStateMachine.istheAttackCancelConditionTrue(_playerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
@@ -80,30 +82,33 @@ public class AttackingScript : MonoBehaviour
     {
         throwDagger = context.ReadValueAsButton();
 
-        ThrowDagger(throwDagger);
+        ThrowDagger(throwDagger, "Dagger", Dagger);
     }
 
-    private void ThrowDagger(bool throwDagger)
+    private void ThrowDagger(bool throwDagger, string DaggerName, GameObject prefab)
     {
-        if (throwDagger)
+        _playerCollider = GVA.pollPlayerHelperClassForCollider();
+
+        if (throwDagger && _playerCollider != null && _playerCollider.name == DaggerName)
         {
-            _playerCollider = pollPlayerHelperClassForCollider();
-            Debug.Log(_playerCollider);
+            GameObjectInstantiator _dagger = new GameObjectInstantiator(prefab);
 
+            AddDaggerToInventoryAndDestroyItFromScene(ref _playerCollider);
 
-            GameObjectInstantiator _dagger = new GameObjectInstantiator(Dagger);
-            _dagger = new GameObjectInstantiator(Dagger);
-            _dagger.InstantiateGameObject(getDaggerPositionwithOffset(1, 0), Quaternion.identity);
+            _dagger = new GameObjectInstantiator(prefab);
+
+            _dagger.InstantiateGameObject(getDaggerPositionwithOffset(1, -1), Quaternion.identity);
+
             AttackEnemy.ThrowDagger = true; //will change this logic too
 
         }
     }
 
-    private Collider2D pollPlayerHelperClassForCollider()
+    private void AddDaggerToInventoryAndDestroyItFromScene(ref Collider2D gameObjectCollider) //add this method to the DaggerClass Later
     {
-        _PlayerHelperClass = GameObjectCreator.getPlayerHelperClassObject();
-        return _PlayerHelperClass.getColliderObject();
-
+        CreateInventorySystem.AddToInventory(gameObjectCollider.gameObject.GetComponent<SpriteRenderer>().sprite, gameObjectCollider.gameObject.tag);
+        //change addInventoryLogic too for Dagger
+        Destroy(gameObjectCollider.gameObject);
     }
 
     public Vector2 getDaggerPositionwithOffset(float xOffset, float yOffset)
@@ -281,26 +286,6 @@ public class AttackingScript : MonoBehaviour
         }
 
     }
-
-    void instantiateDag()
-    {
-        Vector3 position = transform.position;
-        position.y = transform.position.y - 1f;
-
-        Instantiate(Dagger, position, Quaternion.identity);
-
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("DaggerPickUp"))
-        {
-            canthrowDagger = true;
-            CreateInventorySystem.AddToInventory(collision.gameObject.GetComponent<SpriteRenderer>().sprite, collision.gameObject.tag);
-            Destroy(collision.gameObject);
-        }
-    }
-
     public void Icetail()
     {
 

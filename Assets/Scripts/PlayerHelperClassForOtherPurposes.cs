@@ -20,7 +20,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
     public static bool isGrabbing = false;//for the ledge grab script
     private bool once = true;
-    public Collider2D collidedObject;
+    private Collider2D collidedObject;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -98,6 +98,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         collidedObject = collision;
+        collidedObject.gameObject.SetActive(false); //hides it
         if (collision.CompareTag("Crystal"))
         {
             GameObject DHE = Instantiate(DiamondHitEffect, collision.transform.position, Quaternion.identity);

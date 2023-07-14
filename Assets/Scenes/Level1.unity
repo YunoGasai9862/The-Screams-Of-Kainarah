@@ -3547,6 +3547,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dagger
       objectReference: {fileID: 0}
+    - target: {fileID: 7544466194396164622, guid: f5006c4251e868640992bff5de9a13a9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6519,54 +6523,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: JumpTime
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: JumpSpeed
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: maxJumpTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: maxTimeJump
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: slidingSpeed
-      value: 18
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: maxJumpHeight
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: ledgeLayer.m_Bits
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: groundLayer.m_Bits
-      value: 64
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078222, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: m_Mass
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078222, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: m_Interpolate
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857118627078222, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: m_GravityScale
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2357857119552702225, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: m_Name
       value: Heroine
@@ -6576,66 +6532,19 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 989729090}
     - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: trackingEntities
       value: 
       objectReference: {fileID: 220448025}
-    - target: {fileID: 2357857119552702235, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857119552702235, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3387488181997499512, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: attackStateName
-      value: PlayerAttack
-      objectReference: {fileID: 0}
-    - target: {fileID: 3387488181997499512, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: canAttackStateName
-      value: Attack
-      objectReference: {fileID: 0}
-    - target: {fileID: 3387488181997499512, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: jumpAttackStateName
-      value: AttackJ
-      objectReference: {fileID: 0}
-    - target: {fileID: 3387488181997499512, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: timeDifferenceStateName
-      value: ElapsedTime
-      objectReference: {fileID: 0}
-    - target: {fileID: 8468629046130634944, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2357857119552702225, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2357857118627078222}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
 --- !u!1 &2357857118627078211 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2357857119552702225, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
   m_PrefabInstance: {fileID: 2357857118627078210}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2357857118627078222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2357857118627078211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfcd2735284f62d43a8d8a06fb03d652, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &3411736709899530786
 PrefabInstance:
   m_ObjectHideFlags: 0
