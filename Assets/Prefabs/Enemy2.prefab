@@ -214,7 +214,7 @@ MonoBehaviour:
   Player:
     serializedVersion: 2
     m_Bits: 128
-  Hit: {fileID: 0}
+  Hit: {fileID: 3285503076644769960, guid: 15b81b06a58e6014a92f09a4bef3dee3, type: 3}
 --- !u!61 &6972185359054276974
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -222,7 +222,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6972185359054276948}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -326,7 +326,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6972185359099912430}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.63, y: 1.43, z: 0}
+  m_LocalPosition: {x: 2.63, y: 1.65, z: -0.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

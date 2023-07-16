@@ -24,7 +24,8 @@ public class AttackingScript : MonoBehaviour
     private float timeDifferencebetweenStates;
     private bool throwDagger = false;
     private PlayerHelperClassForOtherPurposes _PlayerHelperClass;
-    private Collider2D _playerCollider;
+    private Collider2D daggerCollider;
+    private IPickable _pickable;
 
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
@@ -87,15 +88,15 @@ public class AttackingScript : MonoBehaviour
 
     private void ThrowDagger(bool throwDagger, string DaggerName, GameObject prefab)
     {
-        _playerCollider = GVA.pollPlayerHelperClassForCollider();
+        daggerCollider = GVA.pollPlayerHelperClassForCollider();
 
-        if (throwDagger && _playerCollider != null && _playerCollider.name == DaggerName)
+        if (throwDagger && daggerCollider != null && daggerCollider.name == DaggerName)
         {
             GameObjectInstantiator _dagger = new GameObjectInstantiator(prefab);
 
-            AddDaggerToInventoryAndDestroyItFromScene(ref _playerCollider);
+            _pickable = new IPickable(ref daggerCollider);
 
-            _dagger = new GameObjectInstantiator(prefab);
+            managePickable();
 
             _dagger.InstantiateGameObject(getDaggerPositionwithOffset(1, -1), Quaternion.identity);
 
@@ -104,12 +105,13 @@ public class AttackingScript : MonoBehaviour
         }
     }
 
-    private void AddDaggerToInventoryAndDestroyItFromScene(ref Collider2D gameObjectCollider) //add this method to the DaggerClass Later
+    public void managePickable()
     {
-        CreateInventorySystem.AddToInventory(gameObjectCollider.gameObject.GetComponent<SpriteRenderer>().sprite, gameObjectCollider.gameObject.tag);
-        //change addInventoryLogic too for Dagger
-        Destroy(gameObjectCollider.gameObject);
+        _pickable.AddToInventory(); //adds to the inventory
+
+        _pickable.DestroyPickableFromScene();
     }
+
 
     public Vector2 getDaggerPositionwithOffset(float xOffset, float yOffset)
     {

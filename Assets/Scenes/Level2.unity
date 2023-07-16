@@ -2248,6 +2248,7 @@ MonoBehaviour:
     sentences:
     - You dare enter my dungeon!
     - Your transgressions will be punished...
+  WizardPlayerConvo: []
 --- !u!1 &1044945611
 GameObject:
   m_ObjectHideFlags: 0
@@ -3288,8 +3289,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myname: {fileID: 142851601}
-  maindialogue: {fileID: 1622764820}
+  maindialogue: {fileID: 0}
   myanimator: {fileID: 1124974984}
+  IsOpen: 0
+  myinteractable: {fileID: 0}
 --- !u!1 &1177047590 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7097680049040053745, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}

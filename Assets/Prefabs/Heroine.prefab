@@ -760,12 +760,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sr: {fileID: 0}
-  DiamondHitEffect: {fileID: 0}
+  DiamondHitEffect: {fileID: 2661038635046788335, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
   pickupEffect: {fileID: 0}
   dialogue: {fileID: 0}
   trackingEntities: {fileID: 0}
   TeleportTransition: {fileID: 0}
-  collidedObject: {fileID: 0}
 --- !u!114 &3387488181997499512
 MonoBehaviour:
   m_ObjectHideFlags: 0

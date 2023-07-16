@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1873030402443433276, guid: 332b21a684312b34798ace98affe4eed, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.7
+      value: -2.67
       objectReference: {fileID: 0}
     - target: {fileID: 1873030402443433276, guid: 332b21a684312b34798ace98affe4eed, type: 3}
       propertyPath: m_LocalPosition.z
@@ -95,6 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09fc735165b049c48bf82a8a9d48700f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BossDead: {fileID: 7294662482550770413, guid: 8df7eb68a2313664fb8aa8f93f7bf27f, type: 3}
 --- !u!61 &1177047596
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -127,7 +128,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.08571321, y: 3.37}
+  m_Offset: {x: -0.93, y: 3.37}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}

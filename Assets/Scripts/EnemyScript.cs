@@ -24,7 +24,7 @@ public class EnemyScript : MonoBehaviour
         Heroine = GameObject.FindWithTag("Player");
         if (transform.gameObject.name != "Enemy2")
         {
-            anim.SetBool("Destroyed", false);
+            // anim.SetBool("Destroyed", false);
         }
 
     }
