@@ -54,7 +54,7 @@ public class LedgeGrab : MonoBehaviour
             rb.velocity = new Vector2(0, 0);//setting the x and y velocity to zero  (even i was doing the same in my implementation!)
             rb.gravityScale = 0f;  //and sets the gravity scale to zero
         }
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= .5f) //it checks for the same animations normalziaed TIME!!
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= .2f) //it checks for the same animations normalziaed TIME!!
         {
             ChangePositionOfThePlayer();  //this is for setting the animation to false
             anim.SetBool("LedgeGrab", false);

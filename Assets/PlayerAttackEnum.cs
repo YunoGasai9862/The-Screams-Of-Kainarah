@@ -4,4 +4,6 @@ public class PlayerAttackEnum
     {
         Attack = 1, Attack2 = 2, Attack3 = 3, Attack4 = 4
     }
+
+
 }

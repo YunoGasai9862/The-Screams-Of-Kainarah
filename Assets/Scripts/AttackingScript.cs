@@ -1,5 +1,6 @@
 using CoreCode;
 using GlobalAccessAndGameHelper;
+using PlayerAnimationHandler;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -37,6 +38,7 @@ public class AttackingScript : MonoBehaviour
     [SerializeField] string timeDifferenceStateName;
     [SerializeField] string jumpAttackStateName;
     [SerializeField] string daggerAttackName;
+
 
     private void Awake()
     {
@@ -83,18 +85,24 @@ public class AttackingScript : MonoBehaviour
     {
         throwDagger = context.ReadValueAsButton();
 
-        ThrowDagger(throwDagger, "Dagger", Dagger);
-    }
-
-    private void ThrowDagger(bool throwDagger, string DaggerName, GameObject prefab)
-    {
         daggerCollider = GVA.pollPlayerHelperClassForCollider();
 
-        if (throwDagger && daggerCollider != null && daggerCollider.name == DaggerName)
+        _playerAttackStateMachine.setAttackState(AnimationConstants.THROWDAGGER, throwDagger);
+
+        if (daggerCollider != null)
+        {
+            ThrowDagger(daggerCollider, throwDagger, "Dagger", Dagger);
+        }
+
+    }
+
+    private void ThrowDagger(Collider2D collider, bool throwDagger, string DaggerName, GameObject prefab)
+    {
+        if (throwDagger)
         {
             GameObjectInstantiator _dagger = new GameObjectInstantiator(prefab);
 
-            _pickable = new IPickable(ref daggerCollider);
+            _pickable = new IPickable(ref collider);
 
             managePickable();
 

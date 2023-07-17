@@ -1,6 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 {
     [SerializeField] SpriteRenderer sr;
@@ -8,6 +10,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     [SerializeField] GameObject pickupEffect;
     [SerializeField] Interactable dialogue;
     [SerializeField] TrackingEntities trackingEntities;
+    [SerializeField] List<string> pickableItems;
 
     public static bool AudioPickUp;
 
@@ -31,22 +34,6 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     }
     void Update()
     {
-        if (!GameObjectCreator.getDialogueManager().getIsOpen())
-        {
-
-            if (Death)
-            {
-                rb.bodyType = RigidbodyType2D.Static;
-            }
-
-
-            if (rb.velocity.y < -15f) //freefalling into an abyss. Not a good solution, i know
-            {
-                GameStateManager.RestartGame();
-            }
-
-        }
-
 
 
     }
@@ -98,7 +85,13 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         collidedObject = collision;
-        collidedObject.gameObject.SetActive(false); //hides it
+
+        bool pickedUp = didPlayerCollideWithaPickableItem(collision.name);
+
+        if (pickedUp)
+        {
+            collidedObject.gameObject.SetActive(false); //hides it
+        }
         if (collision.CompareTag("Crystal"))
         {
             GameObject DHE = Instantiate(DiamondHitEffect, collision.transform.position, Quaternion.identity);
@@ -120,6 +113,19 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
 
         }
+    }
+
+    private bool didPlayerCollideWithaPickableItem(string collisionObjectName)
+    {
+        for (int i = 0; i < pickableItems.Count; i++)
+        {
+            if (collisionObjectName == pickableItems[i])
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public Collider2D getColliderObject()
