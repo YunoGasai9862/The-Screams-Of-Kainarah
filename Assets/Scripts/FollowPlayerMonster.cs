@@ -13,7 +13,7 @@ public class FollowPlayerMonster : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
-        if (!GameObjectCreator.getDialogueManager().getIsOpen())
+        if (!GameObjectCreator.GetDialogueManager().getIsOpen())
         {
 
             if (MonsterFollow.Player != null && MonsterFollow.checkDistance(animator))

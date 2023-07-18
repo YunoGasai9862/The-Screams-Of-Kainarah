@@ -23,23 +23,23 @@ namespace CoreCode
 
         public void setAttackState(string parameterName, int currentStateInt)
         {
-            this._animator.SetInteger(parameterName, currentStateInt);
+            _animator.SetInteger(parameterName, currentStateInt);
         }
 
         public void setAttackState(string parameterName, bool currentStateInt)
         {
-            this._animator.SetBool(parameterName, currentStateInt);
+            _animator.SetBool(parameterName, currentStateInt);
         }
 
 
         public void timeDifferenceRequiredBetweenTwoStates(string parameterName, float timePassed)
         {
-            this._animator.SetFloat(parameterName, timePassed);
+            _animator.SetFloat(parameterName, timePassed);
         }
 
         public void canAttack(string parameterName, bool canAttack)
         {
-            this._animator.SetBool(parameterName, canAttack);
+            _animator.SetBool(parameterName, canAttack);
         }
 
         public bool istheAttackCancelConditionTrue(string stateName, string[] expectedStateName)
@@ -49,7 +49,7 @@ namespace CoreCode
 
                 if (stateName == expectedStateNames)
                 {
-                    return this._animator.GetCurrentAnimatorStateInfo(0).IsName(stateName) && this._animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f;
+                    return _animator.GetCurrentAnimatorStateInfo(0).IsName(stateName) && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f;
                 }
 
             }
@@ -60,7 +60,7 @@ namespace CoreCode
 
         public bool getCurrentState(string state)
         {
-            return this._animator.GetCurrentAnimatorStateInfo(0).IsName(state);
+            return _animator.GetCurrentAnimatorStateInfo(0).IsName(state);
         }
 
         public string getStateNameThroughEnum(int state)
@@ -82,7 +82,7 @@ namespace CoreCode
             {
                 string stateName = getStateNameThroughEnum(i + 1);
 
-                result = result || this._animator.GetCurrentAnimatorStateInfo(0).IsName(stateName);
+                result = result || _animator.GetCurrentAnimatorStateInfo(0).IsName(stateName);
 
             }
 

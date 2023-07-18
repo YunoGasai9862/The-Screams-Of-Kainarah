@@ -12,17 +12,17 @@ public class GameObjectCreator : MonoBehaviour
         _playerHelperClassForOtherPurposes = FindObjectOfType<PlayerHelperClassForOtherPurposes>();
     }
 
-    public static DialogueManager getDialogueManager()
+    public static DialogueManager GetDialogueManager()
     {
         return _dialogueManager;
     }
 
-    public static InventoryOpenCloseManager getInventoryOpenCloseManager()
+    public static InventoryOpenCloseManager GetInventoryOpenCloseManager()
     {
         return _inventoryOpenCloseManager;
     }
 
-    public static PlayerHelperClassForOtherPurposes getPlayerHelperClassObject()
+    public static PlayerHelperClassForOtherPurposes GetPlayerHelperClassObject()
     {
         return _playerHelperClassForOtherPurposes;
     }

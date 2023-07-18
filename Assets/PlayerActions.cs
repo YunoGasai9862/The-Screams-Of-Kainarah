@@ -84,7 +84,7 @@ public class PlayerActions : MonoBehaviour
         }
 
 
-        if (!globalVariablesAccess.ISJUMPING && !_movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer)) //falling
+        if (!globalVariablesAccess.ISJUMPING && !LedgeGroundChecker(groundLayer, ledgeLayer)) //falling
         {
             characterVelocityY = -JumpSpeed * .8f; //extra check
             _animationHandler.JumpingFalling(globalVariablesAccess.ISJUMPING); //falling naimation
@@ -104,7 +104,6 @@ public class PlayerActions : MonoBehaviour
 
             _timeCounter = 0;
         }
-
 
     }
 
@@ -128,14 +127,14 @@ public class PlayerActions : MonoBehaviour
 
     private bool LedgeGroundChecker(LayerMask ground, LayerMask ledge)
     {
-        return (_movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, ground)
-            || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, ledge));
+        return _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, ground)
+            || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, ledge);
     }
 
 
     private void Update()
     {
-        if (!GameObjectCreator.getDialogueManager().getIsOpen())
+        if (!GameObjectCreator.GetDialogueManager().getIsOpen())
         {
             //movement
             _keystrokeTrack = PlayerMovement();
@@ -162,6 +161,7 @@ public class PlayerActions : MonoBehaviour
             {
                 globalVariablesAccess.setSliding(false);
             }
+
 
         }
 

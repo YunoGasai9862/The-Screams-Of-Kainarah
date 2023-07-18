@@ -29,7 +29,7 @@ namespace PlayerAnimationHandler
 
         private void Update()
         {
-            if (this._anim.GetCurrentAnimatorStateInfo(0).IsName(AnimationConstants.SLIDING) &&
+            if (_anim.GetCurrentAnimatorStateInfo(0).IsName(AnimationConstants.SLIDING) &&
                 returnCurrentAnimation() > maxSlideTime)
             {
                 PlayAnimation(AnimationConstants.SLIDING, false);  //for fixing the Sliding Issue
@@ -87,17 +87,17 @@ namespace PlayerAnimationHandler
 
         public float returnCurrentAnimation()
         {
-            return this._anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            return _anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
         }
 
         public bool isNameOfTheCurrentAnimation(string name)
         {
-            return this._anim.GetCurrentAnimatorStateInfo(0).IsName(name);
+            return _anim.GetCurrentAnimatorStateInfo(0).IsName(name);
         }
 
         public Animator getAnimator()
         {
-            return this._anim;
+            return _anim;
         }
 
 
@@ -126,12 +126,12 @@ namespace PlayerAnimationHandler
 
         public void AnimationPlayMachineInt(string constName, int state)
         {
-            this.animator.SetInteger(constName, state);
+            animator.SetInteger(constName, state);
 
         }
         public void AnimationPlayMachineBool(string constName, bool state)
         {
-            this.animator.SetBool(constName, state);
+            animator.SetBool(constName, state);
         }
 
     }

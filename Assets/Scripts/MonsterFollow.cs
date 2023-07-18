@@ -16,7 +16,7 @@ public class MonsterFollow : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (!GameObjectCreator.getDialogueManager().getIsOpen())
+        if (!GameObjectCreator.GetDialogueManager().getIsOpen())
         {
             if (Player != null && checkDistance(animator))
             {
@@ -58,7 +58,7 @@ public class MonsterFollow : StateMachineBehaviour
 
     public static bool checkDistance(Animator animator)
     {
-        return (Vector3.Distance(Player.transform.position, animator.transform.position) <= 15f && Vector3.Distance(Player.transform.position, animator.transform.position) >= 3);
+        return Vector3.Distance(Player.transform.position, animator.transform.position) <= 15f && Vector3.Distance(Player.transform.position, animator.transform.position) >= 3;
     }
 
     public static void DelayAttack(Animator animator)

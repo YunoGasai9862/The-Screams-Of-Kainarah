@@ -3,8 +3,8 @@ namespace GlobalAccessAndGameHelper
 {
     public class GameObjectInstantiator
     {
-        GameObject _prefab;
-        GameObject _gameObject;
+      private readonly GameObject _prefab;
+      private GameObject _gameObject;
         public GameObjectInstantiator(GameObject _prefab)
         {
             this._prefab = _prefab;
@@ -28,7 +28,7 @@ namespace GlobalAccessAndGameHelper
 
         public void setGameObjectParent(Transform parent)
         {
-            this._gameObject.transform.parent = parent;
+            _gameObject.transform.parent = parent;
         }
     }
 
@@ -100,7 +100,7 @@ namespace GlobalAccessAndGameHelper
 
         public static Collider2D pollPlayerHelperClassForCollider()
         {
-            PlayerHelperClassForOtherPurposes _PlayerHelperClass = GameObjectCreator.getPlayerHelperClassObject();
+            PlayerHelperClassForOtherPurposes _PlayerHelperClass = GameObjectCreator.GetPlayerHelperClassObject();
             return _PlayerHelperClass.getColliderObject();
 
         }

@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class PanelHandler
 {
-    private GameObject Panel;
+    private readonly GameObject Panel;
 
     public PanelHandler(ref GameObject panel)
     {
-        this.Panel = panel;
+        Panel = panel;
     }
 
     public void OpenPanel()

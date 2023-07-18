@@ -9,9 +9,7 @@ public class AttackingScript : MonoBehaviour
 {
     private Animator _anim;
     private BoxCollider2D col;
-    private GameObject dag;
     public static bool canthrowDagger = true;
-    private float throwdaggerTime = 0;
     private float _timeForMouseClickStart = 0;
     private float _timeForMouseClickEnd = 0;
     private MovementHelperClass _movementHelper;
@@ -89,24 +87,26 @@ public class AttackingScript : MonoBehaviour
 
         _playerAttackStateMachine.setAttackState(AnimationConstants.THROWDAGGER, throwDagger);
 
-        if (daggerCollider != null)
+        Debug.Log(daggerCollider);
+
+        if (daggerCollider != null && daggerCollider.name=="Dagger")
         {
-            ThrowDagger(daggerCollider, throwDagger, "Dagger", Dagger);
+            ThrowDagger(daggerCollider, throwDagger, Dagger);
         }
 
     }
 
-    private void ThrowDagger(Collider2D collider, bool throwDagger, string DaggerName, GameObject prefab)
+    private void ThrowDagger(Collider2D collider, bool throwDagger, GameObject prefab)
     {
         if (throwDagger)
         {
-            GameObjectInstantiator _dagger = new GameObjectInstantiator(prefab);
+            GameObjectInstantiator _dagger = new(prefab);
 
             _pickable = new IPickable(ref collider);
 
             managePickable();
 
-            _dagger.InstantiateGameObject(getDaggerPositionwithOffset(1, -1), Quaternion.identity);
+            _dagger.InstantiateGameObject(getDaggerPositionwithOffset(2, -1), Quaternion.identity);
 
             AttackEnemy.ThrowDagger = true; //will change this logic too
 
@@ -146,13 +146,14 @@ public class AttackingScript : MonoBehaviour
 
         }
 
-        if (isJumpAttackPrequisitesMet())
+         if(isJumpAttackPrequisitesMet())
         {
             _playerAttackStateMachine.setAttackState(jumpAttackStateName, leftMouseButtonPressed);
 
         }
-
     }
+
+
 
     private bool isJumpAttackPrequisitesMet()
     {
@@ -239,6 +240,7 @@ public class AttackingScript : MonoBehaviour
     private void ResetAttackStatuses()
     {
         _playerAttackStateMachine.canAttack(canAttackStateName, false);
+        _playerAttackStateMachine.canAttack(jumpAttackStateName, false);
         _playerAttackState = 0; //resets the attackingstate
         GVA.setAttacking(false);
     }
@@ -259,47 +261,19 @@ public class AttackingScript : MonoBehaviour
     }
     public bool IsAttackPrerequisiteMet()
     {
-        bool isDialogueOpen = GameObjectCreator.getDialogueManager().getIsOpen();
+        bool isDialogueOpen = GameObjectCreator.GetDialogueManager().getIsOpen();
         bool isJumping = GVA.ISJUMPING;
         bool isBuying = OpenWares.Buying;
-        bool isInventoryOpen = GameObjectCreator.getInventoryOpenCloseManager().isOpenInventory;
+        bool isInventoryOpen = GameObjectCreator.GetInventoryOpenCloseManager().isOpenInventory;
         bool isSliding = GVA.ISSLIDING;
 
         return GVA.boolConditionAndTester(!isDialogueOpen, !isBuying, !isInventoryOpen, !isSliding, !isJumping);
 
     }
-    void AttackingMechanism()
-    {
-
-        if (_anim.GetCurrentAnimatorStateInfo(0).IsName("ThrowDagger"))
-        {
-            throwdaggerTime += Time.deltaTime;
-            if (throwdaggerTime > .5f)
-            {
-                _anim.SetBool("ThrowDagger", false);
-                throwdaggerTime = 0f;
-
-            }
-
-
-        }
-
-        if (!(_anim.GetCurrentAnimatorStateInfo(0).IsName("Running")) && Input.GetKeyDown(KeyCode.F) && canthrowDagger)
-        {
-            _anim.SetBool("ThrowDagger", true);
-            AttackEnemy.ThrowDagger = true;
-
-            Invoke("instantiateDag", .4f);
-            canthrowDagger = false;
-
-
-        }
-
-    }
     public void Icetail()
     {
 
-        GameObjectInstantiator iceTrail = new GameObjectInstantiator(IceTrail);
+        GameObjectInstantiator iceTrail = new(IceTrail);
         iceTrail.InstantiateGameObject(transform.position, Quaternion.identity);
         iceTrail.setGameObjectParent(transform);
 
@@ -309,7 +283,7 @@ public class AttackingScript : MonoBehaviour
     public void Icetail2()
     {
 
-        GameObjectInstantiator iceTrail = new GameObjectInstantiator(IceTrail2);
+        GameObjectInstantiator iceTrail = new(IceTrail2);
         iceTrail.InstantiateGameObject(transform.position, Quaternion.identity);
         iceTrail.setGameObjectParent(transform);
 

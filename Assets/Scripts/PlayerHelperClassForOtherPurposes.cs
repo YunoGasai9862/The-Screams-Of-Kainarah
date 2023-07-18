@@ -15,7 +15,6 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     public static bool AudioPickUp;
 
     private Animator anim;
-    private Rigidbody2D rb;
     private bool Death = false;
     public static double MAXHEALTH = 100f;
     public static double ENEMYATTACK = 5f;
@@ -26,15 +25,9 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     private Collider2D collidedObject;
     private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         MAXHEALTH = 100f;
-
-    }
-    void Update()
-    {
-
 
     }
     private void FixedUpdate()
@@ -127,7 +120,10 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
         return false;
     }
+    private void pickupEffectInstantiator()
+    {
 
+    }
     public Collider2D getColliderObject()
     {
         return collidedObject;
@@ -156,19 +152,9 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
 
         }
-        if (hit.collider != null)
-
-            Debug.Log(hit.collider.name);
 
 
-        if (hit.collider != null && hit.collider.isTrigger && hit.collider.CompareTag("Portal"))
-        {
-            return true;
-        }
-
-        return false;
-
-
+        return hit.collider != null && hit.collider.isTrigger && hit.collider.CompareTag("Portal");
     }
 
     IEnumerator WaiterFunction()
