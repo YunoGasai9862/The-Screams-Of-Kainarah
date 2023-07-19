@@ -3,7 +3,8 @@ using GlobalAccessAndGameHelper;
 using PlayerAnimationHandler;
 using UnityEngine;
 using UnityEngine.InputSystem;
-public class PlayerActions : MonoBehaviour
+public class PlayerActions : SubjectsToBeNotified //why i removed the MonoBehavior? The notified subject class inherits from MonoBehavior so does the PlayerActions now, but also 
+    //have the ability to inherit notifiy actions
 {
     private PlayerInput _playerInput;
     private Rocky2DActions _rocky2DActions;
@@ -178,6 +179,8 @@ public class PlayerActions : MonoBehaviour
         characterVelocityX = keystroke.x;
 
         CharacterControllerMove(characterVelocityX * _characterSpeed, characterVelocityY);
+
+        NotifyObservers(AnimationStateKeeper.StateKeeper.RUNNING); //fix this tomorrow
 
         _animationHandler.RunningWalkingAnimation(keystroke.x);  //for movement, plays the animation
 

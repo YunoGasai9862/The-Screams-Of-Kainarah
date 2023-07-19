@@ -13,7 +13,7 @@ namespace PlayerAnimationHandler
 
 
     }
-    public class AnimationHandler : MonoBehaviour
+    public class AnimationHandler : SubjectsToBeNotified
     {
         private AnimationStateMachine _stateMachine;
         private Animator _anim;
@@ -29,7 +29,7 @@ namespace PlayerAnimationHandler
 
         private void Update()
         {
-            if (_anim.GetCurrentAnimatorStateInfo(0).IsName(AnimationConstants.SLIDING) &&
+            if (_anim!=null && _anim.GetCurrentAnimatorStateInfo(0).IsName(AnimationConstants.SLIDING) &&
                 returnCurrentAnimation() > maxSlideTime)
             {
                 PlayAnimation(AnimationConstants.SLIDING, false);  //for fixing the Sliding Issue
@@ -58,6 +58,7 @@ namespace PlayerAnimationHandler
             if (VectorChecker(keystroke))
             {
                 state = AnimationStateKeeper.StateKeeper.RUNNING;
+                NotifyObservers(state);
                 globalVariablesAccess.ISRUNNING = true;
                 globalVariablesAccess.ISWALKING = false;
             }
