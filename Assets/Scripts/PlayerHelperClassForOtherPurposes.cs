@@ -1,3 +1,4 @@
+using GlobalAccessAndGameHelper;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,8 +54,6 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
     }
 
-
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Enemy") || (collision.collider.CompareTag("Boss") &&
@@ -84,13 +83,23 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
         if (pickedUp)
         {
             collidedObject.gameObject.SetActive(false); //hides it
+
+            switch(collidedObject.gameObject.name)
+            {
+                case "Crystal":
+                    pickupEffectInstantiator(DiamondHitEffect, collidedObject.transform.position);
+                    break;
+
+                case "Health":
+                    pickupEffectInstantiator(pickupEffect, collidedObject.transform.position);
+                    break;
+
+            }
+         
         }
         if (collision.CompareTag("Crystal"))
         {
-            GameObject DHE = Instantiate(DiamondHitEffect, collision.transform.position, Quaternion.identity);
             AudioPickUp = true;
-            Destroy(DHE, 2f);
-
         }
 
         if (collision.CompareTag("Health"))
@@ -99,9 +108,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
             if (MAXHEALTH < 100)
             {
                 MAXHEALTH += 10;
-                GameObject temp = Instantiate(pickupEffect, collision.gameObject.transform.position, Quaternion.identity);
                 Destroy(collision.gameObject);
-                Destroy(temp, 1f);
             }
 
 
@@ -120,9 +127,10 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
         return false;
     }
-    private void pickupEffectInstantiator()
+    private void pickupEffectInstantiator(GameObject prefab, Vector3 position)
     {
-
+        GameObjectInstantiator _gameObject = new(prefab);
+        _gameObject.InstantiateGameObject(position, Quaternion.identity);
     }
     public Collider2D getColliderObject()
     {

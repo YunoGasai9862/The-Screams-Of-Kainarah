@@ -3,14 +3,14 @@ using GlobalAccessAndGameHelper;
 using PlayerAnimationHandler;
 using UnityEngine;
 using UnityEngine.InputSystem;
-public class PlayerActions : SubjectsToBeNotified //why i removed the MonoBehavior? The notified subject class inherits from MonoBehavior so does the PlayerActions now, but also 
+public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The notified subject class inherits from MonoBehavior so does the PlayerActions now, but also 
     //have the ability to inherit notifiy actions
 {
     private PlayerInput _playerInput;
     private Rocky2DActions _rocky2DActions;
     private Rigidbody2D _rb;
     private SpriteRenderer _spriteRenderer;
-    private AnimationHandler _animationHandler;
+    private PlayerAnimationMethods _animationHandler;
     private Vector2 _keystrokeTrack;
     private IOverlapChecker _movementHelperClass;
     private BoxCollider2D _boxCollider;
@@ -37,7 +37,7 @@ public class PlayerActions : SubjectsToBeNotified //why i removed the MonoBehavi
         _anim = GetComponent<Animator>();
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _animationHandler = GetComponent<AnimationHandler>();
+        _animationHandler = GetComponent<PlayerAnimationMethods>();
         _movementHelperClass = new MovementHelperClass();
         _boxCollider = GetComponent<BoxCollider2D>();
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
@@ -97,6 +97,11 @@ public class PlayerActions : SubjectsToBeNotified //why i removed the MonoBehavi
             _timeCounter += Time.deltaTime;
         }
 
+        if(PlayerHelperClassForOtherPurposes.isGrabbing) //tackles the ledgeGrab
+        {
+            _rb.velocity = new Vector2(0, 0);
+            _rb.gravityScale = 0;
+        }
 
 
         if (!globalVariablesAccess.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed) //on the ground
@@ -179,8 +184,6 @@ public class PlayerActions : SubjectsToBeNotified //why i removed the MonoBehavi
         characterVelocityX = keystroke.x;
 
         CharacterControllerMove(characterVelocityX * _characterSpeed, characterVelocityY);
-
-        NotifyObservers(AnimationStateKeeper.StateKeeper.RUNNING); //fix this tomorrow
 
         _animationHandler.RunningWalkingAnimation(keystroke.x);  //for movement, plays the animation
 

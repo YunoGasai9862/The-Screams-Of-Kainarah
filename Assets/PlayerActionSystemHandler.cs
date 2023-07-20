@@ -32,6 +32,6 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
 
     public void OnNotify(AnimationStateKeeper.StateKeeper stateNotifier)
     {
-        Debug.Log(stateNotifier);
+       
     }
 }

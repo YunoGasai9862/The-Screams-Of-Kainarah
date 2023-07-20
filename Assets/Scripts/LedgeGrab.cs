@@ -1,3 +1,4 @@
+using GlobalAccessAndGameHelper;
 using UnityEngine;
 
 public class LedgeGrab : MonoBehaviour
@@ -38,21 +39,21 @@ public class LedgeGrab : MonoBehaviour
 
 
         //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
-        greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + (greenYOffset)), new Vector2(greenXsize, greenYSize), 0, ledge);
+        greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
         RedBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
         //if the variable is public static and exists on the same object, you can access it with the name of the script!!
 
-
-        if (greenBox && !RedBox && !isOntheGround() && !PlayerHelperClassForOtherPurposes.isGrabbing)
+        if (greenBox && !RedBox && globalVariablesAccess.ISJUMPING)
         {
             PlayerHelperClassForOtherPurposes.isGrabbing = true;
         }
 
         if (PlayerHelperClassForOtherPurposes.isGrabbing)
         {
-            anim.SetBool("LedgeGrab", true);
             rb.velocity = new Vector2(0, 0);//setting the x and y velocity to zero  (even i was doing the same in my implementation!)
             rb.gravityScale = 0f;  //and sets the gravity scale to zero
+            anim.SetBool("LedgeGrab", true);
+           
         }
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= .2f) //it checks for the same animations normalziaed TIME!!
         {
@@ -66,12 +67,12 @@ public class LedgeGrab : MonoBehaviour
     {
         if (sr.flipX)
         {
-            transform.position = new Vector2(transform.position.x, transform.position.y + 12 * Time.deltaTime * transform.localScale.y);
+            transform.position = new Vector2(transform.position.x, transform.position.y + 15 * Time.deltaTime * transform.localScale.y);
             transform.position = new Vector2(transform.position.x - 10 * Time.deltaTime * transform.localScale.x, transform.position.y);
         }
         else
         {
-            transform.position = new Vector2(transform.position.x, transform.position.y + 12 * Time.deltaTime * transform.localScale.y);
+            transform.position = new Vector2(transform.position.x, transform.position.y + 15 * Time.deltaTime * transform.localScale.y);
             transform.position = new Vector2(transform.position.x + 10 * Time.deltaTime * transform.localScale.x, transform.position.y);
         }
 

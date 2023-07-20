@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71176dfd92264d047a4d57c5dd5dc258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Subject: {fileID: 2357857118627078214}
+  Subject: {fileID: 2357857118627078226}
 --- !u!4 &249938540
 Transform:
   m_ObjectHideFlags: 0
@@ -6352,34 +6352,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 989729090}
     - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: trackingEntities
       value: 
       objectReference: {fileID: 220448025}
-    - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: pickableItems.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: pickableItems.Array.data[0]
-      value: Dagger
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: pickableItems.Array.data[1]
-      value: Crystal
-      objectReference: {fileID: 0}
-    - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: pickableItems.Array.data[2]
-      value: Health
-      objectReference: {fileID: 0}
-    - target: {fileID: 3387488181997499512, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
-      propertyPath: daggerAttackName
-      value: ThrowDagger
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2357857118627078234, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -6389,15 +6366,15 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2357857119552702225, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
   m_PrefabInstance: {fileID: 2357857118627078210}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2357857118627078214 stripped
+--- !u!114 &2357857118627078226 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2357857118627078221, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+  m_CorrespondingSourceObject: {fileID: 2290307266042556730, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
   m_PrefabInstance: {fileID: 2357857118627078210}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2357857118627078211}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ba7c44513390474d97e023c8824ab9a, type: 3}
+  m_Script: {fileID: 11500000, guid: 22a95b7df80e5e24e90e058f190117c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &3411736709899530786

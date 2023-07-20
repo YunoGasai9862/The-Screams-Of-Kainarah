@@ -570,7 +570,7 @@ GameObject:
   - component: {fileID: 8744535595071973501}
   - component: {fileID: 2357857118627078221}
   - component: {fileID: 6549680331415743501}
-  - component: {fileID: 2357857118627078234}
+  - component: {fileID: 2290307266042556730}
   m_Layer: 7
   m_Name: Heroine
   m_TagString: Player
@@ -596,7 +596,7 @@ RectTransform:
   - {fileID: 1478819944}
   - {fileID: 1360148642}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -754,7 +754,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2357857119552702225}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c868b2ccd683da049b2b355d8a748e36, type: 3}
   m_Name: 
@@ -764,6 +764,10 @@ MonoBehaviour:
   pickupEffect: {fileID: 0}
   dialogue: {fileID: 0}
   trackingEntities: {fileID: 0}
+  pickableItems:
+  - Dagger
+  - Crystal
+  - Health
   TeleportTransition: {fileID: 0}
 --- !u!114 &3387488181997499512
 MonoBehaviour:
@@ -790,7 +794,7 @@ MonoBehaviour:
   attackStateName: PlayerAttack
   timeDifferenceStateName: ElapsedTime
   jumpAttackStateName: AttackJ
-  daggerAttackName: 
+  daggerAttackName: ThrowDagger
 --- !u!114 &8744535595071973501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -851,7 +855,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfcd2735284f62d43a8d8a06fb03d652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2357857118627078234
+--- !u!114 &2290307266042556730
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -860,7 +864,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2357857119552702225}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95945d8dacdeea34db44ccfc9e49a407, type: 3}
+  m_Script: {fileID: 11500000, guid: 22a95b7df80e5e24e90e058f190117c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &3485019726026848876
