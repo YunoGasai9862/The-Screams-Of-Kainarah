@@ -16,9 +16,9 @@ namespace GlobalAccessAndGameHelper
             return _gameObject;
         }
 
-        public void DestroyGameObject()
+        public void DestroyGameObject(float time)
         {
-            Object.Destroy(_gameObject);
+            Object.Destroy(_gameObject, time);
         }
 
         public GameObject getGameObject()

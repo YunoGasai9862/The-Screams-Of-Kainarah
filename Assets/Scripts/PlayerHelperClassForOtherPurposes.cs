@@ -19,17 +19,54 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     private bool Death = false;
     public static double MAXHEALTH = 100f;
     public static double ENEMYATTACK = 5f;
+    private GameObjectInstantiator _gameObject;
     [SerializeField] GameObject TeleportTransition;
 
     public static bool isGrabbing = false;//for the ledge grab script
     private bool once = true;
     private Collider2D collidedObject;
+    private bool pickedUp;
+
+    private Dictionary<string, GameObject> pickUpEffectDictionary;
+
+
+    private void Awake()
+    {
+        pickUpEffectDictionary = new Dictionary<string, GameObject> {
+
+            { "Crystal", DiamondHitEffect },
+            { "Health", pickupEffect }
+        };
+    }
     private void Start()
     {
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         MAXHEALTH = 100f;
 
+    }
+    private void Update()
+    {
+        if (pickedUp && collidedObject != null)
+        {
+
+            foreach (KeyValuePair<string, GameObject> value in pickUpEffectDictionary)
+            {
+
+                if (value.Key == collidedObject.name)
+                {
+                    pickupEffectInstantiator(value.Value, collidedObject.transform.position);
+                    break;
+                }
+            }
+            collidedObject.gameObject.SetActive(false); //hides it
+
+            _gameObject.DestroyGameObject(1);
+
+            pickedUp = !pickedUp;
+
+
+        }
     }
     private void FixedUpdate()
     {
@@ -78,25 +115,9 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     {
         collidedObject = collision;
 
-        bool pickedUp = didPlayerCollideWithaPickableItem(collision.name);
+        pickedUp = didPlayerCollideWithaPickableItem(collision.name);
 
-        if (pickedUp)
-        {
-            collidedObject.gameObject.SetActive(false); //hides it
 
-            switch(collidedObject.gameObject.name)
-            {
-                case "Crystal":
-                    pickupEffectInstantiator(DiamondHitEffect, collidedObject.transform.position);
-                    break;
-
-                case "Health":
-                    pickupEffectInstantiator(pickupEffect, collidedObject.transform.position);
-                    break;
-
-            }
-         
-        }
         if (collision.CompareTag("Crystal"))
         {
             AudioPickUp = true;
@@ -129,7 +150,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     }
     private void pickupEffectInstantiator(GameObject prefab, Vector3 position)
     {
-        GameObjectInstantiator _gameObject = new(prefab);
+        _gameObject = new(prefab);
         _gameObject.InstantiateGameObject(position, Quaternion.identity);
     }
     public Collider2D getColliderObject()

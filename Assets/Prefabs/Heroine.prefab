@@ -596,7 +596,7 @@ RectTransform:
   - {fileID: 1478819944}
   - {fileID: 1360148642}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -813,14 +813,16 @@ MonoBehaviour:
   redYSize: 0.2
   greenXOffset: 0.09
   greenYOffset: -0.05
-  greenXsize: 0.38
-  greenYSize: 0.38
+  greenXsize: 0.87
+  greenYSize: 0.3
   groundmask:
     serializedVersion: 2
     m_Bits: 64
   ledge:
     serializedVersion: 2
     m_Bits: 8
+  Xdisplace: 12
+  Ydisplace: 15
 --- !u!114 &2357857118627078221
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -9,6 +9,7 @@ public class LedgeGrab : MonoBehaviour
     private float startingGrav;
     [SerializeField] LayerMask groundmask;
     [SerializeField] LayerMask ledge;
+    [SerializeField] float Xdisplace, Ydisplace;
     private BoxCollider2D col;
     private Animator anim;
     private SpriteRenderer sr;
@@ -67,13 +68,13 @@ public class LedgeGrab : MonoBehaviour
     {
         if (sr.flipX)
         {
-            transform.position = new Vector2(transform.position.x, transform.position.y + 15 * Time.deltaTime * transform.localScale.y);
-            transform.position = new Vector2(transform.position.x - 10 * Time.deltaTime * transform.localScale.x, transform.position.y);
+            transform.position = new Vector2(transform.position.x, transform.position.y + Ydisplace * Time.deltaTime * transform.localScale.y);
+            transform.position = new Vector2(transform.position.x - Xdisplace * Time.deltaTime * transform.localScale.x, transform.position.y);
         }
         else
         {
-            transform.position = new Vector2(transform.position.x, transform.position.y + 15 * Time.deltaTime * transform.localScale.y);
-            transform.position = new Vector2(transform.position.x + 10 * Time.deltaTime * transform.localScale.x, transform.position.y);
+            transform.position = new Vector2(transform.position.x, transform.position.y + Ydisplace * Time.deltaTime * transform.localScale.y);
+            transform.position = new Vector2(transform.position.x + Xdisplace * Time.deltaTime * transform.localScale.x, transform.position.y);
         }
 
         rb.gravityScale = startingGrav;

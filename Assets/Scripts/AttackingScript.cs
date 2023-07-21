@@ -83,13 +83,11 @@ public class AttackingScript : MonoBehaviour
     {
         throwDagger = context.ReadValueAsButton();
 
-        daggerCollider = GVA.pollPlayerHelperClassForCollider();
+        daggerCollider = GVA.pollPlayerHelperClassForCollider(); //change logic, and retrive from inventory class
 
         _playerAttackStateMachine.setAttackState(AnimationConstants.THROWDAGGER, throwDagger);
 
-        Debug.Log(daggerCollider);
-
-        if (daggerCollider != null && daggerCollider.name=="Dagger")
+        if (daggerCollider != null && daggerCollider.name == "Dagger")
         {
             ThrowDagger(daggerCollider, throwDagger, Dagger);
         }
@@ -146,7 +144,7 @@ public class AttackingScript : MonoBehaviour
 
         }
 
-         if(isJumpAttackPrequisitesMet())
+        if (isJumpAttackPrequisitesMet())
         {
             _playerAttackStateMachine.setAttackState(jumpAttackStateName, leftMouseButtonPressed);
 
