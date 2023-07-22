@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SubjectsToBeNotified : MonoBehaviour
 {
-   
+
     private List<IObserver> _potentialObservers = new();
 
     public void AddObserver(IObserver observer)
@@ -18,11 +18,11 @@ public class SubjectsToBeNotified : MonoBehaviour
         _potentialObservers.Remove(observer);
     }
 
-    protected void NotifyObservers(AnimationStateKeeper.StateKeeper stateNotifier)
+    protected void NotifyObservers(string objectPickedup)
     {
         foreach (var observer in _potentialObservers)
         {
-            observer.OnNotify(stateNotifier);
+            observer.OnNotify(objectPickedup);
         }
     }
 

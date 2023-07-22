@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IObserver 
+public interface IObserver
 {
-    public abstract void OnNotify(AnimationStateKeeper.StateKeeper stateNotifier);
+    public abstract void OnNotify(string stateNotifier);
 }

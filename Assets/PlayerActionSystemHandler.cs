@@ -1,52 +1,48 @@
+using GlobalAccessAndGameHelper;
 using PlayerAnimationHandler;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerActionSystemHandler : MonoBehaviour, IObserver
 {
     [SerializeField] SubjectsToBeNotified Subject;
 
-    Dictionary<AnimationStateKeeper.StateKeeper, System.Action> _playerActionHandlerDic;
+    Dictionary<String, System.Action> _playerActionHandlerDic;
+
+    private IPickable _pickable;
+
+    private GameObjectInstantiator _gameObject;
+
 
     private void Awake()
     {
-        _playerActionHandlerDic = new Dictionary<AnimationStateKeeper.StateKeeper, System.Action>
+        _playerActionHandlerDic = new Dictionary<String, System.Action>
         {
 
-            { AnimationStateKeeper.StateKeeper.JUMP, OnJump() },
-             { AnimationStateKeeper.StateKeeper.RUNNING, OnRun() },
-                { AnimationStateKeeper.StateKeeper.IDLE, OnIdle() },
-              { AnimationStateKeeper.StateKeeper.FALL, OnFall() },
-               { AnimationStateKeeper.StateKeeper.SLIDING, OnSlide() }
+             { "Crystal", OnCrystalPickup },
+             { "Health" , OnHealthPickup  },
+             { "Dagger" , OnDaggerPickup  }
+
         };
     }
 
-    private Action OnIdle()
+    private void OnDaggerPickup()
     {
-        throw new NotImplementedException();
+        Debug.Log("Dagger");
     }
 
-    private Action OnSlide()
+    private void OnHealthPickup()
     {
-        throw new NotImplementedException();
+        Debug.Log("Health");
     }
 
-    private Action OnFall()
+    private void OnCrystalPickup()
     {
-        throw new NotImplementedException();
-    }
-
-    private Action OnRun()
-    {
-        throw new NotImplementedException();
-    }
-
-    private Action OnJump()
-    {
-        throw new NotImplementedException();
+        Debug.Log("Crystal");
     }
 
     private void OnEnable()
@@ -59,8 +55,30 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
         Subject.RemoveOberver(this); //Remove PlayerActionSystem as an observer when an event is handled/or the observer is no longer needed
     }
 
-    public void OnNotify(AnimationStateKeeper.StateKeeper stateNotifier)
-    {
 
+    public void managePickable()
+    {
+        _pickable.AddToInventory(); //adds to the inventory
+
+        _pickable.DestroyPickableFromScene();
+    }
+
+    private void pickupEffectInstantiator(GameObject prefab, Vector3 position)
+    {
+        _gameObject = new(prefab);
+        _gameObject.InstantiateGameObject(position, Quaternion.identity);
+    }
+
+    public void OnNotify(string itemPickedUp)
+    {
+        foreach (var actionsToBePerformed in _playerActionHandlerDic.Keys)
+        {
+            if (actionsToBePerformed == itemPickedUp)
+            {
+                System.Action action = _playerActionHandlerDic[itemPickedUp];
+
+                action.Invoke(); //invokes the method
+            }
+        }
     }
 }

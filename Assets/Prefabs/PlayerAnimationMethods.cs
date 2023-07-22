@@ -2,7 +2,7 @@ using GlobalAccessAndGameHelper;
 using PlayerAnimationHandler;
 using UnityEngine;
 
-public class PlayerAnimationMethods : SubjectsToBeNotified
+public class PlayerAnimationMethods : MonoBehaviour
 {
     private AnimationStateMachine _stateMachine;
     private Animator _anim;
@@ -47,7 +47,6 @@ public class PlayerAnimationMethods : SubjectsToBeNotified
         if (VectorChecker(keystroke))
         {
             state = AnimationStateKeeper.StateKeeper.RUNNING;
-            NotifyObservers(state);
             globalVariablesAccess.ISRUNNING = true;
             globalVariablesAccess.ISWALKING = false;
         }

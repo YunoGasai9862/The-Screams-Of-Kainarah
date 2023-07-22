@@ -813,8 +813,8 @@ MonoBehaviour:
   redYSize: 0.2
   greenXOffset: 0.09
   greenYOffset: -0.05
-  greenXsize: 0.87
-  greenYSize: 0.3
+  greenXsize: 0.59
+  greenYSize: 0.57
   groundmask:
     serializedVersion: 2
     m_Bits: 64

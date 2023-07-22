@@ -24,7 +24,6 @@ public class AttackingScript : MonoBehaviour
     private bool throwDagger = false;
     private PlayerHelperClassForOtherPurposes _PlayerHelperClass;
     private Collider2D daggerCollider;
-    private IPickable _pickable;
 
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
@@ -67,8 +66,6 @@ public class AttackingScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-
         if (IsAttackPrerequisiteMet())
         {
             if (_playerAttackStateMachine.istheAttackCancelConditionTrue(_playerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
@@ -83,14 +80,14 @@ public class AttackingScript : MonoBehaviour
     {
         throwDagger = context.ReadValueAsButton();
 
-        daggerCollider = GVA.pollPlayerHelperClassForCollider(); //change logic, and retrive from inventory class
+        // daggerCollider = GVA.pollPlayerHelperClassForCollider(); //change logic, and retrive from inventory class
 
-        _playerAttackStateMachine.setAttackState(AnimationConstants.THROWDAGGER, throwDagger);
+        // _playerAttackStateMachine.setAttackState(AnimationConstants.THROWDAGGER, throwDagger);
 
-        if (daggerCollider != null && daggerCollider.name == "Dagger")
-        {
-            ThrowDagger(daggerCollider, throwDagger, Dagger);
-        }
+        //   if (daggerCollider != null && daggerCollider.name == "Dagger")
+        //   {
+        //       ThrowDagger(daggerCollider, throwDagger, Dagger);
+        //  }
 
     }
 
@@ -98,26 +95,18 @@ public class AttackingScript : MonoBehaviour
     {
         if (throwDagger)
         {
-            GameObjectInstantiator _dagger = new(prefab);
+            //  GameObjectInstantiator _dagger = new(prefab);
 
-            _pickable = new IPickable(ref collider);
+            //  _pickable = new IPickable(ref collider);
 
-            managePickable();
+            //  managePickable();
 
-            _dagger.InstantiateGameObject(getDaggerPositionwithOffset(2, -1), Quaternion.identity);
+            // _dagger.InstantiateGameObject(getDaggerPositionwithOffset(2, -_p1), Quaternion.identity);
 
-            AttackEnemy.ThrowDagger = true; //will change this logic too
+            // AttackEnemy.ThrowDagger = true; //will change this logic too
 
         }
     }
-
-    public void managePickable()
-    {
-        _pickable.AddToInventory(); //adds to the inventory
-
-        _pickable.DestroyPickableFromScene();
-    }
-
 
     public Vector2 getDaggerPositionwithOffset(float xOffset, float yOffset)
     {
@@ -150,8 +139,6 @@ public class AttackingScript : MonoBehaviour
 
         }
     }
-
-
 
     private bool isJumpAttackPrequisitesMet()
     {

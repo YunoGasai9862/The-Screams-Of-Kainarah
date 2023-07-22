@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerHelperClassForOtherPurposes : MonoBehaviour
+public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 {
     [SerializeField] SpriteRenderer sr;
     [SerializeField] GameObject DiamondHitEffect;
@@ -19,7 +19,6 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     private bool Death = false;
     public static double MAXHEALTH = 100f;
     public static double ENEMYATTACK = 5f;
-    private GameObjectInstantiator _gameObject;
     [SerializeField] GameObject TeleportTransition;
 
     public static bool isGrabbing = false;//for the ledge grab script
@@ -47,26 +46,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     }
     private void Update()
     {
-        if (pickedUp && collidedObject != null)
-        {
 
-            foreach (KeyValuePair<string, GameObject> value in pickUpEffectDictionary)
-            {
-
-                if (value.Key == collidedObject.name)
-                {
-                    pickupEffectInstantiator(value.Value, collidedObject.transform.position);
-                    break;
-                }
-            }
-            collidedObject.gameObject.SetActive(false); //hides it
-
-            _gameObject.DestroyGameObject(1);
-
-            pickedUp = !pickedUp;
-
-
-        }
     }
     private void FixedUpdate()
     {
@@ -115,7 +95,13 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     {
         collidedObject = collision;
 
-        pickedUp = didPlayerCollideWithaPickableItem(collision.name);
+        pickedUp = didPlayerCollideWithaPickableItem(collision.tag);
+
+        if (pickedUp)
+            collidedObject.gameObject.SetActive(false);
+
+        NotifyObservers(collision.tag);
+
 
 
         if (collision.CompareTag("Crystal"))
@@ -148,11 +134,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
         return false;
     }
-    private void pickupEffectInstantiator(GameObject prefab, Vector3 position)
-    {
-        _gameObject = new(prefab);
-        _gameObject.InstantiateGameObject(position, Quaternion.identity);
-    }
+
     public Collider2D getColliderObject()
     {
         return collidedObject;
