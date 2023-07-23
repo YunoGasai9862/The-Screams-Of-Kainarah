@@ -7,13 +7,11 @@ using UnityEngine.SceneManagement;
 public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 {
     [SerializeField] SpriteRenderer sr;
-    [SerializeField] GameObject DiamondHitEffect;
-    [SerializeField] GameObject pickupEffect;
     [SerializeField] Interactable dialogue;
     [SerializeField] TrackingEntities trackingEntities;
-    [SerializeField] List<string> pickableItems;
 
     public static bool AudioPickUp;
+    [SerializeField] PickableItemsClass _pickableItems;
 
     private Animator anim;
     private bool Death = false;
@@ -23,31 +21,15 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 
     public static bool isGrabbing = false;//for the ledge grab script
     private bool once = true;
-    private Collider2D collidedObject;
     private bool pickedUp;
 
-    private Dictionary<string, GameObject> pickUpEffectDictionary;
-
-
     private void Awake()
-    {
-        pickUpEffectDictionary = new Dictionary<string, GameObject> {
-
-            { "Crystal", DiamondHitEffect },
-            { "Health", pickupEffect }
-        };
-    }
-    private void Start()
     {
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         MAXHEALTH = 100f;
-
     }
-    private void Update()
-    {
 
-    }
     private void FixedUpdate()
     {
         if (checkForExistenceOfPortal(sr))
@@ -93,14 +75,14 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        collidedObject = collision;
 
-        pickedUp = didPlayerCollideWithaPickableItem(collision.tag);
+
+        pickedUp = _pickableItems.didPlayerCollideWithaPickableItem(collision.tag);
 
         if (pickedUp)
-            collidedObject.gameObject.SetActive(false);
+            collision.gameObject.SetActive(false);
 
-        NotifyObservers(collision.tag);
+        NotifyObservers(collision.tag, collision.gameObject.transform.position);
 
 
 
@@ -121,25 +103,6 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 
         }
     }
-
-    private bool didPlayerCollideWithaPickableItem(string collisionObjectName)
-    {
-        for (int i = 0; i < pickableItems.Count; i++)
-        {
-            if (collisionObjectName == pickableItems[i])
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public Collider2D getColliderObject()
-    {
-        return collidedObject;
-    }
-
     public bool checkForExistenceOfPortal(SpriteRenderer sr)
     {
         RaycastHit hit; //using 3D raycast because of 3D object, portal

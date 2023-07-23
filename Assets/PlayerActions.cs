@@ -1,10 +1,11 @@
 using CoreCode;
 using GlobalAccessAndGameHelper;
 using PlayerAnimationHandler;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The notified subject class inherits from MonoBehavior so does the PlayerActions now, but also 
-    //have the ability to inherit notifiy actions
+                                           //have the ability to inherit notifiy actions
 {
     private PlayerInput _playerInput;
     private Rocky2DActions _rocky2DActions;
@@ -80,7 +81,7 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
 
             characterVelocityY = -JumpSpeed * .8f;
 
-            isJumpPressed = false; //fixed the issue of eternally looping at jump on JUMP HOLD
+            isJumpPressed = false; //fixed the issue of eternally looping at jumep on JUMP HOLD
 
         }
 
@@ -97,10 +98,10 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
             _timeCounter += Time.deltaTime;
         }
 
-        if(PlayerHelperClassForOtherPurposes.isGrabbing) //tackles the ledgeGrab
+        if (PlayerHelperClassForOtherPurposes.isGrabbing) //tackles the ledgeGrab
         {
-            _rb.velocity = new Vector2(0, 0);
-            _rb.gravityScale = 0;
+            HandleIsGrabbingScenario();
+            return;
         }
 
 
@@ -137,6 +138,13 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
             || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, ledge);
     }
 
+    private void HandleIsGrabbingScenario()
+    {
+        _rb.velocity = new Vector2(0, 0);
+
+        _rb.gravityScale = 0;
+
+    }
 
     private void Update()
     {

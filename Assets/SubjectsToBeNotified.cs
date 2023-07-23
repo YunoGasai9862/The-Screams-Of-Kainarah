@@ -18,11 +18,11 @@ public class SubjectsToBeNotified : MonoBehaviour
         _potentialObservers.Remove(observer);
     }
 
-    protected void NotifyObservers(string objectPickedup)
+    protected void NotifyObservers(string objectPickedup, Vector2 position)
     {
         foreach (var observer in _potentialObservers)
         {
-            observer.OnNotify(objectPickedup);
+            observer.OnNotify(objectPickedup, position);
         }
     }
 

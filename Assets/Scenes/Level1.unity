@@ -236,6 +236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Subject: {fileID: 2357857118627078231}
+  pickableItems: {fileID: 888315727}
 --- !u!4 &249938540
 Transform:
   m_ObjectHideFlags: 0
@@ -1923,6 +1924,57 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 29
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &888315725
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 888315726}
+  - component: {fileID: 888315727}
+  m_Layer: 0
+  m_Name: PickableItemsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &888315726
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 888315725}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 44
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &888315727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 888315725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e65eaa732297734b902bb93a343c45e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickableItems:
+  - name: Dagger
+    GameObject: {fileID: 8025573198793576023, guid: f56de393cd630934e8c8c9cd19ec01bf, type: 3}
+  - name: Crystal
+    GameObject: {fileID: 2661038635046788335, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+  - name: Health
+    GameObject: {fileID: 3620229772945060252, guid: f901c7f519fa17a4c820233c6749cc55, type: 3}
 --- !u!1001 &912936786
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6352,9 +6404,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 989729090}
     - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: _pickableItems
+      value: 
+      objectReference: {fileID: 888315727}
+    - target: {fileID: 2357857119552702229, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: trackingEntities
       value: 
       objectReference: {fileID: 220448025}
+    - target: {fileID: 8744535595071973501, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: greenXsize
+      value: 0.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 8744535595071973501, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: greenYSize
+      value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 8744535595071973501, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: greenYOffset
+      value: -0.41
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

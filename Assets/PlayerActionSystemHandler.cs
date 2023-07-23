@@ -9,13 +9,18 @@ using UnityEngine.UIElements;
 
 public class PlayerActionSystemHandler : MonoBehaviour, IObserver
 {
+
     [SerializeField] SubjectsToBeNotified Subject;
+
+    [SerializeField] PickableItemsClass pickableItems;
 
     Dictionary<String, System.Action> _playerActionHandlerDic;
 
-    private IPickable _pickable;
+    private Vector2 _pickableItemPosition;
 
     private GameObjectInstantiator _gameObject;
+
+    private string pickableItemKey;
 
 
     private void Awake()
@@ -28,21 +33,23 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
              { "Dagger" , OnDaggerPickup  }
 
         };
+
     }
 
     private void OnDaggerPickup()
     {
-        Debug.Log("Dagger");
+        //Dagger Throw Logic
     }
 
     private void OnHealthPickup()
     {
-        Debug.Log("Health");
+        pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(pickableItemKey), _pickableItemPosition);
     }
 
     private void OnCrystalPickup()
     {
-        Debug.Log("Crystal");
+        pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(pickableItemKey), _pickableItemPosition);
+        //Add Inventory Logic!!!
     }
 
     private void OnEnable()
@@ -55,21 +62,13 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
         Subject.RemoveOberver(this); //Remove PlayerActionSystem as an observer when an event is handled/or the observer is no longer needed
     }
 
-
-    public void managePickable()
-    {
-        _pickable.AddToInventory(); //adds to the inventory
-
-        _pickable.DestroyPickableFromScene();
-    }
-
     private void pickupEffectInstantiator(GameObject prefab, Vector3 position)
     {
         _gameObject = new(prefab);
         _gameObject.InstantiateGameObject(position, Quaternion.identity);
     }
 
-    public void OnNotify(string itemPickedUp)
+    public void OnNotify(string itemPickedUp, Vector3 Position)
     {
         foreach (var actionsToBePerformed in _playerActionHandlerDic.Keys)
         {
@@ -77,7 +76,14 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
             {
                 System.Action action = _playerActionHandlerDic[itemPickedUp];
 
+                pickableItemKey = itemPickedUp;
+
+                _pickableItemPosition = Position;
+
                 action.Invoke(); //invokes the method
+
+                break;
+
             }
         }
     }

@@ -3,8 +3,6 @@ using UnityEngine.EventSystems;
 
 public class ClickFeedbackOnItem : MonoBehaviour, IPointerUpHandler
 {
-
-
     public void OnPointerUp(PointerEventData eventData)
     {
         GameObject item = eventData.pointerEnter.transform.gameObject;

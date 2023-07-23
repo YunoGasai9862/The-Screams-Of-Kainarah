@@ -5,6 +5,7 @@ public class LedgeGrab : MonoBehaviour
 {
     private bool greenBox, RedBox;
     public float redXOffset, redYoffset, redXSize, redYSize, greenXOffset, greenYOffset, greenXsize, greenYSize;
+    private MovementHelperClass _helperFunc;
     private Rigidbody2D rb;
     private float startingGrav;
     [SerializeField] LayerMask groundmask;
@@ -13,6 +14,12 @@ public class LedgeGrab : MonoBehaviour
     private BoxCollider2D col;
     private Animator anim;
     private SpriteRenderer sr;
+    private float _timeSpent;
+
+    private void Awake()
+    {
+        _helperFunc = new MovementHelperClass();
+    }
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -38,6 +45,18 @@ public class LedgeGrab : MonoBehaviour
 
         }
 
+        if (!_helperFunc.overlapAgainstLayerMaskChecker(ref col, groundmask) && greenBox &&
+            PlayerHelperClassForOtherPurposes.isGrabbing)
+        {
+            _timeSpent += Time.deltaTime;
+        }
+
+        if (TimeSpentIsGrabbing() || _helperFunc.overlapAgainstLayerMaskChecker(ref col, ledge))
+        {
+            PlayerHelperClassForOtherPurposes.isGrabbing = false;
+            _timeSpent = 0f;
+        }
+
 
         //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
         greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
@@ -51,11 +70,9 @@ public class LedgeGrab : MonoBehaviour
 
         if (PlayerHelperClassForOtherPurposes.isGrabbing)
         {
-            rb.velocity = new Vector2(0, 0);//setting the x and y velocity to zero  (even i was doing the same in my implementation!)
-            rb.gravityScale = 0f;  //and sets the gravity scale to zero
             anim.SetBool("LedgeGrab", true);
-           
         }
+
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= .2f) //it checks for the same animations normalziaed TIME!!
         {
             ChangePositionOfThePlayer();  //this is for setting the animation to false
@@ -91,8 +108,8 @@ public class LedgeGrab : MonoBehaviour
         Gizmos.DrawWireCube(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize));
 
     }
-    bool isOntheGround()
+    private bool TimeSpentIsGrabbing()
     {
-        return Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, .1f, groundmask);
+        return _timeSpent > .3f;
     }
 }
