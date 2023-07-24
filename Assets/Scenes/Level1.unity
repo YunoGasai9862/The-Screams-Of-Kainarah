@@ -6411,6 +6411,10 @@ PrefabInstance:
       propertyPath: trackingEntities
       value: 
       objectReference: {fileID: 220448025}
+    - target: {fileID: 3387488181997499512, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
+      propertyPath: pickableItems
+      value: 
+      objectReference: {fileID: 888315727}
     - target: {fileID: 8744535595071973501, guid: 48c8d0ed9ac830647a0af690b1f61479, type: 3}
       propertyPath: greenXsize
       value: 0.59

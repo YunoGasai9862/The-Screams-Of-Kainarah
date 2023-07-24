@@ -16,7 +16,6 @@ public class PickableItemsClass : MonoBehaviour
     {
         for (int i = 0; i < pickableItems.Count; i++)
         {
-            Debug.Log(pickableItems[i].name);
             if (collisionObjectName == pickableItems[i].name)
             {
                 return true;

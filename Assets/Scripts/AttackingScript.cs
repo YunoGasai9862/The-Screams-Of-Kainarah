@@ -27,7 +27,6 @@ public class AttackingScript : MonoBehaviour
 
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
-    [SerializeField] GameObject Dagger;
     [SerializeField] GameObject IceTrail;
     [SerializeField] GameObject IceTrail2;
     [SerializeField] string canAttackStateName;
@@ -35,15 +34,20 @@ public class AttackingScript : MonoBehaviour
     [SerializeField] string timeDifferenceStateName;
     [SerializeField] string jumpAttackStateName;
     [SerializeField] string daggerAttackName;
-
+    [SerializeField] PickableItemsClass pickableItems;
 
     private void Awake()
     {
         _anim = GetComponent<Animator>();
+
         _rocky2DActions = new Rocky2DActions();
+
         _playerInput = GetComponent<PlayerInput>();
+
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
+
         col = GetComponent<BoxCollider2D>();
+
         _movementHelper = new MovementHelperClass();
 
         _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
@@ -80,32 +84,29 @@ public class AttackingScript : MonoBehaviour
     {
         throwDagger = context.ReadValueAsButton();
 
-        // daggerCollider = GVA.pollPlayerHelperClassForCollider(); //change logic, and retrive from inventory class
+        _playerAttackStateMachine.setAttackState(AnimationConstants.THROWDAGGER, throwDagger);
 
-        // _playerAttackStateMachine.setAttackState(AnimationConstants.THROWDAGGER, throwDagger);
+        GameObject daggerInventorySlot = CreateInventorySystem.CheckForObject("Dagger");
 
-        //   if (daggerCollider != null && daggerCollider.name == "Dagger")
-        //   {
-        //       ThrowDagger(daggerCollider, throwDagger, Dagger);
-        //  }
+        if (daggerInventorySlot != null)
+        {
+            ThrowDagger(pickableItems.returnGameObjectForTheKey("Dagger"), ref daggerInventorySlot);
+        }
 
     }
 
-    private void ThrowDagger(Collider2D collider, bool throwDagger, GameObject prefab)
+    private void ThrowDagger(GameObject prefab, ref GameObject slot)
     {
-        if (throwDagger)
-        {
-            //  GameObjectInstantiator _dagger = new(prefab);
 
-            //  _pickable = new IPickable(ref collider);
+        GameObjectInstantiator _dagger = new(prefab);
 
-            //  managePickable();
+        _dagger.InstantiateGameObject(getDaggerPositionwithOffset(2, -1), Quaternion.identity);
 
-            // _dagger.InstantiateGameObject(getDaggerPositionwithOffset(2, -_p1), Quaternion.identity);
+        CreateInventorySystem.ReduceItem(ref slot, false);
 
-            // AttackEnemy.ThrowDagger = true; //will change this logic too
+        AttackEnemy.ThrowDagger = true; //will change this logic too
 
-        }
+
     }
 
     public Vector2 getDaggerPositionwithOffset(float xOffset, float yOffset)

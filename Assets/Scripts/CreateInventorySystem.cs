@@ -101,8 +101,6 @@ public class CreateInventorySystem : MonoBehaviour
 
     public static bool CheckPreviousItems(Sprite itemTobeAdded, string Tag)
     {
-        // Debug.Log("Count: "+ inventoryCheck.Count);
-        //Debug.Log("Already Exist: " + _alreadyExist);
 
         while (inventoryCheck.Count != 0 && _alreadyExist)
         {
@@ -226,7 +224,7 @@ public class CreateInventorySystem : MonoBehaviour
     }
     public static GameObject InstantiateTextObject()
     {
-        GameObject TextBox = new GameObject("Numerical");
+        GameObject TextBox = new("Numerical");
         TextBox.AddComponent<TextMeshProUGUI>();
         TextBox.GetComponent<RectTransform>().sizeDelta = new Vector2(100f, 100f);
         TextBox.GetComponent<TextMeshProUGUI>().text = "2";
@@ -249,13 +247,13 @@ public class CreateInventorySystem : MonoBehaviour
 
         TransferTheItemsToQueue(ref inventoryCheck, ref inventoryTemp);
     }
-    public static void ReduceItem(ref GameObject item, bool buying)
+    public static void ReduceItem(ref GameObject item, bool utilizing)
     {
 
         if (CheckIfNumericalExists(ref item))
         {
             Transform TextBox;
-            if (buying)
+            if (utilizing)
             {
                 TextBox = item.transform.Find("Numerical").gameObject.transform;
 

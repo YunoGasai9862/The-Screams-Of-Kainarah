@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using InventoryManagement = CreateInventorySystem;
 
 public class PlayerActionSystemHandler : MonoBehaviour, IObserver
 {
@@ -38,7 +39,10 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
 
     private void OnDaggerPickup()
     {
-        //Dagger Throw Logic
+        GameObject temp = pickableItems.returnGameObjectForTheKey(pickableItemKey);
+
+        InventoryManagement.AddToInventory(temp.GetComponent<SpriteRenderer>().sprite, temp.tag); //adds it to the inventory
+
     }
 
     private void OnHealthPickup()
@@ -49,7 +53,6 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
     private void OnCrystalPickup()
     {
         pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(pickableItemKey), _pickableItemPosition);
-        //Add Inventory Logic!!!
     }
 
     private void OnEnable()
