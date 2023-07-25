@@ -10,6 +10,7 @@ public class CreateInventorySystem : MonoBehaviour
     [SerializeField] string ScriptTobeAddedForItems;
     [SerializeField] int SizeOftheInventory = 6;
     [SerializeField] GenerateBoxes _boxes;
+    [SerializeField] string slotTag;
 
     private static Queue<GameObject> inventoryList;
     private static Queue<GameObject> inventoryCheck;
@@ -44,9 +45,9 @@ public class CreateInventorySystem : MonoBehaviour
         _spriteLocation = PanelObject.GetComponent<RectTransform>();
 
         if (startX == 0 && startY == 0 && increment == 0 && decrement == 0)
-            _boxes.GenerateInventory(SizeOftheInventory, -250, 150, 100, -50, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems);
+            _boxes.GenerateInventory(SizeOftheInventory, -250, 150, 100, -50, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems, slotTag);
         else
-            _boxes.GenerateInventory(SizeOftheInventory, startX, startY, increment, decrement, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems);
+            _boxes.GenerateInventory(SizeOftheInventory, startX, startY, increment, decrement, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems, slotTag);
     }
 
 
@@ -177,7 +178,7 @@ public class CreateInventorySystem : MonoBehaviour
         while (inventoryCheck.Count != 0)
         {
             GameObject _item = inventoryCheck.Dequeue();
-            if (tag == _item.transform.tag)
+            if (_item != null && tag == _item.transform.tag)
             {
                 _obj = _item;
                 inventoryTemp.Enqueue(_item);
@@ -233,7 +234,7 @@ public class CreateInventorySystem : MonoBehaviour
         return TextBox;
     }
 
-    public static void CheckItem(ref GameObject item)
+    public static void removeItemFromTheList(ref GameObject item)
     {
         while (inventoryCheck.Count != 0)
         {
@@ -249,7 +250,6 @@ public class CreateInventorySystem : MonoBehaviour
     }
     public static void ReduceItem(ref GameObject item, bool utilizing)
     {
-
         if (CheckIfNumericalExists(ref item))
         {
             Transform TextBox;
@@ -275,17 +275,14 @@ public class CreateInventorySystem : MonoBehaviour
         }
         else
         {
-            if (item.transform.childCount != 0)
+            if (item.transform.childCount == 0)
             {
-                CheckItem(ref item);
-                Destroy(item.transform.GetChild(0).gameObject);
+                removeItemFromTheList(ref item);
+
+                Destroy(item);
 
             }
-            else
-            {
 
-                return;
-            }
         }
 
 

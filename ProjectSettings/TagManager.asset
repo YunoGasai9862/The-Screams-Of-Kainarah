@@ -29,6 +29,7 @@ TagManager:
   - Scythe
   - Transact
   - DialogueManager
+  - Slots
   layers:
   - Default
   - TransparentFX

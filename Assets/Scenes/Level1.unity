@@ -1837,6 +1837,7 @@ MonoBehaviour:
   ScriptTobeAddedForItems: ClickFeedbackOnItem
   SizeOftheInventory: 6
   _boxes: {fileID: 1646742885}
+  slotTag: Slots
   startX: -250
   startY: 150
   increment: 100
