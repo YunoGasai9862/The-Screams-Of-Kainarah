@@ -12,7 +12,9 @@ public class AttackEnemy : MonoBehaviour
 
 
     private SpriteRenderer _daggerrenderer;
-    public static bool ThrowDagger;
+    private bool ThrowDagger;
+
+    public bool throwDagger { set => ThrowDagger = value; get => ThrowDagger; }
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();

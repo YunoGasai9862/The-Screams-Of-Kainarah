@@ -3,15 +3,15 @@ using UnityEngine.EventSystems;
 
 public class ClickFeedbackOnItem : MonoBehaviour, IPointerUpHandler, ISerializableFeildsHelper
 {
-    [SerializeField] string SlotTag;
+    [SerializeField] string slotTag;
 
-    public string FieldName { get => SlotTag; set => SlotTag = value; }
+    public string FieldName { get => slotTag; set => slotTag = value; }
 
     public void OnPointerUp(PointerEventData eventData)
     {
         GameObject item = eventData.pointerEnter.transform.gameObject;
 
-        if (item.tag != SlotTag)
+        if (item.tag != slotTag)
         {
             CreateInventorySystem.ReduceItem(ref item, false);
 

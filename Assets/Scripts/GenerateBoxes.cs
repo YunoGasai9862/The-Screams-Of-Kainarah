@@ -24,8 +24,22 @@ public class GenerateBoxes : MonoBehaviour
                 GameObject _temp = Instantiate(InventoryBox, IncrementalSize, Quaternion.identity);
                 if (ScriptTobeAddedForItems != "")
                 {
-                    _temp.AddComponent(Type.GetType(ScriptTobeAddedForItems)); //adds the script
+                    try
+                    {
+                        var scriptInstance = _temp.AddComponent(Type.GetType(ScriptTobeAddedForItems)) as ISerializableFeildsHelper; //adds the script (cast it to ISerializableFieldsHelper)
 
+                        if (scriptInstance == null)
+                        {
+                            throw new ExceptionList.NullException("The above instance lacks the correct implementation of the interface");
+                        }
+
+                        scriptInstance.FieldName = slotTag; //adds the field tag
+
+                    }
+                    catch (ExceptionList.NullException ex)
+                    {
+                        Debug.LogError(ex.ExceptionMessage);
+                    }
 
                 }
                 _temp.name = (_count).ToString("0");
@@ -41,8 +55,6 @@ public class GenerateBoxes : MonoBehaviour
         }
 
         _count = 0;
-
-
 
     }
 

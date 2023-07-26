@@ -98,13 +98,13 @@ public class AttackingScript : MonoBehaviour
     private void ThrowDagger(GameObject prefab, ref GameObject slot)
     {
 
-        GameObjectInstantiator _dagger = new(prefab);
+        GameObjectInstantiator _daggerInstantiator = new(prefab);
 
-        _dagger.InstantiateGameObject(getDaggerPositionwithOffset(2, -1), Quaternion.identity);
+        GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(getDaggerPositionwithOffset(2, -1), Quaternion.identity);
 
         CreateInventorySystem.ReduceItem(ref slot, false);
 
-        AttackEnemy.ThrowDagger = true; //will change this logic too
+        _daggerGameObject.GetComponent<AttackEnemy>().throwDagger = true;
 
 
     }
