@@ -1,23 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
+using GlobalAccessAndGameHelper;
+using System;
 
-public class MusicManager : MonoBehaviour
+public class MusicManager : SubjectsToBeNotified
 {
     [SerializeField] Toggle menuToggleSound;
-    public enum GameState
-    {
-
-        BACKGROUNDMUSIC = 0, BOSSMUSIC = 1, PICKUP = 2, STOP = 3
-    }
 
     [SerializeField] AudioSource _bgGameMusic;
     [SerializeField] AudioSource _BossMusic;
     [SerializeField] AudioSource _Pickup;
-    GameState _gameState;
+    GameMusicState _gameState;
 
     void Start()
     {
-        _gameState = GameState.BACKGROUNDMUSIC;
+        _gameState = GameMusicState.BACKGROUNDMUSIC;
         ChannelMusic(_gameState);
 
     }
@@ -29,36 +26,36 @@ public class MusicManager : MonoBehaviour
         {
             if (TrackingBosses.BossExists)
             {
-                _gameState = GameState.BOSSMUSIC;
+                _gameState = GameMusicState.BOSSMUSIC;
 
             }
             else
             {
-                _gameState = GameState.BACKGROUNDMUSIC;
+                _gameState = GameMusicState.BACKGROUNDMUSIC;
 
             }
 
             if (PlayerHelperClassForOtherPurposes.AudioPickUp)
             {
-                _gameState = GameState.PICKUP;
+                _gameState = GameMusicState.PICKUP;
             }
 
             ChannelMusic(_gameState);
         }
         else
         {
-            _gameState = GameState.STOP;
+            _gameState = GameMusicState.STOP;
             ChannelMusic(_gameState);
         }
 
     }
 
 
-    public void ChannelMusic(GameState state)
+    public void ChannelMusic(GameMusicState state)
     {
         switch (state)
         {
-            case GameState.BACKGROUNDMUSIC:
+            case GameMusicState.BACKGROUNDMUSIC:
                 if (!_bgGameMusic.isPlaying && _bgGameMusic.time == 0f)
                 {
                     _bgGameMusic.Play();
@@ -69,7 +66,7 @@ public class MusicManager : MonoBehaviour
                 break;
 
 
-            case GameState.BOSSMUSIC:
+            case GameMusicState.BOSSMUSIC:
                 if (!_BossMusic.isPlaying && _BossMusic.time == 0f) //makes sure the same music is not playedagain
                 {
                     _BossMusic.Play();
@@ -80,12 +77,12 @@ public class MusicManager : MonoBehaviour
 
                 break;
 
-            case GameState.PICKUP:
+            case GameMusicState.PICKUP:
                 _Pickup.Play();
                 PlayerHelperClassForOtherPurposes.AudioPickUp = false;
                 break;
 
-            case GameState.STOP:
+            case GameMusicState.STOP:
                 _bgGameMusic.Stop();
                 _BossMusic.Stop();
                 _Pickup.Stop();

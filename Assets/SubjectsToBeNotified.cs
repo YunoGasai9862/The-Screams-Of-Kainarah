@@ -1,12 +1,10 @@
-using PlayerAnimationHandler;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SubjectsToBeNotified : MonoBehaviour
 {
 
-    private List<IObserver> _potentialObservers = new();
+    private List<IObserver<> _potentialObservers = new ();
 
     public void AddObserver(IObserver observer)
     {
@@ -18,11 +16,19 @@ public class SubjectsToBeNotified : MonoBehaviour
         _potentialObservers.Remove(observer);
     }
 
-    protected void NotifyObservers(string objectPickedup, Vector2 position)
+    protected void NotifyObservers(Collider2D collider)
     {
         foreach (var observer in _potentialObservers)
         {
-            observer.OnNotify(objectPickedup, position);
+            observer.OnNotify(ref collider);
+        }
+    }
+
+    protected void NotifyObservers(bool value)
+    {
+        foreach (var observer in _potentialObservers)
+        {
+            observer.OnNotify(value);
         }
     }
 

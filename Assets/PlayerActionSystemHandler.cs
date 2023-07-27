@@ -17,11 +17,9 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
 
     Dictionary<String, System.Action> _playerActionHandlerDic;
 
-    private Vector2 _pickableItemPosition;
-
     private GameObjectInstantiator _gameObject;
 
-    private string pickableItemKey;
+    private Collider2D _passedOnCollider;
 
 
     private void Awake()
@@ -39,7 +37,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
 
     private void OnDaggerPickup()
     {
-        GameObject temp = pickableItems.returnGameObjectForTheKey(pickableItemKey);
+        GameObject temp = pickableItems.returnGameObjectForTheKey(_passedOnCollider.tag);
 
         InventoryManagement.AddToInventory(temp.GetComponent<SpriteRenderer>().sprite, temp.tag); //adds it to the inventory
 
@@ -47,12 +45,12 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
 
     private void OnHealthPickup()
     {
-        pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(pickableItemKey), _pickableItemPosition);
+        pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(GetComponent<Collider>().tag), _passedOnCollider.transform.position);
     }
 
     private void OnCrystalPickup()
     {
-        pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(pickableItemKey), _pickableItemPosition);
+        pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(_passedOnCollider.tag), _passedOnCollider.transform.position);
     }
 
     private void OnEnable()
@@ -71,17 +69,15 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
         _gameObject.InstantiateGameObject(position, Quaternion.identity);
     }
 
-    public void OnNotify(string itemPickedUp, Vector3 Position)
+    public void OnNotify(ref Collider2D collider)
     {
         foreach (var actionsToBePerformed in _playerActionHandlerDic.Keys)
         {
-            if (actionsToBePerformed == itemPickedUp)
+            if (actionsToBePerformed == collider.tag)
             {
-                System.Action action = _playerActionHandlerDic[itemPickedUp];
+                System.Action action = _playerActionHandlerDic[collider.tag];
 
-                pickableItemKey = itemPickedUp;
-
-                _pickableItemPosition = Position;
+                _passedOnCollider = collider;
 
                 action.Invoke(); //invokes the method
 
@@ -90,4 +86,5 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
             }
         }
     }
+
 }

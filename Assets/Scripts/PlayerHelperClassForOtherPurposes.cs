@@ -10,7 +10,6 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
     [SerializeField] Interactable dialogue;
     [SerializeField] TrackingEntities trackingEntities;
 
-    public static bool AudioPickUp;
     [SerializeField] PickableItemsClass _pickableItems;
 
     private Animator anim;
@@ -82,14 +81,7 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
         if (pickedUp)
             collision.gameObject.SetActive(false);
 
-        NotifyObservers(collision.tag, collision.gameObject.transform.position);
-
-
-
-        if (collision.CompareTag("Crystal"))
-        {
-            AudioPickUp = true;
-        }
+        NotifyObservers(collision);
 
         if (collision.CompareTag("Health"))
         {
