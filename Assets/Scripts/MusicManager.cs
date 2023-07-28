@@ -1,17 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
 using GlobalAccessAndGameHelper;
-using System;
 
-public class MusicManager : SubjectsToBeNotified
+public class MusicManager : MonoBehaviour, IObserver<bool>
 {
     [SerializeField] Toggle menuToggleSound;
-
     [SerializeField] AudioSource _bgGameMusic;
     [SerializeField] AudioSource _BossMusic;
     [SerializeField] AudioSource _Pickup;
+    [SerializeField] SubjectsToBeNotified AudioSubject;
     GameMusicState _gameState;
 
+    private bool shouldPlayPickUpAudio;
     void Start()
     {
         _gameState = GameMusicState.BACKGROUNDMUSIC;
@@ -19,6 +19,15 @@ public class MusicManager : SubjectsToBeNotified
 
     }
 
+    private void OnEnable()
+    {
+        AudioSubject.AddObserver(this);
+    }
+
+    private void OnDisable()
+    {
+        AudioSubject.RemoveOberver(this);
+    }
     // Update is called once per frame
     void Update()
     {
@@ -35,7 +44,7 @@ public class MusicManager : SubjectsToBeNotified
 
             }
 
-            if (PlayerHelperClassForOtherPurposes.AudioPickUp)
+            if (shouldPlayPickUpAudio)
             {
                 _gameState = GameMusicState.PICKUP;
             }
@@ -56,7 +65,8 @@ public class MusicManager : SubjectsToBeNotified
         switch (state)
         {
             case GameMusicState.BACKGROUNDMUSIC:
-                if (!_bgGameMusic.isPlaying && _bgGameMusic.time == 0f)
+
+                if (globalVariablesAccess.boolConditionAndTester(!_bgGameMusic.isPlaying, _bgGameMusic.time == 0f))
                 {
                     _bgGameMusic.Play();
 
@@ -67,7 +77,7 @@ public class MusicManager : SubjectsToBeNotified
 
 
             case GameMusicState.BOSSMUSIC:
-                if (!_BossMusic.isPlaying && _BossMusic.time == 0f) //makes sure the same music is not playedagain
+                if (globalVariablesAccess.boolConditionAndTester(!_BossMusic.isPlaying, _BossMusic.time == 0f)) //makes sure the same music is not playedagain
                 {
                     _BossMusic.Play();
 
@@ -79,7 +89,7 @@ public class MusicManager : SubjectsToBeNotified
 
             case GameMusicState.PICKUP:
                 _Pickup.Play();
-                PlayerHelperClassForOtherPurposes.AudioPickUp = false;
+                shouldPlayPickUpAudio = false;
                 break;
 
             case GameMusicState.STOP:
@@ -89,9 +99,10 @@ public class MusicManager : SubjectsToBeNotified
                 break;
         }
 
-
-
     }
 
-
+    public void OnNotify(ref bool Data)
+    {
+        shouldPlayPickUpAudio = true;
+    }
 }

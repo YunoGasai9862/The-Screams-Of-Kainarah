@@ -8,13 +8,11 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 {
     [SerializeField] SpriteRenderer sr;
     [SerializeField] Interactable dialogue;
-    [SerializeField] TrackingEntities trackingEntities;
-
     [SerializeField] PickableItemsClass _pickableItems;
 
     private Animator anim;
     private bool Death = false;
-    public static double MAXHEALTH = 100f;
+    private double MAXHEALTH;
     public static double ENEMYATTACK = 5f;
     [SerializeField] GameObject TeleportTransition;
 
@@ -26,7 +24,7 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
     {
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
-        MAXHEALTH = 100f;
+        Health = 100f;
     }
 
     private void FixedUpdate()
@@ -51,6 +49,8 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 
 
     }
+
+    public double Health { set => MAXHEALTH = value; get => MAXHEALTH; }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -79,21 +79,13 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
         pickedUp = _pickableItems.didPlayerCollideWithaPickableItem(collision.tag);
 
         if (pickedUp)
-            collision.gameObject.SetActive(false);
-
-        NotifyObservers(collision);
-
-        if (collision.CompareTag("Health"))
         {
-
-            if (MAXHEALTH < 100)
-            {
-                MAXHEALTH += 10;
-                Destroy(collision.gameObject);
-            }
-
-
+            collision.gameObject.SetActive(false);
+            NotifyObservers(true); //for audios
         }
+
+        NotifyObservers(ref collision);
+
     }
     public bool checkForExistenceOfPortal(SpriteRenderer sr)
     {

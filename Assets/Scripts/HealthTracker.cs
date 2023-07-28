@@ -2,13 +2,14 @@ using UnityEngine;
 
 public class HealthTracker : MonoBehaviour
 {
-    public static float ReturnMainPlayerHealth()
+    [SerializeField] PlayerHelperClassForOtherPurposes _playerHelperClass;
+    public float ReturnMainPlayerHealth()
     {
-        return (float)PlayerHelperClassForOtherPurposes.MAXHEALTH;
+        return (float)_playerHelperClass.Health;
 
     }
 
-    public static float ReturnBossHealth()
+    public float ReturnBossHealth()
     {
         // return (float)Movement.MAXHEALTH;
         return (float)BossScript.MAXHEALTH;

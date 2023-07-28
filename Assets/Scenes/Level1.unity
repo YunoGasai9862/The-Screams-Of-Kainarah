@@ -6997,6 +6997,10 @@ PrefabInstance:
       value: MusicManager
       objectReference: {fileID: 0}
     - target: {fileID: 6209139972207400974, guid: 73669fc9c657ec249a327c7f305a0876, type: 3}
+      propertyPath: AudioSubject
+      value: 
+      objectReference: {fileID: 2357857118627078231}
+    - target: {fileID: 6209139972207400974, guid: 73669fc9c657ec249a327c7f305a0876, type: 3}
       propertyPath: menuToggleSound
       value: 
       objectReference: {fileID: 2124722306}

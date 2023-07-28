@@ -30,6 +30,7 @@ TagManager:
   - Transact
   - DialogueManager
   - Slots
+  - EntitiesTracker
   layers:
   - Default
   - TransparentFX

@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using InventoryManagement = CreateInventorySystem;
 
-public class PlayerActionSystemHandler : MonoBehaviour, IObserver
+public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 {
 
     [SerializeField] SubjectsToBeNotified Subject;
@@ -21,6 +21,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
 
     private Collider2D _passedOnCollider;
 
+    private PlayerHelperClassForOtherPurposes _playerHelperClassForOtherPurposes;
 
     private void Awake()
     {
@@ -32,6 +33,10 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
              { "Dagger" , OnDaggerPickup  }
 
         };
+
+        _playerHelperClassForOtherPurposes = (PlayerHelperClassForOtherPurposes)Subject;
+
+        Debug.Log(_playerHelperClassForOtherPurposes);
 
     }
 
@@ -45,7 +50,8 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver
 
     private void OnHealthPickup()
     {
-        pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(GetComponent<Collider>().tag), _passedOnCollider.transform.position);
+        pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(_passedOnCollider.tag), _passedOnCollider.transform.position);
+
     }
 
     private void OnCrystalPickup()

@@ -27,11 +27,11 @@ public class HealthBar : MonoBehaviour
         switch (TH)
         {
             case "Player":
-                slide.value = HealthTracker.ReturnMainPlayerHealth();
+                //   slide.value = HealthTracker.ReturnMainPlayerHealth(); Fix this
                 break;
 
             case "Boss":
-                slide.value = HealthTracker.ReturnBossHealth();
+                //    slide.value = HealthTracker.ReturnBossHealth();
                 break;
 
         }
