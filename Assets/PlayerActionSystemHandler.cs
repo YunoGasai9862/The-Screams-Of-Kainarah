@@ -21,8 +21,6 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 
     private Collider2D _passedOnCollider;
 
-    private PlayerHelperClassForOtherPurposes _playerHelperClassForOtherPurposes;
-
     private void Awake()
     {
         _playerActionHandlerDic = new Dictionary<String, System.Action>
@@ -33,10 +31,6 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
              { "Dagger" , OnDaggerPickup  }
 
         };
-
-        _playerHelperClassForOtherPurposes = (PlayerHelperClassForOtherPurposes)Subject;
-
-        Debug.Log(_playerHelperClassForOtherPurposes);
 
     }
 

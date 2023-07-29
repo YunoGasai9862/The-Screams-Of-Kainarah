@@ -12,19 +12,17 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 
     private Animator anim;
     private bool Death = false;
-    private double MAXHEALTH;
-    public static double ENEMYATTACK = 5f;
+    public static float ENEMYATTACK = 5f;
     [SerializeField] GameObject TeleportTransition;
+
 
     public static bool isGrabbing = false;//for the ledge grab script
     private bool once = true;
     private bool pickedUp;
-
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
-        Health = 100f;
     }
 
     private void FixedUpdate()
@@ -50,22 +48,20 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 
     }
 
-    public double Health { set => MAXHEALTH = value; get => MAXHEALTH; }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Enemy") || (collision.collider.CompareTag("Boss") &&
             (collision.collider.transform.root.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack") ||
             collision.collider.transform.root.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack_02"))))
         {
-            if (MAXHEALTH == 0)
+            if (HealthManager.getPlayerHealth == 0)
             {
                 Death = true;
                 anim.SetBool("Death", true);
             }
             else
             {
-                MAXHEALTH -= ENEMYATTACK;
+                HealthManager.getPlayerHealth -= ENEMYATTACK;
             }
 
         }

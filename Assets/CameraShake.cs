@@ -1,18 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
+
+using PlayerAnimationHandler;
 using UnityEngine;
 
 public class CameraShake : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [SerializeField] Camera _mainCamera;
+    private int _currentPlayerState = AnimationStateKeeper.currentPlayerState;
     void Start()
     {
-        
+
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-        
+
     }
 }

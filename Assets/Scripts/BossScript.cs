@@ -4,19 +4,17 @@ public class BossScript : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    public static float MAXHEALTH = 100;
-
     private GameObject Player;
     private Animator anim;
     private float TimeoverBody = 0f;
     private BoxCollider2D _bC2;
     private bool onTopBossBool = false;
     [SerializeField] GameObject BossDead;
+
     void Start()
     {
         Player = GameObject.FindWithTag("Player");
         anim = GetComponent<Animator>();
-        MAXHEALTH = 100;
         _bC2 = GetComponent<BoxCollider2D>();
     }
 
@@ -73,11 +71,11 @@ public class BossScript : MonoBehaviour
         if (collision.CompareTag("Sword") || collision.CompareTag("Dagger"))
         {
             anim.SetTrigger("damage");
-            MAXHEALTH -= 10;
+            HealthManager.getBossHealth -= 10;
 
         }
 
-        if (MAXHEALTH == 0)
+        if (HealthManager.getBossHealth == 0)
         {
             Vector2 pos = transform.position;
             pos.y = transform.position.y + .5f;
@@ -86,7 +84,6 @@ public class BossScript : MonoBehaviour
             Destroy(dead, 1f);
         }
     }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Player") && onTopBossBool == false)
