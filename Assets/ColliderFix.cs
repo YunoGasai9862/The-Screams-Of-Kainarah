@@ -3,13 +3,13 @@ using UnityEngine;
 public class ColliderFix : MonoBehaviour
 {
     private SpriteRenderer _sr;
-    private BoxCollider2D _collider;
+    private CapsuleCollider2D _collider;
     private bool _isFixed = false;
 
     private void Awake()
     {
         _sr = GetComponent<SpriteRenderer>();
-        _collider = GetComponent<BoxCollider2D>();
+        _collider = GetComponent<CapsuleCollider2D>();
     }
     void Update()
     {
@@ -29,7 +29,7 @@ public class ColliderFix : MonoBehaviour
         return _sr.flipX;
     }
 
-    public void FixColliderOffset(ref BoxCollider2D bc2d)
+    public void FixColliderOffset(ref CapsuleCollider2D bc2d)
     {
         float temp = bc2d.offset.x;
         temp *= -1;

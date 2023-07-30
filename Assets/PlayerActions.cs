@@ -14,7 +14,7 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
     private PlayerAnimationMethods _animationHandler;
     private Vector2 _keystrokeTrack;
     private IOverlapChecker _movementHelperClass;
-    private BoxCollider2D _boxCollider;
+    private CapsuleCollider2D _capsulecollider;
     private Animator _anim;
 
     [SerializeField] float _characterSpeed = 10f;
@@ -40,7 +40,7 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animationHandler = GetComponent<PlayerAnimationMethods>();
         _movementHelperClass = new MovementHelperClass();
-        _boxCollider = GetComponent<BoxCollider2D>();
+        _capsulecollider = GetComponent<CapsuleCollider2D>();
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
         //have the actionMappings
         _rb = GetComponent<Rigidbody2D>();
@@ -134,8 +134,8 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
 
     private bool LedgeGroundChecker(LayerMask ground, LayerMask ledge)
     {
-        return _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, ground)
-            || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, ledge);
+        return _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsulecollider, ground)
+            || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsulecollider, ledge);
     }
 
     private void HandleIsGrabbingScenario()
@@ -163,7 +163,7 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
             //sliding
 
             if (globalVariablesAccess.boolConditionAndTester(globalVariablesAccess.ISSLIDING, !globalVariablesAccess.ISATTACKING,
-                 _movementHelperClass.overlapAgainstLayerMaskChecker(ref _boxCollider, groundLayer),
+                 _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsulecollider, groundLayer),
                  !_playerAttackStateMachine.isInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>()))
             {
                 _playerAttackStateMachine.ForceDisableAttacking(1);

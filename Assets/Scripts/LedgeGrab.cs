@@ -11,7 +11,7 @@ public class LedgeGrab : MonoBehaviour
     [SerializeField] LayerMask groundmask;
     [SerializeField] LayerMask ledge;
     [SerializeField] float Xdisplace, Ydisplace;
-    private BoxCollider2D col;
+    private CapsuleCollider2D col;
     private Animator anim;
     private SpriteRenderer sr;
     private float _timeSpent;
@@ -23,7 +23,7 @@ public class LedgeGrab : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        col = GetComponent<BoxCollider2D>();
+        col = GetComponent<CapsuleCollider2D>();
         startingGrav = rb.gravityScale;  //the initially gravity is stored in the array
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();

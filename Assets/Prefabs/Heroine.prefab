@@ -564,13 +564,13 @@ GameObject:
   - component: {fileID: 2357857119552702230}
   - component: {fileID: 2357857119552702228}
   - component: {fileID: 2357857118627078222}
-  - component: {fileID: 2357857119552702235}
   - component: {fileID: 2357857119552702229}
   - component: {fileID: 3387488181997499512}
   - component: {fileID: 8744535595071973501}
   - component: {fileID: 2357857118627078221}
   - component: {fileID: 6549680331415743501}
   - component: {fileID: 2290307266042556730}
+  - component: {fileID: 2357857118627078232}
   m_Layer: 7
   m_Name: Heroine
   m_TagString: Player
@@ -702,51 +702,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!61 &2357857119552702235
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2357857119552702225}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 6200000, guid: 20e27f28af61fef4abdfaeb4ae076985, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.6407323, y: -0.7004063}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 4, y: 4}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.1175451, y: 1.8600793}
-  m_EdgeRadius: 0
 --- !u!114 &2357857119552702229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -760,14 +715,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sr: {fileID: 0}
-  DiamondHitEffect: {fileID: 2661038635046788335, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
-  pickupEffect: {fileID: 0}
   dialogue: {fileID: 0}
-  trackingEntities: {fileID: 0}
-  pickableItems:
-  - Dagger
-  - Crystal
-  - Health
+  _pickableItems: {fileID: 0}
   TeleportTransition: {fileID: 0}
 --- !u!114 &3387488181997499512
 MonoBehaviour:
@@ -787,7 +736,6 @@ MonoBehaviour:
   ledge:
     serializedVersion: 2
     m_Bits: 8
-  Dagger: {fileID: 8025573198793576023, guid: f56de393cd630934e8c8c9cd19ec01bf, type: 3}
   IceTrail: {fileID: 1326094510711206718, guid: f87dcd0b34fb626439aac4d24529af72, type: 3}
   IceTrail2: {fileID: 6942044088278875987, guid: 05dace05c5d30104880353dab19e2674, type: 3}
   canAttackStateName: Attack
@@ -795,6 +743,7 @@ MonoBehaviour:
   timeDifferenceStateName: ElapsedTime
   jumpAttackStateName: AttackJ
   daggerAttackName: ThrowDagger
+  pickableItems: {fileID: 0}
 --- !u!114 &8744535595071973501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -812,9 +761,9 @@ MonoBehaviour:
   redXSize: 0.2
   redYSize: 0.2
   greenXOffset: 0.09
-  greenYOffset: -0.05
+  greenYOffset: -0.41
   greenXsize: 0.59
-  greenYSize: 0.57
+  greenYSize: 0.08
   groundmask:
     serializedVersion: 2
     m_Bits: 64
@@ -869,6 +818,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22a95b7df80e5e24e90e058f190117c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!70 &2357857118627078232
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.6232314, y: -0.93135786}
+  m_Size: {x: 1.0740252, y: 2.1372843}
+  m_Direction: 0
 --- !u!1 &3485019726026848876
 GameObject:
   m_ObjectHideFlags: 0

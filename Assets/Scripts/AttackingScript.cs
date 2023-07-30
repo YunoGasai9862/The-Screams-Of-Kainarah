@@ -8,7 +8,7 @@ using GVA = GlobalAccessAndGameHelper.globalVariablesAccess;
 public class AttackingScript : MonoBehaviour
 {
     private Animator _anim;
-    private BoxCollider2D col;
+    private CapsuleCollider2D col;
     public static bool canthrowDagger = true;
     private float _timeForMouseClickStart = 0;
     private float _timeForMouseClickEnd = 0;
@@ -46,7 +46,7 @@ public class AttackingScript : MonoBehaviour
 
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
 
-        col = GetComponent<BoxCollider2D>();
+        col = GetComponent<CapsuleCollider2D>();
 
         _movementHelper = new MovementHelperClass();
 
