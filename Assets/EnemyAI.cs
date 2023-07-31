@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using Pathfinding;
+using GlobalAccessAndGameHelper;
 public class EnemyAI : MonoBehaviour
 {
     [Header("Pathfinding")]
@@ -20,16 +21,24 @@ public class EnemyAI : MonoBehaviour
     public bool jumpEnabled = true;
     public bool directionLookEnabled = true;
 
+    [Header("Layer Mask")]
+    public LayerMask _groundLayerMask;
+
     private Path path;
+    private MovementHelperClass _overlap;
     private int currentWaypoint = 0;
+    private CapsuleCollider2D _col;
     bool isGrounded = false;
     Seeker seeker;
     Rigidbody2D rb;
+
 
     public void Start()
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
+        _overlap = new MovementHelperClass();
+        _col = GetComponent<CapsuleCollider2D>();
 
         InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds); //it's going to keep repeating the script like a coroutine
     }
@@ -64,7 +73,10 @@ public class EnemyAI : MonoBehaviour
         }
 
         //see if we collide with anything
-        isGrounded = Physics2D.Raycast(transform.position, -Vector3.up, GetComponent<Collider2D>().bounds.extents.y + jumpCheckOffset);
+
+        isGrounded = _overlap.overlapAgainstLayerMaskChecker(ref _col, _groundLayerMask);
+
+        //learn more about the script and modify!!!!
 
         //Direction Calculation
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized; //direction from enemy to the currentWayPoint. Normalizes gives the magnitude 
@@ -80,5 +92,43 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
+        //Movement
+        rb.AddForce(force);  //makes the AI enemy move toward the target continuously
+
+        //Next WayPoint
+        float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
+        if (distance < nextWaypointDistance)
+        {
+            currentWaypoint++;  //makes sure that the object keeps following the path
+        }
+
+        //Direction Graphics Handling
+        if (directionLookEnabled)
+        {
+            if (rb.velocity.x > 0.05f)
+            {
+                transform.localScale = new Vector3(-1f * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            }
+            else if (rb.velocity.x < -0.05f)
+            {
+                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+
+            }
+        }
+
+    }
+
+    private bool TargetInDistance()
+    {
+        return Vector2.Distance(transform.position, target.transform.position) < activateDistance;
+    }
+
+    private void OnPathComplete(Path p)
+    {
+        if (!p.error)
+        {
+            path = p;
+            currentWaypoint = 0;
+        }
     }
 }

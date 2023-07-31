@@ -156,4 +156,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Funds: {fileID: 0}
-  transact: {fileID: 2668144598599883127, guid: 6d801208a49b7b5469a6b99afc620b85, type: 3}
