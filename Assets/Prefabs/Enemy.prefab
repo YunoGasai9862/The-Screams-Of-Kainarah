@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: 1546601297}
   - component: {fileID: 1912497939}
   - component: {fileID: 1912497940}
-  - component: {fileID: 1170805263}
+  - component: {fileID: 257111450}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -296,8 +296,8 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
---- !u!70 &1170805263
-CapsuleCollider2D:
+--- !u!58 &257111450
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -329,5 +329,5 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.89, y: 1.48}
-  m_Direction: 0
+  serializedVersion: 2
+  m_Radius: 0.66

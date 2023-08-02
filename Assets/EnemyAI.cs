@@ -25,9 +25,7 @@ public class EnemyAI : MonoBehaviour
     public LayerMask _groundLayerMask;
 
     private Path path;
-    private MovementHelperClass _overlap;
     private int currentWaypoint = 0;
-    private CapsuleCollider2D _col;
     bool isGrounded = false;
     Seeker seeker;
     Rigidbody2D rb;
@@ -37,8 +35,6 @@ public class EnemyAI : MonoBehaviour
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
-        _overlap = new MovementHelperClass();
-        _col = GetComponent<CapsuleCollider2D>();
 
         InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds); //it's going to keep repeating the script like a coroutine
     }
@@ -74,9 +70,9 @@ public class EnemyAI : MonoBehaviour
 
         //see if we collide with anything
 
-        isGrounded = _overlap.overlapAgainstLayerMaskChecker(ref _col, _groundLayerMask);
+        isGrounded = Physics2D.Raycast(rb.position, -Vector3.up, GetComponent<Collider2D>().bounds.extents.y + jumpCheckOffset);  //keeping modifying other stuff too
 
-        //learn more about the script and modify!!!!
+        //learn more about the script and modify!!!! (AFTER LIGHTNING IS DONE!!)
 
         //Direction Calculation
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized; //direction from enemy to the currentWayPoint. Normalizes gives the magnitude 
@@ -93,7 +89,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         //Movement
-        rb.AddForce(force);  //makes the AI enemy move toward the target continuously
+        rb.AddForce(force, ForceMode2D.Force);  //makes the AI enemy move toward the target continuously
 
         //Next WayPoint
         float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
