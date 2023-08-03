@@ -6492,7 +6492,7 @@ GameObject:
   - component: {fileID: 1889739055}
   m_Layer: 0
   m_Name: Candle
-  m_TagString: Untagged
+  m_TagString: candle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6706,7 +6706,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4126c627d52b8b7478d879e2a22a6a58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemiesNames: []
 --- !u!1 &1979483824 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7957833072274404953, guid: 3355f6bfa6db8b24281b827de929694c, type: 3}
