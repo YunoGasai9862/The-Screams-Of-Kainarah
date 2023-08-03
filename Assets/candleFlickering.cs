@@ -1,57 +1,31 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-using static UnityEditor.Progress;
 
-public class candleFlickering : MonoBehaviour
+public class candleFlickering : SubjectsToBeNotified
 {
     private Light2D m_light;
 
     [Header("Light Intensity Swing Values")]
     public float maxIntensity;
     public float minIntensity;
-    public float incrementor;
-
-    private float m_intensityOffset = 0.01f;
-    private bool iscycleFinished = false;
 
     private void Awake()
     {
         m_light = GetComponent<Light2D>();
 
     }
-
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-
+        StartCoroutine(lightFlicker(maxIntensity, minIntensity));
     }
 
-
-    private bool flicker(float maxIntensity, float minIntensity)
+    private IEnumerator lightFlicker(float maxIntensity, float minIntensity)
     {
-        float _temp = maxIntensity - m_intensityOffset;
-        while (_temp < maxIntensity && _temp > minIntensity)
-        {
-            _temp -= incrementor * Time.deltaTime;
-            m_light.intensity = _temp;
-
-        }
-
-        _temp = minIntensity + m_intensityOffset;
-        while (_temp > minIntensity && _temp < maxIntensity)
-        {
-            _temp += incrementor * Time.deltaTime;
-            m_light.intensity = _temp;
-
-        }
-
-        iscycleFinished = true;
-        return iscycleFinished;
-
+        float _lightFlickerValue = Random.Range(minIntensity, maxIntensity);
+        m_light.intensity = _lightFlickerValue;
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(lightFlicker(maxIntensity, minIntensity));
     }
-
 
 }

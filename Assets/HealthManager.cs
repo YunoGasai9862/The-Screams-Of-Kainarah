@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class HealthManager : MonoBehaviour
 {
-    [SerializeField] List<string> _enemiesNames;
+    [SerializeField] static List<string> _enemiesNames;
     private static HealthClass _mainPlayer;
     private static HealthClass _boss;
-    private Dictionary<string, HealthClass> _allEnemies;
+    private static Dictionary<string, HealthClass> _allEnemies;
+
+    private static string currentEnemyName;
 
     private void Awake()
     {
@@ -16,11 +18,17 @@ public class HealthManager : MonoBehaviour
     }
 
     public static float getPlayerHealth { get => _mainPlayer.EntityHealth; set => _mainPlayer.EntityHealth = value; }
+
     public static float getBossHealth { get => _boss.EntityHealth; set => _boss.EntityHealth = value; }
 
-    public static void addAllPotentialEnemiesFromTheScene()
-    {
+    public static float getEnemyHealth { get => _allEnemies[currentEnemyName].EntityHealth; set => _allEnemies[currentEnemyName].EntityHealth = value; }
 
+    public void addAllPotentialEnemiesFromTheScene()
+    {
+        foreach (var _enemy in _enemiesNames)
+        {
+            //set in dictionary
+        }
     }
 
 

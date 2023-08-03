@@ -1,4 +1,5 @@
 using GlobalAccessAndGameHelper;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,9 +7,13 @@ using UnityEngine.SceneManagement;
 
 public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 {
+
+
     [SerializeField] SpriteRenderer sr;
     [SerializeField] Interactable dialogue;
     [SerializeField] PickableItemsClass _pickableItems;
+    private Dictionary<GameObject, Candle> allCandlesInTheScene;
+    private Array _allCandleObjects;
 
     private Animator anim;
     private bool Death = false;
@@ -23,6 +28,7 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
     {
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        _allCandleObjects = GameObject.FindGameObjectsWithTag("candle");
     }
 
     private void FixedUpdate()
@@ -119,7 +125,11 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 
 }
 
-
+public class Candle
+{
+    public string CandleName;
+    public bool shouldCanFlicker;
+}
 
 
 
