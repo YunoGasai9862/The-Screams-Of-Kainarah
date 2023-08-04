@@ -2,18 +2,17 @@ using GlobalAccessAndGameHelper;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 {
-
-
     [SerializeField] SpriteRenderer sr;
     [SerializeField] Interactable dialogue;
     [SerializeField] PickableItemsClass _pickableItems;
-    private Dictionary<GameObject, Candle> allCandlesInTheScene;
-    private Array _allCandleObjects;
+    private Dictionary<GameObject, Candle> allCandlesInTheScene = new();
+    private List<GameObject> _allCandleObjects;
 
     private Animator anim;
     private bool Death = false;
@@ -27,8 +26,13 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+
         anim = GetComponent<Animator>();
-        _allCandleObjects = GameObject.FindGameObjectsWithTag("candle");
+
+        _allCandleObjects = GameObject.FindGameObjectsWithTag("candle").ToList();
+
+        fillupDictionaryWithCandleObjects(_allCandleObjects);
+
     }
 
     private void FixedUpdate()
@@ -89,6 +93,16 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
         NotifyObservers(ref collision);
 
     }
+    private void fillupDictionaryWithCandleObjects(List<GameObject> array)
+    {
+        Candle _temp = new();
+        foreach (GameObject value in array)
+        {
+            _temp.LightName = value.name;
+            _temp.canFlicker = false;
+            allCandlesInTheScene[value] = _temp;
+        }
+    }
     public bool checkForExistenceOfPortal(SpriteRenderer sr)
     {
         RaycastHit hit; //using 3D raycast because of 3D object, portal
@@ -122,14 +136,29 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
         yield return new WaitForSeconds(1f);
     }
 
+    private IEnumerator PlayersDistanceFromCandles(Dictionary<GameObject, Candle> dict, float acceptedDistance)
+    {
+        Candle _temp = new();
+        foreach (GameObject value in dict.Keys)
+        {
+            if (Vector2.Distance(transform.position, value.transform.position) < acceptedDistance)
+            {
+                _temp = dict.GetValueOrDefault(value);
+                _temp.canFlicker = true;
+                dict[value] = _temp; //updates the value
+            }
+            else
+            {
+                _temp = dict.GetValueOrDefault(value);
+                _temp.canFlicker = false;
+                dict[value] = _temp; //updates the value
+            }
+        }
+        yield return null;
+    }
 
 }
 
-public class Candle
-{
-    public string CandleName;
-    public bool shouldCanFlicker;
-}
 
 
 
