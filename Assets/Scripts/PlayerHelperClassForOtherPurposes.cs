@@ -11,13 +11,14 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
     [SerializeField] SpriteRenderer sr;
     [SerializeField] Interactable dialogue;
     [SerializeField] PickableItemsClass _pickableItems;
-    private Dictionary<GameObject, Candle> allCandlesInTheScene = new();
-    private List<GameObject> _allCandleObjects;
+    private bool calculatingDistance = false;
+    private float _screenWidth;
 
     private Animator anim;
     private bool Death = false;
     public static float ENEMYATTACK = 5f;
     [SerializeField] GameObject TeleportTransition;
+    private Candle _temp = new();
 
 
     public static bool isGrabbing = false;//for the ledge grab script
@@ -25,13 +26,12 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
     private bool pickedUp;
     private void Awake()
     {
+        _screenWidth = CalculateScreenWidth(Camera.main);
+
         sr = GetComponent<SpriteRenderer>();
 
         anim = GetComponent<Animator>();
 
-        _allCandleObjects = GameObject.FindGameObjectsWithTag("candle").ToList();
-
-        fillupDictionaryWithCandleObjects(_allCandleObjects);
 
     }
 
@@ -55,6 +55,13 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
             once = false;
         }
 
+
+    }
+
+    private void Update()
+    {
+        if (!calculatingDistance)
+            StartCoroutine(PlayersDistanceFromCandles(LightPoolObject.allCandlesInTheScene, _screenWidth));
 
     }
 
@@ -93,16 +100,7 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
         NotifyObservers(ref collision);
 
     }
-    private void fillupDictionaryWithCandleObjects(List<GameObject> array)
-    {
-        Candle _temp = new();
-        foreach (GameObject value in array)
-        {
-            _temp.LightName = value.name;
-            _temp.canFlicker = false;
-            allCandlesInTheScene[value] = _temp;
-        }
-    }
+
     public bool checkForExistenceOfPortal(SpriteRenderer sr)
     {
         RaycastHit hit; //using 3D raycast because of 3D object, portal
@@ -138,23 +136,34 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 
     private IEnumerator PlayersDistanceFromCandles(Dictionary<GameObject, Candle> dict, float acceptedDistance)
     {
-        Candle _temp = new();
-        foreach (GameObject value in dict.Keys)
+        calculatingDistance = true;
+
+        foreach (GameObject value in dict.Keys.ToList()) //allows modifying the copy of the keys, etc in the dictionary
         {
+            _temp = dict.GetValueOrDefault(value);
+
             if (Vector2.Distance(transform.position, value.transform.position) < acceptedDistance)
             {
-                _temp = dict.GetValueOrDefault(value);
                 _temp.canFlicker = true;
-                dict[value] = _temp; //updates the value
+                //notify that object as well
             }
             else
             {
-                _temp = dict.GetValueOrDefault(value);
                 _temp.canFlicker = false;
-                dict[value] = _temp; //updates the value
             }
+
+            dict[value] = _temp; //updates the value
+
         }
+        calculatingDistance = false;
+
         yield return null;
+    }
+
+    private float CalculateScreenWidth(Camera _mainCamera)
+    {
+        float aspectRatio = _mainCamera.aspect;
+        return aspectRatio * _mainCamera.orthographicSize;
     }
 
 }
