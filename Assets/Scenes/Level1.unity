@@ -4305,6 +4305,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxIntensity: 1
   minIntensity: 0.7
+  _subject: {fileID: 623876214}
 --- !u!114 &1140041379 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3411736711016420481, guid: e723d316729677642b873a6b6cd23d00, type: 3}
