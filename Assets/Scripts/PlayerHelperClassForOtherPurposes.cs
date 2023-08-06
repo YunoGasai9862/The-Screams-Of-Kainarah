@@ -11,14 +11,11 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
     [SerializeField] SpriteRenderer sr;
     [SerializeField] Interactable dialogue;
     [SerializeField] PickableItemsClass _pickableItems;
-    private bool calculatingDistance = false;
-    private float _screenWidth;
 
     private Animator anim;
     private bool Death = false;
     public static float ENEMYATTACK = 5f;
     [SerializeField] GameObject TeleportTransition;
-    private Candle _temp = new();
 
 
     public static bool isGrabbing = false;//for the ledge grab script
@@ -26,7 +23,6 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
     private bool pickedUp;
     private void Awake()
     {
-        _screenWidth = CalculateScreenWidth(Camera.main);
 
         sr = GetComponent<SpriteRenderer>();
 
@@ -57,14 +53,6 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 
 
     }
-
-    private void Update()
-    {
-        if (!calculatingDistance)
-            StartCoroutine(PlayersDistanceFromCandles(LightPoolObject.allCandlesInTheScene, _screenWidth));
-
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Enemy") || (collision.collider.CompareTag("Boss") &&
@@ -134,37 +122,6 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
         yield return new WaitForSeconds(1f);
     }
 
-    private IEnumerator PlayersDistanceFromCandles(Dictionary<GameObject, Candle> dict, float acceptedDistance)
-    {
-        calculatingDistance = true;
-
-        foreach (GameObject value in dict.Keys.ToList()) //allows modifying the copy of the keys, etc in the dictionary
-        {
-            _temp = dict.GetValueOrDefault(value);
-
-            if (Vector2.Distance(transform.position, value.transform.position) < acceptedDistance)
-            {
-                _temp.canFlicker = true;
-                //notify that object as well
-            }
-            else
-            {
-                _temp.canFlicker = false;
-            }
-
-            dict[value] = _temp; //updates the value
-
-        }
-        calculatingDistance = false;
-
-        yield return null;
-    }
-
-    private float CalculateScreenWidth(Camera _mainCamera)
-    {
-        float aspectRatio = _mainCamera.aspect;
-        return aspectRatio * _mainCamera.orthographicSize;
-    }
 
 }
 

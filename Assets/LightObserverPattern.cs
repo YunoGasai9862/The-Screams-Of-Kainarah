@@ -1,18 +1,24 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LightObserverPattern : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private List<IObserver<Candle>> subjectsToBeadded = new();
+    public void AddObserver(IObserver<Candle> subject)
     {
-
+        subjectsToBeadded.Add(subject);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void RemoveObserver(IObserver<Candle> subject)
     {
+        subjectsToBeadded.Remove(subject);
+    }
 
+    public void NotifyAllLightObservers(Candle _candleProperties)
+    {
+        foreach (IObserver<Candle> subject in subjectsToBeadded)
+        {
+            subject.OnNotify(ref _candleProperties);
+        }
     }
 }

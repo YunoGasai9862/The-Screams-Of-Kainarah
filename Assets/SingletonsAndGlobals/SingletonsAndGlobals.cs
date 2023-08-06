@@ -107,5 +107,13 @@ namespace GlobalAccessAndGameHelper
         BACKGROUNDMUSIC = 0, BOSSMUSIC = 1, PICKUP = 2, STOP = 3
     }
 
+    public static class HelperFunctions
+    {
+        public static float CalculateScreenWidth(Camera _mainCamera)
+        {
+            float aspectRatio = _mainCamera.aspect;
+            return aspectRatio * _mainCamera.orthographicSize;
+        }
+    }
 
 }
