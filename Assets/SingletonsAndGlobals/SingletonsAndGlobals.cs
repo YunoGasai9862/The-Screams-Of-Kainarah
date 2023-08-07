@@ -1,4 +1,7 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+
 namespace GlobalAccessAndGameHelper
 {
     public class GameObjectInstantiator
@@ -114,6 +117,20 @@ namespace GlobalAccessAndGameHelper
             float aspectRatio = _mainCamera.aspect;
             return aspectRatio * _mainCamera.orthographicSize;
         }
+
+        public static IEnumerator TuneDownIntensityToZero(Light2D _light)
+        {
+            while (_light.intensity > 0f)
+            {
+                _light.intensity -= 10 * Time.deltaTime;
+
+                Debug.Log(_light.intensity);
+
+                yield return new WaitForSeconds(.1f);
+            }
+
+        }
+
     }
 
 }

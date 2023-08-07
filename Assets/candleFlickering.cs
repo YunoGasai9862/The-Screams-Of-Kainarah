@@ -10,6 +10,10 @@ public class candleFlickering : MonoBehaviour, IObserver<Candle>
     public float maxIntensity;
     public float minIntensity;
 
+    [Header("Light Outer Radius")]
+    public float maxOuterRadius;
+    public float minOuterRadius;
+
     [Header("Add the Subject which willl be responsible for notifying")]
     public LightObserverPattern _subject;
 
@@ -31,16 +35,16 @@ public class candleFlickering : MonoBehaviour, IObserver<Candle>
     }
     private void Start()
     {
-        StartCoroutine(lightFlicker(maxIntensity, minIntensity));
+        StartCoroutine(lightFlicker(minIntensity, maxIntensity));
     }
 
-    private IEnumerator lightFlicker(float maxIntensity, float minIntensity)
+    private IEnumerator lightFlicker(float minIntensity, float maxIntensity)
     {
         coroutingIsRunning = true;
         float _lightFlickerValue = Random.Range(minIntensity, maxIntensity);
         m_light.intensity = _lightFlickerValue;
-        yield return new WaitForSeconds(0.2f);
         coroutingIsRunning = false;
+        yield return new WaitForSeconds(0.2f);
     }
 
     public void OnNotify(ref Candle Data)
@@ -50,8 +54,7 @@ public class candleFlickering : MonoBehaviour, IObserver<Candle>
         if (m_Candle != null && m_Candle.LightName == transform.parent.name && m_Candle.canFlicker)
         {
             if (!coroutingIsRunning)
-                StartCoroutine(lightFlicker(maxIntensity, minIntensity));
-
+                StartCoroutine(lightFlicker(minIntensity, maxIntensity));
         }
         else
         {

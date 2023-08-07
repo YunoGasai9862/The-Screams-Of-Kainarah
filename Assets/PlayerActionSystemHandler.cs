@@ -1,11 +1,7 @@
 using GlobalAccessAndGameHelper;
-using PlayerAnimationHandler;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 using InventoryManagement = CreateInventorySystem;
 
 public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
@@ -44,7 +40,9 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 
     private void OnHealthPickup()
     {
-        pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(_passedOnCollider.tag), _passedOnCollider.transform.position);
+        Vector2 _pickupPos = new(_passedOnCollider.transform.position.x, _passedOnCollider.transform.position.y - 1f);
+        GameObjectInstantiator _gameObject = pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(_passedOnCollider.tag), _pickupPos);
+        _gameObject.DestroyGameObject(3f);
 
     }
 
@@ -63,11 +61,13 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
         Subject.RemoveOberver(this); //Remove PlayerActionSystem as an observer when an event is handled/or the observer is no longer needed
     }
 
-    private void pickupEffectInstantiator(GameObject prefab, Vector3 position)
+    private GameObjectInstantiator pickupEffectInstantiator(GameObject prefab, Vector3 position)
     {
         _gameObject = new(prefab);
         _gameObject.InstantiateGameObject(position, Quaternion.identity);
+        return _gameObject;
     }
+
 
     public void OnNotify(ref Collider2D collider)
     {
