@@ -12,14 +12,13 @@ public class LightPoolObject : LightObserverPattern
     public static Dictionary<GameObject, Candle> allCandlesInTheScene = new();
     public static List<GameObject> _allCandleObjects;
     private bool calculatingDistance = false;
-    private Candle _temp = new();
     private float _screenWidth;
 
     private void Awake()
     {
         _allCandleObjects = GameObject.FindGameObjectsWithTag("candle").ToList();
 
-        fillupDictionaryWithCandleObjects(_allCandleObjects);
+        allCandlesInTheScene = fillupDictionaryWithCandleObjects(_allCandleObjects);
 
         _screenWidth = HelperFunctions.CalculateScreenWidth(Camera.main);
 
@@ -30,36 +29,36 @@ public class LightPoolObject : LightObserverPattern
             StartCoroutine(PlayersDistanceFromCandles(allCandlesInTheScene, _screenWidth));
     }
 
-    private void fillupDictionaryWithCandleObjects(List<GameObject> array)
+    private Dictionary<GameObject, Candle> fillupDictionaryWithCandleObjects(List<GameObject> array)
     {
-        Candle _temp = new();
+        Dictionary<GameObject, Candle> _candleObjects = new();
         foreach (GameObject value in array)
         {
+            Candle _temp = new(); //this fixed the issue!!!
             _temp.LightName = value.name;
             _temp.canFlicker = false;
-            allCandlesInTheScene[value] = _temp;
+            _candleObjects[value] = _temp;
         }
+
+        return _candleObjects;
     }
 
     private IEnumerator PlayersDistanceFromCandles(Dictionary<GameObject, Candle> dict, float acceptedDistance)
     {
         calculatingDistance = true;
 
-        foreach (GameObject value in dict.Keys.ToList()) //allows modifying the copy of the keys, etc in the dictionary
+        foreach (GameObject value in dict.Keys) //allows modifying the copy of the keys, etc in the dictionary
         {
-            _temp = dict.GetValueOrDefault(value);
+            Candle _candle = new();
+            _candle.LightName = dict[value].LightName;
+            _candle.canFlicker = false;
 
             if (Vector2.Distance(Player.transform.position, value.transform.position) < acceptedDistance)
             {
-                _temp.canFlicker = true;
-            }
-            else
-            {
-                _temp.canFlicker = false;
+                _candle.canFlicker = true;
             }
 
-            dict[value] = _temp; //updates the value
-            NotifyAllLightObservers(_temp);
+            NotifyAllLightObservers(_candle);
 
         }
         calculatingDistance = false;

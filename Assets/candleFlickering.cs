@@ -50,7 +50,6 @@ public class candleFlickering : MonoBehaviour, IObserver<Candle>
     public void OnNotify(ref Candle Data)
     {
         m_Candle = Data;
-
         if (m_Candle != null && m_Candle.LightName == transform.parent.name && m_Candle.canFlicker)
         {
             if (!coroutingIsRunning)
