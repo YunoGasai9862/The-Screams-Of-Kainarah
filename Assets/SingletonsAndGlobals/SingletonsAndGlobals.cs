@@ -124,11 +124,24 @@ namespace GlobalAccessAndGameHelper
             {
                 _light.intensity -= 10 * Time.deltaTime;
 
-                Debug.Log(_light.intensity);
-
                 yield return new WaitForSeconds(.1f);
             }
 
+        }
+        public static Vector2 FlipTheObjectAccordingToParent(ref SpriteRenderer spriteRenderer, Vector2 position, float offset)
+        {
+            Vector2 flipped = Vector2.zero;
+            if (spriteRenderer.flipX)
+            {
+                flipped = new Vector2(position.x - offset, position.y);
+            }
+            else
+            {
+                flipped = new Vector2(position.x + offset, position.y);
+
+            }
+
+            return flipped;
         }
 
     }
