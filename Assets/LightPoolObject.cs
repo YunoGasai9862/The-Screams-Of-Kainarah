@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using GlobalAccessAndGameHelper;
+using System.Threading.Tasks;
+using System.Threading;
+using Unity.VisualScripting.Antlr3.Runtime;
+using System;
 
 public class LightPoolObject : LightObserverPattern
 {
@@ -13,6 +17,7 @@ public class LightPoolObject : LightObserverPattern
     public static List<GameObject> _allCandleObjects;
     private bool calculatingDistance = false;
     private float _screenWidth;
+    private CancellationTokenSource tokenSource;
 
     private void Awake()
     {
@@ -22,12 +27,21 @@ public class LightPoolObject : LightObserverPattern
 
         _screenWidth = HelperFunctions.CalculateScreenWidth(Camera.main);
 
+        tokenSource = new();
+
     }
     private void Update()
     {
         if (!calculatingDistance)
-            StartCoroutine(PlayersDistanceFromCandles(allCandlesInTheScene, _screenWidth));
+        {
+            Task.Run(async () =>
+            {
+                await PlayersDistanceFromCandles(allCandlesInTheScene, _screenWidth, tokenSource.Token);
+
+            });
+        }
     }
+
 
     private Dictionary<GameObject, Candle> fillupDictionaryWithCandleObjects(List<GameObject> array)
     {
@@ -43,7 +57,7 @@ public class LightPoolObject : LightObserverPattern
         return _candleObjects;
     }
 
-    private IEnumerator PlayersDistanceFromCandles(Dictionary<GameObject, Candle> dict, float acceptedDistance)
+    private async Task PlayersDistanceFromCandles(Dictionary<GameObject, Candle> dict, float acceptedDistance, CancellationToken token)
     {
         calculatingDistance = true;
 
@@ -58,12 +72,21 @@ public class LightPoolObject : LightObserverPattern
                 _candle.canFlicker = true;
             }
 
-            NotifyAllLightObservers(_candle);
+            await NotifyAllLightObserversAsync(_candle);
+
+            if (token.IsCancellationRequested)
+            {
+                calculatingDistance = false;
+                return;
+            }
 
         }
         calculatingDistance = false;
 
-        yield return null;
+    }
+    private void OnDisable()
+    {
+        tokenSource.Cancel();
     }
 
 }

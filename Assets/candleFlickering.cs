@@ -1,8 +1,9 @@
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class candleFlickering : MonoBehaviour, IObserver<Candle>
+public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
 {
     private Light2D m_light;
 
@@ -47,7 +48,7 @@ public class candleFlickering : MonoBehaviour, IObserver<Candle>
 
     }
 
-    public void OnNotify(ref Candle Data)
+    public async Task OnNotify(Candle Data)
     {
         m_Candle = Data;
 
