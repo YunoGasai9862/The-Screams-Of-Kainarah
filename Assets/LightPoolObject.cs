@@ -30,15 +30,11 @@ public class LightPoolObject : LightObserverPattern
         tokenSource = new();
 
     }
-    private void Update()
+    private async void Update()
     {
         if (!calculatingDistance)
         {
-            Task.Run(async () =>
-            {
-                await PlayersDistanceFromCandles(allCandlesInTheScene, _screenWidth, tokenSource.Token);
-
-            });
+            await PlayersDistanceFromCandles(allCandlesInTheScene, _screenWidth, tokenSource.Token);
         }
     }
 
@@ -52,6 +48,7 @@ public class LightPoolObject : LightObserverPattern
             _temp.LightName = value.name;
             _temp.canFlicker = false;
             _candleObjects[value] = _temp;
+            Debug.Log(value);
         }
 
         return _candleObjects;
@@ -60,7 +57,6 @@ public class LightPoolObject : LightObserverPattern
     private async Task PlayersDistanceFromCandles(Dictionary<GameObject, Candle> dict, float acceptedDistance, CancellationToken token)
     {
         calculatingDistance = true;
-
         foreach (GameObject value in dict.Keys) //allows modifying the copy of the keys, etc in the dictionary
         {
             Candle _candle = new();
@@ -71,11 +67,13 @@ public class LightPoolObject : LightObserverPattern
             {
                 _candle.canFlicker = true;
             }
+            Debug.Log("Here");
 
             await NotifyAllLightObserversAsync(_candle);
 
             if (token.IsCancellationRequested)
             {
+                Debug.Log("Cancelling");
                 calculatingDistance = false;
                 return;
             }

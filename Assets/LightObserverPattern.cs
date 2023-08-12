@@ -17,6 +17,8 @@ public class LightObserverPattern : MonoBehaviour
 
     public async Task NotifyAllLightObserversAsync(Candle _candleProperties)
     {
+        Debug.Log("notifying!");
+
         foreach (IObserverAsync<Candle> subject in subjectsToBeadded)
         {
             await subject.OnNotify(_candleProperties);
