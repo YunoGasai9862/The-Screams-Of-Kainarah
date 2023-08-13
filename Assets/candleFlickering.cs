@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -20,6 +21,7 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
 
     private Candle m_Candle;
     private bool coroutingIsRunning = false;
+
     private void Awake()
     {
         m_light = GetComponent<Light2D>();
@@ -53,20 +55,33 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
         //add checks as well
         return Task.FromResult(intensity);
     }
-    public async Task OnNotify(Candle Data)
+
+    public async Task OnNotify(Candle Data, CancellationToken _cancellationToken)
     {
         m_Candle = Data;
 
+        Debug.Log(_cancellationToken.IsCancellationRequested);
+
         if (m_Candle != null)
         {
+
             if (m_Candle.LightName == transform.parent.name && m_Candle.canFlicker)
             {
                 if (!coroutingIsRunning)
                 {
                     coroutingIsRunning = true;
 
+                    IAsyncEnumerator<WaitForSeconds> lightFlickerWaiting = lightFlicker(minIntensity, maxIntensity);
+
                     // StartCoroutine(lightFlicker(minIntensity, maxIntensity));
                     // IAsyncEnumer
+
+
+                    if (_cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
 
                 }
             }

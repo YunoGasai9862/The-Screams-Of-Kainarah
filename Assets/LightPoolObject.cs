@@ -36,8 +36,8 @@ public class LightPoolObject : LightObserverPattern
         {
             await PlayersDistanceFromCandles(allCandlesInTheScene, _screenWidth, tokenSource.Token);
         }
-    }
 
+    }
 
     private Dictionary<GameObject, Candle> fillupDictionaryWithCandleObjects(List<GameObject> array)
     {
@@ -67,13 +67,14 @@ public class LightPoolObject : LightObserverPattern
             {
                 _candle.canFlicker = true;
             }
-            Debug.Log("Here");
 
-            await NotifyAllLightObserversAsync(_candle);
-
-            if (token.IsCancellationRequested)
+            try
             {
-                Debug.Log("Cancelling");
+                await NotifyAllLightObserversAsync(_candle, token);
+
+            }
+            catch (OperationCanceledException) //works (making use of Exceptions)
+            {
                 calculatingDistance = false;
                 return;
             }
@@ -85,6 +86,7 @@ public class LightPoolObject : LightObserverPattern
     private void OnDisable()
     {
         tokenSource.Cancel();
+
     }
 
 }
