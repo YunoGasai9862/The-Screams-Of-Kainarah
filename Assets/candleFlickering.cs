@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,8 +46,10 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
     {
         float _lightFlickerValue = await GenerateLightIntensityAsync(minIntensity, maxIntensity);
         m_light.intensity = _lightFlickerValue;
-        yield return new WaitForSeconds(.2f);
+        await Task.Delay(System.TimeSpan.FromSeconds(2f));
         coroutingIsRunning = false;
+        yield return new WaitForSeconds(2f);
+
 
     }
     private Task<float> GenerateLightIntensityAsync(float minIntensity, float maxIntensity)
@@ -60,8 +63,6 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
     {
         m_Candle = Data;
 
-        Debug.Log(_cancellationToken.IsCancellationRequested);
-
         if (m_Candle != null)
         {
 
@@ -71,17 +72,12 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
                 {
                     coroutingIsRunning = true;
 
-                    IAsyncEnumerator<WaitForSeconds> lightFlickerWaiting = lightFlicker(minIntensity, maxIntensity);
-
-                    // StartCoroutine(lightFlicker(minIntensity, maxIntensity));
-                    // IAsyncEnumer
-
+                    RunAsyncCoroutine.RunTheAsyncCoroutine(lightFlicker(minIntensity, maxIntensity));
 
                     if (_cancellationToken.IsCancellationRequested)
                     {
                         return;
                     }
-
 
                 }
             }
