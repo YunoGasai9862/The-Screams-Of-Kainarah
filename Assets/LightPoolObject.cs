@@ -48,7 +48,6 @@ public class LightPoolObject : LightObserverPattern
             _temp.LightName = value.name;
             _temp.canFlicker = false;
             _candleObjects[value] = _temp;
-            Debug.Log(value);
         }
 
         return _candleObjects;

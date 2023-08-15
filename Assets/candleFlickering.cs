@@ -37,18 +37,13 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
     {
         _subject.RemoveObserver(this);
     }
-    private void Start()
-    {
-        //StartCoroutine(lightFlicker(minIntensity, maxIntensity));
-    }
-
     private async IAsyncEnumerator<WaitForSeconds> lightFlicker(float minIntensity, float maxIntensity)
     {
         float _lightFlickerValue = await GenerateLightIntensityAsync(minIntensity, maxIntensity);
         m_light.intensity = _lightFlickerValue;
-        await Task.Delay(System.TimeSpan.FromSeconds(2f));
+        await Task.Delay(System.TimeSpan.FromSeconds(.2f));
         coroutingIsRunning = false;
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(.2f);
 
 
     }
@@ -59,7 +54,9 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
         return Task.FromResult(intensity);
     }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public async Task OnNotify(Candle Data, CancellationToken _cancellationToken)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         m_Candle = Data;
 
@@ -72,7 +69,9 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
                 {
                     coroutingIsRunning = true;
 
-                    RunAsyncCoroutine.RunTheAsyncCoroutine(lightFlicker(minIntensity, maxIntensity));
+                    RunAsyncCoroutine.RunTheAsyncCoroutine(lightFlicker(minIntensity, maxIntensity), _cancellationToken); //Async runner
+
+                    //successfully was able to do it! (Async convesion)
 
                     if (_cancellationToken.IsCancellationRequested)
                     {
