@@ -128,19 +128,19 @@ namespace GlobalAccessAndGameHelper
             }
 
         }
-        public static Vector2 FlipTheObjectToFaceParent(ref SpriteRenderer spriteRenderer, Vector2 position, float offset)
+        public static Vector2 FlipTheObjectToFaceParent(ref SpriteRenderer spriteRenderer, Vector2 parentPos, Vector2 position, float offset)
         {
             Vector2 flipped = Vector2.zero;
+
             if (spriteRenderer.flipX)
             {
-                flipped = new Vector2(position.x + offset, position.y);
+                flipped = new Vector2(parentPos.x + offset, position.y);
             }
             else
             {
-                flipped = new Vector2(position.x - offset, position.y);
+                flipped = new Vector2(parentPos.x - offset, position.y);
 
             }
-
             return flipped;
         }
 
