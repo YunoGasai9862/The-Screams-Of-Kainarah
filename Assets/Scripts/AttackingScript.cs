@@ -22,8 +22,6 @@ public class AttackingScript : MonoBehaviour
     private bool _isPlayerEligibleForStartingAttack = false;
     private float timeDifferencebetweenStates;
     private bool throwDagger = false;
-    private PlayerHelperClassForOtherPurposes _PlayerHelperClass;
-    private Collider2D daggerCollider;
 
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
