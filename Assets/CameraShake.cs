@@ -19,37 +19,24 @@ public class CameraShake : MonoBehaviour
 
     void Update()
     {
-        if(_canShake)
-        {
-            _mainCamera.transform.position =new Vector3(_mainCamera.transform.position.x +  _timeSpentShaking, _mainCamera.transform.position.y +  _timeSpentShaking, -10f);
-
-
-        }
-        if (_timeSpentShaking < 2f && modifier == 1 || (_timeSpentShaking > 0f && modifier == -1))
-        {
-
-            _timeSpentShaking += (modifier) * Time.deltaTime;
-            _canShake = true;
-        }
-
-        if(_timeSpentShaking > 2f  && modifier == 1 || (_timeSpentShaking  < 0f && modifier == -1))
-        {
-            _canShake = false;
-           // _mainCamera.transform.position = _cameraOldPosition;
-        }
-
-        if(!_canShake)
-        {
-            _canShake = true;
-            modifier *= -1;
-            
-         }
-
+       
     }
 
-    private async Task<bool> shakeCamera(Camera _camera, float strength, float shiftX, float shiftY) //do it tomorrow
+    private async Task<bool> shakeCamera(Camera _camera, float strength,  float timeForCameraShake) //do it tomorrow
     {
-        await Task.Delay(100);
+        float timeSpent = 0f;
+
+        while(timeSpent < timeForCameraShake)
+        {
+            float randomXThrust = Random.Range(-1f, 1f);  //i didn't know this work too, i was using adding to x and y, this will simply shake/translate the camera up and down
+            //only and only if there's a camera holder to keep the camera in place
+            float randomYThrust = Random.Range(-1f, 1f);    
+
+            _camera.transform.position = new Vector3(randomYThrust, randomXThrust, _camera.transform.position.z);
+            await Task.Delay(100);
+            timeSpent += randomXThrust;
+
+        }
         return  false;
     }
 }
