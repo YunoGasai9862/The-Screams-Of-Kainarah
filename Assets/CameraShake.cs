@@ -9,22 +9,23 @@ public class CameraShake : MonoBehaviour
     private int _currentPlayerState = AnimationStateKeeper.currentPlayerState; //to see if the player is attacking or not
     private Vector3 _cameraOldPosition;
     private bool _canShake = true;
-    private float _timeSpentShaking = 0f;
-    private float modifier=1;
-    void Start()
+
+    async void Update()
     {
-        _cameraOldPosition= _mainCamera.transform.position; 
+        if (_canShake)
+        {
+            await shakeCamera(_mainCamera, .2f);
+            _canShake = true;
+        }
     }
 
-
-    void Update()
-    {
-       
-    }
-
-    private async Task<bool> shakeCamera(Camera _camera, float strength,  float timeForCameraShake) //do it tomorrow
+    private async Task<bool> shakeCamera( Camera _camera, float timeForCameraShake) //do it tomorrow
     {
         float timeSpent = 0f;
+
+        _cameraOldPosition = _mainCamera.transform.position;
+
+        _canShake = false;
 
         while(timeSpent < timeForCameraShake)
         {
@@ -33,10 +34,15 @@ public class CameraShake : MonoBehaviour
             float randomYThrust = Random.Range(-1f, 1f);    
 
             _camera.transform.position = new Vector3(randomYThrust, randomXThrust, _camera.transform.position.z);
-            await Task.Delay(100);
-            timeSpent += randomXThrust;
+
+            timeSpent += Time.deltaTime;
+
 
         }
+        await Task.Delay(10);
+
+        _camera.transform.position = _cameraOldPosition; //sets back the position
+
         return  false;
     }
 }
