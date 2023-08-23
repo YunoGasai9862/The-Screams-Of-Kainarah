@@ -6,31 +6,27 @@ using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class RunAsyncCoroutine : MonoBehaviour //attach it to the a GameObject
+public class RunAsyncCoroutine<T> : MonoBehaviour //attach it to the a GameObject
 {
-    private static RunAsyncCoroutine instance;
+    private readonly static Queue<IAsyncEnumerator<T>> asyncEnumeratorCollection = new();
 
-    private readonly Queue<IAsyncEnumerator<WaitForSeconds>> asyncEnumeratorCollection = new();
+    private static bool singleInstancePerClass = false;
 
-    private void Awake()
+    public static void RunTheAsyncCoroutine(IAsyncEnumerator<T> asyncEnumerator, T type,  CancellationToken _token)
     {
-        instance = this;
-    }
-    public static RunAsyncCoroutine RunAsyncCoroutineInstance { get => instance; } //getter + setter
-
-    public static void RunTheAsyncCoroutine(IAsyncEnumerator<WaitForSeconds> asyncEnumerator, CancellationToken _token)
-    {
-        if (instance == null)
+        if (singleInstancePerClass == false)
         {
-            AttachToGameObject();
+            AttachToGameObject(type); 
+
+            singleInstancePerClass = true;
         }
 
         if (!_token.IsCancellationRequested)
-            RunAsyncCoroutineInstance.asyncEnumeratorCollection.Enqueue(asyncEnumerator); //adds it to the Queue
+             asyncEnumeratorCollection.Enqueue(asyncEnumerator); //adds it to the Queue
         else
             return;
     }
-    public async Task ExecuteAsyncCoroutine(IAsyncEnumerator<WaitForSeconds> asyncCoroutine) //passing fucntion
+    public async Task ExecuteAsyncCoroutine(IAsyncEnumerator<T> asyncCoroutine) //passing fucntion
     {
         while (await asyncCoroutine.MoveNextAsync()) //checks if there is any async operation left in the thread, if there is it yeilds back to the main thread momentarily to keep the performance in check
         {
@@ -38,9 +34,9 @@ public class RunAsyncCoroutine : MonoBehaviour //attach it to the a GameObject
         }
 
     }
-    public static void AttachToGameObject()
+    public static void AttachToGameObject(T type)
     {
-        var coroutineRunner = new GameObject("AsyncCoroutineRunner").AddComponent<RunAsyncCoroutine>();
+        var _ = new GameObject("AsyncCoroutineRunner" + type.GetType()).AddComponent<RunAsyncCoroutine<T>>();
 
     }
 
