@@ -69,7 +69,7 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
                 {
                     coroutingIsRunning = true;
 
-                    RunAsyncCoroutine.RunTheAsyncCoroutine(lightFlicker(minIntensity, maxIntensity), _cancellationToken); //Async runner
+                    RunAsyncCoroutine<WaitForSeconds>.RunTheAsyncCoroutine(lightFlicker(minIntensity, maxIntensity) , _cancellationToken); //Async runner
 
                     //successfully was able to do it! (Async convesion)
 

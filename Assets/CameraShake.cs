@@ -24,7 +24,7 @@ public class CameraShake : MonoBehaviour
         if (_canShake)
         {
             _canShake = false;
-            RunAsyncCoroutine.RunTheAsyncCoroutine(shakeCamera(_mainCamera, .1f), _token);
+            //RunAsyncCoroutine<bool>.RunTheAsyncCoroutine(shakeCamera(_mainCamera, .1f), _token);
         }
 
         if(Input.GetKey(KeyCode.H))

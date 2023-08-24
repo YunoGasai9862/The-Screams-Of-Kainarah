@@ -1,22 +1,20 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class RunAsyncCoroutine<T> : MonoBehaviour //attach it to the a GameObject
+public class RunAsyncCoroutine<T> //attach it to the a GameObject
 {
     private readonly static Queue<IAsyncEnumerator<T>> asyncEnumeratorCollection = new();
 
     private static bool singleInstancePerClass = false;
 
-    public static void RunTheAsyncCoroutine(IAsyncEnumerator<T> asyncEnumerator, T type,  CancellationToken _token)
+    public static void RunTheAsyncCoroutine(IAsyncEnumerator<T> asyncEnumerator,  CancellationToken _token)
     {
         if (singleInstancePerClass == false)
         {
-            AttachToGameObject(type); 
+            AttachToGameObject(typeof(T)); 
 
             singleInstancePerClass = true;
         }
@@ -34,9 +32,9 @@ public class RunAsyncCoroutine<T> : MonoBehaviour //attach it to the a GameObjec
         }
 
     }
-    public static void AttachToGameObject(T type)
+    public static void AttachToGameObject(Type type)
     {
-        var _ = new GameObject("AsyncCoroutineRunner" + type.GetType()).AddComponent<RunAsyncCoroutine<T>>();
+        var _ = new GameObject("AsyncCoroutineRunner" + type.Name).AddComponent<RunAsyncCoroutine<T>>();
 
     }
 
