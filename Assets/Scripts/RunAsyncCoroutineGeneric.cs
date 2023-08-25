@@ -4,12 +4,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public abstract  class RunAsyncCoroutineGeneric<T>: MonoBehaviour //attach it to the a GameObject
+public abstract class RunAsyncCoroutineGeneric<T>: MonoBehaviour //attach it to the a GameObject
 {
-    private readonly  Queue<IAsyncEnumerator<T>> asyncEnumeratorCollection = new();
+    private static readonly  Queue<IAsyncEnumerator<T>> asyncEnumeratorCollection = new();
 
-    public void RunTheAsyncCoroutine(IAsyncEnumerator<T> asyncEnumerator,  CancellationToken _token)
+    public static void RunTheAsyncCoroutine(IAsyncEnumerator<T> asyncEnumerator,  CancellationToken _token)
     {
+        Debug.Log("Entering");
         if (!_token.IsCancellationRequested)
              asyncEnumeratorCollection.Enqueue(asyncEnumerator); //adds it to the Queue
         else

@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class RunAsyncCoroutineWaitForSeconds : RunAsyncCoroutine<WaitForSeconds>
+public class RunAsyncCoroutineWaitForSeconds : RunAsyncCoroutineGeneric<WaitForSeconds>
 {
     private bool isAttached = false;
-    private void Awake()
+
+    async void Update()
     {
         if (!isAttached)
             AttachToGameObject();
-    }
-    async void Update()
-    {
+
         await traverseAsyncOperations();
     }
 
