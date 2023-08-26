@@ -5,16 +5,14 @@ using UnityEngine;
 
 public class RunAsyncCoroutineWaitForSeconds : RunAsyncCoroutineGeneric<WaitForSeconds>
 {
-    private bool isAttached = false;
+    public bool isAttached;
 
-    async void Update()
+    public bool GetIsAttached {get => isAttached; set => isAttached=value;}
+
+    public RunAsyncCoroutineWaitForSeconds()
     {
-        if (!isAttached)
-            AttachToGameObject();
-
-        await traverseAsyncOperations();
+        isAttached = false;
     }
-
     public override void AttachToGameObject()
     {
        string className= typeof(RunAsyncCoroutineWaitForSeconds).Name;

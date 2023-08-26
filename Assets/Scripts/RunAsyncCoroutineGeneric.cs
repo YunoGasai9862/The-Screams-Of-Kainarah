@@ -6,11 +6,11 @@ using UnityEngine;
 
 public abstract class RunAsyncCoroutineGeneric<T>: MonoBehaviour //attach it to the a GameObject
 {
-    private static readonly  Queue<IAsyncEnumerator<T>> asyncEnumeratorCollection = new();
+    private readonly Queue<IAsyncEnumerator<T>> asyncEnumeratorCollection = new();
 
-    public static void RunTheAsyncCoroutine(IAsyncEnumerator<T> asyncEnumerator,  CancellationToken _token)
+    public void RunTheAsyncCoroutine(IAsyncEnumerator<T> asyncEnumerator,  CancellationToken _token)
     {
-        Debug.Log("Entering");
+   
         if (!_token.IsCancellationRequested)
              asyncEnumeratorCollection.Enqueue(asyncEnumerator); //adds it to the Queue
         else

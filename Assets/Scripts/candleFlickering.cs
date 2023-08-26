@@ -23,9 +23,13 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
     private Candle m_Candle;
     private bool coroutingIsRunning = false;
 
+    private RunAsyncCoroutineWaitForSeconds _CoroutineWaitForSeconds;
+
     private void Awake()
     {
         m_light = GetComponent<Light2D>();
+        _CoroutineWaitForSeconds = new();
+        _CoroutineWaitForSeconds.
 
     }
     private void OnEnable()
@@ -68,7 +72,6 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
                 if (!coroutingIsRunning)
                 {
                     coroutingIsRunning = true;
-
                     RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(lightFlicker(minIntensity, maxIntensity) , _cancellationToken); //Async runner
 
                     //successfully was able to do it! (Async convesion)
