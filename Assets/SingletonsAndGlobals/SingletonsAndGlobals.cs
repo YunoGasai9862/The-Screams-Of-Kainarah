@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -116,6 +117,17 @@ namespace GlobalAccessAndGameHelper
         {
             float aspectRatio = _mainCamera.aspect;
             return aspectRatio * _mainCamera.orthographicSize;
+        }
+
+        public static bool isWithinOneOfTheAttackStates<T>(PlayerAttackEnum.PlayerAttackSlash _attackState, Animator _playerAnimator)
+        {
+            int Size = Enum.GetValues(typeof(T)).Length;
+            for(int i=0; i< Size; i++)
+            {
+                //do it tomorrow
+            }
+
+            return false;
         }
 
         public static IEnumerator TuneDownIntensityToZero(Light2D _light)

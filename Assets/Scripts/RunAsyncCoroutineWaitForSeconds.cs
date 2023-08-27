@@ -5,18 +5,20 @@ using UnityEngine;
 
 public class RunAsyncCoroutineWaitForSeconds : RunAsyncCoroutineGeneric<WaitForSeconds>
 {
-    public bool isAttached;
+    public static bool isAttached=false;
 
-    public bool GetIsAttached {get => isAttached; set => isAttached=value;}
+    public static bool GetIsAttached {get => isAttached;}
 
-    public RunAsyncCoroutineWaitForSeconds()
-    {
-        isAttached = false;
-    }
-    public override void AttachToGameObject()
+    public static new void AttachToGameObject()  //why new? => it overrides the nonstatic instance, and use this one instead.
     {
        string className= typeof(RunAsyncCoroutineWaitForSeconds).Name;
        var _ =new GameObject(className).AddComponent<RunAsyncCoroutineWaitForSeconds>();
         isAttached = true;
     }
+
+    async void Update()
+    {
+        await traverseAsyncOperations();
+    }
+
 }

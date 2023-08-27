@@ -6,9 +6,9 @@ using UnityEngine;
 
 public abstract class RunAsyncCoroutineGeneric<T>: MonoBehaviour //attach it to the a GameObject
 {
-    private readonly Queue<IAsyncEnumerator<T>> asyncEnumeratorCollection = new();
+    private static readonly Queue<IAsyncEnumerator<T>> asyncEnumeratorCollection = new();
 
-    public void RunTheAsyncCoroutine(IAsyncEnumerator<T> asyncEnumerator,  CancellationToken _token)
+    public static void RunTheAsyncCoroutine(IAsyncEnumerator<T> asyncEnumerator,  CancellationToken _token)
     {
    
         if (!_token.IsCancellationRequested)
@@ -24,7 +24,8 @@ public abstract class RunAsyncCoroutineGeneric<T>: MonoBehaviour //attach it to 
         }
 
     }
-    public abstract void AttachToGameObject();
+
+    public virtual void AttachToGameObject() { }
     public async Task traverseAsyncOperations()
     {
         if (asyncEnumeratorCollection.Count > 0) //makes sure other Async fucntions keep running if there are any
