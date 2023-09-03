@@ -13,7 +13,6 @@ public class FollowPlayer : MonoBehaviour
     public static void TrackPlayer(Transform Follower, float xOffset, float yOffset, float zOffset)
     {
         Follower.transform.position = new Vector3(Player.transform.position.x + xOffset, Player.transform.position.y + yOffset, Follower.transform.position.z + zOffset);
-
     }
 
 }

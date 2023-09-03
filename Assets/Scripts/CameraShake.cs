@@ -20,6 +20,14 @@ public class CameraShake : MonoBehaviour
     [Header("Target Body Animation Names For Camera Shake")]
     [SerializeField] List<string> animationNames;
 
+
+    [Header("Target Body Movement Animation Name")]
+
+    [SerializeField] string _name;
+
+    [Header("Target Body Movement Animation Value")]
+
+
     private PlayerAttackEnum.PlayerAttackSlash currentAttackState;
     private Vector3 _cameraOldPosition;
     private CancellationToken _token;
@@ -51,10 +59,12 @@ public class CameraShake : MonoBehaviour
 
             timeSpent += Time.deltaTime;
 
-            await Task.Delay(System.TimeSpan.FromSeconds(.1f));
+            await Task.Delay(System.TimeSpan.FromSeconds(.05f));
 
         }
         _mainCamera.transform.position = _cameraOldPosition; //sets back the position
+
+        _shaking = false;
 
         yield return new WaitForSeconds(0f); //dummy return value for IAsync Type
 
@@ -67,14 +77,12 @@ public class CameraShake : MonoBehaviour
            if(_animator.GetCurrentAnimatorStateInfo(0).IsName(_animationName) && !_shaking)
             {
                 _shaking = true;
-                RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(shakeCamera(_mainCamera, .01f), _token);
+
+                RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(shakeCamera(_mainCamera, .03f), _token);
+
                 break;
             }
 
-            if(_animator.GetCurrentAnimatorStateInfo(0).IsName(_animationName) && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime >.7f) //fix this logic
-            {
-                _shaking = false;
-            }
         }
 
     }
