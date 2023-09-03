@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -121,7 +120,7 @@ namespace GlobalAccessAndGameHelper
 
         public static bool isWithinOneOfTheAttackStates<T>(PlayerAttackEnum.PlayerAttackSlash _attackState, Animator _playerAnimator)
         {
-            int Size = Enum.GetValues(typeof(T)).Length;
+            int Size = System.Enum.GetValues(typeof(T)).Length;
             for(int i=0; i< Size; i++)
             {
                 //do it tomorrow
