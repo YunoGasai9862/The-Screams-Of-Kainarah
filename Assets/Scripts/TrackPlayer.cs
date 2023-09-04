@@ -7,6 +7,6 @@ public class TrackPlayer : MonoBehaviour
    
     void Update()
     {
-        FollowPlayer.TrackPlayer(this.transform, 0, 25, 0);
+        FollowPlayer.TrackPlayer(transform, 0, 25, 0, 0f);
     }
 }

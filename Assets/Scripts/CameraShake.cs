@@ -20,18 +20,12 @@ public class CameraShake : MonoBehaviour
     [Header("Target Body Animation Names For Camera Shake")]
     [SerializeField] List<string> animationNames;
 
-
-    [Header("Target Body Movement Animation Name")]
-
-    [SerializeField] string _name;
-
-    [Header("Target Body Movement Animation Value")]
-
-
     private PlayerAttackEnum.PlayerAttackSlash currentAttackState;
     private Vector3 _cameraOldPosition;
     private CancellationToken _token;
     private bool _shaking = false;
+
+    public bool isShaking { get => _shaking; set => _shaking = value; }
 
     private void Start()
     {
@@ -74,9 +68,9 @@ public class CameraShake : MonoBehaviour
     {
         foreach(string _animationName in _animationNames)
         {
-           if(_animator.GetCurrentAnimatorStateInfo(0).IsName(_animationName) && !_shaking)
+           if(_animator.GetCurrentAnimatorStateInfo(0).IsName(_animationName) && !isShaking)
             {
-                _shaking = true;
+                isShaking = true;
 
                 RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(shakeCamera(_mainCamera, .03f), _token);
 

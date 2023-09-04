@@ -25,8 +25,6 @@ public class AttackEnemy : MonoBehaviour
 
     void Update()
     {
-
-
         if (checker)
         {
             elapsedTime += Time.deltaTime;

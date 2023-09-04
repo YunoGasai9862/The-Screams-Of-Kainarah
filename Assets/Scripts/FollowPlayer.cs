@@ -10,9 +10,10 @@ public class FollowPlayer : MonoBehaviour
 
     }
 
-    public static void TrackPlayer(Transform Follower, float xOffset, float yOffset, float zOffset)
+    public static void TrackPlayer(Transform Follower, float xOffset, float yOffset, float zOffset, float CameraSpeed)
     {
-        Follower.transform.position = new Vector3(Player.transform.position.x + xOffset, Player.transform.position.y + yOffset, Follower.transform.position.z + zOffset);
+        Vector3 newPosition= new(Player.transform.position.x + xOffset, Player.transform.position.y + yOffset, Follower.transform.position.z + zOffset);
+        Follower.transform.position = Vector3.MoveTowards(Follower.transform.position, newPosition, CameraSpeed * Time.deltaTime);
     }
 
 }

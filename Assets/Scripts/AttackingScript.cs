@@ -98,6 +98,8 @@ public class AttackingScript : MonoBehaviour
 
         GameObjectInstantiator _daggerInstantiator = new(prefab);
 
+        //check here if the player is flipped or not
+
         GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(getDaggerPositionwithOffset(2, -1), Quaternion.identity);
 
         CreateInventorySystem.ReduceItem(ref slot, false);
