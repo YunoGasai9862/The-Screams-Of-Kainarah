@@ -23,13 +23,17 @@ public class CameraShake : MonoBehaviour
     private PlayerAttackEnum.PlayerAttackSlash currentAttackState;
     private Vector3 _cameraOldPosition;
     private CancellationToken _token;
+    private CancellationTokenSource _cancellationTokenSource;
     private bool _shaking = false;
 
     public bool isShaking { get => _shaking; set => _shaking = value; }
 
     private void Start()
     {
-        _token = new CancellationToken();
+        _cancellationTokenSource= new CancellationTokenSource();
+        _token = _cancellationTokenSource.Token;
+
+
     }
 
     void Update()

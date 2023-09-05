@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
 public class PlayerShadow : MonoBehaviour
@@ -11,44 +12,49 @@ public class PlayerShadow : MonoBehaviour
     private SpriteRenderer m_SpriteRenderer;
     private Vector2 m_newPosition;
     private Vector2 m_parentPos;
-    private CancellationTokenSource _token;
+    private CancellationToken _token;
+    private CancellationTokenSource _tokenSource;
     private void Awake()
     {
         m_Position = transform.position;
         m_SpriteRenderer = transform.parent.GetComponent<SpriteRenderer>();
         m_parentPos = transform.parent.position;
-        _token=new CancellationTokenSource();
+        _tokenSource= new CancellationTokenSource();
+        _token = _tokenSource.Token;
     }
     // Update is called once per frame
-    async void Update()
+     async void Update()
     {
-        if(!_token.IsCancellationRequested)
+        if (!_token.IsCancellationRequested)
         {
-            m_newPosition = await ShadowObjectsNewPosition(m_SpriteRenderer, m_parentPos, m_Position, .5f, 10);
+            m_newPosition =await ShadowObjectsNewPosition(m_SpriteRenderer, m_parentPos, m_Position, .5f, 10);
 
             transform.position = new Vector2(m_newPosition.x, m_newPosition.y); //updates it
 
             m_Position = transform.position;
 
             m_parentPos = transform.parent.position;
-        }
 
+        }
+  
     }
 
     private async Task<Vector2> ShadowObjectsNewPosition(SpriteRenderer spriteRenderer, Vector2 parentPos, Vector2 position, float offset, int delyForShadowInMiliseconds)
     {
-        Vector2 result = HelperFunctions.FlipTheObjectToFaceParent(ref spriteRenderer, parentPos, position, offset);
+        Vector2 result = new(0, 0);
 
-        await Task.Delay(delyForShadowInMiliseconds); //to not let it calculate everytime
+        result = HelperFunctions.FlipTheObjectToFaceParent(ref spriteRenderer, parentPos, position, offset);
+
+        await Task.Delay(0, _token); //why making it zero fix the issue of getting the null exception (debug tomorrow)
 
         return result;
-
 
     }
 
     private void OnDisable()
     {
-        _token.Cancel();
+        _tokenSource.Cancel();
+
     }
 
 }

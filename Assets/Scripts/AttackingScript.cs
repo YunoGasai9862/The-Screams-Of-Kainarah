@@ -22,6 +22,7 @@ public class AttackingScript : MonoBehaviour
     private bool _isPlayerEligibleForStartingAttack = false;
     private float timeDifferencebetweenStates;
     private bool throwDagger = false;
+    private SpriteRenderer _spriteRenderer;
 
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
@@ -37,6 +38,8 @@ public class AttackingScript : MonoBehaviour
     private void Awake()
     {
         _anim = GetComponent<Animator>();
+
+        _spriteRenderer = GetComponent<SpriteRenderer>();   
 
         _rocky2DActions = new Rocky2DActions();
 
@@ -98,8 +101,6 @@ public class AttackingScript : MonoBehaviour
 
         GameObjectInstantiator _daggerInstantiator = new(prefab);
 
-        //check here if the player is flipped or not
-
         GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(getDaggerPositionwithOffset(2, -1), Quaternion.identity);
 
         CreateInventorySystem.ReduceItem(ref slot, false);
@@ -111,7 +112,13 @@ public class AttackingScript : MonoBehaviour
 
     public Vector2 getDaggerPositionwithOffset(float xOffset, float yOffset)
     {
-        return new Vector2(transform.position.x + xOffset, transform.position.y + yOffset);
+        return isPlayerFlipped(_spriteRenderer)? new Vector2(transform.position.x - xOffset, transform.position.y + yOffset) :
+            new Vector2(transform.position.x + xOffset, transform.position.y + yOffset);
+    }
+
+    public bool isPlayerFlipped(SpriteRenderer _sr)
+    {
+        return _sr.flipX;
     }
 
     private void PlayerAttackStart(InputAction.CallbackContext context)
