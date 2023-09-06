@@ -25,18 +25,18 @@ public class PlayerShadow : MonoBehaviour
     // Update is called once per frame
      async void Update()
     {
-        if (!_token.IsCancellationRequested)
-        {
-            m_newPosition =await ShadowObjectsNewPosition(m_SpriteRenderer, m_parentPos, m_Position, .5f, 10);
 
+        m_newPosition =await ShadowObjectsNewPosition(m_SpriteRenderer, m_parentPos, m_Position, .5f, 10);
+
+        if(!_token.IsCancellationRequested) //extra check due to async programming
+        {
             transform.position = new Vector2(m_newPosition.x, m_newPosition.y); //updates it
 
             m_Position = transform.position;
 
             m_parentPos = transform.parent.position;
-
         }
-  
+
     }
 
     private async Task<Vector2> ShadowObjectsNewPosition(SpriteRenderer spriteRenderer, Vector2 parentPos, Vector2 position, float offset, int delyForShadowInMiliseconds)
@@ -45,7 +45,7 @@ public class PlayerShadow : MonoBehaviour
 
         result = HelperFunctions.FlipTheObjectToFaceParent(ref spriteRenderer, parentPos, position, offset);
 
-        await Task.Delay(0, _token); //why making it zero fix the issue of getting the null exception (debug tomorrow)
+        await Task.Delay(delyForShadowInMiliseconds, _token); //why making it zero fix the issue of getting the null exception (debug tomorrow)
 
         return result;
 

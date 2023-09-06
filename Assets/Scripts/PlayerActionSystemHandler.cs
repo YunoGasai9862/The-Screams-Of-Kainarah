@@ -48,6 +48,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 
     private void OnCrystalPickup()
     {
+        _passedOnCollider.gameObject.SetActive(true); //so the crystal can flow back
         pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(_passedOnCollider.tag), _passedOnCollider.transform.position);
     }
 

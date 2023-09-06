@@ -23,8 +23,9 @@ public class MoveCrystal : MonoBehaviour
         {
             _diamondUILocaitonConverted = Camera.main.ScreenToWorldPoint(_diamondUILocation.position); //converts UI position to world position
             LocalPos = _diamondUILocaitonConverted;
+            Debug.Log("Here");
             LocalPos.z = 0;
-            LocalPos.x = LocalPos.x - 1f;
+            LocalPos.x--;
             transform.DOMove(LocalPos, .050f).SetEase(Ease.InFlash);
             // transform.GetComponent<BoxCollider2D>().enabled = false;
 
