@@ -75,8 +75,6 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
-
         pickedUp = _pickableItems.didPlayerCollideWithaPickableItem(collision.tag);
 
         if (pickedUp)
@@ -86,7 +84,6 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
         }
 
         NotifyObservers(ref collision);
-
     }
 
     public bool checkForExistenceOfPortal(SpriteRenderer sr)
