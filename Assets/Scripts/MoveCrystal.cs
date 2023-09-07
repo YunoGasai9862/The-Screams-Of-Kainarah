@@ -1,4 +1,6 @@
 using DG.Tweening;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class MoveCrystal : MonoBehaviour
@@ -7,35 +9,54 @@ public class MoveCrystal : MonoBehaviour
     private bool _isMoving = false;
     private RectTransform _diamondUILocation;
     private Vector3 _diamondUILocaitonConverted, LocalPos;
-    public static bool increaseValue = false;
+    private static bool increaseValue = false;
+    private CancellationTokenSource _cancellationTokenSource;   
+    private CancellationToken _cancellationToken;
+    public static bool IncreaseValue { get => increaseValue; set => increaseValue = value; }
     void Start()
     {
+        _cancellationTokenSource = new CancellationTokenSource();
+        _cancellationToken = _cancellationTokenSource.Token;
         _diamondUILocation = GameObject.FindWithTag("Diamond").GetComponent<RectTransform>();
 
     }
 
+    //fix on disable (the disabling that i do in the playerHelperClass)
+
     // Update is called once per frame
-    void Update()
+    async void Update()
     {
+        MoveTheCrystalToTheGuiPanel();
 
+        bool isAtTheGuiPanel = await isCrystalAtTheGuiPanel();
 
-        if (transform != null && _isMoving)
+        if(isAtTheGuiPanel)
         {
+            Debug.Log("Destroyed");
+            IncreaseValue = true;
+            Destroy(gameObject);
+        }
+    }
+
+    public bool conditionsSatisfied(Transform transform, bool isMoving)
+    {
+        return transform != null && _isMoving;
+    }
+    public async void MoveTheCrystalToTheGuiPanel()
+    {
+        if (conditionsSatisfied(transform, _isMoving))
+        {
+            Debug.Log("Here");
             _diamondUILocaitonConverted = Camera.main.ScreenToWorldPoint(_diamondUILocation.position); //converts UI position to world position
             LocalPos = _diamondUILocaitonConverted;
-            Debug.Log("Here");
             LocalPos.z = 0;
             LocalPos.x--;
             transform.DOMove(LocalPos, .050f).SetEase(Ease.InFlash);
-            // transform.GetComponent<BoxCollider2D>().enabled = false;
-
-
         }
 
-        OnDestroy();
+        await Task.Delay(10);
 
     }
-
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -53,13 +74,13 @@ public class MoveCrystal : MonoBehaviour
         }
     }
 
-
-    private void OnDestroy()
+    public Task<bool> isCrystalAtTheGuiPanel()
     {
-        if (transform != null && ((int)transform.position.x == (int)LocalPos.x))
-        {
-            increaseValue = true;
-            Destroy(gameObject);
-        }
+        return Task.FromResult(((int)transform.position.x == (int)LocalPos.x));
+    }
+
+    private void OnDisable()
+    {
+        _cancellationTokenSource.Cancel();
     }
 }

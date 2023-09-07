@@ -12,11 +12,11 @@ public class IncreaseDiamond : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (MoveCrystal.increaseValue)
+        if (MoveCrystal.IncreaseValue)
         {
             _diamondText.text = IncreaseCount().ToString("0");
 
-            MoveCrystal.increaseValue = false;
+            MoveCrystal.IncreaseValue = false;
         }
     }
 
