@@ -11,7 +11,6 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
     [SerializeField] SpriteRenderer sr;
     [SerializeField] Interactable dialogue;
     [SerializeField] PickableItemsClass _pickableItems;
-
     private Animator anim;
     private bool Death = false;
     public static float ENEMYATTACK = 5f;
@@ -79,12 +78,17 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
 
         if (pickedUp)
         {
-            collision.gameObject.SetActive(false);
+            bool shouldbedisabled = _pickableItems.shouldThisItemBeDisabled(collision.tag);
+
+            if(shouldbedisabled)
+                collision.gameObject.SetActive(false);
+
             NotifyObservers(true); //for audios
         }
 
         NotifyObservers(ref collision);
     }
+
 
     public bool checkForExistenceOfPortal(SpriteRenderer sr)
     {

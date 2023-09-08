@@ -32,7 +32,6 @@ public class MoveCrystal : MonoBehaviour
 
         if(isAtTheGuiPanel)
         {
-            Debug.Log("Destroyed");
             IncreaseValue = true;
             Destroy(gameObject);
         }
@@ -40,13 +39,12 @@ public class MoveCrystal : MonoBehaviour
 
     public bool conditionsSatisfied(Transform transform, bool isMoving)
     {
-        return transform != null && _isMoving;
+        return transform != null && isMoving;
     }
     public async void MoveTheCrystalToTheGuiPanel()
     {
         if (conditionsSatisfied(transform, _isMoving))
         {
-            Debug.Log("Here");
             _diamondUILocaitonConverted = Camera.main.ScreenToWorldPoint(_diamondUILocation.position); //converts UI position to world position
             LocalPos = _diamondUILocaitonConverted;
             LocalPos.z = 0;

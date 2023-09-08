@@ -9,6 +9,7 @@ public class PickableItemsClass : MonoBehaviour
     {
         public string name;
         public GameObject GameObject;
+        public bool shouldBeDisabled;
     }
 
     [SerializeField] List<pickableItemsKeyValuePair> pickableItems;
@@ -36,5 +37,19 @@ public class PickableItemsClass : MonoBehaviour
         }
 
         return null;
+    }
+
+
+    public bool shouldThisItemBeDisabled(string collisionObjectName)
+    {
+        for(int i=0; i < pickableItems.Count; i++)
+        {
+            if (collisionObjectName == pickableItems[i].name)
+            {
+                return pickableItems[i].shouldBeDisabled;
+            }
+        }
+
+        return true;
     }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyScript : MonoBehaviour
+public class EnemyScript : AbstractEnemy
 {
     [SerializeField] Transform[] Waypoints;
     private int Index = 0;
@@ -16,16 +16,26 @@ public class EnemyScript : MonoBehaviour
 
     [SerializeField] LayerMask Player;
     [SerializeField] GameObject Hit;
+    [Header("Max Health For The Enemy")]
+    [SerializeField] int MaxHealth;
+
+    public override string enemyName { get => m_Name; set => m_Name=value; }
+    public override int health { get => m_health; set => m_health = value; }
+    public override int maxHealth { get => m_maxHealth; set => m_maxHealth = value; }
+
+    private void Awake()
+    {
+        enemyName= gameObject.name;
+        maxHealth = MaxHealth;
+        m_health = maxHealth;
+    }
+
     void Start()
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         Heroine = GameObject.FindWithTag("Player");
-        if (transform.gameObject.name != "Enemy2")
-        {
-            // anim.SetBool("Destroyed", false);
-        }
 
     }
 
@@ -110,9 +120,8 @@ public class EnemyScript : MonoBehaviour
     }
 
 
-    bool CanAttack()
+    private bool CanAttack()
     {
-
 
         if (sr.flipX)
         {
