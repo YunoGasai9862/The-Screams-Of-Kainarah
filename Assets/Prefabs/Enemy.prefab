@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 1912497939}
   - component: {fileID: 1912497940}
   - component: {fileID: 257111450}
+  - component: {fileID: 1397851457}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -234,14 +235,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe72db2a50c0dc245a0facaba6e43147, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Waypoints:
-  - {fileID: 0}
-  - {fileID: 0}
   StopForAttack: 0
   Player:
     serializedVersion: 2
     m_Bits: 128
   Hit: {fileID: 3285503076644769960, guid: 15b81b06a58e6014a92f09a4bef3dee3, type: 3}
+  MaxHealth: 0
 --- !u!114 &1912497939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,3 +330,19 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.66
+--- !u!114 &1397851457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 613478252915356505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56ee6abfd751ed4429ac5abf4ded2a31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Waypoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  MovementSpeed: 10

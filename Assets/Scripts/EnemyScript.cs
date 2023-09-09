@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class EnemyScript : AbstractEnemy
 {
-    [SerializeField] Transform[] Waypoints;
-    private int Index = 0;
     private Animator anim;
     private int lifeCounter = 0;
     private bool isNotdead = true;
@@ -88,26 +86,13 @@ public class EnemyScript : AbstractEnemy
             lifeCounter = 0;
         }
 
-
-
-
-        if (Vector2.Distance(transform.position, Waypoints[Index].position) < .1f)
-        {
-            Index++;
-
-            if (Index >= Waypoints.Length)
-            {
-                Index = 0;
-            }
-
-        }
         if (!StopForAttack) //continuing moving if the Player is not in the range
         {
-            transform.position = Vector3.MoveTowards(transform.position, Waypoints[Index].position, Speed * Time.deltaTime);
+            //transform.position = Vector3.MoveTowards(transform.position, Waypoints[Index].position, Speed * Time.deltaTime);
 
         }
 
-        if (Waypoints[Index].CompareTag("WP1"))
+        if (rb.velocity.x < 0)
         {
             sr.flipX = true;
         }
