@@ -96,11 +96,10 @@ public class EnemyScript : AbstractEnemy
         {
             sr.flipX = true;
         }
-        else
+        if(rb.velocity.x==0)
         {
             sr.flipX = false;
         }
-
 
     }
 
