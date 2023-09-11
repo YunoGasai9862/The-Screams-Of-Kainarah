@@ -7,16 +7,8 @@ using UnityEngine;
 
 public class WayPointsMovement : MonoBehaviour
 {
-    [Serializable]
-    //implement custom editor
-    public class WayPoints
-    {
-        public Transform wayPoint;
-        public bool leftWayPoint;
-        public bool rightWayPoint;
-    }
-
-    [SerializeField] List<WayPoints> Waypoints;
+    [SerializeField] Transform[] actualTransformWayPoints;
+    [SerializeField] WayPoints[] Waypoints;
     [SerializeField] float MovementSpeed;
     private int currentIndex = 0;
     private SpriteRenderer sr;
@@ -28,7 +20,7 @@ public class WayPointsMovement : MonoBehaviour
     async void Update()
     {
         if (await WayPointDistance())
-        {
+        { 
             currentIndex++;
 
             if(await isCurrentIndexValueWithinBounds())
@@ -43,7 +35,7 @@ public class WayPointsMovement : MonoBehaviour
 
     public Task<bool> CharacterFlip(int index)
     {
-        if(index < Waypoints.Count)
+        if(index < Waypoints.Length)
         {
             //return Task.FromResult(transform.position.x > Waypoints[index].wayPoint.position.x && transform.position.x < Waypoints[index + 1].wayPoint.position.x)
         }
@@ -58,6 +50,6 @@ public class WayPointsMovement : MonoBehaviour
 
     public Task<bool> isCurrentIndexValueWithinBounds()
     {
-        return Task.FromResult(currentIndex >= Waypoints.Count);
+        return Task.FromResult(currentIndex >= Waypoints.Length);
     }
 }
