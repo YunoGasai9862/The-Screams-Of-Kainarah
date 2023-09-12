@@ -1,3 +1,5 @@
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class EnemyScript : AbstractEnemy
@@ -11,6 +13,8 @@ public class EnemyScript : AbstractEnemy
     private GameObject Heroine;
     [SerializeField] bool StopForAttack = false;
     public static RaycastHit2D[] hit;
+    private CancellationTokenSource cancellationTokenSource;
+    private CancellationToken cancellationToken;
 
     [SerializeField] LayerMask Player;
     [SerializeField] GameObject Hit;
@@ -34,14 +38,16 @@ public class EnemyScript : AbstractEnemy
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         Heroine = GameObject.FindWithTag("Player");
+        cancellationTokenSource = new CancellationTokenSource();    
+        cancellationToken = cancellationTokenSource.Token;
 
     }
 
-    void Update()
+    async void Update()
     {
         if (transform.gameObject.name != "Enemy2")
         {
-            if (CanAttack())
+            if (await isPlayerInSight())
             {
                 StopForAttack = true;
                 rb.velocity = new Vector2(0, 0);
@@ -92,36 +98,21 @@ public class EnemyScript : AbstractEnemy
 
         }
 
-        if (rb.velocity.x < 0)
-        {
-            sr.flipX = true;
-        }
-        if(rb.velocity.x==0)
-        {
-            sr.flipX = false;
-        }
-
     }
 
 
-    private bool CanAttack()
+    private async Task<bool> isPlayerInSight()
     {
+        int sign = sr.flipX ? -1 : 1;
 
-        if (sr.flipX)
-        {
+        Debug.DrawRay(transform.position, sign * transform.right * 3f, Color.cyan);
 
-            Debug.DrawRay(transform.position, -transform.right * 3f, Color.cyan);
-            return Physics2D.Raycast(transform.position, -transform.right, 3f, Player);
+        await Task.Delay(System.TimeSpan.FromSeconds(1f));
 
-        }
-        else
-        {
-            Debug.DrawRay(transform.position, transform.right * 3f, Color.cyan);
+        if (!cancellationToken.IsCancellationRequested)
+         return Physics2D.Raycast(transform.position, sign * transform.right, 3f, Player);
 
-            return Physics2D.Raycast(transform.position, transform.right, 3f, Player);
-
-        }
-
+        return false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -156,6 +147,11 @@ public class EnemyScript : AbstractEnemy
             }
 
         }
+    }
+
+    private void OnDisable()
+    {
+        cancellationTokenSource.Cancel();
     }
 
 }

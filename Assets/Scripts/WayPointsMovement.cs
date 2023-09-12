@@ -30,15 +30,16 @@ public class WayPointsMovement : MonoBehaviour
 
         transform.position = Vector2.MoveTowards(transform.position, Waypoints[currentIndex].wayPoint.position, Time.deltaTime * MovementSpeed);
 
+        sr.flipX = await CharacterFlip(currentIndex);
+
     }
 
     public Task<bool> CharacterFlip(int index)
     {
-        if(index < Waypoints.Length)
-        {
-            //return Task.FromResult(transform.position.x > Waypoints[index].wayPoint.position.x && transform.position.x < Waypoints[index + 1].wayPoint.position.x)
-        }
-        return Task.FromResult(false);
+        bool characterFlip = Waypoints[index].leftWayPoint ? false : true;
+
+        return Task.FromResult(characterFlip);
+  
     }
 
     public Task<bool> WayPointDistance()
