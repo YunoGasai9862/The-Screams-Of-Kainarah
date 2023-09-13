@@ -7,12 +7,8 @@ public class EnemyScript : AbstractEnemy
     private Animator anim;
     private int lifeCounter = 0;
     private bool isNotdead = true;
-    private float Speed = 5f;
-    private Rigidbody2D rb;
     private SpriteRenderer sr;
-    private GameObject Heroine;
-    [SerializeField] bool StopForAttack = false;
-    public static RaycastHit2D[] hit;
+    private WayPointsMovement wayPointsMovementScript;
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
 
@@ -30,14 +26,13 @@ public class EnemyScript : AbstractEnemy
         enemyName= gameObject.name;
         maxHealth = MaxHealth;
         m_health = maxHealth;
+        wayPointsMovementScript= gameObject.GetComponent<WayPointsMovement>();
     }
 
     void Start()
     {
         anim = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
-        Heroine = GameObject.FindWithTag("Player");
         cancellationTokenSource = new CancellationTokenSource();    
         cancellationToken = cancellationTokenSource.Token;
 
@@ -49,37 +44,42 @@ public class EnemyScript : AbstractEnemy
         {
             if (await isPlayerInSight())
             {
-                StopForAttack = true;
-                rb.velocity = new Vector2(0, 0);
+                wayPointsMovementScript.shouldMove = false;
 
-                if (sr.flipX)
-                {
-                    anim.SetBool("EnemyAttack2", true);
+                if(!cancellationToken.IsCancellationRequested) {
 
+                    if (sr.flipX)
+                    {
+                        anim.SetBool("EnemyAttack2", true);
+
+                    }
+                    else
+                    {
+                        anim.SetBool("EnemyAttack", true);
+
+                    }
                 }
-                else
-                {
-                    anim.SetBool("EnemyAttack", true);
-
-                }
-
 
             }
             else
             {
-                if (sr.flipX)
+                if (!cancellationToken.IsCancellationRequested)
                 {
-                    anim.SetBool("EnemyAttack2", false);
+
+                        if (sr.flipX)
+                    {
+                        anim.SetBool("EnemyAttack2", false);
+
+                    }
+                    else
+                    {
+                        anim.SetBool("EnemyAttack", false);
+
+                    }
+
+                    wayPointsMovementScript.shouldMove = true;
 
                 }
-                else
-                {
-                    anim.SetBool("EnemyAttack", false);
-
-                }
-
-                StopForAttack = false;
-
             }
 
 
@@ -92,14 +92,7 @@ public class EnemyScript : AbstractEnemy
             lifeCounter = 0;
         }
 
-        if (!StopForAttack) //continuing moving if the Player is not in the range
-        {
-            //transform.position = Vector3.MoveTowards(transform.position, Waypoints[Index].position, Speed * Time.deltaTime);
-
-        }
-
     }
-
 
     private async Task<bool> isPlayerInSight()
     {
@@ -110,7 +103,7 @@ public class EnemyScript : AbstractEnemy
         await Task.Delay(System.TimeSpan.FromSeconds(1f));
 
         if (!cancellationToken.IsCancellationRequested)
-         return Physics2D.Raycast(transform.position, sign * transform.right, 3f, Player);
+            return Physics2D.Raycast(transform.position, sign * transform.right, 3f, Player);
 
         return false;
     }

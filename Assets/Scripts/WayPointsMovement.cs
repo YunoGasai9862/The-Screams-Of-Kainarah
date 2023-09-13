@@ -11,7 +11,13 @@ public class WayPointsMovement : MonoBehaviour
     [SerializeField] float MovementSpeed;
     private int currentIndex = 0;
     private SpriteRenderer sr;
+    private bool shouldTargetMove;
+    public bool shouldMove { get => shouldTargetMove; set => shouldTargetMove = value; }
 
+    private void Awake()
+    {
+        shouldMove = true;
+    }
     private void Start()
     {
         sr = GetComponent<SpriteRenderer>();
@@ -28,9 +34,12 @@ public class WayPointsMovement : MonoBehaviour
             }
         }
 
-        transform.position = Vector2.MoveTowards(transform.position, Waypoints[currentIndex].wayPoint.position, Time.deltaTime * MovementSpeed);
+        if (shouldTargetMove)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, Waypoints[currentIndex].wayPoint.position, Time.deltaTime * MovementSpeed);
 
-        sr.flipX = await CharacterFlip(currentIndex);
+            sr.flipX = await CharacterFlip(currentIndex);
+        }
 
     }
 
