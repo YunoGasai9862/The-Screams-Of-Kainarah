@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -16,10 +17,13 @@ public class EnemyScript : AbstractEnemy
     [SerializeField] GameObject Hit;
     [Header("Max Health For The Enemy")]
     [SerializeField] int MaxHealth;
+    [Header("Objects That Can be Treated As Hit (tag)")]
+    [SerializeField] List<string> tags;
 
     public override string enemyName { get => m_Name; set => m_Name=value; }
     public override int health { get => m_health; set => m_health = value; }
     public override int maxHealth { get => m_maxHealth; set => m_maxHealth = value; }
+
 
     private void Awake()
     {
@@ -45,41 +49,13 @@ public class EnemyScript : AbstractEnemy
             if (await isPlayerInSight())
             {
                 wayPointsMovementScript.shouldMove = false;
-
-                if(!cancellationToken.IsCancellationRequested) {
-
-                    if (sr.flipX)
-                    {
-                        anim.SetBool("EnemyAttack2", true);
-
-                    }
-                    else
-                    {
-                        anim.SetBool("EnemyAttack", true);
-
-                    }
-                }
+                
+                //add attack logic here
 
             }
             else
             {
-                if (!cancellationToken.IsCancellationRequested)
-                {
-
-                        if (sr.flipX)
-                    {
-                        anim.SetBool("EnemyAttack2", false);
-
-                    }
-                    else
-                    {
-                        anim.SetBool("EnemyAttack", false);
-
-                    }
-
-                    wayPointsMovementScript.shouldMove = true;
-
-                }
+                wayPointsMovementScript.shouldMove = true;
             }
 
 
@@ -108,24 +84,17 @@ public class EnemyScript : AbstractEnemy
         return false;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private async void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Dagger") || collision.CompareTag("Sword"))
         {
-            if (isNotdead)
-            {
-                GameObject endofLife = Instantiate(Hit, transform.position, Quaternion.identity);
+            //observer pattern for animation and instantiators
 
-                if (transform.gameObject.name != "Enemy2")
-                {
-                    anim.SetBool("Hit", true);
-                }
+           // GameObject endofLife = Instantiate(Hit, transform.position, Quaternion.identity);
 
-                lifeCounter++;
-                Destroy(endofLife, 1f);
+                //add hit animation logic here
 
-            }
-
+               // Destroy(endofLife, 1f);
 
         }
     }
@@ -133,11 +102,11 @@ public class EnemyScript : AbstractEnemy
     {
         if (collision.CompareTag("Dagger") || collision.CompareTag("Sword"))
         {
+            //observer pattern for animation
 
-            if (transform.gameObject.name != "Enemy2")
-            {
-                anim.SetBool("Hit", false);
-            }
+
+            //animation logic (a different class)
+            //anim.SetBool("Hit", false);
 
         }
     }
@@ -147,4 +116,11 @@ public class EnemyScript : AbstractEnemy
         cancellationTokenSource.Cancel();
     }
 
+    private async Task<bool> isEntityAnAttackObject(Collider2D collider,List<string> tags)
+    {
+        for (int i = 0; i < tags.Count; i++)
+        {
+
+        }
+    }
 }
