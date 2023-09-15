@@ -12,13 +12,12 @@ public class EnemyScript : AbstractEnemy
     private WayPointsMovement wayPointsMovementScript;
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
+    private EnemyHittableManager enemyHittableManager;
 
     [SerializeField] LayerMask Player;
     [SerializeField] GameObject Hit;
     [Header("Max Health For The Enemy")]
     [SerializeField] int MaxHealth;
-    [Header("Objects That Can be Treated As Hit (tag)")]
-    [SerializeField] List<string> tags;
 
     public override string enemyName { get => m_Name; set => m_Name=value; }
     public override int health { get => m_health; set => m_health = value; }
@@ -31,6 +30,7 @@ public class EnemyScript : AbstractEnemy
         maxHealth = MaxHealth;
         m_health = maxHealth;
         wayPointsMovementScript= gameObject.GetComponent<WayPointsMovement>();
+        enemyHittableManager = GameObject.FindObjectOfType<EnemyHittableManager>(); //from the scene
     }
 
     void Start()
@@ -116,11 +116,4 @@ public class EnemyScript : AbstractEnemy
         cancellationTokenSource.Cancel();
     }
 
-    private async Task<bool> isEntityAnAttackObject(Collider2D collider,List<string> tags)
-    {
-        for (int i = 0; i < tags.Count; i++)
-        {
-
-        }
-    }
 }
