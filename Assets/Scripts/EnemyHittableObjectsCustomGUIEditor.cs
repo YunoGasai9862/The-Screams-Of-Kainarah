@@ -13,11 +13,13 @@ public class EnemyHittableManagerCustomUIEditor : Editor
 
         enemyHittableObject.IsinstantiableObject = EditorGUILayout.Toggle("Instantiate?", enemyHittableObject.IsinstantiableObject);
 
-        EditorGUI.BeginDisabledGroup(!enemyHittableObject.IsinstantiableObject); //open the disabling scope
+        EditorGUI.BeginDisabledGroup(!enemyHittableObject.IsinstantiableObject); //open the disabling scope (it works!!)
 
         enemyHittableObject.instantiateAfterAttack = (GameObject)EditorGUILayout.ObjectField("Instantiable Object", enemyHittableObject.instantiateAfterAttack, typeof(GameObject), true); //te field which should be visible
 
         EditorGUI.EndDisabledGroup();//end the disabling scope
+
+        enemyHittableObject.ObjectTag = EditorGUILayout.TextField("Object Tag", enemyHittableObject.ObjectTag);
     }
 
 }
