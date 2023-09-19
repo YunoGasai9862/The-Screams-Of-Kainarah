@@ -1,10 +1,17 @@
 using System;
 using UnityEngine;
 
-[Serializable]
-public class EnemyHittableObjects : MonoBehaviour
+[CreateAssetMenu(fileName = "EnemyHittableObjectsScriptableEntity", menuName = "Enemy Hittable Object")]
+public class EnemyHittableObjects : ScriptableObject
 {
-    public bool IsinstantiableObject;
-    public GameObject instantiateAfterAttack;
-    public string ObjectTag;
+    [Serializable]
+    public class Elements
+    {
+        public bool IsinstantiableObject;
+        public GameObject instantiateAfterAttack;
+        public string ObjectTag;
+    }
+
+    public Elements[] elements;
+
 }

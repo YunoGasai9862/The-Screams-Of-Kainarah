@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -7,16 +8,17 @@ public class EnemyHittableManager : MonoBehaviour
 {
 
     [Header("Objects That Can be Treated As Hit (tag)")]
-    [SerializeField] public List<EnemyHittableObjects> objects_or_prefabs= new();
+    [SerializeField] public EnemyHittableObjects _enemyHittableObjects;
 
-    public Task<bool> isEntityAnAttackObject(Collider2D collider, List<EnemyHittableObjects> tags)
+    public Task<bool> isEntityAnAttackObject(Collider2D collider, EnemyHittableObjects objects )
     {
-        for (int i = 0; i < objects_or_prefabs.Count; i++)
+        for (int i = 0; i < 2; i++)
         {
-            if (collider.tag == objects_or_prefabs[i].ObjectTag)
+          /*  if (collider.tag == tags[i].enemyHittableObjectsReference)
             {
                 return Task.FromResult(true);
             }
+          */
         }
 
         return Task.FromResult(false);

@@ -7,19 +7,35 @@ public class EnemyHittableManagerCustomUIEditor : Editor
 {
     public override void OnInspectorGUI()
     {
+        serializedObject.Update();
+
         EnemyHittableObjects enemyHittableObject = (EnemyHittableObjects)target;
 
-        EditorGUILayout.LabelField("Custom Editor For Enemy Hittable Ojbects");
+        for (int i = 0; i < enemyHittableObject.elements.Length; i++)
+        {
 
-        enemyHittableObject.IsinstantiableObject = EditorGUILayout.Toggle("Instantiate?", enemyHittableObject.IsinstantiableObject);
+            SerializedProperty eachElement = serializedObject.FindProperty("elements").GetArrayElementAtIndex(i); //at each index
 
-        EditorGUI.BeginDisabledGroup(!enemyHittableObject.IsinstantiableObject); //open the disabling scope (it works!!)
+            SerializedProperty isInstantiable = eachElement.FindPropertyRelative("IsinstantiableObject");
 
-        enemyHittableObject.instantiateAfterAttack = (GameObject)EditorGUILayout.ObjectField("Instantiable Object", enemyHittableObject.instantiateAfterAttack, typeof(GameObject), true); //te field which should be visible
+            SerializedProperty instantiateAfterAttack = eachElement.FindPropertyRelative("instantiateAfterAttack");
 
-        EditorGUI.EndDisabledGroup();//end the disabling scope
+            EditorGUI.BeginChangeCheck(); //keeps track of changes
 
-        enemyHittableObject.ObjectTag = EditorGUILayout.TextField("Object Tag", enemyHittableObject.ObjectTag);
+            EditorGUILayout.PropertyField(isInstantiable);
+
+            if (isInstantiable.boolValue) //if True
+            {
+                EditorGUILayout.PropertyField(instantiateAfterAttack); //YAYA works~!!! Will add more tomorrow!
+            }
+
+            EditorGUI.EndChangeCheck();
+
+            EditorGUILayout.Space();
+        }
+
+        serializedObject.ApplyModifiedProperties();
+
+
     }
-
 }
