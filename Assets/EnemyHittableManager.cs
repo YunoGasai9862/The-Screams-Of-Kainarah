@@ -12,13 +12,13 @@ public class EnemyHittableManager : MonoBehaviour
 
     public Task<bool> isEntityAnAttackObject(Collider2D collider, EnemyHittableObjects objects )
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < objects.elements.Length; i++)
         {
-          /*  if (collider.tag == tags[i].enemyHittableObjectsReference)
+            if (collider.tag == objects.elements[i].ObjectTag) //scriptable Object
             {
                 return Task.FromResult(true);
             }
-          */
+      
         }
 
         return Task.FromResult(false);
