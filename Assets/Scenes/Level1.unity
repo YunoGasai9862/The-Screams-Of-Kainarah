@@ -6458,7 +6458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99802d2d6ca861544b7d0152d3d4fd8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyHittableObjects: {fileID: 11400000, guid: d97822dd61c065e45a4a4c9eb3b7284f, type: 2}
+  _enemyHittableObjects: {fileID: 0}
 --- !u!1 &1801196254
 GameObject:
   m_ObjectHideFlags: 0
