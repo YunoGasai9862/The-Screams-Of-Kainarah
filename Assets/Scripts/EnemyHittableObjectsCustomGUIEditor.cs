@@ -14,7 +14,7 @@ public class EnemyHittableManagerCustomUIEditor : Editor
 
         SerializedProperty arraySize = serializedObject.FindProperty("elements");
 
-        if(GUILayout.Button("Add Element")) //adds a button
+        if (GUILayout.Button("Add Element")) //adds a button
         {
             arraySize.arraySize++; //increases the array size by 1
         }
@@ -30,28 +30,29 @@ public class EnemyHittableManagerCustomUIEditor : Editor
 
             SerializedProperty objectTag = eachElement.FindPropertyRelative("ObjectTag");
 
+
             EditorGUI.BeginChangeCheck(); //keeps track of changes
 
-            EditorGUILayout.PropertyField(isInstantiable);
+            _ = EditorGUILayout.PropertyField(isInstantiable);
 
             if (isInstantiable.boolValue) //if True/exists
             {
-                EditorGUILayout.PropertyField(instantiateAfterAttack); //YAYA works~!!! Will add more tomorrow!
+                _ = EditorGUILayout.PropertyField(instantiateAfterAttack); //YAYA works~!!! Will add more tomorrow!
             }
 
-            EditorGUILayout.PropertyField(objectTag);
+            _ = EditorGUILayout.PropertyField(objectTag);
 
-            EditorGUI.EndChangeCheck();
+            _ = EditorGUI.EndChangeCheck();
 
             EditorGUILayout.Space();
         }
 
-        if(GUILayout.Button("Delete Element")) //removes the Element
+        if (GUILayout.Button("Delete Element")) //removes the Element
         {
             arraySize.arraySize--;
         }
 
-        serializedObject.ApplyModifiedProperties();
+        _ = serializedObject.ApplyModifiedProperties();
 
 
     }

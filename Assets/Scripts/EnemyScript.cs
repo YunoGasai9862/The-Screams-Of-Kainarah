@@ -18,18 +18,21 @@ public class EnemyScript : AbstractEnemy
     [SerializeField] GameObject Hit;
     [Header("Max Health For The Enemy")]
     [SerializeField] int MaxHealth;
+    [Header("Hittable Objects")]
+    [SerializeField] public EnemyHittableObjects _enemyHittableObjects;
 
-    public override string enemyName { get => m_Name; set => m_Name=value; }
+
+    public override string enemyName { get => m_Name; set => m_Name = value; }
     public override int health { get => m_health; set => m_health = value; }
     public override int maxHealth { get => m_maxHealth; set => m_maxHealth = value; }
 
 
     private void Awake()
     {
-        enemyName= gameObject.name;
+        enemyName = gameObject.name;
         maxHealth = MaxHealth;
         m_health = maxHealth;
-        wayPointsMovementScript= gameObject.GetComponent<WayPointsMovement>();
+        wayPointsMovementScript = gameObject.GetComponent<WayPointsMovement>();
         enemyHittableManager = GameObject.FindObjectOfType<EnemyHittableManager>(); //from the scene
     }
 
@@ -37,7 +40,7 @@ public class EnemyScript : AbstractEnemy
     {
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
-        cancellationTokenSource = new CancellationTokenSource();    
+        cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
 
     }
@@ -49,7 +52,7 @@ public class EnemyScript : AbstractEnemy
             if (await isPlayerInSight())
             {
                 wayPointsMovementScript.shouldMove = false;
-                
+
                 //add attack logic here
 
             }
@@ -86,15 +89,17 @@ public class EnemyScript : AbstractEnemy
 
     private async void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Dagger") || collision.CompareTag("Sword"))
+        if (await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
             //observer pattern for animation and instantiators
 
-           // GameObject endofLife = Instantiate(Hit, transform.position, Quaternion.identity);
+            // GameObject endofLife = Instantiate(Hit, transform.position, Quaternion.identity);
 
-                //add hit animation logic here
+            //add hit animation logic here
 
-               // Destroy(endofLife, 1f);
+            // Destroy(endofLife, 1f);
+
+            Debug.Log(collision.tag);
 
         }
     }

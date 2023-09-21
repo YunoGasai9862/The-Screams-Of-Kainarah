@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19cd73fa8bfb7b45bb776f2e0eed242, type: 3}
   m_Name: EnemyHittableObjectsScriptableEntity
   m_EditorClassIdentifier: 
-  elements: []
+  elements:
+  - IsinstantiableObject: 1
+    instantiateAfterAttack: {fileID: 0}
+    ObjectTag: Dagger
+  - IsinstantiableObject: 1
+    instantiateAfterAttack: {fileID: 0}
+    ObjectTag: Sword

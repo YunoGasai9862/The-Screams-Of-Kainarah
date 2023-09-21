@@ -5,13 +5,13 @@ using UnityEngine;
 public class EnemyHittableObjects : ScriptableObject
 {
     [Serializable]
-    public class Elements
+    public class HittableObjects
     {
         public bool IsinstantiableObject;
         public GameObject instantiateAfterAttack;
         public string ObjectTag;
     }
 
-    public Elements[] elements;
+    public HittableObjects[] elements; //better to create an array so i can store many Elements
 
 }
