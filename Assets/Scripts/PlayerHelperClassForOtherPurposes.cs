@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
+public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified<Collider2D>
 {
     [SerializeField] SpriteRenderer sr;
     [SerializeField] Interactable dialogue;
@@ -80,7 +80,7 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified
         {
             bool shouldbedisabled = _pickableItems.shouldThisItemBeDisabled(collision.tag);
 
-            if(shouldbedisabled)
+            if (shouldbedisabled)
                 collision.gameObject.SetActive(false);
 
             NotifyObservers(true); //for audios

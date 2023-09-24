@@ -7,7 +7,7 @@ using InventoryManagement = CreateInventorySystem;
 public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 {
 
-    [SerializeField] SubjectsToBeNotified Subject;
+    [SerializeField] SubjectsToBeNotified<Collider2D> Subject;
 
     [SerializeField] PickableItemsClass pickableItems;
 

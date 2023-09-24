@@ -8,7 +8,7 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
     [SerializeField] AudioSource _bgGameMusic;
     [SerializeField] AudioSource _BossMusic;
     [SerializeField] AudioSource _Pickup;
-    [SerializeField] SubjectsToBeNotified AudioSubject;
+    [SerializeField] SubjectsToBeNotified<bool> AudioSubject;
     GameMusicState _gameState;
 
     private bool shouldPlayPickUpAudio;
