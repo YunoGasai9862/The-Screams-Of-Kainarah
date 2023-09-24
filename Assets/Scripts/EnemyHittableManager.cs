@@ -8,8 +8,8 @@ public class EnemyHittableManager : MonoBehaviour
     {
         for (int i = 0; i < objects.elements.Length; i++)
         {
-
-            if (collider.tag == objects.elements[i].ObjectTag) //scriptable Object
+            var element = objects.elements[i];
+            if (collider.tag == element.ObjectTag) //scriptable Object
             {
                 return Task.FromResult(true);
             }

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 624e226d0c7a37d4899b25c185ea67d7, type: 3}
+  m_Name: PickableItems
+  m_EditorClassIdentifier: 
+  pickableEntities:
+  - objectName: Dagger
+    prefabToInstantiate: {fileID: 8025573198793576023, guid: f56de393cd630934e8c8c9cd19ec01bf, type: 3}
+    shouldBeDisabledAfterSomeTime: 1
+  - objectName: Crystal
+    prefabToInstantiate: {fileID: 2661038635046788335, guid: c9219bccaf3c6df48b3497e2a15f35ae, type: 3}
+    shouldBeDisabledAfterSomeTime: 0
+  - objectName: Health
+    prefabToInstantiate: {fileID: 3620229772945060252, guid: f901c7f519fa17a4c820233c6749cc55, type: 3}
+    shouldBeDisabledAfterSomeTime: 1

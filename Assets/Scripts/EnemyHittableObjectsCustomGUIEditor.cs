@@ -33,16 +33,16 @@ public class EnemyHittableManagerCustomUIEditor : Editor
 
             EditorGUI.BeginChangeCheck(); //keeps track of changes
 
-            _ = EditorGUILayout.PropertyField(isInstantiable);
+            EditorGUILayout.PropertyField(isInstantiable);
 
             if (isInstantiable.boolValue) //if True/exists
             {
-                _ = EditorGUILayout.PropertyField(instantiateAfterAttack); //YAYA works~!!! Will add more tomorrow!
+                EditorGUILayout.PropertyField(instantiateAfterAttack); //YAYA works~!!! Will add more tomorrow!
             }
 
-            _ = EditorGUILayout.PropertyField(objectTag);
+            EditorGUILayout.PropertyField(objectTag);
 
-            _ = EditorGUI.EndChangeCheck();
+            EditorGUI.EndChangeCheck();
 
             EditorGUILayout.Space();
         }
@@ -52,7 +52,7 @@ public class EnemyHittableManagerCustomUIEditor : Editor
             arraySize.arraySize--;
         }
 
-        _ = serializedObject.ApplyModifiedProperties();
+        serializedObject.ApplyModifiedProperties();
 
 
     }

@@ -3,21 +3,15 @@ using UnityEngine;
 
 public class PickableItemsClass : MonoBehaviour
 {
-
-    [System.Serializable]
-    public class pickableItemsKeyValuePair
-    {
-        public string name;
-        public GameObject GameObject;
-        public bool shouldBeDisabled;
-    }
-
-    [SerializeField] List<pickableItemsKeyValuePair> pickableItems;
+    [SerializeField]
+    public PickableItems pickableItems;
     public bool didPlayerCollideWithaPickableItem(string collisionObjectName)
     {
-        for (int i = 0; i < pickableItems.Count; i++)
+        for (int i = 0; i < pickableItems.pickableEntities.Length; i++)
         {
-            if (collisionObjectName == pickableItems[i].name)
+            var element = pickableItems.pickableEntities[i];
+
+            if (collisionObjectName == element.objectName)
             {
                 return true;
             }
@@ -28,11 +22,13 @@ public class PickableItemsClass : MonoBehaviour
 
     public GameObject returnGameObjectForTheKey(string keyName)
     {
-        for (int i = 0; i < pickableItems.Count; i++)
+        for (int i = 0; i < pickableItems.pickableEntities.Length; i++)
         {
-            if (keyName == pickableItems[i].name)
+            var element = pickableItems.pickableEntities[i];
+
+            if (keyName == element.objectName)
             {
-                return pickableItems[i].GameObject;
+                return element.prefabToInstantiate;
             }
         }
 
@@ -42,11 +38,13 @@ public class PickableItemsClass : MonoBehaviour
 
     public bool shouldThisItemBeDisabled(string collisionObjectName)
     {
-        for(int i=0; i < pickableItems.Count; i++)
+        for (int i = 0; i < pickableItems.pickableEntities.Length; i++)
         {
-            if (collisionObjectName == pickableItems[i].name)
+            var element = pickableItems.pickableEntities[i];
+
+            if (collisionObjectName == element.objectName)
             {
-                return pickableItems[i].shouldBeDisabled;
+                return element.shouldBeDisabledAfterSomeTime;
             }
         }
 
