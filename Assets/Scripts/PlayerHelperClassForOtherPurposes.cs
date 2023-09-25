@@ -6,17 +6,18 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified<Collider2D>
+public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 {
     [SerializeField] SpriteRenderer sr;
     [SerializeField] Interactable dialogue;
     [SerializeField] PickableItemsClass _pickableItems;
+    [SerializeField] GameObject TeleportTransition;
+    private SubjectsToBeNotified<Collider2D> colliderSubjects = new();
+    private SubjectsToBeNotified<bool> musicSubjects = new();
+
     private Animator anim;
     private bool Death = false;
     public static float ENEMYATTACK = 5f;
-    [SerializeField] GameObject TeleportTransition;
-
-
     public static bool isGrabbing = false;//for the ledge grab script
     private bool once = true;
     private bool pickedUp;
@@ -26,7 +27,6 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified<Collider2D
         sr = GetComponent<SpriteRenderer>();
 
         anim = GetComponent<Animator>();
-
 
     }
 
@@ -83,10 +83,11 @@ public class PlayerHelperClassForOtherPurposes : SubjectsToBeNotified<Collider2D
             if (shouldbedisabled)
                 collision.gameObject.SetActive(false);
 
-            NotifyObservers(true); //for audios
+            bool shouldMusicBePlayed = true;
+            musicSubjects.NotifyObservers(ref shouldMusicBePlayed); //for audios
         }
 
-        NotifyObservers(ref collision);
+        colliderSubjects.NotifyObservers(ref collision);
     }
 
 
