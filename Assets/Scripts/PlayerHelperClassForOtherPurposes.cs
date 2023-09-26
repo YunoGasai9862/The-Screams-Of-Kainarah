@@ -15,6 +15,9 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     private SubjectsToBeNotified<Collider2D> colliderSubjects = new();
     private SubjectsToBeNotified<bool> musicSubjects = new();
 
+    public SubjectsToBeNotified<Collider2D> getColliderSubjects { get => colliderSubjects; set => colliderSubjects = value; }
+    public SubjectsToBeNotified<bool> getBoolSubjects { get => musicSubjects; set => musicSubjects = value; }
+
     private Animator anim;
     private bool Death = false;
     public static float ENEMYATTACK = 5f;

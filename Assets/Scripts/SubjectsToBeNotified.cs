@@ -1,7 +1,11 @@
 using System.Collections.Generic;
+using UnityEngine;
+
 public class SubjectsToBeNotified<T>
 {
     private List<IObserver<T>> _potentialObservers = new();
+
+    public List<IObserver<T>> potentialObservers { set=>_potentialObservers=value; get=>_potentialObservers; }
 
     public void AddObserver(IObserver<T> observer)
     {

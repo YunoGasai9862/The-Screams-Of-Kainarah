@@ -7,7 +7,9 @@ using InventoryManagement = CreateInventorySystem;
 public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 {
 
-    [SerializeField] SubjectsToBeNotified<Collider2D> Subject;
+    [SerializeField] GameObject MainParent;
+
+    private SubjectsToBeNotified<Collider2D> subject;
 
     [SerializeField] PickableItemsClass pickableItems;
 
@@ -19,6 +21,8 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 
     private void Awake()
     {
+        subject = MainParent.GetComponent<PlayerHelperClassForOtherPurposes>().getColliderSubjects;
+
         _playerActionHandlerDic = new Dictionary<String, System.Action>
         {
 
@@ -53,12 +57,12 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 
     private void OnEnable()
     {
-        Subject.AddObserver(this); //Add PlayerActionSystem as an observer
+        subject.AddObserver(this); //Add PlayerActionSystem as an observer
     }
 
     private void OnDisable()
     {
-        Subject.RemoveOberver(this); //Remove PlayerActionSystem as an observer when an event is handled/or the observer is no longer needed
+        subject.RemoveOberver(this); //Remove PlayerActionSystem as an observer when an event is handled/or the observer is no longer needed
     }
 
     private GameObjectInstantiator pickupEffectInstantiator(GameObject prefab, Vector3 position)
