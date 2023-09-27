@@ -21,6 +21,7 @@ public class EnemyScript : AbstractEnemy
     [Header("Hittable Objects")]
     [SerializeField] public EnemyHittableObjects _enemyHittableObjects;
 
+    private SubjectsToBeNotified<Collider2D> colliderEnemySubjects;
 
     public override string enemyName { get => m_Name; set => m_Name = value; }
     public override int health { get => m_health; set => m_health = value; }
@@ -92,6 +93,8 @@ public class EnemyScript : AbstractEnemy
         if (await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
             //observer pattern for animation and instantiators
+
+            colliderEnemySubjects.NotifyObservers(ref collision);
 
             // GameObject endofLife = Instantiate(Hit, transform.position, Quaternion.identity);
 

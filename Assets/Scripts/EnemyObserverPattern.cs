@@ -4,20 +4,10 @@ using UnityEngine;
 
 public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D>
 {
+    [SerializeField] EnemyObserverListener _observerScript;
     public void OnNotify(ref Collider2D Data)
     {
-        throw new System.NotImplementedException();
+        //this function will be called
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }

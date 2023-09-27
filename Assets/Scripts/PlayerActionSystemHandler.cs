@@ -6,8 +6,8 @@ using InventoryManagement = CreateInventorySystem;
 
 public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 {
-
-    [SerializeField] GameObject MainParent;
+    [Header("Add the Script which has the instance of Collider Subject")]
+    [SerializeField] PlayerHelperClassForOtherPurposes ColliderParent;
 
     private SubjectsToBeNotified<Collider2D> subject;
 
@@ -21,7 +21,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 
     private void Awake()
     {
-        subject = MainParent.GetComponent<PlayerHelperClassForOtherPurposes>().getColliderSubjects;
+        subject = ColliderParent.getColliderSubjects;
 
         _playerActionHandlerDic = new Dictionary<String, System.Action>
         {

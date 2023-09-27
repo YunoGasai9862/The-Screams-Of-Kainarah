@@ -8,10 +8,17 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
     [SerializeField] AudioSource _bgGameMusic;
     [SerializeField] AudioSource _BossMusic;
     [SerializeField] AudioSource _Pickup;
+    [Header("Add the Script that acts as a music collider listener")]
+    [SerializeField] PlayerHelperClassForOtherPurposes _targetScript;
     private SubjectsToBeNotified<bool> AudioSubject;
     GameMusicState _gameState;
 
     private bool shouldPlayPickUpAudio;
+
+    private void Awake()
+    {
+        AudioSubject = _targetScript.getBoolSubjects;
+    }
     void Start()
     {
         _gameState = GameMusicState.BACKGROUNDMUSIC;

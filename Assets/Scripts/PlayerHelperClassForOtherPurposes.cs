@@ -12,8 +12,8 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     [SerializeField] Interactable dialogue;
     [SerializeField] PickableItemsClass _pickableItems;
     [SerializeField] GameObject TeleportTransition;
-    private SubjectsToBeNotified<Collider2D> colliderSubjects = new();
-    private SubjectsToBeNotified<bool> musicSubjects = new();
+    protected SubjectsToBeNotified<Collider2D> colliderSubjects = new();
+    protected SubjectsToBeNotified<bool> musicSubjects = new();
 
     public SubjectsToBeNotified<Collider2D> getColliderSubjects { get => colliderSubjects; set => colliderSubjects = value; }
     public SubjectsToBeNotified<bool> getBoolSubjects { get => musicSubjects; set => musicSubjects = value; }
