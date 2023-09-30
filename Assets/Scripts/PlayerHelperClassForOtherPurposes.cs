@@ -85,7 +85,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
             bool shouldMusicBePlayed = true;
 
-            playerObserverListener.PlayerMusicDelegator(ref shouldMusicBePlayed);
+            playerObserverListener.PlayerMusicDelegator(shouldMusicBePlayed);
         }
 
        bool success= await playerObserverListener.PlayerCollisionDelegator(collision);
