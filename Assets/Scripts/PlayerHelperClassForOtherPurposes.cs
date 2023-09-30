@@ -76,6 +76,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     {
         pickedUp = _pickableItems.didPlayerCollideWithaPickableItem(collision.tag);
 
+
         if (pickedUp)
         {
             bool shouldbedisabled = _pickableItems.shouldThisItemBeDisabled(collision.tag);
@@ -85,7 +86,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
             bool shouldMusicBePlayed = true;
 
-            playerObserverListener.PlayerMusicDelegator(shouldMusicBePlayed);
+            bool success= await playerObserverListener.PlayerMusicDelegator(ref shouldMusicBePlayed);
         }
 
        bool success= await playerObserverListener.PlayerCollisionDelegator(collision);
