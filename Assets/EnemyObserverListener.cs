@@ -1,18 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class EnemyObserverListener : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private SubjectsToBeNotified<Collider2D> enemyColliderSubjects=new();
 
-    // Update is called once per frame
-    void Update()
+    public SubjectsToBeNotified<Collider2D> getenemyColliderSubjects {get=> enemyColliderSubjects;}
+
+    public async Task<bool> EnemyCollisionDelegator(Collider2D collider)
     {
-        
+        getenemyColliderSubjects.NotifyObservers(ref collider);
+        return await Task.FromResult(true);
     }
 }

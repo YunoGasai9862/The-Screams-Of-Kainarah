@@ -8,17 +8,12 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
     [SerializeField] AudioSource _bgGameMusic;
     [SerializeField] AudioSource _BossMusic;
     [SerializeField] AudioSource _Pickup;
-    [Header("Add the Script that acts as a music collider listener")]
-    [SerializeField] PlayerHelperClassForOtherPurposes _targetScript;
-    private SubjectsToBeNotified<bool> AudioSubject;
+    [Header("Add the Player Delegate Object")]
+    [SerializeField] PlayerObserverListener _targetScript;
     GameMusicState _gameState;
 
     private bool shouldPlayPickUpAudio;
 
-    private void Awake()
-    {
-        AudioSubject = _targetScript.getBoolSubjects;
-    }
     void Start()
     {
         _gameState = GameMusicState.BACKGROUNDMUSIC;
@@ -28,12 +23,12 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
 
     private void OnEnable()
     {
-        AudioSubject.AddObserver(this);
+        _targetScript.getBoolSubjects.AddObserver(this);
     }
 
     private void OnDisable()
     {
-        AudioSubject.RemoveOberver(this);
+        _targetScript.getBoolSubjects.RemoveOberver(this);
     }
     // Update is called once per frame
     void Update()

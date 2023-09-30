@@ -12,20 +12,17 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     [SerializeField] Interactable dialogue;
     [SerializeField] PickableItemsClass _pickableItems;
     [SerializeField] GameObject TeleportTransition;
-    protected SubjectsToBeNotified<Collider2D> colliderSubjects = new();
-    protected SubjectsToBeNotified<bool> musicSubjects = new();
-
-    public SubjectsToBeNotified<Collider2D> getColliderSubjects { get => colliderSubjects; set => colliderSubjects = value; }
-    public SubjectsToBeNotified<bool> getBoolSubjects { get => musicSubjects; set => musicSubjects = value; }
+    private PlayerObserverListener playerObserverListener;
 
     private Animator anim;
     private bool Death = false;
-    public static float ENEMYATTACK = 5f;
+    private float ENEMYATTACK = 5f;
     public static bool isGrabbing = false;//for the ledge grab script
     private bool once = true;
     private bool pickedUp;
     private void Awake()
     {
+        playerObserverListener = FindObjectOfType<PlayerObserverListener>();
 
         sr = GetComponent<SpriteRenderer>();
 
@@ -75,7 +72,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private async void OnTriggerEnter2D(Collider2D collision)
     {
         pickedUp = _pickableItems.didPlayerCollideWithaPickableItem(collision.tag);
 
@@ -87,14 +84,15 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
                 collision.gameObject.SetActive(false);
 
             bool shouldMusicBePlayed = true;
-            musicSubjects.NotifyObservers(ref shouldMusicBePlayed); //for audios
+
+            playerObserverListener.PlayerMusicDelegator(ref shouldMusicBePlayed);
         }
 
-        colliderSubjects.NotifyObservers(ref collision);
+       bool success= await playerObserverListener.PlayerCollisionDelegator(collision);
     }
 
 
-    public bool checkForExistenceOfPortal(SpriteRenderer sr)
+    private bool checkForExistenceOfPortal(SpriteRenderer sr)
     {
         RaycastHit hit; //using 3D raycast because of 3D object, portal
         Vector2 pos = transform.position;
@@ -122,7 +120,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
         return hit.collider != null && hit.collider.isTrigger && hit.collider.CompareTag("Portal");
     }
 
-    IEnumerator WaiterFunction()
+    private IEnumerator WaiterFunction()
     {
         yield return new WaitForSeconds(1f);
     }
