@@ -12,16 +12,14 @@ public class EnemyScript : AbstractEnemy
     private WayPointsMovement wayPointsMovementScript;
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
-    private EnemyHittableManager enemyHittableManager;
+    private EnemyObserverListener enemyObserverListener;
 
     [SerializeField] LayerMask Player;
-    [SerializeField] GameObject Hit;
     [Header("Max Health For The Enemy")]
     [SerializeField] int MaxHealth;
     [Header("Hittable Objects")]
     [SerializeField] public EnemyHittableObjects _enemyHittableObjects;
 
-    private SubjectsToBeNotified<Collider2D> colliderEnemySubjects;
 
     public override string enemyName { get => m_Name; set => m_Name = value; }
     public override int health { get => m_health; set => m_health = value; }
@@ -34,7 +32,7 @@ public class EnemyScript : AbstractEnemy
         maxHealth = MaxHealth;
         m_health = maxHealth;
         wayPointsMovementScript = gameObject.GetComponent<WayPointsMovement>();
-        enemyHittableManager = GameObject.FindObjectOfType<EnemyHittableManager>(); //from the scene
+        enemyObserverListener= FindObjectOfType<EnemyObserverListener>();
     }
 
     void Start()
@@ -94,7 +92,7 @@ public class EnemyScript : AbstractEnemy
         {
             //observer pattern for animation and instantiators
 
-            colliderEnemySubjects.NotifyObservers(ref collision);
+           _=await enemyObserverListener.EnemyCollisionDelegator(collision);
 
             // GameObject endofLife = Instantiate(Hit, transform.position, Quaternion.identity);
 
@@ -102,11 +100,9 @@ public class EnemyScript : AbstractEnemy
 
             // Destroy(endofLife, 1f);
 
-            Debug.Log(collision.tag);
-
         }
     }
-    private void OnTriggerExit2D(Collider2D collision)
+    private async void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Dagger") || collision.CompareTag("Sword"))
         {
@@ -115,6 +111,11 @@ public class EnemyScript : AbstractEnemy
 
             //animation logic (a different class)
             //anim.SetBool("Hit", false);
+
+        }
+
+        if (await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
+        {
 
         }
     }
