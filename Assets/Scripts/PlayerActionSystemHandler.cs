@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using InventoryManagement = CreateInventorySystem;
 
-public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
+public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D, bool>
 {
     [Header("Add the Player Delegate Object")]
     [SerializeField] PlayerObserverListener ColliderParent;
@@ -70,7 +70,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     }
 
 
-    public void OnNotify(ref Collider2D collider)
+    public void OnNotify(ref Collider2D collider, params bool[] optional)
     {
         foreach (var actionsToBePerformed in _playerActionHandlerDic.Keys)
         {

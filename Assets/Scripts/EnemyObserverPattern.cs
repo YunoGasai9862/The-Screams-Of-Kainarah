@@ -3,21 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D>
+public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
 {
+    private enum enemyAttack
+    {
+        Attack1=0, Attack2=1
+    }
+
     [Header("Add the Script that delegates for enemies")]
     [SerializeField] EnemyObserverListener _observerScript;
     [Header("Object to instantiate upon hit")]
     [SerializeField] GameObject Hit;
     [Header("Add Enemy's Animator Component")]
-    [SerializeField] Animator _animator;
-    
+    [SerializeField] Animator animator;
+    [Header("Enter hit Param name")]
+    [SerializeField] string animationHitParam;
+
+
     private Dictionary<string, System.Action> enemyActionDictionary;
-    private AnimationStateMachine _currentState;
+    private AnimationStateMachine _stateTracker;
 
     private void Awake()
     {
-        _currentState = new AnimationStateMachine(_animator); 
+        _stateTracker = new AnimationStateMachine(animator); 
         enemyActionDictionary = new Dictionary<string, System.Action>()
         {
             {"Sword", playHitAnimation },
@@ -25,11 +33,12 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D>
 
         };
     }
+   
     private void playHitAnimation()
     {
-       
+        _stateTracker.AnimationPlayMachineBool(animationHitParam, true);
     }
-    public void OnNotify(ref Collider2D Data)
+    public void OnNotify(ref Collider2D Data, params int[] optional)
     {
         foreach(var actionToBePerformed in enemyActionDictionary.Keys)
         {

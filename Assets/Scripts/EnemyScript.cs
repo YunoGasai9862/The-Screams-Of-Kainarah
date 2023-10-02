@@ -5,6 +5,11 @@ using UnityEngine;
 
 public class EnemyScript : AbstractEnemy
 {
+    private enum AnimationIndicator
+    { 
+      STOP=0, PLAY=1
+    }
+
     private Animator anim;
     private int lifeCounter = 0;
     private bool isNotdead = true;
@@ -92,7 +97,7 @@ public class EnemyScript : AbstractEnemy
         {
             //observer pattern for animation and instantiators
 
-           _=await enemyObserverListener.EnemyCollisionDelegator(collision);
+           _=await enemyObserverListener.EnemyCollisionDelegator(collision, (int)AnimationIndicator.PLAY);
 
             // GameObject endofLife = Instantiate(Hit, transform.position, Quaternion.identity);
 
