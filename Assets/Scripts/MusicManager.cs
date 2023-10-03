@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using GlobalAccessAndGameHelper;
 
-public class MusicManager : MonoBehaviour, IObserver<bool, bool>
+public class MusicManager : MonoBehaviour, IObserver<bool>
 {
     [SerializeField] Toggle menuToggleSound;
     [SerializeField] AudioSource _bgGameMusic;
@@ -102,10 +102,8 @@ public class MusicManager : MonoBehaviour, IObserver<bool, bool>
         }
 
     }
-
-    public void OnNotify(ref bool Data, params bool[] optional)
+    public void OnNotify(ref bool Data, params object[] optional)
     {
         shouldPlayPickUpAudio = true;
     }
-
 }

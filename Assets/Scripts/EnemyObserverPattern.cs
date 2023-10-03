@@ -60,5 +60,4 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
         _observerScript.getenemyColliderSubjects.RemoveOberver(this);
 
     }
-
 }

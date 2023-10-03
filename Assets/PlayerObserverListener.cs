@@ -6,11 +6,11 @@ using UnityEngine;
 public class PlayerObserverListener : MonoBehaviour //try something new (delegates)
 {
 
-    private SubjectsToBeNotified<Collider2D, bool> colliderSubjects=new();
-    private SubjectsToBeNotified<bool, bool> boolSubjects=new();
+    private SubjectsToBeNotified<Collider2D> colliderSubjects=new();
+    private SubjectsToBeNotified<bool> boolSubjects=new();
 
-    public SubjectsToBeNotified<Collider2D, bool> getColliderSubjects { get => colliderSubjects; }
-    public SubjectsToBeNotified<bool, bool> getBoolSubjects { get => boolSubjects; }
+    public SubjectsToBeNotified<Collider2D> getColliderSubjects { get => colliderSubjects; }
+    public SubjectsToBeNotified<bool> getBoolSubjects { get => boolSubjects; }
 
     public async Task<bool> PlayerCollisionDelegator(Collider2D collision)
     {
