@@ -95,32 +95,15 @@ public class EnemyScript : AbstractEnemy
     {
         if (await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
-            //observer pattern for animation and instantiators
-
-           _=await enemyObserverListener.EnemyCollisionDelegator(collision, (int)AnimationIndicator.PLAY);
-
-            // GameObject endofLife = Instantiate(Hit, transform.position, Quaternion.identity);
-
-            //add hit animation logic here
-
-            // Destroy(endofLife, 1f);
+            _ = await enemyObserverListener.EnemyCollisionDelegator(collision, (int)AnimationIndicator.PLAY);
 
         }
     }
     private async void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Dagger") || collision.CompareTag("Sword"))
-        {
-            //observer pattern for animation
-
-
-            //animation logic (a different class)
-            //anim.SetBool("Hit", false);
-
-        }
-
         if (await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
+            _ = await enemyObserverListener.EnemyCollisionDelegator(collision, (int)AnimationIndicator.STOP);
 
         }
     }

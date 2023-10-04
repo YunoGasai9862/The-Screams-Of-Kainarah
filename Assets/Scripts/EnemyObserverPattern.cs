@@ -1,6 +1,8 @@
+using GlobalAccessAndGameHelper;
 using PlayerAnimationHandler;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
@@ -22,13 +24,16 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
 
     private Dictionary<string, System.Action> enemyActionDictionary;
     private AnimationStateMachine _stateTracker;
+    private bool _shouldPlay;
+    private GameObjectInstantiator _gameObjectCreator;
 
     private void Awake()
     {
-        _stateTracker = new AnimationStateMachine(animator); 
+        _stateTracker = new AnimationStateMachine(animator);
+        _gameObjectCreator = new GameObjectInstantiator(Hit);
         enemyActionDictionary = new Dictionary<string, System.Action>()
         {
-            {"Sword", playHitAnimation },
+            {"Sword",  playHitAnimation},
             {"Dagger", playHitAnimation}
 
         };
@@ -36,15 +41,29 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
    
     private void playHitAnimation()
     {
-        _stateTracker.AnimationPlayMachineBool(animationHitParam, true);
+        _stateTracker.AnimationPlayMachineBool(animationHitParam, _shouldPlay);
+        handleGameObjectCreation();
+
+    }
+
+    private async void handleGameObjectCreation()
+    {
+        _gameObjectCreator.InstantiateGameObject(transform.position, Quaternion.identity);
+        await Task.Delay(1000);
+        _gameObjectCreator.DestroyGameObject(0f);
     }
     public void OnNotify(ref Collider2D Data, params int[] optional)
     {
-        foreach(var actionToBePerformed in enemyActionDictionary.Keys)
+        foreach (var actionToBePerformed in enemyActionDictionary.Keys)
         {
             if(Data.tag== actionToBePerformed)
             {
                 System.Action action = enemyActionDictionary[Data.tag]; //get the function (action) name
+
+                if(!checkIfThereAreMoreThanOneExtraParam(optional))
+                {
+                    _shouldPlay = optional[0] == 1 ? true : false;
+                }
                 action.Invoke(); //invoke it
             }
         }
@@ -60,4 +79,11 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
         _observerScript.getenemyColliderSubjects.RemoveOberver(this);
 
     }
+
+    private bool checkIfThereAreMoreThanOneExtraParam(int[] optional)
+    {
+       return optional.Length>1? true: false;
+    }
+
+ 
 }

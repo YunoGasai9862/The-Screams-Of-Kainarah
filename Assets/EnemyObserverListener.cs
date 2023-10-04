@@ -9,9 +9,9 @@ public class EnemyObserverListener : MonoBehaviour
 
     public SubjectsToBeNotified<Collider2D, int> getenemyColliderSubjects {get=> enemyColliderSubjects;}
 
-    public async Task<bool> EnemyCollisionDelegator(Collider2D collider, params int[] optionalInts)
+    public async Task<bool> EnemyCollisionDelegator(Collider2D collider, params int[] optionalints)
     {
-        getenemyColliderSubjects.NotifyObservers(ref collider, optionalInts);
+        getenemyColliderSubjects.NotifyObservers(ref collider, optionalints);
         return await Task.FromResult(true);
     }
 }
