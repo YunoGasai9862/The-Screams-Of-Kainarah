@@ -26,6 +26,9 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
     private AnimationStateMachine _stateTracker;
     private bool _shouldPlay;
     private GameObjectInstantiator _gameObjectCreator;
+    private GameObject _enemyGameObject;
+
+    public GameObject enemyGameObject { get => _enemyGameObject; set=>_enemyGameObject = value;}
 
     private void Awake()
     {
@@ -48,7 +51,7 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
 
     private async void handleGameObjectCreation()
     {
-        _gameObjectCreator.InstantiateGameObject(transform.position, Quaternion.identity);
+        _gameObjectCreator.InstantiateGameObject(_enemyGameObject.transform.position, Quaternion.identity);
         await Task.Delay(1000);
         _gameObjectCreator.DestroyGameObject(0f);
     }
@@ -60,7 +63,7 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
             {
                 System.Action action = enemyActionDictionary[Data.tag]; //get the function (action) name
 
-                if(!checkIfThereAreMoreThanOneExtraParam(optional))
+                if (!checkIfThereAreMoreThanOneExtraParam(optional))
                 {
                     _shouldPlay = optional[0] == 1 ? true : false;
                 }

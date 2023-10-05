@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyScript : AbstractEnemy
 {
     private enum AnimationIndicator
-    { 
-      STOP=0, PLAY=1
+    {
+        STOP = 0, PLAY = 1
     }
 
     private Animator anim;
@@ -18,6 +19,7 @@ public class EnemyScript : AbstractEnemy
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
     private EnemyObserverListener enemyObserverListener;
+    private const int HITPOINTS = 10;
 
     [SerializeField] LayerMask Player;
     [Header("Max Health For The Enemy")]
@@ -35,9 +37,9 @@ public class EnemyScript : AbstractEnemy
     {
         enemyName = gameObject.name;
         maxHealth = MaxHealth;
-        m_health = maxHealth;
+        health = maxHealth;
         wayPointsMovementScript = gameObject.GetComponent<WayPointsMovement>();
-        enemyObserverListener= FindObjectOfType<EnemyObserverListener>();
+        enemyObserverListener = FindObjectOfType<EnemyObserverListener>();
     }
 
     void Start()
@@ -68,13 +70,11 @@ public class EnemyScript : AbstractEnemy
 
         }
 
-        if (lifeCounter > 3)
+        if (isEnemyHealthZero(health))
         {
-            isNotdead = false;
-            Destroy(gameObject, .5f);
-            lifeCounter = 0;
+            if (!cancellationTokenSource.IsCancellationRequested)
+                Destroy(gameObject);
         }
-
     }
 
     private async Task<bool> isPlayerInSight()
@@ -93,24 +93,29 @@ public class EnemyScript : AbstractEnemy
 
     private async void OnTriggerEnter2D(Collider2D collision)
     {
-        if (await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
+        if (gameObject != null && await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
-            _ = await enemyObserverListener.EnemyCollisionDelegator(collision, (int)AnimationIndicator.PLAY);
+            health -= HITPOINTS;
+            _ = await enemyObserverListener.EnemyCollisionDelegator(collision, gameObject, (int)AnimationIndicator.PLAY);
 
         }
     }
     private async void OnTriggerExit2D(Collider2D collision)
     {
-        if (await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
+        if (gameObject != null && await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
-            _ = await enemyObserverListener.EnemyCollisionDelegator(collision, (int)AnimationIndicator.STOP);
+            _ = await enemyObserverListener.EnemyCollisionDelegator(collision, gameObject, (int)AnimationIndicator.STOP);
 
         }
     }
-
     private void OnDisable()
     {
         cancellationTokenSource.Cancel();
+    }
+
+    private bool isEnemyHealthZero(int enemyHealth)
+    {
+       return enemyHealth==0? true: false;
     }
 
 }
