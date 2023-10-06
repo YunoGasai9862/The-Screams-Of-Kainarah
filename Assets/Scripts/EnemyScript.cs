@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyScript : AbstractEnemy
@@ -10,6 +8,8 @@ public class EnemyScript : AbstractEnemy
     {
         STOP = 0, PLAY = 1
     }
+
+    private const int RAYSARRAYSIZE= 2;
 
     private Animator anim;
     private int lifeCounter = 0;
@@ -20,6 +20,8 @@ public class EnemyScript : AbstractEnemy
     private CancellationToken cancellationToken;
     private EnemyObserverListener enemyObserverListener;
     private const int HITPOINTS = 10;
+    private RaycastHit2D[] rayReleased;
+    private ContactFilter2D contactFilter2D;
 
     [SerializeField] LayerMask Player;
     [Header("Max Health For The Enemy")]
@@ -35,6 +37,8 @@ public class EnemyScript : AbstractEnemy
 
     private void Awake()
     {
+        rayReleased = new RaycastHit2D[RAYSARRAYSIZE];
+        contactFilter2D.SetLayerMask(Player);
         enemyName = gameObject.name;
         maxHealth = MaxHealth;
         health = maxHealth;
@@ -55,18 +59,18 @@ public class EnemyScript : AbstractEnemy
     {
         if (transform.gameObject.name != "Enemy2")
         {
+
             if (await isPlayerInSight())
             {
                 wayPointsMovementScript.shouldMove = false;
 
-                //add attack logic here
+             
 
             }
             else
             {
                 wayPointsMovementScript.shouldMove = true;
             }
-
 
         }
 
@@ -86,7 +90,15 @@ public class EnemyScript : AbstractEnemy
         await Task.Delay(System.TimeSpan.FromSeconds(1f));
 
         if (!cancellationToken.IsCancellationRequested)
-            return Physics2D.Raycast(transform.position, sign * transform.right, 3f, Player);
+        {
+            Physics2D.Raycast(transform.position, sign * transform.right, contactFilter2D, rayReleased, 3f);
+            if (rayReleased[0].collider!=null)
+            {
+                Debug.Log(rayReleased[0].collider);
+            }
+
+        }
+
 
         return false;
     }

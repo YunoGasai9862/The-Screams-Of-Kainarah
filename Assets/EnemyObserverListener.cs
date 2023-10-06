@@ -21,4 +21,12 @@ public class EnemyObserverListener : MonoBehaviour
         getenemyColliderSubjects.NotifyObservers(ref collider, optionalints);
         return await Task.FromResult(true);
     }
+
+    public async Task<bool> playerInSightAction(Collider2D collider, params int[] optionalints)
+    {
+        getenemyColliderSubjects.NotifyObservers(ref collider, optionalints);
+        return await Task.FromResult(true);
+    }
+
+
 }
