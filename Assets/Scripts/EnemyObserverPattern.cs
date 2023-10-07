@@ -37,7 +37,9 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
         enemyActionDictionary = new Dictionary<string, System.Action>()
         {
             {"Sword",  playHitAnimation},
-            {"Dagger", playHitAnimation}
+            {"Dagger", playHitAnimation},
+            {"Heroine", attackLogicInitiation }
+
 
         };
     }
@@ -46,6 +48,11 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
     {
         _stateTracker.AnimationPlayMachineBool(animationHitParam, _shouldPlay);
         handleGameObjectCreation();
+
+    }
+
+    private void attackLogicInitiation()
+    {
 
     }
 

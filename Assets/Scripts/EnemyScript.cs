@@ -10,6 +10,7 @@ public class EnemyScript : AbstractEnemy
     }
 
     private const int RAYSARRAYSIZE= 2;
+    private const int HITINDEX = 0;
 
     private Animator anim;
     private int lifeCounter = 0;
@@ -22,6 +23,7 @@ public class EnemyScript : AbstractEnemy
     private const int HITPOINTS = 10;
     private RaycastHit2D[] rayReleased;
     private ContactFilter2D contactFilter2D;
+    private Collider2D playerCollider;
 
     [SerializeField] LayerMask Player;
     [Header("Max Health For The Enemy")]
@@ -64,7 +66,7 @@ public class EnemyScript : AbstractEnemy
             {
                 wayPointsMovementScript.shouldMove = false;
 
-             
+                await enemyObserverListener.EnemyActionDelegator(playerCollider, gameObject);
 
             }
             else
@@ -91,14 +93,11 @@ public class EnemyScript : AbstractEnemy
 
         if (!cancellationToken.IsCancellationRequested)
         {
-            Physics2D.Raycast(transform.position, sign * transform.right, contactFilter2D, rayReleased, 3f);
-            if (rayReleased[0].collider!=null)
-            {
-                Debug.Log(rayReleased[0].collider);
-            }
+            int numOfObjectsInContact=Physics2D.Raycast(transform.position, sign * transform.right, contactFilter2D, rayReleased, 3f);
+
+            if(numOfObjectsInContact > 0) { playerCollider = rayReleased[HITINDEX].collider; return true; }
 
         }
-
 
         return false;
     }
@@ -108,7 +107,7 @@ public class EnemyScript : AbstractEnemy
         if (gameObject != null && await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
             health -= HITPOINTS;
-            _ = await enemyObserverListener.EnemyCollisionDelegator(collision, gameObject, (int)AnimationIndicator.PLAY);
+            _ = await enemyObserverListener.EnemyActionDelegator(collision, gameObject, (int)AnimationIndicator.PLAY);
 
         }
     }
@@ -116,7 +115,7 @@ public class EnemyScript : AbstractEnemy
     {
         if (gameObject != null && await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
-            _ = await enemyObserverListener.EnemyCollisionDelegator(collision, gameObject, (int)AnimationIndicator.STOP);
+            _ = await enemyObserverListener.EnemyActionDelegator(collision, gameObject, (int)AnimationIndicator.STOP);
 
         }
     }

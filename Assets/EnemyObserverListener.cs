@@ -15,15 +15,9 @@ public class EnemyObserverListener : MonoBehaviour
         enemyObserverPattern = FindObjectOfType<EnemyObserverPattern>();
     }
 
-    public async Task<bool> EnemyCollisionDelegator(Collider2D collider, GameObject enemyObject, params int[] optionalints)
+    public async Task<bool> EnemyActionDelegator(Collider2D collider, GameObject enemyObject, params int[] optionalints)
     {
         enemyObserverPattern.enemyGameObject = enemyObject; //sets it for use    
-        getenemyColliderSubjects.NotifyObservers(ref collider, optionalints);
-        return await Task.FromResult(true);
-    }
-
-    public async Task<bool> playerInSightAction(Collider2D collider, params int[] optionalints)
-    {
         getenemyColliderSubjects.NotifyObservers(ref collider, optionalints);
         return await Task.FromResult(true);
     }
