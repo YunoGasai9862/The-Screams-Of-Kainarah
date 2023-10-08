@@ -27,6 +27,7 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
     private bool _shouldPlay;
     private GameObjectInstantiator _gameObjectCreator;
     private GameObject _enemyGameObject;
+    private EnemyAnimationScriptableObject _enemyAnimationScriptableObject;
 
     public GameObject enemyGameObject { get => _enemyGameObject; set=>_enemyGameObject = value;}
 
@@ -53,7 +54,8 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
 
     private void attackLogicInitiation()
     {
-
+        //use scriptable Object here
+        //use -180 flip so all the colliders flip too!!
     }
 
     private async void handleGameObjectCreation()
