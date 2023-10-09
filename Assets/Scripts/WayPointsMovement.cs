@@ -38,16 +38,19 @@ public class WayPointsMovement : MonoBehaviour
         {
             transform.position = Vector2.MoveTowards(transform.position, Waypoints[currentIndex].wayPoint.position, Time.deltaTime * MovementSpeed);
 
-            sr.flipX = await CharacterFlip(currentIndex);
+            Vector3 rotation = await CharacterFlip(currentIndex);
+
+            transform.localRotation= Quaternion.Euler(rotation.x, rotation.y, rotation.z);
         }
 
     }
 
-    public Task<bool> CharacterFlip(int index)
+    public Task<Vector3> CharacterFlip(int index)
     {
-        bool characterFlip = Waypoints[index].leftWayPoint ? false : true;
 
-        return Task.FromResult(characterFlip);
+        Vector3 localRotation = Waypoints[index].leftWayPoint ? new Vector3(0, 0, 0) : new Vector3(0, 180, 0);
+
+        return Task.FromResult(localRotation);
   
     }
 

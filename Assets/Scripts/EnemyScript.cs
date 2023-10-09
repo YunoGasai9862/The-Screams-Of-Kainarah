@@ -15,7 +15,6 @@ public class EnemyScript : AbstractEnemy
     private Animator anim;
     private int lifeCounter = 0;
     private bool isNotdead = true;
-    private SpriteRenderer sr;
     private WayPointsMovement wayPointsMovementScript;
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
@@ -51,7 +50,6 @@ public class EnemyScript : AbstractEnemy
     void Start()
     {
         anim = GetComponent<Animator>();
-        sr = GetComponent<SpriteRenderer>();
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
 
@@ -85,11 +83,13 @@ public class EnemyScript : AbstractEnemy
 
     private async Task<bool> isPlayerInSight()
     {
-        int sign = sr.flipX ? -1 : 1;
+        int sign = (int)transform.localEulerAngles.magnitude==180 ? -1 : 1;
+
+        //fix sign issue tomorrow
 
         Debug.DrawRay(transform.position, sign * transform.right * 3f, Color.cyan);
 
-        await Task.Delay(System.TimeSpan.FromSeconds(1f));
+        await Task.Delay(System.TimeSpan.FromSeconds(.1f));
 
         if (!cancellationToken.IsCancellationRequested)
         {

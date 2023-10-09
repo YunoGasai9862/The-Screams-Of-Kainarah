@@ -39,16 +39,3 @@ MonoBehaviour:
       value: 0
     valueBool:
       value: 1
-  - animationName: EnemyAttack2
-    selectIntValue: 0
-    selectBoolValue: 1
-    selectFloatValue: 0
-    selectStringValue: 0
-    valueInt:
-      value: 0
-    valueString:
-      value: 
-    valueFloat:
-      value: 0
-    valueBool:
-      value: 1

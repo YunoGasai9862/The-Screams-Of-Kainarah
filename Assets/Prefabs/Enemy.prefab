@@ -167,7 +167,7 @@ SpriteRenderer:
   m_SortingOrder: 1
   m_Sprite: {fileID: -595256821, guid: cf7ff2c53746cff44924cd3d48be6077, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 1
+  m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1.8125, y: 1.4375}
@@ -230,17 +230,16 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 613478252915356505}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe72db2a50c0dc245a0facaba6e43147, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StopForAttack: 0
   Player:
     serializedVersion: 2
     m_Bits: 128
-  Hit: {fileID: 3285503076644769960, guid: 15b81b06a58e6014a92f09a4bef3dee3, type: 3}
-  MaxHealth: 0
+  MaxHealth: 100
+  _enemyHittableObjects: {fileID: 11400000, guid: 717a65d109ef0bf4fbb68f126e57dccd, type: 2}
 --- !u!114 &1912497939
 MonoBehaviour:
   m_ObjectHideFlags: 0
