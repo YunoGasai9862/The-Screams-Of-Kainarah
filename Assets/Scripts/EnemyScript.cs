@@ -83,17 +83,13 @@ public class EnemyScript : AbstractEnemy
 
     private async Task<bool> isPlayerInSight()
     {
-        int sign = (int)transform.localEulerAngles.magnitude==180 ? -1 : 1;
-
-        //fix sign issue tomorrow
-
-        Debug.DrawRay(transform.position, sign * transform.right * 3f, Color.cyan);
+        Debug.DrawRay(transform.position, transform.right * 3f, Color.cyan);
 
         await Task.Delay(System.TimeSpan.FromSeconds(.1f));
 
         if (!cancellationToken.IsCancellationRequested)
         {
-            int numOfObjectsInContact=Physics2D.Raycast(transform.position, sign * transform.right, contactFilter2D, rayReleased, 3f);
+            int numOfObjectsInContact=Physics2D.Raycast(transform.position,  transform.right, contactFilter2D, rayReleased, 3f);
 
             if(numOfObjectsInContact > 0) { playerCollider = rayReleased[HITINDEX].collider; return true; }
 
