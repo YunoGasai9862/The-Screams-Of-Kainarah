@@ -26,7 +26,7 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
     [Header("Add the Scriptable Object that Contains the Animation Information")]
     [SerializeField] EnemyAnimationScriptableObject _enemyAnimationScriptableObject;
 
-    private Dictionary<string, System.Action<Object>> enemyActionDictionary;
+    private Dictionary<string, System.Action<object>> enemyActionDictionary;
     private AnimationStateMachine _stateTracker;
     private GameObjectInstantiator _gameObjectCreator;
     private GameObject _enemyGameObject;
@@ -37,7 +37,7 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
     {
         _stateTracker = new AnimationStateMachine(animator);
         _gameObjectCreator = new GameObjectInstantiator(Hit);
-        enemyActionDictionary = new Dictionary<string, System.Action<Object>>() //object is required here
+        enemyActionDictionary = new Dictionary<string, System.Action<object>>() //object is required here
         {
             {"Sword",  value => playHitAnimation(value)}, //lambda expression for passing values
             {"Dagger", value => playHitAnimation(value)},
@@ -47,14 +47,14 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
         };
     }
 
-    private void playHitAnimation(Object value)
+    private void playHitAnimation(object value)
     {
         animationFinder<bool>(_enemyAnimationScriptableObject, animationHitParam, true);
         _stateTracker.AnimationPlayMachineBool(animationHitParam, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
         handleGameObjectCreation();
 
     }
-    private void attackLogicInitiation(Object value)
+    private void attackLogicInitiation(object value)
     {
 
     }
@@ -72,14 +72,15 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
         {
             if(Data.tag== actionToBePerformed)
             {
-                System.Action<Object> action = enemyActionDictionary[Data.tag]; //get the function (action) name
-                int valueToPass = 1;
+                System.Action<object> action = enemyActionDictionary[Data.tag]; //get the function (action) name
+                int valueToPass=0; //improve passing logic tomorrow
 
                 if (!checkIfThereAreMoreThanOneExtraParam(optional) && optional.Length != 0)
                 {
+
                 }
 
-                action.Invoke(); //invoke it
+                action.Invoke(valueToPass); //invoke it
             }
         }
     }
