@@ -2,6 +2,7 @@ using GlobalAccessAndGameHelper;
 using PlayerAnimationHandler;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -25,40 +26,39 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
     [Header("Add the Scriptable Object that Contains the Animation Information")]
     [SerializeField] EnemyAnimationScriptableObject _enemyAnimationScriptableObject;
 
-    private Dictionary<string, System.Action> enemyActionDictionary;
+    private Dictionary<string, System.Action<Object>> enemyActionDictionary;
     private AnimationStateMachine _stateTracker;
-    private bool _shouldPlay;
     private GameObjectInstantiator _gameObjectCreator;
     private GameObject _enemyGameObject;
-
+    private int animationPosInTheObject;
     public GameObject enemyGameObject { get => _enemyGameObject; set=>_enemyGameObject = value;}
 
     private void Awake()
     {
         _stateTracker = new AnimationStateMachine(animator);
         _gameObjectCreator = new GameObjectInstantiator(Hit);
-        enemyActionDictionary = new Dictionary<string, System.Action>()
+        enemyActionDictionary = new Dictionary<string, System.Action<Object>>() //object is required here
         {
-            {"Sword",  playHitAnimation},
-            {"Dagger", playHitAnimation},
-            {"Player", attackLogicInitiation }
+            {"Sword",  value => playHitAnimation(value)}, //lambda expression for passing values
+            {"Dagger", value => playHitAnimation(value)},
+            {"Player",  attackLogicInitiation}
 
 
         };
     }
-   
-    private void playHitAnimation()
-    {
 
-        _stateTracker.AnimationPlayMachineBool(animationHitParam, _shouldPlay);
+    private void playHitAnimation(Object value)
+    {
+        animationFinder<bool>(_enemyAnimationScriptableObject, animationHitParam, true);
+        _stateTracker.AnimationPlayMachineBool(animationHitParam, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
         handleGameObjectCreation();
 
     }
-
-    private void attackLogicInitiation()
+    private void attackLogicInitiation(Object value)
     {
-       
+
     }
+
 
     private async void handleGameObjectCreation()
     {
@@ -72,12 +72,13 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
         {
             if(Data.tag== actionToBePerformed)
             {
-                System.Action action = enemyActionDictionary[Data.tag]; //get the function (action) name
+                System.Action<Object> action = enemyActionDictionary[Data.tag]; //get the function (action) name
+                int valueToPass = 1;
 
-                if (!checkIfThereAreMoreThanOneExtraParam(optional) && optional.Length!=0)
+                if (!checkIfThereAreMoreThanOneExtraParam(optional) && optional.Length != 0)
                 {
-                    _shouldPlay = optional[0] == 1 ? true : false; //a new logic for it
                 }
+
                 action.Invoke(); //invoke it
             }
         }
@@ -96,32 +97,34 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
 
     private bool checkIfThereAreMoreThanOneExtraParam(int[] optional)
     {
-       return optional.Length>1? true: false;
+        return optional.Length > 1 ? true : false;
     }
-    
+
     private void animationFinder<T>(EnemyAnimationScriptableObject enemy, string paramToSearch, T valueToSet)
     {
         for(int i=0; i< enemy.eachAnimation.Length; i++)  
         {
             if (paramToSearch == enemy.eachAnimation[i].animationName)
             {
-               switch(valueToSet)  //c# pattern matching algorithm
+                animationPosInTheObject = i;
+                switch (valueToSet)  //c# pattern matching algorithm
                 {
                     case int intValue:
+                        enemy.eachAnimation[i].valueInt = intValue;
                         break;
                     case bool boolValue:
+                        enemy.eachAnimation[i].valueBool = boolValue;
                         break;
                     case float floatValue:
+                        enemy.eachAnimation[i].valueFloat= floatValue;
                         break;      
                     case string stringValue:
+                        enemy.eachAnimation[i].valueString = stringValue;
                         break;
-
                     default:
                         break;
 
                 }
-
-
             }
         }
     }
