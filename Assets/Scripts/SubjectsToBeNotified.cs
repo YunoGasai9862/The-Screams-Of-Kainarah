@@ -26,26 +26,26 @@ public class SubjectsToBeNotified<T> //for player
 
 }
 
-public class SubjectsToBeNotified<T, I> //for player
+public class SubjectsToBeNotifiedV2<T> //for player
 {
-    private List<IObserver<T, I>> _potentialObservers = new();
+    private List<IObserverV2<T>> _potentialObservers = new();
 
-    public List<IObserver<T, I>> potentialObservers { set => _potentialObservers = value; get => _potentialObservers; }
+    public List<IObserverV2<T>> potentialObservers { set => _potentialObservers = value; get => _potentialObservers; }
 
-    public void AddObserver(IObserver<T, I> observer)
+    public void AddObserver(IObserverV2<T> observer)
     {
         _potentialObservers.Add(observer);
     }
 
-    public void RemoveOberver(IObserver<T, I> observer)
+    public void RemoveOberver(IObserverV2<T> observer)
     {
         _potentialObservers.Remove(observer);
     }
-    public void NotifyObservers(ref T value, params I[] optional)
+    public void NotifyObservers<Z>(ref T value, Z value2)
     {
         foreach (var observer in _potentialObservers)
         {
-            observer.OnNotify(ref value, optional);
+            observer.OnNotify(ref value, value2);
         }
     }
 

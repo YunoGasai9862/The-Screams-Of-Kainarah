@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
+public class EnemyObserverPattern : MonoBehaviour, IObserverV2<Collider2D>
 {
     private enum enemyAttack
     {
@@ -49,7 +49,7 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
 
     private void playHitAnimation(object value)
     {
-        animationFinder<bool>(_enemyAnimationScriptableObject, animationHitParam, true);
+        animationFinder(_enemyAnimationScriptableObject, animationHitParam, value);
         _stateTracker.AnimationPlayMachineBool(animationHitParam, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
         handleGameObjectCreation();
 
@@ -66,21 +66,15 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
         await Task.Delay(1000);
         _gameObjectCreator.DestroyGameObject(0f);
     }
-    public void OnNotify(ref Collider2D Data, params int[] optional)
+    public void OnNotify<Z>(ref Collider2D Data, Z optional)
     {
         foreach (var actionToBePerformed in enemyActionDictionary.Keys)
         {
             if(Data.tag== actionToBePerformed)
             {
                 System.Action<object> action = enemyActionDictionary[Data.tag]; //get the function (action) name
-                int valueToPass=0; //improve passing logic tomorrow
 
-                if (!checkIfThereAreMoreThanOneExtraParam(optional) && optional.Length != 0)
-                {
-
-                }
-
-                action.Invoke(valueToPass); //invoke it
+                action.Invoke(optional); //invoke it
             }
         }
     }
@@ -95,12 +89,6 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
         _observerScript.getenemyColliderSubjects.RemoveOberver(this);
 
     }
-
-    private bool checkIfThereAreMoreThanOneExtraParam(int[] optional)
-    {
-        return optional.Length > 1 ? true : false;
-    }
-
     private void animationFinder<T>(EnemyAnimationScriptableObject enemy, string paramToSearch, T valueToSet)
     {
         for(int i=0; i< enemy.eachAnimation.Length; i++)  
@@ -129,5 +117,6 @@ public class EnemyObserverPattern : MonoBehaviour, IObserver<Collider2D, int>
             }
         }
     }
- 
+
+
 }

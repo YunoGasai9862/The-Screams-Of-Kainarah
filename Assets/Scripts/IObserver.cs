@@ -8,3 +8,8 @@ public interface IObserver<T,I> //simply create another interface instead of inh
 {
     public abstract void OnNotify(ref T Data, params I[] optional);
 }
+
+public interface IObserverV2<T>
+{
+    public abstract void OnNotify<Z>(ref T Data, Z optional);
+}

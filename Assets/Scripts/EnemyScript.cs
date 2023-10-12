@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class EnemyScript : AbstractEnemy
 {
-    private enum AnimationIndicator
-    {
-        STOP = 0, PLAY = 1
-    }
-
     private const int RAYSARRAYSIZE= 2;
     private const int HITINDEX = 0;
 
@@ -64,7 +59,7 @@ public class EnemyScript : AbstractEnemy
             {
                 wayPointsMovementScript.shouldMove = false;
 
-                await enemyObserverListener.EnemyActionDelegator(playerCollider, gameObject);
+                await enemyObserverListener.EnemyActionDelegator(playerCollider, gameObject, true);
 
             }
             else
@@ -103,7 +98,7 @@ public class EnemyScript : AbstractEnemy
         if (gameObject != null && await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
             health -= HITPOINTS;
-            _ = await enemyObserverListener.EnemyActionDelegator(collision, gameObject, (int)AnimationIndicator.PLAY);
+            _ = await enemyObserverListener.EnemyActionDelegator(collision, gameObject, true);
 
         }
     }
@@ -111,7 +106,7 @@ public class EnemyScript : AbstractEnemy
     {
         if (gameObject != null && await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
-            _ = await enemyObserverListener.EnemyActionDelegator(collision, gameObject, (int)AnimationIndicator.STOP);
+            _ = await enemyObserverListener.EnemyActionDelegator(collision, gameObject, false);
 
         }
     }

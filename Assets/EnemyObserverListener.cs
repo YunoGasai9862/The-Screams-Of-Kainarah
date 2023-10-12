@@ -5,22 +5,21 @@ using UnityEngine;
 
 public class EnemyObserverListener : MonoBehaviour
 {
-    private SubjectsToBeNotified<Collider2D, int> enemyColliderSubjects=new();
+    private SubjectsToBeNotifiedV2<Collider2D> enemyColliderSubjects=new();
     private EnemyObserverPattern enemyObserverPattern;
 
-    public SubjectsToBeNotified<Collider2D, int> getenemyColliderSubjects {get=> enemyColliderSubjects;}
+    public SubjectsToBeNotifiedV2<Collider2D> getenemyColliderSubjects {get=> enemyColliderSubjects;}
 
     private void Awake()
     {
         enemyObserverPattern = FindObjectOfType<EnemyObserverPattern>();
     }
 
-    public async Task<bool> EnemyActionDelegator(Collider2D collider, GameObject enemyObject, params int[] optionalints)
+    public async Task<bool> EnemyActionDelegator<Z>(Collider2D collider, GameObject enemyObject, Z value)
     {
         enemyObserverPattern.enemyGameObject = enemyObject; //sets it for use    
-        getenemyColliderSubjects.NotifyObservers(ref collider, optionalints);
+        getenemyColliderSubjects.NotifyObservers(ref collider, value);
         return await Task.FromResult(true);
     }
-
 
 }
