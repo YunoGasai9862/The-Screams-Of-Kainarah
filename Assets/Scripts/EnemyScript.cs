@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -24,7 +25,11 @@ public class EnemyScript : AbstractEnemy
     [SerializeField] int MaxHealth;
     [Header("Hittable Objects")]
     [SerializeField] public EnemyHittableObjects _enemyHittableObjects;
-
+    [Header("Enter hit Param name")]
+    [SerializeField] string animationHitParam;
+    [Header("Enter Attack Anim Param name")]
+    [SerializeField] string animationAttackParam;
+    [SerializeField] string[] extraAnimations;
 
     public override string enemyName { get => m_Name; set => m_Name = value; }
     public override int health { get => m_health; set => m_health = value; }
@@ -52,21 +57,17 @@ public class EnemyScript : AbstractEnemy
 
     async void Update()
     {
-        if (transform.gameObject.name != "Enemy2")
+
+        if (await isPlayerInSight())
         {
+            wayPointsMovementScript.shouldMove = false;
 
-            if (await isPlayerInSight())
-            {
-                wayPointsMovementScript.shouldMove = false;
+            await enemyObserverListener.EnemyActionDelegator(playerCollider, gameObject, animationAttackParam, true);
 
-                await enemyObserverListener.EnemyActionDelegator(playerCollider, gameObject, true);
-
-            }
-            else
-            {
-                wayPointsMovementScript.shouldMove = true;
-            }
-
+        }
+        else
+        {
+            wayPointsMovementScript.shouldMove = true;
         }
 
         if (isEnemyHealthZero(health))
@@ -98,7 +99,7 @@ public class EnemyScript : AbstractEnemy
         if (gameObject != null && await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
             health -= HITPOINTS;
-            _ = await enemyObserverListener.EnemyActionDelegator(collision, gameObject, true);
+            _ = await enemyObserverListener.EnemyActionDelegator(collision, gameObject, animationHitParam, true);
 
         }
     }
@@ -106,7 +107,7 @@ public class EnemyScript : AbstractEnemy
     {
         if (gameObject != null && await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
-            _ = await enemyObserverListener.EnemyActionDelegator(collision, gameObject, false);
+            _ = await enemyObserverListener.EnemyActionDelegator(collision, gameObject, animationHitParam, false);
 
         }
     }

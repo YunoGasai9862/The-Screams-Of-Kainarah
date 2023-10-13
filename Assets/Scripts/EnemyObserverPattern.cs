@@ -19,14 +19,10 @@ public class EnemyObserverPattern : MonoBehaviour, IObserverV2<Collider2D>
     [SerializeField] GameObject Hit;
     [Header("Add Enemy's Animator Component")]
     [SerializeField] Animator animator;
-    [Header("Enter hit Param name")]
-    [SerializeField] string animationHitParam;
-    [Header("Enter Attack Anim Param name")]
-    [SerializeField] string animationAttackParam;
     [Header("Add the Scriptable Object that Contains the Animation Information")]
     [SerializeField] EnemyAnimationScriptableObject _enemyAnimationScriptableObject;
 
-    private Dictionary<string, System.Action<object>> enemyActionDictionary;
+    private Dictionary<string, System.Action<object, object>> enemyActionDictionary;
     private AnimationStateMachine _stateTracker;
     private GameObjectInstantiator _gameObjectCreator;
     private GameObject _enemyGameObject;
@@ -37,28 +33,28 @@ public class EnemyObserverPattern : MonoBehaviour, IObserverV2<Collider2D>
     {
         _stateTracker = new AnimationStateMachine(animator);
         _gameObjectCreator = new GameObjectInstantiator(Hit);
-        enemyActionDictionary = new Dictionary<string, System.Action<object>>() //object is required here
+        enemyActionDictionary = new Dictionary<string, System.Action<object, object>>() //object is required here
         {
-            {"Sword",  value => playHitAnimation(value)}, //lambda expression for passing values
-            {"Dagger", value => playHitAnimation(value)},
-            {"Player",  attackLogicInitiation}
-
+            {"Sword",  (animName,  value) => playHitAnimation(animName, value)}, //lambda expression for passing values
+            {"Dagger", (animName,  value) => playHitAnimation(animName, value)},
+            {"Player", (animName,  value) =>  attackLogicInitiation(animName, value)}
 
         };
     }
 
-    private void playHitAnimation(object value)
+    private void playHitAnimation(object animName, object value)
     {
-        animationFinder(_enemyAnimationScriptableObject, animationHitParam, value);
-        _stateTracker.AnimationPlayMachineBool(animationHitParam, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
+        animationFinder(_enemyAnimationScriptableObject, (string)animName, value);
+        _stateTracker.AnimationPlayMachineBool((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
         handleGameObjectCreation();
 
     }
-    private void attackLogicInitiation(object value)
+    private void attackLogicInitiation(object animName, object value)
     {
+        animationFinder(_enemyAnimationScriptableObject, (string)animName, value);
+        _stateTracker.AnimationPlayMachineBool((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
 
     }
-
 
     private async void handleGameObjectCreation()
     {
@@ -66,15 +62,15 @@ public class EnemyObserverPattern : MonoBehaviour, IObserverV2<Collider2D>
         await Task.Delay(1000);
         _gameObjectCreator.DestroyGameObject(0f);
     }
-    public void OnNotify<Z>(ref Collider2D Data, Z optional)
+    public void OnNotify<Z, Y>(ref Collider2D Data, Z value1, Y value2)
     {
         foreach (var actionToBePerformed in enemyActionDictionary.Keys)
         {
             if(Data.tag== actionToBePerformed)
             {
-                System.Action<object> action = enemyActionDictionary[Data.tag]; //get the function (action) name
+                System.Action<object, object> action = enemyActionDictionary[Data.tag]; //get the function (action) name
 
-                action.Invoke(optional); //invoke it
+                action.Invoke(value1, value2); //invoke it
             }
         }
     }
