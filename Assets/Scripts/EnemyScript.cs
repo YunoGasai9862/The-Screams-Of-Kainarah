@@ -19,6 +19,7 @@ public class EnemyScript : AbstractEnemy
     private RaycastHit2D[] rayReleased;
     private ContactFilter2D contactFilter2D;
     private Collider2D playerCollider;
+    private Collider2D tempCollider;
 
     [SerializeField] LayerMask Player;
     [Header("Max Health For The Enemy")]
@@ -62,17 +63,25 @@ public class EnemyScript : AbstractEnemy
         {
             wayPointsMovementScript.shouldMove = false;
 
-            await enemyObserverListener.EnemyActionDelegator(playerCollider, gameObject, animationAttackParam, true);
+            gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+
+            if(!cancellationToken.IsCancellationRequested)
+                await enemyObserverListener.EnemyActionDelegator(playerCollider, gameObject, animationAttackParam, true);
 
         }
         else
         {
             wayPointsMovementScript.shouldMove = true;
+
+            if (tempCollider!=null)
+                if(!cancellationToken.IsCancellationRequested)    
+                    await enemyObserverListener.EnemyActionDelegator(tempCollider, gameObject, animationAttackParam, false);
+
         }
 
         if (isEnemyHealthZero(health))
         {
-            if (!cancellationTokenSource.IsCancellationRequested)
+            if (!cancellationToken.IsCancellationRequested)
                 Destroy(gameObject);
         }
     }
@@ -83,12 +92,17 @@ public class EnemyScript : AbstractEnemy
 
         await Task.Delay(System.TimeSpan.FromSeconds(.1f));
 
-        if (!cancellationToken.IsCancellationRequested)
+        if(!cancellationToken.IsCancellationRequested)
         {
-            int numOfObjectsInContact=Physics2D.Raycast(transform.position,  transform.right, contactFilter2D, rayReleased, 3f);
+            int numOfObjectsInContact = Physics2D.Raycast(transform.position, transform.right, contactFilter2D, rayReleased, 3f);
 
-            if(numOfObjectsInContact > 0) { playerCollider = rayReleased[HITINDEX].collider; return true; }
+            if (numOfObjectsInContact > 0)
+            {
+                playerCollider = rayReleased[HITINDEX].collider;
+                tempCollider = playerCollider;
+                return true;
 
+            }
         }
 
         return false;

@@ -47,7 +47,7 @@ public class EnemyObserverPattern : MonoBehaviour, IObserverV2<Collider2D>
         animationFinder(_enemyAnimationScriptableObject, (string)animName, value);
         _stateTracker.AnimationPlayMachineBool((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
         handleGameObjectCreation();
-
+ 
     }
     private void attackLogicInitiation(object animName, object value)
     {
@@ -55,7 +55,6 @@ public class EnemyObserverPattern : MonoBehaviour, IObserverV2<Collider2D>
         _stateTracker.AnimationPlayMachineBool((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
 
     }
-
     private async void handleGameObjectCreation()
     {
         _gameObjectCreator.InstantiateGameObject(_enemyGameObject.transform.position, Quaternion.identity);
