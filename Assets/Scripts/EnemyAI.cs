@@ -2,10 +2,12 @@
 using UnityEngine;
 using Pathfinding;
 using GlobalAccessAndGameHelper;
+using System.Threading.Tasks;
+
 public class EnemyAI : MonoBehaviour
 {
     [Header("Pathfinding")]
-    public Transform target;
+    public Transform[] targets;
     public float activateDistance = 50f; //seeking distance
     public float pathUpdateSeconds = 0.5f;
 
@@ -22,19 +24,25 @@ public class EnemyAI : MonoBehaviour
     public bool directionLookEnabled = true;
 
     [Header("Layer Mask")]
-    public LayerMask _groundLayerMask;
+    public LayerMask layerMask;
 
     private Path path;
     private int currentWaypoint = 0;
+    private Transform _actualTarget;
     bool isGrounded = false;
     Seeker seeker;
     Rigidbody2D rb;
 
 
-    public void Start()
+    public async void Start()
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
+
+        if (await isOneTargetOnly(targets))
+        {
+            _actualTarget = targets[0];
+        }
 
         InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds); //it's going to keep repeating the script like a coroutine
     }
@@ -51,8 +59,13 @@ public class EnemyAI : MonoBehaviour
     {
         if (followEnabled && TargetInDistance() && seeker.IsDone()) //the object is found which we are seeking
         {
-            seeker.StartPath(rb.position, target.position, OnPathComplete);
+            seeker.StartPath(rb.position, _actualTarget.position, OnPathComplete);
         }
+    }
+
+    private async Task<bool> isOneTargetOnly(Transform[] targets)
+    {
+        return await Task.FromResult(targets.Length < 2);
     }
 
     private void PathFollow()
@@ -116,13 +129,14 @@ public class EnemyAI : MonoBehaviour
 
     private bool TargetInDistance()
     {
-        return Vector2.Distance(transform.position, target.transform.position) < activateDistance;
+        return Vector2.Distance(transform.position, _actualTarget.transform.position) < activateDistance;
     }
 
     private void OnPathComplete(Path p)
     {
         if (!p.error)
         {
+            Debug.Log(p);
             path = p;
             currentWaypoint = 0;
         }

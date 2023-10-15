@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6972185358230228465}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.15, y: 1.41, z: 0}
+  m_LocalPosition: {x: -3.02, y: 1.18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56,7 +56,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6972185358849154384}
-  - component: {fileID: 1480162791}
   m_Layer: 0
   m_Name: Enemy2
   m_TagString: Enemy
@@ -82,26 +81,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &1480162791
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6972185358849154385}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &6972185359054276948
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,7 +95,6 @@ GameObject:
   - component: {fileID: 6972185359054276944}
   - component: {fileID: 6972185359054276974}
   - component: {fileID: 6972185359054276975}
-  - component: {fileID: 689072354}
   - component: {fileID: 1250198229}
   m_Layer: 0
   m_Name: Enemy2
@@ -132,8 +110,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6972185359054276948}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.03, y: 1.27, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.03, y: 1.18, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -229,6 +207,9 @@ MonoBehaviour:
     m_Bits: 128
   MaxHealth: 100
   _enemyHittableObjects: {fileID: 0}
+  animationHitParam: 
+  animationAttackParam: 
+  extraAnimations: []
 --- !u!61 &6972185359054276974
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -301,21 +282,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &689072354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6972185359054276948}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5af10fa447dcb8843ba59b8aeabc575d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Player:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!114 &1250198229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,7 +297,7 @@ MonoBehaviour:
   Waypoints:
   - {fileID: 299594798}
   - {fileID: 922440053}
-  MovementSpeed: 10
+  MovementSpeed: 6
 --- !u!1 &6972185359099912430
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,7 +323,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6972185359099912430}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.63, y: 1.65, z: -0.73}
+  m_LocalPosition: {x: 2.63, y: 1.22, z: -0.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

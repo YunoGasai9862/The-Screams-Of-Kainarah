@@ -208,7 +208,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 30
+  m_Mass: 1000
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 613478252915356505}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe72db2a50c0dc245a0facaba6e43147, type: 3}
   m_Name: 
@@ -240,6 +240,9 @@ MonoBehaviour:
     m_Bits: 128
   MaxHealth: 100
   _enemyHittableObjects: {fileID: 11400000, guid: 717a65d109ef0bf4fbb68f126e57dccd, type: 2}
+  animationHitParam: Hit
+  animationAttackParam: EnemyAttack
+  extraAnimations: []
 --- !u!114 &1912497939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,12 +250,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 613478252915356505}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 78afc79f4bfd3534181ec4dd200b42d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  targets: []
   activateDistance: 50
   pathUpdateSeconds: 0.5
   speed: 200
@@ -263,7 +266,7 @@ MonoBehaviour:
   followEnabled: 1
   jumpEnabled: 1
   directionLookEnabled: 1
-  _groundLayerMask:
+  layerMask:
     serializedVersion: 2
     m_Bits: 64
 --- !u!114 &1912497940
@@ -336,7 +339,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 613478252915356505}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56ee6abfd751ed4429ac5abf4ded2a31, type: 3}
   m_Name: 
