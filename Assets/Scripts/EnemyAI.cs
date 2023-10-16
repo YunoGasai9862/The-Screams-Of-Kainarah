@@ -8,7 +8,7 @@ public class EnemyAI : MonoBehaviour
 {
     [Header("Pathfinding")]
     public Transform[] targets;
-    public float activateDistance = 50f; //seeking distance
+    public float activeDistance = 50f; //seeking distance
     public float pathUpdateSeconds = 0.5f;
 
     [Header("Physics")]
@@ -88,8 +88,8 @@ public class EnemyAI : MonoBehaviour
         //learn more about the script and modify!!!! (AFTER LIGHTNING IS DONE!!)
 
         //Direction Calculation
-        Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized; //direction from enemy to the currentWayPoint. Normalizes gives the magnitude 
-        Vector2 force = direction * speed * Time.deltaTime;
+        Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized; //direction from enemy to the currentWayPoint. Normalizes gives the magnitude
+        Vector2 force = direction * speed * Time.deltaTime * rb.mass; //account for mass as well
 
         //Jump
 
@@ -97,7 +97,7 @@ public class EnemyAI : MonoBehaviour
         {
             if (direction.y > jumpNodeHeightRequirement)
             {
-                rb.AddForce(Vector2.up * speed * jumpModifier);
+                rb.AddForce(Vector2.up * speed * jumpModifier * rb.mass);
             }
         }
 
@@ -111,32 +111,42 @@ public class EnemyAI : MonoBehaviour
             currentWaypoint++;  //makes sure that the object keeps following the path
         }
 
+
         //Direction Graphics Handling
         if (directionLookEnabled)
         {
             if (rb.velocity.x > 0.05f)
             {
-                transform.localScale = new Vector3(-1f * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+                transform.localScale = flipTheScales(1, transform);
             }
             else if (rb.velocity.x < -0.05f)
             {
-                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+                transform.localScale = flipTheScales(-1, transform);
 
             }
         }
 
     }
 
+    private Vector3 flipTheScales(int flipValue, Transform transform)
+    {
+        return new Vector3(flipValue * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+    }
+
+    private Vector3 flipOnRotationY(int degrees) //try this too
+    {
+        return new Vector3(0, degrees, 0);
+    }
+
     private bool TargetInDistance()
     {
-        return Vector2.Distance(transform.position, _actualTarget.transform.position) < activateDistance;
+        return Vector2.Distance(transform.position, _actualTarget.transform.position) < activeDistance;
     }
 
     private void OnPathComplete(Path p)
     {
         if (!p.error)
         {
-            Debug.Log(p);
             path = p;
             currentWaypoint = 0;
         }
