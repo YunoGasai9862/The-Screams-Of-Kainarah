@@ -11,6 +11,7 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
     public float updatePathSeconds;
     public float activeDistance;
     public Transform[] WayPoints;
+    public float nextWayPointDistance; //tells you how much to move until the next waypoint
 
 
     [Header("Custom Behavior")]
@@ -18,6 +19,7 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
     public bool isJumpEnabled;
     public LayerMask layerMaskForGrounding;
     public float forceMagnitude;
+    public float jumpHeight;
 
     private Seeker seeker;
     private Rigidbody2D rb;
@@ -86,15 +88,27 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
             return; //there's an error -> exit (nothing to follow)
         }
 
-        if(currentWayPointIndex > path.vectorPath.Count)
+        if(currentWayPointIndex >= path.vectorPath.Count)
         {
             return; //crossed all waypoints so far
         }
 
         isGrounded = Physics2D.Raycast(rb.position, -Vector3.up, 1f, layerMaskForGrounding);
 
+        if(isGrounded && isJumpEnabled)
+        {
+            //jump mechanism
+        }
         Vector3 direction = ((Vector2)path.vectorPath[currentWayPointIndex]- rb.position).normalized;  //the waypoint index in the path selected for that true value
         Vector3 force = direction * rb.mass * forceMagnitude;
+
+        rb.AddForce(force, ForceMode2D.Force);
+
+        float distance = Vector3.Distance(rb.position, path.vectorPath[currentWayPointIndex]);
+        if(distance < nextWayPointDistance)
+        {
+            currentWayPointIndex++; //move to next path (tells you how much to move)
+        }
 
     }
 }
