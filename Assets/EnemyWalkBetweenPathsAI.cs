@@ -20,11 +20,12 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
     public LayerMask layerMaskForGrounding;
     public float forceMagnitude;
     public float jumpHeight;
+    public float jumpPower;
 
     private Seeker seeker;
     private Rigidbody2D rb;
     private Path path;
-    private int currentIndex=-1;
+    private int currentIndex = -1;
     private int sign;
     private int currentWayPointIndex = 0;
     private Transform selectedTargetToMoveToward;
@@ -39,42 +40,44 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
 
     private async void FixedUpdate()
     {
-        if(await IsInVisibleDistance() && isFollowEnabled)
+        if (await IsInVisibleDistance() && isFollowEnabled)
         {
             PathToFollow();
         }
     }
 
     private async void UpdatePath()
-    { 
-       if(await IsInVisibleDistance() && isFollowEnabled && seeker.IsDone()) //if one path is finished
+    {
+        if (await IsInVisibleDistance() && isFollowEnabled && seeker.IsDone()) //if one path is finished
         {
-            seeker.StartPath(rb.position, WayPoints[currentIndex].position, OnPathComplete);
+            seeker.StartPath(rb.position, selectedTargetToMoveToward.position, OnPathComplete);
         }
-     
+
     }
 
     private async Task<bool> IsInVisibleDistance() //find the closest first
     {
-        if(currentIndex < WayPoints.Length-1 || currentIndex < 0)
-        {
-            sign = 1;
-        }else
+        if (currentIndex >= WayPoints.Length - 1)
         {
             sign = -1;
         }
+        if (currentIndex <= 0)
+        {
+            sign = 1;
+        }
         currentIndex = currentIndex + sign;
         bool isInDistance = Vector2.Distance(transform.position, WayPoints[currentIndex].position) < activeDistance;
-        if(isInDistance)
-         selectedTargetToMoveToward= WayPoints[currentIndex].transform; 
+        if (isInDistance)
+            selectedTargetToMoveToward = WayPoints[currentIndex].transform;
+
         await Task.Delay(500);
         return isInDistance;
 
     }
 
-    private void OnPathComplete(Path p) 
+    private void OnPathComplete(Path p)
     {
-        if(!p.error)
+        if (!p.error)
         {
             path = p;
             currentWayPointIndex = 0;//resets (this index is for all the waypoints between the wayPoints i have specified)
@@ -83,32 +86,45 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
 
     private async void PathToFollow()
     {
-        if(path==null)
+        if (path == null)
         {
             return; //there's an error -> exit (nothing to follow)
         }
 
-        if(currentWayPointIndex >= path.vectorPath.Count)
+        if (currentWayPointIndex >= path.vectorPath.Count)
         {
             return; //crossed all waypoints so far
         }
 
         isGrounded = Physics2D.Raycast(rb.position, -Vector3.up, 1f, layerMaskForGrounding);
 
-        if(isGrounded && isJumpEnabled)
+        Vector3 direction = ((Vector2)path.vectorPath[currentWayPointIndex] - rb.position).normalized;  //the waypoint index in the path selected for that true value
+        Vector3 force = direction * rb.mass * forceMagnitude * Time.deltaTime;
+
+
+        if (await canJump(isGrounded, isJumpEnabled))
         {
-            //jump mechanism
+            if (direction.y > jumpHeight) //if the direction of y is above, then jump
+            {
+                Debug.Log("Here");
+                rb.AddForce(Vector2.up * forceMagnitude * rb.mass * jumpPower);
+            }
         }
-        Vector3 direction = ((Vector2)path.vectorPath[currentWayPointIndex]- rb.position).normalized;  //the waypoint index in the path selected for that true value
-        Vector3 force = direction * rb.mass * forceMagnitude;
 
         rb.AddForce(force, ForceMode2D.Force);
 
         float distance = Vector3.Distance(rb.position, path.vectorPath[currentWayPointIndex]);
-        if(distance < nextWayPointDistance)
+        if (distance < nextWayPointDistance)
         {
-            currentWayPointIndex++; //move to next path (tells you how much to move)
+            currentWayPointIndex++; //move to next path (current waypoint has been reached)
         }
 
+
+    }
+
+    private async Task<bool> canJump(bool isGrounded, bool isJumpEnabled)
+    {
+        await Task.Delay(100);
+        return isGrounded && isJumpEnabled;
     }
 }

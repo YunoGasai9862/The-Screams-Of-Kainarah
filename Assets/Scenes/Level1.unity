@@ -604,7 +604,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.12, y: 1.27}
   m_EdgeRadius: 0
---- !u!43 &347296948
+--- !u!43 &350471772
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2077,7 +2077,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.4472466, y: 0.881873, z: -0.0072341785}
+  m_LocalPosition: {x: -7.044597, y: 0.87773806, z: -0.0072002583}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2224,98 +2224,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 54
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &623876213
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 623876215}
-  - component: {fileID: 623876214}
-  m_Layer: 0
-  m_Name: LightPoolObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &623876214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 623876213}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66dbf0b9a1eadbc49a21148da7ca9448, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Player: {fileID: 2357857118627078211}
---- !u!4 &623876215
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 623876213}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 48
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &625219367
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 625219369}
-  - component: {fileID: 625219368}
-  m_Layer: 0
-  m_Name: CrystalGenerator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &625219368
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 625219367}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2673045c89a71c84da202dce6edc24f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _tiles: {fileID: 454730941}
-  Crystals: {fileID: 6985490835736572203, guid: b52968afaccb289438b3fdcd569e985b, type: 3}
---- !u!4 &625219369
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 625219367}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 12
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!43 &654175524
+--- !u!43 &617708037
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2480,6 +2389,97 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &623876213
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 623876215}
+  - component: {fileID: 623876214}
+  m_Layer: 0
+  m_Name: LightPoolObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &623876214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 623876213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66dbf0b9a1eadbc49a21148da7ca9448, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player: {fileID: 2357857118627078211}
+--- !u!4 &623876215
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 623876213}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 48
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &625219367
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 625219369}
+  - component: {fileID: 625219368}
+  m_Layer: 0
+  m_Name: CrystalGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &625219368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625219367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2673045c89a71c84da202dce6edc24f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tiles: {fileID: 454730941}
+  Crystals: {fileID: 6985490835736572203, guid: b52968afaccb289438b3fdcd569e985b, type: 3}
+--- !u!4 &625219369
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625219367}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &695092030 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5803765632311059293, guid: 3d53eef10f4683740a9508ec7415baba, type: 3}
@@ -5265,8 +5265,8 @@ MonoBehaviour:
   - {x: 2.363215, y: 0.061176598, z: 0}
   - {x: -1.1521382, y: -0.00029313564, z: 0}
   m_ShapePathHash: 467761487
-  m_Mesh: {fileID: 347296948}
-  m_InstanceId: 30628
+  m_Mesh: {fileID: 617708037}
+  m_InstanceId: 30632
 --- !u!1 &1302264926
 GameObject:
   m_ObjectHideFlags: 0
@@ -5712,8 +5712,8 @@ MonoBehaviour:
   - {x: 2.363215, y: 0.061176598, z: 0}
   - {x: -1.1521382, y: -0.00029313564, z: 0}
   m_ShapePathHash: 467761487
-  m_Mesh: {fileID: 654175524}
-  m_InstanceId: 30672
+  m_Mesh: {fileID: 350471772}
+  m_InstanceId: 30674
 --- !u!1 &1481028406
 GameObject:
   m_ObjectHideFlags: 0
@@ -5982,18 +5982,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updatePathSeconds: 0.3
-  activeDistance: 5
+  activeDistance: 10
   WayPoints:
   - {fileID: 1858552054}
   - {fileID: 327107440}
+  - {fileID: 1271953461}
   nextWayPointDistance: 5
   isFollowEnabled: 1
   isJumpEnabled: 1
   layerMaskForGrounding:
     serializedVersion: 2
     m_Bits: 0
-  forceMagnitude: 10
-  jumpHeight: 0
+  forceMagnitude: 100
+  jumpHeight: 0.5
+  jumpPower: 0.6
 --- !u!1 &1614187360 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6676636840783403517, guid: 530a6e8c04e35c745bfef6d83d77c956, type: 3}
@@ -7321,7 +7323,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!43 &1914812813
+--- !u!43 &1912919815
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
