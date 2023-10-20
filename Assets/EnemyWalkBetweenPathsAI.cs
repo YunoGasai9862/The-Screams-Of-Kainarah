@@ -1,6 +1,4 @@
 using Pathfinding;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -12,6 +10,7 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
     public float activeDistance;
     public Transform[] WayPoints;
     public float nextWayPointDistance; //tells you how much to move until the next waypoint
+    public float jumpCheckOffset;
 
 
     [Header("Custom Behavior")]
@@ -70,7 +69,7 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
         if (isInDistance)
             selectedTargetToMoveToward = WayPoints[currentIndex].transform;
 
-        await Task.Delay(500);
+        await Task.Delay(5);
         return isInDistance;
 
     }
@@ -96,7 +95,9 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
             return; //crossed all waypoints so far
         }
 
-        isGrounded = Physics2D.Raycast(rb.position, -Vector3.up, 1f, layerMaskForGrounding);
+        isGrounded = Physics2D.Raycast(rb.position, -Vector3.up, jumpCheckOffset, layerMaskForGrounding);
+
+        Debug.Log(isGrounded);
 
         Vector3 direction = ((Vector2)path.vectorPath[currentWayPointIndex] - rb.position).normalized;  //the waypoint index in the path selected for that true value
         Vector3 force = direction * rb.mass * forceMagnitude * Time.deltaTime;
@@ -106,25 +107,45 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
         {
             if (direction.y > jumpHeight) //if the direction of y is above, then jump
             {
-                Debug.Log("Here");
                 rb.AddForce(Vector2.up * forceMagnitude * rb.mass * jumpPower);
             }
         }
 
         rb.AddForce(force, ForceMode2D.Force);
 
-        float distance = Vector3.Distance(rb.position, path.vectorPath[currentWayPointIndex]);
-        if (distance < nextWayPointDistance)
+        if(currentWayPointIndex < path.vectorPath.Count)
         {
-            currentWayPointIndex++; //move to next path (current waypoint has been reached)
+            float distance = Vector3.Distance(rb.position, path.vectorPath[currentWayPointIndex]);
+
+            if (distance < nextWayPointDistance)
+            {
+                currentWayPointIndex++; //move to next path (current waypoint has been reached)
+            }
+
+        }
+        Vector3 rotation = await flipCharacter(0, 0, 0);
+
+        if (rb.velocity.x > .05f)
+        {
+            transform.localRotation = Quaternion.Euler(rotation.x, rotation.y, rotation.z);
         }
 
+        if(rb.velocity.x < -.05f)
+        {
+            transform.localRotation = Quaternion.Euler(rotation.x, rotation.y - 180, rotation.z);
 
+        }
+
+    }
+
+    private Task<Vector3> flipCharacter(int valueX, int valueY, int intValueZ)
+    {
+        return Task.FromResult(new Vector3(valueX, valueY, intValueZ));
     }
 
     private async Task<bool> canJump(bool isGrounded, bool isJumpEnabled)
     {
-        await Task.Delay(100);
+        await Task.Delay(5);
         return isGrounded && isJumpEnabled;
     }
 }
