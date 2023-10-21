@@ -7,7 +7,8 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
 
     [Header("Pathfinding Variables")]
     public float updatePathSeconds;
-    public float activeDistance;
+    public float farDistance;
+    public float closeDistance;
     public Transform[] WayPoints;
     public float nextWayPointDistance; //tells you how much to move until the next waypoint
     public float jumpCheckOffset;
@@ -24,11 +25,11 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
     private Seeker seeker;
     private Rigidbody2D rb;
     private Path path;
-    private int currentIndex = -1;
+    private int currentIndex = 0;
     private int sign;
     private int currentWayPointIndex = 0;
     private Transform selectedTargetToMoveToward;
-    private bool isGrounded;
+    private bool isJumping=false;
     void Start()
     {
         seeker = GetComponent<Seeker>();
@@ -47,7 +48,8 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
 
     private async void UpdatePath()
     {
-        if (await IsInVisibleDistance() && isFollowEnabled && seeker.IsDone()) //if one path is finished
+        if (await IsInVisibleDistance() &&
+        isFollowEnabled && seeker.IsDone()) //if one path is finished
         {
             seeker.StartPath(rb.position, selectedTargetToMoveToward.position, OnPathComplete);
         }
@@ -56,6 +58,8 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
 
     private async Task<bool> IsInVisibleDistance() //find the closest first
     {
+        bool inDistance = false;
+
         if (currentIndex >= WayPoints.Length - 1)
         {
             sign = -1;
@@ -64,13 +68,22 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
         {
             sign = 1;
         }
-        currentIndex = currentIndex + sign;
-        bool isInDistance = Vector2.Distance(transform.position, WayPoints[currentIndex].position) < activeDistance;
-        if (isInDistance)
-            selectedTargetToMoveToward = WayPoints[currentIndex].transform;
-
         await Task.Delay(5);
-        return isInDistance;
+
+        if (Vector2.Distance(transform.position, WayPoints[currentIndex].position) < farDistance && Vector2.Distance(transform.position, WayPoints[currentIndex].position) > closeDistance)
+        {
+            selectedTargetToMoveToward = WayPoints[currentIndex].transform;
+            inDistance = true;
+
+        }
+
+        if (Vector2.Distance(transform.position, WayPoints[currentIndex].position) < closeDistance)
+        {
+            currentIndex = currentIndex + sign;
+        }
+
+        return inDistance;
+
 
     }
 
@@ -95,20 +108,26 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
             return; //crossed all waypoints so far
         }
 
-        isGrounded = Physics2D.Raycast(rb.position, -Vector3.up, jumpCheckOffset, layerMaskForGrounding);
-
-        Debug.Log(isGrounded);
 
         Vector3 direction = ((Vector2)path.vectorPath[currentWayPointIndex] - rb.position).normalized;  //the waypoint index in the path selected for that true value
         Vector3 force = direction * rb.mass * forceMagnitude * Time.deltaTime;
 
 
-        if (await canJump(isGrounded, isJumpEnabled))
+        if (await canJump(isJumpEnabled))
         {
-            if (direction.y > jumpHeight) //if the direction of y is above, then jump
+            if (direction.y > jumpHeight && !isJumping) //if the direction of y is above, then jump
             {
+                isJumping = true;
+
                 rb.AddForce(Vector2.up * forceMagnitude * rb.mass * jumpPower);
             }
+
+        }
+
+        if(await canJump(isJumpEnabled) && isJumping)
+        {
+            await Task.Delay(1000);
+            isJumping = false;
         }
 
         rb.AddForce(force, ForceMode2D.Force);
@@ -143,9 +162,9 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
         return Task.FromResult(new Vector3(valueX, valueY, intValueZ));
     }
 
-    private async Task<bool> canJump(bool isGrounded, bool isJumpEnabled)
+    private async Task<bool> canJump(bool isJumpEnabled)
     {
         await Task.Delay(5);
-        return isGrounded && isJumpEnabled;
+        return Physics2D.BoxCast(transform.position, gameObject.GetComponent<Collider2D>().bounds.size, 0.0f, -Vector3.up, jumpCheckOffset, layerMaskForGrounding) && isJumpEnabled;
     }
 }
