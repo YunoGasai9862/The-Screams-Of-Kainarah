@@ -1,9 +1,15 @@
 using Pathfinding;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class EnemyWalkBetweenPathsAI : MonoBehaviour
 {
+    public const float FORCEUPPERLIMIT = 400f;
+
+    [Header("Targets")]
+    public bool multipleTargets;
 
     [Header("Pathfinding Variables")]
     public float updatePathSeconds;
@@ -22,20 +28,27 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
     public float jumpHeight;
     public float jumpPower;
 
-    private Seeker seeker;
-    private Rigidbody2D rb;
-    private Path path;
-    private int currentIndex = 0;
-    private int sign;
-    private int currentWayPointIndex = 0;
-    private Transform selectedTargetToMoveToward;
+    private Seeker _seeker;
+    private Rigidbody2D _rb;
+    private Path _path;
+    private int _currentIndex = 0;
+    private int _sign;
+    private int _currentWayPointIndex = 0;
+    private Transform _selectedTargetToMoveToward;
     private bool isJumping=false;
+    private Collider2D _collider;
+    private Vector2 _boundsValue;
+    private CancellationToken _cancellationToken;
+    private CancellationTokenSource _tokenSource;
+      
     void Start()
     {
-        seeker = GetComponent<Seeker>();
-        rb = GetComponent<Rigidbody2D>();
-
+        _seeker = GetComponent<Seeker>();
+        _rb = GetComponent<Rigidbody2D>();
+        _collider= GetComponent<Collider2D>();
         InvokeRepeating("UpdatePath", 0f, updatePathSeconds);
+        _tokenSource = new CancellationTokenSource();
+        _cancellationToken=_tokenSource.Token;
     }
 
     private async void FixedUpdate()
@@ -48,10 +61,11 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
 
     private async void UpdatePath()
     {
+        _boundsValue = _collider.bounds.center;
         if (await IsInVisibleDistance() &&
-        isFollowEnabled && seeker.IsDone()) //if one path is finished
+        isFollowEnabled && _seeker.IsDone()) //if one path is finished
         {
-            seeker.StartPath(rb.position, selectedTargetToMoveToward.position, OnPathComplete);
+            _seeker.StartPath(_rb.position, _selectedTargetToMoveToward.position, OnPathComplete);
         }
 
     }
@@ -60,30 +74,32 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
     {
         bool inDistance = false;
 
-        if (currentIndex >= WayPoints.Length - 1)
+        if (_currentIndex >= WayPoints.Length - 1)
         {
-            sign = -1;
+            _sign = -1;
         }
-        if (currentIndex <= 0)
+        if (_currentIndex <= 0)
         {
-            sign = 1;
+            _sign = 1;
         }
         await Task.Delay(5);
 
-        if (Vector2.Distance(transform.position, WayPoints[currentIndex].position) < farDistance && Vector2.Distance(transform.position, WayPoints[currentIndex].position) > closeDistance)
+        if (!_cancellationToken.IsCancellationRequested)
         {
-            selectedTargetToMoveToward = WayPoints[currentIndex].transform;
-            inDistance = true;
+            if (Vector2.Distance(transform.position, WayPoints[_currentIndex].position) < farDistance && Vector2.Distance(transform.position, WayPoints[_currentIndex].position) > closeDistance)
+            {
+                _selectedTargetToMoveToward = WayPoints[_currentIndex].transform;
+                inDistance = true;
 
-        }
+            }
 
-        if (Vector2.Distance(transform.position, WayPoints[currentIndex].position) < closeDistance)
-        {
-            currentIndex = currentIndex + sign;
+            if (Vector2.Distance(transform.position, WayPoints[_currentIndex].position) < closeDistance)
+            {
+                _currentIndex = _currentIndex + _sign;
+            }
         }
 
         return inDistance;
-
 
     }
 
@@ -91,26 +107,26 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
     {
         if (!p.error)
         {
-            path = p;
-            currentWayPointIndex = 0;//resets (this index is for all the waypoints between the wayPoints i have specified)
+            _path = p;
+            _currentWayPointIndex = 0;//resets (this index is for all the waypoints between the wayPoints i have specified)
         }
     }
 
     private async void PathToFollow()
     {
-        if (path == null)
+        if (_path == null)
         {
             return; //there's an error -> exit (nothing to follow)
         }
 
-        if (currentWayPointIndex >= path.vectorPath.Count)
+        if (_currentWayPointIndex >= _path.vectorPath.Count)
         {
             return; //crossed all waypoints so far
         }
 
 
-        Vector3 direction = ((Vector2)path.vectorPath[currentWayPointIndex] - rb.position).normalized;  //the waypoint index in the path selected for that true value
-        Vector3 force = direction * rb.mass * forceMagnitude * Time.deltaTime;
+        Vector3 direction = ((Vector2)_path.vectorPath[_currentWayPointIndex] - _rb.position).normalized;  //the waypoint index in the path selected for that true value
+        Vector3 force = direction * forceMagnitude * Time.deltaTime;
 
 
         if (await canJump(isJumpEnabled))
@@ -118,38 +134,34 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
             if (direction.y > jumpHeight && !isJumping) //if the direction of y is above, then jump
             {
                 isJumping = true;
-
-                rb.AddForce(Vector2.up * forceMagnitude * rb.mass * jumpPower);
+                var value = Vector2.up * forceMagnitude * Time.deltaTime * jumpPower;
+                if (value.y < FORCEUPPERLIMIT)
+                    _rb.AddForce(value, ForceMode2D.Impulse);
             }
-
-        }
-
-        if(await canJump(isJumpEnabled) && isJumping)
-        {
-            await Task.Delay(1000);
             isJumping = false;
+
         }
 
-        rb.AddForce(force, ForceMode2D.Force);
+        _rb.AddForce(force, ForceMode2D.Force);
 
-        if(currentWayPointIndex < path.vectorPath.Count)
+        if(_currentWayPointIndex < _path.vectorPath.Count)
         {
-            float distance = Vector3.Distance(rb.position, path.vectorPath[currentWayPointIndex]);
+            float distance = Vector3.Distance(_rb.position, _path.vectorPath[_currentWayPointIndex]);
 
             if (distance < nextWayPointDistance)
             {
-                currentWayPointIndex++; //move to next path (current waypoint has been reached)
+                _currentWayPointIndex++; //move to next path (current waypoint has been reached)
             }
 
         }
         Vector3 rotation = await flipCharacter(0, 0, 0);
 
-        if (rb.velocity.x > .05f)
+        if (_rb.velocity.x > .05f)
         {
             transform.localRotation = Quaternion.Euler(rotation.x, rotation.y, rotation.z);
         }
 
-        if(rb.velocity.x < -.05f)
+        if(_rb.velocity.x < -.05f)
         {
             transform.localRotation = Quaternion.Euler(rotation.x, rotation.y - 180, rotation.z);
 
@@ -165,6 +177,11 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
     private async Task<bool> canJump(bool isJumpEnabled)
     {
         await Task.Delay(5);
-        return Physics2D.BoxCast(transform.position, gameObject.GetComponent<Collider2D>().bounds.size, 0.0f, -Vector3.up, jumpCheckOffset, layerMaskForGrounding) && isJumpEnabled;
+        return Physics2D.Raycast(_boundsValue, -Vector3.up, jumpCheckOffset, layerMaskForGrounding) && isJumpEnabled;
+    }
+
+    private void OnDisable()
+    {
+        _tokenSource.Cancel();
     }
 }
