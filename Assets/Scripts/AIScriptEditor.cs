@@ -6,6 +6,7 @@ using UnityEngine;
 [CustomEditor(typeof(EnemyWalkBetweenPathsAI))]
 public class AIScriptEditor : Editor
 {
+
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
@@ -13,7 +14,16 @@ public class AIScriptEditor : Editor
         serializedObject.Update();
 
         EnemyWalkBetweenPathsAI enemyWalkBetweenPaths = (EnemyWalkBetweenPathsAI)target;
-        SerializedProperty multipleObjects = serializedObject.FindProperty("Multiple Targets");
+
+        SerializedProperty wayPoints = serializedObject.FindProperty("WayPoints");
+        SerializedProperty singleTarget = serializedObject.FindProperty("target");
+
+        if (enemyWalkBetweenPaths.multipleTargets)
+            EditorGUILayout.PropertyField(wayPoints);
+        else
+            EditorGUILayout.PropertyField(singleTarget);
+
+        serializedObject.ApplyModifiedProperties();
 
     }
 }

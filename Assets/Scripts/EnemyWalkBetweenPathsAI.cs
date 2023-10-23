@@ -8,17 +8,12 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
 {
     public const float FORCEUPPERLIMIT = 400f;
 
-    [Header("Targets")]
-    public bool multipleTargets;
-
     [Header("Pathfinding Variables")]
     public float updatePathSeconds;
     public float farDistance;
     public float closeDistance;
-    public Transform[] WayPoints;
     public float nextWayPointDistance; //tells you how much to move until the next waypoint
     public float jumpCheckOffset;
-
 
     [Header("Custom Behavior")]
     public bool isFollowEnabled;
@@ -27,6 +22,14 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
     public float forceMagnitude;
     public float jumpHeight;
     public float jumpPower;
+
+    [Header("Targets")]
+    public bool multipleTargets;
+
+    [HideInInspector]
+    public Transform[] WayPoints;
+    [HideInInspector]
+    public Transform target;
 
     private Seeker _seeker;
     private Rigidbody2D _rb;
@@ -53,7 +56,7 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
 
     private async void FixedUpdate()
     {
-        if (await IsInVisibleDistance() && isFollowEnabled)
+        if ( multipleTargets?await IsInVisibleDistance(_cancellationToken) : await IsInVisibleDistanceSingleTarget(_cancellationToken) && isFollowEnabled)
         {
             PathToFollow();
         }
@@ -62,7 +65,7 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
     private async void UpdatePath()
     {
         _boundsValue = _collider.bounds.center;
-        if (await IsInVisibleDistance() &&
+        if (multipleTargets ? await IsInVisibleDistance(_cancellationToken) : await IsInVisibleDistanceSingleTarget(_cancellationToken) &&
         isFollowEnabled && _seeker.IsDone()) //if one path is finished
         {
             _seeker.StartPath(_rb.position, _selectedTargetToMoveToward.position, OnPathComplete);
@@ -70,7 +73,7 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
 
     }
 
-    private async Task<bool> IsInVisibleDistance() //find the closest first
+    private async Task<bool> IsInVisibleDistance(CancellationToken _token) //find the closest first
     {
         bool inDistance = false;
 
@@ -84,7 +87,7 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
         }
         await Task.Delay(5);
 
-        if (!_cancellationToken.IsCancellationRequested)
+        if (!_token.IsCancellationRequested)
         {
             if (Vector2.Distance(transform.position, WayPoints[_currentIndex].position) < farDistance && Vector2.Distance(transform.position, WayPoints[_currentIndex].position) > closeDistance)
             {
@@ -101,6 +104,22 @@ public class EnemyWalkBetweenPathsAI : MonoBehaviour
 
         return inDistance;
 
+    }
+
+    private async Task<bool> IsInVisibleDistanceSingleTarget(CancellationToken _token) //find the closest first
+    {
+
+        bool inDistance = false;
+
+        if (!_token.IsCancellationRequested)
+        {
+            inDistance = Vector2.Distance(transform.position, target.position) < farDistance;
+            _selectedTargetToMoveToward = target;
+
+            await Task.Delay(100);
+
+        }
+        return inDistance;
     }
 
     private void OnPathComplete(Path p)
