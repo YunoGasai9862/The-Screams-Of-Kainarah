@@ -3,152 +3,205 @@ using UnityEngine;
 using Pathfinding;
 using GlobalAccessAndGameHelper;
 using System.Threading.Tasks;
+using System.Threading;
 
 public class EnemyAI : MonoBehaviour
 {
-    [Header("Pathfinding")]
-    public Transform[] targets;
-    public float activeDistance = 50f; //seeking distance
-    public float pathUpdateSeconds = 0.5f;
+    public const float FORCEUPPERLIMIT = 400f;
 
-    [Header("Physics")]
-    public float speed = 200f;
-    public float nextWaypointDistance = 3f;
-    public float jumpNodeHeightRequirement = 0.8f; //next node height for the enemy to jump
-    public float jumpModifier = 0.3f;//how powerful the jump is for the enemy
-    public float jumpCheckOffset = 0.1f; //collider check
+    [Header("Pathfinding Variables")]
+    public float updatePathSeconds;
+    public float farDistance;
+    public float closeDistance;
+    public float nextWayPointDistance; //tells you how much to move until the next waypoint
+    public float jumpCheckOffset;
 
     [Header("Custom Behavior")]
-    public bool followEnabled = true;
-    public bool jumpEnabled = true;
-    public bool directionLookEnabled = true;
+    public bool isFollowEnabled;
+    public bool isJumpEnabled;
+    public LayerMask layerMaskForGrounding;
+    public float forceMagnitude;
+    public float jumpHeight;
+    public float jumpPower;
 
-    [Header("Layer Mask")]
-    public LayerMask layerMask;
+    [Header("Targets")]
+    public bool multipleTargets;
 
-    private Path path;
-    private int currentWaypoint = 0;
-    private Transform _actualTarget;
-    bool isGrounded = false;
-    Seeker seeker;
-    Rigidbody2D rb;
+    [HideInInspector]
+    public Transform[] WayPoints;
+    [HideInInspector]
+    public Transform target;
 
+    private Seeker _seeker;
+    private Rigidbody2D _rb;
+    private Path _path;
+    private int _currentIndex = 0;
+    private int _sign;
+    private int _currentWayPointIndex = 0;
+    private Transform _selectedTargetToMoveToward;
+    private bool isJumping = false;
+    private Collider2D _collider;
+    private Vector2 _boundsValue;
+    private CancellationToken _cancellationToken;
+    private CancellationTokenSource _tokenSource;
 
-    public async void Start()
+    void Start()
     {
-        seeker = GetComponent<Seeker>();
-        rb = GetComponent<Rigidbody2D>();
-
-        if (await isOneTargetOnly(targets))
-        {
-            _actualTarget = targets[0];
-        }
-
-        InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds); //it's going to keep repeating the script like a coroutine
+        _seeker = GetComponent<Seeker>();
+        _rb = GetComponent<Rigidbody2D>();
+        _collider = GetComponent<Collider2D>();
+        InvokeRepeating("UpdatePath", 0f, updatePathSeconds);
+        _tokenSource = new CancellationTokenSource();
+        _cancellationToken = _tokenSource.Token;
     }
 
-    private void FixedUpdate()
+    private async void FixedUpdate()
     {
-        if (TargetInDistance() && followEnabled)
+        if (multipleTargets ? await IsInVisibleDistanceMultipleTargets(_cancellationToken) : await IsInVisibleDistanceSingleTarget(_cancellationToken) && isFollowEnabled)
         {
-            PathFollow();
+            PathToFollow();
         }
     }
 
-    private void UpdatePath()
+    private async void UpdatePath()
     {
-        if (followEnabled && TargetInDistance() && seeker.IsDone()) //the object is found which we are seeking
+        _boundsValue = _collider.bounds.center;
+        if (multipleTargets ? await IsInVisibleDistanceMultipleTargets(_cancellationToken) : await IsInVisibleDistanceSingleTarget(_cancellationToken) &&
+        isFollowEnabled && _seeker.IsDone()) //if one path is finished
         {
-            seeker.StartPath(rb.position, _actualTarget.position, OnPathComplete);
+            _seeker.StartPath(_rb.position, _selectedTargetToMoveToward.position, OnPathComplete);
         }
+
     }
 
-    private async Task<bool> isOneTargetOnly(Transform[] targets)
+    private async Task<bool> IsInVisibleDistanceMultipleTargets(CancellationToken _token) //find the closest first
     {
-        return await Task.FromResult(targets.Length < 2);
-    }
+        bool inDistance = false;
 
-    private void PathFollow()
-    {
-        if (path == null)
+        if (_currentIndex >= WayPoints.Length - 1)
         {
-            return;
+            _sign = -1;
         }
-
-        //Reached the end of path =>All the possible paths in vectorPath
-        if (currentWaypoint >= path.vectorPath.Count)
+        if (_currentIndex <= 0)
         {
-            return;
+            _sign = 1;
         }
+        await Task.Delay(5);
 
-        //see if we collide with anything
-
-        isGrounded = Physics2D.Raycast(rb.position, -Vector3.up, GetComponent<Collider2D>().bounds.extents.y + jumpCheckOffset);  //keeping modifying other stuff too
-
-        //learn more about the script and modify!!!! (AFTER LIGHTNING IS DONE!!)
-
-        //Direction Calculation
-        Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized; //direction from enemy to the currentWayPoint. Normalizes gives the magnitude
-        Vector2 force = direction * speed * Time.deltaTime * rb.mass; //account for mass as well
-
-        //Jump
-
-        if (jumpEnabled && isGrounded)
+        if (!_token.IsCancellationRequested)
         {
-            if (direction.y > jumpNodeHeightRequirement)
+            if (Vector2.Distance(transform.position, WayPoints[_currentIndex].position) < farDistance && Vector2.Distance(transform.position, WayPoints[_currentIndex].position) > closeDistance)
             {
-                rb.AddForce(Vector2.up * speed * jumpModifier * rb.mass);
+                _selectedTargetToMoveToward = WayPoints[_currentIndex].transform;
+                inDistance = true;
+
+            }
+
+            if (Vector2.Distance(transform.position, WayPoints[_currentIndex].position) < closeDistance)
+            {
+                _currentIndex = _currentIndex + _sign;
             }
         }
 
-        //Movement
-        rb.AddForce(force, ForceMode2D.Force);  //makes the AI enemy move toward the target continuously
+        return inDistance;
 
-        //Next WayPoint
-        float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
-        if (distance < nextWaypointDistance)
+    }
+
+    private async Task<bool> IsInVisibleDistanceSingleTarget(CancellationToken _token) //find the closest first
+    {
+
+        bool inDistance = false;
+
+        if (!_token.IsCancellationRequested)
         {
-            currentWaypoint++;  //makes sure that the object keeps following the path
+            inDistance = Vector2.Distance(transform.position, target.position) < farDistance;
+            _selectedTargetToMoveToward = target;
+
+            await Task.Delay(100);
+
         }
-
-
-        //Direction Graphics Handling
-        if (directionLookEnabled)
-        {
-            if (rb.velocity.x > 0.05f)
-            {
-                transform.localScale = flipTheScales(1, transform);
-            }
-            else if (rb.velocity.x < -0.05f)
-            {
-                transform.localScale = flipTheScales(-1, transform);
-
-            }
-        }
-
-    }
-
-    private Vector3 flipTheScales(int flipValue, Transform transform)
-    {
-        return new Vector3(flipValue * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-    }
-
-    private Vector3 flipOnRotationY(int degrees) //try this too
-    {
-        return new Vector3(0, degrees, 0);
-    }
-
-    private bool TargetInDistance()
-    {
-        return Vector2.Distance(transform.position, _actualTarget.transform.position) < activeDistance;
+        return inDistance;
     }
 
     private void OnPathComplete(Path p)
     {
         if (!p.error)
         {
-            path = p;
-            currentWaypoint = 0;
+            _path = p;
+            _currentWayPointIndex = 0;//resets (this index is for all the waypoints between the wayPoints i have specified)
         }
+    }
+
+    private async void PathToFollow()
+    {
+        if (_path == null)
+        {
+            return; //there's an error -> exit (nothing to follow)
+        }
+
+        if (_currentWayPointIndex >= _path.vectorPath.Count)
+        {
+            return; //crossed all waypoints so far
+        }
+
+
+        Vector3 direction = ((Vector2)_path.vectorPath[_currentWayPointIndex] - _rb.position).normalized;  //the waypoint index in the path selected for that true value
+        Vector3 force = direction * forceMagnitude * Time.deltaTime * _rb.mass;
+
+        if (await canJump(isJumpEnabled))
+        {
+            if (direction.y > jumpHeight && !isJumping) //if the direction of y is above, then jump
+            {
+                isJumping = true;
+                var value = Vector2.up * forceMagnitude * Time.deltaTime * jumpPower;
+                if (value.y < FORCEUPPERLIMIT)
+                    _rb.AddForce(value * _rb.mass, ForceMode2D.Impulse);
+            }
+            isJumping = false;
+
+        }
+
+        _rb.AddForce(force, ForceMode2D.Force);
+
+        if (_currentWayPointIndex < _path.vectorPath.Count)
+        {
+            float distance = Vector3.Distance(_rb.position, _path.vectorPath[_currentWayPointIndex]);
+
+            if (distance < nextWayPointDistance)
+            {
+                _currentWayPointIndex++; //move to next path (current waypoint has been reached)
+            }
+
+        }
+        Vector3 rotation = await flipCharacter(0, 0, 0);
+
+        if (_rb.velocity.x > .05f)
+        {
+            transform.localRotation = Quaternion.Euler(rotation.x, rotation.y, rotation.z);
+        }
+
+        if (_rb.velocity.x < -.05f)
+        {
+            transform.localRotation = Quaternion.Euler(rotation.x, rotation.y - 180, rotation.z);
+
+        }
+
+    }
+
+    private Task<Vector3> flipCharacter(int valueX, int valueY, int intValueZ)
+    {
+        return Task.FromResult(new Vector3(valueX, valueY, intValueZ));
+    }
+
+    private async Task<bool> canJump(bool isJumpEnabled)
+    {
+        await Task.Delay(5);
+        Debug.DrawRay(_boundsValue, -Vector3.up * jumpCheckOffset, Color.red);
+        return Physics2D.Raycast(_boundsValue, -Vector3.up, jumpCheckOffset, layerMaskForGrounding) && isJumpEnabled;
+    }
+
+    private void OnDisable()
+    {
+        _tokenSource.Cancel();
     }
 }

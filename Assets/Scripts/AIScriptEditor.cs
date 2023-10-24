@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(EnemyWalkBetweenPathsAI))]
+[CustomEditor(typeof(EnemyAI))]
 public class AIScriptEditor : Editor
 {
 
@@ -13,7 +13,7 @@ public class AIScriptEditor : Editor
 
         serializedObject.Update();
 
-        EnemyWalkBetweenPathsAI enemyWalkBetweenPaths = (EnemyWalkBetweenPathsAI)target;
+        EnemyAI enemyWalkBetweenPaths = (EnemyAI)target;
 
         SerializedProperty wayPoints = serializedObject.FindProperty("WayPoints");
         SerializedProperty singleTarget = serializedObject.FindProperty("target");
