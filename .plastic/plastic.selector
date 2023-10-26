@@ -1,0 +1,4 @@
+repository "Rocky2DGame@unity_o3Z6SSJwvSXhfw@cloud"
+  path "/"
+    br "/main"
+    co "/main"
