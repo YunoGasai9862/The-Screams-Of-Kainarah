@@ -10,6 +10,7 @@ public class CaveBugsManipulator : MonoBehaviour
     [Header("Particle System")]
     [SerializeField] ParticleSystem _ps;
     [SerializeField] Transform _target;
+    [SerializeField] float particleMovementSpeed;
     private MainModule mainModule;
     private Particle[] particles;
     private CancellationTokenSource cancellationTokenSource;
@@ -28,51 +29,51 @@ public class CaveBugsManipulator : MonoBehaviour
         mainModule = _ps.main;
         particles = new Particle[mainModule.maxParticles]; //stores particles (updates their position as well)
         _ps.Play();
+        StartCoroutine(channelGravity(-1f, 1f));
 
     }
 
     async void Update()
     {
-        //await gravityModifier();
 
         int numberOfParticlesUpdated = _ps.GetParticles(particles); //updates the state of the particles.
 
-        if (numberOfParticlesUpdated > 0 && !_taskRunning) //we dont have the particles
-        {
-          // _taskRunning = true;
-          //_taskRunning = await travelTowardTarget(particles);
+        await travelTowardTarget(particles);
 
-        }
-
-        for (int i = 0; i < particles.Length; i++)
-        {
-            await Task.Delay(10);
-            if (!cancellationToken.IsCancellationRequested)
-            {
-
-              particles[i].position = Vector2.MoveTowards(particles[i].position, _target.position, Time.deltaTime);
-             _ps.SetParticles(particles);
-
-            }
-        }
-
+        //create release and come back effect. The particles once reached, can go back again for the time being
 
     }
 
-    private async Task gravityModifier()
+    private void gravityModifier(float minRange, float maxRange)
     {
-        await Task.Delay(1000);
-        mainModule.gravityModifierMultiplier -= .001f;
+    
+         float value = Random.Range(minRange, maxRange);
+         mainModule.gravityModifierMultiplier += value;
+    }
+
+    private IEnumerator channelGravity(float minRange, float maxRange)
+    {
+        while (true)
+        {
+            gravityModifier(minRange, maxRange);
+
+            yield return new WaitForSeconds(2f);
+        }
     }
 
     private async Task<bool> travelTowardTarget(Particle[] particles)
     {
         for(int i= 0; i < particles.Length; i++)
         {
-            await Task.Delay(10);
+            await Task.Delay(0);
+
             if (!cancellationToken.IsCancellationRequested)
             {
-                particles[i].position = Vector2.MoveTowards(particles[i].position, _target.position, Time.deltaTime);
+                while (Vector2.Distance(particles[i].position, _target.position)>1f)
+                {
+                    particles[i].position = Vector2.MoveTowards(particles[i].position, _target.position, Time.deltaTime);
+                    _ps.SetParticles(particles);
+                }
             }
         }
         return false;
