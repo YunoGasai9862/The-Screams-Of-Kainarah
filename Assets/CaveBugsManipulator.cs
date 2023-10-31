@@ -30,6 +30,7 @@ public class CaveBugsManipulator : MonoBehaviour
         particles = new Particle[mainModule.maxParticles]; //stores particles (updates their position as well)
         _ps.Play();
         StartCoroutine(channelGravity(-1f, 1f));
+       
 
     }
 
@@ -37,8 +38,11 @@ public class CaveBugsManipulator : MonoBehaviour
     {
 
         int numberOfParticlesUpdated = _ps.GetParticles(particles); //updates the state of the particles.
-
+    
         await travelTowardTarget(particles);
+
+
+
 
         //create release and come back effect. The particles once reached, can go back again for the time being
 
@@ -60,6 +64,20 @@ public class CaveBugsManipulator : MonoBehaviour
             yield return new WaitForSeconds(2f);
         }
     }
+
+    private async IAsyncEnumerator<WaitForSeconds> travelTowardTargetManager ()
+    {
+        while (true)
+        {
+            await travelTowardTarget(particles);
+
+            //use Yield function else, IASYNC
+
+            yield return new WaitForSeconds(2f);
+        }
+    }
+
+
 
     private async Task<bool> travelTowardTarget(Particle[] particles)
     {
@@ -83,5 +101,6 @@ public class CaveBugsManipulator : MonoBehaviour
     {
         cancellationTokenSource.Cancel();
     }
+
 
 }

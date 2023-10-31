@@ -1,17 +1,22 @@
-using System;
-using UnityEngine;
 
-[CreateAssetMenu(fileName = "EnemyHittableObjectsScriptableEntity", menuName = "Enemy Hittable Object")]
-public class EnemyHittableObjects : ScriptableObject
+namespace EnemyHittable
 {
-    [Serializable]
-    public class HittableObjects
-    {
-        public bool IsinstantiableObject;
-        public GameObject instantiateAfterAttack;
-        public string ObjectTag;
-    }
+    using System;
+    using UnityEngine;
 
-    public HittableObjects[] elements; //better to create an array so i can store many Elements
+    [CreateAssetMenu(fileName = "EnemyHittableObjectsScriptableEntity", menuName = "Enemy Hittable Object")]
+    public class EnemyHittableObjects : ScriptableObject
+    {
+        [Serializable]
+        public class HittableObjects
+        {
+            public bool IsinstantiableObject;
+            public GameObject instantiateAfterAttack;
+            public string ObjectTag;
+        }
+
+        public HittableObjects[] elements; //better to create an array so i can store many Elements
+
+    }
 
 }

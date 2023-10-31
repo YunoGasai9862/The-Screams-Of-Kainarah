@@ -1,7 +1,7 @@
 
 using System.Threading.Tasks;
 using UnityEngine;
-
+using EnemyHittable;
 public class EnemyHittableManager : MonoBehaviour
 {
     public static Task<bool> isEntityAnAttackObject(Collider2D collider, EnemyHittableObjects objects)

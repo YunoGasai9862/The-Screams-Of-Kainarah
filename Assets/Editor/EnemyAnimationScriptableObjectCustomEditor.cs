@@ -1,12 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEditor;
 using UnityEngine;
-
 
 [CustomEditor(typeof(EnemyAnimationScriptableObject))]
 public class EnemyAnimationScriptableObjectCustomEditor : Editor
 {
+
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
