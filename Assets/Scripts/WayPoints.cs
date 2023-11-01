@@ -1,11 +1,15 @@
-using System;
-using UnityEngine;
 
-[Serializable]
-//implement custom editor
-public class WayPoints: MonoBehaviour
+namespace WayPointsObject
 {
-    [SerializeField] public Transform wayPoint;
-    public bool leftWayPoint;
-    public bool rightWayPoint;
+    using System;
+    using UnityEngine;
+
+    [Serializable]
+    //implement custom editor
+    public class WayPoints : MonoBehaviour
+    {
+        [SerializeField] public Transform wayPoint;
+        public bool leftWayPoint;
+        public bool rightWayPoint;
+    }
 }

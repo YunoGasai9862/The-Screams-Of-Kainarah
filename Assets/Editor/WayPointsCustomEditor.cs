@@ -1,6 +1,7 @@
 
 using UnityEditor;
 using UnityEngine;
+using WayPointsObject;
 
 [CustomEditor(typeof(WayPoints))]
 public class WayPointsCustomEditor : Editor

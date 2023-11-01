@@ -1,7 +1,7 @@
 
+using EnemyHittable;
 using UnityEditor;
 using UnityEngine;
-using EnemyHitable;
 
 [CustomEditor(typeof(EnemyHittableObjects))]
 public class EnemyHittableManagerCustomUIEditor : Editor

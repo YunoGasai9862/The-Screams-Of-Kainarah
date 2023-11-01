@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -24,72 +25,57 @@ public class CaveBugsManipulator : MonoBehaviour
     }
 
 
-    private void Start()
+    private async void Start()
     {
         mainModule = _ps.main;
         particles = new Particle[mainModule.maxParticles]; //stores particles (updates their position as well)
         _ps.Play();
-        StartCoroutine(channelGravity(-1f, 1f));
-       
+        //await channelGravity(-1f, 1f);
 
+        await travelTowardTarget(particles);
+  
     }
 
     async void Update()
     {
-
         int numberOfParticlesUpdated = _ps.GetParticles(particles); //updates the state of the particles.
-    
-        await travelTowardTarget(particles);
 
-
-
-
-        //create release and come back effect. The particles once reached, can go back again for the time being
-
+        //add particles movement here so it doesn't get called every second
     }
 
     private void gravityModifier(float minRange, float maxRange)
     {
     
-         float value = Random.Range(minRange, maxRange);
+         float value = UnityEngine.Random.Range(minRange, maxRange);
          mainModule.gravityModifierMultiplier += value;
     }
 
-    private IEnumerator channelGravity(float minRange, float maxRange)
+    private async Task channelGravity(float minRange, float maxRange)
     {
         while (true)
         {
-            gravityModifier(minRange, maxRange);
+           gravityModifier(minRange, maxRange);
 
-            yield return new WaitForSeconds(2f);
+           await Task.Delay(TimeSpan.FromSeconds(2f));
+
         }
     }
-
-    private async IAsyncEnumerator<WaitForSeconds> travelTowardTargetManager ()
-    {
-        while (true)
-        {
-            await travelTowardTarget(particles);
-
-            //use Yield function else, IASYNC
-
-            yield return new WaitForSeconds(2f);
-        }
-    }
-
 
 
     private async Task<bool> travelTowardTarget(Particle[] particles)
     {
         for(int i= 0; i < particles.Length; i++)
         {
-            await Task.Delay(0);
+            await Task.Delay(TimeSpan.FromSeconds(.5));
 
             if (!cancellationToken.IsCancellationRequested)
             {
                 while (Vector2.Distance(particles[i].position, _target.position)>1f)
                 {
+                    _ps.GetParticles(particles); //updates the state of the particles.
+
                     particles[i].position = Vector2.MoveTowards(particles[i].position, _target.position, Time.deltaTime);
+
                     _ps.SetParticles(particles);
                 }
             }

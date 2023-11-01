@@ -1,13 +1,16 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-[CreateAssetMenu(fileName = "EnemyAnimationScriptableObjectEntity", menuName="Enemy Animation Object" )]
-public class EnemyAnimationScriptableObject : ScriptableObject
+namespace EnemyAnimation
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
+
+    [CreateAssetMenu(fileName = "EnemyAnimationScriptableObjectEntity", menuName="Enemy Animation Object" )]
+    public class EnemyAnimationScriptableObject : ScriptableObject
+    {
     [Serializable]
-   public class EnemyAnimationDetails
+    public class EnemyAnimationDetails
     {
         public string animationName;
         public bool selectIntValue;
@@ -22,4 +25,5 @@ public class EnemyAnimationScriptableObject : ScriptableObject
     }
 
     public EnemyAnimationDetails[] eachAnimation;
+    }
 }
