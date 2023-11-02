@@ -32,7 +32,7 @@ public class CaveBugsManipulator : MonoBehaviour
         _ps.Play();
         //await channelGravity(-1f, 1f);
 
-        await travelTowardTarget(particles);
+       _taskRunning= await travelTowardTarget(particles);
   
     }
 
@@ -40,7 +40,11 @@ public class CaveBugsManipulator : MonoBehaviour
     {
         int numberOfParticlesUpdated = _ps.GetParticles(particles); //updates the state of the particles.
 
-        //add particles movement here so it doesn't get called every second
+        if(!_taskRunning && !cancellationToken.IsCancellationRequested)
+        {
+            _taskRunning= await travelTowardTarget(particles);
+        }
+
     }
 
     private void gravityModifier(float minRange, float maxRange)
@@ -64,9 +68,10 @@ public class CaveBugsManipulator : MonoBehaviour
 
     private async Task<bool> travelTowardTarget(Particle[] particles)
     {
+        _taskRunning = true;
         for(int i= 0; i < particles.Length; i++)
         {
-            await Task.Delay(TimeSpan.FromSeconds(.5));
+            await Task.Delay(TimeSpan.FromSeconds(.02f));
 
             if (!cancellationToken.IsCancellationRequested)
             {
@@ -74,7 +79,7 @@ public class CaveBugsManipulator : MonoBehaviour
                 {
                     _ps.GetParticles(particles); //updates the state of the particles.
 
-                    particles[i].position = Vector2.MoveTowards(particles[i].position, _target.position, Time.deltaTime);
+                    particles[i].position = Vector3.Lerp(particles[i].position, _target.position, .5f);
 
                     _ps.SetParticles(particles);
                 }
