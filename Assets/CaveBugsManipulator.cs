@@ -11,14 +11,12 @@ public class CaveBugsManipulator : MonoBehaviour
     [Header("Particle System")]
     [SerializeField] ParticleSystem _ps;
     [SerializeField] Transform _target;
-    [SerializeField] float particleInterpolationTime;
-    [SerializeField] float delay;
+    [SerializeField] float particleMovementSpeed;
     private MainModule mainModule;
     private Particle[] particles;
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
-    private bool _taskRunning = true;
-
+    private bool _taskRunning = false;
 
     private void Awake()
     {
@@ -34,18 +32,15 @@ public class CaveBugsManipulator : MonoBehaviour
         _ps.Play();
         //await channelGravity(-1f, 1f);
 
-        _taskRunning = await travelTowardTarget(particles, delay);
+        await travelTowardTarget(particles);
   
     }
 
     async void Update()
     {
         int numberOfParticlesUpdated = _ps.GetParticles(particles); //updates the state of the particles.
-   
-        if (!cancellationToken.IsCancellationRequested && !_taskRunning)
-        {
-            _taskRunning = await travelTowardTarget(particles, delay);
-        }
+
+        //add particles movement here so it doesn't get called every second
     }
 
     private void gravityModifier(float minRange, float maxRange)
@@ -66,19 +61,20 @@ public class CaveBugsManipulator : MonoBehaviour
         }
     }
 
-    private async Task<bool> travelTowardTarget(Particle[] particles, float delay)
-    {
-        _taskRunning = true;
 
+    private async Task<bool> travelTowardTarget(Particle[] particles)
+    {
         for(int i= 0; i < particles.Length; i++)
         {
-            await Task.Delay(TimeSpan.FromSeconds(delay));
+            await Task.Delay(TimeSpan.FromSeconds(.5));
 
             if (!cancellationToken.IsCancellationRequested)
             {
                 while (Vector2.Distance(particles[i].position, _target.position)>1f)
                 {
-                    particles[i].position = Vector3.Lerp(particles[i].position, _target.position, particleInterpolationTime);
+                    _ps.GetParticles(particles); //updates the state of the particles.
+
+                    particles[i].position = Vector2.MoveTowards(particles[i].position, _target.position, Time.deltaTime);
 
                     _ps.SetParticles(particles);
                 }
