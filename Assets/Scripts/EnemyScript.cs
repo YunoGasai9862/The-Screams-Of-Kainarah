@@ -45,7 +45,7 @@ public class EnemyScript : AbstractEnemy
         maxHealth = MaxHealth;
         health = maxHealth;
         wayPointsMovementScript = gameObject.GetComponent<WayPointsMovement>();
-        enemyObserverListener = FindObjectOfType<EnemyObserverListener>();
+        enemyObserverListener = FindFirstObjectByType<EnemyObserverListener>();
     }
 
     void Start()

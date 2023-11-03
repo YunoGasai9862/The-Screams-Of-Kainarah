@@ -12,7 +12,7 @@ public class EnemyObserverListener : MonoBehaviour
 
     private void Awake()
     {
-        enemyObserverPattern = FindObjectOfType<EnemyObserverPattern>();
+        enemyObserverPattern = FindFirstObjectByType<EnemyObserverPattern>();
     }
 
     public async Task<bool> EnemyActionDelegator<Z, Y>(Collider2D collider, GameObject enemyObject, Z animName, Y animValue)

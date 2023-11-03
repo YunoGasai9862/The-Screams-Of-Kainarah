@@ -22,7 +22,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     private bool pickedUp;
     private void Awake()
     {
-        playerObserverListener = FindObjectOfType<PlayerObserverListener>();
+        playerObserverListener = FindFirstObjectByType<PlayerObserverListener>();
 
         sr = GetComponent<SpriteRenderer>();
 

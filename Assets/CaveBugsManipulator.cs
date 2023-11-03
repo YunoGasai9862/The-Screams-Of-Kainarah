@@ -11,12 +11,16 @@ public class CaveBugsManipulator : MonoBehaviour
     [Header("Particle System")]
     [SerializeField] ParticleSystem _ps;
     [SerializeField] Transform _target;
-    [SerializeField] float particleMovementSpeed;
+    [SerializeField] float particleLerpTiming;
+    [SerializeField] float taskDelay;
     private MainModule mainModule;
     private Particle[] particles;
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
     private bool _taskRunning = false;
+
+    //getters and setters
+    private bool getTaskRunning {  get =>  _taskRunning; set => _taskRunning = value; }
 
     private void Awake()
     {
@@ -32,7 +36,7 @@ public class CaveBugsManipulator : MonoBehaviour
         _ps.Play();
         //await channelGravity(-1f, 1f);
 
-       _taskRunning= await travelTowardTarget(particles);
+        getTaskRunning = await travelTowardTarget(particles, taskDelay);
   
     }
 
@@ -40,9 +44,10 @@ public class CaveBugsManipulator : MonoBehaviour
     {
         int numberOfParticlesUpdated = _ps.GetParticles(particles); //updates the state of the particles.
 
-        if(!_taskRunning && !cancellationToken.IsCancellationRequested)
+        if(!getTaskRunning && !cancellationToken.IsCancellationRequested)
         {
-            _taskRunning= await travelTowardTarget(particles);
+            getTaskRunning = await travelTowardTarget(particles, taskDelay);
+            Debug.Log("Here");
         }
 
     }
@@ -51,6 +56,7 @@ public class CaveBugsManipulator : MonoBehaviour
     {
     
          float value = UnityEngine.Random.Range(minRange, maxRange);
+
          mainModule.gravityModifierMultiplier += value;
     }
 
@@ -65,22 +71,30 @@ public class CaveBugsManipulator : MonoBehaviour
         }
     }
 
-
-    private async Task<bool> travelTowardTarget(Particle[] particles)
+    private Vector3 randomPosition(Vector3 position, float min, float max)
     {
-        _taskRunning = true;
+        float posX = UnityEngine.Random.Range(min, max);
+        float posY = UnityEngine.Random.Range(min, max);
+        return new Vector3(position.x + posX, position.y + posY);
+    }
+
+
+    private async Task<bool> travelTowardTarget(Particle[] particles, float taskDelay)
+    {
+        getTaskRunning = true;
+
         for(int i= 0; i < particles.Length; i++)
         {
-            await Task.Delay(TimeSpan.FromSeconds(.02f));
+            await Task.Delay(TimeSpan.FromSeconds(taskDelay));
+
+            Vector3 target = randomPosition(_target.position, -2, 2);
 
             if (!cancellationToken.IsCancellationRequested)
             {
-                while (Vector2.Distance(particles[i].position, _target.position)>1f)
+                while (Vector2.Distance(particles[i].position, _target.position)>3f)
                 {
                     _ps.GetParticles(particles); //updates the state of the particles.
-
-                    particles[i].position = Vector3.Lerp(particles[i].position, _target.position, .5f);
-
+                    particles[i].position = Vector3.Lerp(particles[i].position, target, particleLerpTiming);
                     _ps.SetParticles(particles);
                 }
             }

@@ -6,10 +6,10 @@ public class GameObjectCreator : MonoBehaviour
     private static InventoryOpenCloseManager _inventoryOpenCloseManager;
     private static PlayerHelperClassForOtherPurposes _playerHelperClassForOtherPurposes;
     private void Awake()
-    {
-        _dialogueManager = FindObjectOfType<DialogueManager>();
-        _inventoryOpenCloseManager = FindObjectOfType<InventoryOpenCloseManager>();
-        _playerHelperClassForOtherPurposes = FindObjectOfType<PlayerHelperClassForOtherPurposes>();
+    { 
+        _dialogueManager = FindFirstObjectByType<DialogueManager>();  //faster compared to FindObjectOfType
+        _inventoryOpenCloseManager = FindFirstObjectByType<InventoryOpenCloseManager>();
+        _playerHelperClassForOtherPurposes = FindFirstObjectByType<PlayerHelperClassForOtherPurposes>();
     }
 
     public static DialogueManager GetDialogueManager()

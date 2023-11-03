@@ -37,7 +37,7 @@ public class Interactable : MonoBehaviour
         yield return new WaitForSeconds(.1f);
         if (dialogueDictionary[dialogue] == false)
         {
-            FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
+            FindFirstObjectByType<DialogueManager>().StartDialogue(dialogue);
             dialogueDictionary[dialogue] = true; //already played
         }
 
@@ -58,7 +58,7 @@ public class Interactable : MonoBehaviour
             else
             {
 
-                FindObjectOfType<DialogueManager>().StartDialogue(dialogue[Dialoguecounter], dialogue);
+                FindFirstObjectByType<DialogueManager>().StartDialogue(dialogue[Dialoguecounter], dialogue);
                 Dialoguecounter++;
             }
 
