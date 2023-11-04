@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
+public class LightFlickering : MonoBehaviour, IObserverAsync<Candle>
 {
     private Light2D m_light;
 
@@ -21,7 +21,7 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
     public LightObserverPattern _subject;
 
     private Candle m_Candle;
-    private bool coroutingIsRunning = false;
+    private SemaphoreSlim m_Semaphore;
 
     private void Awake()
     {
@@ -39,22 +39,7 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
     {
         _subject.RemoveObserver(this);
     }
-    private async IAsyncEnumerator<WaitForSeconds> lightFlicker(float minIntensity, float maxIntensity)
-    {
-        float _lightFlickerValue = await GenerateLightIntensityAsync(minIntensity, maxIntensity);
-        m_light.intensity = _lightFlickerValue;
-        await Task.Delay(System.TimeSpan.FromSeconds(.2f));
-        coroutingIsRunning = false;
-        yield return new WaitForSeconds(.2f);
 
-
-    }
-    private Task<float> GenerateLightIntensityAsync(float minIntensity, float maxIntensity)
-    {
-        float intensity = Random.Range(minIntensity, maxIntensity);
-        //add checks as well
-        return Task.FromResult(intensity);
-    }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public async Task OnNotify(Candle Data, CancellationToken _cancellationToken)
@@ -67,19 +52,20 @@ public class candleFlickering : MonoBehaviour, IObserverAsync<Candle>
 
             if (m_Candle.LightName == transform.parent.name && m_Candle.canFlicker)
             {
-                if (!coroutingIsRunning)
+                m_Semaphore= new SemaphoreSlim(0);
+    
+                RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(LightFlickerHelper.lightFlicker(m_light, minIntensity, maxIntensity, m_Semaphore) , _cancellationToken); //Async runner
+
+                await m_Semaphore.WaitAsync(); //similar to using a bool variable, initializing it with 0. The thread becomes lock, and released in the helper class function
+
+                //successfully was able to do it! (Async convesion)
+
+                if (_cancellationToken.IsCancellationRequested)
                 {
-                    coroutingIsRunning = true;
-                    RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(lightFlicker(minIntensity, maxIntensity) , _cancellationToken); //Async runner
-
-                    //successfully was able to do it! (Async convesion)
-
-                    if (_cancellationToken.IsCancellationRequested)
-                    {
-                        return;
-                    }
-
+                    return;
                 }
+
+ 
             }
 
             if (m_Candle.LightName == transform.parent.name && !m_Candle.canFlicker)

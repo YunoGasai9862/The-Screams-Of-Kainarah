@@ -11,8 +11,17 @@ public class CaveBugsManipulator : MonoBehaviour
     [Header("Particle System")]
     [SerializeField] ParticleSystem _ps;
     [SerializeField] Transform _target;
+
+
+    [Header("Customizable Behavior")]
     [SerializeField] float particleLerpTiming;
     [SerializeField] float taskDelay;
+    [SerializeField] float minGravity;
+    [SerializeField] float maxGravity;
+    [SerializeField] int minParticleDistanceFromTarget;
+    [SerializeField] int maxParticleDistanceFromTarget;
+
+
     private MainModule mainModule;
     private Particle[] particles;
     private CancellationTokenSource cancellationTokenSource;
@@ -34,9 +43,9 @@ public class CaveBugsManipulator : MonoBehaviour
         mainModule = _ps.main;
         particles = new Particle[mainModule.maxParticles]; //stores particles (updates their position as well)
         _ps.Play();
-        //await channelGravity(-1f, 1f);
+        await channelGravity(minGravity, maxGravity);
 
-        getTaskRunning = await travelTowardTarget(particles, taskDelay);
+        getTaskRunning = await travelTowardTarget(particles, taskDelay, minParticleDistanceFromTarget, maxParticleDistanceFromTarget);  //a decent range
   
     }
 
@@ -46,8 +55,7 @@ public class CaveBugsManipulator : MonoBehaviour
 
         if(!getTaskRunning && !cancellationToken.IsCancellationRequested)
         {
-            getTaskRunning = await travelTowardTarget(particles, taskDelay);
-            Debug.Log("Here");
+            getTaskRunning = await travelTowardTarget(particles, taskDelay, minParticleDistanceFromTarget, maxParticleDistanceFromTarget);
         }
 
     }
@@ -57,7 +65,7 @@ public class CaveBugsManipulator : MonoBehaviour
     
          float value = UnityEngine.Random.Range(minRange, maxRange);
 
-         mainModule.gravityModifierMultiplier += value;
+         mainModule.gravityModifierMultiplier = value;
     }
 
     private async Task channelGravity(float minRange, float maxRange)
@@ -79,7 +87,7 @@ public class CaveBugsManipulator : MonoBehaviour
     }
 
 
-    private async Task<bool> travelTowardTarget(Particle[] particles, float taskDelay)
+    private async Task<bool> travelTowardTarget(Particle[] particles, float taskDelay, int randomMin, int randomMax)
     {
         getTaskRunning = true;
 
@@ -87,11 +95,11 @@ public class CaveBugsManipulator : MonoBehaviour
         {
             await Task.Delay(TimeSpan.FromSeconds(taskDelay));
 
-            Vector3 target = randomPosition(_target.position, -2, 2);
+            Vector3 target = randomPosition(_target.position, randomMin, randomMax);
 
             if (!cancellationToken.IsCancellationRequested)
             {
-                while (Vector2.Distance(particles[i].position, _target.position)>3f)
+                while (Vector2.Distance(particles[i].position, _target.position)> randomMax + 1)
                 {
                     _ps.GetParticles(particles); //updates the state of the particles.
                     particles[i].position = Vector3.Lerp(particles[i].position, target, particleLerpTiming);
