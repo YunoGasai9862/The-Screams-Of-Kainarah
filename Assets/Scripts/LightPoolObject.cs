@@ -13,7 +13,7 @@ public class LightPoolObject : LightObserverPattern
     [Header("Insert Player Object")]
     [SerializeField] GameObject Player;
 
-    public static Dictionary<GameObject, Candle> allCandlesInTheScene = new();
+    public static Dictionary<GameObject, LightEntity> allCandlesInTheScene = new();
     public static List<GameObject> _allCandleObjects;
     private bool calculatingDistance = false;
     private float _screenWidth;
@@ -39,12 +39,12 @@ public class LightPoolObject : LightObserverPattern
 
     }
 
-    private Dictionary<GameObject, Candle> fillupDictionaryWithCandleObjects(List<GameObject> array)
+    private Dictionary<GameObject, LightEntity> fillupDictionaryWithCandleObjects(List<GameObject> array)
     {
-        Dictionary<GameObject, Candle> _candleObjects = new();
+        Dictionary<GameObject, LightEntity> _candleObjects = new();
         foreach (GameObject value in array)
         {
-            Candle _temp = new(); //this fixed the issue!!!
+            LightEntity _temp = new(); //this fixed the issue!!!
             _temp.LightName = value.name;
             _temp.canFlicker = false;
             _candleObjects[value] = _temp;
@@ -53,12 +53,12 @@ public class LightPoolObject : LightObserverPattern
         return _candleObjects;
     }
 
-    private async Task PlayersDistanceFromCandles(Dictionary<GameObject, Candle> dict, float acceptedDistance, CancellationToken token)
+    private async Task PlayersDistanceFromCandles(Dictionary<GameObject, LightEntity> dict, float acceptedDistance, CancellationToken token)
     {
         calculatingDistance = true;
         foreach (GameObject value in dict.Keys) //allows modifying the copy of the keys, etc in the dictionary
         {
-            Candle _candle = new();
+            LightEntity _candle = new();
             _candle.LightName = dict[value].LightName;
             _candle.canFlicker = false;
 

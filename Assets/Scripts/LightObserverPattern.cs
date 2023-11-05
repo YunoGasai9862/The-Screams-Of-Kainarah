@@ -6,22 +6,22 @@ using UnityEngine;
 
 public class LightObserverPattern : MonoBehaviour
 {
-    private List<IObserverAsync<Candle>> subjectsToBeadded = new();
-    public void AddObserver(IObserverAsync<Candle> subject)
+    private List<IObserverAsync<LightEntity>> subjectsToBeadded = new();
+    public void AddObserver(IObserverAsync<LightEntity> subject)
     {
         subjectsToBeadded.Add(subject);
     }
 
-    public void RemoveObserver(IObserverAsync<Candle> subject)
+    public void RemoveObserver(IObserverAsync<LightEntity> subject)
     {
         subjectsToBeadded.Remove(subject);
     }
 
-    public async Task NotifyAllLightObserversAsync(Candle _candleProperties, CancellationToken _cancellationToken)
+    public async Task NotifyAllLightObserversAsync(LightEntity lightProperties, CancellationToken _cancellationToken)
     {
-        foreach (IObserverAsync<Candle> subject in subjectsToBeadded)
+        foreach (IObserverAsync<LightEntity> subject in subjectsToBeadded)
         {
-            await subject.OnNotify(_candleProperties, _cancellationToken);
+            await subject.OnNotify(lightProperties, _cancellationToken);
 
             if (_cancellationToken.IsCancellationRequested)
             {

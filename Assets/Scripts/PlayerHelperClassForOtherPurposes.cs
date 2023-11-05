@@ -52,7 +52,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
 
     }
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision) //FIX THIS TOO
     {
         if (collision.collider.CompareTag("Enemy") || (collision.collider.CompareTag("Boss") &&
             (collision.collider.transform.root.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack") ||
