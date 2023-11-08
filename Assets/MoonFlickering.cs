@@ -23,20 +23,17 @@ public class MoonFlickering : LightObserverPattern
         m_cancellationToken = m_cancellationTokenSource.Token;
         m_light.canFlicker = canFlicker;
         m_light.LightName = transform.parent.name; //always add transform.parent.name
+        m_light.innerRadiusMax = innerRadiusMax;
+        m_light.innerRadiusMin = innerRadiusMin;
+        m_light.outerRadiusMin = outerRadiusMin;
+        m_light.outerRadiusMax = outerRadiusMax;
 
     }
     async void Update()
     {
-         await MoonShimmer(m_light, m_cancellationToken, innerRadiusMin, innerRadiusMax, outerRadiusMin, outerRadiusMax);
+         await MoonShimmer(m_light, m_cancellationToken);
     }
-
-    private async Task<float> GenerateRadia(float min, float max)
-    {
-        await Task.Delay(TimeSpan.FromSeconds(0.5));
-        return UnityEngine.Random.Range(min, max);
-    }
-
-    private async Task MoonShimmer(LightEntity entity, CancellationToken cancellationToken, float innerMinRadius, float innerMaxRadius, float outerMinRadius, float outerMaxRadius)
+    private async Task MoonShimmer(LightEntity entity, CancellationToken cancellationToken)
     {
         await _semaphoreSlim.WaitAsync(); //waits for the thread to become available
         if (!m_cancellationTokenSource.IsCancellationRequested)
@@ -45,8 +42,6 @@ public class MoonFlickering : LightObserverPattern
 
             try
             {
-                await GenerateRadia(innerMinRadius, innerMaxRadius);
-                await GenerateRadia(outerMinRadius, outerMaxRadius);
                 await NotifyAllLightObserversAsync(entity, cancellationToken);
             }
             catch (OperationCanceledException) //catches the exception, and gracefully exits

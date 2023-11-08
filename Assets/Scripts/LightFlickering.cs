@@ -13,10 +13,6 @@ public class LightFlickering : MonoBehaviour, IObserverAsync<LightEntity>
     public float maxIntensity;
     public float minIntensity;
 
-    [Header("Light Outer Radius")]
-    public float maxOuterRadius;
-    public float minOuterRadius;
-
     [Header("Add the Subject which willl be responsible for notifying")]
     public bool anySubjectThatIsNotifyingTheLight;
     [HideInInspector]
@@ -58,7 +54,7 @@ public class LightFlickering : MonoBehaviour, IObserverAsync<LightEntity>
             {
                 m_Semaphore= new SemaphoreSlim(0);
     
-                RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(LightFlickerHelper.lightFlicker(m_light, minIntensity, maxIntensity, m_Semaphore) , _cancellationToken); //Async runner
+                RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(LightFlickerHelper.lightFlicker(m_light, minIntensity, maxIntensity, m_Semaphore, Data.innerRadiusMin, Data.innerRadiusMax, Data.outerRadiusMin, Data.outerRadiusMax) , _cancellationToken); //Async runner
 
                 await m_Semaphore.WaitAsync(); //similar to using a bool variable, initializing it with 0. The thread becomes lock, and released in the helper class function
                 //if the value becomes 0, everything else is put on hold, hence initializing it with 0
