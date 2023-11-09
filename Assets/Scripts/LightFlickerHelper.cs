@@ -7,12 +7,8 @@ using UnityEngine.Rendering.Universal;
 
 public class LightFlickerHelper : MonoBehaviour
 {
-    const float MININNERRADIUS = 0; //default values
-    const float MAXINNERRADIUS = 0;
-    const float MINOUTERRADIUS = 4;
-    const float MAXOUTERRADIUS = 5;
 
-    public static async IAsyncEnumerator<WaitForSeconds> lightFlicker(Light2D light, float minIntensity, float maxIntensity, SemaphoreSlim couroutineBlocker, float minInnnerRadius= MININNERRADIUS, float maxInnerRadius= MAXINNERRADIUS, float minOuterRadius= MINOUTERRADIUS, float maxOuterRadius= MAXOUTERRADIUS)
+    public static async IAsyncEnumerator<WaitForSeconds> lightFlicker(Light2D light, float minIntensity, float maxIntensity, SemaphoreSlim couroutineBlocker, float minInnnerRadius, float maxInnerRadius, float minOuterRadius, float maxOuterRadius)
     {
         float _lightFlickerValue = await GenerateLightIntensityAsync(minIntensity, maxIntensity);
         float _lightInnerRadius = await GenerateLightRadia(minInnnerRadius, maxInnerRadius);

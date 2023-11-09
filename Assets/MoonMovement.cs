@@ -9,7 +9,6 @@ public class MoonMovement : MonoBehaviour
 {
     [Header("Custom Variables")]
     [SerializeField] float moonSpeed;
-    [SerializeField] Transform targetToFollow;
     [SerializeField] float XOffset, YOffset, ZOffset;
 
     private SemaphoreSlim semaphoreSlim= new SemaphoreSlim(1);
@@ -20,19 +19,20 @@ public class MoonMovement : MonoBehaviour
     {
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
+
     }
 
 
     async void Update()
     {
-        await moveToFollowPlayer(targetToFollow, XOffset, YOffset, ZOffset, moonSpeed);   
+        await moveToFollowPlayer(gameObject.transform, XOffset, YOffset, ZOffset, moonSpeed);   
     }
 
     private async Task<bool> moveToFollowPlayer(Transform targetToFollow, float xOffset, float yOffset, float zOffset, float speed)
     {
 
         await semaphoreSlim.WaitAsync();
-        await Task.Delay(TimeSpan.FromSeconds(.5f));
+        await Task.Delay(TimeSpan.FromSeconds(0f));
         if(!cancellationToken.IsCancellationRequested)
         {
             try
