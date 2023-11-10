@@ -10,10 +10,29 @@ public class FollowPlayer : MonoBehaviour
 
     }
 
-    public static void TrackPlayer(Transform Follower, float xOffset, float yOffset, float zOffset, float speed)
+    public static void TrackPlayerX(Transform Follower, float xOffset, float yOffset, float zOffset, float speed)
     {
-        Vector3 newPosition= new(Player.transform.position.x + xOffset, Player.transform.position.y + yOffset, Follower.transform.position.z + zOffset);
+        Vector3 newPosition= new(Player.transform.position.x + xOffset, yOffset, zOffset);
         Follower.transform.position = Vector3.MoveTowards(Follower.transform.position, newPosition, speed * Time.deltaTime);
     }
+
+    public static void TrackPlayerY(Transform Follower, float xOffset, float yOffset, float zOffset, float speed)
+    {
+        Vector3 newPosition = new(xOffset, Player.transform.position.y + yOffset, zOffset);
+        Follower.transform.position = Vector3.MoveTowards(Follower.transform.position, newPosition, speed * Time.deltaTime);
+    }
+
+    public static void TrackPlayerZ(Transform Follower, float xOffset, float yOffset, float zOffset, float speed)
+    {
+        Vector3 newPosition = new(xOffset, yOffset, Follower.transform.position.z + zOffset);
+        Follower.transform.position = Vector3.MoveTowards(Follower.transform.position, newPosition, speed * Time.deltaTime);
+    }
+
+    public static void TrackPlayer(Transform Follower, float xOffset, float yOffset, float zOffset, float speed)
+    {
+        Vector3 newPosition = new(Player.transform.position.x + xOffset, Player.transform.position.y + yOffset, Follower.transform.position.z + zOffset);
+        Follower.transform.position = Vector3.MoveTowards(Follower.transform.position, newPosition, speed * Time.deltaTime);
+    }
+
 
 }

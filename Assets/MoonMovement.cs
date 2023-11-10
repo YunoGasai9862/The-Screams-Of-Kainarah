@@ -37,7 +37,7 @@ public class MoonMovement : MonoBehaviour
         {
             try
             {
-                FollowPlayer.TrackPlayer(targetToFollow, xOffset, yOffset, zOffset, speed);
+                FollowPlayer.TrackPlayerX(targetToFollow, xOffset, yOffset, zOffset, speed);
 
             }
             catch (OperationCanceledException ex)
