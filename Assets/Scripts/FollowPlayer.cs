@@ -34,5 +34,14 @@ public class FollowPlayer : MonoBehaviour
         Follower.transform.position = Vector3.MoveTowards(Follower.transform.position, newPosition, speed * Time.deltaTime);
     }
 
+    public static void TrackPlayerX(Transform Follower, float distance, float xOffset, float yOffset, float zOffset, float speed)
+    {
+        if(Vector2.Distance(Follower.position, Player.transform.position) > distance)
+        {
+            Vector3 newPosition = new(Player.transform.position.x + xOffset, yOffset, zOffset);
+            Follower.transform.position = Vector3.MoveTowards(Follower.transform.position, newPosition, speed * Time.deltaTime);
+        }
+    }
+
 
 }
