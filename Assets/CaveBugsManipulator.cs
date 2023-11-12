@@ -10,7 +10,7 @@ public class CaveBugsManipulator : MonoBehaviour
 {
     [Header("Particle System")]
     [SerializeField] ParticleSystem _ps;
-    [SerializeField] Transform _target;
+    [SerializeField] string _targetTag;
 
 
     [Header("Customizable Behavior")]
@@ -27,12 +27,14 @@ public class CaveBugsManipulator : MonoBehaviour
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
     private bool _taskRunning = false;
+    private GameObject _target;
 
     //getters and setters
     private bool getTaskRunning {  get =>  _taskRunning; set => _taskRunning = value; }
 
     private void Awake()
     {
+         _target = GameObject.FindWithTag(_targetTag);
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
     }
@@ -51,13 +53,18 @@ public class CaveBugsManipulator : MonoBehaviour
 
     async void Update()
     {
-        int numberOfParticlesUpdated = _ps.GetParticles(particles); //updates the state of the particles.
-
-        if(!getTaskRunning && !cancellationToken.IsCancellationRequested)
+        if(_target!=null)
         {
-            getTaskRunning = await travelTowardTarget(particles, taskDelay, minParticleDistanceFromTarget, maxParticleDistanceFromTarget);
-        }
+            int numberOfParticlesUpdated = _ps.GetParticles(particles); //updates the state of the particles.
 
+            if (!getTaskRunning && !cancellationToken.IsCancellationRequested)
+            {
+                getTaskRunning = await travelTowardTarget(particles, taskDelay, minParticleDistanceFromTarget, maxParticleDistanceFromTarget);
+            }
+        }else
+        {
+            _target = GameObject.FindWithTag(_targetTag);
+        }
     }
 
     private void gravityModifier(float minRange, float maxRange)
@@ -95,11 +102,11 @@ public class CaveBugsManipulator : MonoBehaviour
         {
             await Task.Delay(TimeSpan.FromSeconds(taskDelay));
 
-            Vector3 target = randomPosition(_target.position, randomMin, randomMax);
+            Vector3 target = randomPosition(_target.transform.position, randomMin, randomMax);
 
             if (!cancellationToken.IsCancellationRequested)
             {
-                while (Vector2.Distance(particles[i].position, _target.position)> randomMax + 1)
+                while (Vector2.Distance(particles[i].position, _target.transform.position) > randomMax + 1)
                 {
                     _ps.GetParticles(particles); //updates the state of the particles.
                     particles[i].position = Vector3.Lerp(particles[i].position, target, particleLerpTiming);
