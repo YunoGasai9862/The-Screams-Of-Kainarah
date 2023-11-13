@@ -10,7 +10,6 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 {
     [SerializeField] SpriteRenderer sr;
     [SerializeField] Interactable dialogue;
-    [SerializeField] PickableItemsClass _pickableItems;
     [SerializeField] GameObject TeleportTransition;
     private PlayerObserverListener playerObserverListener;
 
@@ -20,9 +19,12 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     public static bool isGrabbing = false;//for the ledge grab script
     private bool once = true;
     private bool pickedUp;
+    private PickableItemsClass _pickableItems;
     private void Awake()
     {
         playerObserverListener = FindFirstObjectByType<PlayerObserverListener>();
+
+        _pickableItems= GameObject.FindWithTag("PickableItemsManager").GetComponent<PickableItemsClass>();
 
         sr = GetComponent<SpriteRenderer>();
 

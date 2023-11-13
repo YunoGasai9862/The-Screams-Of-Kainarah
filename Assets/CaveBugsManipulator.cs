@@ -96,13 +96,16 @@ public class CaveBugsManipulator : MonoBehaviour
 
     private async Task<bool> travelTowardTarget(Particle[] particles, float taskDelay, int randomMin, int randomMax)
     {
+        Vector3 target = Vector3.zero;
+
         getTaskRunning = true;
 
         for(int i= 0; i < particles.Length; i++)
         {
             await Task.Delay(TimeSpan.FromSeconds(taskDelay));
 
-            Vector3 target = randomPosition(_target.transform.position, randomMin, randomMax);
+            if (_target!=null)
+                 target = randomPosition(_target.transform.position, randomMin, randomMax);
 
             if (!cancellationToken.IsCancellationRequested)
             {

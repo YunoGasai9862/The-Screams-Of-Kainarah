@@ -823,7 +823,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sr: {fileID: 0}
   dialogue: {fileID: 0}
-  _pickableItems: {fileID: 0}
   TeleportTransition: {fileID: 0}
 --- !u!114 &3387488181997499512
 MonoBehaviour:
@@ -850,7 +849,7 @@ MonoBehaviour:
   timeDifferenceStateName: ElapsedTime
   jumpAttackStateName: AttackJ
   daggerAttackName: ThrowDagger
-  pickableItems: {fileID: 0}
+  pickableItemClassTag: PickableItemsManager
 --- !u!114 &8744535595071973501
 MonoBehaviour:
   m_ObjectHideFlags: 0

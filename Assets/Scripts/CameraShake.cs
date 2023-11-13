@@ -4,14 +4,15 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class CameraShake : MonoBehaviour
 {
     [Header("Target Camera")]
     [SerializeField] Camera _mainCamera;
 
-    [Header("Target Body Animator")]
-    [SerializeField] Animator _animator;
+    [Header("Target Body Tag")]
+    [SerializeField] string targetBodyTag;
 
     [Header("Shake Min and Max Range")]
     [SerializeField] float _minShake;
@@ -20,11 +21,12 @@ public class CameraShake : MonoBehaviour
     [Header("Target Body Animation Names For Camera Shake")]
     [SerializeField] List<string> animationNames;
 
-    private PlayerAttackEnum.PlayerAttackSlash currentAttackState;
     private Vector3 _cameraOldPosition;
     private CancellationToken _token;
     private CancellationTokenSource _cancellationTokenSource;
     private bool _shaking = false;
+    private GameObject _targetBody;
+    private Animator _animator;
 
     public bool isShaking { get => _shaking; set => _shaking = value; }
 
@@ -32,13 +34,17 @@ public class CameraShake : MonoBehaviour
     {
         _cancellationTokenSource= new CancellationTokenSource();
         _token = _cancellationTokenSource.Token;
+        _targetBody= GameObject.FindWithTag(targetBodyTag);
+        _animator = _targetBody.GetComponent<Animator>();
 
 
     }
 
     void Update()
     {
-        currentTargetAnimationShake(animationNames);
+      
+      currentTargetAnimationShake(animationNames);
+        
     }
 
     private async IAsyncEnumerator<WaitForSeconds> shakeCamera(Camera _mainCamera, float timeForCameraShake) //do it tomorrow

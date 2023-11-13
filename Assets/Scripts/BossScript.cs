@@ -21,24 +21,30 @@ public class BossScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckRotation();
-
-
-        if (GameObjectCreator.GetDialogueManager().getIsOpen())
+        if (Player == null)
         {
-            anim.SetBool("walk", false);
-        }
-        if (onTopBossBool)
-        {
-            TimeoverBody += Time.deltaTime;
-        }
+            Player = GameObject.FindWithTag("Player");
 
-        if (TimeoverBody > .5f)
+        }else
         {
-            _bC2.enabled = false;
-            onTopBossBool = false;
-            StartCoroutine(TimeElapse());
+            CheckRotation();
 
+            if (GameObjectCreator.GetDialogueManager().getIsOpen())
+            {
+                anim.SetBool("walk", false);
+            }
+            if (onTopBossBool)
+            {
+                TimeoverBody += Time.deltaTime;
+            }
+
+            if (TimeoverBody > .5f)
+            {
+                _bC2.enabled = false;
+                onTopBossBool = false;
+                StartCoroutine(TimeElapse());
+
+            }
         }
 
     }

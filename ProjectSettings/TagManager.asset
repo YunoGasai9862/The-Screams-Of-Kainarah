@@ -32,6 +32,7 @@ TagManager:
   - Slots
   - EntitiesTracker
   - candle
+  - PickableItemsManager
   layers:
   - Default
   - TransparentFX

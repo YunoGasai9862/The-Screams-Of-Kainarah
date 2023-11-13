@@ -23,6 +23,7 @@ public class AttackingScript : MonoBehaviour
     private float timeDifferencebetweenStates;
     private bool throwDagger = false;
     private SpriteRenderer _spriteRenderer;
+    private PickableItemsClass _pickableItems;
 
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
@@ -33,7 +34,7 @@ public class AttackingScript : MonoBehaviour
     [SerializeField] string timeDifferenceStateName;
     [SerializeField] string jumpAttackStateName;
     [SerializeField] string daggerAttackName;
-    [SerializeField] PickableItemsClass pickableItems;
+    [SerializeField] string pickableItemClassTag;
 
     private void Awake()
     {
@@ -66,7 +67,10 @@ public class AttackingScript : MonoBehaviour
         _playerAttackState = 0;
     }
 
-
+    private void Start()
+    {
+        _pickableItems = GameObject.FindWithTag(pickableItemClassTag).GetComponent<PickableItemsClass>();
+    }
 
     // Update is called once per frame
     void Update()
@@ -91,7 +95,7 @@ public class AttackingScript : MonoBehaviour
 
         if (daggerInventorySlot != null)
         {
-            ThrowDagger(pickableItems.returnGameObjectForTheKey("Dagger"), ref daggerInventorySlot);
+            ThrowDagger(_pickableItems.returnGameObjectForTheKey("Dagger"), ref daggerInventorySlot);
         }
 
     }

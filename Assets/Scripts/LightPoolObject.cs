@@ -10,14 +10,15 @@ using System;
 
 public class LightPoolObject : LightObserverPattern
 {
-    [Header("Insert Player Object")]
-    [SerializeField] GameObject Player;
+    [Header("Insert Player Tag")]
+    [SerializeField] string PlayerTag;
 
     public static Dictionary<GameObject, LightEntity> allCandlesInTheScene = new();
     public static List<GameObject> _allCandleObjects;
     private bool calculatingDistance = false;
     private float _screenWidth;
     private CancellationTokenSource tokenSource;
+    private GameObject _player;
 
     private void Awake()
     {
@@ -29,6 +30,10 @@ public class LightPoolObject : LightObserverPattern
 
         tokenSource = new();
 
+    }
+    private void Start()
+    {
+        _player = GameObject.FindWithTag(PlayerTag);
     }
     private async void Update()
     {
@@ -62,7 +67,7 @@ public class LightPoolObject : LightObserverPattern
             _candle.LightName = dict[value].LightName;
             _candle.canFlicker = false;
 
-            if (Vector2.Distance(Player.transform.position, value.transform.position) < acceptedDistance)
+            if (Vector2.Distance(_player.transform.position, value.transform.position) < acceptedDistance)
             {
                 _candle.canFlicker = true;
             }
