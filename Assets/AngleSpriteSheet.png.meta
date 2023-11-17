@@ -308,7 +308,15 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      AngleSpriteSheet_0: -7920067344015067448
+      AngleSpriteSheet_1: -2163093924355004195
+      AngleSpriteSheet_2: -8780036375337503695
+      AngleSpriteSheet_3: 4345556640333617087
+      AngleSpriteSheet_4: 2943194590024901122
+      AngleSpriteSheet_5: -2661277799796006686
+      AngleSpriteSheet_6: 1762439468692447291
+      AngleSpriteSheet_7: 1281088384785293976
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
