@@ -33,6 +33,7 @@ TagManager:
   - EntitiesTracker
   - candle
   - PickableItemsManager
+  - DialogueTrigger
   layers:
   - Default
   - TransparentFX

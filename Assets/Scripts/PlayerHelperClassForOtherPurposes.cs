@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 {
     [SerializeField] SpriteRenderer sr;
-    [SerializeField] Interactable dialogue;
+    [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
     private PlayerObserverListener playerObserverListener;
 
@@ -20,6 +20,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     private bool once = true;
     private bool pickedUp;
     private PickableItemsClass _pickableItems;
+    private Interactable dialogue;
     private void Awake()
     {
         playerObserverListener = FindFirstObjectByType<PlayerObserverListener>();
@@ -30,8 +31,17 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
         anim = GetComponent<Animator>();
 
+        dialogue= GameObject.FindWithTag(InteractableTag).GetComponent<Interactable>(); 
+
     }
 
+    private void Update()
+    {
+        if (dialogue != null)
+        {
+            dialogue = GameObject.FindWithTag(InteractableTag).GetComponent<Interactable>();
+        }
+    }
     private void FixedUpdate()
     {
         if (checkForExistenceOfPortal(sr))

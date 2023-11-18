@@ -45,30 +45,30 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
-      propertyPath: WizardPlayerConvo.Array.data[0].sentences.Array.data[0]
+      propertyPath: 'WizardPlayerConvo.Array.data[0].sentences.Array.data[0]'
       value: What are you doing here, miss?
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
-      propertyPath: WizardPlayerConvo.Array.data[1].sentences.Array.data[0]
+      propertyPath: 'WizardPlayerConvo.Array.data[1].sentences.Array.data[0]'
       value: I dont know. I was reposing by one of ponds near the Grisha-Forest.
         A light, iridescent, bubbled out of the pond, and then i remember nothing...
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
-      propertyPath: WizardPlayerConvo.Array.data[1].sentences.Array.data[1]
+      propertyPath: 'WizardPlayerConvo.Array.data[1].sentences.Array.data[1]'
       value: Do you know what place is this?
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
-      propertyPath: WizardPlayerConvo.Array.data[2].sentences.Array.data[0]
+      propertyPath: 'WizardPlayerConvo.Array.data[2].sentences.Array.data[0]'
       value: 'It''s the end of time, miss. No one is safe anymore. This is not a
         place to be in. '
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
-      propertyPath: WizardPlayerConvo.Array.data[2].sentences.Array.data[1]
+      propertyPath: 'WizardPlayerConvo.Array.data[2].sentences.Array.data[1]'
       value: I would advice you to leave. But before you go, have a look at my wares.
         They might aid you in your journey...
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
-      propertyPath: WizardPlayerConvo.Array.data[3].sentences.Array.data[0]
+      propertyPath: 'WizardPlayerConvo.Array.data[3].sentences.Array.data[0]'
       value: I think so. Thanks.
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144530, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
@@ -117,6 +117,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144531, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
       propertyPath: m_Name
+      value: DialogueTrigger Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103493442260144531, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
+      propertyPath: m_TagString
       value: DialogueTrigger
       objectReference: {fileID: 0}
     m_RemovedComponents: []
