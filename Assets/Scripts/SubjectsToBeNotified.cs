@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class SubjectsToBeNotified<T> //for player
 {
+
     private List<IObserver<T>> _potentialObservers = new();
 
     public List<IObserver<T>> potentialObservers { set=>_potentialObservers=value; get=>_potentialObservers; }

@@ -51,6 +51,9 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
             StartCoroutine(WaiterFunction());
             GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
+
+
+
         if (FindingObjects.FindObject(gameObject, "Boss"))
         {
             StartCoroutine(dialogue.TriggerDialogue(dialogue.BossDialogue));
@@ -88,7 +91,6 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     {
         pickedUp = _pickableItems.didPlayerCollideWithaPickableItem(collision.tag);
 
-
         if (pickedUp)
         {
             bool shouldbedisabled = _pickableItems.shouldThisItemBeDisabled(collision.tag);
@@ -98,10 +100,10 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
             bool shouldMusicBePlayed = true;
 
-            _= await playerObserverListener.PlayerMusicDelegator(shouldMusicBePlayed);
+            await playerObserverListener.ListenerDelegator<bool>(PlayerObserverListenerHelper.BoolSubjects, shouldMusicBePlayed);
         }
 
-        _= await playerObserverListener.PlayerCollisionDelegator(collision);
+         await playerObserverListener.ListenerDelegator<Collider2D>(PlayerObserverListenerHelper.ColliderSubjects, collision);
     }
 
 

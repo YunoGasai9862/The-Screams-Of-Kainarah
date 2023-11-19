@@ -7,6 +7,9 @@ public class Interactable : MonoBehaviour
     public Dialogues dialogue;
     public Dialogues BossDialogue;
 
+    public Dictionary<string, Dialogues> dialoguesDictionary;
+
+
     [Header("Conversation between Vendor and the Player")]
     public Dialogues[] WizardPlayerConvo;
 
@@ -26,8 +29,12 @@ public class Interactable : MonoBehaviour
         dialogueDictionary.Add(BossDialogue, false);
         MultipleDialogues.Add(WizardPlayerConvo, false);
 
+        dialoguesDictionary = new Dictionary<string, Dialogues>
+        {
+            {"Player", dialogue},
+            {"Boss",  BossDialogue}
 
-
+        };
 
         StartCoroutine(TriggerDialogue(dialogue));//because queue is already empty, thats why using Invoke to give some time to the queue
     }

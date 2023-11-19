@@ -8,8 +8,6 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
     [SerializeField] AudioSource _bgGameMusic;
     [SerializeField] AudioSource _BossMusic;
     [SerializeField] AudioSource _Pickup;
-    [Header("Add the Player Delegate Object")]
-    [SerializeField] PlayerObserverListener _targetScript;
     GameMusicState _gameState;
 
     private bool shouldPlayPickUpAudio;
@@ -23,12 +21,12 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
 
     private void OnEnable()
     {
-        _targetScript.getBoolSubjects.AddObserver(this);
+        PlayerObserverListenerHelper.BoolSubjects.AddObserver(this);
     }
 
     private void OnDisable()
     {
-        _targetScript.getBoolSubjects.RemoveOberver(this);
+        PlayerObserverListenerHelper.BoolSubjects.RemoveOberver(this);
     }
     // Update is called once per frame
     void Update()
