@@ -5,35 +5,36 @@ using UnityEngine;
 public class Interactable : MonoBehaviour
 {
     public Dialogues dialogue;
-    public Dialogues BossDialogue;
+    public Dialogues bossDialogue;
 
-    public Dictionary<string, Dialogues> dialoguesDictionary;
+    public Dictionary<string, object> dialoguesDictionary; //can be list or singular
 
 
     [Header("Conversation between Vendor and the Player")]
-    public Dialogues[] WizardPlayerConvo;
+    public Dialogues[] wizardPlayerConvo;
 
     //dictionaries
     public static Dictionary<Dialogues, bool> dialogueDictionary;
     public static Dictionary<Dialogues[], bool> MultipleDialogues;
 
-
-
     public static int Dialoguecounter = 0;
+
+    //getter
+    public Dictionary<string, object> GetDialoguesDict { get => dialoguesDictionary; }
 
     private void Start()
     {
         dialogueDictionary = new Dictionary<Dialogues, bool>();
         MultipleDialogues = new Dictionary<Dialogues[], bool>();
         dialogueDictionary.Add(dialogue, false);
-        dialogueDictionary.Add(BossDialogue, false);
-        MultipleDialogues.Add(WizardPlayerConvo, false);
+        dialogueDictionary.Add(bossDialogue, false);
+        MultipleDialogues.Add(wizardPlayerConvo, false);
 
-        dialoguesDictionary = new Dictionary<string, Dialogues>
+        dialoguesDictionary = new Dictionary<string, object>
         {
             {"Player", dialogue},
-            {"Boss",  BossDialogue}
-
+            {"Boss",  bossDialogue},
+            {"Vendor", wizardPlayerConvo}
         };
 
         StartCoroutine(TriggerDialogue(dialogue));//because queue is already empty, thats why using Invoke to give some time to the queue

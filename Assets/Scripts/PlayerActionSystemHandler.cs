@@ -68,19 +68,13 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 
     public void OnNotify(ref Collider2D collider, params object[] optional)
     {
-        foreach (var actionsToBePerformed in _playerActionHandlerDic.Keys)
+        if(_playerActionHandlerDic.ContainsKey(collider.tag)) //simplified
         {
-            if (actionsToBePerformed == collider.tag)
-            {
-                System.Action action = _playerActionHandlerDic[collider.tag];
+            Action action = _playerActionHandlerDic[collider.tag];
 
-                _passedOnCollider = collider;
+            _passedOnCollider = collider;
 
-                action.Invoke(); //invokes the method
-
-                break;
-
-            }
+            action.Invoke(); //invokes the method
         }
     }
 }

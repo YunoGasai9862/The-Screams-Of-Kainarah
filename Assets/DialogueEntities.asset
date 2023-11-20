@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0de284ccbf2ee24dae18f6cb5c9406d, type: 3}
   m_Name: DialogueEntities
   m_EditorClassIdentifier: 
-  entities: []
+  entities:
+  - entity: {fileID: 7097680049040053745, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
+    shouldDialogueTrigger: 0

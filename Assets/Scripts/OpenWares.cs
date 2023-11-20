@@ -9,7 +9,7 @@ public class OpenWares : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Interactable.MultipleDialogues[checkingDialogue.WizardPlayerConvo])
+        if (Interactable.MultipleDialogues[checkingDialogue.wizardPlayerConvo])
         {
             MagicCircle.SetActive(true);
         }
