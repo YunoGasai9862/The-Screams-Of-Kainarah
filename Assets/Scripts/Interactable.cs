@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    public Dialogues dialogue;
-    public Dialogues bossDialogue;
+    private static Dialogues dialogue;
+    private static Dialogues bossDialogue;
 
-    public Dictionary<string, object> dialoguesDictionary; //can be list or singular
+    private static Dictionary<string, object> dialoguesDictionary; //can be list or singular
 
 
     [Header("Conversation between Vendor and the Player")]
@@ -20,7 +20,7 @@ public class Interactable : MonoBehaviour
     public static int Dialoguecounter = 0;
 
     //getter
-    public Dictionary<string, object> GetDialoguesDict { get => dialoguesDictionary; }
+    public static Dictionary<string, object> GetDialoguesDict { get => dialoguesDictionary; }
 
     private void Start()
     {
@@ -37,10 +37,10 @@ public class Interactable : MonoBehaviour
             {"Vendor", wizardPlayerConvo}
         };
 
-        StartCoroutine(TriggerDialogue(dialogue));//because queue is already empty, thats why using Invoke to give some time to the queue
+        StartCoroutine(TriggerDialogue(dialogue));//because queue is already empty, thats why using Invoke to give some time to the queue (fix that so something triggers it)
     }
 
-    public IEnumerator TriggerDialogue(Dialogues dialogue)
+    public static IEnumerator TriggerDialogue(Dialogues dialogue)
     {
         yield return new WaitForSeconds(.1f);
         if (dialogueDictionary[dialogue] == false)
@@ -52,7 +52,7 @@ public class Interactable : MonoBehaviour
     }
 
 
-    public IEnumerator TriggerDialogue(Dialogues[] dialogue)
+    public static IEnumerator TriggerDialogue(Dialogues[] dialogue)
     {
         if (MultipleDialogues[dialogue] == false)
         {

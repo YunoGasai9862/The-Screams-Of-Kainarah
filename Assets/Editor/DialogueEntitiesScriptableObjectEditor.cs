@@ -28,11 +28,15 @@ public class DialogueEntitiesScriptableObjectEditor : Editor
 
             SerializedProperty entityShouldDialogueTrigger = eachEntity.FindPropertyRelative("shouldDialogueTrigger");
 
+            SerializedProperty entityMultipleDialogues = eachEntity.FindPropertyRelative("multipleDialogues");
+
             EditorGUI.BeginChangeCheck();
 
             EditorGUILayout.PropertyField(entityGameObject);
 
             EditorGUILayout.PropertyField(entityShouldDialogueTrigger);
+
+            EditorGUILayout.PropertyField(entityMultipleDialogues);
 
             EditorGUI.EndChangeCheck();
         }

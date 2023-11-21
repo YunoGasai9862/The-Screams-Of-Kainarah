@@ -56,13 +56,13 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
         if (FindingObjects.FindObject(gameObject, "Boss"))
         {
-            StartCoroutine(dialogue.TriggerDialogue(dialogue.bossDialogue));
+           // StartCoroutine(dialogue.TriggerDialogue(dialogue.bossDialogue));
 
         }
         if (FindingObjects.FindObject(gameObject, "Vendor") && once)
         {
-            StartCoroutine(dialogue.TriggerDialogue(dialogue.wizardPlayerConvo));
-            once = false;
+           // StartCoroutine(dialogue.TriggerDialogue(dialogue.wizardPlayerConvo));
+           // once = false;
         }
 
 

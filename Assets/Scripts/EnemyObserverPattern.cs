@@ -64,14 +64,9 @@ public class EnemyObserverPattern : MonoBehaviour, IObserverV2<Collider2D>
     }
     public void OnNotify<Z, Y>(ref Collider2D Data, Z value1, Y value2)
     {
-        foreach (var actionToBePerformed in enemyActionDictionary.Keys)
+        if(enemyActionDictionary.TryGetValue(Data.tag, out var func))  //put it in the func
         {
-            if(Data.tag== actionToBePerformed)
-            {
-                System.Action<object, object> action = enemyActionDictionary[Data.tag]; //get the function (action) name
-
-                action.Invoke(value1, value2); //invoke it
-            }
+            func.Invoke(value1, value2);//similar to doing it separately
         }
     }
 

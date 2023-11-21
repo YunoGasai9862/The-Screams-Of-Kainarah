@@ -12,7 +12,6 @@ public class DialogueManager : MonoBehaviour
     public bool IsOpen = false;
 
     private static Dialogues[] _dialogues = null;
-    [SerializeField] Interactable myinteractable;
 
     void Start()
     {
@@ -64,7 +63,7 @@ public class DialogueManager : MonoBehaviour
             if (_dialogues != null && Interactable.MultipleDialogues[_dialogues] == false)
             {
 
-                StartCoroutine(myinteractable.TriggerDialogue(_dialogues));
+                StartCoroutine(Interactable.TriggerDialogue(_dialogues));
                 return;  //THIS WAS ALL I NEEDED, OMG!
                 //it fixed the issue, oh lord. 
                 //the problem was: it was trying to execute the rest of the code without exiting the function

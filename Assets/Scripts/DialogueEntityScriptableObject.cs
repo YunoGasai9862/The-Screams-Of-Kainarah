@@ -12,6 +12,7 @@ public class DialogueEntityScriptableObject: ScriptableObject
     {
         public GameObject entity;
         public bool shouldDialogueTrigger;
+        public bool multipleDialogues;
     }
 
     public DialogueEntity[] entities;
