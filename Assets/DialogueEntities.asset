@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: DialogueEntities
   m_EditorClassIdentifier: 
   entities:
-  - entity: {fileID: 0}
-    shouldDialogueTrigger: 0
+  - entity: {fileID: 7097680049040053745, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
+    shouldDialogueTrigger: 1
     multipleDialogues: 0
-  - entity: {fileID: 0}
-    shouldDialogueTrigger: 0
-    multipleDialogues: 0
+  - entity: {fileID: 2162997534625558111, guid: ced37d8fda09e2e4393f3ca890a8df38, type: 3}
+    shouldDialogueTrigger: 1
+    multipleDialogues: 1

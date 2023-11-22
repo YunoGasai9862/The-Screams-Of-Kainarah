@@ -1,16 +1,17 @@
-using GlobalAccessAndGameHelper;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static DialogueEntityScriptableObject;
 
 public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 {
     [SerializeField] SpriteRenderer sr;
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
+    [SerializeField] DialogueEntityScriptableObject dialogueScriptableObject;
     private PlayerObserverListener playerObserverListener;
 
     private Animator anim;
@@ -21,8 +22,17 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     private bool pickedUp;
     private PickableItemsClass _pickableItems;
     private Interactable dialogue;
+    private SemaphoreSlim _semaphoreSlim;
+    private CancellationTokenSource _cancellationTokenSource;
+    private CancellationToken _cancellationToken;
     private void Awake()
     {
+        _semaphoreSlim = new SemaphoreSlim(1);
+
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        _cancellationToken = _cancellationTokenSource.Token;
+
         playerObserverListener = FindFirstObjectByType<PlayerObserverListener>();
 
         _pickableItems= GameObject.FindWithTag("PickableItemsManager").GetComponent<PickableItemsClass>();
@@ -42,30 +52,53 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
             dialogue = GameObject.FindWithTag(InteractableTag).GetComponent<Interactable>();
         }
     }
-    private void FixedUpdate()
+    private async void FixedUpdate()
     {
         if (checkForExistenceOfPortal(sr))
         {
-
             //Instantiate(TeleportTransition, transform.position, Quaternion.identity);
             StartCoroutine(WaiterFunction());
             GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
+         
+        (bool inSight, DialogueEntity entity) = await isGameObjectInSightForDialogueTrigger(dialogueScriptableObject); //use of tuple return
+
+        if(!_cancellationToken.IsCancellationRequested && inSight && entity!=null)
+        {
+            await playerObserverListener.ListenerDelegator<DialogueEntity>(PlayerObserverListenerHelper.DialogueEntites, entity); //test this out
+        }
 
 
-
-        if (FindingObjects.FindObject(gameObject, "Boss"))
+        if (FindingObjects.CastRayToFindObject(gameObject, "Boss"))
         {
            // StartCoroutine(dialogue.TriggerDialogue(dialogue.bossDialogue));
 
         }
-        if (FindingObjects.FindObject(gameObject, "Vendor") && once)
+        if (FindingObjects.CastRayToFindObject(gameObject, "Vendor") && once)
         {
            // StartCoroutine(dialogue.TriggerDialogue(dialogue.wizardPlayerConvo));
            // once = false;
         }
 
 
+    }
+    private async Task<(bool, DialogueEntity)> isGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObject scriptableObject)
+    {
+        bool isInSight = false;
+        DialogueEntity dialogueEntity = null;
+
+        foreach(var item in scriptableObject.entities)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(.1f));
+
+            if(FindingObjects.CastRayToFindObject(gameObject, item.entity.tag))
+            {
+                isInSight = true;
+                dialogueEntity = item;
+                break;
+            }
+        }
+        return (isInSight, dialogueEntity);
     }
     private void OnCollisionEnter2D(Collision2D collision) //FIX THIS TOO
     {
@@ -140,6 +173,10 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
         yield return new WaitForSeconds(1f);
     }
 
+    private void OnDisable()
+    {
+       _cancellationTokenSource.Cancel();
+    }
 
 }
 

@@ -13,6 +13,22 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
+      propertyPath: wizardPlayerConvo.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
+      propertyPath: bossDialogue.sentences.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
+      propertyPath: 'bossDialogue.sentences.Array.data[0]'
+      value: What brings you here!!!!
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
+      propertyPath: 'bossDialogue.sentences.Array.data[1]'
+      value: Begone!! Or Die!
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
       propertyPath: WizardPlayerConvo.Array.data[0].playername
       value: 'Rahbar:'
       objectReference: {fileID: 0}

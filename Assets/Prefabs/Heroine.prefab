@@ -824,6 +824,7 @@ MonoBehaviour:
   sr: {fileID: 0}
   InteractableTag: DialogueTrigger
   TeleportTransition: {fileID: 0}
+  dialogueScriptableObject: {fileID: 11400000, guid: ae73224639778ea4fb6fd69c41f72e5b, type: 2}
 --- !u!114 &3387488181997499512
 MonoBehaviour:
   m_ObjectHideFlags: 0

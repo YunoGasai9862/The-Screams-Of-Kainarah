@@ -22,6 +22,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueEntity>
     private async Task TriggerDialogue(Dialogues[] dialogues)
     {
         await Task.Delay(TimeSpan.FromSeconds(0));
+        Debug.Log(dialogues.Length);
         StartCoroutine(Interactable.TriggerDialogue(dialogues));
      
     }

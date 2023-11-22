@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class FindingObjects : MonoBehaviour
 {
-    public static bool FindObject(GameObject source, string tag)
+    public static bool CastRayToFindObject(GameObject source, string tag)
     {
         RaycastHit2D ray;
         ray = Physics2D.Raycast(source.transform.position, Vector3.right, 10f);

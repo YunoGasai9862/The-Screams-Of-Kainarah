@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    private static Dialogues dialogue;
-    private static Dialogues bossDialogue;
+    public Dialogues dialogue;
+    public Dialogues bossDialogue;
 
     private static Dictionary<string, object> dialoguesDictionary; //can be list or singular
 
