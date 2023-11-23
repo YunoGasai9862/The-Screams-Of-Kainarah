@@ -61,28 +61,16 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
             GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
          
-        (bool inSight, DialogueEntity entity) = await isGameObjectInSightForDialogueTrigger(dialogueScriptableObject); //use of tuple return
+        (bool inSight, DialogueEntity entity) = await isGameObjectInSightForDialogueTrigger(dialogueScriptableObject, _cancellationToken); //use of tuple return
 
-        if(!_cancellationToken.IsCancellationRequested && inSight && entity!=null)
+
+        if (inSight && entity != null)
         {
             await playerObserverListener.ListenerDelegator<DialogueEntity>(PlayerObserverListenerHelper.DialogueEntites, entity); //test this out
         }
 
-
-        if (FindingObjects.CastRayToFindObject(gameObject, "Boss"))
-        {
-           // StartCoroutine(dialogue.TriggerDialogue(dialogue.bossDialogue));
-
-        }
-        if (FindingObjects.CastRayToFindObject(gameObject, "Vendor") && once)
-        {
-           // StartCoroutine(dialogue.TriggerDialogue(dialogue.wizardPlayerConvo));
-           // once = false;
-        }
-
-
     }
-    private async Task<(bool, DialogueEntity)> isGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObject scriptableObject)
+    private async Task<(bool, DialogueEntity)> isGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObject scriptableObject, CancellationToken cancellationToken)
     {
         bool isInSight = false;
         DialogueEntity dialogueEntity = null;
@@ -91,7 +79,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
         {
             await Task.Delay(TimeSpan.FromSeconds(.1f));
 
-            if(FindingObjects.CastRayToFindObject(gameObject, item.entity.tag))
+            if(!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, item.entity.tag))
             {
                 isInSight = true;
                 dialogueEntity = item;
