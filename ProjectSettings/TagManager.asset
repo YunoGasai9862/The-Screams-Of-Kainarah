@@ -34,6 +34,8 @@ TagManager:
   - candle
   - PickableItemsManager
   - DialogueTrigger
+  - TriggerPoint1
+  - SinglePlayerDialogueTriggers
   layers:
   - Default
   - TransparentFX

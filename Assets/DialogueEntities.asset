@@ -19,3 +19,6 @@ MonoBehaviour:
   - entity: {fileID: 2162997534625558111, guid: ced37d8fda09e2e4393f3ca890a8df38, type: 3}
     shouldDialogueTrigger: 1
     multipleDialogues: 1
+  - entity: {fileID: 2370432743021307287, guid: 314d8d53d6c0c4b4dae663477b80e0eb, type: 3}
+    shouldDialogueTrigger: 1
+    multipleDialogues: 0

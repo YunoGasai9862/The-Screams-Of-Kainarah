@@ -63,7 +63,6 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
          
         (bool inSight, DialogueEntity entity) = await isGameObjectInSightForDialogueTrigger(dialogueScriptableObject, _cancellationToken); //use of tuple return
 
-
         if (inSight && entity != null)
         {
             await playerObserverListener.ListenerDelegator<DialogueEntity>(PlayerObserverListenerHelper.DialogueEntites, entity); //test this out
@@ -72,21 +71,16 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     }
     private async Task<(bool, DialogueEntity)> isGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObject scriptableObject, CancellationToken cancellationToken)
     {
-        bool isInSight = false;
-        DialogueEntity dialogueEntity = null;
-
         foreach(var item in scriptableObject.entities)
         {
             await Task.Delay(TimeSpan.FromSeconds(.1f));
 
             if(!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, item.entity.tag))
             {
-                isInSight = true;
-                dialogueEntity = item;
-                break;
+                return (true, item);
             }
         }
-        return (isInSight, dialogueEntity);
+        return (false, null);
     }
     private void OnCollisionEnter2D(Collision2D collision) //FIX THIS TOO
     {

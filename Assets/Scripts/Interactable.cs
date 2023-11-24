@@ -32,12 +32,11 @@ public class Interactable : MonoBehaviour
 
         dialoguesDictionary = new Dictionary<string, object>
         {
-            {"Player", dialogue},
+            {"TriggerPoint1", dialogue},
             {"Boss",  bossDialogue},
             {"Vendor", wizardPlayerConvo}
         };
 
-        StartCoroutine(TriggerDialogue(dialogue));//because queue is already empty, thats why using Invoke to give some time to the queue (fix that so something triggers it)
     }
 
     public static IEnumerator TriggerDialogue(Dialogues dialogue)
