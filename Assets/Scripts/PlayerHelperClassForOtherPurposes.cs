@@ -12,13 +12,13 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
     [SerializeField] DialogueEntityScriptableObject dialogueScriptableObject;
-    private PlayerObserverListener playerObserverListener;
+    [SerializeField] PlayerHittableItemsScriptableObject playerHittableItemsScriptableObject;
 
+    private PlayerObserverListener playerObserverListener;
     private Animator anim;
     private bool Death = false;
     private float ENEMYATTACK = 5f;
     public static bool isGrabbing = false;//for the ledge grab script
-    private bool once = true;
     private bool pickedUp;
     private PickableItemsClass _pickableItems;
     private Interactable dialogue;
@@ -60,8 +60,10 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
             StartCoroutine(WaiterFunction());
             GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
-         
-        (bool inSight, DialogueEntity entity) = await isGameObjectInSightForDialogueTrigger(dialogueScriptableObject, _cancellationToken); //use of tuple return
+
+        await _semaphoreSlim.WaitAsync();
+
+        (bool inSight, DialogueEntity entity) = await isGameObjectInSightForDialogueTrigger(dialogueScriptableObject, _cancellationToken, _semaphoreSlim); //use of tuple return
 
         if (inSight && entity != null)
         {
@@ -69,20 +71,26 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
         }
 
     }
-    private async Task<(bool, DialogueEntity)> isGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObject scriptableObject, CancellationToken cancellationToken)
+    private async Task<(bool, DialogueEntity)> isGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObject scriptableObject, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim)
     {
-        foreach(var item in scriptableObject.entities)
+        bool inSight = false;
+        DialogueEntity dialogueEntity = null;
+
+        foreach (var item in scriptableObject.entities)
         {
             await Task.Delay(TimeSpan.FromSeconds(.1f));
 
             if(!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, item.entity.tag))
             {
-                return (true, item);
+                inSight = true;
+                dialogueEntity = item;
+                break;
             }
         }
-        return (false, null);
+        semaphoreSlim.Release();
+        return (inSight, dialogueEntity);
     }
-    private void OnCollisionEnter2D(Collision2D collision) //FIX THIS TOO
+    private async void OnCollisionEnter2D(Collision2D collision) //FIX THIS TOO
     {
         if (collision.collider.CompareTag("Enemy") || (collision.collider.CompareTag("Boss") &&
             (collision.collider.transform.root.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack") ||
@@ -100,6 +108,31 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
         }
 
+        if (await CanPlayerBeAttacked(playerHittableItemsScriptableObject, collision.collider))
+        {
+            if (HealthManager.getPlayerHealth == 0)
+            {
+                Death = true;
+                anim.SetBool("Death", true);
+            }
+            else
+            {
+                HealthManager.getPlayerHealth -= ENEMYATTACK;
+            }
+        }
+
+    }
+
+    private Task<bool> CanPlayerBeAttacked(PlayerHittableItemsScriptableObject scriptableObject, Collider2D collider)
+    {
+        foreach(var item in scriptableObject.colliderItems)
+        {
+            if(item.collider.tag == collider.tag)
+            {
+                return Task.FromResult(true);
+            }
+        }
+        return Task.FromResult(false);
     }
 
     private async void OnTriggerEnter2D(Collider2D collision)
