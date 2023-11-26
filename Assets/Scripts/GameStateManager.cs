@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class GameStateManager : MonoBehaviour
 {
-  
-
     public static void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);

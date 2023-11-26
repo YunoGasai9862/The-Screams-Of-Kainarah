@@ -42,8 +42,8 @@ public class DialogueEntitiesScriptableObjectEditor : Editor
         }
 
         if (GUILayout.Button("Delete Entity"))
-        {
-            arraySize.arraySize--;
+        {   
+            arraySize.arraySize = arraySize.arraySize > 0? arraySize.arraySize - 1: 0;
         }
 
         serializedObject.ApplyModifiedProperties();

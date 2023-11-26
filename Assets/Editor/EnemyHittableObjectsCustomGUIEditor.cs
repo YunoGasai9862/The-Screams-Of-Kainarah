@@ -51,7 +51,7 @@ public class EnemyHittableManagerCustomUIEditor : Editor
 
         if (GUILayout.Button("Delete Element")) //removes the Element
         {
-            arraySize.arraySize--;
+            arraySize.arraySize = arraySize.arraySize > 0 ? arraySize.arraySize - 1 : 0;
         }
 
         serializedObject.ApplyModifiedProperties();

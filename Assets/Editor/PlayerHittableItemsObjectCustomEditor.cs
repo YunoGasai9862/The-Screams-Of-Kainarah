@@ -29,10 +29,15 @@ public class PlayerHittableItemsObjectCustomEditor : Editor
             SerializedProperty animationName = elements.FindPropertyRelative("animationName");
 
             EditorGUILayout.PropertyField(canHitPlayer);
-            EditorGUILayout.PropertyField(collider);
-            EditorGUILayout.PropertyField(isItBasedOnAnimationName);
 
             EditorGUI.BeginChangeCheck();
+
+            if(canHitPlayer.boolValue)
+            {
+                EditorGUILayout.PropertyField(collider);
+            }
+
+            EditorGUILayout.PropertyField(isItBasedOnAnimationName);
 
             if (isItBasedOnAnimationName.boolValue)
             {
@@ -48,7 +53,7 @@ public class PlayerHittableItemsObjectCustomEditor : Editor
         {
             if(arraySize.arraySize > 0)
             {
-                arraySize.arraySize--;
+                arraySize.arraySize = arraySize.arraySize > 0 ? arraySize.arraySize - 1 : 0;
             }
         }
 

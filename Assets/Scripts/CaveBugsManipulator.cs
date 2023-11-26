@@ -72,7 +72,8 @@ public class CaveBugsManipulator : MonoBehaviour
     
          float value = UnityEngine.Random.Range(minRange, maxRange);
 
-         mainModule.gravityModifierMultiplier = value;
+        if(_ps!=null)
+            mainModule.gravityModifierMultiplier = value;
     }
 
     private async Task channelGravity(float minRange, float maxRange)

@@ -5,16 +5,15 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static DialogueEntityScriptableObject;
+using static GameObjectCreator;
 
 public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 {
     [SerializeField] SpriteRenderer sr;
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
-    [SerializeField] DialogueEntityScriptableObject dialogueScriptableObject;
-    [SerializeField] PlayerHittableItemsScriptableObject playerHittableItemsScriptableObject;
 
-    private PlayerObserverListener playerObserverListener;
+
     private Animator anim;
     private bool Death = false;
     private float ENEMYATTACK = 5f;
@@ -32,8 +31,6 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
         _cancellationTokenSource = new CancellationTokenSource();
 
         _cancellationToken = _cancellationTokenSource.Token;
-
-        playerObserverListener = FindFirstObjectByType<PlayerObserverListener>();
 
         _pickableItems= GameObject.FindWithTag("PickableItemsManager").GetComponent<PickableItemsClass>();
 
@@ -63,11 +60,11 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
         await _semaphoreSlim.WaitAsync();
 
-        (bool inSight, DialogueEntity entity) = await isGameObjectInSightForDialogueTrigger(dialogueScriptableObject, _cancellationToken, _semaphoreSlim); //use of tuple return
+        (bool inSight, DialogueEntity entity) = await isGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObjectFetch, _cancellationToken, _semaphoreSlim); //use of tuple return
 
         if (inSight && entity != null)
         {
-            await playerObserverListener.ListenerDelegator<DialogueEntity>(PlayerObserverListenerHelper.DialogueEntites, entity); //test this out
+            await GetPlayerObserverListenerObject().ListenerDelegator<DialogueEntity>(PlayerObserverListenerHelper.DialogueEntites, entity); //test this out
         }
 
     }
@@ -92,6 +89,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     }
     private async void OnCollisionEnter2D(Collision2D collision) //FIX THIS TOO
     {
+        /**
         if (collision.collider.CompareTag("Enemy") || (collision.collider.CompareTag("Boss") &&
             (collision.collider.transform.root.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack") ||
             collision.collider.transform.root.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack_02"))))
@@ -107,8 +105,9 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
             }
 
         }
+        **/
 
-        if (await CanPlayerBeAttacked(playerHittableItemsScriptableObject, collision.collider))
+        if (await CanPlayerBeAttacked(PlayerHittableItemScriptableObjectFetch, collision.collider))
         {
             if (HealthManager.getPlayerHealth == 0)
             {
@@ -125,12 +124,23 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
     private Task<bool> CanPlayerBeAttacked(PlayerHittableItemsScriptableObject scriptableObject, Collider2D collider)
     {
-        foreach(var item in scriptableObject.colliderItems)
+        foreach (var item in scriptableObject.colliderItems)
         {
-            if(item.collider.tag == collider.tag)
+            if (item.collider.tag == collider.tag && !item.isItBasedOnAnimationName)
             {
                 return Task.FromResult(true);
             }
+
+            if (item.isItBasedOnAnimationName)
+            {
+                Animator animator = collider.transform.root.GetComponent<Animator>() ?? null; //attached to the root component always (the animator)
+
+                if (animator != null)
+                {
+                    return Task.FromResult(animator.GetCurrentAnimatorStateInfo(0).IsName(item.animationName));
+                }
+            }
+           
         }
         return Task.FromResult(false);
     }
@@ -148,10 +158,10 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
             bool shouldMusicBePlayed = true;
 
-            await playerObserverListener.ListenerDelegator<bool>(PlayerObserverListenerHelper.BoolSubjects, shouldMusicBePlayed);
+            await GetPlayerObserverListenerObject().ListenerDelegator<bool>(PlayerObserverListenerHelper.BoolSubjects, shouldMusicBePlayed);
         }
 
-         await playerObserverListener.ListenerDelegator<Collider2D>(PlayerObserverListenerHelper.ColliderSubjects, collision);
+         await GetPlayerObserverListenerObject().ListenerDelegator<Collider2D>(PlayerObserverListenerHelper.ColliderSubjects, collision);
     }
 
 

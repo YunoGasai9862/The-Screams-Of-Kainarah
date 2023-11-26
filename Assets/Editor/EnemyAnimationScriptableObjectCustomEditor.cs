@@ -85,7 +85,7 @@ public class EnemyAnimationScriptableObjectCustomEditor : Editor
 
         if (GUILayout.Button("Remove Element"))
         {
-            arraySize.arraySize--;
+            arraySize.arraySize = arraySize.arraySize > 0 ? arraySize.arraySize - 1 : 0;
         }
 
         serializedObject.ApplyModifiedProperties();

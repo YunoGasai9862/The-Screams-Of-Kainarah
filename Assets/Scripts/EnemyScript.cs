@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using EnemyHittable;
+using static GameObjectCreator;
 public class EnemyScript : AbstractEnemy
 {
     private const int RAYSARRAYSIZE= 2;
@@ -14,7 +15,6 @@ public class EnemyScript : AbstractEnemy
     private WayPointsMovement wayPointsMovementScript;
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
-    private EnemyObserverListener enemyObserverListener;
     private const int HITPOINTS = 10;
     private RaycastHit2D[] rayReleased;
     private ContactFilter2D contactFilter2D;
@@ -45,7 +45,7 @@ public class EnemyScript : AbstractEnemy
         maxHealth = MaxHealth;
         health = maxHealth;
         wayPointsMovementScript = gameObject.GetComponent<WayPointsMovement>();
-        enemyObserverListener = FindFirstObjectByType<EnemyObserverListener>();
+   
     }
 
     void Start()
@@ -66,7 +66,7 @@ public class EnemyScript : AbstractEnemy
             gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
 
             if(!cancellationToken.IsCancellationRequested)
-                await enemyObserverListener.EnemyActionDelegator(playerCollider, gameObject, animationAttackParam, true);
+                await GetEnemyOberverListenerObject().EnemyActionDelegator(playerCollider, gameObject, animationAttackParam, true);
 
         }
         else
@@ -75,7 +75,7 @@ public class EnemyScript : AbstractEnemy
 
             if (tempCollider!=null)
                 if(!cancellationToken.IsCancellationRequested)    
-                    await enemyObserverListener.EnemyActionDelegator(tempCollider, gameObject, animationAttackParam, false);
+                    await GetEnemyOberverListenerObject().EnemyActionDelegator(tempCollider, gameObject, animationAttackParam, false);
 
         }
 
@@ -113,7 +113,7 @@ public class EnemyScript : AbstractEnemy
         if (gameObject != null && await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
             health -= HITPOINTS;
-            _ = await enemyObserverListener.EnemyActionDelegator(collision, gameObject, animationHitParam, true);
+            _ = await GetEnemyOberverListenerObject().EnemyActionDelegator(collision, gameObject, animationHitParam, true);
 
         }
     }
@@ -121,7 +121,7 @@ public class EnemyScript : AbstractEnemy
     {
         if (gameObject != null && await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
-            _ = await enemyObserverListener.EnemyActionDelegator(collision, gameObject, animationHitParam, false);
+            _ = await GetEnemyOberverListenerObject().EnemyActionDelegator(collision, gameObject, animationHitParam, false);
 
         }
     }
