@@ -27,14 +27,14 @@ RectTransform:
   m_GameObject: {fileID: 396414189}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1875905215411050442}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.82, y: -1.74}
+  m_AnchoredPosition: {x: -0.8, y: -1.7}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &396414191
@@ -692,7 +692,7 @@ RectTransform:
   m_GameObject: {fileID: 2357857119552702225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 570442510829673565}
@@ -705,7 +705,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -8.7, y: -0.85}
+  m_AnchoredPosition: {x: -8.7, y: 2}
   m_SizeDelta: {x: 4, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &2357857119552702230
@@ -824,7 +824,6 @@ MonoBehaviour:
   sr: {fileID: 0}
   InteractableTag: DialogueTrigger
   TeleportTransition: {fileID: 0}
-  dialogueScriptableObject: {fileID: 11400000, guid: ae73224639778ea4fb6fd69c41f72e5b, type: 2}
 --- !u!114 &3387488181997499512
 MonoBehaviour:
   m_ObjectHideFlags: 0

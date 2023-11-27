@@ -18,7 +18,7 @@ public class CameraFollow : MonoBehaviour
     {
         if(!_cameraShakeScript.isShaking)
         {
-            FollowPlayer.TrackPlayer(transform, 0, 15, 0, _cameraFollowSpeed);
+            FollowPlayer.TrackPlayer(transform, 0, 5, 0, _cameraFollowSpeed);
         }
     }
 }

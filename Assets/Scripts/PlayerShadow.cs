@@ -26,7 +26,7 @@ public class PlayerShadow : MonoBehaviour
      async void Update()
     {
 
-        m_newPosition =await ShadowObjectsNewPosition(m_SpriteRenderer, m_parentPos, m_Position, .5f, 10);
+        m_newPosition =await ShadowObjectsNewPosition(m_SpriteRenderer, m_parentPos, m_Position, 0f, 10);
 
         if(!_token.IsCancellationRequested) //extra check due to async programming
         {
