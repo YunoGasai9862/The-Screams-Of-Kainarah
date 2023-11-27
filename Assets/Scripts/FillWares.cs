@@ -21,7 +21,7 @@ public class FillWares : MonoBehaviour
 
     void Start()
     {
-        _boxes.GenerateInventory(3, StartX, StartY, IncrementX, IncrementY, gameObject, "ClickFeedbackOnItem");
+       _= _boxes.GenerateInventory(3, StartX, StartY, IncrementX, IncrementY, gameObject, "ClickFeedbackOnItem");
         freeslots = new List<GameObject>();
         StartCoroutine(FillSlots(gameObject));
         StartCoroutine(FillUpWares());

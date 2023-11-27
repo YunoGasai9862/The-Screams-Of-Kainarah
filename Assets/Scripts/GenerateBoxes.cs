@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 public class GenerateBoxes : MonoBehaviour
@@ -9,9 +10,7 @@ public class GenerateBoxes : MonoBehaviour
     private int _count = 0;
     [SerializeField] GameObject InventoryBox;
 
-
-
-    public void GenerateInventory(int _Size, int _startX, int _startY, int _increment, int _decrement, ref Queue<GameObject> inventoryList, ref GameObject PanelObject, string ScriptTobeAddedForItems, string slotTag)
+    public Task<bool> GenerateInventory(int _Size, int _startX, int _startY, int _increment, int _decrement, ref Queue<GameObject> inventoryList, ref GameObject PanelObject, string ScriptTobeAddedForItems, string slotTag)
     {
         int increment = _startX;
         int decrement = _startY;
@@ -55,10 +54,11 @@ public class GenerateBoxes : MonoBehaviour
         }
 
         _count = 0;
+        return Task.FromResult(true);
 
     }
 
-    public void GenerateInventory(int _Size, int _startX, int _startY, int _increment, int _decrement, GameObject PanelObject, string ScriptTobeAddedForItems)
+    public Task<bool> GenerateInventory(int _Size, int _startX, int _startY, int _increment, int _decrement, GameObject PanelObject, string ScriptTobeAddedForItems)
     {
         int increment = _startX;
         int decrement = _startY;
@@ -84,7 +84,7 @@ public class GenerateBoxes : MonoBehaviour
 
         _count = 0;
 
-
+        return Task.FromResult(true);
 
     }
 

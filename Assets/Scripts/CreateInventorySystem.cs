@@ -31,6 +31,7 @@ public class CreateInventorySystem : MonoBehaviour
 
     private RectTransform _spriteLocation;
 
+    //REFACTOR THIS PLEASE!!
     public static Queue<GameObject> GetInventoryList()
     {
         return inventoryList;
@@ -44,10 +45,8 @@ public class CreateInventorySystem : MonoBehaviour
         inventoryTemp = new Queue<GameObject>();
         _spriteLocation = PanelObject.GetComponent<RectTransform>();
 
-        if (startX == 0 && startY == 0 && increment == 0 && decrement == 0)
-            _boxes.GenerateInventory(SizeOftheInventory, -250, 150, 100, -50, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems, slotTag);
-        else
-            _boxes.GenerateInventory(SizeOftheInventory, startX, startY, increment, decrement, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems, slotTag);
+        _ = (startX == 0 && startY == 0 && increment == 0 && decrement == 0) ? _boxes.GenerateInventory(SizeOftheInventory, -250, 150, 100, -50, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems, slotTag) :
+                    _boxes.GenerateInventory(SizeOftheInventory, startX, startY, increment, decrement, ref inventoryList, ref PanelObject, ScriptTobeAddedForItems, slotTag);
     }
 
 
@@ -142,7 +141,6 @@ public class CreateInventorySystem : MonoBehaviour
 
 
     }
-    // public static
     public static void TransferTheItemsToQueue(ref Queue<GameObject> queue1, ref Queue<GameObject> queue2)
     {
         if (queue1.Count == 0)
