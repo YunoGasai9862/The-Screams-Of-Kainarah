@@ -1,6 +1,7 @@
 using GlobalAccessAndGameHelper;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using InventoryManagement = CreateInventorySystem;
 
@@ -8,45 +9,45 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 {
     [SerializeField] PickableItemsClass pickableItems;
 
-    Dictionary<String, System.Action> _playerActionHandlerDic;
+    Dictionary<String, Func<Collider2D, Task >> _playerActionHandlerDic;
 
     private GameObjectInstantiator _gameObject;
-
-    private Collider2D _passedOnCollider;
 
     private void Awake()
     {
 
-        _playerActionHandlerDic = new Dictionary<String, System.Action>
+        _playerActionHandlerDic = new Dictionary<String, Func<Collider2D, Task>>
         {
 
-             { "Crystal", OnCrystalPickup },
-             { "Health" , OnHealthPickup  },
-             { "Dagger" , OnDaggerPickup  }
+             { "Crystal", value => OnCrystalPickup(value)},
+             { "Health" , value => OnHealthPickup(value) },
+             { "Dagger" , value => OnDaggerPickup(value) }
 
         };
 
     }
 
-    private void OnDaggerPickup()
+    private async Task<bool> OnDaggerPickup(Collider2D collider)
     {
-        GameObject temp = pickableItems.returnGameObjectForTheKey(_passedOnCollider.tag);
+        GameObject temp = pickableItems.returnGameObjectForTheKey(collider.tag);
 
-        InventoryManagement.AddToInventory(temp.GetComponent<SpriteRenderer>().sprite, temp.tag); //adds it to the inventory
+       return await InventoryManagement.AddToInventory(temp.GetComponent<SpriteRenderer>().sprite, temp.tag); //adds it to the inventory
 
     }
 
-    private void OnHealthPickup()
+    private async Task<bool> OnHealthPickup(Collider2D collider)
     {
-        Vector2 _pickupPos = new(_passedOnCollider.transform.position.x, _passedOnCollider.transform.position.y - 1f);
-        GameObjectInstantiator _gameObject = pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(_passedOnCollider.tag), _pickupPos);
+        Vector2 _pickupPos = new(collider.transform.position.x, collider.transform.position.y - 1f);
+        GameObjectInstantiator _gameObject = pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(collider.tag), _pickupPos);
         _gameObject.DestroyGameObject(3f);
+        return await Task.FromResult(true);
 
     }
 
-    private void OnCrystalPickup()
+    private async Task<bool> OnCrystalPickup(Collider2D collider)
     {
-        pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(_passedOnCollider.tag), _passedOnCollider.transform.position);
+        pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(collider.tag), collider.transform.position);
+        return await Task.FromResult(true);
     }
 
     private void OnEnable()
@@ -58,7 +59,10 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     {
         PlayerObserverListenerHelper.ColliderSubjects.RemoveOberver(this); //Remove PlayerActionSystem as an observer when an event is handled/or the observer is no longer needed
     }
-
+    private async Task<bool> AddItemToInventory(Sprite pickableItemSprite, string tag)
+    {
+        return await InventoryManagement.AddToInventory(pickableItemSprite, tag);
+    }
     private GameObjectInstantiator pickupEffectInstantiator(GameObject prefab, Vector3 position)
     {
         _gameObject = new(prefab);
@@ -68,13 +72,9 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 
     public void OnNotify(ref Collider2D collider, params object[] optional)
     {
-        if(_playerActionHandlerDic.ContainsKey(collider.tag)) //simplified
+        if(_playerActionHandlerDic.TryGetValue(collider.tag, out var invokeFunc)) //simplified
         {
-            Action action = _playerActionHandlerDic[collider.tag];
-
-            _passedOnCollider = collider;
-
-            action.Invoke(); //invokes the method
+            invokeFunc.Invoke(collider);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,10 +29,23 @@ public class CreateInventorySystem : MonoBehaviour
     [Header("Enter the decrement and Increment Sizes: Default values=> 100, 50")]
     [SerializeField] int increment, decrement;
 
+    [Space]
+    [Header("Enter scale for each slot")]
+    [SerializeField] float scale;
+
+    private static float getScale { get => instance.scale; set => instance.scale = value; }
+    private static CreateInventorySystem instance;
+
 
     private RectTransform _spriteLocation;
 
     //REFACTOR THIS PLEASE!!
+
+    private void Awake()
+    {
+        if(instance == null)
+            instance = this;
+    }
     public static Queue<GameObject> GetInventoryList()
     {
         return inventoryList;
@@ -50,11 +64,11 @@ public class CreateInventorySystem : MonoBehaviour
     }
 
 
-
-    public static void AddToInventory(Sprite itemTobeAdded, string Tag)  //fix this tomorrow ->Only collectively addds if its the first slot.
+    public static Task<bool> AddToInventory(Sprite itemTobeAdded, string Tag)  //fix this tomorrow ->Only collectively addds if its the first slot.
     {
+        Debug.Log(itemTobeAdded);
         _temp = new GameObject("Item" + i);
-        _temp.transform.localScale = new Vector3(.6f, .6f, .6f);
+        _temp.transform.localScale = new Vector3(getScale, getScale, getScale);
         GameObject ItemBox = null;
         int _count = 0;
 
@@ -96,6 +110,7 @@ public class CreateInventorySystem : MonoBehaviour
 
         }
 
+        return Task.FromResult(true);
 
     }
 

@@ -12,7 +12,7 @@ public class MouseFollowInventory : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 MousePosition= otherCamera.ScreenToWorldPoint(Input.mousePosition); //words perfectly
+        Vector3 MousePosition= otherCamera.ScreenToWorldPoint(Input.mousePosition); //words perfectly
         starAura.transform.position = MousePosition;
     }
 }
