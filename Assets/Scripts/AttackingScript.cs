@@ -95,19 +95,19 @@ public class AttackingScript : MonoBehaviour
 
         if (daggerInventorySlot != null)
         {
-            ThrowDagger(_pickableItems.returnGameObjectForTheKey("Dagger"), ref daggerInventorySlot);
+            ThrowDagger(_pickableItems.returnGameObjectForTheKey("Dagger"), daggerInventorySlot);
         }
 
     }
 
-    private void ThrowDagger(GameObject prefab, ref GameObject slot)
+    private async void ThrowDagger(GameObject prefab, GameObject slot)
     {
 
         GameObjectInstantiator _daggerInstantiator = new(prefab);
 
         GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(getDaggerPositionwithOffset(2, -1), Quaternion.identity);
 
-        CreateInventorySystem.ReduceItem(ref slot, false);
+        await CreateInventorySystem.ReduceItem(slot, false);
 
         _daggerGameObject.GetComponent<AttackEnemy>().throwDagger = true;
 

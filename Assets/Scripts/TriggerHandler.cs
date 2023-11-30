@@ -83,13 +83,13 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         DecreaseDiamondsFromInventory();
     }
 
-    public void DecreaseDiamondsFromInventory()
+    public async void DecreaseDiamondsFromInventory()
     {
         GameObject _diamondObject = CreateInventorySystem.CheckForObject("Crystal");
         if (_diamondObject != null)
         {
             GameObject _diamondObjectParent = _diamondObject.transform.parent.gameObject;
-            CreateInventorySystem.ReduceItem(ref _diamondObjectParent, true);
+           await CreateInventorySystem.ReduceItem(_diamondObjectParent, true);
 
         }
 
