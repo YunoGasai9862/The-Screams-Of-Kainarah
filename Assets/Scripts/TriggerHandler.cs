@@ -89,7 +89,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         if (_diamondObject != null)
         {
             GameObject _diamondObjectParent = _diamondObject.transform.parent.gameObject;
-           await CreateInventorySystem.ReduceItem(_diamondObjectParent, true);
+           await CreateInventorySystem.ReduceItem(_diamondObjectParent);
 
         }
 

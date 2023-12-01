@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -227,58 +229,42 @@ public class CreateInventorySystem : MonoBehaviour
 
         TransferTheItemsToQueue(ref inventoryCheck, ref inventoryTemp);
     }
-    public static async Task<bool> ReduceItem(GameObject item, bool utilizing)
+    public static async Task<bool> ReduceItem(GameObject item)
     {
         if (CheckIfNumericalExists(ref item))
         {
-            Transform TextBox;
+            Transform textBox = item.transform; //numerical will always exist
 
-            if (utilizing)
-            {
-                TextBox = item.transform.Find("Numerical").gameObject.transform;
+            Transform[] siblings = item.transform.parent.GetComponentsInChildren<Transform>();
 
-            }
-            else
-            {
-                TextBox = item.transform;
-            }
+            int textBoxValue = int.Parse(textBox.GetComponent<TextMeshProUGUI>().text);
 
-            int textBoxValue = int.Parse(TextBox.GetComponent<TextMeshProUGUI>().text);
+            Decrement(ref textBox);
 
-            if (textBoxValue >= 1)
-            {
-                Destroy(TextBox.gameObject);
-            }
-            else
-            {
-                Decrement(ref TextBox);
-            }
-        }
-        else
-        {
-            if (item.transform.childCount == 0)
+            if (textBoxValue == 1)
             {
                 removeItemFromTheList(ref item);
 
-                Destroy(item);
+                for (int i = 0; i < siblings.Length; i++)
+                {
+                    if (i == 0)
+                        continue;
+                    else
+                        Destroy(siblings[i].gameObject);
+                }
 
             }
-
         }
 
         await Task.Delay(TimeSpan.FromSeconds(0));
+
         return true;
 
     }
 
     public static bool CheckIfNumericalExists(ref GameObject item)
     {
-        if (item.transform.name == "Numerical" || item.transform.Find("Numerical"))
-        {
-            return true;
-        }
-
-        return false;
+        return item.transform.name == "Numerical" || item.transform.Find("Numerical");
     }
 
 }

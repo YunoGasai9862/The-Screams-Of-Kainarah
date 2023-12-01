@@ -107,7 +107,7 @@ public class AttackingScript : MonoBehaviour
 
         GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(getDaggerPositionwithOffset(2, -1), Quaternion.identity);
 
-        await CreateInventorySystem.ReduceItem(slot, false);
+        await CreateInventorySystem.ReduceItem(slot);
 
         _daggerGameObject.GetComponent<AttackEnemy>().throwDagger = true;
 
