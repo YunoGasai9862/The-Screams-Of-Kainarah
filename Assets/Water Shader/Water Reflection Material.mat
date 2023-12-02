@@ -61,5 +61,5 @@ Material:
     - _RefractionStrength: 1
     - _WaterSpeed: 0.1
     m_Colors:
-    - _WaterShade: {r: 1, g: 1, b: 1, a: 1}
+    - _WaterShade: {r: 0.42435032, g: 0.54783136, b: 0.6037736, a: 1}
   m_BuildTextureStacks: []
