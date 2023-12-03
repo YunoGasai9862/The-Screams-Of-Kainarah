@@ -31,7 +31,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     {
         GameObject temp = pickableItems.returnGameObjectForTheKey(collider.tag);
 
-       return await InventoryManagement.AddToInventory(temp.GetComponent<SpriteRenderer>().sprite, temp.tag); //adds it to the inventory
+        return await InventoryManagement.AddToInventorySystem(temp, temp.tag); //adds it to the inventory
 
     }
 
@@ -58,10 +58,6 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     private void OnDisable()
     {
         PlayerObserverListenerHelper.ColliderSubjects.RemoveOberver(this); //Remove PlayerActionSystem as an observer when an event is handled/or the observer is no longer needed
-    }
-    private async Task<bool> AddItemToInventory(Sprite pickableItemSprite, string tag)
-    {
-        return await InventoryManagement.AddToInventory(pickableItemSprite, tag);
     }
     private GameObjectInstantiator pickupEffectInstantiator(GameObject prefab, Vector3 position)
     {

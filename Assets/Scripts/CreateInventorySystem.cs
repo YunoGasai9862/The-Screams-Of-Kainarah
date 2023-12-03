@@ -1,14 +1,16 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class CreateInventorySystem : MonoBehaviour
 {
+    private const string QUANITY = "QUANTITY";
+
     [SerializeField] GameObject PanelObject;
     [SerializeField] string ScriptTobeAddedForItems;
     [SerializeField] int SizeOftheInventory = 6;
@@ -21,7 +23,7 @@ public class CreateInventorySystem : MonoBehaviour
     private static int i = 0;
     private static bool _alreadyExist = false;
 
-    private static Dictionary<string, GameObject> _inventoryItemsDict;
+    private static Dictionary<string, InventoryItem> _inventoryItemsDict;
 
     [Space]
     [Header("Enter the start value of the grid: Default values=> -250, 150")]
@@ -50,66 +52,95 @@ public class CreateInventorySystem : MonoBehaviour
         return _inventorySlots;
     }
 
-    void Start()
+    async void Start()
     {
 
         _inventorySlots = new List<GameObject>();
         _inventoryCheck = new Queue<GameObject>();
         _inventoryTemp = new Queue<GameObject>();
 
-        _inventoryItemsDict = new Dictionary<string, GameObject>();
+        _inventoryItemsDict = new Dictionary<string, InventoryItem>();
         _ = (startX == 0 && startY == 0 && increment == 0 && decrement == 0) ? _boxes.GenerateInventory(SizeOftheInventory, -250, 150, 100, -50, PanelObject, ScriptTobeAddedForItems, slotTag) :
                     _boxes.GenerateInventory(SizeOftheInventory, startX, startY, increment, decrement, PanelObject, ScriptTobeAddedForItems, slotTag);
+
+        await WipeCleanInventory(InventorySlots);
     }
 
 
     //use Dictionary Logic (Refactor)
-    public static async Task<bool> AddToInventorySystem(GameObject gameObject, string tag)
+    public static async Task<bool> AddToInventorySystem(GameObject itemToBeAdded, string tag)
     {
-        var itemTemp = new GameObject(tag);
-        GameObject ItemBox = null;
-        GameObject textBox = InstantiateTextObject("Numerical", "1", 100f, 100f);
+        var itemTemp = new InventoryItem(itemToBeAdded);
 
-         if(_inventoryItemsDict.TryGetValue(tag, out GameObject value))
+         if(_inventoryItemsDict.TryGetValue(tag, out InventoryItem value))
         {
+            value.GetQuantity = value.GetQuantity++;
 
         }else
         {
             _inventoryItemsDict.Add(tag, itemTemp);
         }
 
-        await DisplayOnInventory(_inventoryItemsDict);
+        Debug.Log(_inventoryItemsDict.Count);
+
+        await DisplayOnInventory(_inventoryItemsDict, InventorySlots);
 
         return true;
     }
 
-    private static async Task DisplayOnInventory(Dictionary<string, GameObject> dict)
+    private static async Task DisplayOnInventory(Dictionary<string, InventoryItem> dict, List<GameObject> slots)
     {
         int x = 0;
 
-        foreach(var item in dict)
-        {
-            await WipeCleanInventory();
+        await WipeCleanInventory(slots);
 
+        foreach (var item in dict.Values)
+        {
             GameObject parentSlot = InventorySlots[x];
 
-            await AddItemToTheSlot(parentSlot, item); //continue tomorrow
+            await AddItemToTheSlot(parentSlot, item);
 
             x++;
         }
 
     }
-
-    private static Task WipeCleanInventory()
+    private static async Task WipeCleanInventory(List<GameObject> slots)
     {
-        throw new NotImplementedException();
+        foreach(var slot in slots)
+        {
+            var children = slot.transform.Cast<Transform>().ToList(); //Casts to Transform because it does not directly implements IEnumerator
+            children.ForEach(child => Destroy(child.gameObject));
+        }
+
+        await Task.FromResult(true);
     }
 
-    private static Task AddItemToTheSlot(GameObject parentSlot, KeyValuePair<string, GameObject> item)
+    private static async Task<bool> AddItemToTheSlot(GameObject parentSlot, InventoryItem item)
     {
-        throw new NotImplementedException();
+        if(item.GetQuantity > 0)
+        {
+           GameObject quantityBox = InstantiateQuanityBox(QUANITY, item.GetQuantity.ToString(), 100f, 100f);
+           quantityBox.transform.SetParent(parentSlot.transform, false);
+
+           GameObject inventoryItem = new GameObject(item.GetInventoryItem.tag);
+           Debug.Log(item.GetInventoryItem.tag);
+           inventoryItem.transform.localScale = new Vector3(getScale, getScale, getScale);
+           inventoryItem.transform.SetParent(parentSlot.transform, false);
+            Debug.Log(item.GetInventoryItem.gameObject);
+
+            Image sprite = inventoryItem.AddComponent<Image>();
+
+           sprite.sprite = item.GetInventoryItem.GetComponent<SpriteRenderer>().sprite; //take the sprite renderer sprite, and project it onto an image for the UI
+           Debug.Log(sprite);
+           inventoryItem.tag = item.GetInventoryItem.tag;
+            Debug.Log(item.GetInventoryItem.gameObject);
+
+        }
+
+        return await Task.FromResult(true);
     }
 
+    /**
     public static Task<bool> AddToInventory(Sprite itemTobeAdded, string Tag) 
     {
         var itemTemp = new GameObject("Item" + i);
@@ -118,7 +149,7 @@ public class CreateInventorySystem : MonoBehaviour
 
         itemTemp.transform.localScale = new Vector3(getScale, getScale, getScale);
         int _count = 0;
-        if (CheckPreviousItems(itemTobeAdded, Tag))
+        if (CheckPreviousItems(itemTobeAdded, Tag)) 
         {
             Exchange(ref _inventoryTemp, ref _inventoryCheck);
             Destroy(itemTemp);
@@ -158,7 +189,7 @@ public class CreateInventorySystem : MonoBehaviour
         return Task.FromResult(true);
 
     }
-
+    */
     public static bool CheckPreviousItems(Sprite itemTobeAdded, string Tag)
     {
 
@@ -231,6 +262,7 @@ public class CreateInventorySystem : MonoBehaviour
         return _obj;
     }
 
+    /**
     public static void FindCorrectPosition(int Count)
     {
         int Size = _inventorySlots.Count - Count;
@@ -242,6 +274,7 @@ public class CreateInventorySystem : MonoBehaviour
             Size--;
         }
     }
+    **/
 
     public static void UpdateNumericalValue(ref Transform Numerical, int sign)
     {
@@ -249,7 +282,7 @@ public class CreateInventorySystem : MonoBehaviour
         int count = Int32.Parse(_T.text) + sign;
         _T.text = count.ToString("0");
     }
-    public static GameObject InstantiateTextObject(string textBoxName, string initialCount, float initialXSize, float initialYSize)
+    public static GameObject InstantiateQuanityBox(string textBoxName, string initialCount, float initialXSize, float initialYSize)
     {
         GameObject TextBox = new(textBoxName);
         TextBox.AddComponent<TextMeshProUGUI>();

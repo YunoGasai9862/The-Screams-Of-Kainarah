@@ -31,7 +31,7 @@ public class GenerateBoxes : MonoBehaviour
                     {
                         scriptInstance.FieldName = slotTag; //adds the field tag
                         _temp.tag = slotTag;
-                        CreateInventorySystem.InventorySlots.Enqueue(_temp);
+                        CreateInventorySystem.InventorySlots.Add(_temp);
                     }
 
                 }
