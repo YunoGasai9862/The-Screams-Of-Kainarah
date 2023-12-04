@@ -36,7 +36,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                 if (CheckIfFundsExists(Funds))
                 {
                     _insideObject = _insideObject.transform.GetChild(0).gameObject;
-                    _= CreateInventorySystem.AddToInventorySystem(_insideObject, _insideObject.tag); //the rest of the process is automated in that function
+                    _= CreateInventorySystem.AddToInventorySystem(_insideObject.GetComponent<SpriteRenderer>().sprite, _insideObject.tag); //the rest of the process is automated in that function
                     transact.Play();
                     DecreaseFunds(ref Funds);
                 } 

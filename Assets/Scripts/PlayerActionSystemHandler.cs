@@ -31,7 +31,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     {
         GameObject temp = pickableItems.returnGameObjectForTheKey(collider.tag);
 
-        return await InventoryManagement.AddToInventorySystem(temp, temp.tag); //adds it to the inventory
+        return await InventoryManagement.AddToInventorySystem(temp.GetComponent<SpriteRenderer>().sprite, temp.tag); //adds it to the inventory
 
     }
 
