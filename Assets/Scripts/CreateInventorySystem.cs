@@ -18,7 +18,6 @@ public class CreateInventorySystem : MonoBehaviour
     [SerializeField] string slotTag;
 
     private static List<GameObject> _inventorySlots;
-    private static bool _alreadyExist = false;
 
     private static Dictionary<string, InventoryItem> _inventoryItemsDict;
 
@@ -76,7 +75,7 @@ public class CreateInventorySystem : MonoBehaviour
         {
             GetInventoryItemsDict.Add(tag, itemTemp);
         }
-
+        Debug.Log(GetInventoryItemsDict.Count);
         await DisplayOnInventory(GetInventoryItemsDict, InventorySlots);
 
         return true;
@@ -85,6 +84,8 @@ public class CreateInventorySystem : MonoBehaviour
     private static async Task DisplayOnInventory(Dictionary<string, InventoryItem> dict, List<GameObject> slots)
     {
         int x = 0;
+
+        List<InventoryItem> tempItems = new List<InventoryItem>();
 
         await WipeCleanInventory(slots);
 
@@ -96,9 +97,14 @@ public class CreateInventorySystem : MonoBehaviour
             
             await AddItemToTheSlot(inventorySlot, item);
 
-            dict[item.GetTag] = item; //update the value
+            tempItems.Add(item);
 
             x++;
+        }
+
+        foreach(var item in tempItems)
+        {
+            GetInventoryItemsDict[item.GetTag] = item; // uppdate the inventory with modified data
         }
 
     }
@@ -119,6 +125,7 @@ public class CreateInventorySystem : MonoBehaviour
         {
            GameObject quantityBox = InstantiateQuanityBox(QUANITY, item.GetQuantity.ToString(), 100f, 100f);
            quantityBox.transform.SetParent(parentSlot.transform, false);
+            quantityBox.tag = item.GetTag; //the same as the added gameobject
 
            GameObject inventoryItem = new GameObject(item.GetTag);
            inventoryItem.transform.localScale = new Vector3(getScale, getScale, getScale);
@@ -133,29 +140,14 @@ public class CreateInventorySystem : MonoBehaviour
 
         return await Task.FromResult(true);
     }
-    public static GameObject CheckForObject(string tag)
+    public static GameObject GetSlotTheGameObjectIsAttachedTo(string tag)
     {
-        GameObject slot = null;
         if(GetInventoryItemsDict.TryGetValue(tag, out InventoryItem value))
         {
-
+            return value.GetSlotAttachedTo;
         }
 
-        while (_inventoryCheck.Count != 0)
-        {
-            GameObject _item = _inventoryCheck.Dequeue();
-            if (_item != null && tag == _item.transform.tag)
-            {
-                _obj = _item;
-                _inventoryTemp.Enqueue(_item);
-                Exchange(ref _inventoryCheck, ref _inventoryTemp);
-                return _obj;
-            }
-            _inventoryTemp.Enqueue(_item);
-        }
-        Exchange(ref _inventoryTemp, ref _inventoryCheck);
-
-        return _obj;
+        return null;
     }
 
     public static GameObject InstantiateQuanityBox(string textBoxName, string initialCount, float initialXSize, float initialYSize)
@@ -168,42 +160,24 @@ public class CreateInventorySystem : MonoBehaviour
         return textBox;
     }
 
-    public static async Task<bool> ReduceItem(GameObject item)
+
+    public static async Task<bool> ReduceQuantity(string tag)
     {
-        if (CheckIfNumericalExists(ref item))
+        if (GetInventoryItemsDict.TryGetValue(tag, out InventoryItem value))
         {
-            Transform textBox = item.transform; //numerical will always exist
+            var quantity = value.GetQuantity;
+            quantity--; //reduce the quantity
 
-            Transform[] siblings = item.transform.parent.GetComponentsInChildren<Transform>();
+            if (quantity < 1)
+                GetInventoryItemsDict.Remove(tag);
+            else
+                GetInventoryItemsDict[tag].GetQuantity = quantity; //display the new quantity
 
-            int textBoxValue = int.Parse(textBox.GetComponent<TextMeshProUGUI>().text);
+            await DisplayOnInventory(GetInventoryItemsDict, InventorySlots); //display the new 
 
-            UpdateNumericalValue(ref textBox, -1);
-
-            if (textBoxValue == 1)
-            {
-                removeItemFromTheList(ref item);
-
-                for (int i = 0; i < siblings.Length; i++)
-                {
-                    if (i == 0)
-                        continue;
-                    else
-                        Destroy(siblings[i].gameObject);
-                }
-
-            }
+            return true;
         }
-
-        await Task.Delay(TimeSpan.FromSeconds(0));
-
-        return true;
-
-    }
-
-    public static bool CheckIfNumericalExists(ref GameObject item)
-    {
-        return item.transform.name == "Numerical" || item.transform.Find("Numerical");
+        return false;
     }
 
 }

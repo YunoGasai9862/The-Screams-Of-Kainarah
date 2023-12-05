@@ -84,11 +84,11 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public async void DecreaseDiamondsFromInventory()
     {
-        GameObject _diamondObject = CreateInventorySystem.CheckForObject("Crystal");
+        GameObject _diamondObject = CreateInventorySystem.GetSlotTheGameObjectIsAttachedTo("Crystal");
         if (_diamondObject != null)
         {
             GameObject _diamondObjectParent = _diamondObject.transform.parent.gameObject;
-           await CreateInventorySystem.ReduceItem(_diamondObjectParent);
+           await CreateInventorySystem.ReduceQuantity(_diamondObjectParent.tag);
 
         }
 

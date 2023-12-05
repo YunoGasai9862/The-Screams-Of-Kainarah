@@ -91,23 +91,23 @@ public class AttackingScript : MonoBehaviour
 
         _playerAttackStateMachine.setAttackState(AnimationConstants.THROWDAGGER, throwDagger);
 
-        GameObject daggerInventorySlot = CreateInventorySystem.CheckForObject("Dagger");
+        GameObject daggerInventorySlot = CreateInventorySystem.GetSlotTheGameObjectIsAttachedTo("Dagger");
 
         if (daggerInventorySlot != null)
         {
-            ThrowDagger(_pickableItems.returnGameObjectForTheKey("Dagger"), daggerInventorySlot);
+            ThrowDagger(_pickableItems.returnGameObjectForTheKey("Dagger"));
         }
 
     }
 
-    private async void ThrowDagger(GameObject prefab, GameObject slot)
+    private async void ThrowDagger(GameObject prefab)
     {
 
         GameObjectInstantiator _daggerInstantiator = new(prefab);
 
         GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(getDaggerPositionwithOffset(2, -1), Quaternion.identity);
 
-        await CreateInventorySystem.ReduceItem(slot);
+        await CreateInventorySystem.ReduceQuantity(prefab.gameObject.tag);
 
         _daggerGameObject.GetComponent<AttackEnemy>().throwDagger = true;
 
