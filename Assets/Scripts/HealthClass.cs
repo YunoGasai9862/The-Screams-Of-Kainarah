@@ -11,11 +11,11 @@ public class HealthClass
     }
     public float EntityHealth { get => _entityHealth; set => _entityHealth = value; }
 
-    public void healEntity(float healAmount)
+    public void HealEntity(float healAmount)
     {
         _entityHealth += healAmount;
     }
-    public void damageEntity(float damageAmount)
+    public void DamageEntity(float damageAmount)
     {
         _entityHealth -= damageAmount;
     }

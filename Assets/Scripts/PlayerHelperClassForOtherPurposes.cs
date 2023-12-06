@@ -15,7 +15,6 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
 
 
     private Animator anim;
-    private bool Death = false;
     private float ENEMYATTACK = 5f;
     public static bool isGrabbing = false;//for the ledge grab script
     private bool pickedUp;
@@ -26,6 +25,8 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     private CancellationToken _cancellationToken;
     private void Awake()
     {
+        DontDestroyOnLoad(this);
+
         _semaphoreSlim = new SemaphoreSlim(1);
 
         _cancellationTokenSource = new CancellationTokenSource();
@@ -51,7 +52,7 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     }
     private async void FixedUpdate()
     {
-        if (checkForExistenceOfPortal(sr))
+        if (await IfPortalExists(sr, "Portal"))
         {
             //Instantiate(TeleportTransition, transform.position, Quaternion.identity);
             StartCoroutine(WaiterFunction());
@@ -89,30 +90,13 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     }
     private async void OnCollisionEnter2D(Collision2D collision) //FIX THIS TOO
     {
-        /**
-        if (collision.collider.CompareTag("Enemy") || (collision.collider.CompareTag("Boss") &&
-            (collision.collider.transform.root.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack") ||
-            collision.collider.transform.root.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("attack_02"))))
-        {
-            if (HealthManager.getPlayerHealth == 0)
-            {
-                Death = true;
-                anim.SetBool("Death", true);
-            }
-            else
-            {
-                HealthManager.getPlayerHealth -= ENEMYATTACK;
-            }
-
-        }
-        **/
-
+       
         if (await CanPlayerBeAttacked(PlayerHittableItemScriptableObjectFetch, collision.collider))
         {
             if (HealthManager.getPlayerHealth == 0)
             {
-                Death = true;
                 anim.SetBool("Death", true);
+                await Task.Delay(TimeSpan.FromSeconds(0.1f));
             }
             else
             {
@@ -165,32 +149,20 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     }
 
 
-    private bool checkForExistenceOfPortal(SpriteRenderer sr)
+    private async Task<bool> IfPortalExists(SpriteRenderer sr, string portalTag)
     {
         RaycastHit hit; //using 3D raycast because of 3D object, portal
         Vector2 pos = transform.position;
-        if (sr.flipX)
-        {
-            pos.x = transform.position.x - 1f;
-            Debug.DrawRay(pos, -transform.right * 1, Color.red);
-            Physics.Raycast(transform.position, -transform.right, out hit, 1f);
 
+        int sign = sr.flipX ? -1 : 1;
 
+        pos.x = transform.position.x + sign;
+        Physics.Raycast(transform.position, transform.right * sign, out hit, 1f);
+        Debug.DrawRay(pos, transform.right * sign, Color.red);
 
-        }
-        else
-        {
-            pos.x = transform.position.x + 1f;
+        await Task.Delay(TimeSpan.FromSeconds(0));
 
-            Debug.DrawRay(transform.position, transform.right * 1, Color.red);
-
-            Physics.Raycast(transform.position, -transform.right, out hit, 1f);
-
-
-        }
-
-
-        return hit.collider != null && hit.collider.isTrigger && hit.collider.CompareTag("Portal");
+        return hit.collider != null && hit.collider.isTrigger && hit.collider.CompareTag(portalTag);
     }
 
     private IEnumerator WaiterFunction()

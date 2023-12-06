@@ -20,15 +20,12 @@ public class MoveCrystal : MonoBehaviour
         _diamondUILocation = GameObject.FindWithTag("Diamond").GetComponent<RectTransform>();
 
     }
-
-    //fix on disable (the disabling that i do in the playerHelperClass)
-
     // Update is called once per frame
     async void Update()
     {
         MoveTheCrystalToTheGuiPanel();
 
-        bool isAtTheGuiPanel = await isCrystalAtTheGuiPanel();
+        bool isAtTheGuiPanel = await IsCrystalAtTheGuiPanel();
 
         if(isAtTheGuiPanel)
         {
@@ -72,7 +69,7 @@ public class MoveCrystal : MonoBehaviour
         }
     }
 
-    public Task<bool> isCrystalAtTheGuiPanel()
+    public Task<bool> IsCrystalAtTheGuiPanel()
     {
         return Task.FromResult(((int)transform.position.x == (int)LocalPos.x));
     }

@@ -68,14 +68,14 @@ public class CreateInventorySystem : MonoBehaviour
 
          if(GetInventoryItemsDict.TryGetValue(tag, out InventoryItem value))
         {
-            value.GetQuantity = value.GetQuantity++;
+            value.GetQuantity = ++value.GetQuantity;
             GetInventoryItemsDict[tag] = value;
         }
         else
         {
             GetInventoryItemsDict.Add(tag, itemTemp);
         }
-        Debug.Log(GetInventoryItemsDict.Count);
+
         await DisplayOnInventory(GetInventoryItemsDict, InventorySlots);
 
         return true;

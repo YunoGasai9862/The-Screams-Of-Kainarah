@@ -38,6 +38,8 @@ public class AttackingScript : MonoBehaviour
 
     private void Awake()
     {
+        DontDestroyOnLoad(this);
+
         _anim = GetComponent<Animator>();
 
         _spriteRenderer = GetComponent<SpriteRenderer>();   
@@ -173,7 +175,6 @@ public class AttackingScript : MonoBehaviour
 
             GVA.setAttacking(false); //once the user stops clicking, it should be set to false
         }
-
 
         _playerAttackStateMachine.setAttackState(jumpAttackStateName, leftMouseButtonPressed); //no jump attack
 

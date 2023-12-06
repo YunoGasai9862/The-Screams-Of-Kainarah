@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class DeathScript : StateMachineBehaviour
@@ -15,9 +17,10 @@ public class DeathScript : StateMachineBehaviour
     //}
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    override public async void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        GameStateManager.RestartGame(animator.GetComponent<Rigidbody2D>());
+        animator.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+        await GameStateManager.RestartGame();
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

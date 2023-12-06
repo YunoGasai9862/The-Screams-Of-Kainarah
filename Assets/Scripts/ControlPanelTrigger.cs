@@ -3,21 +3,21 @@ using UnityEngine;
 public class ControlPanelTrigger : MonoBehaviour
 {
     [SerializeField] GameObject currentSettingsPanel;
-    [SerializeField] GameObject ControlPanel;
-    private OpenClose OC;
+    [SerializeField] GameObject controlPanel;
+    private OpenClose _oc;
     void Start()
     {
-        OC = new OpenClose(currentSettingsPanel, ControlPanel);
+        _oc = new OpenClose(currentSettingsPanel, controlPanel);
     }
 
     // Update is called once per frame
     public void OpenControlPanel()
     {
-        OC.ToggleSecondPanelOn();
+        _oc.ToggleSecondPanelOn();
     }
 
     public void CloseControlPanel()
     {
-        OC.ToggleFirstPanelOn();
+        _oc.ToggleFirstPanelOn();
     }
 }

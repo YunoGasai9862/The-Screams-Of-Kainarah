@@ -22,7 +22,6 @@ public class IncreaseDiamond : MonoBehaviour
 
     int IncreaseCount()
     {
-        count++;
-        return count;
+        return ++count;
     }
 }
