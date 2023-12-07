@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class SpawnPlayer : MonoBehaviour
+public class SpawnPlayer : SubjectsToBeNotified<bool>
 {
     const float SHADERFADEMAXVALUE = 1;
 
@@ -19,6 +19,7 @@ public class SpawnPlayer : MonoBehaviour
     private SemaphoreSlim _semaphoreSlim;
     private CancellationTokenSource _cancellationTokenSource;
     private CancellationToken _cancellationToken;
+    private Dictionary<string, Checkpoints> spawnpoints;
 
     private void Awake()
     {
@@ -65,6 +66,17 @@ public class SpawnPlayer : MonoBehaviour
         playerMaterial.SetFloat(property, value);
         locker.Release();
 
+    }
+
+    private async Task RespawnToLastCheckPoint(Checkpoints checkpoint)
+    {
+        //also notify enemies to replenish health etc
+        await ResetPlayerValues();
+    }
+
+    private Task ResetPlayerValues()
+    {
+        throw new NotImplementedException();
     }
 
     private void cancelPendingCalls(CancellationTokenSource token)
