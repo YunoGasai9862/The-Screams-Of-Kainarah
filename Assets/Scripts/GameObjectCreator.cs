@@ -5,9 +5,11 @@ public class GameObjectCreator : MonoBehaviour
     [Header("Scriptable Objects")]
     [SerializeField] private DialogueEntityScriptableObject dialogueScriptableObject;
     [SerializeField] private PlayerHittableItemsScriptableObject playerHittableItemsScriptableObject;
+    [SerializeField] private EntitiesToReplenishScriptableObject entitiesToReplenishScriptableObject;
 
     public static DialogueEntityScriptableObject DialogueEntityScriptableObjectFetch => _instance.dialogueScriptableObject;
     public static PlayerHittableItemsScriptableObject PlayerHittableItemScriptableObjectFetch => _instance.playerHittableItemsScriptableObject;
+    public static EntitiesToReplenishScriptableObject EntitiesToReplenishScriptableObjectFetch => _instance.entitiesToReplenishScriptableObject;
 
     private static DialogueManager _dialogueManager { get; set; }
     private static InventoryOpenCloseManager _inventoryOpenCloseManager { get; set;}

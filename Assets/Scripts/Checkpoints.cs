@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class Checkpoints 
-{
-    public GameObject checkpoint;
-    public bool shouldResetValues;
+public class CheckPoints : ScriptableObject { 
+    public class Checkpoint
+    {
+        public GameObject checkpoint;
+        public bool shouldResetValues;
+    }
 }

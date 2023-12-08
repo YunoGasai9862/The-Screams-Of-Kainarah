@@ -34,7 +34,6 @@ namespace CoreCode
 
         public void timeDifferenceRequiredBetweenTwoStates(string parameterName, float timePassed)
         {
-            Debug.Log(_animator);
             _animator.SetFloat(parameterName, timePassed);
         }
 
