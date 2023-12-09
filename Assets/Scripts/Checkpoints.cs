@@ -1,13 +1,15 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class CheckPoints : ScriptableObject { 
+[CreateAssetMenu(fileName = "CheckpointsScriptableObject", menuName ="Checkpoints Scriptable Object")]
+public class CheckPoints : ScriptableObject {
+
+    [Serializable]
     public class Checkpoint
     {
         public GameObject checkpoint;
         public bool shouldResetValues;
     }
+
+    public Checkpoint[] checkpoints;
 }
