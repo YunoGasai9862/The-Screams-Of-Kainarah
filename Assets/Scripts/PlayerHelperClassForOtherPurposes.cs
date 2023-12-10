@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 using static DialogueEntityScriptableObject;
 using static GameObjectCreator;
 
-public class PlayerHelperClassForOtherPurposes : MonoBehaviour
+public class PlayerHelperClassForOtherPurposes : AbstractEntity
 {
     [SerializeField] SpriteRenderer sr;
     [SerializeField] string InteractableTag;
@@ -23,8 +23,15 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
     private SemaphoreSlim _semaphoreSlim;
     private CancellationTokenSource _cancellationTokenSource;
     private CancellationToken _cancellationToken;
+    public override string EntityName { get => m_Name; set => m_Name = value; }
+    public override float Health { get => m_health; set => m_health = value; }
+    public override float MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
+
     private void Awake()
     {
+        MaxHealth = 100f;
+        Health = MaxHealth;
+
         DontDestroyOnLoad(this);
 
         _semaphoreSlim = new SemaphoreSlim(1);
@@ -93,17 +100,16 @@ public class PlayerHelperClassForOtherPurposes : MonoBehaviour
        
         if (await CanPlayerBeAttacked(PlayerHittableItemScriptableObjectFetch, collision.collider))
         {
-            if (HealthManager.getPlayerHealth == 0)
+            if (Health == 0)
             {
                 anim.SetBool("Death", true);
                 await Task.Delay(TimeSpan.FromSeconds(0.1f));
             }
             else
             {
-                HealthManager.getPlayerHealth -= ENEMYATTACK;
+                Health -= ENEMYATTACK;
             }
         }
-
     }
 
     private Task<bool> CanPlayerBeAttacked(PlayerHittableItemsScriptableObject scriptableObject, Collider2D collider)

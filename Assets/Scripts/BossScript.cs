@@ -1,15 +1,22 @@
 using System.Collections;
 using UnityEngine;
-public class BossScript : MonoBehaviour
+public class BossScript : AbstractEntity
 {
-    // Start is called before the first frame update
-
     private GameObject Player;
     private Animator anim;
     private float TimeoverBody = 0f;
     private BoxCollider2D _bC2;
     private bool onTopBossBool = false;
     [SerializeField] GameObject BossDead;
+    public override string EntityName { get => m_Name; set => m_Name = value; }
+    public override float Health { get => m_health; set => m_health = value; }
+    public override float MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
+
+    private void Awake()
+    {
+        MaxHealth = 100f;
+        Health = MaxHealth;
+    }
 
     void Start()
     {
@@ -77,11 +84,11 @@ public class BossScript : MonoBehaviour
         if (collision.CompareTag("Sword") || collision.CompareTag("Dagger"))
         {
             anim.SetTrigger("damage");
-            HealthManager.getBossHealth -= 10;
+            Health -= 10;
 
         }
-
-        if (HealthManager.getBossHealth == 0)
+       
+        if (Health == 0)
         {
             Vector2 pos = transform.position;
             pos.y = transform.position.y + .5f;

@@ -7,39 +7,24 @@ public class HealthBar : MonoBehaviour
     [SerializeField] Image Fill;
     [SerializeField] Slider slide;
     [SerializeField] Gradient gr;
-    [SerializeField] string TargetHealth;
+    [SerializeField] string TargetEntityTag;
+
+    private AbstractEntity _targetEntity;
     private void Start()
     {
-
+        _targetEntity = GameObject.FindGameObjectWithTag(TargetEntityTag).GetComponent<AbstractEntity>();
         Fill.color = gr.Evaluate(slide.value);
-
     }
     void Update()
     {
-        TrackHealth(TargetHealth);
-
+        TrackHealth(_targetEntity);      
     }
 
-
-    private void TrackHealth(string TH)
+    private void TrackHealth(AbstractEntity abstractEntity)
     {
-
-        switch (TH)
-        {
-            case "Player":
-                slide.value = HealthManager.getPlayerHealth;
-                break;
-
-            case "Boss":
-                slide.value = HealthManager.getBossHealth;
-                break;
-
-        }
-
+        slide.value = abstractEntity.Health;
+        Debug.Log((abstractEntity, slide.value));
         Fill.color = gr.Evaluate(slide.value / 100.0f);
-
     }
-
-
 
 }

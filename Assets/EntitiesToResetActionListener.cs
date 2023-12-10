@@ -1,17 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class EntitiesToResetActionListener : MonoBehaviour
+public class EntitiesToResetActionListener : MonoBehaviour, IObserver<EntitiesToReset>
 {
-    // Start is called before the first frame update
-    void Start()
+    private async Task ResetAttributes(EntitiesToReset Data)
     {
-        
+        foreach(var entity in Data.entitiesToReset)
+        {
+
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnNotify(ref EntitiesToReset Data, params object[] optional)
     {
         
     }

@@ -4,14 +4,11 @@ using System.Threading.Tasks;
 using UnityEngine;
 using EnemyHittable;
 using static GameObjectCreator;
-public class EnemyScript : AbstractEnemy
+public class EnemyScript : AbstractEntity
 {
     private const int RAYSARRAYSIZE= 2;
     private const int HITINDEX = 0;
 
-    private Animator anim;
-    private int lifeCounter = 0;
-    private bool isNotdead = true;
     private WayPointsMovement wayPointsMovementScript;
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
@@ -23,7 +20,7 @@ public class EnemyScript : AbstractEnemy
 
     [SerializeField] LayerMask Player;
     [Header("Max Health For The Enemy")]
-    [SerializeField] int MaxHealth;
+    [SerializeField] int maxHealth;
     [Header("Hittable Objects")]
     [SerializeField] public EnemyHittableObjects _enemyHittableObjects;
     [Header("Enter hit Param name")]
@@ -32,25 +29,24 @@ public class EnemyScript : AbstractEnemy
     [SerializeField] string animationAttackParam;
     [SerializeField] string[] extraAnimations;
 
-    public override string enemyName { get => m_Name; set => m_Name = value; }
-    public override int health { get => m_health; set => m_health = value; }
-    public override int maxHealth { get => m_maxHealth; set => m_maxHealth = value; }
+    public override string EntityName { get => m_Name; set => m_Name = value; }
+    public override float Health { get => m_health; set => m_health = value; }
+    public override float MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
 
 
     private void Awake()
     {
         rayReleased = new RaycastHit2D[RAYSARRAYSIZE];
         contactFilter2D.SetLayerMask(Player);
-        enemyName = gameObject.name;
-        maxHealth = MaxHealth;
-        health = maxHealth;
+        EntityName = gameObject.name;
+        MaxHealth = maxHealth;
+        Health = maxHealth;
         wayPointsMovementScript = gameObject.GetComponent<WayPointsMovement>();
    
     }
 
     void Start()
     {
-        anim = GetComponent<Animator>();
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
 
@@ -79,7 +75,7 @@ public class EnemyScript : AbstractEnemy
 
         }
 
-        if (isEnemyHealthZero(health))
+        if (isEnemyHealthZero(Health))
         {
             if (!cancellationToken.IsCancellationRequested)
                 Destroy(gameObject);
@@ -112,7 +108,7 @@ public class EnemyScript : AbstractEnemy
     {
         if (gameObject != null && await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
         {
-            health -= HITPOINTS;
+            Health -= HITPOINTS;
             _ = await GetEnemyOberverListenerObject().EnemyActionDelegator(collision, gameObject, animationHitParam, true);
 
         }
@@ -130,7 +126,7 @@ public class EnemyScript : AbstractEnemy
         cancellationTokenSource.Cancel();
     }
 
-    private bool isEnemyHealthZero(int enemyHealth)
+    private bool isEnemyHealthZero(float enemyHealth)
     {
        return enemyHealth==0? true: false;
     }
