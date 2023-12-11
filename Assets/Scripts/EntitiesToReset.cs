@@ -8,6 +8,7 @@ public class EntitiesToReset : ScriptableObject
     public class EntityReset
     {
         public GameObject entity;
+        public AbstractEntity absractEntity;
     }
 
     public EntityReset[] entitiesToReset;

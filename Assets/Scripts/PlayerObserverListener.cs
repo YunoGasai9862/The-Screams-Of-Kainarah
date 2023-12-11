@@ -8,7 +8,7 @@ public class PlayerObserverListener : MonoBehaviour //try something new (delegat
 {
     public async Task<bool> ListenerDelegator<T>(SubjectsToBeNotified<T> subjectsToNofity,  T dataType)
     {
-        subjectsToNofity.NotifyObservers(ref dataType);
+        subjectsToNofity.NotifyObservers(dataType);
         return await Task.FromResult(true);
     }
 

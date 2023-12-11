@@ -36,6 +36,7 @@ TagManager:
   - DialogueTrigger
   - TriggerPoint1
   - SinglePlayerDialogueTriggers
+  - Boss_r_hand
   layers:
   - Default
   - TransparentFX

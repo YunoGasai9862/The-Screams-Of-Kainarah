@@ -10,20 +10,30 @@ public class HealthBar : MonoBehaviour
     [SerializeField] string TargetEntityTag;
 
     private AbstractEntity _targetEntity;
+    private GameObject _targetGameObject;
     private void Start()
     {
-        _targetEntity = GameObject.FindGameObjectWithTag(TargetEntityTag).GetComponent<AbstractEntity>();
+        _targetGameObject = GameObject.FindGameObjectWithTag(TargetEntityTag);
+        if (_targetGameObject != null)
+            _targetEntity=_targetGameObject.GetComponent<AbstractEntity>();
+
         Fill.color = gr.Evaluate(slide.value);
     }
     void Update()
     {
-        TrackHealth(_targetEntity);      
+        if(_targetGameObject==null)
+        {
+            _targetGameObject = GameObject.FindGameObjectWithTag(TargetEntityTag);
+            _targetEntity = _targetGameObject.GetComponent<AbstractEntity>();
+        }
+        
+        if(_targetEntity!=null)
+           TrackHealth(_targetEntity);      
     }
 
     private void TrackHealth(AbstractEntity abstractEntity)
     {
         slide.value = abstractEntity.Health;
-        Debug.Log((abstractEntity, slide.value));
         Fill.color = gr.Evaluate(slide.value / 100.0f);
     }
 

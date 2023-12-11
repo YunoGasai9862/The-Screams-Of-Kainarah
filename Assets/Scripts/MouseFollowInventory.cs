@@ -7,9 +7,6 @@ public class MouseFollowInventory : MonoBehaviour
     [SerializeField] GameObject starAura;
     [SerializeField] Camera otherCamera;
 
-
-
-    // Update is called once per frame
     void Update()
     {
         Vector3 MousePosition= otherCamera.ScreenToWorldPoint(Input.mousePosition); //words perfectly

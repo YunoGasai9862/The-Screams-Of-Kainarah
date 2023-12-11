@@ -8,8 +8,8 @@ public class CheckPoints : ScriptableObject {
     public class Checkpoint
     {
         public GameObject checkpoint;
-        public bool shouldResetValues;
+        public bool shouldResetPlayerAttributes;
+        public Checkpoint lastCheckPoint;
     }
-
     public Checkpoint[] checkpoints;
 }

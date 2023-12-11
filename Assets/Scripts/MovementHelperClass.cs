@@ -10,8 +10,6 @@ public class MovementHelperClass : IOverlapChecker
     public bool overlapAgainstLayerMaskChecker(ref BoxCollider2D gameObject, LayerMask colliderLayerMask)
     {
         return Physics2D.CapsuleCast(gameObject.bounds.center, gameObject.bounds.size, CapsuleDirection2D.Vertical, 0f, Vector2.down, .1f, colliderLayerMask);
-
     }
-
 
 }

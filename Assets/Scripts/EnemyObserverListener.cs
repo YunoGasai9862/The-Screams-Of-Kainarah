@@ -18,7 +18,7 @@ public class EnemyObserverListener : MonoBehaviour
     public async Task<bool> EnemyActionDelegator<Z, Y>(Collider2D collider, GameObject enemyObject, Z animName, Y animValue)
     {
         enemyObserverPattern.enemyGameObject = enemyObject; //sets it for use    
-        getenemyColliderSubjects.NotifyObservers(ref collider, animName, animValue);
+        getenemyColliderSubjects.NotifyObservers(collider, animName, animValue);
         return await Task.FromResult(true);
     }
 

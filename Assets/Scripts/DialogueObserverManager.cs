@@ -51,7 +51,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueEntity>
     {
         return dialogues.GetType();
     }
-    public void OnNotify(ref DialogueEntity Data, params object[] optional)
+    public void OnNotify(DialogueEntity Data, params object[] optional)
     {
         if(dialogueManagerActionDict.TryGetValue(Data.entity.tag, out var func))
         {

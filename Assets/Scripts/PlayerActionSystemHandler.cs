@@ -66,7 +66,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
         return _gameObject;
     }
 
-    public void OnNotify(ref Collider2D collider, params object[] optional)
+    public void OnNotify(Collider2D collider, params object[] optional)
     {
         if(_playerActionHandlerDic.TryGetValue(collider.tag, out var invokeFunc)) //simplified
         {

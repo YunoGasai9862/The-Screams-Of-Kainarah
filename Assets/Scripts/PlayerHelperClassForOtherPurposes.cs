@@ -13,7 +13,6 @@ public class PlayerHelperClassForOtherPurposes : AbstractEntity
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
 
-
     private Animator anim;
     private float ENEMYATTACK = 5f;
     public static bool isGrabbing = false;//for the ledge grab script
@@ -104,6 +103,7 @@ public class PlayerHelperClassForOtherPurposes : AbstractEntity
             {
                 anim.SetBool("Death", true);
                 await Task.Delay(TimeSpan.FromSeconds(0.1f));
+               await GetPlayerObserverListenerObject().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, EntitiesToResetScriptableObjectFetch);
             }
             else
             {

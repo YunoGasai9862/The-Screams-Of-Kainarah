@@ -62,7 +62,7 @@ public class EnemyObserverPattern : MonoBehaviour, IObserverV2<Collider2D>
         await Task.Delay(1000);
         _gameObjectCreator.DestroyGameObject(0f);
     }
-    public void OnNotify<Z, Y>(ref Collider2D Data, Z value1, Y value2)
+    public void OnNotify<Z, Y>(Collider2D Data, Z value1, Y value2)
     {
         if(enemyActionDictionary.TryGetValue(Data.tag, out var func))  //put it in the func
         {
