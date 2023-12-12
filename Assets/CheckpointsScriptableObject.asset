@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d5ae0efa36da6f4c9b4565cc8d3f67a, type: 3}
   m_Name: CheckpointsScriptableObject
   m_EditorClassIdentifier: 
-  checkpoints: []
+  checkpoints:
+  - checkpoint: {fileID: 0}
+    shouldResetPlayerAttributes: 0
+    finishLevelCheckpoint: 0

@@ -9,7 +9,7 @@ public class CheckPoints : ScriptableObject {
     {
         public GameObject checkpoint;
         public bool shouldResetPlayerAttributes;
-        public Checkpoint lastCheckPoint;
+        public bool finishLevelCheckpoint;
     }
     public Checkpoint[] checkpoints;
 }
