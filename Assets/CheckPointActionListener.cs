@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,28 +8,48 @@ using static CheckPoints;
 public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
 {
 
-    private Dictionary<string, Checkpoint> _checkpointsDict = new Dictionary<string, Checkpoint>();
+    private Dictionary<string, Func<Checkpoint, CheckPoints, Task>> _checkpointsDict = new Dictionary<string, Func<Checkpoint, CheckPoints, Task>>();
 
-    public Dictionary<string, Checkpoint> CheckpointDict { get => _checkpointsDict; set => _checkpointsDict = value; } 
+    public Dictionary<string, Func<Checkpoint, CheckPoints, Task>> CheckpointDict { get => _checkpointsDict; set => _checkpointsDict = value; } 
 
     private async void Awake()
     {
         CheckpointDict = await PrefillCheckPointsDict(GameObjectCreator.CheckPointsScriptableObjectFetch);
     }
 
-    private async Task<Dictionary<string, Checkpoint>> PrefillCheckPointsDict(CheckPoints scriptableObject)
+    private Task<Dictionary<string, Func<Checkpoint, CheckPoints, Task>>> PrefillCheckPointsDict(CheckPoints checkPointsScriptableObjectFetch)
     {
-        var filledDict = new Dictionary<string, Checkpoint>();
-        await Task.Run(() =>
+        var filledDict = new Dictionary<string, Func<Checkpoint, CheckPoints, Task>>();
+
+        foreach (var value in checkPointsScriptableObjectFetch.checkpoints)
         {
-            foreach (var value in scriptableObject.checkpoints)
-            {
-                filledDict.Add(value.checkpoint.tag, value);
-            }
-        });
-        return filledDict;
- 
+            filledDict.Add(value.checkpoint.tag, (value, scriptableObject) => PerformCheckPointOperation(value, scriptableObject));
+        }
+
+        return Task.FromResult(filledDict);
     }
+
+    private async Task PerformCheckPointOperation(Checkpoint value, CheckPoints checkPointsScriptableObjectFetch)
+    {
+        //overwrite the values with the values sent in by the player
+        //remove previous respawn checkpoint bools, and add the bool to the current one
+        for(int i=0;  i< checkPointsScriptableObjectFetch.checkpoints.Length; i++)
+        {
+            if(value.checkpoint.tag == checkPointsScriptableObjectFetch.checkpoints[i].checkpoint.tag)
+            {
+                checkPointsScriptableObjectFetch.checkpoints[i] = value; //update the value
+                break;
+            }
+        }
+
+        await Task.Delay(TimeSpan.FromSeconds(0));
+    }
+
+    private Task RespawnPlayer(Checkpoint value)
+    {
+        throw new NotImplementedException();
+    }
+
     private void OnEnable()
     {
         PlayerObserverListenerHelper.CheckPointsObserver.AddObserver(this);
@@ -40,9 +61,9 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
     }
     public void OnNotify(Checkpoint Data, params object[] optional)
     {
-        if(CheckpointDict.TryGetValue(Data.checkpoint.tag, out Checkpoint value))
+        if(CheckpointDict.TryGetValue(Data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task > value))
         {
-
+          value.Invoke(Data, GameObjectCreator.CheckPointsScriptableObjectFetch); //invokes that particular function
         }
     }
 }
