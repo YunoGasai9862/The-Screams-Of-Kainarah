@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using static CheckPoints;
 
-public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
+public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>, IObserver<GameObject>
 {
 
     private Dictionary<string, Func<Checkpoint, CheckPoints, Task>> _checkpointsDict = new Dictionary<string, Func<Checkpoint, CheckPoints, Task>>();
@@ -37,33 +37,68 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
         {
             if(value.checkpoint.tag == checkPointsScriptableObjectFetch.checkpoints[i].checkpoint.tag)
             {
-                checkPointsScriptableObjectFetch.checkpoints[i] = value; //update the value
-                break;
-            }
+                checkPointsScriptableObjectFetch.checkpoints[i] = await SetAsCurrentRespawnCheckPoint(value, true); //update the value
+            }else
+                checkPointsScriptableObjectFetch.checkpoints[i] = await SetAsCurrentRespawnCheckPoint(value, false); 
         }
 
         await Task.Delay(TimeSpan.FromSeconds(0));
     }
 
-    private Task RespawnPlayer(Checkpoint value)
+    private Task<Checkpoint> SetAsCurrentRespawnCheckPoint(Checkpoint value, bool shouldRespawn)
     {
-        throw new NotImplementedException();
+       Checkpoint newValue = new Checkpoint
+       {
+           checkpoint= value.checkpoint,
+           finishLevelCheckpoint= value.finishLevelCheckpoint,
+           shouldResetPlayerAttributes= value.shouldResetPlayerAttributes,
+           shouldRespawn = shouldRespawn
+       };
+
+        return Task.FromResult(newValue);
+    }
+    private Task RespawnPlayer(GameObject playerObject, CheckPoints checkPointsScriptableObjectFetch)
+    {
+        foreach(var checkpoint in checkPointsScriptableObjectFetch.checkpoints)
+        {
+            if (checkpoint.shouldRespawn)
+                break; //do something here tomorrow
+                
+        }
+        return Task.CompletedTask;
+    }
+
+    private bool IsPlayerDead(AbstractEntity playerData)
+    {
+       return playerData.Health == 0 ? true : false;
     }
 
     private void OnEnable()
     {
         PlayerObserverListenerHelper.CheckPointsObserver.AddObserver(this);
+        PlayerObserverListenerHelper.MainPlayerListener.AddObserver(this);
     }
 
     private void OnDisable()
     {
         PlayerObserverListenerHelper.CheckPointsObserver.RemoveOberver(this);
+        PlayerObserverListenerHelper.MainPlayerListener.RemoveOberver(this);
     }
     public void OnNotify(Checkpoint Data, params object[] optional)
     {
         if(CheckpointDict.TryGetValue(Data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task > value))
         {
-          value.Invoke(Data, GameObjectCreator.CheckPointsScriptableObjectFetch); //invokes that particular function
+          value.Invoke(Data, GameObjectCreator.CheckPointsScriptableObjectFetch); //invokes that particular function to reset checkpoints
+        }
+    }
+
+    public void OnNotify(GameObject Data, params object[] optional)
+    {
+        if(Data.GetComponent<AbstractEntity>() != null)
+        {
+            AbstractEntity playerData = Data.GetComponent<AbstractEntity>();
+            if (IsPlayerDead(playerData))
+                RespawnPlayer(Data, GameObjectCreator.CheckPointsScriptableObjectFetch);
         }
     }
 }

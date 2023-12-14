@@ -10,8 +10,6 @@ public class CheckPoints : ScriptableObject {
         public GameObject checkpoint;
         public bool shouldResetPlayerAttributes;
         public bool shouldRespawn;
-        [HideInInspector]
-        public GameObject respawnCheckpoint;
         public bool finishLevelCheckpoint;
 
     }
