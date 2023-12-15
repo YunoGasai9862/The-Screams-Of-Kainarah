@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using static CheckPoints;
+using static GameObjectCreator;
 
 public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>, IObserver<GameObject>
 {
@@ -14,7 +15,7 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>, IO
 
     private async void Awake()
     {
-        CheckpointDict = await PrefillCheckPointsDict(GameObjectCreator.CheckPointsScriptableObjectFetch);
+        CheckpointDict = await PrefillCheckPointsDict(CheckPointsScriptableObjectFetch);
     }
 
     private Task<Dictionary<string, Func<Checkpoint, CheckPoints, Task>>> PrefillCheckPointsDict(CheckPoints checkPointsScriptableObjectFetch)
@@ -57,15 +58,14 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>, IO
 
         return Task.FromResult(newValue);
     }
-    private Task RespawnPlayer(GameObject playerObject, CheckPoints checkPointsScriptableObjectFetch)
+    private async Task RespawnPlayer(GameObject playerObject, CheckPoints checkPointsScriptableObjectFetch)
     {
-        foreach(var checkpoint in checkPointsScriptableObjectFetch.checkpoints)
+        foreach(var cp in checkPointsScriptableObjectFetch.checkpoints)
         {
-            if (checkpoint.shouldRespawn)
-                break; //do something here tomorrow
+            if (cp.shouldRespawn)
+                await PlayerSpawn().spawnPlayer(playerObject, cp.checkpoint.transform.position);
                 
         }
-        return Task.CompletedTask;
     }
 
     private bool IsPlayerDead(AbstractEntity playerData)
@@ -88,7 +88,7 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>, IO
     {
         if(CheckpointDict.TryGetValue(Data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task > value))
         {
-          value.Invoke(Data, GameObjectCreator.CheckPointsScriptableObjectFetch); //invokes that particular function to reset checkpoints
+          value.Invoke(Data, CheckPointsScriptableObjectFetch); //invokes that particular function to reset checkpoints
         }
     }
 
@@ -97,8 +97,9 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>, IO
         if(Data.GetComponent<AbstractEntity>() != null)
         {
             AbstractEntity playerData = Data.GetComponent<AbstractEntity>();
+            Debug.Log(playerData);
             if (IsPlayerDead(playerData))
-                RespawnPlayer(Data, GameObjectCreator.CheckPointsScriptableObjectFetch);
+              _=  RespawnPlayer(Data, CheckPointsScriptableObjectFetch);
         }
     }
 }

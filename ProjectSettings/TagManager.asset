@@ -37,6 +37,9 @@ TagManager:
   - TriggerPoint1
   - SinglePlayerDialogueTriggers
   - Boss_r_hand
+  - Checkpoint
+  - CP1
+  - CP2
   layers:
   - Default
   - TransparentFX

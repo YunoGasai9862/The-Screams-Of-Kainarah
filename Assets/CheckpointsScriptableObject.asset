@@ -13,6 +13,11 @@ MonoBehaviour:
   m_Name: CheckpointsScriptableObject
   m_EditorClassIdentifier: 
   checkpoints:
-  - checkpoint: {fileID: 0}
+  - checkpoint: {fileID: 8470196108919571849, guid: e9979820d53e97b4e8f3d16e229e9e8c, type: 3}
     shouldResetPlayerAttributes: 0
+    shouldRespawn: 1
+    finishLevelCheckpoint: 0
+  - checkpoint: {fileID: 3539546595306775677, guid: 08693885b34fc6140ad38c05ddcf0b81, type: 3}
+    shouldResetPlayerAttributes: 0
+    shouldRespawn: 0
     finishLevelCheckpoint: 0

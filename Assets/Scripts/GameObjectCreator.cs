@@ -20,6 +20,7 @@ public class GameObjectCreator : MonoBehaviour
     private static EnemyObserverListener _enemyObserverListener { get; set; }
     private static EntitiesToResetActionListener _entitiesToResetActionListener { get; set; }
     private static CheckPointActionListener _checkpointActionListener { get; set; }
+    private static SpawnPlayer _getSpawnPlayerScript { get; set; }
 
     private static GameObjectCreator _instance;
 
@@ -35,6 +36,7 @@ public class GameObjectCreator : MonoBehaviour
         _enemyObserverListener = FindFirstObjectByType<EnemyObserverListener>();
         _entitiesToResetActionListener = FindFirstObjectByType<EntitiesToResetActionListener>();
         _checkpointActionListener = FindFirstObjectByType<CheckPointActionListener>();
+        _getSpawnPlayerScript = FindFirstObjectByType<SpawnPlayer>();
     }
 
     public static DialogueManager GetDialogueManager()
@@ -42,6 +44,10 @@ public class GameObjectCreator : MonoBehaviour
         return _dialogueManager;
     }
 
+    public static SpawnPlayer PlayerSpawn()
+    {
+        return _getSpawnPlayerScript;
+    }
     public static InventoryOpenCloseManager GetInventoryOpenCloseManager()
     {
         return _inventoryOpenCloseManager;

@@ -12,6 +12,7 @@ public class PlayerHelperClassForOtherPurposes : AbstractEntity
     [SerializeField] SpriteRenderer sr;
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
+    [SerializeField] string[] checkpointTags;
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
@@ -101,8 +102,8 @@ public class PlayerHelperClassForOtherPurposes : AbstractEntity
         {
             if (Health == 0)
             {
-                anim.SetBool("Death", true);
-                await Task.Delay(TimeSpan.FromSeconds(0.1f));
+               anim.SetBool("Death", true);
+               await Task.Delay(TimeSpan.FromSeconds(0.1f));
                await GetPlayerObserverListenerObject().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, EntitiesToResetScriptableObjectFetch);
             }
             else
@@ -152,6 +153,22 @@ public class PlayerHelperClassForOtherPurposes : AbstractEntity
         }
 
          await GetPlayerObserverListenerObject().ListenerDelegator<Collider2D>(PlayerObserverListenerHelper.ColliderSubjects, collision);
+
+        if(await GetOneOfTheCheckPoints(collision.tag, checkpointTags))
+        {
+            await GetPlayerObserverListenerObject().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject);
+        }
+    }
+
+    private Task<bool> GetOneOfTheCheckPoints(string tag, string[] tags)
+    { 
+        foreach(var cpTag in tags)
+        {
+            if(cpTag==tag)
+                return Task.FromResult(true);
+        }
+
+        return Task.FromResult(false);
     }
 
 
