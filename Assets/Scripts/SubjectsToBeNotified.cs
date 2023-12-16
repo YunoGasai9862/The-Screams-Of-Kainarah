@@ -42,11 +42,11 @@ public class SubjectsToBeNotifiedV2<T> //for player
     {
         _potentialObservers.Remove(observer);
     }
-    public void NotifyObservers<Z, Y>(T objectCausingTrigger, Z animName, Y animValue)
+    public void NotifyObservers<Z, Y>(T objectCausingTrigger, Z dataTypeValue, Y dataTypeValue2)
     {
         foreach (var observer in _potentialObservers)
         {
-            observer.OnNotify(objectCausingTrigger, animName, animValue);
+            observer.OnNotify(objectCausingTrigger, dataTypeValue, dataTypeValue2);
         }
     }
 

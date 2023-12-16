@@ -46,14 +46,14 @@ public class LedgeGrab : MonoBehaviour
         }
 
         if (!_helperFunc.overlapAgainstLayerMaskChecker(ref col, groundmask) && greenBox &&
-            PlayerHelperClassForOtherPurposes.isGrabbing)
+            PlayerActionRelayer.isGrabbing)
         {
             _timeSpent += Time.deltaTime;
         }
 
         if (TimeSpentIsGrabbing() || _helperFunc.overlapAgainstLayerMaskChecker(ref col, ledge))
         {
-            PlayerHelperClassForOtherPurposes.isGrabbing = false;
+            PlayerActionRelayer.isGrabbing = false;
             _timeSpent = 0f;
         }
 
@@ -65,10 +65,10 @@ public class LedgeGrab : MonoBehaviour
 
         if (greenBox && !RedBox && globalVariablesAccess.ISJUMPING)
         {
-            PlayerHelperClassForOtherPurposes.isGrabbing = true;
+            PlayerActionRelayer.isGrabbing = true;
         }
 
-        if (PlayerHelperClassForOtherPurposes.isGrabbing)
+        if (PlayerActionRelayer.isGrabbing)
         {
             anim.SetBool("LedgeGrab", true);
         }
@@ -95,7 +95,7 @@ public class LedgeGrab : MonoBehaviour
         }
 
         rb.gravityScale = startingGrav;
-        PlayerHelperClassForOtherPurposes.isGrabbing = false;
+        PlayerActionRelayer.isGrabbing = false;
 
     }
 

@@ -15,12 +15,13 @@ public class GameObjectCreator : MonoBehaviour
 
     private static DialogueManager _dialogueManager { get; set; }
     private static InventoryOpenCloseManager _inventoryOpenCloseManager { get; set; }
-    private static PlayerHelperClassForOtherPurposes _playerHelperClassForOtherPurposes { get; set; }
+    private static PlayerActionRelayer _playerHelperClassForOtherPurposes { get; set; }
     private static PlayerObserverListener _playerObserverListener { get; set; }
     private static EnemyObserverListener _enemyObserverListener { get; set; }
     private static EntitiesToResetActionListener _entitiesToResetActionListener { get; set; }
     private static CheckPointActionListener _checkpointActionListener { get; set; }
     private static SpawnPlayer _getSpawnPlayerScript { get; set; }
+    private static CheckpointColliderListener _checkpointColliderListener { get; set; }
 
     private static GameObjectCreator _instance;
 
@@ -31,12 +32,13 @@ public class GameObjectCreator : MonoBehaviour
             _instance = this; //creating an instance (singleton pattern)
         _dialogueManager = FindFirstObjectByType<DialogueManager>();  //faster compared to FindObjectOfType
         _inventoryOpenCloseManager = FindFirstObjectByType<InventoryOpenCloseManager>();
-        _playerHelperClassForOtherPurposes = FindFirstObjectByType<PlayerHelperClassForOtherPurposes>();
+        _playerHelperClassForOtherPurposes = FindFirstObjectByType<PlayerActionRelayer>();
         _playerObserverListener = FindFirstObjectByType<PlayerObserverListener>();
         _enemyObserverListener = FindFirstObjectByType<EnemyObserverListener>();
         _entitiesToResetActionListener = FindFirstObjectByType<EntitiesToResetActionListener>();
         _checkpointActionListener = FindFirstObjectByType<CheckPointActionListener>();
         _getSpawnPlayerScript = FindFirstObjectByType<SpawnPlayer>();
+        _checkpointColliderListener = FindFirstObjectByType<CheckpointColliderListener>();
     }
 
     public static DialogueManager GetDialogueManager()
@@ -53,7 +55,7 @@ public class GameObjectCreator : MonoBehaviour
         return _inventoryOpenCloseManager;
     }
 
-    public static PlayerHelperClassForOtherPurposes GetPlayerHelperClassObject()
+    public static PlayerActionRelayer GetPlayerHelperClassObject()
     {
         return _playerHelperClassForOtherPurposes;
     }
@@ -73,6 +75,10 @@ public class GameObjectCreator : MonoBehaviour
     public static CheckPointActionListener GetCheckPointActionListenerObject()
     {
         return _checkpointActionListener;
+    }
+    public static CheckpointColliderListener GetCheckPointColliderActionListenerObject()
+    {
+        return _checkpointColliderListener;
     }
 
 }

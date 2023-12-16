@@ -826,6 +826,9 @@ MonoBehaviour:
   sr: {fileID: 0}
   InteractableTag: DialogueTrigger
   TeleportTransition: {fileID: 0}
+  checkpointTags:
+  - CP1
+  - CP2
 --- !u!114 &3387488181997499512
 MonoBehaviour:
   m_ObjectHideFlags: 0

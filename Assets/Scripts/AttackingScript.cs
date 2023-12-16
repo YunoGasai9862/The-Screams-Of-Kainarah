@@ -38,8 +38,6 @@ public class AttackingScript : MonoBehaviour
 
     private void Awake()
     {
-        DontDestroyOnLoad(this);
-
         _anim = GetComponent<Animator>();
 
         _spriteRenderer = GetComponent<SpriteRenderer>();   

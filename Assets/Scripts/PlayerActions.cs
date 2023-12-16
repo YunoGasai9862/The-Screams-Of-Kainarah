@@ -50,8 +50,6 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
         _rocky2DActions.PlayerMovement.Slide.started += Slide;
         _rocky2DActions.PlayerMovement.Slide.canceled += Slide;
 
-
-
     }
 
 
@@ -62,8 +60,6 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
     }
     public void HandleJumping()
     {
-
-
         if (canPlayerJump()) //jumping
         {
             globalVariablesAccess.ISJUMPING = true;
@@ -98,7 +94,7 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
             _timeCounter += Time.deltaTime;
         }
 
-        if (PlayerHelperClassForOtherPurposes.isGrabbing) //tackles the ledgeGrab
+        if (PlayerActionRelayer.isGrabbing) //tackles the ledgeGrab
         {
             HandleIsGrabbingScenario();
             return;

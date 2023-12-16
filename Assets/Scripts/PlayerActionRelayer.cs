@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 using static DialogueEntityScriptableObject;
 using static GameObjectCreator;
 
-public class PlayerHelperClassForOtherPurposes : AbstractEntity
+public class PlayerActionRelayer : AbstractEntity
 {
     [SerializeField] SpriteRenderer sr;
     [SerializeField] string InteractableTag;
@@ -50,11 +50,21 @@ public class PlayerHelperClassForOtherPurposes : AbstractEntity
 
     }
 
-    private void Update()
+    private async void Update()
     {
         if (dialogue != null)
         {
             dialogue = GameObject.FindWithTag(InteractableTag).GetComponent<Interactable>();
+        }
+        _semaphoreSlim.Wait();
+
+        if (await IsPlayerDead(Health))
+        {
+            anim.SetBool("Death", true);
+            await Task.Delay(TimeSpan.FromSeconds(0.1f));
+            await GetPlayerObserverListenerObject().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, EntitiesToResetScriptableObjectFetch);
+            await GetPlayerObserverListenerObject().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject);
+            _semaphoreSlim.Release();
         }
     }
     private async void FixedUpdate()
@@ -100,16 +110,7 @@ public class PlayerHelperClassForOtherPurposes : AbstractEntity
        
         if (await CanPlayerBeAttacked(PlayerHittableItemScriptableObjectFetch, collision.collider))
         {
-            if (Health == 0)
-            {
-               anim.SetBool("Death", true);
-               await Task.Delay(TimeSpan.FromSeconds(0.1f));
-               await GetPlayerObserverListenerObject().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, EntitiesToResetScriptableObjectFetch);
-            }
-            else
-            {
-                Health -= ENEMYATTACK;
-            }
+            Health -= ENEMYATTACK;
         }
     }
 
@@ -136,6 +137,11 @@ public class PlayerHelperClassForOtherPurposes : AbstractEntity
         return Task.FromResult(false);
     }
 
+    private Task<bool> IsPlayerDead(float health)
+    {
+        return health == 0 ? Task.FromResult(true) : Task.FromResult(false);
+    }
+
     private async void OnTriggerEnter2D(Collider2D collision)
     {
         pickedUp = _pickableItems.didPlayerCollideWithaPickableItem(collision.tag);
@@ -156,8 +162,14 @@ public class PlayerHelperClassForOtherPurposes : AbstractEntity
 
         if(await GetOneOfTheCheckPoints(collision.tag, checkpointTags))
         {
-            await GetPlayerObserverListenerObject().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject);
+           //call checkpoint replacement
         }
+
+    }
+
+    private async Task<bool> GetCheckPointFromScriptableObject(CheckPoints checkpointsScriptableObject, string tag)
+    {
+        return true;
     }
 
     private Task<bool> GetOneOfTheCheckPoints(string tag, string[] tags)

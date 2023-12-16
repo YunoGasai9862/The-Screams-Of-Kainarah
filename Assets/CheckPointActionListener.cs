@@ -6,7 +6,7 @@ using UnityEngine;
 using static CheckPoints;
 using static GameObjectCreator;
 
-public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>, IObserver<GameObject>
+public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
 {
 
     private Dictionary<string, Func<Checkpoint, CheckPoints, Task>> _checkpointsDict = new Dictionary<string, Func<Checkpoint, CheckPoints, Task>>();
@@ -58,48 +58,23 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>, IO
 
         return Task.FromResult(newValue);
     }
-    private async Task RespawnPlayer(GameObject playerObject, CheckPoints checkPointsScriptableObjectFetch)
-    {
-        foreach(var cp in checkPointsScriptableObjectFetch.checkpoints)
-        {
-            if (cp.shouldRespawn)
-                await PlayerSpawn().spawnPlayer(playerObject, cp.checkpoint.transform.position);
-                
-        }
-    }
-
-    private bool IsPlayerDead(AbstractEntity playerData)
-    {
-       return playerData.Health == 0 ? true : false;
-    }
 
     private void OnEnable()
     {
         PlayerObserverListenerHelper.CheckPointsObserver.AddObserver(this);
-        PlayerObserverListenerHelper.MainPlayerListener.AddObserver(this);
     }
 
     private void OnDisable()
     {
         PlayerObserverListenerHelper.CheckPointsObserver.RemoveOberver(this);
-        PlayerObserverListenerHelper.MainPlayerListener.RemoveOberver(this);
     }
     public void OnNotify(Checkpoint Data, params object[] optional)
     {
         if(CheckpointDict.TryGetValue(Data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task > value))
         {
+          Debug.Log("Here");
           value.Invoke(Data, CheckPointsScriptableObjectFetch); //invokes that particular function to reset checkpoints
         }
     }
 
-    public void OnNotify(GameObject Data, params object[] optional)
-    {
-        if(Data.GetComponent<AbstractEntity>() != null)
-        {
-            AbstractEntity playerData = Data.GetComponent<AbstractEntity>();
-            Debug.Log(playerData);
-            if (IsPlayerDead(playerData))
-              _=  RespawnPlayer(Data, CheckPointsScriptableObjectFetch);
-        }
-    }
 }
