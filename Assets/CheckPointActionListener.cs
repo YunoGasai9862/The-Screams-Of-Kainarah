@@ -40,7 +40,7 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
             {
                 checkPointsScriptableObjectFetch.checkpoints[i] = await SetAsCurrentRespawnCheckPoint(value, true); //update the value
             }else
-                checkPointsScriptableObjectFetch.checkpoints[i] = await SetAsCurrentRespawnCheckPoint(value, false); 
+                checkPointsScriptableObjectFetch.checkpoints[i] = await SetAsCurrentRespawnCheckPoint(checkPointsScriptableObjectFetch.checkpoints[i], false); 
         }
 
         await Task.Delay(TimeSpan.FromSeconds(0));
@@ -48,9 +48,9 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
 
     private Task<Checkpoint> SetAsCurrentRespawnCheckPoint(Checkpoint value, bool shouldRespawn)
     {
-       Checkpoint newValue = new Checkpoint
-       {
-           checkpoint= value.checkpoint,
+        Checkpoint newValue = new Checkpoint
+        {
+           checkpoint = value.checkpoint,
            finishLevelCheckpoint= value.finishLevelCheckpoint,
            shouldResetPlayerAttributes= value.shouldResetPlayerAttributes,
            shouldRespawn = shouldRespawn
@@ -67,14 +67,28 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
     private void OnDisable()
     {
         PlayerObserverListenerHelper.CheckPointsObserver.RemoveOberver(this);
+
+        //reset checkpoints
+        ResetCheckpoints(CheckPointsScriptableObjectFetch, false, false, false);
+    }
+
+    private void ResetCheckpoints(CheckPoints checkPointsScriptableObjectFetch, bool finishLevelBool, bool shouldRespawnBool, bool shouldResetAttributesBool)
+    {
+        foreach (var cp in checkPointsScriptableObjectFetch.checkpoints)
+        {
+            cp.finishLevelCheckpoint = finishLevelBool;
+            cp.shouldRespawn= shouldRespawnBool;
+            cp.shouldResetPlayerAttributes = shouldResetAttributesBool;
+        }
+
     }
     public void OnNotify(Checkpoint Data, params object[] optional)
     {
         if(CheckpointDict.TryGetValue(Data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task > value))
         {
-          Debug.Log("Here");
           value.Invoke(Data, CheckPointsScriptableObjectFetch); //invokes that particular function to reset checkpoints
         }
     }
+
 
 }

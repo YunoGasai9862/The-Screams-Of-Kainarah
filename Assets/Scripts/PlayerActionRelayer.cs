@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static DialogueEntityScriptableObject;
 using static GameObjectCreator;
-
+using static CheckPoints;
 public class PlayerActionRelayer : AbstractEntity
 {
     [SerializeField] SpriteRenderer sr;
@@ -29,7 +29,7 @@ public class PlayerActionRelayer : AbstractEntity
 
     private void Awake()
     {
-        MaxHealth = 100f;
+        MaxHealth = 5f;
         Health = MaxHealth;
 
         DontDestroyOnLoad(this);
@@ -56,16 +56,21 @@ public class PlayerActionRelayer : AbstractEntity
         {
             dialogue = GameObject.FindWithTag(InteractableTag).GetComponent<Interactable>();
         }
-        _semaphoreSlim.Wait();
-
+        
         if (await IsPlayerDead(Health))
         {
             anim.SetBool("Death", true);
             await Task.Delay(TimeSpan.FromSeconds(0.1f));
             await GetPlayerObserverListenerObject().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, EntitiesToResetScriptableObjectFetch);
-            await GetPlayerObserverListenerObject().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject);
-            _semaphoreSlim.Release();
+
+            if (!_cancellationTokenSource.IsCancellationRequested)
+            {
+                Debug.Log("Calling");
+                await GetPlayerObserverListenerObject().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject);
+
+            }
         }
+        
     }
     private async void FixedUpdate()
     {
@@ -144,6 +149,12 @@ public class PlayerActionRelayer : AbstractEntity
 
     private async void OnTriggerEnter2D(Collider2D collision)
     {
+        await ItemCollisionHandler(collision);
+        await CheckpointCollisionHandler(collision);
+    }
+
+    private async Task ItemCollisionHandler(Collider2D collision)
+    {
         pickedUp = _pickableItems.didPlayerCollideWithaPickableItem(collision.tag);
 
         if (pickedUp)
@@ -158,18 +169,30 @@ public class PlayerActionRelayer : AbstractEntity
             await GetPlayerObserverListenerObject().ListenerDelegator<bool>(PlayerObserverListenerHelper.BoolSubjects, shouldMusicBePlayed);
         }
 
-         await GetPlayerObserverListenerObject().ListenerDelegator<Collider2D>(PlayerObserverListenerHelper.ColliderSubjects, collision);
-
-        if(await GetOneOfTheCheckPoints(collision.tag, checkpointTags))
-        {
-           //call checkpoint replacement
-        }
+        await GetPlayerObserverListenerObject().ListenerDelegator<Collider2D>(PlayerObserverListenerHelper.ColliderSubjects, collision);
 
     }
-
-    private async Task<bool> GetCheckPointFromScriptableObject(CheckPoints checkpointsScriptableObject, string tag)
+    private async Task CheckpointCollisionHandler(Collider2D collision)
     {
-        return true;
+        if (await GetOneOfTheCheckPoints(collision.tag, checkpointTags))
+        {
+            //call checkpoint replacement 
+            Checkpoint checkpoint = await GetCheckPointFromScriptableObject(GameObjectCreator.CheckPointsScriptableObjectFetch, collision.tag);
+
+            await GetPlayerObserverListenerObject().ListenerDelegator<Checkpoint>(PlayerObserverListenerHelper.CheckPointsObserver, checkpoint);
+        }
+    }
+
+    private Task<Checkpoint> GetCheckPointFromScriptableObject(CheckPoints checkpointsScriptableObject, string tag)
+    {
+        foreach(var cp in checkpointsScriptableObject.checkpoints)
+        {
+            if(string.Compare(tag, cp.checkpoint.transform.tag, true)==0)
+            {
+                return Task.FromResult(cp);
+            }
+        }
+        return null;
     }
 
     private Task<bool> GetOneOfTheCheckPoints(string tag, string[] tags)

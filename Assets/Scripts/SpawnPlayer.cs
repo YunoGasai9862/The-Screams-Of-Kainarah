@@ -1,3 +1,4 @@
+using NUnit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ public class SpawnPlayer : MonoBehaviour
     }
     async void Start()
     {
-        await spawnPlayer(Player, locationToSpawn);
+        await SpawnEntity(Player, locationToSpawn);
         playerMaterial = Player.GetComponent<Renderer>().sharedMaterial; //we have to take it from the Renderer component                                                                     //direct material access is not allowed
         playerMaterial.SetFloat("_FadeIn", _increment);
     }
@@ -44,14 +45,32 @@ public class SpawnPlayer : MonoBehaviour
             _increment += incrementValue * Time.deltaTime;
             await FadeIn(playerMaterial, "_FadeIn", _increment, _semaphoreSlim, _cancellationTokenSource);
         }
+   
     }
 
-    public async Task spawnPlayer(GameObject Player, Vector3 locationToSpawn)
+    public async Task SpawnEntity(GameObject Player, Vector3 locationToSpawn)
     {
         await Task.Delay(TimeSpan.FromSeconds(0));
         Instantiate(Player, locationToSpawn, Player.transform.rotation);
     }
+    
+    public async Task ResetPlayerAttributes(GameObject Player, Vector3 locationToSpawn, Vector3 offsetValues)
+    {
+        await Task.Delay(TimeSpan.FromSeconds(0));
+        var animator= Player.GetComponent<Animator>();
+        animator.Rebind(); //reset the death anim
+        _increment = await ResetMaterialProperties(0, playerMaterial);
+        Vector3 newSpawnLocation = locationToSpawn + offsetValues;
+        Player.transform.position = newSpawnLocation;
+        
+    }
 
+    public async Task<float> ResetMaterialProperties(float incrementValue, Material material)
+    {
+        await Task.Delay(TimeSpan.FromSeconds(0));
+        material.SetFloat("_FadeIn", incrementValue);
+        return incrementValue;
+    }
     private async Task FadeIn(Material playerMaterial, string property, float increment, SemaphoreSlim locker, CancellationTokenSource token)
     {
         if (playerMaterial.GetFloat("_FadeIn")> SHADERFADEMAXVALUE)

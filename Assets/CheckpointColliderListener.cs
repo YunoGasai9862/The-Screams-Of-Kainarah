@@ -21,7 +21,9 @@ public class CheckpointColliderListener : MonoBehaviour, IObserver<GameObject>
         foreach (var cp in checkPointsScriptableObjectFetch.checkpoints)
         {
             if (cp.shouldRespawn)
-                await PlayerSpawn().spawnPlayer(playerObject, cp.checkpoint.transform.position);
+            { 
+                await PlayerSpawn().ResetPlayerAttributes(playerObject, cp.checkpoint.transform.position, new Vector3(0, 2, 0));
+            }
         }
     }
 
