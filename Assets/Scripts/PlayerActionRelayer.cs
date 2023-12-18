@@ -13,6 +13,7 @@ public class PlayerActionRelayer : AbstractEntity
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
     [SerializeField] string[] checkpointTags;
+    [SerializeField] float playerHealth;
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
@@ -29,7 +30,7 @@ public class PlayerActionRelayer : AbstractEntity
 
     private void Awake()
     {
-        MaxHealth = 5f;
+        MaxHealth = playerHealth;
         Health = MaxHealth;
 
         DontDestroyOnLoad(this);
@@ -65,7 +66,6 @@ public class PlayerActionRelayer : AbstractEntity
 
             if (!_cancellationTokenSource.IsCancellationRequested)
             {
-                Debug.Log("Calling");
                 await GetPlayerObserverListenerObject().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject);
 
             }

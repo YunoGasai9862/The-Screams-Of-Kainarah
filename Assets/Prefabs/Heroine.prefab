@@ -829,6 +829,7 @@ MonoBehaviour:
   checkpointTags:
   - CP1
   - CP2
+  playerHealth: 100
 --- !u!114 &3387488181997499512
 MonoBehaviour:
   m_ObjectHideFlags: 0
