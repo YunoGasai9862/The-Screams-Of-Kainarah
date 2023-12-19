@@ -6,8 +6,9 @@ using UnityEngine;
 public interface IGameState
 {
     Task LoadGame();
-    Task SaveGame();
+    Task SaveGame(SceneData sceneData); //for manipulating
     Task  RestartLevel();
     Task LoadLastCheckPoint();
+    Task NewGame();
 
 }

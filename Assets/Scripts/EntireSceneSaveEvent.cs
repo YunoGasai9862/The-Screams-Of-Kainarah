@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 [Serializable]
-public class GameData : MonoBehaviour
+public class EntireSceneSaveEvent : UnityEvent<SceneData>
 {
-   //add data to save
+   
 }
