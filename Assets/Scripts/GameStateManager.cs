@@ -1,5 +1,6 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,12 +12,21 @@ public class GameStateManager : MonoBehaviour, IGameState
     public CheckPointEvent onCheckpointSaveEvent; //checkpoint event
     public EntireSceneSaveEvent onEntireSceneSaveEvent;
 
+    public IGameStateHandler[] gameStateHandlerObjects;
+
+    [Obsolete]
     private void Awake()
     {
         if(instance == null) //so only instance is there
             instance = this;
+
+        gameStateHandlerObjects = GameObjectCreator.GameStateHandlerObjects();
     }
 
+    private async Task AddSubscriptionToGameStateHandlerObjects(IGameStateHandler[] objects)
+    {
+
+    }
     private async void Start()
     {
         await LoadGame();
@@ -57,6 +67,13 @@ public class GameStateManager : MonoBehaviour, IGameState
 
     private async void OnApplicationQuit()
     {
-        await SaveGame();
+        await SaveGame(this._sceneData);
+    }
+
+    public Task SaveCheckPoint(SceneData sceneData)
+    {
+        onCheckpointSaveEvent.Invoke(sceneData); //calling event
+        return Task.CompletedTask;
+
     }
 }

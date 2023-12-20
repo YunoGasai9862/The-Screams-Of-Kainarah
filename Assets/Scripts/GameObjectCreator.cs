@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class GameObjectCreator : MonoBehaviour
@@ -24,8 +25,9 @@ public class GameObjectCreator : MonoBehaviour
     private static CheckpointColliderListener _checkpointColliderListener { get; set; }
 
     private static GameObjectCreator _instance;
+    private static IGameStateHandler[] _gameStateHandlerObjects { get; set; }//fill only once
 
-
+    [System.Obsolete]
     private void Awake()
     {
         if (_instance == null)
@@ -39,6 +41,8 @@ public class GameObjectCreator : MonoBehaviour
         _checkpointActionListener = FindFirstObjectByType<CheckPointActionListener>();
         _getSpawnPlayerScript = FindFirstObjectByType<SpawnPlayer>();
         _checkpointColliderListener = FindFirstObjectByType<CheckpointColliderListener>();
+        _gameStateHandlerObjects = FindObjectsOfType<MonoBehaviour>().OfType<IGameStateHandler>().ToArray();
+
     }
 
     public static DialogueManager GetDialogueManager()
@@ -54,7 +58,10 @@ public class GameObjectCreator : MonoBehaviour
     {
         return _inventoryOpenCloseManager;
     }
-
+    public static IGameStateHandler[] GameStateHandlerObjects()
+    {
+        return _gameStateHandlerObjects;
+    }
     public static PlayerActionRelayer GetPlayerHelperClassObject()
     {
         return _playerHelperClassForOtherPurposes;

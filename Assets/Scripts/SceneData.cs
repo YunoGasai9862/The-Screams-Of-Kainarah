@@ -7,6 +7,7 @@ using UnityEngine;
 [Serializable]
 public class SceneData
 {
+    public IList<ObjectData> ObjectsToPersit { get => objectsToPersist; set => objectsToPersist = value; }
     [Serializable]
     public class ObjectData
     {
@@ -16,5 +17,5 @@ public class SceneData
         public string name;
     }
 
-    IList<ObjectData> objectsToPersist = new List<ObjectData>();
+   private IList<ObjectData> objectsToPersist = new List<ObjectData>();
 }
