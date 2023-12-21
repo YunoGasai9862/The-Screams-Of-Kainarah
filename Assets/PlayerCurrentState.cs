@@ -2,17 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCurrentState : MonoBehaviour
+public class PlayerCurrentState : MonoBehaviour, IGameStateHandler
 {
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        
+        GameObjectCreator.InsertIntoGameStateHandlerList(GetComponent<IGameStateHandler>());
     }
-
-    // Update is called once per frame
-    void Update()
+    public void GameStateHandler(SceneData data)
     {
-        
+       
     }
 }

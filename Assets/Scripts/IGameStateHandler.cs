@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface IGameStateHandler
 {
-   public abstract void GameStateHandler();
+    void GameStateHandler(SceneData data);
 
 }

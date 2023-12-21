@@ -1,4 +1,7 @@
+using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class GameObjectCreator : MonoBehaviour
@@ -27,11 +30,15 @@ public class GameObjectCreator : MonoBehaviour
     private static GameObjectCreator _instance;
     private static IGameStateHandler[] _gameStateHandlerObjects { get; set; }//fill only once
 
-    [System.Obsolete]
     private void Awake()
     {
         if (_instance == null)
             _instance = this; //creating an instance (singleton pattern)
+    }
+
+    [System.Obsolete]
+    private void Start()
+    {
         _dialogueManager = FindFirstObjectByType<DialogueManager>();  //faster compared to FindObjectOfType
         _inventoryOpenCloseManager = FindFirstObjectByType<InventoryOpenCloseManager>();
         _playerHelperClassForOtherPurposes = FindFirstObjectByType<PlayerActionRelayer>();
@@ -42,7 +49,6 @@ public class GameObjectCreator : MonoBehaviour
         _getSpawnPlayerScript = FindFirstObjectByType<SpawnPlayer>();
         _checkpointColliderListener = FindFirstObjectByType<CheckpointColliderListener>();
         _gameStateHandlerObjects = FindObjectsOfType<MonoBehaviour>().OfType<IGameStateHandler>().ToArray();
-
     }
 
     public static DialogueManager GetDialogueManager()
@@ -58,9 +64,15 @@ public class GameObjectCreator : MonoBehaviour
     {
         return _inventoryOpenCloseManager;
     }
-    public static IGameStateHandler[] GameStateHandlerObjects()
+    public static async Task<IGameStateHandler[]> GameStateHandlerObjects(SemaphoreSlim semaphoreSlim, float delayInSeconds)
     {
+        await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
+        semaphoreSlim.Release();
         return _gameStateHandlerObjects;
+    }
+    public static void InsertIntoGameStateHandlerList(IGameStateHandler handler)
+    {
+        _gameStateHandlerObjects.Append(handler);
     }
     public static PlayerActionRelayer GetPlayerHelperClassObject()
     {

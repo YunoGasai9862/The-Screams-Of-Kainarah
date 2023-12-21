@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,22 +15,24 @@ public class GameStateManager : MonoBehaviour, IGameState
 
     public IGameStateHandler[] gameStateHandlerObjects;
 
-    [Obsolete]
-    private void Awake()
+    public SemaphoreSlim SemaphoreSlim { get; private set; }
+
+    private  void Awake()
     {
         if(instance == null) //so only instance is there
             instance = this;
 
-        gameStateHandlerObjects = GameObjectCreator.GameStateHandlerObjects();
+        SemaphoreSlim = new SemaphoreSlim(1);
     }
 
-    private async Task AddSubscriptionToGameStateHandlerObjects(IGameStateHandler[] objects)
-    {
-
-    }
     private async void Start()
     {
         await LoadGame();
+    }
+    private async void Update()
+    {
+       await SemaphoreSlim.WaitAsync();
+       gameStateHandlerObjects = await GameObjectCreator.GameStateHandlerObjects(SemaphoreSlim, 3); //keep polling for them each second?
     }
     public static void ChangeLevel(int buildIndex)
     {

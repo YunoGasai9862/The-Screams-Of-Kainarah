@@ -7,5 +7,5 @@ using UnityEngine.Events;
 [Serializable]
 public class CheckPointEvent : UnityEvent<SceneData>
 {
-    
+
 }
