@@ -64,10 +64,8 @@ public class GameObjectCreator : MonoBehaviour
     {
         return _inventoryOpenCloseManager;
     }
-    public static async Task<IGameStateHandler[]> GameStateHandlerObjects(SemaphoreSlim semaphoreSlim, float delayInSeconds)
+    public static IGameStateHandler[] GameStateHandlerObjects()
     {
-        await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
-        semaphoreSlim.Release();
         return _gameStateHandlerObjects;
     }
     public static void InsertIntoGameStateHandlerList(IGameStateHandler handler)

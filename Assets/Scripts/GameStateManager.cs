@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,27 +14,21 @@ public class GameStateManager : MonoBehaviour, IGameState
     public CheckPointEvent onCheckpointSaveEvent; //checkpoint event
     public EntireSceneSaveEvent onEntireSceneSaveEvent;
 
+    public List<string> jsonSerializedData = new List<string>();
+
     public IGameStateHandler[] gameStateHandlerObjects;
-
-    public SemaphoreSlim SemaphoreSlim { get; private set; }
-
     private  void Awake()
     {
         if(instance == null) //so only instance is there
             instance = this;
 
-        SemaphoreSlim = new SemaphoreSlim(1);
     }
 
     private async void Start()
     {
         await LoadGame();
     }
-    private async void Update()
-    {
-       await SemaphoreSlim.WaitAsync();
-       gameStateHandlerObjects = await GameObjectCreator.GameStateHandlerObjects(SemaphoreSlim, 3); //keep polling for them each second?
-    }
+
     public static void ChangeLevel(int buildIndex)
     {
         SceneManager.LoadScene(buildIndex + 1);
@@ -73,9 +68,24 @@ public class GameStateManager : MonoBehaviour, IGameState
         await SaveGame(this._sceneData);
     }
 
-    public Task SaveCheckPoint(SceneData sceneData)
+    public Task SaveCheckPoint()
     {
-        onCheckpointSaveEvent.Invoke(sceneData); //calling event
+        onCheckpointSaveEvent.Invoke(this.gameStateHandlerObjects); //gathering all the current state of the objects implementing IGameStateHandler
+
+        gameStateHandlerObjects = GameObjectCreator.GameStateHandlerObjects(); //get all the objects
+
+        foreach(var gameObjectState in gameStateHandlerObjects)
+        {
+            var gameObjectStateJson = JsonUtility.ToJson(gameObjectState);
+            jsonSerializedData.Add(gameObjectStateJson);
+        }
+
+        var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file
+
+        string fileName = Path.Combine(Application.persistentDataPath, "SaveData.json");
+
+        File.WriteAllText(fileName, completeJson);
+
         return Task.CompletedTask;
 
     }

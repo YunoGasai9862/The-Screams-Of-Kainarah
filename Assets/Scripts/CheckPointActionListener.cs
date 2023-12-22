@@ -86,7 +86,10 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
     {
         if(CheckpointDict.TryGetValue(Data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task > value))
         {
-          value.Invoke(Data, CheckPointsScriptableObjectFetch); //invokes that particular function to reset checkpoints
+            value.Invoke(Data, CheckPointsScriptableObjectFetch); //invokes that particular function to reset checkpoints 
+
+            //call the checkpoint => Save Game method
+            GameStateManager.instance.SaveCheckPoint();
         }
     }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [Serializable]
-public class CheckPointEvent : UnityEvent<SceneData>
+public class CheckPointEvent : UnityEvent<IGameStateHandler[]>
 {
 
 }
