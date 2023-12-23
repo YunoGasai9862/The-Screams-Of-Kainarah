@@ -70,12 +70,13 @@ public class GameStateManager : MonoBehaviour, IGameState
 
     public Task SaveCheckPoint()
     {
-        onCheckpointSaveEvent.Invoke(this.gameStateHandlerObjects); //gathering all the current state of the objects implementing IGameStateHandler
-
         gameStateHandlerObjects = GameObjectCreator.GameStateHandlerObjects(); //get all the objects
 
         foreach(var gameObjectState in gameStateHandlerObjects)
         {
+            onCheckpointSaveEvent.AddListener(gameObjectState.GameStateHandler); //we subscrive the game objects
+
+            onCheckpointSaveEvent.Invoke(_sceneData); //gathering all the current state of the objects implementing IGameStateHandler
             var gameObjectStateJson = JsonUtility.ToJson(gameObjectState);
             jsonSerializedData.Add(gameObjectStateJson);
         }
