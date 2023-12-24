@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class GameStateManager : MonoBehaviour, IGameState
@@ -68,26 +69,34 @@ public class GameStateManager : MonoBehaviour, IGameState
         await SaveGame(this._sceneData);
     }
 
-    public Task SaveCheckPoint()
+
+    public Task InvokeListeners(IGameStateHandler[] handlers)
+    {
+        foreach (var gameObjectState in handlers)
+        {
+            onCheckpointSaveEvent.AddListener(gameObjectState.GameStateHandler); //we subscribe to the game objects
+
+            onCheckpointSaveEvent.Invoke(_sceneData); //gathering all the current state of the objects implementing IGameStateHandler
+        }
+        return Task.CompletedTask;
+    }
+
+    public async Task SaveCheckPoint()
     {
         gameStateHandlerObjects = GameObjectCreator.GameStateHandlerObjects(); //get all the objects
 
-        foreach(var gameObjectState in gameStateHandlerObjects)
+        await InvokeListeners(gameStateHandlerObjects);
+
+        foreach (var objectToSave in this._sceneData.ObjectsToPersit)
         {
-            onCheckpointSaveEvent.AddListener(gameObjectState.GameStateHandler); //we subscrive the game objects
-
-            onCheckpointSaveEvent.Invoke(_sceneData); //gathering all the current state of the objects implementing IGameStateHandler
-            var gameObjectStateJson = JsonUtility.ToJson(gameObjectState);
-            jsonSerializedData.Add(gameObjectStateJson);
+            var jsonObject = JsonUtility.ToJson(objectToSave);
+            jsonSerializedData.Add(jsonObject);
         }
-
         var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file
 
         string fileName = Path.Combine(Application.persistentDataPath, "SaveData.json");
 
         File.WriteAllText(fileName, completeJson);
-
-        return Task.CompletedTask;
 
     }
 }

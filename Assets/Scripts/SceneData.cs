@@ -7,9 +7,9 @@ using UnityEngine;
 [Serializable]
 public class SceneData
 {
-    protected IList<ObjectData> ObjectsToPersit { get => objectsToPersist; set => objectsToPersist = value; }
+    public IList<ObjectData> ObjectsToPersit { get => objectsToPersist; set => objectsToPersist = value; }
     [Serializable]
-    public class ObjectData: SceneData
+    public class ObjectData
     {
         public Vector3 position;
         public Quaternion rotation;
@@ -22,11 +22,16 @@ public class SceneData
             this.tag = tag;
             this.name = name;
         }
-        public void AddToObjectsToPersist(ObjectData data)
+
+        public override string ToString()
         {
-            ObjectsToPersit.Add(data);
+            return $"Pos: {this.position}, Rot: {this.rotation}, Tag: {this.tag}, Name: {this.name}";
         }
     }
+    public void AddToObjectsToPersist(ObjectData data)
+    {
+        ObjectsToPersit.Add(data);
+    }
 
-   private IList<ObjectData> objectsToPersist = new List<ObjectData>();
+    private IList<ObjectData> objectsToPersist = new List<ObjectData>();
 }

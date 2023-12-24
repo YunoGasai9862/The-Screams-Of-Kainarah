@@ -12,6 +12,6 @@ public class PlayerCurrentState : MonoBehaviour, IGameStateHandler
     public void GameStateHandler(SceneData data)
     {
         ObjectData playerData = new ObjectData(transform.position, transform.rotation, transform.tag, transform.name);
-        playerData.AddToObjectsToPersist(playerData);   
+        data.AddToObjectsToPersist(playerData);
     }
 }
