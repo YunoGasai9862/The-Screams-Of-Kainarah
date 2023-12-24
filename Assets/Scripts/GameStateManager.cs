@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class GameStateManager : MonoBehaviour, IGameState
 {
     private SceneData _sceneData;
@@ -18,6 +20,11 @@ public class GameStateManager : MonoBehaviour, IGameState
     public List<string> jsonSerializedData = new List<string>();
 
     public IGameStateHandler[] gameStateHandlerObjects;
+
+    public class ObjectDataWrapperClass
+    {
+        public List<SceneData.ObjectData> objects;
+    }
     private  void Awake()
     {
         if(instance == null) //so only instance is there
@@ -44,9 +51,29 @@ public class GameStateManager : MonoBehaviour, IGameState
         }
 
     }
-    public async Task LoadLastCheckPoint()
+    public Task LoadLastCheckPoint(string saveFileName)
     {
-        await Task.CompletedTask;
+        var saveFilePath = Path.Combine(Application.persistentDataPath, saveFileName);
+        var jsonData = File.ReadAllText(saveFilePath);
+        var wrappedJsonData = "{\"objects\":" + jsonData + "}";
+        Debug.Log(wrappedJsonData);
+        try
+        {
+            ObjectDataWrapperClass wrapper = JsonUtility.FromJson<ObjectDataWrapperClass>(wrappedJsonData);
+            Debug.Log(wrapper.objects.Count);
+            List<SceneData.ObjectData> savedData = wrapper.objects;
+            foreach(var gameObjectData in savedData)
+            {
+                Debug.Log(gameObjectData);
+            }
+
+        }catch(Exception ex)
+        {
+            Debug.Log(ex.Message);
+        }
+
+        return Task.CompletedTask;
+
 
     }
     public async Task SaveGame(SceneData sceneData)
@@ -81,7 +108,7 @@ public class GameStateManager : MonoBehaviour, IGameState
         return Task.CompletedTask;
     }
 
-    public async Task SaveCheckPoint()
+    public async Task SaveCheckPoint(string fileName)
     {
         gameStateHandlerObjects = GameObjectCreator.GameStateHandlerObjects(); //get all the objects
 
@@ -94,9 +121,10 @@ public class GameStateManager : MonoBehaviour, IGameState
         }
         var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file
 
-        string fileName = Path.Combine(Application.persistentDataPath, "SaveData.json");
-
-        File.WriteAllText(fileName, completeJson);
+        string localFilename = Path.Combine(Application.persistentDataPath, fileName);
+        File.WriteAllText(localFilename, completeJson);
+        jsonSerializedData.Clear(); //doesn't store old data
+        await LoadLastCheckPoint(fileName);
 
     }
 }

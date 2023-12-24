@@ -8,6 +8,8 @@ using static GameObjectCreator;
 
 public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
 {
+    [SerializeField]
+    public string saveFileName;
 
     private Dictionary<string, Func<Checkpoint, CheckPoints, Task>> _checkpointsDict = new Dictionary<string, Func<Checkpoint, CheckPoints, Task>>();
 
@@ -89,7 +91,7 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
             value.Invoke(Data, CheckPointsScriptableObjectFetch); //invokes that particular function to reset checkpoints 
 
             //call the checkpoint => Save Game method
-            GameStateManager.instance.SaveCheckPoint();
+            _ = GameStateManager.instance.SaveCheckPoint(saveFileName);
         }
     }
 

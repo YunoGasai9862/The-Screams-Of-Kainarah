@@ -7,9 +7,9 @@ public interface IGameState
 {
     Task LoadGame();
     Task SaveGame(SceneData sceneData); //for manipulating
-    Task SaveCheckPoint();
+    Task SaveCheckPoint(string saveFileName);
     Task  RestartLevel();
-    Task LoadLastCheckPoint();
+    Task LoadLastCheckPoint(string saveFileName);
     Task NewGame();
 
 }

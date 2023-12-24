@@ -27,6 +27,7 @@ public class SceneData
         {
             return $"Pos: {this.position}, Rot: {this.rotation}, Tag: {this.tag}, Name: {this.name}";
         }
+
     }
     public void AddToObjectsToPersist(ObjectData data)
     {
