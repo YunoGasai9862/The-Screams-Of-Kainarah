@@ -11,16 +11,16 @@ public class SceneData
     [Serializable]
     public class ObjectData
     {
-        public Vector3 position;
-        public Quaternion rotation;
         public string tag;
         public string name;
-        public ObjectData(Vector3 pos, Quaternion rot, string tag, string name)
+        public Vector3 position;
+        public Quaternion rotation;
+        public ObjectData(string tag, string name,Vector3 pos, Quaternion rot)
         {
-            this.position = pos;
-            this.rotation = rot;
             this.tag = tag;
             this.name = name;
+            this.position = pos;
+            this.rotation = rot;
         }
 
         public override string ToString()

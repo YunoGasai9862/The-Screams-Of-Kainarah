@@ -131,4 +131,8 @@ public class EnemyScript : AbstractEntity
        return enemyHealth==0? true: false;
     }
 
+    public override void GameStateHandler(SceneData data)
+    {
+        throw new System.NotImplementedException();
+    }
 }

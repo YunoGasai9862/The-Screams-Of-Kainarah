@@ -22,6 +22,7 @@ public class PlayerActionRelayer : AbstractEntity
     private PickableItemsClass _pickableItems;
     private Interactable dialogue;
     private SemaphoreSlim _semaphoreSlim;
+    private SemaphoreSlim _semaphoreSlimForCheckpoint;
     private CancellationTokenSource _cancellationTokenSource;
     private CancellationToken _cancellationToken;
     public override string EntityName { get => m_Name; set => m_Name = value; }
@@ -35,7 +36,9 @@ public class PlayerActionRelayer : AbstractEntity
 
         DontDestroyOnLoad(this);
 
-        _semaphoreSlim = new SemaphoreSlim(1);
+        _semaphoreSlim = new SemaphoreSlim(1); //using at two places
+
+        _semaphoreSlimForCheckpoint = new SemaphoreSlim(1);
 
         _cancellationTokenSource = new CancellationTokenSource();
 
@@ -96,18 +99,25 @@ public class PlayerActionRelayer : AbstractEntity
         bool inSight = false;
         DialogueEntity dialogueEntity = null;
 
-        foreach (var item in scriptableObject.entities)
+        try
         {
-            await Task.Delay(TimeSpan.FromSeconds(.1f));
-
-            if(!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, item.entity.tag))
+            foreach (var item in scriptableObject.entities)
             {
-                inSight = true;
-                dialogueEntity = item;
-                break;
+                await Task.Delay(TimeSpan.FromSeconds(.1f));
+
+                if (!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, item.entity.tag))
+                {
+                    inSight = true;
+                    dialogueEntity = item;
+                    break;
+                }
             }
         }
-        semaphoreSlim.Release();
+        finally
+        {
+            semaphoreSlim.Release();
+        }
+
         return (inSight, dialogueEntity);
     }
     private async void OnCollisionEnter2D(Collision2D collision) //FIX THIS TOO
@@ -174,12 +184,20 @@ public class PlayerActionRelayer : AbstractEntity
     }
     private async Task CheckpointCollisionHandler(Collider2D collision)
     {
+        await _semaphoreSlimForCheckpoint.WaitAsync();
+
         if (await GetOneOfTheCheckPoints(collision.tag, checkpointTags))
         {
             //call checkpoint replacement 
             Checkpoint checkpoint = await GetCheckPointFromScriptableObject(GameObjectCreator.CheckPointsScriptableObjectFetch, collision.tag);
 
+            collision.gameObject.SetActive(false); //turn it off
+
+            Debug.Log("Executing!");
+
             await GetPlayerObserverListenerObject().ListenerDelegator<Checkpoint>(PlayerObserverListenerHelper.CheckPointsObserver, checkpoint);
+
+            _semaphoreSlimForCheckpoint.Release();
         }
     }
 
@@ -233,6 +251,10 @@ public class PlayerActionRelayer : AbstractEntity
        _cancellationTokenSource.Cancel();
     }
 
+    public override void GameStateHandler(SceneData data)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 

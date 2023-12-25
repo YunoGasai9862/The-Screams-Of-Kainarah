@@ -23,7 +23,7 @@ public class GameStateManager : MonoBehaviour, IGameState
 
     public class ObjectDataWrapperClass
     {
-        public List<SceneData.ObjectData> objects;
+        public List<SceneData.ObjectData> objectsToSave;
     }
     private  void Awake()
     {
@@ -55,16 +55,15 @@ public class GameStateManager : MonoBehaviour, IGameState
     {
         var saveFilePath = Path.Combine(Application.persistentDataPath, saveFileName);
         var jsonData = File.ReadAllText(saveFilePath);
-        var wrappedJsonData = "{\"objects\":" + jsonData + "}";
-        Debug.Log(wrappedJsonData);
+        var wrappedJsonData = "{\"objectsToSave\":" + jsonData + "}"; //for deserializing
+        Debug.Log($"Wrapped JsonData: {wrappedJsonData}");
         try
         {
             ObjectDataWrapperClass wrapper = JsonUtility.FromJson<ObjectDataWrapperClass>(wrappedJsonData);
-            Debug.Log(wrapper.objects.Count);
-            List<SceneData.ObjectData> savedData = wrapper.objects;
+            List<SceneData.ObjectData> savedData = wrapper.objectsToSave;
             foreach(var gameObjectData in savedData)
             {
-                Debug.Log(gameObjectData);
+                
             }
 
         }catch(Exception ex)
@@ -112,18 +111,21 @@ public class GameStateManager : MonoBehaviour, IGameState
     {
         gameStateHandlerObjects = GameObjectCreator.GameStateHandlerObjects(); //get all the objects
 
+        Debug.Log(gameStateHandlerObjects.Length);
+
         await InvokeListeners(gameStateHandlerObjects);
 
         foreach (var objectToSave in this._sceneData.ObjectsToPersit)
         {
             var jsonObject = JsonUtility.ToJson(objectToSave);
+            Debug.Log(jsonObject);
             jsonSerializedData.Add(jsonObject);
         }
         var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file
 
         string localFilename = Path.Combine(Application.persistentDataPath, fileName);
         File.WriteAllText(localFilename, completeJson);
-        jsonSerializedData.Clear(); //doesn't store old data
+        jsonSerializedData.Clear(); //remove old data
         await LoadLastCheckPoint(fileName);
 
     }

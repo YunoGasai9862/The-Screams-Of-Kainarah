@@ -78,6 +78,7 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
     {
         foreach (var cp in checkPointsScriptableObjectFetch.checkpoints)
         {
+            cp.checkpoint.SetActive(true);
             cp.finishLevelCheckpoint = finishLevelBool;
             cp.shouldRespawn= shouldRespawnBool;
             cp.shouldResetPlayerAttributes = shouldResetAttributesBool;
@@ -89,8 +90,8 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
         if(CheckpointDict.TryGetValue(Data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task > value))
         {
             value.Invoke(Data, CheckPointsScriptableObjectFetch); //invokes that particular function to reset checkpoints 
-
             //call the checkpoint => Save Game method
+            Debug.Log("On Notify Executing!!");
             _ = GameStateManager.instance.SaveCheckPoint(saveFileName);
         }
     }

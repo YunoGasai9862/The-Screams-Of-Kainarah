@@ -116,6 +116,8 @@ public class BossScript : AbstractEntity
 
     }
 
-
-
+    public override void GameStateHandler(SceneData data)
+    {
+        throw new System.NotImplementedException();
+    }
 }
