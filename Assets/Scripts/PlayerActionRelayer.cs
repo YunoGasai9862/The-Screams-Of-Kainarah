@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using static DialogueEntityScriptableObject;
 using static GameObjectCreator;
 using static CheckPoints;
+using static SceneData;
 public class PlayerActionRelayer : AbstractEntity
 {
     [SerializeField] SpriteRenderer sr;
@@ -29,6 +30,10 @@ public class PlayerActionRelayer : AbstractEntity
     public override float Health { get => m_health; set => m_health = value; }
     public override float MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
 
+    private void Start()
+    {
+        InsertIntoGameStateHandlerList(this);
+    }
     private void Awake()
     {
         MaxHealth = playerHealth;
@@ -253,7 +258,8 @@ public class PlayerActionRelayer : AbstractEntity
 
     public override void GameStateHandler(SceneData data)
     {
-        throw new NotImplementedException();
+        ObjectData playerData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation);
+        data.AddToObjectsToPersist(playerData);
     }
 }
 

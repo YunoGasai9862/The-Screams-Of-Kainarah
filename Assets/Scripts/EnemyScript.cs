@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using EnemyHittable;
 using static GameObjectCreator;
+using static SceneData;
 public class EnemyScript : AbstractEntity
 {
     private const int RAYSARRAYSIZE= 2;
@@ -49,7 +50,8 @@ public class EnemyScript : AbstractEntity
     {
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
-
+        if(this!=null)
+         InsertIntoGameStateHandlerList(this);
     }
 
     async void Update()
@@ -133,6 +135,8 @@ public class EnemyScript : AbstractEntity
 
     public override void GameStateHandler(SceneData data)
     {
-        throw new System.NotImplementedException();
+        ObjectData enemyData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation);
+        Debug.Log(enemyData.ToString());
+        data.AddToObjectsToPersist(enemyData);
     }
 }

@@ -101,8 +101,8 @@ public class GameStateManager : MonoBehaviour, IGameState
         foreach (var gameObjectState in handlers)
         {
             onCheckpointSaveEvent.AddListener(gameObjectState.GameStateHandler); //we subscribe to the game objects
-
             onCheckpointSaveEvent.Invoke(_sceneData); //gathering all the current state of the objects implementing IGameStateHandler
+            onCheckpointSaveEvent.RemoveListener(gameObjectState.GameStateHandler);
         }
         return Task.CompletedTask;
     }
@@ -111,14 +111,11 @@ public class GameStateManager : MonoBehaviour, IGameState
     {
         gameStateHandlerObjects = GameObjectCreator.GameStateHandlerObjects(); //get all the objects
 
-        Debug.Log(gameStateHandlerObjects.Length);
-
         await InvokeListeners(gameStateHandlerObjects);
 
         foreach (var objectToSave in this._sceneData.ObjectsToPersit)
         {
             var jsonObject = JsonUtility.ToJson(objectToSave);
-            Debug.Log(jsonObject);
             jsonSerializedData.Add(jsonObject);
         }
         var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file

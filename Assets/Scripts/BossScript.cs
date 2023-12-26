@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using static SceneData;
 public class BossScript : AbstractEntity
 {
     private GameObject Player;
@@ -23,6 +24,7 @@ public class BossScript : AbstractEntity
         Player = GameObject.FindWithTag("Player");
         anim = GetComponent<Animator>();
         _bC2 = GetComponent<BoxCollider2D>();
+        GameObjectCreator.InsertIntoGameStateHandlerList(this);
     }
 
     // Update is called once per frame
@@ -115,9 +117,10 @@ public class BossScript : AbstractEntity
         }
 
     }
-
     public override void GameStateHandler(SceneData data)
     {
-        throw new System.NotImplementedException();
+        ObjectData bossData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation);
+        Debug.Log(bossData.ToString());
+        data.AddToObjectsToPersist(bossData);
     }
 }
