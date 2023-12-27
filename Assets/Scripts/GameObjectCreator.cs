@@ -70,7 +70,7 @@ public class GameObjectCreator : MonoBehaviour
     }
     public static void InsertIntoGameStateHandlerList(IGameStateHandler handler)
     {
-        _gameStateHandlerObjects.Append(handler);
+         _gameStateHandlerObjects.Append(handler);
     }
     public static PlayerActionRelayer GetPlayerHelperClassObject()
     {

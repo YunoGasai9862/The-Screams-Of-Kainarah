@@ -198,8 +198,6 @@ public class PlayerActionRelayer : AbstractEntity
 
             collision.gameObject.SetActive(false); //turn it off
 
-            Debug.Log("Executing!");
-
             await GetPlayerObserverListenerObject().ListenerDelegator<Checkpoint>(PlayerObserverListenerHelper.CheckPointsObserver, checkpoint);
 
             _semaphoreSlimForCheckpoint.Release();

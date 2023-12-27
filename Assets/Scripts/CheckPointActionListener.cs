@@ -91,7 +91,6 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
         {
             value.Invoke(Data, CheckPointsScriptableObjectFetch); //invokes that particular function to reset checkpoints 
             //call the checkpoint => Save Game method
-            Debug.Log("On Notify Executing!!");
             _ = GameStateManager.instance.SaveCheckPoint(saveFileName);
         }
     }

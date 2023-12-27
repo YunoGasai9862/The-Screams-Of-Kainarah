@@ -31,7 +31,6 @@ public class SceneData
     }
     public void AddToObjectsToPersist(ObjectData data)
     {
-        Debug.Log($"TESTING:  {data}");
         ObjectsToPersit.Add(data);
     }
 

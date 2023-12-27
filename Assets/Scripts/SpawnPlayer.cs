@@ -61,18 +61,13 @@ public class SpawnPlayer : MonoBehaviour
         Instantiate(Player, locationToSpawn, Player.transform.rotation);
     }
     
-    public async Task ResetPlayerAttributes(GameObject Player, Vector3 locationToSpawn, Vector3 offsetValues, CancellationToken token)
+    public async Task ResetAnimationAndMaterialProperties(GameObject Player, CancellationToken token)
     {
         GetCancellationToken = token;
-
         await Task.Delay(TimeSpan.FromSeconds(0));
-        //Load Last CheckPoint here with json
         var animator= Player.GetComponent<Animator>();
         animator.Rebind(); //reset the death anim
         _increment = await ResetMaterialProperties(0, playerMaterial);
-        Vector3 newSpawnLocation = locationToSpawn + offsetValues;
-        Player.transform.position = newSpawnLocation;
-        
     }
 
     public async Task<float> ResetMaterialProperties(float incrementValue, Material material)

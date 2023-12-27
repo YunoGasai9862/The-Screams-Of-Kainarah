@@ -50,8 +50,7 @@ public class EnemyScript : AbstractEntity
     {
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
-        if(this!=null)
-         InsertIntoGameStateHandlerList(this);
+         //InsertIntoGameStateHandlerList(this);
     }
 
     async void Update()

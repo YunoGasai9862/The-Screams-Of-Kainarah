@@ -120,7 +120,6 @@ public class BossScript : AbstractEntity
     public override void GameStateHandler(SceneData data)
     {
         ObjectData bossData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation);
-        Debug.Log(bossData.ToString());
         data.AddToObjectsToPersist(bossData);
     }
 }

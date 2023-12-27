@@ -12,6 +12,7 @@ using UnityEngine.SceneManagement;
 public class GameStateManager : MonoBehaviour, IGameState
 {
     private SceneData _sceneData;
+    private string _fileName;
     public static GameStateManager instance { get; private set; }
 
     public CheckPointEvent onCheckpointSaveEvent; //checkpoint event
@@ -20,6 +21,8 @@ public class GameStateManager : MonoBehaviour, IGameState
     public List<string> jsonSerializedData = new List<string>();
 
     public IGameStateHandler[] gameStateHandlerObjects;
+
+    public string GetFileLocationToLoad { get => _fileName; set => _fileName = value; }
 
     public class ObjectDataWrapperClass
     {
@@ -51,7 +54,7 @@ public class GameStateManager : MonoBehaviour, IGameState
         }
 
     }
-    public Task LoadLastCheckPoint(string saveFileName)
+    public async Task LoadLastCheckPoint(string saveFileName)
     {
         var saveFilePath = Path.Combine(Application.persistentDataPath, saveFileName);
         var jsonData = File.ReadAllText(saveFilePath);
@@ -63,7 +66,7 @@ public class GameStateManager : MonoBehaviour, IGameState
             List<SceneData.ObjectData> savedData = wrapper.objectsToSave;
             foreach(var gameObjectData in savedData)
             {
-                
+                await ReAlignTheObjectWithSavedData(gameObjectData);
             }
 
         }catch(Exception ex)
@@ -71,10 +74,16 @@ public class GameStateManager : MonoBehaviour, IGameState
             Debug.Log(ex.Message);
         }
 
-        return Task.CompletedTask;
-
-
     }
+
+    private Task ReAlignTheObjectWithSavedData(SceneData.ObjectData gameObjectData)
+    {
+        GameObject gameObject = GameObject.FindWithTag(gameObjectData.tag);
+        gameObject.transform.position = gameObjectData.position;
+        gameObject.transform.rotation = gameObjectData.rotation;
+        return Task.CompletedTask;
+    }
+
     public async Task SaveGame(SceneData sceneData)
     {
         await Task.CompletedTask;
@@ -96,13 +105,13 @@ public class GameStateManager : MonoBehaviour, IGameState
     }
 
 
-    public Task InvokeListeners(IGameStateHandler[] handlers)
+    public  Task InvokeListeners(IGameStateHandler[] handlers)
     {
         foreach (var gameObjectState in handlers)
         {
-            onCheckpointSaveEvent.AddListener(gameObjectState.GameStateHandler); //we subscribe to the game objects
-            onCheckpointSaveEvent.Invoke(_sceneData); //gathering all the current state of the objects implementing IGameStateHandler
-            onCheckpointSaveEvent.RemoveListener(gameObjectState.GameStateHandler);
+            onCheckpointSaveEvent.AddListener(gameObjectState.GameStateHandler); //we subscribe to the game object
+            onCheckpointSaveEvent.Invoke(_sceneData); //gathering all the current state of the object implementing IGameStateHandler
+            onCheckpointSaveEvent.RemoveListener(gameObjectState.GameStateHandler); //we de-subscribe until next point
         }
         return Task.CompletedTask;
     }
@@ -121,9 +130,9 @@ public class GameStateManager : MonoBehaviour, IGameState
         var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file
 
         string localFilename = Path.Combine(Application.persistentDataPath, fileName);
+        GetFileLocationToLoad = fileName;
         File.WriteAllText(localFilename, completeJson);
         jsonSerializedData.Clear(); //remove old data
-        await LoadLastCheckPoint(fileName);
 
     }
 }
