@@ -29,7 +29,7 @@ public class CheckpointColliderListener : MonoBehaviour, IObserver<GameObject>
                 _cancellationTokenSource = new CancellationTokenSource();
                 _cancellationToken = _cancellationTokenSource.Token;
                 await PlayerSpawn().ResetAnimationAndMaterialProperties(playerObject, _cancellationToken);
-                await GameStateManager.instance.LoadLastCheckPoint(GameStateManager.instance.GetFileLocationToLoad);
+                await GameStateManager.instance.LoadLastCheckPoint(GameStateManager.instance.GetFileLocationToLoad); //make sure it happens only once
             }
         }
     }

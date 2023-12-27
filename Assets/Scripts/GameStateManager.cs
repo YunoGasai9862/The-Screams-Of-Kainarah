@@ -81,6 +81,12 @@ public class GameStateManager : MonoBehaviour, IGameState
         GameObject gameObject = GameObject.FindWithTag(gameObjectData.tag);
         gameObject.transform.position = gameObjectData.position;
         gameObject.transform.rotation = gameObjectData.rotation;
+        if(gameObjectData.entity!=null)
+        {
+            Debug.Log($"Here: {gameObjectData.entity.Health}");
+            gameObject.GetComponent<AbstractEntity>().Health = gameObjectData.entity.Health;
+        }
+           
         return Task.CompletedTask;
     }
 

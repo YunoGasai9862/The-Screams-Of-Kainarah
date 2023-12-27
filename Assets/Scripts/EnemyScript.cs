@@ -135,7 +135,6 @@ public class EnemyScript : AbstractEntity
     public override void GameStateHandler(SceneData data)
     {
         ObjectData enemyData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation);
-        Debug.Log(enemyData.ToString());
         data.AddToObjectsToPersist(enemyData);
     }
 }
