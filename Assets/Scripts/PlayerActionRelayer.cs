@@ -68,13 +68,15 @@ public class PlayerActionRelayer : AbstractEntity
         
         if (await IsPlayerDead(Health))
         {
+            await _semaphoreSlimForCheckpoint.WaitAsync();
+            Debug.Log("Calling respawn");
             anim.SetBool("Death", true);
             await Task.Delay(TimeSpan.FromSeconds(0.1f));
             await GetPlayerObserverListenerObject().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, EntitiesToResetScriptableObjectFetch);
 
             if (!_cancellationTokenSource.IsCancellationRequested)
             {
-                await GetPlayerObserverListenerObject().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject);
+                await GetPlayerObserverListenerObject().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, _semaphoreSlimForCheckpoint);
 
             }
         }
@@ -189,8 +191,6 @@ public class PlayerActionRelayer : AbstractEntity
     }
     private async Task CheckpointCollisionHandler(Collider2D collision)
     {
-        await _semaphoreSlimForCheckpoint.WaitAsync();
-
         if (await GetOneOfTheCheckPoints(collision.tag, checkpointTags))
         {
             //call checkpoint replacement 
@@ -200,7 +200,6 @@ public class PlayerActionRelayer : AbstractEntity
 
             await GetPlayerObserverListenerObject().ListenerDelegator<Checkpoint>(PlayerObserverListenerHelper.CheckPointsObserver, checkpoint);
 
-            _semaphoreSlimForCheckpoint.Release();
         }
     }
 
@@ -257,8 +256,7 @@ public class PlayerActionRelayer : AbstractEntity
     public override void GameStateHandler(SceneData data)
     {
         AbstractEntity entity = GetComponent<AbstractEntity>();
-        Debug.Log(entity.Health);
-        ObjectData playerData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation, ref entity);
+        ObjectData playerData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation, entity);
         data.AddToObjectsToPersist(playerData);
     }
 }

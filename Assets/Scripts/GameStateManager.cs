@@ -54,8 +54,9 @@ public class GameStateManager : MonoBehaviour, IGameState
         }
 
     }
-    public async Task LoadLastCheckPoint(string saveFileName)
+    public async Task LoadLastCheckPoint(string saveFileName, SemaphoreSlim lockingThread)
     {
+
         var saveFilePath = Path.Combine(Application.persistentDataPath, saveFileName);
         var jsonData = File.ReadAllText(saveFilePath);
         var wrappedJsonData = "{\"objectsToSave\":" + jsonData + "}"; //for deserializing
@@ -64,16 +65,20 @@ public class GameStateManager : MonoBehaviour, IGameState
         {
             ObjectDataWrapperClass wrapper = JsonUtility.FromJson<ObjectDataWrapperClass>(wrappedJsonData);
             List<SceneData.ObjectData> savedData = wrapper.objectsToSave;
-            foreach(var gameObjectData in savedData)
+            foreach (var gameObjectData in savedData)
             {
                 await ReAlignTheObjectWithSavedData(gameObjectData);
             }
-
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             Debug.Log(ex.Message);
         }
-
+        finally
+        {
+            lockingThread.Release();
+        }
+       
     }
 
     private Task ReAlignTheObjectWithSavedData(SceneData.ObjectData gameObjectData)
@@ -83,8 +88,7 @@ public class GameStateManager : MonoBehaviour, IGameState
         gameObject.transform.rotation = gameObjectData.rotation;
         if(gameObjectData.entity!=null)
         {
-            Debug.Log($"Here: {gameObjectData.entity.Health}");
-            gameObject.GetComponent<AbstractEntity>().Health = gameObjectData.entity.Health;
+            gameObject.GetComponent<AbstractEntity>().Health = gameObjectData.health;
         }
            
         return Task.CompletedTask;

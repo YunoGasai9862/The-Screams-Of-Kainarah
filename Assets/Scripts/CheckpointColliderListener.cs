@@ -20,7 +20,7 @@ public class CheckpointColliderListener : MonoBehaviour, IObserver<GameObject>
         PlayerObserverListenerHelper.MainPlayerListener.RemoveOberver(this);
     }
 
-    private async Task RespawnPlayer(GameObject playerObject, CheckPoints checkPointsScriptableObjectFetch)
+    private async Task RespawnPlayer(GameObject playerObject, CheckPoints checkPointsScriptableObjectFetch, SemaphoreSlim lockingThread)
     {
         foreach (var cp in checkPointsScriptableObjectFetch.checkpoints)
         {
@@ -29,14 +29,15 @@ public class CheckpointColliderListener : MonoBehaviour, IObserver<GameObject>
                 _cancellationTokenSource = new CancellationTokenSource();
                 _cancellationToken = _cancellationTokenSource.Token;
                 await PlayerSpawn().ResetAnimationAndMaterialProperties(playerObject, _cancellationToken);
-                await GameStateManager.instance.LoadLastCheckPoint(GameStateManager.instance.GetFileLocationToLoad); //make sure it happens only once
+                await GameStateManager.instance.LoadLastCheckPoint(GameStateManager.instance.GetFileLocationToLoad, lockingThread); //make sure it happens only once
             }
         }
     }
 
-    public void OnNotify(GameObject Data, params object[] optional)
+    public void OnNotify(GameObject Data, params object[] optional) //passing it here, maybe think of a better approach later?
     {
-      _ = RespawnPlayer(Data, CheckPointsScriptableObjectFetch);
-    
+        SemaphoreSlim lockingThread = optional[0] as SemaphoreSlim;
+        Debug.Log(lockingThread);
+        _ = RespawnPlayer(Data, CheckPointsScriptableObjectFetch, lockingThread);
     }
 }

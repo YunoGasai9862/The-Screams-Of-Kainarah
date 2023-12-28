@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class SubjectsToBeNotified<T> //for player
@@ -17,11 +18,11 @@ public class SubjectsToBeNotified<T> //for player
     {
         _potentialObservers.Remove(observer);
     }
-    public void NotifyObservers(T value)
+    public void NotifyObservers(T value, SemaphoreSlim lockingThread = null)
     {
         foreach (var observer in _potentialObservers)
         {
-            observer.OnNotify(value);
+            observer.OnNotify(value, lockingThread);
         }
     }
 

@@ -16,14 +16,16 @@ public class SceneData
         public Vector3 position;
         public Quaternion rotation;
         public AbstractEntity entity=null;
-        public ObjectData(string tag, string name,Vector3 pos, Quaternion rot, ref AbstractEntity entity)
+
+        public float health;
+        public ObjectData(string tag, string name,Vector3 pos, Quaternion rot, AbstractEntity entity)
         {
-            Debug.Log(entity.Health);
             this.tag = tag;
             this.name = name;
             this.position = pos;
             this.rotation = rot;
-            this.entity=entity;
+            this.entity= entity;
+            this.health = entity.Health;
         }
 
         public ObjectData(string tag, string name, Vector3 pos, Quaternion rot)
