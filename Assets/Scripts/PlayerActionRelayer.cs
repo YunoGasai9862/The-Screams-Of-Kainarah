@@ -66,7 +66,7 @@ public class PlayerActionRelayer : AbstractEntity
             dialogue = GameObject.FindWithTag(InteractableTag).GetComponent<Interactable>();
         }
         
-        if (await IsPlayerDead(Health))
+        if (await IsPlayerDead(Health) && _semaphoreSlimForCheckpoint.CurrentCount!=0)
         {
             await _semaphoreSlimForCheckpoint.WaitAsync();
             Debug.Log("Calling respawn");
