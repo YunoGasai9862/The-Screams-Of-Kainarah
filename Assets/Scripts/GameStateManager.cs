@@ -1,3 +1,4 @@
+using Pathfinding.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,6 +14,9 @@ public class GameStateManager : MonoBehaviour, IGameState
 {
     private SceneData _sceneData;
     private string _fileName;
+
+    [SerializeField]
+    public string fileName;
     public static GameStateManager instance { get; private set; }
 
     public CheckPointEvent onCheckpointSaveEvent; //checkpoint event
@@ -52,6 +56,8 @@ public class GameStateManager : MonoBehaviour, IGameState
             Debug.Log("No data found, initializing everything to default");
             await NewGame();
         }
+
+        //load the whole scene
 
     }
     public async Task LoadLastCheckPoint(string saveFileName, SemaphoreSlim lockingThread)
@@ -94,8 +100,21 @@ public class GameStateManager : MonoBehaviour, IGameState
         return Task.CompletedTask;
     }
 
-    public async Task SaveGame(SceneData sceneData)
+    [Obsolete]
+    public async Task SaveGame(string fileName)
     {
+        GameObject[] allGameObjectsInTheScene = FindObjectsOfType<GameObject>();
+        jsonSerializedData.Clear();
+        foreach (var gameObject in allGameObjectsInTheScene)
+        {
+            var gameObjectToSave = JsonUtility.ToJson(gameObject);
+            jsonSerializedData.Add(gameObjectToSave);
+        }
+
+        var completeJson = "{\"objectsToSave\": [" + string.Join(",", jsonSerializedData) + "]}";
+        string location = Path.Combine(Application.persistentDataPath, fileName);
+        GetFileLocationToLoad = location;
+        File.WriteAllText(location, completeJson);
         await Task.CompletedTask;
     }
 
@@ -108,10 +127,9 @@ public class GameStateManager : MonoBehaviour, IGameState
     {
         await SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
     }
-
     private async void OnApplicationQuit()
     {
-        await SaveGame(this._sceneData);
+        await SaveGame(GetFileLocationToLoad);
     }
 
 
@@ -140,7 +158,7 @@ public class GameStateManager : MonoBehaviour, IGameState
         var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file
 
         string localFilename = Path.Combine(Application.persistentDataPath, fileName);
-        GetFileLocationToLoad = fileName;
+        GetFileLocationToLoad = localFilename;
         File.WriteAllText(localFilename, completeJson);
         jsonSerializedData.Clear(); //remove old data
 

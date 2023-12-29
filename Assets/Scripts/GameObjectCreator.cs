@@ -1,3 +1,4 @@
+using EnemyHittable;
 using System;
 using System.Linq;
 using System.Threading;
@@ -11,11 +12,13 @@ public class GameObjectCreator : MonoBehaviour
     [SerializeField] private PlayerHittableItemsScriptableObject playerHittableItemsScriptableObject;
     [SerializeField] private EntitiesToReset entitiesToResetScriptableObject;
     [SerializeField] private CheckPoints checkpointsScriptableObject;
+    [SerializeField] private EnemyHittableObjects enemyHittableObject;
 
     public static DialogueEntityScriptableObject DialogueEntityScriptableObjectFetch => _instance.dialogueScriptableObject;
     public static PlayerHittableItemsScriptableObject PlayerHittableItemScriptableObjectFetch => _instance.playerHittableItemsScriptableObject;
     public static EntitiesToReset EntitiesToResetScriptableObjectFetch => _instance.entitiesToResetScriptableObject;
     public static CheckPoints CheckPointsScriptableObjectFetch => _instance.checkpointsScriptableObject;
+    public static EnemyHittableObjects EnemyHittableObjects => _instance.enemyHittableObject;
 
     private static DialogueManager _dialogueManager { get; set; }
     private static InventoryOpenCloseManager _inventoryOpenCloseManager { get; set; }

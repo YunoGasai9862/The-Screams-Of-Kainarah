@@ -1,14 +1,16 @@
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using static SceneData;
 public class BossScript : AbstractEntity
 {
-    private GameObject Player;
-    private Animator anim;
-    private float TimeoverBody = 0f;
+    private GameObject _player;
+    private Animator _anim;
+    private float _timeoverBody = 0f;
     private BoxCollider2D _bC2;
     private bool onTopBossBool = false;
-    [SerializeField] GameObject BossDead;
+    [SerializeField] GameObject bossDead;
+    [SerializeField] string[] attackingAnimationNames;
     public override string EntityName { get => m_Name; set => m_Name = value; }
     public override float Health { get => m_health; set => m_health = value; }
     public override float MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
@@ -21,8 +23,8 @@ public class BossScript : AbstractEntity
 
     void Start()
     {
-        Player = GameObject.FindWithTag("Player");
-        anim = GetComponent<Animator>();
+        _player = GameObject.FindWithTag("Player");
+        _anim = GetComponent<Animator>();
         _bC2 = GetComponent<BoxCollider2D>();
         GameObjectCreator.InsertIntoGameStateHandlerList(this);
     }
@@ -30,9 +32,9 @@ public class BossScript : AbstractEntity
     // Update is called once per frame
     void Update()
     {
-        if (Player == null)
+        if (_player == null)
         {
-            Player = GameObject.FindWithTag("Player");
+            _player = GameObject.FindWithTag("Player");
 
         }else
         {
@@ -40,14 +42,14 @@ public class BossScript : AbstractEntity
 
             if (GameObjectCreator.GetDialogueManager().getIsOpen())
             {
-                anim.SetBool("walk", false);
+                _anim.SetBool("walk", false);
             }
             if (onTopBossBool)
             {
-                TimeoverBody += Time.deltaTime;
+                _timeoverBody += Time.deltaTime;
             }
 
-            if (TimeoverBody > .5f)
+            if (_timeoverBody > .5f)
             {
                 _bC2.enabled = false;
                 onTopBossBool = false;
@@ -55,46 +57,54 @@ public class BossScript : AbstractEntity
 
             }
         }
-
     }
 
     IEnumerator TimeElapse()
     {
         yield return new WaitForSeconds(.5f);
         _bC2.enabled = true;
-        TimeoverBody = 0f;
+        _timeoverBody = 0f;
 
     }
 
-    void CheckRotation()
+    public async void CheckRotation()
     {
-        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("attack") && !anim.GetCurrentAnimatorStateInfo(0).IsName("attack_02"))
+        if (await IsNotOneOfTheAttackingAnimations(attackingAnimationNames, _anim))
         {
-            if (transform.position.x > Player.transform.position.x)
+            if (transform.position.x > _player.transform.position.x)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 0);
             }
-            if (transform.position.x < Player.transform.position.x)
+            if (transform.position.x < _player.transform.position.x)
             {
                 transform.rotation = Quaternion.Euler(0, 180, 0);
             }
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private Task<bool> IsNotOneOfTheAttackingAnimations(string[] animationNames, Animator anim)
     {
-        if (collision.CompareTag("Sword") || collision.CompareTag("Dagger"))
+        bool result = true;
+        foreach (string animationName in animationNames)
         {
-            anim.SetTrigger("damage");
-            Health -= 10;
+            result = result && !anim.GetCurrentAnimatorStateInfo(0).IsName(animationName);
+        }
+        return Task.FromResult(result);
+    }
 
+    private async void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (await EnemyHittableManager.isEntityAnAttackObject(collision, GameObjectCreator.EnemyHittableObjects))
+        {
+            _anim.SetTrigger("damage");
+            Health -= 10;
         }
        
         if (Health == 0)
         {
             Vector2 pos = transform.position;
             pos.y = transform.position.y + .5f;
-            GameObject dead = Instantiate(BossDead, pos, Quaternion.identity);
+            GameObject dead = Instantiate(bossDead, pos, Quaternion.identity);
             Destroy(gameObject);
             Destroy(dead, 1f);
         }

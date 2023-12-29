@@ -30,6 +30,10 @@ public class PlayerActionRelayer : AbstractEntity
     public override float Health { get => m_health; set => m_health = value; }
     public override float MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
 
+    public SemaphoreSlim GetCheckPointSemaphore { get => _semaphoreSlimForCheckpoint; set => _semaphoreSlimForCheckpoint = value; }
+    public SemaphoreSlim GetSemaphore { get => _semaphoreSlim; set => _semaphoreSlim = value; }
+
+
     private void Start()
     {
         InsertIntoGameStateHandlerList(this);
@@ -66,9 +70,9 @@ public class PlayerActionRelayer : AbstractEntity
             dialogue = GameObject.FindWithTag(InteractableTag).GetComponent<Interactable>();
         }
         
-        if (await IsPlayerDead(Health) && _semaphoreSlimForCheckpoint.CurrentCount!=0)
+        if (await IsPlayerDead(Health) && GetCheckPointSemaphore.CurrentCount!=0)
         {
-            await _semaphoreSlimForCheckpoint.WaitAsync();
+            await GetCheckPointSemaphore.WaitAsync();
             Debug.Log("Calling respawn");
             anim.SetBool("Death", true);
             await Task.Delay(TimeSpan.FromSeconds(0.1f));
@@ -76,7 +80,7 @@ public class PlayerActionRelayer : AbstractEntity
 
             if (!_cancellationTokenSource.IsCancellationRequested)
             {
-                await GetPlayerObserverListenerObject().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, _semaphoreSlimForCheckpoint);
+                await GetPlayerObserverListenerObject().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, GetCheckPointSemaphore);
 
             }
         }
@@ -91,9 +95,9 @@ public class PlayerActionRelayer : AbstractEntity
             GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
 
-        await _semaphoreSlim.WaitAsync();
+        await GetSemaphore.WaitAsync();
 
-        (bool inSight, DialogueEntity entity) = await isGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObjectFetch, _cancellationToken, _semaphoreSlim); //use of tuple return
+        (bool inSight, DialogueEntity entity) = await isGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObjectFetch, _cancellationToken, GetSemaphore); //use of tuple return
 
         if (inSight && entity != null)
         {

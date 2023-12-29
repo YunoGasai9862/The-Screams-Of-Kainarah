@@ -37,7 +37,6 @@ public class CheckpointColliderListener : MonoBehaviour, IObserver<GameObject>
     public void OnNotify(GameObject Data, params object[] optional) //passing it here, maybe think of a better approach later?
     {
         SemaphoreSlim lockingThread = optional[0] as SemaphoreSlim;
-        Debug.Log(lockingThread);
         _ = RespawnPlayer(Data, CheckPointsScriptableObjectFetch, lockingThread);
     }
 }

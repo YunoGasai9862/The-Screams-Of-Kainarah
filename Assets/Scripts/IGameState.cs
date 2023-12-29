@@ -7,7 +7,7 @@ using UnityEngine;
 public interface IGameState
 {
     Task LoadGame();
-    Task SaveGame(SceneData sceneData); //for manipulating
+    Task SaveGame(string fileName); //for manipulating
     Task SaveCheckPoint(string saveFileName);
     Task  RestartLevel();
     Task LoadLastCheckPoint(string saveFileName, SemaphoreSlim lockingThread);
