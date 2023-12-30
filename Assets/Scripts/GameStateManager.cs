@@ -32,24 +32,22 @@ public class GameStateManager : MonoBehaviour, IGameState
     {
         public List<SceneData.ObjectData> objectsToSave;
     }
+    public class CompleteObjectWrapperClass
+    {
+        public IDictionary<string, SceneData.CompleteObject> gameObjects;
+    }
     private  void Awake()
     {
         if(instance == null) //so only instance is there
             instance = this;
 
     }
-
-    private async void Start()
-    {
-        await LoadGame();
-    }
-
     public static void ChangeLevel(int buildIndex)
     {
         SceneManager.LoadScene(buildIndex + 1);
     }
 
-    public async Task LoadGame() //implement LoadGame with Json etc by saving states
+    public async Task LoadGame(string saveFileName, Semaphore lockingThread) //implement LoadGame with Json etc by saving states
     {
         if (this._sceneData == null)
         {
@@ -58,6 +56,16 @@ public class GameStateManager : MonoBehaviour, IGameState
         }
 
         //load the whole scene
+        string saveFileLocation = Path.Combine(Application.persistentDataPath, saveFileName);
+        var jsonData = File.ReadAllText(saveFileLocation);
+        CompleteObjectWrapperClass wrapper = JsonUtility.FromJson<CompleteObjectWrapperClass>(jsonData);
+        IDictionary<string, SceneData.CompleteObject> objectsToLoad = wrapper.gameObjects;
+        foreach (var objectToLoad in objectsToLoad)
+        {
+            //continue
+        }
+
+
 
     }
     public async Task LoadLastCheckPoint(string saveFileName, SemaphoreSlim lockingThread)
@@ -104,14 +112,12 @@ public class GameStateManager : MonoBehaviour, IGameState
     public async Task SaveGame(string fileName)
     {
         GameObject[] allGameObjectsInTheScene = FindObjectsOfType<GameObject>();
-        jsonSerializedData.Clear();
+        IDictionary<string, SceneData.CompleteObject> gameData = new Dictionary<string, SceneData.CompleteObject>(); //different approach
         foreach (var gameObject in allGameObjectsInTheScene)
         {
-            var gameObjectToSave = JsonUtility.ToJson(gameObject);
-            jsonSerializedData.Add(gameObjectToSave);
+            gameData.Add(gameObject.name, new SceneData.CompleteObject(gameObject, gameObject.transform));
         }
-
-        var completeJson = "{\"objectsToSave\": [" + string.Join(",", jsonSerializedData) + "]}";
+        var completeJson = "{\"objectsToSave\": [" + string.Join(",", gameData) + "]}";
         string location = Path.Combine(Application.persistentDataPath, fileName);
         GetFileLocationToLoad = location;
         File.WriteAllText(location, completeJson);
@@ -127,6 +133,8 @@ public class GameStateManager : MonoBehaviour, IGameState
     {
         await SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
     }
+
+    [Obsolete]
     private async void OnApplicationQuit()
     {
         await SaveGame(GetFileLocationToLoad);

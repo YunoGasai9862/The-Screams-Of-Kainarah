@@ -6,7 +6,7 @@ using UnityEngine;
 
 public interface IGameState
 {
-    Task LoadGame();
+    Task LoadGame(string saveFileName, Semaphore lockingThread);
     Task SaveGame(string fileName); //for manipulating
     Task SaveCheckPoint(string saveFileName);
     Task  RestartLevel();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
 
 
@@ -39,6 +40,19 @@ public class SceneData
         public override string ToString()
         {
             return $"Pos: {this.position}, Rot: {this.rotation}, Tag: {this.tag}, Name: {this.name}";
+        }
+
+    }
+    [Serializable]
+    public class CompleteObject
+    {
+        public GameObject gameObject;
+        public Transform transform;
+
+        public CompleteObject(GameObject gameObject, Transform transform)
+        {
+            this.gameObject = gameObject;
+            this.transform = transform;
         }
 
     }
