@@ -1,12 +1,8 @@
-using Pathfinding.Serialization;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
-using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -36,11 +32,16 @@ public class GameStateManager : MonoBehaviour, IGameState
     {
         public IDictionary<string, SceneData.CompleteObject> gameObjects;
     }
-    private  void Awake()
+    private async void Awake()
     {
         if(instance == null) //so only instance is there
             instance = this;
 
+        if (this._sceneData == null)
+        {
+            Debug.Log("No data found, initializing everything to default");
+            await NewGame();
+        }
     }
     public static void ChangeLevel(int buildIndex)
     {
@@ -49,20 +50,14 @@ public class GameStateManager : MonoBehaviour, IGameState
 
     public async Task LoadGame(string saveFileName, Semaphore lockingThread) //implement LoadGame with Json etc by saving states
     {
-        if (this._sceneData == null)
-        {
-            Debug.Log("No data found, initializing everything to default");
-            await NewGame();
-        }
-
         //load the whole scene
         string saveFileLocation = Path.Combine(Application.persistentDataPath, saveFileName);
         var jsonData = File.ReadAllText(saveFileLocation);
         CompleteObjectWrapperClass wrapper = JsonUtility.FromJson<CompleteObjectWrapperClass>(jsonData);
         IDictionary<string, SceneData.CompleteObject> objectsToLoad = wrapper.gameObjects;
-        foreach (var objectToLoad in objectsToLoad)
+        foreach (var objectToLoad in objectsToLoad.Keys)
         {
-            //continue
+          // GameObject.find
         }
 
 
@@ -84,7 +79,7 @@ public class GameStateManager : MonoBehaviour, IGameState
                 await ReAlignTheObjectWithSavedData(gameObjectData);
             }
         }
-        catch (Exception ex)
+        catch (System.Exception ex)
         {
             Debug.Log(ex.Message);
         }
@@ -108,19 +103,23 @@ public class GameStateManager : MonoBehaviour, IGameState
         return Task.CompletedTask;
     }
 
-    [Obsolete]
     public async Task SaveGame(string fileName)
     {
-        GameObject[] allGameObjectsInTheScene = FindObjectsOfType<GameObject>();
+        GameObject[] allGameObjectsInTheScene = FindObjectsByType<GameObject>(FindObjectsSortMode.None).Where(o=>o.transform == o.transform.root).ToArray(); //only parent objects
         IDictionary<string, SceneData.CompleteObject> gameData = new Dictionary<string, SceneData.CompleteObject>(); //different approach
+
         foreach (var gameObject in allGameObjectsInTheScene)
         {
+
             gameData.Add(gameObject.name, new SceneData.CompleteObject(gameObject, gameObject.transform));
+          
         }
         var completeJson = "{\"objectsToSave\": [" + string.Join(",", gameData) + "]}";
+        Debug.Log(completeJson);
         string location = Path.Combine(Application.persistentDataPath, fileName);
         GetFileLocationToLoad = location;
         File.WriteAllText(location, completeJson);
+
         await Task.CompletedTask;
     }
 
@@ -132,12 +131,6 @@ public class GameStateManager : MonoBehaviour, IGameState
     public async Task RestartLevel()
     {
         await SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
-    }
-
-    [Obsolete]
-    private async void OnApplicationQuit()
-    {
-        await SaveGame(GetFileLocationToLoad);
     }
 
 
@@ -154,21 +147,29 @@ public class GameStateManager : MonoBehaviour, IGameState
 
     public async Task SaveCheckPoint(string fileName)
     {
-        gameStateHandlerObjects = GameObjectCreator.GameStateHandlerObjects(); //get all the objects
-
-        await InvokeListeners(gameStateHandlerObjects);
-
-        foreach (var objectToSave in this._sceneData.ObjectsToPersit)
+        try
         {
-            var jsonObject = JsonUtility.ToJson(objectToSave);
-            jsonSerializedData.Add(jsonObject);
+            gameStateHandlerObjects = GameObjectCreator.GameStateHandlerObjects(); //get all the objects
+
+            await InvokeListeners(gameStateHandlerObjects);
+
+            foreach (var objectToSave in this._sceneData.ObjectsToPersit)
+            {
+                var jsonObject = JsonUtility.ToJson(objectToSave);
+                jsonSerializedData.Add(jsonObject);
+            }
+            var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file
+
+            string localFilename = Path.Combine(Application.persistentDataPath, fileName);
+            GetFileLocationToLoad = localFilename;
+            File.WriteAllText(localFilename, completeJson);
+            jsonSerializedData.Clear(); //remove old data
+        }catch(System.Exception e)
+        {
+            Debug.Log(e.Message);
+
         }
-        var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file
 
-        string localFilename = Path.Combine(Application.persistentDataPath, fileName);
-        GetFileLocationToLoad = localFilename;
-        File.WriteAllText(localFilename, completeJson);
-        jsonSerializedData.Clear(); //remove old data
-
+        await SaveGame(fileName);
     }
 }

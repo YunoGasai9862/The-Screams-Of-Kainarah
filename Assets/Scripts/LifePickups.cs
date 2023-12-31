@@ -3,10 +3,11 @@ using UnityEngine.Tilemaps;
 
 public class LifePickups : MonoBehaviour
 {
-
     [SerializeField] Tilemap _ground;
-    [SerializeField] GameObject LifePickup;
+    [SerializeField] GameObject lifePickup;
     [SerializeField] float zPos;
+    private int _numberOfLifePickUps = 0;
+    private string condition = "";
     void Start()
     {
         for (int x = _ground.cellBounds.xMin; x < _ground.cellBounds.xMax; x++)
@@ -21,7 +22,9 @@ public class LifePickups : MonoBehaviour
                     if (x % 2 == 0)
                     {
                         Vector2 LifeLocation = new Vector2(localSpace.x + 2f, localSpace.y + 2f);
-                        Instantiate(LifePickup, LifeLocation, Quaternion.identity);
+                        GameObject lifePU= Instantiate(lifePickup, LifeLocation, Quaternion.identity);
+                        lifePU.name = lifePickup.name.ToString() + $"{_numberOfLifePickUps}";
+                        _numberOfLifePickUps++;
                     }
 
                 }
