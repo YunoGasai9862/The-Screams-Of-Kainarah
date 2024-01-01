@@ -7,7 +7,12 @@ public class FollowPlayer : MonoBehaviour
     private void Start()
     {
         Player = GameObject.FindWithTag("Player");
+    }
 
+    private void Update()
+    {
+        if(Player==null)
+            Player = GameObject.FindWithTag("Player");
     }
 
     public static void TrackPlayerX(Transform Follower, float xOffset, float yOffset, float zOffset, float speed)

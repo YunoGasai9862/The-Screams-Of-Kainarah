@@ -135,7 +135,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09fc735165b049c48bf82a8a9d48700f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BossDead: {fileID: 7294662482550770413, guid: 8df7eb68a2313664fb8aa8f93f7bf27f, type: 3}
+  bossDead: {fileID: 0}
+  attackingAnimationNames:
+  - attack
+  - attack_02
 --- !u!61 &1177047596
 BoxCollider2D:
   m_ObjectHideFlags: 0

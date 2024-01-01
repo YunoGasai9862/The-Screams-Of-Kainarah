@@ -5,14 +5,19 @@ using UnityEngine;
 
 public class Command : ICommand
 {
-    private IReceiver receiver;
+    private IReceiver _receiver;
+
+    public Command(IReceiver receiver)
+    {
+        this._receiver = receiver;
+    }
     public void Cancel()
     {
-        throw new System.NotImplementedException();
+        this._receiver.CancelAction();
     }
 
     public void Execute()
     {
-        throw new System.NotImplementedException();
+        this._receiver.PerformAction();
     }
 }

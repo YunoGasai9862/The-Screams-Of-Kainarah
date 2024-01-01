@@ -44,6 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2673045c89a71c84da202dce6edc24f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tiles: {fileID: 0}
-  Crystals: {fileID: 6985490835736572203, guid: b52968afaccb289438b3fdcd569e985b, type: 3}
-  zPos: 0
+  tiles: {fileID: 0}
+  prefabWithLocations: {fileID: 0}
+  itemToInstantiate: {fileID: 6985490835736572203, guid: b52968afaccb289438b3fdcd569e985b, type: 3}
+  offsetForInstantiation: {x: -0.05, y: 1.5, z: 0}
+  shouldUseTiles: 1

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5590584302819716347}
-  - component: {fileID: 8927826499568260806}
+  - component: {fileID: 8694355044022079238}
   m_Layer: 0
   m_Name: LifeGenerator
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8927826499568260806
+--- !u!114 &8694355044022079238
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,9 +41,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2395737315874828492}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fd2b5ab56d4fce42ae51ff7abada0c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 2673045c89a71c84da202dce6edc24f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ground: {fileID: 0}
-  LifePickup: {fileID: 3796040923135568132, guid: a3dd9d26585ed7e42b74d2cbfb618e34, type: 3}
-  zPos: 0
+  tiles: {fileID: 0}
+  prefabWithLocations: {fileID: 0}
+  itemToInstantiate: {fileID: 3796040923135568132, guid: a3dd9d26585ed7e42b74d2cbfb618e34, type: 3}
+  offsetForInstantiation: {x: 2, y: 2, z: 0}
+  shouldUseTiles: 0
