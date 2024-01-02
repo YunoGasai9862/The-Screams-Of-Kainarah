@@ -36,14 +36,20 @@ public class PlayerActionRelayer : AbstractEntity
 
     private void Start()
     {
-        InsertIntoGameStateHandlerList(this);
+        try
+        {
+            GameObjectCreator.InsertIntoGameStateHandlerList(this);
+        }
+        catch (Exception ex)
+        {
+            Debug.Log($"Exception: {ex.StackTrace}");
+        }
+
     }
     private void Awake()
     {
         MaxHealth = playerHealth;
         Health = MaxHealth;
-
-        DontDestroyOnLoad(this);
 
         _semaphoreSlim = new SemaphoreSlim(1); //using at two places
 
@@ -65,6 +71,7 @@ public class PlayerActionRelayer : AbstractEntity
 
     private async void Update()
     {
+
         if (dialogue != null)
         {
             dialogue = GameObject.FindWithTag(InteractableTag).GetComponent<Interactable>();
@@ -74,6 +81,7 @@ public class PlayerActionRelayer : AbstractEntity
         {
             await GetCheckPointSemaphore.WaitAsync();
             Debug.Log("Calling respawn");
+            Debug.Log(GetCheckPointSemaphore.CurrentCount);
             anim.SetBool("Death", true);
             await Task.Delay(TimeSpan.FromSeconds(0.1f));
             await GetPlayerObserverListenerObject().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, EntitiesToResetScriptableObjectFetch);

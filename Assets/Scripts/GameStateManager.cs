@@ -20,7 +20,7 @@ public class GameStateManager : MonoBehaviour, IGameState
 
     public List<string> jsonSerializedData = new List<string>();
 
-    public IGameStateHandler[] gameStateHandlerObjects;
+    public List<IGameStateHandler> gameStateHandlerObjects;
 
     public string GetFileLocationToLoad { get => _fileName; set => _fileName = value; }
 
@@ -57,7 +57,18 @@ public class GameStateManager : MonoBehaviour, IGameState
         IDictionary<string, SceneData.CompleteObject> objectsToLoad = wrapper.gameObjects;
         foreach (var objectToLoad in objectsToLoad.Keys)
         {
-          // GameObject.find
+            if(objectsToLoad.TryGetValue(objectToLoad, out var objectTL)) //continue this tomorrow
+            {
+                var foundObject = GameObject.Find(objectToLoad);
+                if (foundObject==null)
+                {
+                    Instantiate(objectTL.gameObject);
+                }
+                else
+                {
+                    foundObject.transform.position= objectTL.transform.position;
+                }
+            }
         }
 
 
@@ -134,13 +145,22 @@ public class GameStateManager : MonoBehaviour, IGameState
     }
 
 
-    public  Task InvokeListeners(IGameStateHandler[] handlers)
+    public  Task InvokeListeners(List<IGameStateHandler> handlers)
     {
         foreach (var gameObjectState in handlers)
         {
-            onCheckpointSaveEvent.AddListener(gameObjectState.GameStateHandler); //we subscribe to the game object
-            onCheckpointSaveEvent.Invoke(_sceneData); //gathering all the current state of the object implementing IGameStateHandler
-            onCheckpointSaveEvent.RemoveListener(gameObjectState.GameStateHandler); //we de-subscribe until next point
+            try
+            {
+                onCheckpointSaveEvent.AddListener(gameObjectState.GameStateHandler); //we subscribe to the game object
+                onCheckpointSaveEvent.Invoke(_sceneData); //gathering all the current state of the object implementing IGameStateHandler
+                onCheckpointSaveEvent.RemoveListener(gameObjectState.GameStateHandler); //we de-subscribe until next point
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e.Message);
+
+            }
+
         }
         return Task.CompletedTask;
     }
@@ -150,6 +170,7 @@ public class GameStateManager : MonoBehaviour, IGameState
         try
         {
             gameStateHandlerObjects = GameObjectCreator.GameStateHandlerObjects(); //get all the objects
+            Debug.Log(gameStateHandlerObjects.Count);
 
             await InvokeListeners(gameStateHandlerObjects);
 

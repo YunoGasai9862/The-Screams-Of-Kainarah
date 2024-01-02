@@ -1,5 +1,6 @@
 using EnemyHittable;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ public class GameObjectCreator : MonoBehaviour
     private static CheckpointColliderListener _checkpointColliderListener { get; set; }
 
     private static GameObjectCreator _instance;
-    private static IGameStateHandler[] _gameStateHandlerObjects { get; set; }//fill only once
+    private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; }//fill only once
 
     private void Awake()
     {
@@ -39,7 +40,6 @@ public class GameObjectCreator : MonoBehaviour
             _instance = this; //creating an instance (singleton pattern)
     }
 
-    [System.Obsolete]
     private void Start()
     {
         _dialogueManager = FindFirstObjectByType<DialogueManager>();  //faster compared to FindObjectOfType
@@ -51,7 +51,11 @@ public class GameObjectCreator : MonoBehaviour
         _checkpointActionListener = FindFirstObjectByType<CheckPointActionListener>();
         _getSpawnPlayerScript = FindFirstObjectByType<SpawnPlayer>();
         _checkpointColliderListener = FindFirstObjectByType<CheckpointColliderListener>();
-        _gameStateHandlerObjects = FindObjectsOfType<MonoBehaviour>().OfType<IGameStateHandler>().ToArray();
+        _gameStateHandlerObjects= new List<IGameStateHandler>();
+    }
+    private void Update()
+    {
+        //Debug.Log(_gameStateHandlerObjects.Count);
     }
 
     public static DialogueManager GetDialogueManager()
@@ -67,13 +71,25 @@ public class GameObjectCreator : MonoBehaviour
     {
         return _inventoryOpenCloseManager;
     }
-    public static IGameStateHandler[] GameStateHandlerObjects()
+    public static List<IGameStateHandler> GameStateHandlerObjects()
     {
+        foreach (var item in _gameStateHandlerObjects)
+        {
+            Debug.Log(item);
+        }
         return _gameStateHandlerObjects;
     }
     public static void InsertIntoGameStateHandlerList(IGameStateHandler handler)
     {
-         _gameStateHandlerObjects.Append(handler);
+        try
+        {
+            _gameStateHandlerObjects.Add(handler);
+
+        }
+        catch (Exception ex)
+        {
+            Debug.Log($"Exception: {ex.StackTrace}");
+        }
     }
     public static PlayerActionRelayer GetPlayerHelperClassObject()
     {

@@ -38,7 +38,7 @@ public class ObjectGenerator : MonoBehaviour
                 {
                     //fix this tomorrow for life pickups
                     _ledgePositions.Add(LocationOnTile);
-                    Vector3 AdjustedPosition = new(localSpace.x + offset.x, localSpace.y + offset.y, localSpace.z + offset.z);  // x=-.5f y= 1.5f z=0.0f
+                    Vector3 AdjustedPosition = new(localSpace.x + offset.x, localSpace.y + offset.y, localSpace.z + offset.z); 
                     GameObject instantiatedObject = Instantiate(itemToInstantiate, AdjustedPosition, Quaternion.identity);
                     instantiatedObject.name = itemToInstantiate.name.ToString() + $"{incrementor}";
                     incrementor++;
@@ -53,7 +53,7 @@ public class ObjectGenerator : MonoBehaviour
         for (int x = 0; x < prefabWithLocations.transform.childCount; x++) 
         {
             Vector3 childObjectPos = prefabWithLocations.transform.GetChild(x).transform.position;
-            Vector3 AdjustedPosition = new(childObjectPos.x + offset.x, childObjectPos.y + offset.y, childObjectPos.z + offset.z);  // x=-.5f y= 1.5f z=0.0f
+            Vector3 AdjustedPosition = new(childObjectPos.x + offset.x, childObjectPos.y + offset.y, childObjectPos.z + offset.z); 
             GameObject instantiatedObject = Instantiate(itemToInstantiate, AdjustedPosition, Quaternion.identity);
             instantiatedObject.name = itemToInstantiate.name.ToString() + $"{x}";        
         }

@@ -1,7 +1,7 @@
 using GlobalAccessAndGameHelper;
 using UnityEngine;
 
-public class LedgeGrab : MonoBehaviour
+public class LedgeGrab : MonoBehaviour, IReceiver
 {
     private bool greenBox, RedBox;
     public float redXOffset, redYoffset, redXSize, redYSize, greenXOffset, greenYOffset, greenXsize, greenYSize;
@@ -15,10 +15,12 @@ public class LedgeGrab : MonoBehaviour
     private Animator anim;
     private SpriteRenderer sr;
     private float _timeSpent;
+    private Command _commandForLedgeGrab;
 
     private void Awake()
     {
         _helperFunc = new MovementHelperClass();
+        _commandForLedgeGrab = new Command(this); 
     }
     void Start()
     {
@@ -111,5 +113,15 @@ public class LedgeGrab : MonoBehaviour
     private bool TimeSpentIsGrabbing()
     {
         return _timeSpent > .3f;
+    }
+
+    public void PerformAction()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void CancelAction()
+    {
+        throw new System.NotImplementedException();
     }
 }
