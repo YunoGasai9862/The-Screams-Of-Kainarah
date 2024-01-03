@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class SmokeGenerator : MonoBehaviour
 {
-    [SerializeField] GameObject SmokeFlare;
-    [SerializeField] int NumberOfFlares;
-    private Vector2 FlarePos;
+    [SerializeField] GameObject smokeFlare;
+    [SerializeField] int numberOfFlares;
+    [SerializeField] int gapBetweenSmokeObjects;
+    private Vector2 _flarePos;
     void Start()
     {
-        FlarePos = transform.position;
-
-        for(int i=0; i<NumberOfFlares; i++)
+        for(int i=0; i<numberOfFlares; i++)
         {
-            FlarePos = new Vector3(transform.position.x - (i * 8), transform.position.y);
-            Instantiate(SmokeFlare, FlarePos, Quaternion.identity);
+            _flarePos = new Vector3(transform.position.x - (i * gapBetweenSmokeObjects), transform.position.y);
+            GameObject smoke= Instantiate(smokeFlare, _flarePos, Quaternion.identity);
+            smoke.name = $"{smokeFlare.name}{i}";
         }
         
     }

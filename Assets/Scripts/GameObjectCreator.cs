@@ -53,11 +53,6 @@ public class GameObjectCreator : MonoBehaviour
         _checkpointColliderListener = FindFirstObjectByType<CheckpointColliderListener>();
         _gameStateHandlerObjects= new List<IGameStateHandler>();
     }
-    private void Update()
-    {
-        //Debug.Log(_gameStateHandlerObjects.Count);
-    }
-
     public static DialogueManager GetDialogueManager()
     {
         return _dialogueManager;
@@ -73,23 +68,11 @@ public class GameObjectCreator : MonoBehaviour
     }
     public static List<IGameStateHandler> GameStateHandlerObjects()
     {
-        foreach (var item in _gameStateHandlerObjects)
-        {
-            Debug.Log(item);
-        }
         return _gameStateHandlerObjects;
     }
     public static void InsertIntoGameStateHandlerList(IGameStateHandler handler)
     {
-        try
-        {
-            _gameStateHandlerObjects.Add(handler);
-
-        }
-        catch (Exception ex)
-        {
-            Debug.Log($"Exception: {ex.StackTrace}");
-        }
+        _gameStateHandlerObjects.Add(handler);
     }
     public static PlayerActionRelayer GetPlayerHelperClassObject()
     {

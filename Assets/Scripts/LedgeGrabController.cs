@@ -2,27 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LedgeGrabController : MonoBehaviour, ICommand
+public class LedgeGrabController : MonoBehaviour
 {
-    public void Cancel()
-    {
-        throw new System.NotImplementedException();
-    }
+    private IReceiver ledgeGrab;
 
-    public void Execute()
+    private void Start()
     {
-        throw new System.NotImplementedException();
+        ledgeGrab = GetComponent<IReceiver>();
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        
+        ledgeGrab.PerformAction();
     }
 }

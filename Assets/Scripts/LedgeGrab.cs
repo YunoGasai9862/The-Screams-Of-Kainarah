@@ -1,4 +1,5 @@
 using GlobalAccessAndGameHelper;
+using System;
 using UnityEngine;
 
 public class LedgeGrab : MonoBehaviour, IReceiver
@@ -15,12 +16,10 @@ public class LedgeGrab : MonoBehaviour, IReceiver
     private Animator anim;
     private SpriteRenderer sr;
     private float _timeSpent;
-    private Command _commandForLedgeGrab;
 
     private void Awake()
     {
         _helperFunc = new MovementHelperClass();
-        _commandForLedgeGrab = new Command(this); 
     }
     void Start()
     {
@@ -117,11 +116,22 @@ public class LedgeGrab : MonoBehaviour, IReceiver
 
     public void PerformAction()
     {
-        throw new System.NotImplementedException();
+        GrabLedge();
     }
 
     public void CancelAction()
     {
-        throw new System.NotImplementedException();
+        CancelLedgeGrab();
     }
+
+    private void CancelLedgeGrab()
+    {
+        Debug.Log("Not Grabbing Ledge");
+
+    }
+    private void GrabLedge()
+    {
+        Debug.Log("Grabbing Ledge");
+    }
+
 }

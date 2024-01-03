@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEditor;
 
 public class GameStateManager : MonoBehaviour, IGameState
 {
@@ -28,10 +29,6 @@ public class GameStateManager : MonoBehaviour, IGameState
     {
         public List<SceneData.ObjectData> objectsToSave;
     }
-    public class CompleteObjectWrapperClass
-    {
-        public IDictionary<string, SceneData.CompleteObject> gameObjects;
-    }
     private async void Awake()
     {
         if(instance == null) //so only instance is there
@@ -53,26 +50,22 @@ public class GameStateManager : MonoBehaviour, IGameState
         //load the whole scene
         string saveFileLocation = Path.Combine(Application.persistentDataPath, saveFileName);
         var jsonData = File.ReadAllText(saveFileLocation);
-        CompleteObjectWrapperClass wrapper = JsonUtility.FromJson<CompleteObjectWrapperClass>(jsonData);
-        IDictionary<string, SceneData.CompleteObject> objectsToLoad = wrapper.gameObjects;
-        foreach (var objectToLoad in objectsToLoad.Keys)
+        ObjectDataWrapperClass wrapper = JsonUtility.FromJson<ObjectDataWrapperClass>(jsonData);
+        var objectsToLoad = wrapper.objectsToSave;
+        foreach (var objectToLoad in objectsToLoad)
         {
-            if(objectsToLoad.TryGetValue(objectToLoad, out var objectTL)) //continue this tomorrow
+            var foundObject = GameObject.Find(objectToLoad.name);
+            if (foundObject==null)
             {
-                var foundObject = GameObject.Find(objectToLoad);
-                if (foundObject==null)
-                {
-                    Instantiate(objectTL.gameObject);
-                }
-                else
-                {
-                    foundObject.transform.position= objectTL.transform.position;
-                }
+                var prefab = PrefabUtility.LoadPrefabContents(objectToLoad.name); //test tomorrow
             }
+            else
+            {
+                foundObject.transform.position = objectToLoad.transform.position;
+            }
+            
         }
-
-
-
+        await Task.CompletedTask;
     }
     public async Task LoadLastCheckPoint(string saveFileName, SemaphoreSlim lockingThread)
     {
@@ -117,15 +110,14 @@ public class GameStateManager : MonoBehaviour, IGameState
     public async Task SaveGame(string fileName)
     {
         GameObject[] allGameObjectsInTheScene = FindObjectsByType<GameObject>(FindObjectsSortMode.None).Where(o=>o.transform == o.transform.root).ToArray(); //only parent objects
-        IDictionary<string, SceneData.CompleteObject> gameData = new Dictionary<string, SceneData.CompleteObject>(); //different approach
+        List<SceneData.ObjectData> gameData = new List<SceneData.ObjectData>(); //different approach
 
         foreach (var gameObject in allGameObjectsInTheScene)
         {
-
-            gameData.Add(gameObject.name, new SceneData.CompleteObject(gameObject, gameObject.transform));
-          
+            var gameObjectForSerializedData = JsonUtility.ToJson(new SceneData.ObjectData(gameObject.name, gameObject.tag, gameObject.transform.position, gameObject.transform.rotation));
+            jsonSerializedData.Add(gameObjectForSerializedData);
         }
-        var completeJson = "{\"objectsToSave\": [" + string.Join(",", gameData) + "]}";
+        var completeJson = "{\"objectsToSave\": [" + string.Join(",", jsonSerializedData) + "]}";
         Debug.Log(completeJson);
         string location = Path.Combine(Application.persistentDataPath, fileName);
         GetFileLocationToLoad = location;
@@ -170,8 +162,6 @@ public class GameStateManager : MonoBehaviour, IGameState
         try
         {
             gameStateHandlerObjects = GameObjectCreator.GameStateHandlerObjects(); //get all the objects
-            Debug.Log(gameStateHandlerObjects.Count);
-
             await InvokeListeners(gameStateHandlerObjects);
 
             foreach (var objectToSave in this._sceneData.ObjectsToPersit)
@@ -180,17 +170,17 @@ public class GameStateManager : MonoBehaviour, IGameState
                 jsonSerializedData.Add(jsonObject);
             }
             var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file
-
             string localFilename = Path.Combine(Application.persistentDataPath, fileName);
             GetFileLocationToLoad = localFilename;
             File.WriteAllText(localFilename, completeJson);
             jsonSerializedData.Clear(); //remove old data
-        }catch(System.Exception e)
+            await SaveGame(fileName);
+        }
+        catch (System.Exception e)
         {
             Debug.Log(e.Message);
 
         }
 
-        await SaveGame(fileName);
     }
 }

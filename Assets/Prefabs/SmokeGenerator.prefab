@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f3eba4ee64da21469806fb6f9cfa3cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SmokeFlare: {fileID: 8443243122173139840, guid: 7edc286eb2a63cd458f4dc34e573923c, type: 3}
-  NumberOfFlares: 2
+  smokeFlare: {fileID: 8443243122173139840, guid: 7edc286eb2a63cd458f4dc34e573923c, type: 3}
+  numberOfFlares: 2

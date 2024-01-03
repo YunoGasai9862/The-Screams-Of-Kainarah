@@ -17,6 +17,7 @@ public class SceneData
         public Vector3 position;
         public Quaternion rotation;
         public AbstractEntity entity=null;
+        public Transform transform;
 
         public float health;
         public ObjectData(string tag, string name,Vector3 pos, Quaternion rot, AbstractEntity entity)
@@ -40,19 +41,6 @@ public class SceneData
         public override string ToString()
         {
             return $"Pos: {this.position}, Rot: {this.rotation}, Tag: {this.tag}, Name: {this.name}";
-        }
-
-    }
-    [Serializable]
-    public class CompleteObject
-    {
-        public GameObject gameObject;
-        public Transform transform;
-
-        public CompleteObject(GameObject gameObject, Transform transform)
-        {
-            this.gameObject = gameObject;
-            this.transform = transform;
         }
 
     }
