@@ -10,7 +10,7 @@ public class LedgeGrabController : MonoBehaviour
     {
         ledgeGrab = GetComponent<IReceiver>();
     }
-    void Update()
+    public void PerformLedgeGrab()
     {
         ledgeGrab.PerformAction();
     }

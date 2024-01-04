@@ -1,10 +1,11 @@
 using GlobalAccessAndGameHelper;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class LedgeGrab : MonoBehaviour, IReceiver
 {
-    private bool greenBox, RedBox;
+    private bool greenBox, redBox;
     public float redXOffset, redYoffset, redXSize, redYSize, greenXOffset, greenYOffset, greenXsize, greenYSize;
     private MovementHelperClass _helperFunc;
     private Rigidbody2D rb;
@@ -30,7 +31,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver
         sr = GetComponent<SpriteRenderer>();
     }
     // Update is called once per frame
-    void Update()
+    async void Update()
     {
         if (sr.flipX)
         {
@@ -42,8 +43,6 @@ public class LedgeGrab : MonoBehaviour, IReceiver
         {
             greenXOffset = 0.09f;
             redXOffset = .1f;
-
-
         }
 
         if (!_helperFunc.overlapAgainstLayerMaskChecker(ref col, groundmask) && greenBox &&
@@ -52,7 +51,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver
             _timeSpent += Time.deltaTime;
         }
 
-        if (TimeSpentIsGrabbing() || _helperFunc.overlapAgainstLayerMaskChecker(ref col, ledge))
+        if (TimeSpentGrabbing(_timeSpent, .3f) || _helperFunc.overlapAgainstLayerMaskChecker(ref col, ledge))
         {
             PlayerActionRelayer.isGrabbing = false;
             _timeSpent = 0f;
@@ -61,10 +60,10 @@ public class LedgeGrab : MonoBehaviour, IReceiver
 
         //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
         greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
-        RedBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
+        redBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
         //if the variable is public static and exists on the same object, you can access it with the name of the script!!
 
-        if (greenBox && !RedBox && globalVariablesAccess.ISJUMPING)
+        if (greenBox && !redBox && globalVariablesAccess.ISJUMPING)
         {
             PlayerActionRelayer.isGrabbing = true;
         }
@@ -74,30 +73,29 @@ public class LedgeGrab : MonoBehaviour, IReceiver
             anim.SetBool("LedgeGrab", true);
         }
 
+    }
+
+    private async void FixedUpdate()
+    {
+        //worked here, fix it tomorrow
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= .2f) //it checks for the same animations normalziaed TIME!!
         {
-            ChangePositionOfThePlayer();  //this is for setting the animation to false
+            int sign = sr.flipX ? -1 : 1;
+            await ChangePositionOfThePlayer(sign, startingGrav, 10000);  //this is for setting the animation to false
             anim.SetBool("LedgeGrab", false);
 
         }
     }
 
-    public void ChangePositionOfThePlayer()
+    public async Task ChangePositionOfThePlayer(int sign, float startingGravity, float force)
     {
-        if (sr.flipX)
-        {
-            transform.position = new Vector2(transform.position.x, transform.position.y + Ydisplace * Time.deltaTime * transform.localScale.y);
-            transform.position = new Vector2(transform.position.x - Xdisplace * Time.deltaTime * transform.localScale.x, transform.position.y);
-        }
-        else
-        {
-            transform.position = new Vector2(transform.position.x, transform.position.y + Ydisplace * Time.deltaTime * transform.localScale.y);
-            transform.position = new Vector2(transform.position.x + Xdisplace * Time.deltaTime * transform.localScale.x, transform.position.y);
-        }
-
-        rb.gravityScale = startingGrav;
+        Debug.Log(rb.gravityScale);
+        rb.AddForce(new Vector2((sign) * Xdisplace * force, Ydisplace * force) * rb.mass, ForceMode2D.Impulse);
+        //transform.position = new Vector2(transform.position.x, transform.position.y + Ydisplace * Time.deltaTime * transform.localScale.y);
+        //transform.position = new Vector2(transform.position.x + (sign) * Xdisplace * Time.deltaTime * transform.localScale.x, transform.position.y);   
+        rb.gravityScale = startingGravity;
         PlayerActionRelayer.isGrabbing = false;
-
+        await Task.CompletedTask;
     }
 
     private void OnDrawGizmosSelected()//drawing the boxes (extras)
@@ -109,9 +107,9 @@ public class LedgeGrab : MonoBehaviour, IReceiver
         Gizmos.DrawWireCube(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize));
 
     }
-    private bool TimeSpentIsGrabbing()
+    private bool TimeSpentGrabbing(float timeSpent, float timeMargin)
     {
-        return _timeSpent > .3f;
+        return timeSpent > timeMargin;
     }
 
     public void PerformAction()
@@ -124,14 +122,14 @@ public class LedgeGrab : MonoBehaviour, IReceiver
         CancelLedgeGrab();
     }
 
-    private void CancelLedgeGrab()
+    private Task CancelLedgeGrab()
     {
-        Debug.Log("Not Grabbing Ledge");
-
+        return Task.CompletedTask;
     }
-    private void GrabLedge()
+    private Task GrabLedge()
     {
-        Debug.Log("Grabbing Ledge");
+        return Task.CompletedTask;
+
     }
 
 }

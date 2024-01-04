@@ -23,6 +23,7 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
     [SerializeField] float JumpSpeed;
     [SerializeField] float maxTimeJump;
     [SerializeField] float slidingSpeed;
+    [SerializeField] LedgeGrabController ledgeGrabController;
 
     private float characterVelocityY;
     private float characterVelocityX;
@@ -97,6 +98,7 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
         if (PlayerActionRelayer.isGrabbing) //tackles the ledgeGrab
         {
             HandleIsGrabbingScenario();
+            ledgeGrabController.PerformLedgeGrab();
             return;
         }
 
@@ -104,7 +106,6 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
         if (!globalVariablesAccess.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed) //on the ground
         {
             characterVelocityY = 0f;
-
             _timeCounter = 0;
         }
 
@@ -137,7 +138,6 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
     private void HandleIsGrabbingScenario()
     {
         _rb.velocity = new Vector2(0, 0);
-
         _rb.gravityScale = 0;
 
     }
