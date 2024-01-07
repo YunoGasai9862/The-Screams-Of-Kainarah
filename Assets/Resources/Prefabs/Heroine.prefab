@@ -694,7 +694,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2357857119552702225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 199}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -877,14 +877,14 @@ MonoBehaviour:
   greenYOffset: -0.41
   greenXsize: 0.59
   greenYSize: 0.08
-  groundmask:
+  groundMask:
     serializedVersion: 2
     m_Bits: 64
   ledge:
     serializedVersion: 2
     m_Bits: 8
-  Xdisplace: 12
-  Ydisplace: 16
+  xDisplace: 10
+  yDisplace: 15
 --- !u!114 &2357857118627078221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -907,6 +907,7 @@ MonoBehaviour:
   JumpSpeed: 20
   maxTimeJump: 0.3
   slidingSpeed: 18
+  ledgeGrabController: {fileID: -7079114110776597852}
 --- !u!114 &6549680331415743501
 MonoBehaviour:
   m_ObjectHideFlags: 0

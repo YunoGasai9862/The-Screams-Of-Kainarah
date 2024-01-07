@@ -57,14 +57,13 @@ public class GameStateManager : MonoBehaviour, IGameState
             var foundObject = GameObject.Find(objectToLoad.name);
             if (foundObject==null)
             {
-               // var prefab = LoadPrefabContents(objectToLoad.name); //test tomorrow
-               //separate this in unityEditor
+               var prefab = Resources.Load<GameObject>(objectToLoad.name); //load the prefab
+               GameObject go = Instantiate(prefab, objectToLoad.transform.position, objectToLoad.rotation); //instantiate it
             }
             else
             {
                 foundObject.transform.position = objectToLoad.transform.position;
             }
-            
         }
         await Task.CompletedTask;
     }

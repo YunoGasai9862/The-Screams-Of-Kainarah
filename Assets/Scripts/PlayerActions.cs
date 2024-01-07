@@ -3,8 +3,7 @@ using GlobalAccessAndGameHelper;
 using PlayerAnimationHandler;
 using UnityEngine;
 using UnityEngine.InputSystem;
-public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The notified subject class inherits from MonoBehavior so does the PlayerActions now, but also 
-                                           //have the ability to inherit notifiy actions
+public class PlayerActions : MonoBehaviour, IReceiver 
 {
     private PlayerInput _playerInput;
     private Rocky2DActions _rocky2DActions;
@@ -67,8 +66,6 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
             characterVelocityY = JumpSpeed * .5f;
 
             _animationHandler.JumpingFalling(globalVariablesAccess.ISJUMPING); //jumping animation
-
-
         }
 
         if (canPlayerFall() || MaxJumpTimeChecker()) //peak reached
@@ -80,7 +77,6 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
             isJumpPressed = false; //fixed the issue of eternally looping at jumep on JUMP HOLD
 
         }
-
 
         if (!globalVariablesAccess.ISJUMPING && !LedgeGroundChecker(groundLayer, ledgeLayer)) //falling
         {
@@ -96,11 +92,9 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
 
         if (PlayerActionRelayer.isGrabbing) //tackles the ledgeGrab
         {
-            HandleIsGrabbingScenario();
             ledgeGrabController.PerformLedgeGrab();
             return;
         }
-
 
         if (!globalVariablesAccess.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed) //on the ground
         {
@@ -132,13 +126,6 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
     {
         return _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsulecollider, ground)
             || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsulecollider, ledge);
-    }
-
-    private void HandleIsGrabbingScenario()
-    {
-        _rb.velocity = new Vector2(0, 0);
-        _rb.gravityScale = 0;
-
     }
 
     private void Update()
@@ -235,5 +222,13 @@ public class PlayerActions : MonoBehaviour //why i removed the MonoBehavior? The
         return isJumpPressed;
     }
 
+    public void PerformAction()
+    {
+        throw new System.NotImplementedException();
+    }
 
+    public void CancelAction()
+    {
+        throw new System.NotImplementedException();
+    }
 }

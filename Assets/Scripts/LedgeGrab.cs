@@ -1,5 +1,6 @@
 using GlobalAccessAndGameHelper;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -10,14 +11,16 @@ public class LedgeGrab : MonoBehaviour, IReceiver
     private MovementHelperClass _helperFunc;
     private Rigidbody2D rb;
     private float startingGrav;
-    [SerializeField] LayerMask groundmask;
+    [SerializeField] LayerMask groundMask;
     [SerializeField] LayerMask ledge;
-    [SerializeField] float Xdisplace, Ydisplace;
+    [SerializeField] float xDisplace, yDisplace;
     private CapsuleCollider2D col;
     private Animator anim;
     private SpriteRenderer sr;
     private float _timeSpent;
-
+    private const float MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB = 1f;
+    private bool _canGrab = false;
+    private Vector2 _groundPosition;
     private void Awake()
     {
         _helperFunc = new MovementHelperClass();
@@ -31,7 +34,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver
         sr = GetComponent<SpriteRenderer>();
     }
     // Update is called once per frame
-    async void Update()
+    void Update()
     {
         if (sr.flipX)
         {
@@ -45,7 +48,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver
             redXOffset = .1f;
         }
 
-        if (!_helperFunc.overlapAgainstLayerMaskChecker(ref col, groundmask) && greenBox &&
+        if (!_helperFunc.overlapAgainstLayerMaskChecker(ref col, groundMask) && greenBox &&
             PlayerActionRelayer.isGrabbing)
         {
             _timeSpent += Time.deltaTime;
@@ -68,30 +71,20 @@ public class LedgeGrab : MonoBehaviour, IReceiver
             PlayerActionRelayer.isGrabbing = true;
         }
 
-        if (PlayerActionRelayer.isGrabbing)
-        {
-            anim.SetBool("LedgeGrab", true);
-        }
-
     }
 
     private async void FixedUpdate()
     {
-        //worked here, fix it tomorrow
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= .2f) //it checks for the same animations normalziaed TIME!!
-        {
-            int sign = sr.flipX ? -1 : 1;
-            await ChangePositionOfThePlayer(sign, startingGrav, 10000);  //this is for setting the animation to false
-            anim.SetBool("LedgeGrab", false);
-
-        }
+       await GrabLedge();
     }
 
-    public async Task ChangePositionOfThePlayer(int sign, float startingGravity, float force)
+    public async Task HandleLedgeGrabCalculations(int sign, float startingGravity, float force, Vector2 groundPosition)
     {
-        rb.AddForce(new Vector2((sign) * Xdisplace * force, Ydisplace * force) * rb.mass, ForceMode2D.Impulse);
-        //transform.position = new Vector2(transform.position.x, transform.position.y + Ydisplace * Time.deltaTime * transform.localScale.y);
-        //transform.position = new Vector2(transform.position.x + (sign) * Xdisplace * Time.deltaTime * transform.localScale.x, transform.position.y);   
+        rb.AddForce(Vector2.up * yDisplace * force * Time.fixedDeltaTime * rb.mass, ForceMode2D.Impulse);
+        Debug.Log(groundPosition);
+        if(transform.position.y > groundPosition.y + MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB)
+            rb.AddForce((sign) * Vector2.right * xDisplace * force * Time.fixedDeltaTime * rb.mass, ForceMode2D.Impulse);
+        
         rb.gravityScale = startingGravity;
         PlayerActionRelayer.isGrabbing = false;
         await Task.CompletedTask;
@@ -113,7 +106,9 @@ public class LedgeGrab : MonoBehaviour, IReceiver
 
     public void PerformAction()
     {
-        GrabLedge();
+        rb.velocity = new Vector2(0, 0);
+        rb.gravityScale = 0f;
+        anim.SetBool("LedgeGrab", true);
     }
 
     public void CancelAction()
@@ -125,10 +120,28 @@ public class LedgeGrab : MonoBehaviour, IReceiver
     {
         return Task.CompletedTask;
     }
-    private Task GrabLedge()
+    private async Task GrabLedge()
     {
-        return Task.CompletedTask;
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab")
+           && _canGrab)
+        {
+            int sign = sr.flipX ? -1 : 1;
+            await HandleLedgeGrabCalculations(sign, startingGrav, 100, _groundPosition);  //this is for setting the animation to false
+            anim.SetBool("LedgeGrab", false);
+        }
+    }
 
+    public Task StartLedgeGrab()
+    {
+        _canGrab = true;
+        _groundPosition = transform.position;
+        return Task.CompletedTask;
+    }
+
+    public Task ShouldLedgeGrab()
+    {
+        _canGrab = false;
+        return Task.CompletedTask;
     }
 
 }
