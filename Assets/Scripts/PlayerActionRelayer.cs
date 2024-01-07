@@ -8,6 +8,7 @@ using static DialogueEntityScriptableObject;
 using static GameObjectCreator;
 using static CheckPoints;
 using static SceneData;
+using PlayerHittableItemsNS;
 public class PlayerActionRelayer : AbstractEntity
 {
     [SerializeField] SpriteRenderer sr;

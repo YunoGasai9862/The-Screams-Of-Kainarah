@@ -89,7 +89,6 @@ public class LedgeGrab : MonoBehaviour, IReceiver
 
     public async Task ChangePositionOfThePlayer(int sign, float startingGravity, float force)
     {
-        Debug.Log(rb.gravityScale);
         rb.AddForce(new Vector2((sign) * Xdisplace * force, Ydisplace * force) * rb.mass, ForceMode2D.Impulse);
         //transform.position = new Vector2(transform.position.x, transform.position.y + Ydisplace * Time.deltaTime * transform.localScale.y);
         //transform.position = new Vector2(transform.position.x + (sign) * Xdisplace * Time.deltaTime * transform.localScale.x, transform.position.y);   

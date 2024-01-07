@@ -16,7 +16,7 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
 
     public Dictionary<string, Func<Checkpoint, CheckPoints, Task>> CheckpointDict { get => _checkpointsDict; set => _checkpointsDict = value; } 
 
-    private async void Awake()
+    private async void Start()
     {
         CheckpointDict = await PrefillCheckPointsDict(CheckPointsScriptableObjectFetch);
     }

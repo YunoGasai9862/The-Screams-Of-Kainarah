@@ -1,10 +1,9 @@
 
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class CameraShake : MonoBehaviour
 {
@@ -34,17 +33,17 @@ public class CameraShake : MonoBehaviour
     {
         _cancellationTokenSource= new CancellationTokenSource();
         _token = _cancellationTokenSource.Token;
-        _targetBody= GameObject.FindWithTag(targetBodyTag);
-        _animator = _targetBody.GetComponent<Animator>();
-
-
     }
-
     void Update()
-    {
-      
-      currentTargetAnimationShake(animationNames);
-        
+    {  
+        if(_targetBody == null)
+        {
+            _targetBody = GameObject.FindWithTag(targetBodyTag);
+            _animator = _targetBody.GetComponent<Animator>();
+        }
+        else
+            currentTargetAnimationShake(animationNames);
+
     }
 
     private async IAsyncEnumerator<WaitForSeconds> shakeCamera(Camera _mainCamera, float timeForCameraShake) //do it tomorrow
@@ -55,15 +54,15 @@ public class CameraShake : MonoBehaviour
 
         while (timeSpent < timeForCameraShake)
         {
-            float randomXThrust = Random.Range(_minShake, _maxShake);  //i didn't know this work too, i was using adding to x and y, this will simply shake/translate the camera up and down
+            float randomXThrust = UnityEngine.Random.Range(_minShake, _maxShake);  //i didn't know this work too, i was using adding to x and y, this will simply shake/translate the camera up and down
             //only and only if there's a camera holder to keep the camera in place
-            float randomYThrust = Random.Range(_minShake, _maxShake);
+            float randomYThrust = UnityEngine.Random.Range(_minShake, _maxShake);
 
             _mainCamera.transform.position = _cameraOldPosition + new Vector3(randomXThrust, randomYThrust, 0); //to avoid effecting the z-index (also add it to _cameraOldPosition)
 
             timeSpent += Time.deltaTime;
 
-            await Task.Delay(System.TimeSpan.FromSeconds(.05f));
+            await Task.Delay(TimeSpan.FromSeconds(.05f));
 
         }
         _mainCamera.transform.position = _cameraOldPosition; //sets back the position

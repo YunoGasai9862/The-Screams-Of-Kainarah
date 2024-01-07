@@ -1,18 +1,21 @@
 using System;
 using UnityEngine;
-
-[CreateAssetMenu(fileName = "PlayerHittableItems", menuName ="Player Hittable Items Object")]
-public class PlayerHittableItemsScriptableObject: ScriptableObject
+namespace PlayerHittableItemsNS
 {
-    [Serializable]
-    public class playerHittableItems
+    [CreateAssetMenu(fileName = "PlayerHittableItems", menuName = "Player Hittable Items Object")]
+    public class PlayerHittableItemsScriptableObject : ScriptableObject
     {
-        public bool canHitPlayer;
-        public Collider2D collider;
-        public bool isItBasedOnAnimationName;
-        [HideInInspector]
-        public string animationName;
+        [Serializable]
+        public class playerHittableItems
+        {
+            public bool canHitPlayer;
+            public Collider2D collider;
+            public bool isItBasedOnAnimationName;
+            [HideInInspector]
+            public string animationName;
+        }
+
+        public playerHittableItems[] colliderItems;
     }
 
-    public playerHittableItems[] colliderItems;
 }

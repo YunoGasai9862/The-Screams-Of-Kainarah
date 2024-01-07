@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
-using UnityEngine.Tilemaps;
 
+using UnityEditor;
 [CustomEditor(typeof(ObjectGenerator))]
 public class ObjectGeneratorCustomEditor : Editor
 {

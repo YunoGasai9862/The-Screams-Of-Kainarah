@@ -57,7 +57,8 @@ public class GameStateManager : MonoBehaviour, IGameState
             var foundObject = GameObject.Find(objectToLoad.name);
             if (foundObject==null)
             {
-                var prefab = PrefabUtility.LoadPrefabContents(objectToLoad.name); //test tomorrow
+               // var prefab = LoadPrefabContents(objectToLoad.name); //test tomorrow
+               //separate this in unityEditor
             }
             else
             {
@@ -174,7 +175,6 @@ public class GameStateManager : MonoBehaviour, IGameState
             GetFileLocationToLoad = localFilename;
             File.WriteAllText(localFilename, completeJson);
             jsonSerializedData.Clear(); //remove old data
-            await SaveGame(fileName);
         }
         catch (System.Exception e)
         {

@@ -1,7 +1,9 @@
 
+using PlayerHittableItemsNS;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
+
 
 [CustomEditor(typeof(PlayerHittableItemsScriptableObject))]
 public class PlayerHittableItemsObjectCustomEditor : Editor
