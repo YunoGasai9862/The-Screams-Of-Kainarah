@@ -4,14 +4,23 @@ using UnityEngine;
 
 public class LedgeGrabController : MonoBehaviour
 {
-    private IReceiver ledgeGrab;
+    private IReceiver _ledgeGrab;
+    private static bool _isGrabbing;
+    private Command _ledgeGrabCommand;
+    public static bool IsGrabbing { get => _isGrabbing; set => _isGrabbing = value; }
 
     private void Start()
     {
-        ledgeGrab = GetComponent<IReceiver>();
+        _ledgeGrab = GetComponent<IReceiver>();
+        _ledgeGrabCommand = new Command(_ledgeGrab);
     }
     public void PerformLedgeGrab()
     {
-        ledgeGrab.PerformAction();
+        _ledgeGrabCommand.Execute();
+    }
+
+    public void CancelLedgeGrab()
+    {
+        _ledgeGrabCommand.Cancel();
     }
 }

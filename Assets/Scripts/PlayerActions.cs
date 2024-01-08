@@ -90,7 +90,7 @@ public class PlayerActions : MonoBehaviour, IReceiver
             _timeCounter += Time.deltaTime;
         }
 
-        if (PlayerActionRelayer.isGrabbing) //tackles the ledgeGrab
+        if (LedgeGrabController.IsGrabbing) //tackles the ledgeGrab
         {
             ledgeGrabController.PerformLedgeGrab();
             return;
@@ -157,8 +157,6 @@ public class PlayerActions : MonoBehaviour, IReceiver
             {
                 globalVariablesAccess.setSliding(false);
             }
-
-
         }
 
     }

@@ -679,6 +679,8 @@ GameObject:
   - component: {fileID: 2290307266042556730}
   - component: {fileID: 2357857118627078232}
   - component: {fileID: -7079114110776597852}
+  - component: {fileID: -7060034625620182088}
+  - component: {fileID: 5169309916338779487}
   m_Layer: 7
   m_Name: Heroine
   m_TagString: Player
@@ -979,6 +981,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e6aab3f105fa581479c6bb695ccd8a0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-7060034625620182088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b31c0eb22d24b6544be424dfa9359882, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5169309916338779487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7f4c100a3d55cf44b8f9ed81c2e47a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &3485019726026848876

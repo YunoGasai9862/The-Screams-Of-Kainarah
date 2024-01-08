@@ -19,7 +19,6 @@ public class PlayerActionRelayer : AbstractEntity
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
-    public static bool isGrabbing = false;//for the ledge grab script
     private bool pickedUp;
     private PickableItemsClass _pickableItems;
     private Interactable dialogue;

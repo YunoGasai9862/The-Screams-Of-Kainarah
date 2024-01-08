@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
+using System.Collections;
 
 public class GameStateManager : MonoBehaviour, IGameState
 {
@@ -59,6 +60,7 @@ public class GameStateManager : MonoBehaviour, IGameState
             {
                var prefab = Resources.Load<GameObject>(objectToLoad.name); //load the prefab
                GameObject go = Instantiate(prefab, objectToLoad.transform.position, objectToLoad.rotation); //instantiate it
+                Debug.Log(go);
             }
             else
             {
@@ -93,7 +95,6 @@ public class GameStateManager : MonoBehaviour, IGameState
         }
        
     }
-
     private Task ReAlignTheObjectWithSavedData(SceneData.ObjectData gameObjectData)
     {
         GameObject gameObject = GameObject.FindWithTag(gameObjectData.tag);
@@ -125,7 +126,6 @@ public class GameStateManager : MonoBehaviour, IGameState
 
         await Task.CompletedTask;
     }
-
     public Task NewGame()
     {
         this._sceneData = new SceneData(); //initializes the new data
@@ -135,7 +135,6 @@ public class GameStateManager : MonoBehaviour, IGameState
     {
         await SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
     }
-
 
     public  Task InvokeListeners(List<IGameStateHandler> handlers)
     {
@@ -156,7 +155,6 @@ public class GameStateManager : MonoBehaviour, IGameState
         }
         return Task.CompletedTask;
     }
-
     public async Task SaveCheckPoint(string fileName)
     {
         try
@@ -181,5 +179,19 @@ public class GameStateManager : MonoBehaviour, IGameState
 
         }
 
+    }
+    public Task LoadSceneAsync(int sceneIndex)
+    {
+        StartCoroutine(LoadScene(sceneIndex));
+        return Task.CompletedTask;
+    }
+    IEnumerator LoadScene(int sceneIndex)
+    {
+       AsyncOperation loadingScene = SceneManager.LoadSceneAsync(sceneIndex);
+
+        if (loadingScene.isDone)
+        {
+            yield return null; //fix this tomorrow
+        }
     }
 }

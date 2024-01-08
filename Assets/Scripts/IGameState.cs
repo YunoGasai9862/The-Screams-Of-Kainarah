@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using System.Threading;
 using System.Threading.Tasks;
-using UnityEngine;
 
 public interface IGameState
 {
@@ -12,5 +10,6 @@ public interface IGameState
     Task  RestartLevel();
     Task LoadLastCheckPoint(string saveFileName, SemaphoreSlim lockingThread);
     Task NewGame();
+    Task LoadSceneAsync(int sceneIndex);
 
 }
