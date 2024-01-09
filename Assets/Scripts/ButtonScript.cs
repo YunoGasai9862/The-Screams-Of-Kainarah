@@ -15,9 +15,4 @@ public class ButtonScript : MonoBehaviour
         panelHandler.ClosePanel();
     }
 
-    public void BuyWares()
-    {
-
-    }
-
 }

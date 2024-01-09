@@ -7,14 +7,18 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
 using System.Collections;
+using UnityEngine.UIElements;
 
 public class GameStateManager : MonoBehaviour, IGameState
 {
     private SceneData _sceneData;
     private string _fileName;
+    private Camera _mainCamera;
+    private Vector3 _mainCameraOldPosition;
 
     [SerializeField]
     public string fileName;
+    public ProgressBar progressBar;
     public static GameStateManager instance { get; private set; }
 
     public CheckPointEvent onCheckpointSaveEvent; //checkpoint event
@@ -40,6 +44,11 @@ public class GameStateManager : MonoBehaviour, IGameState
             Debug.Log("No data found, initializing everything to default");
             await NewGame();
         }
+        _mainCamera = Camera.main;
+        _mainCameraOldPosition = _mainCamera.transform.position;
+        /*
+        _mainCamera.transform.position = new Vector3(_mainCamera.transform.position.x, _mainCamera.transform.position.y, -100);
+         */
     }
     public static void ChangeLevel(int buildIndex)
     {
@@ -58,8 +67,8 @@ public class GameStateManager : MonoBehaviour, IGameState
             var foundObject = GameObject.Find(objectToLoad.name);
             if (foundObject==null)
             {
-               var prefab = Resources.Load<GameObject>(objectToLoad.name); //load the prefab
-               GameObject go = Instantiate(prefab, objectToLoad.transform.position, objectToLoad.rotation); //instantiate it
+                var prefab = Resources.Load<GameObject>(objectToLoad.name); //load the prefab
+                GameObject go = Instantiate(prefab, objectToLoad.transform.position, objectToLoad.rotation); //instantiate it
                 Debug.Log(go);
             }
             else
@@ -187,10 +196,15 @@ public class GameStateManager : MonoBehaviour, IGameState
     }
     IEnumerator LoadScene(int sceneIndex)
     {
-       AsyncOperation loadingScene = SceneManager.LoadSceneAsync(sceneIndex);
+        AsyncOperation loadingScene = SceneManager.LoadSceneAsync(sceneIndex);
 
+        //show it on the UI (percentage bar)
+        float loadPercentage = loadingScene.progress;
+        progressBar.value = loadPercentage;
+        Debug.Log(loadPercentage);
         if (loadingScene.isDone)
         {
+            _mainCamera.transform.position = _mainCameraOldPosition;
             yield return null; //fix this tomorrow
         }
     }

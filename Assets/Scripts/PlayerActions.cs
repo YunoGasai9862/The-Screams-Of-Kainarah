@@ -1,9 +1,10 @@
 using CoreCode;
 using GlobalAccessAndGameHelper;
 using PlayerAnimationHandler;
+using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
-public class PlayerActions : MonoBehaviour, IReceiver 
+public class PlayerActions : MonoBehaviour 
 {
     private PlayerInput _playerInput;
     private Rocky2DActions _rocky2DActions;
@@ -14,6 +15,10 @@ public class PlayerActions : MonoBehaviour, IReceiver
     private IOverlapChecker _movementHelperClass;
     private CapsuleCollider2D _capsulecollider;
     private Animator _anim;
+    private Command _jumpCommand;
+    private Command _slideCommand;
+    private IReceiver _jumpReceiver;
+    private IReceiver _slideReceiver;
 
     [SerializeField] float _characterSpeed = 10f;
     [SerializeField] LayerMask groundLayer;
@@ -22,6 +27,8 @@ public class PlayerActions : MonoBehaviour, IReceiver
     [SerializeField] float maxTimeJump;
     [SerializeField] float slidingSpeed;
     [SerializeField] LedgeGrabController ledgeGrabController;
+    [SerializeField] JumpingController jumpingController;
+    [SerializeField] SlidingController slidingController;
 
     private float characterVelocityY;
     private float characterVelocityX;
@@ -41,6 +48,10 @@ public class PlayerActions : MonoBehaviour, IReceiver
         _movementHelperClass = new MovementHelperClass();
         _capsulecollider = GetComponent<CapsuleCollider2D>();
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
+        _jumpReceiver = GetComponent<JumpingController>();
+        _slideReceiver = GetComponent<SlidingController>();
+        _jumpCommand = new Command(_jumpReceiver);
+        _slideCommand = new Command(_slideReceiver);
         //have the actionMappings
         _rb = GetComponent<Rigidbody2D>();
 
@@ -51,76 +62,11 @@ public class PlayerActions : MonoBehaviour, IReceiver
 
     }
 
-
     private void Start()
     {
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
-
     }
-    public void HandleJumping()
-    {
-        if (canPlayerJump()) //jumping
-        {
-            globalVariablesAccess.ISJUMPING = true;
-
-            characterVelocityY = JumpSpeed * .5f;
-
-            _animationHandler.JumpingFalling(globalVariablesAccess.ISJUMPING); //jumping animation
-        }
-
-        if (canPlayerFall() || MaxJumpTimeChecker()) //peak reached
-        {
-            globalVariablesAccess.ISJUMPING = false;
-
-            characterVelocityY = -JumpSpeed * .8f;
-
-            isJumpPressed = false; //fixed the issue of eternally looping at jumep on JUMP HOLD
-
-        }
-
-        if (!globalVariablesAccess.ISJUMPING && !LedgeGroundChecker(groundLayer, ledgeLayer)) //falling
-        {
-            characterVelocityY = -JumpSpeed * .8f; //extra check
-            _animationHandler.JumpingFalling(globalVariablesAccess.ISJUMPING); //falling naimation
-
-        }
-
-        if (_rb.velocity.y > 0f) //how high the player can jump
-        {
-            _timeCounter += Time.deltaTime;
-        }
-
-        if (LedgeGrabController.IsGrabbing) //tackles the ledgeGrab
-        {
-            ledgeGrabController.PerformLedgeGrab();
-            return;
-        }
-
-        if (!globalVariablesAccess.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed) //on the ground
-        {
-            characterVelocityY = 0f;
-            _timeCounter = 0;
-        }
-
-    }
-
-    private bool canPlayerJump()
-    {
-        bool _isJumping = globalVariablesAccess.ISJUMPING;
-        bool _isOntheLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
-        bool _isJumpPressed = isJumpPressed;
-
-        return globalVariablesAccess.boolConditionAndTester(!_isJumping, _isOntheLedgeOrGround, _isJumpPressed);
-    }
-
-    private bool canPlayerFall()
-    {
-        bool _isJumping = globalVariablesAccess.ISJUMPING;
-        bool _isOntheLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
-        bool _isJumpPressed = isJumpPressed;
-
-        return globalVariablesAccess.boolConditionAndTester(_isJumping, !_isOntheLedgeOrGround, !_isJumpPressed);
-    }
+  
 
     private bool LedgeGroundChecker(LayerMask ground, LayerMask ledge)
     {
@@ -141,6 +87,13 @@ public class PlayerActions : MonoBehaviour, IReceiver
             //jumpining
 
             HandleJumping();
+
+            //ledge grab
+            if (LedgeGrabController.IsGrabbing) //tackles the ledgeGrab
+            {
+                ledgeGrabController.PerformLedgeGrab();
+                return;
+            }
 
             //sliding
 
@@ -180,11 +133,8 @@ public class PlayerActions : MonoBehaviour, IReceiver
 
     private void CharacterControllerMove(float CharacterPositionX, float CharacterPositionY)
     {
-
         _rb.velocity = new Vector2(CharacterPositionX, CharacterPositionY);
-
     }
-
 
     private bool keystrokeMagnitudeChecker(Vector2 _keystrokeTrack)
     {
@@ -194,7 +144,6 @@ public class PlayerActions : MonoBehaviour, IReceiver
     private bool FlipCharacter(Vector2 keystroke, ref SpriteRenderer _sr)
     {
         return keystroke.x >= 0 ? _sr.flipX = false : _sr.flipX = true; //flips the character
-
     }
 
     private void Jump(InputAction.CallbackContext context)
@@ -204,7 +153,7 @@ public class PlayerActions : MonoBehaviour, IReceiver
 
     private void Slide(InputAction.CallbackContext context)
     {
-        if (globalVariablesAccess.boolConditionAndTester(!getJumpRessed(),
+        if (globalVariablesAccess.boolConditionAndTester(!getJumpPressed(),
             !_playerAttackStateMachine.isInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())) //conditions for sliding
         {
             globalVariablesAccess.ISSLIDING = context.ReadValueAsButton();
@@ -214,19 +163,8 @@ public class PlayerActions : MonoBehaviour, IReceiver
             _animationHandler.Sliding(globalVariablesAccess.ISSLIDING);
         }
     }
-
-    private bool getJumpRessed()
+    private bool getJumpPressed()
     {
         return isJumpPressed;
-    }
-
-    public void PerformAction()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void CancelAction()
-    {
-        throw new System.NotImplementedException();
     }
 }
