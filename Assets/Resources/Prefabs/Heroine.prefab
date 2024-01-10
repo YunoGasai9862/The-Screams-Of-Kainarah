@@ -910,6 +910,8 @@ MonoBehaviour:
   maxTimeJump: 0.3
   slidingSpeed: 18
   ledgeGrabController: {fileID: -7079114110776597852}
+  jumpingController: {fileID: 0}
+  slidingController: {fileID: 0}
 --- !u!114 &6549680331415743501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1007,6 +1009,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7f4c100a3d55cf44b8f9ed81c2e47a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _characterSpeed: 10
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  ledgeLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  JumpSpeed: 20
+  maxTimeJump: 0.3
+  slidingSpeed: 18
+  ledgeGrabController: {fileID: 0}
+  jumpingController: {fileID: 0}
+  slidingController: {fileID: 0}
 --- !u!1 &3485019726026848876
 GameObject:
   m_ObjectHideFlags: 0

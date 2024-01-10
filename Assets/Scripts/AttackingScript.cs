@@ -4,7 +4,6 @@ using PlayerAnimationHandler;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using GVA = GlobalAccessAndGameHelper.globalVariablesAccess;
 public class AttackingScript : MonoBehaviour
 {
     private Animator _anim;
@@ -133,7 +132,7 @@ public class AttackingScript : MonoBehaviour
         {
             _timeForMouseClickStart = (float)context.time;
 
-            GVA.setAttacking(true);
+            PlayerMovementHelperFunctions.setAttacking(true);
 
             //keeps track of attacking states
             _isPlayerEligibleForStartingAttack = enumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
@@ -154,7 +153,7 @@ public class AttackingScript : MonoBehaviour
 
     private bool isJumpAttackPrequisitesMet()
     {
-        bool isJumping = GVA.ISJUMPING;
+        bool isJumping = PlayerMovementGlobalVariables.ISJUMPING;
         bool isOnTheGround = _movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground);
 
         return isJumping && !isOnTheGround;
@@ -171,7 +170,7 @@ public class AttackingScript : MonoBehaviour
 
             _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
-            GVA.setAttacking(false); //once the user stops clicking, it should be set to false
+            PlayerMovementHelperFunctions.setAttacking(false); //once the user stops clicking, it should be set to false
         }
 
         _playerAttackStateMachine.setAttackState(jumpAttackStateName, leftMouseButtonPressed); //no jump attack
@@ -238,7 +237,7 @@ public class AttackingScript : MonoBehaviour
         _playerAttackStateMachine.canAttack(canAttackStateName, false);
         _playerAttackStateMachine.canAttack(jumpAttackStateName, false);
         _playerAttackState = 0; //resets the attackingstate
-        GVA.setAttacking(false);
+        PlayerMovementHelperFunctions.setAttacking(false);
     }
 
 
@@ -258,12 +257,12 @@ public class AttackingScript : MonoBehaviour
     public bool IsAttackPrerequisiteMet()
     {
         bool isDialogueOpen = GameObjectCreator.GetDialogueManager().getIsOpen();
-        bool isJumping = GVA.ISJUMPING;
+        bool isJumping = PlayerMovementGlobalVariables.ISJUMPING;
         bool isBuying = OpenWares.Buying;
         bool isInventoryOpen = GameObjectCreator.GetInventoryOpenCloseManager().isOpenInventory;
-        bool isSliding = GVA.ISSLIDING;
+        bool isSliding = PlayerMovementGlobalVariables.ISSLIDING;
 
-        return GVA.boolConditionAndTester(!isDialogueOpen, !isBuying, !isInventoryOpen, !isSliding, !isJumping);
+        return PlayerMovementHelperFunctions.boolConditionAndTester(!isDialogueOpen, !isBuying, !isInventoryOpen, !isSliding, !isJumping);
 
     }
     public void Icetail()

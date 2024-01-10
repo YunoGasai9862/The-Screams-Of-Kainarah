@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IReceiver
+public interface IReceiver<T>
 {
-    void PerformAction();
-    void CancelAction();
+    T PerformAction(T value = default);
+    T CancelAction();
 }

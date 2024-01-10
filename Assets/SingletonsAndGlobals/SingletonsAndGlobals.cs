@@ -35,15 +35,18 @@ namespace GlobalAccessAndGameHelper
         }
     }
 
-    public static class globalVariablesAccess
+    public static class PlayerMovementGlobalVariables
     {
         public static bool ISJUMPING;
         public static bool ISATTACKING;
         public static bool ISSLIDING;
         public static bool ISRUNNING;
         public static bool ISWALKING;
+        public static bool ISGRABBING;
+    }
 
-
+    public static class PlayerMovementHelperFunctions
+    {
         public static bool boolConditionAndTester(params bool[] boolsToCheckAgainst)
         {
             if (boolsToCheckAgainst.Length == 0)
@@ -80,12 +83,12 @@ namespace GlobalAccessAndGameHelper
 
         public static void setSliding(bool value)
         {
-            ISSLIDING = value;
+            PlayerMovementGlobalVariables.ISSLIDING = value;
         }
 
         public static void setAttacking(bool value)
         {
-            ISATTACKING = value;
+            PlayerMovementGlobalVariables.ISATTACKING = value;
         }
 
         public static void initializeAllVariablesTo(params bool[] boolsToInitialize)
@@ -100,7 +103,6 @@ namespace GlobalAccessAndGameHelper
                 boolsToInitialize[i] = false;
             }
         }
-
 
     }
 

@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlidingController : MonoBehaviour, IReceiver
+public class SlidingController : MonoBehaviour, IReceiver<bool>
 {
-    public void CancelAction()
+    public bool CancelAction()
     {
         throw new System.NotImplementedException();
     }
 
-    public void PerformAction()
+    public bool PerformAction(bool value)
     {
         throw new System.NotImplementedException();
     }

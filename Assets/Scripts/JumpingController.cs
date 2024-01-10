@@ -1,35 +1,50 @@
 using GlobalAccessAndGameHelper;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class JumpingController : MonoBehaviour, IReceiver
+public class JumpingController : MonoBehaviour, IReceiver<bool>
 {
-    public void CancelAction()
+    private Rigidbody2D _rb;
+    private PlayerAnimationMethods _animationHandler;
+    private IOverlapChecker _movementHelperClass;
+    private CapsuleCollider2D _capsulecollider;
+
+    [SerializeField] float _characterSpeed = 10f;
+    [SerializeField] LayerMask groundLayer;
+    [SerializeField] LayerMask ledgeLayer;
+    [SerializeField] float JumpSpeed;
+    [SerializeField] float maxTimeJump;
+    [SerializeField] float slidingSpeed;
+
+    private float characterVelocityY;
+    private float characterVelocityX;
+    private bool isJumpPressed;
+    private float _timeCounter;
+    public bool CancelAction()
     {
         throw new System.NotImplementedException();
     }
 
-    public void PerformAction()
+    public bool PerformAction(bool value)
     {
-        _ = HandleJumping();
+        _= HandleJumping();
+        return true;
     }
 
-    public Task HandleJumping()
+    public async Task HandleJumping()
     {
-        if (CanPlayerJump()) //jumping
+        if (await CanPlayerJump()) //jumping
         {
-            globalVariablesAccess.ISJUMPING = true;
+            PlayerMovementGlobalVariables.ISJUMPING = true;
 
             characterVelocityY = JumpSpeed * .5f;
 
-            _animationHandler.JumpingFalling(globalVariablesAccess.ISJUMPING); //jumping animation
+            _animationHandler.JumpingFalling(PlayerMovementGlobalVariables.ISJUMPING); //jumping animation
         }
 
-        if (CanPlayerFall() || MaxJumpTimeChecker()) //peak reached
+        if (await CanPlayerFall() || await MaxJumpTimeChecker()) //peak reached
         {
-            globalVariablesAccess.ISJUMPING = false;
+            PlayerMovementGlobalVariables.ISJUMPING = false;
 
             characterVelocityY = -JumpSpeed * .8f;
 
@@ -37,10 +52,10 @@ public class JumpingController : MonoBehaviour, IReceiver
 
         }
 
-        if (!globalVariablesAccess.ISJUMPING && !LedgeGroundChecker(groundLayer, ledgeLayer)) //falling
+        if (!PlayerMovementGlobalVariables.ISJUMPING && !LedgeGroundChecker(groundLayer, ledgeLayer)) //falling
         {
             characterVelocityY = -JumpSpeed * .8f; //extra check
-            _animationHandler.JumpingFalling(globalVariablesAccess.ISJUMPING); //falling naimation
+            _animationHandler.JumpingFalling(PlayerMovementGlobalVariables.ISJUMPING); //falling naimation
 
         }
 
@@ -49,32 +64,41 @@ public class JumpingController : MonoBehaviour, IReceiver
             _timeCounter += Time.deltaTime;
         }
 
-        if (!globalVariablesAccess.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed) //on the ground
+        if (!PlayerMovementGlobalVariables.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed) //on the ground
         {
             characterVelocityY = 0f;
             _timeCounter = 0;
         }
 
-        return Task.CompletedTask;
-
+        await Task.FromResult(true);
     }
 
     private Task<bool> CanPlayerJump()
     {
-        bool _isJumping = globalVariablesAccess.ISJUMPING;
+        bool _isJumping = PlayerMovementGlobalVariables.ISJUMPING;
         bool _isOntheLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
         bool _isJumpPressed = isJumpPressed;
 
-        return Task.FromResult(globalVariablesAccess.boolConditionAndTester(!_isJumping, _isOntheLedgeOrGround, _isJumpPressed));
+        return Task.FromResult(PlayerMovementHelperFunctions.boolConditionAndTester(!_isJumping, _isOntheLedgeOrGround, _isJumpPressed));
     }
 
     private Task<bool> CanPlayerFall()
     {
-        bool _isJumping = globalVariablesAccess.ISJUMPING;
+        bool _isJumping = PlayerMovementGlobalVariables.ISJUMPING;
         bool _isOntheLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
         bool _isJumpPressed = isJumpPressed;
 
-        return Task.FromResult(globalVariablesAccess.boolConditionAndTester(_isJumping, !_isOntheLedgeOrGround, !_isJumpPressed));
+        return Task.FromResult(PlayerMovementHelperFunctions.boolConditionAndTester(_isJumping, !_isOntheLedgeOrGround, !_isJumpPressed));
     }
+    private bool LedgeGroundChecker(LayerMask ground, LayerMask ledge)
+    {
+        return _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsulecollider, ground)
+            || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsulecollider, ledge);
+    }
+    public Task<bool> MaxJumpTimeChecker()
+    {
+        return Task.FromResult(_timeCounter > maxTimeJump);
+    }
+
 
 }

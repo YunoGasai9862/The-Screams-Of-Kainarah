@@ -1,18 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LedgeGrabController : MonoBehaviour
 {
-    private IReceiver _ledgeGrab;
-    private static bool _isGrabbing;
-    private Command _ledgeGrabCommand;
-    public static bool IsGrabbing { get => _isGrabbing; set => _isGrabbing = value; }
+    private IReceiver<bool> _ledgeGrab;
+    private Command<bool> _ledgeGrabCommand;
 
     private void Start()
     {
-        _ledgeGrab = GetComponent<IReceiver>();
-        _ledgeGrabCommand = new Command(_ledgeGrab);
+        _ledgeGrab = GetComponent<IReceiver<bool>>();
+        _ledgeGrabCommand = new Command<bool>(_ledgeGrab);
     }
     public void PerformLedgeGrab()
     {

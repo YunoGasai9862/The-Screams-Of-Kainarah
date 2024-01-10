@@ -1,9 +1,9 @@
 
-public class Command : ICommand
+public class Command<T> : ICommand<T>
 {
-    private IReceiver _receiver;
+    private  IReceiver<T> _receiver;
 
-    public Command(IReceiver receiver)
+    public Command(IReceiver<T> receiver)
     {
         this._receiver = receiver;
     }
@@ -11,8 +11,7 @@ public class Command : ICommand
     {
         this._receiver.CancelAction();
     }
-
-    public void Execute()
+    public void Execute(T value= default)
     {
         this._receiver.PerformAction();
     }

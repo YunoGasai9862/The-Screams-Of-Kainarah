@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class LedgeGrab : MonoBehaviour, IReceiver
+public class LedgeGrab : MonoBehaviour, IReceiver<bool>
 {
     private bool greenBox, redBox;
     public float redXOffset, redYoffset, redXSize, redYSize, greenXOffset, greenYOffset, greenXsize, greenYSize;
@@ -43,20 +43,20 @@ public class LedgeGrab : MonoBehaviour, IReceiver
         redXOffset = await GetBoxPosition(sr, redXOffset);
 
         if (!_helperFunc.overlapAgainstLayerMaskChecker(ref col, groundMask) && greenBox &&
-            LedgeGrabController.IsGrabbing)
+            PlayerMovementGlobalVariables.ISGRABBING)
         {
             _timeSpent += Time.deltaTime;
         }
 
         if (TimeSpentGrabbing(_timeSpent, .3f) || _helperFunc.overlapAgainstLayerMaskChecker(ref col, ledge))
         {
-            LedgeGrabController.IsGrabbing = false;
+            PlayerMovementGlobalVariables.ISGRABBING = false;
             _timeSpent = 0f;
         }
 
-        if (greenBox && !redBox && globalVariablesAccess.ISJUMPING)
+        if (greenBox && !redBox && PlayerMovementGlobalVariables.ISJUMPING)
         {
-            LedgeGrabController.IsGrabbing = true;
+            PlayerMovementGlobalVariables.ISGRABBING = true;
         }
 
         //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
@@ -65,7 +65,6 @@ public class LedgeGrab : MonoBehaviour, IReceiver
         //if the variable is public static and exists on the same object, you can access it with the name of the script!!
 
     }
-
     private async void FixedUpdate()
     {
        await GrabLedge();
@@ -77,7 +76,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver
         if(transform.position.y > groundPosition.y + MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB)
             rb.AddForce((sign) * Vector2.right * xDisplace * force * Time.fixedDeltaTime * rb.mass, ForceMode2D.Impulse);
         rb.gravityScale = startingGravity;
-        LedgeGrabController.IsGrabbing = false;
+        PlayerMovementGlobalVariables.ISGRABBING = false;
         await Task.CompletedTask;
     }
 
@@ -93,18 +92,19 @@ public class LedgeGrab : MonoBehaviour, IReceiver
         return timeSpent > timeMargin;
     }
 
-    public void PerformAction()
+    public bool PerformAction(bool value)
     {
         rb.velocity = new Vector2(0, 0);
         rb.gravityScale = 0f;
-        LedgeGrabController.IsGrabbing = true;
-        anim.SetBool("LedgeGrab", LedgeGrabController.IsGrabbing);
-
+        PlayerMovementGlobalVariables.ISGRABBING = true;
+        anim.SetBool("LedgeGrab", PlayerMovementGlobalVariables.ISGRABBING);
+        return true;
     }
 
-    public void CancelAction()
+    public bool CancelAction()
     {
         CancelLedgeGrab();
+        return true;
     }
 
     private Task<float> GetBoxPosition(SpriteRenderer sr, float currentValue)
@@ -122,17 +122,15 @@ public class LedgeGrab : MonoBehaviour, IReceiver
         {
             int sign = sr.flipX ? -1 : 1;
             await HandleLedgeGrabCalculations(sign, startingGrav, 100, _groundPosition);  //this is for setting the animation to false
-            anim.SetBool("LedgeGrab", LedgeGrabController.IsGrabbing);
+            anim.SetBool("LedgeGrab", PlayerMovementGlobalVariables.ISGRABBING);
         }
     }
-
     public Task StartLedgeGrab()
     {
         CanGrab = true;
         GroundPositionBeforeLedgeGrab = transform.position;
         return Task.CompletedTask;
     }
-
     public Task ShouldLedgeGrab()
     {
         CanGrab = false;

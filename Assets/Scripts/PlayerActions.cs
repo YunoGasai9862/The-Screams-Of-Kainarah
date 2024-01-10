@@ -15,10 +15,10 @@ public class PlayerActions : MonoBehaviour
     private IOverlapChecker _movementHelperClass;
     private CapsuleCollider2D _capsulecollider;
     private Animator _anim;
-    private Command _jumpCommand;
-    private Command _slideCommand;
-    private IReceiver _jumpReceiver;
-    private IReceiver _slideReceiver;
+    private Command<bool> _jumpCommand;
+    private Command<bool> _slideCommand;
+    private IReceiver<bool> _jumpReceiver;
+    private IReceiver<bool> _slideReceiver;
 
     [SerializeField] float _characterSpeed = 10f;
     [SerializeField] LayerMask groundLayer;
@@ -50,8 +50,8 @@ public class PlayerActions : MonoBehaviour
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
         _jumpReceiver = GetComponent<JumpingController>();
         _slideReceiver = GetComponent<SlidingController>();
-        _jumpCommand = new Command(_jumpReceiver);
-        _slideCommand = new Command(_slideReceiver);
+        _jumpCommand = new Command<bool>(_jumpReceiver);
+        _slideCommand = new Command<bool>(_slideReceiver);
         //have the actionMappings
         _rb = GetComponent<Rigidbody2D>();
 
@@ -67,13 +67,6 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
     }
   
-
-    private bool LedgeGroundChecker(LayerMask ground, LayerMask ledge)
-    {
-        return _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsulecollider, ground)
-            || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsulecollider, ledge);
-    }
-
     private void Update()
     {
         if (!GameObjectCreator.GetDialogueManager().getIsOpen())
@@ -86,10 +79,10 @@ public class PlayerActions : MonoBehaviour
                 FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
             //jumpining
 
-            HandleJumping();
+            _jumpCommand.Execute();
 
             //ledge grab
-            if (LedgeGrabController.IsGrabbing) //tackles the ledgeGrab
+            if (PlayerMovementGlobalVariables.ISGRABBING) //tackles the ledgeGrab
             {
                 ledgeGrabController.PerformLedgeGrab();
                 return;
@@ -97,7 +90,7 @@ public class PlayerActions : MonoBehaviour
 
             //sliding
 
-            if (globalVariablesAccess.boolConditionAndTester(globalVariablesAccess.ISSLIDING, !globalVariablesAccess.ISATTACKING,
+            if (PlayerMovementHelperFunctions.boolConditionAndTester(PlayerMovementGlobalVariables.ISSLIDING, !PlayerMovementGlobalVariables.ISATTACKING,
                  _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsulecollider, groundLayer),
                  !_playerAttackStateMachine.isInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>()))
             {
@@ -108,16 +101,12 @@ public class PlayerActions : MonoBehaviour
 
             if (_animationHandler.returnCurrentAnimation() > .6f && _animationHandler.isNameOfTheCurrentAnimation(AnimationConstants.SLIDING))
             {
-                globalVariablesAccess.setSliding(false);
+                PlayerMovementHelperFunctions.setSliding(false);
             }
         }
 
     }
 
-    public bool MaxJumpTimeChecker()
-    {
-        return _timeCounter > maxTimeJump;
-    }
     private Vector2 PlayerMovement()
     {
         Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>(); //reads the value
@@ -153,14 +142,14 @@ public class PlayerActions : MonoBehaviour
 
     private void Slide(InputAction.CallbackContext context)
     {
-        if (globalVariablesAccess.boolConditionAndTester(!getJumpPressed(),
+        if (PlayerMovementHelperFunctions.boolConditionAndTester(!getJumpPressed(),
             !_playerAttackStateMachine.isInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())) //conditions for sliding
         {
-            globalVariablesAccess.ISSLIDING = context.ReadValueAsButton();
+            PlayerMovementGlobalVariables.ISSLIDING = context.ReadValueAsButton();
 
-            globalVariablesAccess.setAttacking(false); //for some minor fixes
+            PlayerMovementHelperFunctions.setAttacking(false); //for some minor fixes
 
-            _animationHandler.Sliding(globalVariablesAccess.ISSLIDING);
+            _animationHandler.Sliding(PlayerMovementGlobalVariables.ISSLIDING);
         }
     }
     private bool getJumpPressed()

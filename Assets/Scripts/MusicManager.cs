@@ -66,7 +66,7 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
         {
             case GameMusicState.BACKGROUNDMUSIC:
 
-                if (globalVariablesAccess.boolConditionAndTester(!_bgGameMusic.isPlaying, _bgGameMusic.time == 0f))
+                if (PlayerMovementHelperFunctions.boolConditionAndTester(!_bgGameMusic.isPlaying, _bgGameMusic.time == 0f))
                 {
                     _bgGameMusic.Play();
 
@@ -77,7 +77,7 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
 
 
             case GameMusicState.BOSSMUSIC:
-                if (globalVariablesAccess.boolConditionAndTester(!_BossMusic.isPlaying, _BossMusic.time == 0f)) //makes sure the same music is not playedagain
+                if (PlayerMovementHelperFunctions.boolConditionAndTester(!_BossMusic.isPlaying, _BossMusic.time == 0f)) //makes sure the same music is not playedagain
                 {
                     _BossMusic.Play();
 

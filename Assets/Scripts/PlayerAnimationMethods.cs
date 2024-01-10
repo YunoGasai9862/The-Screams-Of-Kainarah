@@ -47,14 +47,14 @@ public class PlayerAnimationMethods : MonoBehaviour
         if (VectorChecker(keystroke))
         {
             state = AnimationStateKeeper.StateKeeper.RUNNING;
-            globalVariablesAccess.ISRUNNING = true;
-            globalVariablesAccess.ISWALKING = false;
+            PlayerMovementGlobalVariables.ISRUNNING = true;
+            PlayerMovementGlobalVariables.ISWALKING = false;
         }
         else
         {
             state = AnimationStateKeeper.StateKeeper.IDLE;
-            globalVariablesAccess.ISRUNNING = false;
-            globalVariablesAccess.ISWALKING = true;
+            PlayerMovementGlobalVariables.ISRUNNING = false;
+            PlayerMovementGlobalVariables.ISWALKING = true;
         }
 
 
