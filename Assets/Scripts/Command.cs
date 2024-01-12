@@ -1,4 +1,5 @@
 
+using UnityEngine;
 public class Command<T> : ICommand<T>
 {
     private  IReceiver<T> _receiver;
@@ -13,6 +14,6 @@ public class Command<T> : ICommand<T>
     }
     public void Execute(T value= default)
     {
-        this._receiver.PerformAction();
+        this._receiver.PerformAction(value);
     }
 }

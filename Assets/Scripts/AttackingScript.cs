@@ -109,8 +109,6 @@ public class AttackingScript : MonoBehaviour
         await CreateInventorySystem.ReduceQuantity(prefab.gameObject.tag);
 
         _daggerGameObject.GetComponent<AttackEnemy>().throwDagger = true;
-
-
     }
 
     public Vector2 getDaggerPositionwithOffset(float xOffset, float yOffset)

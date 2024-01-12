@@ -910,8 +910,8 @@ MonoBehaviour:
   maxTimeJump: 0.3
   slidingSpeed: 18
   ledgeGrabController: {fileID: -7079114110776597852}
-  jumpingController: {fileID: 0}
-  slidingController: {fileID: 0}
+  jumpingController: {fileID: 5169309916338779487}
+  slidingController: {fileID: -7060034625620182088}
 --- !u!114 &6549680331415743501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1019,9 +1019,6 @@ MonoBehaviour:
   JumpSpeed: 20
   maxTimeJump: 0.3
   slidingSpeed: 18
-  ledgeGrabController: {fileID: 0}
-  jumpingController: {fileID: 0}
-  slidingController: {fileID: 0}
 --- !u!1 &3485019726026848876
 GameObject:
   m_ObjectHideFlags: 0

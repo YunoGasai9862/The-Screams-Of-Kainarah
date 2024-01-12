@@ -32,9 +32,10 @@ public class PlayerActions : MonoBehaviour
 
     private float characterVelocityY;
     private float characterVelocityX;
-    private bool isJumpPressed;
-    private float _timeCounter;
+    private bool _isJumpPressed;
     private PlayerAttackStateMachine _playerAttackStateMachine;
+
+    public bool GetJumpPressed { get => _isJumpPressed; set => _isJumpPressed = value; }
 
     //Force = -2m * sqrt (g * h)
 
@@ -52,7 +53,6 @@ public class PlayerActions : MonoBehaviour
         _slideReceiver = GetComponent<SlidingController>();
         _jumpCommand = new Command<bool>(_jumpReceiver);
         _slideCommand = new Command<bool>(_slideReceiver);
-        //have the actionMappings
         _rb = GetComponent<Rigidbody2D>();
 
         _rocky2DActions.PlayerMovement.Jump.started += Jump; //i can add the same function
@@ -75,11 +75,11 @@ public class PlayerActions : MonoBehaviour
             _keystrokeTrack = PlayerMovement();
 
             //Flipping
-            if (keystrokeMagnitudeChecker(_keystrokeTrack))
+            if (KeystrokeMagnitudeChecker(_keystrokeTrack))
                 FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
-            //jumpining
 
-            _jumpCommand.Execute();
+            //jumpining
+            _jumpCommand.Execute(GetJumpPressed);
 
             //ledge grab
             if (PlayerMovementGlobalVariables.ISGRABBING) //tackles the ledgeGrab
@@ -125,7 +125,7 @@ public class PlayerActions : MonoBehaviour
         _rb.velocity = new Vector2(CharacterPositionX, CharacterPositionY);
     }
 
-    private bool keystrokeMagnitudeChecker(Vector2 _keystrokeTrack)
+    private bool KeystrokeMagnitudeChecker(Vector2 _keystrokeTrack)
     {
         return _keystrokeTrack.magnitude != 0;
     }
@@ -137,12 +137,12 @@ public class PlayerActions : MonoBehaviour
 
     private void Jump(InputAction.CallbackContext context)
     {
-        isJumpPressed = context.ReadValueAsButton();
+        GetJumpPressed = context.ReadValueAsButton();
     }
 
     private void Slide(InputAction.CallbackContext context)
     {
-        if (PlayerMovementHelperFunctions.boolConditionAndTester(!getJumpPressed(),
+        if (PlayerMovementHelperFunctions.boolConditionAndTester(!GetJumpPressed,
             !_playerAttackStateMachine.isInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())) //conditions for sliding
         {
             PlayerMovementGlobalVariables.ISSLIDING = context.ReadValueAsButton();
@@ -151,9 +151,5 @@ public class PlayerActions : MonoBehaviour
 
             _animationHandler.Sliding(PlayerMovementGlobalVariables.ISSLIDING);
         }
-    }
-    private bool getJumpPressed()
-    {
-        return isJumpPressed;
     }
 }

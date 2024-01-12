@@ -18,21 +18,35 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
     private float characterVelocityY;
     private float characterVelocityX;
-    private bool isJumpPressed;
     private float _timeCounter;
+    private bool _isJumpPressed;
     public bool CancelAction()
     {
-        throw new System.NotImplementedException();
+        return false;
     }
 
     public bool PerformAction(bool value)
     {
+        _isJumpPressed = value;
+        Debug.Log(_isJumpPressed);
         _= HandleJumping();
         return true;
     }
 
+    private async void Update()
+    {
+
+    }
+    private void Awake()
+    {
+        _movementHelperClass = new MovementHelperClass();
+        _capsulecollider = GetComponent<CapsuleCollider2D>();
+        _animationHandler = GetComponent<PlayerAnimationMethods>();
+        _rb = GetComponent<Rigidbody2D>();
+    }
     public async Task HandleJumping()
     {
+        Debug.Log("Here");
         if (await CanPlayerJump()) //jumping
         {
             PlayerMovementGlobalVariables.ISJUMPING = true;
@@ -48,7 +62,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
             characterVelocityY = -JumpSpeed * .8f;
 
-            isJumpPressed = false; //fixed the issue of eternally looping at jumep on JUMP HOLD
+            _isJumpPressed = false; //fixed the issue of eternally looping at jumep on JUMP HOLD
 
         }
 
@@ -64,7 +78,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
             _timeCounter += Time.deltaTime;
         }
 
-        if (!PlayerMovementGlobalVariables.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed) //on the ground
+        if (!PlayerMovementGlobalVariables.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !_isJumpPressed) //on the ground
         {
             characterVelocityY = 0f;
             _timeCounter = 0;
@@ -75,20 +89,20 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
     private Task<bool> CanPlayerJump()
     {
-        bool _isJumping = PlayerMovementGlobalVariables.ISJUMPING;
-        bool _isOntheLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
-        bool _isJumpPressed = isJumpPressed;
+        bool isJumping = PlayerMovementGlobalVariables.ISJUMPING;
+        bool isOnLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
+        bool isJumpPressed = _isJumpPressed;
 
-        return Task.FromResult(PlayerMovementHelperFunctions.boolConditionAndTester(!_isJumping, _isOntheLedgeOrGround, _isJumpPressed));
+        return Task.FromResult(PlayerMovementHelperFunctions.boolConditionAndTester(!isJumping, isOnLedgeOrGround, isJumpPressed));
     }
 
     private Task<bool> CanPlayerFall()
     {
-        bool _isJumping = PlayerMovementGlobalVariables.ISJUMPING;
-        bool _isOntheLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
-        bool _isJumpPressed = isJumpPressed;
+        bool isJumping = PlayerMovementGlobalVariables.ISJUMPING;
+        bool isOnLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
+        bool isJumpPressed = _isJumpPressed;
 
-        return Task.FromResult(PlayerMovementHelperFunctions.boolConditionAndTester(_isJumping, !_isOntheLedgeOrGround, !_isJumpPressed));
+        return Task.FromResult(PlayerMovementHelperFunctions.boolConditionAndTester(isJumping, !isOnLedgeOrGround, !isJumpPressed));
     }
     private bool LedgeGroundChecker(LayerMask ground, LayerMask ledge)
     {
