@@ -188,9 +188,9 @@ public class PlayerActionRelayer : AbstractEntity
 
         if (pickedUp)
         {
-            bool shouldbedisabled = _pickableItems.shouldThisItemBeDisabled(collision.tag);
+            bool shouldBedisabled = _pickableItems.shouldThisItemBeDisabled(collision.tag);
 
-            if (shouldbedisabled)
+            if (shouldBedisabled)
                 collision.gameObject.SetActive(false);
 
             bool shouldMusicBePlayed = true;
@@ -234,7 +234,6 @@ public class PlayerActionRelayer : AbstractEntity
             if(cpTag==tag)
                 return Task.FromResult(true);
         }
-
         return Task.FromResult(false);
     }
 

@@ -885,8 +885,8 @@ MonoBehaviour:
   ledge:
     serializedVersion: 2
     m_Bits: 8
-  xDisplace: 10
-  yDisplace: 15
+  xDisplace: 6
+  yDisplace: 8
 --- !u!114 &2357857118627078221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -906,8 +906,6 @@ MonoBehaviour:
   ledgeLayer:
     serializedVersion: 2
     m_Bits: 8
-  JumpSpeed: 20
-  maxTimeJump: 0.3
   slidingSpeed: 18
   ledgeGrabController: {fileID: -7079114110776597852}
   jumpingController: {fileID: 5169309916338779487}
@@ -1019,6 +1017,9 @@ MonoBehaviour:
   JumpSpeed: 20
   maxTimeJump: 0.3
   slidingSpeed: 18
+  onPlayerJumpEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3485019726026848876
 GameObject:
   m_ObjectHideFlags: 0

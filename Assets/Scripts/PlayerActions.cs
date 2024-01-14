@@ -1,7 +1,6 @@
 using CoreCode;
 using GlobalAccessAndGameHelper;
 using PlayerAnimationHandler;
-using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerActions : MonoBehaviour 
@@ -23,19 +22,18 @@ public class PlayerActions : MonoBehaviour
     [SerializeField] float _characterSpeed = 10f;
     [SerializeField] LayerMask groundLayer;
     [SerializeField] LayerMask ledgeLayer;
-    [SerializeField] float JumpSpeed;
-    [SerializeField] float maxTimeJump;
     [SerializeField] float slidingSpeed;
     [SerializeField] LedgeGrabController ledgeGrabController;
     [SerializeField] JumpingController jumpingController;
     [SerializeField] SlidingController slidingController;
 
-    private float characterVelocityY;
-    private float characterVelocityX;
+    private float _characterVelocityY;
+    private float _characterVelocityX;
     private bool _isJumpPressed;
     private PlayerAttackStateMachine _playerAttackStateMachine;
-
     public bool GetJumpPressed { get => _isJumpPressed; set => _isJumpPressed = value; }
+    public float CharacterVelocityY { get => _characterVelocityY; set => _characterVelocityY = value; }
+    public float CharacterVelocityX { get => _characterVelocityX; set => _characterVelocityX = value; }
 
     //Force = -2m * sqrt (g * h)
 
@@ -60,16 +58,20 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerMovement.Slide.started += Slide;
         _rocky2DActions.PlayerMovement.Slide.canceled += Slide;
 
+
     }
 
     private void Start()
     {
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
+
+        //event subscription
+        jumpingController.onPlayerJumpEvent.AddListener(VelocityYEventHandler);
     }
   
     private void Update()
     {
-        if (!GameObjectCreator.GetDialogueManager().getIsOpen())
+        if (!GameObjectCreator.GetDialogueManager().IsOpen())
         {
             //movement
             _keystrokeTrack = PlayerMovement();
@@ -78,7 +80,7 @@ public class PlayerActions : MonoBehaviour
             if (KeystrokeMagnitudeChecker(_keystrokeTrack))
                 FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
 
-            //jumpining
+            //jumping
             _jumpCommand.Execute(GetJumpPressed);
 
             //ledge grab
@@ -95,7 +97,8 @@ public class PlayerActions : MonoBehaviour
                  !_playerAttackStateMachine.isInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>()))
             {
                 _playerAttackStateMachine.ForceDisableAttacking(1);
-                CharacterControllerMove(characterVelocityX * slidingSpeed, characterVelocityY);
+                Debug.Log(CharacterVelocityX);
+                CharacterControllerMove(CharacterVelocityX * slidingSpeed, CharacterVelocityY);
 
             }
 
@@ -106,18 +109,22 @@ public class PlayerActions : MonoBehaviour
         }
 
     }
-
     private Vector2 PlayerMovement()
     {
         Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>(); //reads the value
 
-        characterVelocityX = keystroke.x;
+        CharacterVelocityX = keystroke.x;
 
-        CharacterControllerMove(characterVelocityX * _characterSpeed, characterVelocityY);
+        CharacterControllerMove(CharacterVelocityX * _characterSpeed, CharacterVelocityY);
 
         _animationHandler.RunningWalkingAnimation(keystroke.x);  //for movement, plays the animation
 
         return keystroke;
+    }
+    
+    private void VelocityYEventHandler(float characterVelocityY)
+    {
+        CharacterVelocityY = characterVelocityY;
     }
 
     private void CharacterControllerMove(float CharacterPositionX, float CharacterPositionY)

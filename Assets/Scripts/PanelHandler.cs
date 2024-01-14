@@ -5,7 +5,6 @@ using UnityEngine;
 public class PanelHandler
 {
     private readonly GameObject Panel;
-
     public PanelHandler(ref GameObject panel)
     {
         Panel = panel;

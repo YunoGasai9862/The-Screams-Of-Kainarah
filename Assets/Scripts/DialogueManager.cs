@@ -9,13 +9,12 @@ public class DialogueManager : MonoBehaviour
     public TextMeshProUGUI myname;
     public Text maindialogue;
     public Animator myanimator;
-    public bool IsOpen = false;
+    public bool isOpen = false;
 
     private static Dialogues[] _dialogues = null;
 
     void Start()
     {
-
         _storylineSentences = new Queue<string>();
     }
 
@@ -27,7 +26,7 @@ public class DialogueManager : MonoBehaviour
             _dialogues = dialogues;
 
         }
-        IsOpen = true;
+        isOpen = true;
         myanimator.SetBool("IsOpen", true);
         _storylineSentences.Clear();  //clears the previous dialogues, if there are any
 
@@ -40,9 +39,9 @@ public class DialogueManager : MonoBehaviour
         DisplayNextSentence();
 
     }
-    public bool getIsOpen()
+    public bool IsOpen()
     {
-        return IsOpen;
+        return isOpen;
     }
     IEnumerator AnimateLetters(string sentence)
     {
@@ -84,12 +83,11 @@ public class DialogueManager : MonoBehaviour
 
 
     }
-
     void EndDialogue()
     {
 
         myanimator.SetBool("IsOpen", false);
-        IsOpen = false;
+        isOpen = false;
     }
 
 

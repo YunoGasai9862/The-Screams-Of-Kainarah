@@ -18,11 +18,9 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 
         _playerActionHandlerDic = new Dictionary<String, Func<Collider2D, Task>>
         {
-
              { "Crystal", value => OnCrystalPickup(value)},
              { "Health" , value => OnHealthPickup(value) },
              { "Dagger" , value => OnDaggerPickup(value) }
-
         };
 
     }

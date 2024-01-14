@@ -7,7 +7,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     private Rigidbody2D _rb;
     private PlayerAnimationMethods _animationHandler;
     private IOverlapChecker _movementHelperClass;
-    private CapsuleCollider2D _capsulecollider;
+    private CapsuleCollider2D _capsuleCollider;
 
     [SerializeField] float _characterSpeed = 10f;
     [SerializeField] LayerMask groundLayer;
@@ -16,10 +16,12 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     [SerializeField] float maxTimeJump;
     [SerializeField] float slidingSpeed;
 
-    private float characterVelocityY;
-    private float characterVelocityX;
+    private float _characterVelocityY;
     private float _timeCounter;
     private bool _isJumpPressed;
+
+    public PlayerJumpEvent onPlayerJumpEvent;
+    public float CharacterVelocityY { get => _characterVelocityY; set => _characterVelocityY = value; }
     public bool CancelAction()
     {
         return false;
@@ -28,30 +30,27 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     public bool PerformAction(bool value)
     {
         _isJumpPressed = value;
-        Debug.Log(_isJumpPressed);
-        _= HandleJumping();
         return true;
-    }
-
-    private async void Update()
-    {
-
     }
     private void Awake()
     {
         _movementHelperClass = new MovementHelperClass();
-        _capsulecollider = GetComponent<CapsuleCollider2D>();
+        _capsuleCollider = GetComponent<CapsuleCollider2D>();
         _animationHandler = GetComponent<PlayerAnimationMethods>();
         _rb = GetComponent<Rigidbody2D>();
+        onPlayerJumpEvent = new PlayerJumpEvent();
+    }
+    private async void Update()
+    {
+        await HandleJumping();
     }
     public async Task HandleJumping()
     {
-        Debug.Log("Here");
         if (await CanPlayerJump()) //jumping
         {
             PlayerMovementGlobalVariables.ISJUMPING = true;
 
-            characterVelocityY = JumpSpeed * .5f;
+            CharacterVelocityY = JumpSpeed * .5f;
 
             _animationHandler.JumpingFalling(PlayerMovementGlobalVariables.ISJUMPING); //jumping animation
         }
@@ -60,7 +59,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         {
             PlayerMovementGlobalVariables.ISJUMPING = false;
 
-            characterVelocityY = -JumpSpeed * .8f;
+            CharacterVelocityY = -JumpSpeed * .8f;
 
             _isJumpPressed = false; //fixed the issue of eternally looping at jumep on JUMP HOLD
 
@@ -68,7 +67,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
         if (!PlayerMovementGlobalVariables.ISJUMPING && !LedgeGroundChecker(groundLayer, ledgeLayer)) //falling
         {
-            characterVelocityY = -JumpSpeed * .8f; //extra check
+            CharacterVelocityY = -JumpSpeed * .8f; //extra check
             _animationHandler.JumpingFalling(PlayerMovementGlobalVariables.ISJUMPING); //falling naimation
 
         }
@@ -80,10 +79,11 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
         if (!PlayerMovementGlobalVariables.ISJUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !_isJumpPressed) //on the ground
         {
-            characterVelocityY = 0f;
+            CharacterVelocityY = 0f;
             _timeCounter = 0;
         }
 
+        onPlayerJumpEvent.Invoke(CharacterVelocityY);
         await Task.FromResult(true);
     }
 
@@ -106,13 +106,12 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     }
     private bool LedgeGroundChecker(LayerMask ground, LayerMask ledge)
     {
-        return _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsulecollider, ground)
-            || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsulecollider, ledge);
+        return _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, ground)
+            || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, ledge);
     }
     public Task<bool> MaxJumpTimeChecker()
     {
         return Task.FromResult(_timeCounter > maxTimeJump);
     }
-
 
 }

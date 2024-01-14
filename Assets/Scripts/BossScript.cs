@@ -40,7 +40,7 @@ public class BossScript : AbstractEntity
         {
             CheckRotation();
 
-            if (GameObjectCreator.GetDialogueManager().getIsOpen())
+            if (GameObjectCreator.GetDialogueManager().IsOpen())
             {
                 _anim.SetBool("walk", false);
             }

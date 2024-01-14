@@ -254,7 +254,7 @@ public class AttackingScript : MonoBehaviour
     }
     public bool IsAttackPrerequisiteMet()
     {
-        bool isDialogueOpen = GameObjectCreator.GetDialogueManager().getIsOpen();
+        bool isDialogueOpen = GameObjectCreator.GetDialogueManager().IsOpen();
         bool isJumping = PlayerMovementGlobalVariables.ISJUMPING;
         bool isBuying = OpenWares.Buying;
         bool isInventoryOpen = GameObjectCreator.GetInventoryOpenCloseManager().isOpenInventory;

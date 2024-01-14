@@ -20,8 +20,6 @@ public class PauseManager : MonoBehaviour
             pausedGame = !pausedGame;
             PauseGame();
         }
-
-
     }
     public void PauseGame()
     {

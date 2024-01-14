@@ -57,6 +57,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         if (greenBox && !redBox && PlayerMovementGlobalVariables.ISJUMPING)
         {
             PlayerMovementGlobalVariables.ISGRABBING = true;
+            PlayerMovementGlobalVariables.ISJUMPING = false;
         }
 
         //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis

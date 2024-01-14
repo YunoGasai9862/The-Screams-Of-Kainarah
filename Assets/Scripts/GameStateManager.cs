@@ -22,7 +22,6 @@ public class GameStateManager : MonoBehaviour, IGameState
     public static GameStateManager instance { get; private set; }
 
     public CheckPointEvent onCheckpointSaveEvent; //checkpoint event
-    public EntireSceneSaveEvent onEntireSceneSaveEvent;
 
     public List<string> jsonSerializedData = new List<string>();
 

@@ -47,18 +47,22 @@ public class PlayerAnimationMethods : MonoBehaviour
         if (VectorChecker(keystroke))
         {
             state = AnimationStateKeeper.StateKeeper.RUNNING;
-            PlayerMovementGlobalVariables.ISRUNNING = true;
-            PlayerMovementGlobalVariables.ISWALKING = false;
+            SetMovementStates(true, false);
         }
         else
         {
             state = AnimationStateKeeper.StateKeeper.IDLE;
-            PlayerMovementGlobalVariables.ISRUNNING = false;
-            PlayerMovementGlobalVariables.ISWALKING = true;
+            SetMovementStates(false, true);
         }
 
 
         PlayAnimation(AnimationConstants.MOVEMENT, (int)state);
+    }
+
+    private void SetMovementStates(bool isRunning, bool isWalking)
+    {
+        PlayerMovementGlobalVariables.ISRUNNING = isRunning;
+        PlayerMovementGlobalVariables.ISWALKING = isWalking;
     }
 
     public void JumpingFalling(bool keystroke)
