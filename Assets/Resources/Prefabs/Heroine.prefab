@@ -885,8 +885,8 @@ MonoBehaviour:
   ledge:
     serializedVersion: 2
     m_Bits: 8
-  xDisplace: 6
-  yDisplace: 8
+  xDisplace: 12
+  yDisplace: 14
 --- !u!114 &2357857118627078221
 MonoBehaviour:
   m_ObjectHideFlags: 0

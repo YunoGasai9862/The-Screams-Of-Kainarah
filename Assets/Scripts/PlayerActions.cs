@@ -1,6 +1,4 @@
-using CoreCode;
 using GlobalAccessAndGameHelper;
-using PlayerAnimationHandler;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerActions : MonoBehaviour 
@@ -11,18 +9,12 @@ public class PlayerActions : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private PlayerAnimationMethods _animationHandler;
     private Vector2 _keystrokeTrack;
-    private IOverlapChecker _movementHelperClass;
-    private CapsuleCollider2D _capsulecollider;
-    private Animator _anim;
     private Command<bool> _jumpCommand;
     private Command<bool> _slideCommand;
     private IReceiver<bool> _jumpReceiver;
     private IReceiver<bool> _slideReceiver;
 
     [SerializeField] float _characterSpeed = 10f;
-    [SerializeField] LayerMask groundLayer;
-    [SerializeField] LayerMask ledgeLayer;
-    [SerializeField] float slidingSpeed;
     [SerializeField] LedgeGrabController ledgeGrabController;
     [SerializeField] JumpingController jumpingController;
     [SerializeField] SlidingController slidingController;
@@ -30,8 +22,9 @@ public class PlayerActions : MonoBehaviour
     private float _characterVelocityY;
     private float _characterVelocityX;
     private bool _isJumpPressed;
-    private PlayerAttackStateMachine _playerAttackStateMachine;
+    private bool _isSlidePressed;
     public bool GetJumpPressed { get => _isJumpPressed; set => _isJumpPressed = value; }
+    public bool GetSlidePressed { get => _isSlidePressed; set => _isSlidePressed = value; }
     public float CharacterVelocityY { get => _characterVelocityY; set => _characterVelocityY = value; }
     public float CharacterVelocityX { get => _characterVelocityX; set => _characterVelocityX = value; }
 
@@ -40,13 +33,9 @@ public class PlayerActions : MonoBehaviour
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
-        _anim = GetComponent<Animator>();
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animationHandler = GetComponent<PlayerAnimationMethods>();
-        _movementHelperClass = new MovementHelperClass();
-        _capsulecollider = GetComponent<CapsuleCollider2D>();
-        _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
         _jumpReceiver = GetComponent<JumpingController>();
         _slideReceiver = GetComponent<SlidingController>();
         _jumpCommand = new Command<bool>(_jumpReceiver);
@@ -58,7 +47,6 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerMovement.Slide.started += Slide;
         _rocky2DActions.PlayerMovement.Slide.canceled += Slide;
 
-
     }
 
     private void Start()
@@ -67,6 +55,7 @@ public class PlayerActions : MonoBehaviour
 
         //event subscription
         jumpingController.onPlayerJumpEvent.AddListener(VelocityYEventHandler);
+        slidingController.onSlideEvent.AddListener(VelocityXEventHandler);
     }
   
     private void Update()
@@ -91,21 +80,8 @@ public class PlayerActions : MonoBehaviour
             }
 
             //sliding
+            _slideCommand.Execute(GetSlidePressed);
 
-            if (PlayerMovementHelperFunctions.boolConditionAndTester(PlayerMovementGlobalVariables.ISSLIDING, !PlayerMovementGlobalVariables.ISATTACKING,
-                 _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsulecollider, groundLayer),
-                 !_playerAttackStateMachine.isInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>()))
-            {
-                _playerAttackStateMachine.ForceDisableAttacking(1);
-                Debug.Log(CharacterVelocityX);
-                CharacterControllerMove(CharacterVelocityX * slidingSpeed, CharacterVelocityY);
-
-            }
-
-            if (_animationHandler.returnCurrentAnimation() > .6f && _animationHandler.isNameOfTheCurrentAnimation(AnimationConstants.SLIDING))
-            {
-                PlayerMovementHelperFunctions.setSliding(false);
-            }
         }
 
     }
@@ -126,7 +102,10 @@ public class PlayerActions : MonoBehaviour
     {
         CharacterVelocityY = characterVelocityY;
     }
-
+    private void VelocityXEventHandler(float characterVelocityX)
+    {
+        CharacterVelocityX = characterVelocityX;
+    }
     private void CharacterControllerMove(float CharacterPositionX, float CharacterPositionY)
     {
         _rb.velocity = new Vector2(CharacterPositionX, CharacterPositionY);
@@ -149,14 +128,6 @@ public class PlayerActions : MonoBehaviour
 
     private void Slide(InputAction.CallbackContext context)
     {
-        if (PlayerMovementHelperFunctions.boolConditionAndTester(!GetJumpPressed,
-            !_playerAttackStateMachine.isInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())) //conditions for sliding
-        {
-            PlayerMovementGlobalVariables.ISSLIDING = context.ReadValueAsButton();
-
-            PlayerMovementHelperFunctions.setAttacking(false); //for some minor fixes
-
-            _animationHandler.Sliding(PlayerMovementGlobalVariables.ISSLIDING);
-        }
+        GetSlidePressed = context.ReadValueAsButton();
     }
 }

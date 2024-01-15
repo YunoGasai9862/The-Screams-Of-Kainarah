@@ -6,6 +6,11 @@ using UnityEngine;
 
 public class LedgeGrab : MonoBehaviour, IReceiver<bool>
 {
+    private const float MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB = 1f;
+    private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
+    private const float MAXIMUM_VELOCITY_X_FORCE = 12f;
+    private const float FORCE = 30f;
+
     private bool greenBox, redBox;
     public float redXOffset, redYoffset, redXSize, redYSize, greenXOffset, greenYOffset, greenXsize, greenYSize;
     private MovementHelperClass _helperFunc;
@@ -18,7 +23,6 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private Animator anim;
     private SpriteRenderer sr;
     private float _timeSpent;
-    private const float MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB = 1f;
     private bool _canGrab = false;
     private Vector2 _groundPosition;
     public bool CanGrab { get => _canGrab; set => _canGrab = value; }
@@ -57,7 +61,6 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         if (greenBox && !redBox && PlayerMovementGlobalVariables.ISJUMPING)
         {
             PlayerMovementGlobalVariables.ISGRABBING = true;
-            PlayerMovementGlobalVariables.ISJUMPING = false;
         }
 
         //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
@@ -68,13 +71,16 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     }
     private async void FixedUpdate()
     {
-       await GrabLedge();
+        int sign = sr.flipX ? -1 : 1;
+        await GrabLedge(sign, startingGrav, FORCE, GroundPositionBeforeLedgeGrab, new Vector2(MAXIMUM_VELOCITY_X_FORCE, MAXIMUM_VELOCITY_Y_FORCE));
     }
 
-    public async Task HandleLedgeGrabCalculations(int sign, float startingGravity, float force, Vector2 groundPosition)
+    //grab ledge => hold space until the player lands on the ledge
+    public async Task HandleLedgeGrabCalculations(int sign, float startingGravity, float force, Vector2 groundPosition, Vector2 maximumVelocities)
     {
-        rb.AddForce(Vector2.up * yDisplace * force * Time.fixedDeltaTime * rb.mass, ForceMode2D.Impulse);
-        if(transform.position.y > groundPosition.y + MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB)
+        if(rb.velocity.y < maximumVelocities.y)
+            rb.AddForce(Vector2.up * yDisplace * force * Time.fixedDeltaTime * rb.mass, ForceMode2D.Impulse);
+        if(transform.position.y > groundPosition.y + MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB && rb.velocity.x < maximumVelocities.x)
             rb.AddForce((sign) * Vector2.right * xDisplace * force * Time.fixedDeltaTime * rb.mass, ForceMode2D.Impulse);
         rb.gravityScale = startingGravity;
         PlayerMovementGlobalVariables.ISGRABBING = false;
@@ -116,16 +122,17 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     {
         return Task.CompletedTask;
     }
-    private async Task GrabLedge()
+    private async Task GrabLedge(int sign, float startingGrav, float force, Vector2 groundPositionBeforeLedgeGrab, Vector2 maximumVelocities)
     {
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab")
-           && _canGrab)
+           && CanGrab)
         {
-            int sign = sr.flipX ? -1 : 1;
-            await HandleLedgeGrabCalculations(sign, startingGrav, 100, _groundPosition);  //this is for setting the animation to false
+            await HandleLedgeGrabCalculations(sign, startingGrav, force, groundPositionBeforeLedgeGrab, maximumVelocities);  //this is for setting the animation to false
             anim.SetBool("LedgeGrab", PlayerMovementGlobalVariables.ISGRABBING);
         }
     }
+
+    //using in animations
     public Task StartLedgeGrab()
     {
         CanGrab = true;
@@ -137,5 +144,4 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         CanGrab = false;
         return Task.CompletedTask;
     }
-
 }
