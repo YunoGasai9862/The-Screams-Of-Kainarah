@@ -10,9 +10,9 @@ public class PlayerActions : MonoBehaviour
     private PlayerAnimationMethods _animationHandler;
     private Vector2 _keystrokeTrack;
     private Command<bool> _jumpCommand;
-    private Command<bool> _slideCommand;
+    private CommandAsync<bool> _slideCommand;
     private IReceiver<bool> _jumpReceiver;
-    private IReceiver<bool> _slideReceiver;
+    private IReceiverAsync<bool> _slideReceiver;
 
     [SerializeField] float _characterSpeed = 10f;
     [SerializeField] LedgeGrabController ledgeGrabController;
@@ -23,10 +23,13 @@ public class PlayerActions : MonoBehaviour
     private float _characterVelocityX;
     private bool _isJumpPressed;
     private bool _isSlidePressed;
+    private float _originalSpeed;
     public bool GetJumpPressed { get => _isJumpPressed; set => _isJumpPressed = value; }
     public bool GetSlidePressed { get => _isSlidePressed; set => _isSlidePressed = value; }
     public float CharacterVelocityY { get => _characterVelocityY; set => _characterVelocityY = value; }
     public float CharacterVelocityX { get => _characterVelocityX; set => _characterVelocityX = value; }
+    public float CharacterSpeed { get => _characterSpeed; set => _characterSpeed = value; }
+
 
     //Force = -2m * sqrt (g * h)
 
@@ -39,8 +42,9 @@ public class PlayerActions : MonoBehaviour
         _jumpReceiver = GetComponent<JumpingController>();
         _slideReceiver = GetComponent<SlidingController>();
         _jumpCommand = new Command<bool>(_jumpReceiver);
-        _slideCommand = new Command<bool>(_slideReceiver);
+        _slideCommand = new CommandAsync<bool>(_slideReceiver);
         _rb = GetComponent<Rigidbody2D>();
+        _originalSpeed = _characterSpeed;
 
         _rocky2DActions.PlayerMovement.Jump.started += Jump; //i can add the same function
         _rocky2DActions.PlayerMovement.Jump.canceled += Jump;
@@ -55,7 +59,7 @@ public class PlayerActions : MonoBehaviour
 
         //event subscription
         jumpingController.onPlayerJumpEvent.AddListener(VelocityYEventHandler);
-        slidingController.onSlideEvent.AddListener(VelocityXEventHandler);
+        slidingController.onSlideEvent.AddListener(CharacterSpeedHandler);
     }
   
     private void Update()
@@ -89,11 +93,13 @@ public class PlayerActions : MonoBehaviour
     {
         Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>(); //reads the value
 
-        CharacterVelocityX = keystroke.x;
+        CharacterVelocityX =  keystroke.x;
 
-        CharacterControllerMove(CharacterVelocityX * _characterSpeed, CharacterVelocityY);
+        CharacterControllerMove(CharacterVelocityX * CharacterSpeed, CharacterVelocityY);
 
         _animationHandler.RunningWalkingAnimation(keystroke.x);  //for movement, plays the animation
+
+        CharacterSpeed = _originalSpeed; //reset speed
 
         return keystroke;
     }
@@ -102,9 +108,9 @@ public class PlayerActions : MonoBehaviour
     {
         CharacterVelocityY = characterVelocityY;
     }
-    private void VelocityXEventHandler(float characterVelocityX)
+    private void CharacterSpeedHandler(float characterSpeed)
     {
-        CharacterVelocityX = characterVelocityX;
+        CharacterSpeed = characterSpeed;
     }
     private void CharacterControllerMove(float CharacterPositionX, float CharacterPositionY)
     {
@@ -123,11 +129,11 @@ public class PlayerActions : MonoBehaviour
 
     private void Jump(InputAction.CallbackContext context)
     {
-        GetJumpPressed = context.ReadValueAsButton();
+        GetJumpPressed = GetSlidePressed == true? false: context.ReadValueAsButton();
     }
 
     private void Slide(InputAction.CallbackContext context)
     {
-        GetSlidePressed = context.ReadValueAsButton();
+        GetSlidePressed =  GetJumpPressed == true? false : context.ReadValueAsButton();
     }
 }

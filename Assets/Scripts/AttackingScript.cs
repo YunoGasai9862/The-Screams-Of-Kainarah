@@ -130,7 +130,7 @@ public class AttackingScript : MonoBehaviour
         {
             _timeForMouseClickStart = (float)context.time;
 
-            PlayerMovementHelperFunctions.setAttacking(true);
+            PlayerMovementGlobalVariables.ISATTACKING=true;
 
             //keeps track of attacking states
             _isPlayerEligibleForStartingAttack = enumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
@@ -168,7 +168,7 @@ public class AttackingScript : MonoBehaviour
 
             _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
-            PlayerMovementHelperFunctions.setAttacking(false); //once the user stops clicking, it should be set to false
+            PlayerMovementGlobalVariables.ISATTACKING=false; //once the user stops clicking, it should be set to false
         }
 
         _playerAttackStateMachine.setAttackState(jumpAttackStateName, leftMouseButtonPressed); //no jump attack
@@ -235,7 +235,7 @@ public class AttackingScript : MonoBehaviour
         _playerAttackStateMachine.canAttack(canAttackStateName, false);
         _playerAttackStateMachine.canAttack(jumpAttackStateName, false);
         _playerAttackState = 0; //resets the attackingstate
-        PlayerMovementHelperFunctions.setAttacking(false);
+        PlayerMovementGlobalVariables.ISATTACKING=false;
     }
 
 

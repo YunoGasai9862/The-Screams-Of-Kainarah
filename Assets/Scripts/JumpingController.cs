@@ -14,7 +14,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     [SerializeField] LayerMask ledgeLayer;
     [SerializeField] float JumpSpeed;
     [SerializeField] float maxTimeJump;
-    [SerializeField] float slidingSpeed;
 
     private float _characterVelocityY;
     private float _timeCounter;

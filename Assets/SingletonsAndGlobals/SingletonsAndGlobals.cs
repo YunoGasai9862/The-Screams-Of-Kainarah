@@ -81,16 +81,6 @@ namespace GlobalAccessAndGameHelper
             return finalBoolValue;
         }
 
-        public static void setSliding(bool value)
-        {
-            PlayerMovementGlobalVariables.ISSLIDING = value;
-        }
-
-        public static void setAttacking(bool value)
-        {
-            PlayerMovementGlobalVariables.ISATTACKING = value;
-        }
-
         public static void initializeAllVariablesTo(params bool[] boolsToInitialize)
         {
             if (boolsToInitialize.Length == 0)
