@@ -32,7 +32,6 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
         if (PlayerVariables.IS_SLIDING && !PlayerVariables.IS_ATTACKING &&
          _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, groundLayer))
         {
-            _playerAttackStateMachine.ForceDisableAttacking(1);
             onSlideEvent.Invoke(slidingSpeed); //posting
         }
 
@@ -48,7 +47,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
     {
         PlayerVariables.slideVariableEvent.Invoke(value);
 
-        if (!_playerAttackStateMachine.isInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
+        if (!_playerAttackStateMachine.IsInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
         {
             _animationHandler.Sliding(PlayerVariables.IS_SLIDING); //set animation
 

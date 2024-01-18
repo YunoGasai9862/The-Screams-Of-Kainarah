@@ -9,7 +9,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     private IOverlapChecker _movementHelperClass;
     private CapsuleCollider2D _capsuleCollider;
 
-    [SerializeField] float _characterSpeed = 10f;
     [SerializeField] LayerMask groundLayer;
     [SerializeField] LayerMask ledgeLayer;
     [SerializeField] float JumpSpeed;

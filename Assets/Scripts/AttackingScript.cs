@@ -59,9 +59,9 @@ public class AttackingScript : MonoBehaviour
 
         _rocky2DActions.PlayerAttack.Attack.canceled += PlayerAttackCancel;
 
-        _rocky2DActions.PlayerAttack.ThrowProjectile.started += ThrowdaggerInput;
+        _rocky2DActions.PlayerAttack.ThrowProjectile.started += ThrowDaggerInput;
 
-        _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += ThrowdaggerInput;
+        _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += ThrowDaggerInput;
 
         _playerAttackState = 0;
     }
@@ -76,7 +76,7 @@ public class AttackingScript : MonoBehaviour
     {
         if (IsAttackPrerequisiteMet())
         {
-            if (_playerAttackStateMachine.istheAttackCancelConditionTrue(_playerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
+            if (_playerAttackStateMachine.IstheAttackCancelConditionTrue(_playerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
             {
                 ResetAttackStatuses();
             }
@@ -84,11 +84,11 @@ public class AttackingScript : MonoBehaviour
         }
     }
 
-    private void ThrowdaggerInput(InputAction.CallbackContext context)
+    private void ThrowDaggerInput(InputAction.CallbackContext context)
     {
         throwDagger = context.ReadValueAsButton();
 
-        _playerAttackStateMachine.setAttackState(AnimationConstants.THROWDAGGER, throwDagger);
+        _playerAttackStateMachine.SetAttackState(AnimationConstants.THROWDAGGER, throwDagger);
 
         GameObject daggerInventorySlot = CreateInventorySystem.GetSlotTheGameObjectIsAttachedTo("Dagger");
 
@@ -113,11 +113,11 @@ public class AttackingScript : MonoBehaviour
 
     public Vector2 getDaggerPositionwithOffset(float xOffset, float yOffset)
     {
-        return isPlayerFlipped(_spriteRenderer)? new Vector2(transform.position.x - xOffset, transform.position.y + yOffset) :
+        return IsPlayerFlipped(_spriteRenderer)? new Vector2(transform.position.x - xOffset, transform.position.y + yOffset) :
             new Vector2(transform.position.x + xOffset, transform.position.y + yOffset);
     }
 
-    public bool isPlayerFlipped(SpriteRenderer _sr)
+    public bool IsPlayerFlipped(SpriteRenderer _sr)
     {
         return _sr.flipX;
     }
@@ -126,12 +126,13 @@ public class AttackingScript : MonoBehaviour
     {
         leftMouseButtonPressed = context.ReadValueAsButton();
 
+        PlayerVariables.slideVariableEvent.Invoke(false);
+
         if (IsAttackPrerequisiteMet()) //ground attack
         {
             _timeForMouseClickStart = (float)context.time;
 
             PlayerVariables.attackVariableEvent.Invoke(true);
-
             //keeps track of attacking states
             _isPlayerEligibleForStartingAttack = EnumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
 
@@ -144,7 +145,7 @@ public class AttackingScript : MonoBehaviour
 
         if (isJumpAttackPrequisitesMet())
         {
-            _playerAttackStateMachine.setAttackState(jumpAttackStateName, leftMouseButtonPressed);
+            _playerAttackStateMachine.SetAttackState(jumpAttackStateName, leftMouseButtonPressed);
 
         }
     }
@@ -163,7 +164,6 @@ public class AttackingScript : MonoBehaviour
 
         if (IsAttackPrerequisiteMet())
         {
-
             _timeForMouseClickEnd = (float)context.time;
 
             _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
@@ -171,12 +171,12 @@ public class AttackingScript : MonoBehaviour
             PlayerVariables.attackVariableEvent.Invoke(false);
         }
 
-        _playerAttackStateMachine.setAttackState(jumpAttackStateName, leftMouseButtonPressed); //no jump attack
+        _playerAttackStateMachine.SetAttackState(jumpAttackStateName, leftMouseButtonPressed); //no jump attack
 
     }
     private bool EnumStateManipulator<T>(ref int PlayerAttackState, int InitialStateOfTheEnum)
     {
-        int enumSize = getLenthofEnum<T>(); //returns the length of the Enum
+        int enumSize = GetLenthofEnum<T>(); //returns the length of the Enum
 
         foreach (T PAS in Enum.GetValues(typeof(T)))
         {
@@ -201,23 +201,22 @@ public class AttackingScript : MonoBehaviour
     private void settingInitialAttackConfiguration(string canAttackStateName, bool leftMouseButtonPressed)
     {
 
-        _playerAttackStateMachine.canAttack(canAttackStateName, leftMouseButtonPressed);
+        _playerAttackStateMachine.CanAttack(canAttackStateName, leftMouseButtonPressed);
     }
     private void PlayerAttackMechanism<T>()
     {
         if (_isPlayerEligibleForStartingAttack) //cast Type <T>
         {
 
-            _playerAttackStateMachine.setAttackState(attackStateName, _playerAttackState); //toggles state
+            _playerAttackStateMachine.SetAttackState(attackStateName, _playerAttackState); //toggles state
 
-            timeDifferencebetweenStates = timeDifference(_timeForMouseClickEnd, _timeForMouseClickStart);
+            timeDifferencebetweenStates = TimeDifference(_timeForMouseClickEnd, _timeForMouseClickStart);
 
-            _playerAttackStateMachine.timeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName,     //keeps track of time elapsed
-         timeDifferencebetweenStates);
+            _playerAttackStateMachine.TimeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName, timeDifferencebetweenStates);     //keeps track of time elapsed
 
-            if (isEnumValueEqualToLengthOfEnum<T>(_playerAttackStateName) ||
-                (isTimeDifferenceWithinRange(timeDifferencebetweenStates, 1.5f) &&
-                _playerAttackStateName != _playerAttackStateMachine.getStateNameThroughEnum(1))) //dont do it for the first attackState
+            if (IsEnumValueEqualToLengthOfEnum<T>(_playerAttackStateName) ||
+                (IsTimeDifferenceWithinRange(timeDifferencebetweenStates, 1.5f) &&
+                _playerAttackStateName != _playerAttackStateMachine.GetStateNameThroughEnum(1))) //dont do it for the first attackState
             {
                 ResetAttackStatuses();
                 return;
@@ -226,29 +225,29 @@ public class AttackingScript : MonoBehaviour
         }
     }
 
-    private bool isTimeDifferenceWithinRange(float value, float upperBoundary)
+    private bool IsTimeDifferenceWithinRange(float value, float upperBoundary)
     {
         return value > upperBoundary;
     }
     private void ResetAttackStatuses()
     {
-        _playerAttackStateMachine.canAttack(canAttackStateName, false);
-        _playerAttackStateMachine.canAttack(jumpAttackStateName, false);
+        _playerAttackStateMachine.CanAttack(canAttackStateName, false);
+        _playerAttackStateMachine.CanAttack(jumpAttackStateName, false);
         _playerAttackState = 0; //resets the attackingstate
         PlayerVariables.attackVariableEvent.Invoke(false);
     }
 
 
-    private float timeDifference(float EndTime, float StartTime)
+    private float TimeDifference(float EndTime, float StartTime)
     {
         return Math.Abs(EndTime - StartTime);
     }
-    private bool isEnumValueEqualToLengthOfEnum<T>(string _playerAttackStateName)
+    private bool IsEnumValueEqualToLengthOfEnum<T>(string _playerAttackStateName)
     {
-        return (int)Enum.Parse(typeof(T), _playerAttackStateName) == getLenthofEnum<T>();
+        return (int)Enum.Parse(typeof(T), _playerAttackStateName) == GetLenthofEnum<T>();
     }
 
-    private int getLenthofEnum<T>()
+    private int GetLenthofEnum<T>()
     {
         return Enum.GetNames(typeof(T)).Length;
     }
@@ -260,26 +259,19 @@ public class AttackingScript : MonoBehaviour
         bool isInventoryOpen = GameObjectCreator.GetInventoryOpenCloseManager().isOpenInventory;
         bool isSliding = PlayerVariables.IS_SLIDING;
 
-        return PlayerMovementHelperFunctions.boolConditionAndTester(!isDialogueOpen, !isBuying, !isInventoryOpen, !isSliding, !isJumping);
-
+        return !isDialogueOpen && !isBuying && !isInventoryOpen && !isSliding && !isJumping;
     }
     public void Icetail()
     {
-
         GameObjectInstantiator iceTrail = new(IceTrail);
         iceTrail.InstantiateGameObject(transform.position, Quaternion.identity);
         iceTrail.setGameObjectParent(transform);
-
-
     }
 
     public void Icetail2()
     {
-
         GameObjectInstantiator iceTrail = new(IceTrail2);
         iceTrail.InstantiateGameObject(transform.position, Quaternion.identity);
         iceTrail.setGameObjectParent(transform);
-
-
     }
 }
