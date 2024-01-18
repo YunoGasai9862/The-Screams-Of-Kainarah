@@ -130,10 +130,10 @@ public class AttackingScript : MonoBehaviour
         {
             _timeForMouseClickStart = (float)context.time;
 
-            PlayerMovementGlobalVariables.ISATTACKING=true;
+            PlayerVariables.attackVariableEvent.Invoke(true);
 
             //keeps track of attacking states
-            _isPlayerEligibleForStartingAttack = enumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
+            _isPlayerEligibleForStartingAttack = EnumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
 
             //sets the initial configuration for the attacking system
             settingInitialAttackConfiguration(canAttackStateName, leftMouseButtonPressed);
@@ -151,7 +151,7 @@ public class AttackingScript : MonoBehaviour
 
     private bool isJumpAttackPrequisitesMet()
     {
-        bool isJumping = PlayerMovementGlobalVariables.ISJUMPING;
+        bool isJumping = PlayerVariables.IS_JUMPING;
         bool isOnTheGround = _movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground);
 
         return isJumping && !isOnTheGround;
@@ -168,25 +168,25 @@ public class AttackingScript : MonoBehaviour
 
             _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
-            PlayerMovementGlobalVariables.ISATTACKING=false; //once the user stops clicking, it should be set to false
+            PlayerVariables.attackVariableEvent.Invoke(false);
         }
 
         _playerAttackStateMachine.setAttackState(jumpAttackStateName, leftMouseButtonPressed); //no jump attack
 
     }
-    private bool enumStateManipulator<T>(ref int PlayerAttackState, int InitialStateOfTheEnum)
+    private bool EnumStateManipulator<T>(ref int PlayerAttackState, int InitialStateOfTheEnum)
     {
-        int EnumSize = getLenthofEnum<T>(); //returns the length of the Enum
+        int enumSize = getLenthofEnum<T>(); //returns the length of the Enum
 
         foreach (T PAS in Enum.GetValues(typeof(T)))
         {
-            int _dummy = Convert.ToInt32(PAS) - 1; //converts to INT
+            int _dummy = Convert.ToInt32(PAS) - 1; //converts to INTEnumStateManipulator
 
             if (PlayerAttackState == _dummy)
             {
                 _dummy++;
 
-                PlayerAttackState = _dummy <= EnumSize ? _dummy : InitialStateOfTheEnum; //sets to the initial State of the Enum
+                PlayerAttackState = _dummy <= enumSize ? _dummy : InitialStateOfTheEnum; //sets to the initial State of the Enum
 
                 _playerAttackStateName = Enum.GetName(typeof(T), PlayerAttackState);
 
@@ -235,7 +235,7 @@ public class AttackingScript : MonoBehaviour
         _playerAttackStateMachine.canAttack(canAttackStateName, false);
         _playerAttackStateMachine.canAttack(jumpAttackStateName, false);
         _playerAttackState = 0; //resets the attackingstate
-        PlayerMovementGlobalVariables.ISATTACKING=false;
+        PlayerVariables.attackVariableEvent.Invoke(false);
     }
 
 
@@ -255,10 +255,10 @@ public class AttackingScript : MonoBehaviour
     public bool IsAttackPrerequisiteMet()
     {
         bool isDialogueOpen = GameObjectCreator.GetDialogueManager().IsOpen();
-        bool isJumping = PlayerMovementGlobalVariables.ISJUMPING;
+        bool isJumping = PlayerVariables.IS_JUMPING;
         bool isBuying = OpenWares.Buying;
         bool isInventoryOpen = GameObjectCreator.GetInventoryOpenCloseManager().isOpenInventory;
-        bool isSliding = PlayerMovementGlobalVariables.ISSLIDING;
+        bool isSliding = PlayerVariables.IS_SLIDING;
 
         return PlayerMovementHelperFunctions.boolConditionAndTester(!isDialogueOpen, !isBuying, !isInventoryOpen, !isSliding, !isJumping);
 

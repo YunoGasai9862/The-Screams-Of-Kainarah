@@ -47,20 +47,21 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         redXOffset = await GetBoxPosition(sr, redXOffset);
 
         if (!_helperFunc.overlapAgainstLayerMaskChecker(ref col, groundMask) && greenBox &&
-            PlayerMovementGlobalVariables.ISGRABBING)
+            PlayerVariables.IS_GRABBING)
         {
             _timeSpent += Time.deltaTime;
         }
 
         if (TimeSpentGrabbing(_timeSpent, .3f) || _helperFunc.overlapAgainstLayerMaskChecker(ref col, ledge))
         {
-            PlayerMovementGlobalVariables.ISGRABBING = false;
+            PlayerVariables.slideVariableEvent.Invoke(false);
+
             _timeSpent = 0f;
         }
 
-        if (greenBox && !redBox && PlayerMovementGlobalVariables.ISJUMPING)
+        if (greenBox && !redBox && PlayerVariables.IS_JUMPING)
         {
-            PlayerMovementGlobalVariables.ISGRABBING = true;
+            PlayerVariables.slideVariableEvent.Invoke(true);
         }
 
         //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
@@ -83,7 +84,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         if(transform.position.y > groundPosition.y + MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB && rb.velocity.x < maximumVelocities.x)
             rb.AddForce((sign) * Vector2.right * xDisplace * force * Time.fixedDeltaTime * rb.mass, ForceMode2D.Impulse);
         rb.gravityScale = startingGravity;
-        PlayerMovementGlobalVariables.ISGRABBING = false;
+        PlayerVariables.grabVariableEvent.Invoke(false);
         await Task.CompletedTask;
     }
 
@@ -103,8 +104,8 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     {
         rb.velocity = new Vector2(0, 0);
         rb.gravityScale = 0f;
-        PlayerMovementGlobalVariables.ISGRABBING = true;
-        anim.SetBool("LedgeGrab", PlayerMovementGlobalVariables.ISGRABBING);
+        PlayerVariables.grabVariableEvent.Invoke(true);
+        anim.SetBool("LedgeGrab", PlayerVariables.IS_GRABBING);
         return true;
     }
 
@@ -128,7 +129,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
            && CanGrab)
         {
             await HandleLedgeGrabCalculations(sign, startingGrav, force, groundPositionBeforeLedgeGrab, maximumVelocities);  //this is for setting the animation to false
-            anim.SetBool("LedgeGrab", PlayerMovementGlobalVariables.ISGRABBING);
+            anim.SetBool("LedgeGrab", PlayerVariables.IS_GRABBING);
         }
     }
 

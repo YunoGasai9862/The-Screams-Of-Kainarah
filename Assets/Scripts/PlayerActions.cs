@@ -77,7 +77,7 @@ public class PlayerActions : MonoBehaviour
             _jumpCommand.Execute(GetJumpPressed);
 
             //ledge grab
-            if (PlayerMovementGlobalVariables.ISGRABBING) //tackles the ledgeGrab
+            if (PlayerVariables.IS_GRABBING) //tackles the ledgeGrab
             {
                 ledgeGrabController.PerformLedgeGrab();
                 return;
@@ -129,11 +129,11 @@ public class PlayerActions : MonoBehaviour
 
     private void Jump(InputAction.CallbackContext context)
     {
-        GetJumpPressed = GetSlidePressed == true? false: context.ReadValueAsButton();
+        GetJumpPressed = GetSlidePressed? false: context.ReadValueAsButton();
     }
 
     private void Slide(InputAction.CallbackContext context)
     {
-        GetSlidePressed =  GetJumpPressed == true? false : context.ReadValueAsButton();
+        GetSlidePressed =  GetJumpPressed? false : context.ReadValueAsButton();
     }
 }

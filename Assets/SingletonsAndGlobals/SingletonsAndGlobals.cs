@@ -35,16 +35,6 @@ namespace GlobalAccessAndGameHelper
         }
     }
 
-    public static class PlayerMovementGlobalVariables
-    {
-        public static bool ISJUMPING;
-        public static bool ISATTACKING;
-        public static bool ISSLIDING;
-        public static bool ISRUNNING;
-        public static bool ISWALKING;
-        public static bool ISGRABBING;
-    }
-
     public static class PlayerMovementHelperFunctions
     {
         public static bool boolConditionAndTester(params bool[] boolsToCheckAgainst)
