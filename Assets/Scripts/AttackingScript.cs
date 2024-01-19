@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class AttackingScript : MonoBehaviour
 {
+    private const float TIME_DIFFERENCE_MAX = 1.5f;
+
     private Animator _anim;
     private CapsuleCollider2D col;
     public static bool canthrowDagger = true;
@@ -126,8 +128,6 @@ public class AttackingScript : MonoBehaviour
     {
         leftMouseButtonPressed = context.ReadValueAsButton();
 
-        PlayerVariables.slideVariableEvent.Invoke(false);
-
         if (IsAttackPrerequisiteMet()) //ground attack
         {
             _timeForMouseClickStart = (float)context.time;
@@ -207,7 +207,6 @@ public class AttackingScript : MonoBehaviour
     {
         if (_isPlayerEligibleForStartingAttack) //cast Type <T>
         {
-
             _playerAttackStateMachine.SetAttackState(attackStateName, _playerAttackState); //toggles state
 
             timeDifferencebetweenStates = TimeDifference(_timeForMouseClickEnd, _timeForMouseClickStart);
@@ -215,7 +214,7 @@ public class AttackingScript : MonoBehaviour
             _playerAttackStateMachine.TimeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName, timeDifferencebetweenStates);     //keeps track of time elapsed
 
             if (IsEnumValueEqualToLengthOfEnum<T>(_playerAttackStateName) ||
-                (IsTimeDifferenceWithinRange(timeDifferencebetweenStates, 1.5f) &&
+                (IsTimeDifferenceWithinRange(timeDifferencebetweenStates, TIME_DIFFERENCE_MAX) &&
                 _playerAttackStateName != _playerAttackStateMachine.GetStateNameThroughEnum(1))) //dont do it for the first attackState
             {
                 ResetAttackStatuses();
@@ -236,7 +235,6 @@ public class AttackingScript : MonoBehaviour
         _playerAttackState = 0; //resets the attackingstate
         PlayerVariables.attackVariableEvent.Invoke(false);
     }
-
 
     private float TimeDifference(float EndTime, float StartTime)
     {

@@ -1,38 +1,30 @@
+using GlobalAccessAndGameHelper;
 using UnityEngine;
-public class FollowPlayerMonster : StateMachineBehaviour
+public class MonsterMovement : StateMachineBehaviour
 {
+    private float _timeSpanBetweenEachAttack = 0f;
     //OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-
-
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
     }
-
     //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
         if (!GameObjectCreator.GetDialogueManager().IsOpen())
         {
-
-            if (MonsterFollow.Player != null && MonsterFollow.checkDistance(animator))
+            if (MonsterFollow.Player != null && HelperFunctions.CheckDistance(animator, 15f, 3f, MonsterFollow.Player))
             {
-
                 Vector3 newPos = MonsterFollow.Player.transform.position;
                 newPos.y = MonsterFollow.Player.transform.position.y - 1.5f;
 
                 animator.transform.position = Vector3.MoveTowards(animator.transform.position, newPos, 4f * Time.deltaTime);
-
-
             }
-
-
-            if (!MonsterFollow.checkDistance(animator))
+            else
             {
-
                 animator.SetBool("walk", false);
-                MonsterFollow.DelayAttack(animator);
+                HelperFunctions.DelayAttack(animator, _timeSpanBetweenEachAttack);
             }
 
         }

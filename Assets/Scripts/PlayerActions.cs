@@ -134,6 +134,6 @@ public class PlayerActions : MonoBehaviour
 
     private void Slide(InputAction.CallbackContext context)
     {
-        GetSlidePressed =  GetJumpPressed? false : context.ReadValueAsButton();
+        GetSlidePressed =  GetJumpPressed && PlayerVariables.IS_ATTACKING? false : context.ReadValueAsButton();
     }
 }

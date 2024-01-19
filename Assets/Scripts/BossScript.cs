@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -8,7 +9,9 @@ public class BossScript : AbstractEntity
     private Animator _anim;
     private float _timeoverBody = 0f;
     private BoxCollider2D _bC2;
-    private bool onTopBossBool = false;
+    private bool _onTopBossBool = false;
+    private IReceiver<bool> _receiver;
+    private Command<bool> _command;
     [SerializeField] GameObject bossDead;
     [SerializeField] string[] attackingAnimationNames;
     public override string EntityName { get => m_Name; set => m_Name = value; }
@@ -44,7 +47,7 @@ public class BossScript : AbstractEntity
             {
                 _anim.SetBool("walk", false);
             }
-            if (onTopBossBool)
+            if (_onTopBossBool)
             {
                 _timeoverBody += Time.deltaTime;
             }
@@ -52,7 +55,7 @@ public class BossScript : AbstractEntity
             if (_timeoverBody > .5f)
             {
                 _bC2.enabled = false;
-                onTopBossBool = false;
+                _onTopBossBool = false;
                 StartCoroutine(TimeElapse());
 
             }
@@ -64,9 +67,7 @@ public class BossScript : AbstractEntity
         yield return new WaitForSeconds(.5f);
         _bC2.enabled = true;
         _timeoverBody = 0f;
-
     }
-
     public async void CheckRotation()
     {
         if (await IsNotOneOfTheAttackingAnimations(attackingAnimationNames, _anim))
@@ -104,26 +105,36 @@ public class BossScript : AbstractEntity
         {
             Vector2 pos = transform.position;
             pos.y = transform.position.y + .5f;
-            GameObject dead = Instantiate(bossDead, pos, Quaternion.identity);
-            Destroy(gameObject);
-            Destroy(dead, 1f);
+            var deadBody =await HandleBossDefeatScenario(pos, bossDead, gameObject);
+            await DestroyMultipleGameObjects(new[] { deadBody, gameObject }, 1f);
         }
+    }
+
+    private Task<GameObject> HandleBossDefeatScenario(Vector3 position, GameObject prefab, GameObject mainObject)
+    {
+        GameObject dead = Instantiate(prefab, position, Quaternion.identity);
+        return Task.FromResult(dead);   
+    }
+    private Task DestroyMultipleGameObjects(GameObject[] gameObjects, float destroyInSeconds)
+    {
+       foreach(var gameObject in gameObjects)
+       {
+            Destroy(gameObject, destroyInSeconds);
+       }
+       return Task.CompletedTask;
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.CompareTag("Player") && onTopBossBool == false)
+        if (collision.collider.CompareTag("Player") && !_onTopBossBool)
         {
-
-            onTopBossBool = true;
-
+            _onTopBossBool = true;
         }
     }
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Player"))
         {
-            onTopBossBool = false;
-
+            _onTopBossBool = false;
         }
 
     }

@@ -12,7 +12,7 @@ public class DialogueManager : MonoBehaviour
     public bool isOpen = false;
 
     private static Dialogues[] _dialogues = null;
-
+    public DialogueManagerEvent dialogueManagerEvent = new DialogueManagerEvent();
     void Start()
     {
         _storylineSentences = new Queue<string>();
@@ -85,7 +85,6 @@ public class DialogueManager : MonoBehaviour
     }
     void EndDialogue()
     {
-
         myanimator.SetBool("IsOpen", false);
         isOpen = false;
     }

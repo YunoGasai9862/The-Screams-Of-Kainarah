@@ -10,6 +10,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
     private const float MAXIMUM_VELOCITY_X_FORCE = 12f;
     private const float FORCE = 30f;
+    private const float MAX_TIME_FOR_LEDGE_GRAB = 0.3f;
 
     private bool greenBox, redBox;
     public float redXOffset, redYoffset, redXSize, redYSize, greenXOffset, greenYOffset, greenXsize, greenYSize;
@@ -52,16 +53,16 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
             _timeSpent += Time.deltaTime;
         }
 
-        if (TimeSpentGrabbing(_timeSpent, .3f) || _helperFunc.overlapAgainstLayerMaskChecker(ref col, ledge))
+        if (TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB) || _helperFunc.overlapAgainstLayerMaskChecker(ref col, ledge))
         {
-            PlayerVariables.slideVariableEvent.Invoke(false);
+            PlayerVariables.grabVariableEvent.Invoke(false);
 
             _timeSpent = 0f;
         }
 
         if (greenBox && !redBox && PlayerVariables.IS_JUMPING)
         {
-            PlayerVariables.slideVariableEvent.Invoke(true);
+            PlayerVariables.grabVariableEvent.Invoke(true);
         }
 
         //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
@@ -84,7 +85,6 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         if(transform.position.y > groundPosition.y + MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB && rb.velocity.x < maximumVelocities.x)
             rb.AddForce((sign) * Vector2.right * xDisplace * force * Time.fixedDeltaTime * rb.mass, ForceMode2D.Impulse);
         rb.gravityScale = startingGravity;
-        PlayerVariables.grabVariableEvent.Invoke(false);
         await Task.CompletedTask;
     }
 
@@ -130,6 +130,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         {
             await HandleLedgeGrabCalculations(sign, startingGrav, force, groundPositionBeforeLedgeGrab, maximumVelocities);  //this is for setting the animation to false
             anim.SetBool("LedgeGrab", PlayerVariables.IS_GRABBING);
+            PlayerVariables.grabVariableEvent.Invoke(false);
         }
     }
 

@@ -136,6 +136,21 @@ namespace GlobalAccessAndGameHelper
             }
             return flipped;
         }
+        public static bool CheckDistance(Animator animator, float distanceLessThan, float distanceGreaterThan, GameObject player)
+        {
+            return Vector3.Distance(player.transform.position, animator.transform.position) <= distanceLessThan && Vector3.Distance(player.transform.position, animator.transform.position) >= distanceGreaterThan;
+        }
+        public static void DelayAttack(Animator animator, float timeSpanBetweenEachAttack)
+        {
+            timeSpanBetweenEachAttack += Time.deltaTime;
+            if (timeSpanBetweenEachAttack > 1f)
+            {
+                animator.SetTrigger("attack");
+                timeSpanBetweenEachAttack = 0f;
+            }
+        }
+
+
 
     }
 

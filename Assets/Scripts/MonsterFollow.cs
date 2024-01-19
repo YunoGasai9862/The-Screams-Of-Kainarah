@@ -1,12 +1,9 @@
+using GlobalAccessAndGameHelper;
 using UnityEngine;
 public class MonsterFollow : StateMachineBehaviour
-
-
 {
-
-
     public static GameObject Player;
-    static float timeSpanbetweenEachAttack = 0f;
+    public static float timeSpanBetweenEachAttack = 0f;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -18,24 +15,17 @@ public class MonsterFollow : StateMachineBehaviour
     {
         if (!GameObjectCreator.GetDialogueManager().IsOpen())
         {
-            if (Player != null && checkDistance(animator))
+            if (Player != null && HelperFunctions.CheckDistance(animator, 15f, 3f, Player))
             {
-
                 animator.SetBool("walk", true);
-
             }
-
 
             if (Vector3.Distance(Player.transform.position, animator.transform.position) <= 3)
             {
-                DelayAttack(animator);
-
+                HelperFunctions.DelayAttack(animator, timeSpanBetweenEachAttack);
             }
 
-
         }
-
-
 
     }
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
@@ -55,23 +45,5 @@ public class MonsterFollow : StateMachineBehaviour
     //{
     //    // Implement code that sets up animation IK (inverse kinematics)
     //}
-
-    public static bool checkDistance(Animator animator)
-    {
-        return Vector3.Distance(Player.transform.position, animator.transform.position) <= 15f && Vector3.Distance(Player.transform.position, animator.transform.position) >= 3;
-    }
-
-    public static void DelayAttack(Animator animator)
-    {
-        timeSpanbetweenEachAttack += Time.deltaTime;
-        if (timeSpanbetweenEachAttack > 1f)
-        {
-            animator.SetTrigger("attack");
-            timeSpanbetweenEachAttack = 0f;
-
-        }
-    }
-
-
 
 }
