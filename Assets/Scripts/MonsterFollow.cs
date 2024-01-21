@@ -1,9 +1,8 @@
-using GlobalAccessAndGameHelper;
 using UnityEngine;
 public class MonsterFollow : StateMachineBehaviour
 {
     public static GameObject Player;
-    public static float timeSpanBetweenEachAttack = 0f;
+    public const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -22,7 +21,7 @@ public class MonsterFollow : StateMachineBehaviour
 
             if (Vector3.Distance(Player.transform.position, animator.transform.position) <= 3)
             {
-                HelperFunctions.DelayAttack(animator, timeSpanBetweenEachAttack);
+                HelperFunctions.DelayAttack(animator, TIME_SPAN_BETWEEN_EACH_ATTACK, "attack");
             }
 
         }

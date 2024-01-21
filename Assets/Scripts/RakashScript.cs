@@ -3,7 +3,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using static SceneData;
-public class BossScript : AbstractEntity
+public class RakashScript : AbstractEntity
 {
     private GameObject _player;
     private Animator _anim;
@@ -17,6 +17,8 @@ public class BossScript : AbstractEntity
     public override string EntityName { get => m_Name; set => m_Name = value; }
     public override float Health { get => m_health; set => m_health = value; }
     public override float MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
+
+    public RakashEvent onRakashEvent = new RakashEvent();
 
     private void Awake()
     {
@@ -35,30 +37,23 @@ public class BossScript : AbstractEntity
     // Update is called once per frame
     void Update()
     {
-        if (_player == null)
+        CheckRotation();
+
+        if (GameObjectCreator.GetDialogueManager().IsOpen())
         {
-            _player = GameObject.FindWithTag("Player");
-
-        }else
+            _anim.SetBool("walk", false);
+        }
+        if (_onTopBossBool)
         {
-            CheckRotation();
+            _timeoverBody += Time.deltaTime;
+        }
 
-            if (GameObjectCreator.GetDialogueManager().IsOpen())
-            {
-                _anim.SetBool("walk", false);
-            }
-            if (_onTopBossBool)
-            {
-                _timeoverBody += Time.deltaTime;
-            }
+        if (_timeoverBody > .5f)
+        {
+            _bC2.enabled = false;
+            _onTopBossBool = false;
+            StartCoroutine(TimeElapse());
 
-            if (_timeoverBody > .5f)
-            {
-                _bC2.enabled = false;
-                _onTopBossBool = false;
-                StartCoroutine(TimeElapse());
-
-            }
         }
     }
 
@@ -95,7 +90,7 @@ public class BossScript : AbstractEntity
 
     private async void OnTriggerEnter2D(Collider2D collision)
     {
-        if (await EnemyHittableManager.isEntityAnAttackObject(collision, GameObjectCreator.EnemyHittableObjects))
+        if (await EnemyHittableManager.IsEntityAnAttackObject(collision, GameObjectCreator.EnemyHittableObjects))
         {
             _anim.SetTrigger("damage");
             Health -= 10;

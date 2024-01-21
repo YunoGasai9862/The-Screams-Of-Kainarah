@@ -1,7 +1,6 @@
 
 using UnityEngine;
 using Pathfinding;
-using GlobalAccessAndGameHelper;
 using System.Threading.Tasks;
 using System.Threading;
 

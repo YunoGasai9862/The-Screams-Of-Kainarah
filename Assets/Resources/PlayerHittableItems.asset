@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colliderItems:
   - canHitPlayer: 1
-    collider: {fileID: 1177047596, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
+    collider: {fileID: 257111450, guid: aaa7a0367a1ca144e8d5d870d46392c1, type: 3}
     isItBasedOnAnimationName: 0
     animationName: 
   - canHitPlayer: 1
-    collider: {fileID: 1177047596, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
+    collider: {fileID: 6188736412772749654, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
     isItBasedOnAnimationName: 1
     animationName: attack
   - canHitPlayer: 1
-    collider: {fileID: 1177047596, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
+    collider: {fileID: 6188736412772749654, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
     isItBasedOnAnimationName: 1
     animationName: attack_02
   - canHitPlayer: 1

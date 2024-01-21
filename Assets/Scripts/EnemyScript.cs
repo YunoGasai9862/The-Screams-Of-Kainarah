@@ -107,7 +107,7 @@ public class EnemyScript : AbstractEntity
 
     private async void OnTriggerEnter2D(Collider2D collision)
     {
-        if (gameObject != null && await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
+        if (gameObject != null && await EnemyHittableManager.IsEntityAnAttackObject(collision, _enemyHittableObjects))
         {
             Health -= HITPOINTS;
             _ = await GetEnemyOberverListenerObject().EnemyActionDelegator(collision, gameObject, animationHitParam, true);
@@ -116,7 +116,7 @@ public class EnemyScript : AbstractEntity
     }
     private async void OnTriggerExit2D(Collider2D collision)
     {
-        if (gameObject != null && await EnemyHittableManager.isEntityAnAttackObject(collision, _enemyHittableObjects))
+        if (gameObject != null && await EnemyHittableManager.IsEntityAnAttackObject(collision, _enemyHittableObjects))
         {
             _ = await GetEnemyOberverListenerObject().EnemyActionDelegator(collision, gameObject, animationHitParam, false);
 

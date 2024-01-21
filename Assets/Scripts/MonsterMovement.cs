@@ -1,8 +1,7 @@
-using GlobalAccessAndGameHelper;
 using UnityEngine;
 public class MonsterMovement : StateMachineBehaviour
 {
-    private float _timeSpanBetweenEachAttack = 0f;
+    private const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
     //OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -24,7 +23,7 @@ public class MonsterMovement : StateMachineBehaviour
             else
             {
                 animator.SetBool("walk", false);
-                HelperFunctions.DelayAttack(animator, _timeSpanBetweenEachAttack);
+                HelperFunctions.DelayAttack(animator, TIME_SPAN_BETWEEN_EACH_ATTACK, "attack");
             }
 
         }

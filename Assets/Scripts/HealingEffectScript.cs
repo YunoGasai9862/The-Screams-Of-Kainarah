@@ -1,6 +1,5 @@
 
 using UnityEngine;
-using GlobalAccessAndGameHelper;
 using UnityEngine.Rendering.Universal;
 
 public class HealingEffectScript : MonoBehaviour

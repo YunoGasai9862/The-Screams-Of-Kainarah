@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using GlobalAccessAndGameHelper;
 
 public class MusicManager : MonoBehaviour, IObserver<bool>
 {
@@ -8,15 +7,13 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
     [SerializeField] AudioSource _bgGameMusic;
     [SerializeField] AudioSource _BossMusic;
     [SerializeField] AudioSource _Pickup;
-    GameMusicState _gameState;
+    GlobalEnums.GameMusicState _gameState;
 
     private bool shouldPlayPickUpAudio;
-
     void Start()
     {
-        _gameState = GameMusicState.BACKGROUNDMUSIC;
+        _gameState = GlobalEnums.GameMusicState.BACKGROUNDMUSIC;
         ChannelMusic(_gameState);
-
     }
 
     private void OnEnable()
@@ -35,64 +32,56 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
         {
             if (TrackingBosses.BossExists)
             {
-                _gameState = GameMusicState.BOSSMUSIC;
+                _gameState = GlobalEnums.GameMusicState.BOSSMUSIC;
 
             }
             else
             {
-                _gameState = GameMusicState.BACKGROUNDMUSIC;
+                _gameState = GlobalEnums.GameMusicState.BACKGROUNDMUSIC;
 
             }
 
             if (shouldPlayPickUpAudio)
             {
-                _gameState = GameMusicState.PICKUP;
+                _gameState = GlobalEnums.GameMusicState.PICKUP;
             }
 
             ChannelMusic(_gameState);
         }
         else
         {
-            _gameState = GameMusicState.STOP;
+            _gameState = GlobalEnums.GameMusicState.STOP;
             ChannelMusic(_gameState);
         }
 
     }
-
-
-    public void ChannelMusic(GameMusicState state)
+    public void ChannelMusic(GlobalEnums.GameMusicState state)
     {
         switch (state)
         {
-            case GameMusicState.BACKGROUNDMUSIC:
+            case GlobalEnums.GameMusicState.BACKGROUNDMUSIC:
 
-                if (PlayerMovementHelperFunctions.boolConditionAndTester(!_bgGameMusic.isPlaying, _bgGameMusic.time == 0f))
+                if (MovementHelperFunctions.boolConditionAndTester(!_bgGameMusic.isPlaying, _bgGameMusic.time == 0f))
                 {
                     _bgGameMusic.Play();
-
                 }
                 _BossMusic.Stop();
-
                 break;
 
-
-            case GameMusicState.BOSSMUSIC:
-                if (PlayerMovementHelperFunctions.boolConditionAndTester(!_BossMusic.isPlaying, _BossMusic.time == 0f)) //makes sure the same music is not playedagain
+            case GlobalEnums.GameMusicState.BOSSMUSIC:
+                if (MovementHelperFunctions.boolConditionAndTester(!_BossMusic.isPlaying, _BossMusic.time == 0f)) //makes sure the same music is not playedagain
                 {
                     _BossMusic.Play();
-
                 }
-
                 _bgGameMusic.Stop();
-
                 break;
 
-            case GameMusicState.PICKUP:
+            case GlobalEnums.GameMusicState.PICKUP:
                 _Pickup.Play();
                 shouldPlayPickUpAudio = false;
                 break;
 
-            case GameMusicState.STOP:
+            case GlobalEnums.GameMusicState.STOP:
                 _bgGameMusic.Stop();
                 _BossMusic.Stop();
                 _Pickup.Stop();

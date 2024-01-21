@@ -1,4 +1,3 @@
-using GlobalAccessAndGameHelper;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -29,8 +28,7 @@ public class PlayerShadow : MonoBehaviour
     // Update is called once per frame
      async void Update()
     {
-
-        m_newPosition =await ShadowObjectsNewPosition(m_SpriteRenderer, m_parentPos, m_Position, 0.5f, 10);
+        m_newPosition = await ShadowObjectsNewPosition(m_SpriteRenderer, m_parentPos, m_Position, 0.5f, 10);
 
         if(!_token.IsCancellationRequested) //extra check due to async programming
         {
@@ -40,7 +38,6 @@ public class PlayerShadow : MonoBehaviour
 
             m_parentPos = transform.parent.position;
         }
-
     }
 
     private async Task<Vector2> ShadowObjectsNewPosition(SpriteRenderer spriteRenderer, Vector2 parentPos, Vector2 position, float offsetx, int delyForShadowInMiliseconds)

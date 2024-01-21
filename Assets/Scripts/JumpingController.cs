@@ -1,4 +1,3 @@
-using GlobalAccessAndGameHelper;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -90,7 +89,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         bool isOnLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
         bool isJumpPressed = _isJumpPressed;
 
-        return Task.FromResult(PlayerMovementHelperFunctions.boolConditionAndTester(!isJumping, isOnLedgeOrGround, isJumpPressed));
+        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(!isJumping, isOnLedgeOrGround, isJumpPressed));
     }
 
     private Task<bool> CanPlayerFall()
@@ -99,7 +98,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         bool isOnLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
         bool isJumpPressed = _isJumpPressed;
 
-        return Task.FromResult(PlayerMovementHelperFunctions.boolConditionAndTester(isJumping, !isOnLedgeOrGround, !isJumpPressed));
+        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(isJumping, !isOnLedgeOrGround, !isJumpPressed));
     }
     private bool LedgeGroundChecker(LayerMask ground, LayerMask ledge)
     {

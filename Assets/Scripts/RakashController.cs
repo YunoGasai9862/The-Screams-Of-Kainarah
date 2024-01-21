@@ -5,11 +5,11 @@ public class RakashController : MonoBehaviour, IReceiver<bool>
 {
     public bool CancelAction()
     {
-        throw new System.NotImplementedException();
+        return true;
     }
 
     public bool PerformAction(bool value = false)
     {
-        throw new System.NotImplementedException();
+        return true;
     }
 }

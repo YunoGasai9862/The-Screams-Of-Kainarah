@@ -1,4 +1,3 @@
-using GlobalAccessAndGameHelper;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,16 +14,13 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 
     private void Awake()
     {
-
         _playerActionHandlerDic = new Dictionary<String, Func<Collider2D, Task>>
         {
              { "Crystal", value => OnCrystalPickup(value)},
              { "Health" , value => OnHealthPickup(value) },
              { "Dagger" , value => OnDaggerPickup(value) }
         };
-
     }
-
     private async Task<bool> OnDaggerPickup(Collider2D collider)
     {
         GameObject temp = pickableItems.returnGameObjectForTheKey(collider.tag);

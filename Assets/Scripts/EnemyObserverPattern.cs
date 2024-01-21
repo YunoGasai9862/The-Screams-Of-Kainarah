@@ -1,5 +1,4 @@
 using EnemyAnimation;
-using GlobalAccessAndGameHelper;
 using PlayerAnimationHandler;
 using System.Collections;
 using System.Collections.Generic;

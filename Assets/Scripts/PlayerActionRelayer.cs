@@ -152,7 +152,7 @@ public class PlayerActionRelayer : AbstractEntity
     {
         foreach (var item in scriptableObject.colliderItems)
         {
-            if (item.collider.tag == collider.tag && !item.isItBasedOnAnimationName)
+            if (collider!=null && item.collider.tag == collider.tag && !item.isItBasedOnAnimationName)
             {
                 return Task.FromResult(true);
             }

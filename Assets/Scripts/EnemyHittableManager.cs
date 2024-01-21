@@ -4,7 +4,7 @@ using UnityEngine;
 using EnemyHittable;
 public class EnemyHittableManager : MonoBehaviour
 {
-    public static Task<bool> isEntityAnAttackObject(Collider2D collider, EnemyHittableObjects objects)
+    public static Task<bool> IsEntityAnAttackObject(Collider2D collider, EnemyHittableObjects objects)
     {
         for (int i = 0; i < objects.elements.Length; i++)
         {
