@@ -45,7 +45,6 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
     async Task<bool> IReceiverAsync<bool>.PerformAction(bool value)
     {
         PlayerVariables.Instance.slideVariableEvent.Invoke(value);
-        PlayerVariables.Instance.attackVariableEvent.Invoke(false);
         if (!_playerAttackStateMachine.IsInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
         {
             await Slide();
@@ -57,7 +56,6 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
     async Task<bool> IReceiverAsync<bool>.CancelAction()
     {
         PlayerVariables.Instance.slideVariableEvent.Invoke(false);
-
         return await Task.FromResult(true);
     }
 }

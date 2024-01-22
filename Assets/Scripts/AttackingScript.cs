@@ -136,7 +136,7 @@ public class AttackingScript : MonoBehaviour
             //sets the initial configuration for the attacking system
             SettingInitialAttackConfiguration(canAttackStateName, LeftMouseButtonPressed);
 
-            PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>();
+            PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>(_isPlayerEligibleForStartingAttack);
 
         }
 
@@ -157,7 +157,7 @@ public class AttackingScript : MonoBehaviour
 
     private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
     {
-        LeftMouseButtonPressed = context.ReadValueAsButton();
+        LeftMouseButtonPressed = !PlayerVariables.Instance.IS_SLIDING && context.ReadValueAsButton();
 
         if (IsAttackPrerequisiteMet())
         {
@@ -177,16 +177,15 @@ public class AttackingScript : MonoBehaviour
 
         foreach (T PAS in Enum.GetValues(typeof(T)))
         {
-            int _dummy = Convert.ToInt32(PAS) - 1; //converts to INTEnumStateManipulator
+            int dummy = Convert.ToInt32(PAS) - 1; //converts to INTEnumStateManipulator
 
-            if (PlayerAttackState == _dummy)
+            if (PlayerAttackState == dummy)
             {
-                _dummy++;
+                dummy++;
 
-                PlayerAttackState = _dummy <= enumSize ? _dummy : InitialStateOfTheEnum; //sets to the initial State of the Enum
+                PlayerAttackState = dummy <= enumSize ? dummy : InitialStateOfTheEnum; //sets to the initial State of the Enum
 
                 _playerAttackStateName = Enum.GetName(typeof(T), PlayerAttackState);
-
 
                 return true;
             }
@@ -199,9 +198,9 @@ public class AttackingScript : MonoBehaviour
     {
         _playerAttackStateMachine.CanAttack(canAttackStateName, leftMouseButtonPressed);
     }
-    private void PlayerAttackMechanism<T>()
+    private void PlayerAttackMechanism<T>(bool isPlayerEligibleForStartingAttack)
     {
-        if (_isPlayerEligibleForStartingAttack) //cast Type <T>
+        if (isPlayerEligibleForStartingAttack) //cast Type <T>
         {
             _playerAttackStateMachine.SetAttackState(attackStateName, _playerAttackState); //toggles state
 

@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerActions : MonoBehaviour 
 {
+    private const float MAX_SLIDING_TIME_ALLOW = 0.5f;
     private PlayerInput _playerInput;
     private Rocky2DActions _rocky2DActions;
     private Rigidbody2D _rb;
@@ -18,20 +20,16 @@ public class PlayerActions : MonoBehaviour
     public SlidingController SlidingController { get => GetComponent<SlidingController>(); }
     public JumpingController JumpingController { get => GetComponent<JumpingController>(); }
 
-    private float _characterVelocityY;
-    private float _characterVelocityX;
-    private bool _isJumpPressed;
-    private bool _isSlidePressed;
-    private float _originalSpeed;
-    public bool GetJumpPressed { get => _isJumpPressed; set => _isJumpPressed = value; }
-    public bool GetSlidePressed { get => _isSlidePressed; set => _isSlidePressed = value; }
-    public float CharacterVelocityY { get => _characterVelocityY; set => _characterVelocityY = value; }
-    public float CharacterVelocityX { get => _characterVelocityX; set => _characterVelocityX = value; }
-    public float CharacterSpeed { get => _characterSpeed; set => _characterSpeed = value; }
-
+    private bool GetJumpPressed { get; set; }
+    private bool GetSlidePressed { get; set; }
+    private float CharacterVelocityY { get; set; }
+    private float CharacterVelocityX { get; set; }
+    private float CharacterSpeed { get; set; }
+    private float SlidingTimeBegin { get; set; }
+    private float SlidingTimeEnd { get; set; }
+    private float OriginalSpeed { get; set; }
 
     //Force = -2m * sqrt (g * h)
-
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
@@ -43,13 +41,12 @@ public class PlayerActions : MonoBehaviour
         _jumpCommand = new Command<bool>(_jumpReceiver);
         _slideCommand = new CommandAsync<bool>(_slideReceiver);
         _rb = GetComponent<Rigidbody2D>();
-        _originalSpeed = _characterSpeed;
+        OriginalSpeed = _characterSpeed;
 
         _rocky2DActions.PlayerMovement.Jump.started += Jump; //i can add the same function
         _rocky2DActions.PlayerMovement.Jump.canceled += Jump;
-        _rocky2DActions.PlayerMovement.Slide.started += Slide;
-        _rocky2DActions.PlayerMovement.Slide.canceled += Slide;
-
+        _rocky2DActions.PlayerMovement.Slide.started += BeginSlideAction;
+        _rocky2DActions.PlayerMovement.Slide.canceled += EndSlideAction;
     }
 
     private void Start()
@@ -84,7 +81,7 @@ public class PlayerActions : MonoBehaviour
 
             //sliding
             _slideCommand.Execute(GetSlidePressed);
-
+            
         }
 
     }
@@ -98,7 +95,7 @@ public class PlayerActions : MonoBehaviour
 
         _animationHandler.RunningWalkingAnimation(keystroke.x);  //for movement, plays the animation
 
-        CharacterSpeed = _originalSpeed; //reset speed
+        CharacterSpeed = OriginalSpeed; //reset speed
 
         return keystroke;
     }
@@ -131,8 +128,17 @@ public class PlayerActions : MonoBehaviour
         GetJumpPressed = GetSlidePressed? false: context.ReadValueAsButton();
     }
 
-    private void Slide(InputAction.CallbackContext context)
+    private void BeginSlideAction(InputAction.CallbackContext context)
     {
-        GetSlidePressed =  GetJumpPressed == true && PlayerVariables.Instance.IS_ATTACKING == true? false : context.ReadValueAsButton();
+        GetSlidePressed = (GetJumpPressed || PlayerVariables.Instance.IS_ATTACKING)? false : context.ReadValueAsButton();
+        SlidingTimeBegin = (float)context.time;
     }
+    private void EndSlideAction(InputAction.CallbackContext context)
+    {
+        SlidingTimeEnd = (float)context.time;
+    }
+
+    //implement boost feature with slide
+
+
 }
