@@ -45,26 +45,26 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     {
         if (await CanPlayerJump()) //jumping
         {
-            PlayerVariables.jumpVariableEvent.Invoke(true);
+            PlayerVariables.Instance.jumpVariableEvent.Invoke(true);
 
             CharacterVelocityY = JumpSpeed * .5f;
 
-            _animationHandler.JumpingFalling(PlayerVariables.IS_JUMPING); //jumping animation
+            _animationHandler.JumpingFalling(PlayerVariables.Instance.IS_JUMPING); //jumping animation
         }
 
         if (await CanPlayerFall() || await MaxJumpTimeChecker()) //peak reached
         {
-            PlayerVariables.jumpVariableEvent.Invoke(false);
+            PlayerVariables.Instance.jumpVariableEvent.Invoke(false);
             CharacterVelocityY = -JumpSpeed * .8f;
 
             _isJumpPressed = false; //fixed the issue of eternally looping at jumep on JUMP HOLD
 
         }
 
-        if (!PlayerVariables.IS_JUMPING && !LedgeGroundChecker(groundLayer, ledgeLayer)) //falling
+        if (!PlayerVariables.Instance.IS_JUMPING && !LedgeGroundChecker(groundLayer, ledgeLayer)) //falling
         {
             CharacterVelocityY = -JumpSpeed * .8f; //extra check
-            _animationHandler.JumpingFalling(PlayerVariables.IS_JUMPING); //falling naimation
+            _animationHandler.JumpingFalling(PlayerVariables.Instance.IS_JUMPING); //falling naimation
 
         }
 
@@ -73,7 +73,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
             _timeCounter += Time.deltaTime;
         }
 
-        if (!PlayerVariables.IS_JUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !_isJumpPressed) //on the ground
+        if (!PlayerVariables.Instance.IS_JUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !_isJumpPressed) //on the ground
         {
             CharacterVelocityY = 0f;
             _timeCounter = 0;
@@ -85,7 +85,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
     private Task<bool> CanPlayerJump()
     {
-        bool isJumping = PlayerVariables.IS_JUMPING;
+        bool isJumping = PlayerVariables.Instance.IS_JUMPING;
         bool isOnLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
         bool isJumpPressed = _isJumpPressed;
 
@@ -94,7 +94,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
     private Task<bool> CanPlayerFall()
     {
-        bool isJumping = PlayerVariables.IS_JUMPING;
+        bool isJumping = PlayerVariables.Instance.IS_JUMPING;
         bool isOnLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
         bool isJumpPressed = _isJumpPressed;
 

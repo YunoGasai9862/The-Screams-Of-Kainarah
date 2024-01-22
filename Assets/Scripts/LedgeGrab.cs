@@ -45,21 +45,21 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         redXOffset = await GetBoxPosition(sr, redXOffset);
 
         if (!_helperFunc.overlapAgainstLayerMaskChecker(ref col, groundMask) && greenBox &&
-            PlayerVariables.IS_GRABBING)
+            PlayerVariables.Instance.IS_GRABBING)
         {
             _timeSpent += Time.deltaTime;
         }
 
         if (TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB) || _helperFunc.overlapAgainstLayerMaskChecker(ref col, ledge))
         {
-            PlayerVariables.grabVariableEvent.Invoke(false);
+            PlayerVariables.Instance.grabVariableEvent.Invoke(false);
 
             _timeSpent = 0f;
         }
 
-        if (greenBox && !redBox && PlayerVariables.IS_JUMPING)
+        if (greenBox && !redBox && PlayerVariables.Instance.IS_JUMPING)
         {
-            PlayerVariables.grabVariableEvent.Invoke(true);
+            PlayerVariables.Instance.grabVariableEvent.Invoke(true);
         }
 
         //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
@@ -101,8 +101,8 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     {
         rb.velocity = new Vector2(0, 0);
         rb.gravityScale = 0f;
-        PlayerVariables.grabVariableEvent.Invoke(true);
-        anim.SetBool("LedgeGrab", PlayerVariables.IS_GRABBING);
+        PlayerVariables.Instance.grabVariableEvent.Invoke(true);
+        anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
         return true;
     }
 
@@ -126,8 +126,8 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
            && CanGrab)
         {
             await HandleLedgeGrabCalculations(sign, startingGrav, force, groundPositionBeforeLedgeGrab, maximumVelocities);  //this is for setting the animation to false
-            anim.SetBool("LedgeGrab", PlayerVariables.IS_GRABBING);
-            PlayerVariables.grabVariableEvent.Invoke(false);
+            anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
+            PlayerVariables.Instance.grabVariableEvent.Invoke(false);
         }
     }
 

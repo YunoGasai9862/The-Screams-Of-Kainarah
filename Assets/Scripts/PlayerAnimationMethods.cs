@@ -60,8 +60,8 @@ public class PlayerAnimationMethods : MonoBehaviour
 
     private void SetMovementStates(bool isRunning, bool isWalking)
     {
-        PlayerVariables.runVariableEvent.Invoke(isRunning);
-        PlayerVariables.walkVariableEvent.Invoke(isWalking);
+        PlayerVariables.Instance.runVariableEvent.Invoke(isRunning);
+        PlayerVariables.Instance.walkVariableEvent.Invoke(isWalking);
     }
 
     public void JumpingFalling(bool keystroke)

@@ -14,9 +14,9 @@ public class PlayerActions : MonoBehaviour
     private IReceiverAsync<bool> _slideReceiver;
 
     [SerializeField] float _characterSpeed = 10f;
-    [SerializeField] LedgeGrabController ledgeGrabController;
-    [SerializeField] JumpingController jumpingController;
-    [SerializeField] SlidingController slidingController;
+    public LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
+    public SlidingController SlidingController { get => GetComponent<SlidingController>(); }
+    public JumpingController JumpingController { get => GetComponent<JumpingController>(); }
 
     private float _characterVelocityY;
     private float _characterVelocityX;
@@ -57,8 +57,8 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
 
         //event subscription
-        jumpingController.onPlayerJumpEvent.AddListener(VelocityYEventHandler);
-        slidingController.onSlideEvent.AddListener(CharacterSpeedHandler);
+        JumpingController.onPlayerJumpEvent.AddListener(VelocityYEventHandler);
+        SlidingController.onSlideEvent.AddListener(CharacterSpeedHandler);
     }
   
     private void Update()
@@ -76,9 +76,9 @@ public class PlayerActions : MonoBehaviour
             _jumpCommand.Execute(GetJumpPressed);
 
             //ledge grab
-            if (PlayerVariables.IS_GRABBING) //tackles the ledgeGrab
+            if (PlayerVariables.Instance.IS_GRABBING) //tackles the ledgeGrab
             {
-                ledgeGrabController.PerformLedgeGrab();
+                LedgeGrabController.PerformLedgeGrab();
                 return;
             }
 
@@ -133,6 +133,6 @@ public class PlayerActions : MonoBehaviour
 
     private void Slide(InputAction.CallbackContext context)
     {
-        GetSlidePressed =  GetJumpPressed && PlayerVariables.IS_ATTACKING? false : context.ReadValueAsButton();
+        GetSlidePressed =  GetJumpPressed == true && PlayerVariables.Instance.IS_ATTACKING == true? false : context.ReadValueAsButton();
     }
 }

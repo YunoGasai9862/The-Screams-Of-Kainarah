@@ -28,7 +28,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
     private Task Slide()
     {
-        if (PlayerVariables.IS_SLIDING && !PlayerVariables.IS_ATTACKING &&
+        if (PlayerVariables.Instance.IS_SLIDING && !PlayerVariables.Instance.IS_ATTACKING &&
          _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, groundLayer))
         {
             onSlideEvent.Invoke(slidingSpeed); //posting
@@ -36,7 +36,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
         if (_animationHandler.returnCurrentAnimation() > MAX_ANIMATION_TIME && _animationHandler.isNameOfTheCurrentAnimation(AnimationConstants.SLIDING))
         {
-            PlayerVariables.slideVariableEvent.Invoke(false);
+            PlayerVariables.Instance.slideVariableEvent.Invoke(false);
         } 
 
         return Task.CompletedTask;
@@ -44,20 +44,20 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
     async Task<bool> IReceiverAsync<bool>.PerformAction(bool value)
     {
-        PlayerVariables.slideVariableEvent.Invoke(value);
-
+        PlayerVariables.Instance.slideVariableEvent.Invoke(value);
+        PlayerVariables.Instance.attackVariableEvent.Invoke(false);
         if (!_playerAttackStateMachine.IsInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
         {
-            _animationHandler.Sliding(PlayerVariables.IS_SLIDING); //set animation
-
             await Slide();
         }
+        _animationHandler.Sliding(PlayerVariables.Instance.IS_SLIDING); //set animation
 
         return await Task.FromResult(true);
     }
-
-    Task<bool> IReceiverAsync<bool>.CancelAction()
+    async Task<bool> IReceiverAsync<bool>.CancelAction()
     {
-        return Task.FromResult(false);
+        PlayerVariables.Instance.slideVariableEvent.Invoke(false);
+
+        return await Task.FromResult(true);
     }
 }

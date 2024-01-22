@@ -15,7 +15,6 @@ public class AttackingScript : MonoBehaviour
     private MovementHelperClass _movementHelper;
     private Rocky2DActions _rocky2DActions;
     private PlayerInput _playerInput;
-    private bool leftMouseButtonPressed;
     private int _playerAttackState = 0;
     private string _playerAttackStateName;
     private PlayerAttackStateMachine _playerAttackStateMachine;
@@ -35,7 +34,7 @@ public class AttackingScript : MonoBehaviour
     [SerializeField] string jumpAttackStateName;
     [SerializeField] string daggerAttackName;
     [SerializeField] string pickableItemClassTag;
-
+    public bool LeftMouseButtonPressed { get; set; }
     private void Awake()
     {
         _anim = GetComponent<Animator>();
@@ -56,9 +55,9 @@ public class AttackingScript : MonoBehaviour
 
         _rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
 
-        _rocky2DActions.PlayerAttack.Attack.started += PlayerAttackStart;
+        _rocky2DActions.PlayerAttack.Attack.started += HandlePlayerAttackStart;
 
-        _rocky2DActions.PlayerAttack.Attack.canceled += PlayerAttackCancel;
+        _rocky2DActions.PlayerAttack.Attack.canceled += HandlePlayerAttackCancel;
 
         _rocky2DActions.PlayerAttack.ThrowProjectile.started += ThrowDaggerInput;
 
@@ -105,14 +104,14 @@ public class AttackingScript : MonoBehaviour
 
         GameObjectInstantiator _daggerInstantiator = new(prefab);
 
-        GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(getDaggerPositionwithOffset(2, -1), Quaternion.identity);
+        GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(GetDaggerPositionwithOffset(2, -1), Quaternion.identity);
 
         await CreateInventorySystem.ReduceQuantity(prefab.gameObject.tag);
 
         _daggerGameObject.GetComponent<AttackEnemy>().throwDagger = true;
     }
 
-    public Vector2 getDaggerPositionwithOffset(float xOffset, float yOffset)
+    public Vector2 GetDaggerPositionwithOffset(float xOffset, float yOffset)
     {
         return IsPlayerFlipped(_spriteRenderer)? new Vector2(transform.position.x - xOffset, transform.position.y + yOffset) :
             new Vector2(transform.position.x + xOffset, transform.position.y + yOffset);
@@ -123,43 +122,42 @@ public class AttackingScript : MonoBehaviour
         return _sr.flipX;
     }
 
-    private void PlayerAttackStart(InputAction.CallbackContext context)
+    private void HandlePlayerAttackStart(InputAction.CallbackContext context)
     {
-        leftMouseButtonPressed = context.ReadValueAsButton();
+        LeftMouseButtonPressed = !PlayerVariables.Instance.IS_SLIDING && context.ReadValueAsButton();
 
         if (IsAttackPrerequisiteMet()) //ground attack
         {
             _timeForMouseClickStart = (float)context.time;
-
-            PlayerVariables.attackVariableEvent.Invoke(true);
+            PlayerVariables.Instance.attackVariableEvent.Invoke(true);
             //keeps track of attacking states
             _isPlayerEligibleForStartingAttack = EnumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
 
             //sets the initial configuration for the attacking system
-            settingInitialAttackConfiguration(canAttackStateName, leftMouseButtonPressed);
+            SettingInitialAttackConfiguration(canAttackStateName, LeftMouseButtonPressed);
 
             PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>();
 
         }
 
-        if (isJumpAttackPrequisitesMet())
+        if (IsJumpAttackPrequisitesMet())
         {
-            _playerAttackStateMachine.SetAttackState(jumpAttackStateName, leftMouseButtonPressed);
+            _playerAttackStateMachine.SetAttackState(jumpAttackStateName, LeftMouseButtonPressed);
 
         }
     }
 
-    private bool isJumpAttackPrequisitesMet()
+    private bool IsJumpAttackPrequisitesMet()
     {
-        bool isJumping = PlayerVariables.IS_JUMPING;
+        bool isJumping = PlayerVariables.Instance.IS_JUMPING;
         bool isOnTheGround = _movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground);
 
         return isJumping && !isOnTheGround;
     }
 
-    private void PlayerAttackCancel(InputAction.CallbackContext context)
+    private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
     {
-        leftMouseButtonPressed = context.ReadValueAsButton();
+        LeftMouseButtonPressed = context.ReadValueAsButton();
 
         if (IsAttackPrerequisiteMet())
         {
@@ -167,10 +165,10 @@ public class AttackingScript : MonoBehaviour
 
             _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
-            PlayerVariables.attackVariableEvent.Invoke(false);
+            PlayerVariables.Instance.attackVariableEvent.Invoke(false);
         }
 
-        _playerAttackStateMachine.SetAttackState(jumpAttackStateName, leftMouseButtonPressed); //no jump attack
+        _playerAttackStateMachine.SetAttackState(jumpAttackStateName, LeftMouseButtonPressed); //no jump attack
 
     }
     private bool EnumStateManipulator<T>(ref int PlayerAttackState, int InitialStateOfTheEnum)
@@ -197,9 +195,8 @@ public class AttackingScript : MonoBehaviour
         return false;
     }
 
-    private void settingInitialAttackConfiguration(string canAttackStateName, bool leftMouseButtonPressed)
+    private void SettingInitialAttackConfiguration(string canAttackStateName, bool leftMouseButtonPressed)
     {
-
         _playerAttackStateMachine.CanAttack(canAttackStateName, leftMouseButtonPressed);
     }
     private void PlayerAttackMechanism<T>()
@@ -232,7 +229,7 @@ public class AttackingScript : MonoBehaviour
         _playerAttackStateMachine.CanAttack(canAttackStateName, false);
         _playerAttackStateMachine.CanAttack(jumpAttackStateName, false);
         _playerAttackState = 0; //resets the attackingstate
-        PlayerVariables.attackVariableEvent.Invoke(false);
+        PlayerVariables.Instance.attackVariableEvent.Invoke(false);
     }
 
     private float TimeDifference(float EndTime, float StartTime)
@@ -251,10 +248,10 @@ public class AttackingScript : MonoBehaviour
     public bool IsAttackPrerequisiteMet()
     {
         bool isDialogueOpen = GameObjectCreator.GetDialogueManager().IsOpen();
-        bool isJumping = PlayerVariables.IS_JUMPING;
+        bool isJumping = PlayerVariables.Instance.IS_JUMPING;
         bool isBuying = OpenWares.Buying;
         bool isInventoryOpen = GameObjectCreator.GetInventoryOpenCloseManager().isOpenInventory;
-        bool isSliding = PlayerVariables.IS_SLIDING;
+        bool isSliding = PlayerVariables.Instance.IS_SLIDING;
 
         return !isDialogueOpen && !isBuying && !isInventoryOpen && !isSliding && !isJumping;
     }
