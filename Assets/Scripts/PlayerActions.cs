@@ -14,11 +14,14 @@ public class PlayerActions : MonoBehaviour
     private CommandAsync<bool> _slideCommand;
     private IReceiver<bool> _jumpReceiver;
     private IReceiverAsync<bool> _slideReceiver;
+    private IReceiver<bool> _attackReceiver;
+    private Command<bool> _attackCommand;
 
     [SerializeField] float _characterSpeed = 10f;
     public LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
     public SlidingController SlidingController { get => GetComponent<SlidingController>(); }
     public JumpingController JumpingController { get => GetComponent<JumpingController>(); }
+    public AttackingController AttackingController { get => GetComponent<AttackingController>(); } //implement all the actions together
 
     private bool GetJumpPressed { get; set; }
     private bool GetSlidePressed { get; set; }
@@ -38,6 +41,8 @@ public class PlayerActions : MonoBehaviour
         _animationHandler = GetComponent<PlayerAnimationMethods>();
         _jumpReceiver = GetComponent<JumpingController>();
         _slideReceiver = GetComponent<SlidingController>();
+        _attackReceiver = GetComponent<AttackingController>();
+        _attackCommand = new Command<bool>(_attackReceiver);
         _jumpCommand = new Command<bool>(_jumpReceiver);
         _slideCommand = new CommandAsync<bool>(_slideReceiver);
         _rb = GetComponent<Rigidbody2D>();
@@ -70,7 +75,10 @@ public class PlayerActions : MonoBehaviour
                 FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
 
             //jumping
-            _jumpCommand.Execute(GetJumpPressed);
+            if(GetJumpPressed)
+                _jumpCommand.Execute();
+            else
+                _jumpCommand.Cancel();
 
             //ledge grab
             if (PlayerVariables.Instance.IS_GRABBING) //tackles the ledgeGrab
@@ -80,8 +88,10 @@ public class PlayerActions : MonoBehaviour
             }
 
             //sliding
-            _slideCommand.Execute(GetSlidePressed);
-            
+            if(GetSlidePressed)
+                _slideCommand.Execute();
+            else
+                _slideCommand.Cancel();
         }
 
     }
@@ -130,11 +140,12 @@ public class PlayerActions : MonoBehaviour
 
     private void BeginSlideAction(InputAction.CallbackContext context)
     {
-        GetSlidePressed = (GetJumpPressed || PlayerVariables.Instance.IS_ATTACKING)? false : context.ReadValueAsButton();
+        GetSlidePressed = (GetJumpPressed == true || PlayerVariables.Instance.IS_ATTACKING == true) ? false : context.ReadValueAsButton();
         SlidingTimeBegin = (float)context.time;
     }
     private void EndSlideAction(InputAction.CallbackContext context)
     {
+        GetSlidePressed = (GetJumpPressed == true || PlayerVariables.Instance.IS_ATTACKING == true) ? false : context.ReadValueAsButton();
         SlidingTimeEnd = (float)context.time;
     }
 

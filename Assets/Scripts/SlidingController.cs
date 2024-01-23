@@ -2,6 +2,7 @@ using CoreCode;
 using PlayerAnimationHandler;
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 {
@@ -28,34 +29,35 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
     private Task Slide()
     {
-        if (PlayerVariables.Instance.IS_SLIDING && !PlayerVariables.Instance.IS_ATTACKING &&
-         _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, groundLayer))
+        if (PlayerVariables.Instance.IS_SLIDING && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, groundLayer))
         {
-            onSlideEvent.Invoke(slidingSpeed); //posting
+            onSlideEvent.Invoke(slidingSpeed); //posting for speed
+
+            _animationHandler.Sliding(true); //set animation
         }
 
         if (_animationHandler.returnCurrentAnimation() > MAX_ANIMATION_TIME && _animationHandler.isNameOfTheCurrentAnimation(AnimationConstants.SLIDING))
         {
-            PlayerVariables.Instance.slideVariableEvent.Invoke(false);
-        } 
+            _animationHandler.Sliding(false);
+        }
 
         return Task.CompletedTask;
     }
 
     async Task<bool> IReceiverAsync<bool>.PerformAction(bool value)
     {
-        PlayerVariables.Instance.slideVariableEvent.Invoke(value);
+        PlayerVariables.Instance.slideVariableEvent.Invoke(true);
+
         if (!_playerAttackStateMachine.IsInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
         {
             await Slide();
         }
-        _animationHandler.Sliding(PlayerVariables.Instance.IS_SLIDING); //set animation
-
         return await Task.FromResult(true);
     }
     async Task<bool> IReceiverAsync<bool>.CancelAction()
     {
         PlayerVariables.Instance.slideVariableEvent.Invoke(false);
+
         return await Task.FromResult(true);
     }
 }

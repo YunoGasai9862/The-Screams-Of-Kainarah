@@ -1,9 +1,10 @@
 using CoreCode;
+using NUnit.Framework.Internal;
 using PlayerAnimationHandler;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-public class AttackingScript : MonoBehaviour
+public class AttackingController : MonoBehaviour, IReceiver<bool>
 {
     private const float TIME_DIFFERENCE_MAX = 1.5f;
 
@@ -15,8 +16,6 @@ public class AttackingScript : MonoBehaviour
     private MovementHelperClass _movementHelper;
     private Rocky2DActions _rocky2DActions;
     private PlayerInput _playerInput;
-    private int _playerAttackState = 0;
-    private string _playerAttackStateName;
     private PlayerAttackStateMachine _playerAttackStateMachine;
     private bool _isPlayerEligibleForStartingAttack = false;
     private float timeDifferencebetweenStates;
@@ -35,6 +34,9 @@ public class AttackingScript : MonoBehaviour
     [SerializeField] string daggerAttackName;
     [SerializeField] string pickableItemClassTag;
     public bool LeftMouseButtonPressed { get; set; }
+    private int PlayerAttackState { get; set; }
+    private string PlayerAttackStateName { get; set; }
+
     private void Awake()
     {
         _anim = GetComponent<Animator>();
@@ -63,7 +65,7 @@ public class AttackingScript : MonoBehaviour
 
         _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += ThrowDaggerInput;
 
-        _playerAttackState = 0;
+        PlayerAttackState = 0;
     }
 
     private void Start()
@@ -74,13 +76,9 @@ public class AttackingScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (IsAttackPrerequisiteMet())
+        if (PlayerVariables.Instance.IS_SLIDING || _playerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
         {
-            if (_playerAttackStateMachine.IstheAttackCancelConditionTrue(_playerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
-            {
-                ResetAttackStatuses();
-            }
-
+            ResetAttackingState();
         }
     }
 
@@ -101,17 +99,16 @@ public class AttackingScript : MonoBehaviour
 
     private async void ThrowDagger(GameObject prefab)
     {
-
         GameObjectInstantiator _daggerInstantiator = new(prefab);
 
-        GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(GetDaggerPositionwithOffset(2, -1), Quaternion.identity);
+        GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(GetDaggerPositionWithOffset(2, -1), Quaternion.identity);
 
         await CreateInventorySystem.ReduceQuantity(prefab.gameObject.tag);
 
         _daggerGameObject.GetComponent<AttackEnemy>().throwDagger = true;
     }
 
-    public Vector2 GetDaggerPositionwithOffset(float xOffset, float yOffset)
+    public Vector2 GetDaggerPositionWithOffset(float xOffset, float yOffset)
     {
         return IsPlayerFlipped(_spriteRenderer)? new Vector2(transform.position.x - xOffset, transform.position.y + yOffset) :
             new Vector2(transform.position.x + xOffset, transform.position.y + yOffset);
@@ -124,17 +121,18 @@ public class AttackingScript : MonoBehaviour
 
     private void HandlePlayerAttackStart(InputAction.CallbackContext context)
     {
-        LeftMouseButtonPressed = !PlayerVariables.Instance.IS_SLIDING && context.ReadValueAsButton();
+        LeftMouseButtonPressed = (PlayerVariables.Instance.IS_SLIDING == true)? false: context.ReadValueAsButton();
 
         if (IsAttackPrerequisiteMet()) //ground attack
         {
             _timeForMouseClickStart = (float)context.time;
+
             PlayerVariables.Instance.attackVariableEvent.Invoke(true);
-            //keeps track of attacking states
-            _isPlayerEligibleForStartingAttack = EnumStateManipulator<PlayerAttackEnum.PlayerAttackSlash>(ref _playerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
+            //keeps track of attacking state
+            (PlayerAttackState, PlayerAttackStateName, _isPlayerEligibleForStartingAttack) = GetEnumStateAndName<PlayerAttackEnum.PlayerAttackSlash>( PlayerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
 
             //sets the initial configuration for the attacking system
-            SettingInitialAttackConfiguration(canAttackStateName, LeftMouseButtonPressed);
+            _playerAttackStateMachine.CanAttack(canAttackStateName, LeftMouseButtonPressed);
 
             PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>(_isPlayerEligibleForStartingAttack);
 
@@ -157,65 +155,57 @@ public class AttackingScript : MonoBehaviour
 
     private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
     {
-        LeftMouseButtonPressed = !PlayerVariables.Instance.IS_SLIDING && context.ReadValueAsButton();
+        LeftMouseButtonPressed = (PlayerVariables.Instance.IS_SLIDING == true) ? false : context.ReadValueAsButton();
 
-        if (IsAttackPrerequisiteMet())
-        {
-            _timeForMouseClickEnd = (float)context.time;
+        _timeForMouseClickEnd = (float)context.time;
 
-            _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
+        _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
-            PlayerVariables.Instance.attackVariableEvent.Invoke(false);
-        }
-
+        PlayerVariables.Instance.attackVariableEvent.Invoke(false);
+        
         _playerAttackStateMachine.SetAttackState(jumpAttackStateName, LeftMouseButtonPressed); //no jump attack
 
     }
-    private bool EnumStateManipulator<T>(ref int PlayerAttackState, int InitialStateOfTheEnum)
+    private (int, string, bool) GetEnumStateAndName<T>(int playerAttackState, int initialStateOfTheEnum)
     {
         int enumSize = GetLenthofEnum<T>(); //returns the length of the Enum
+        string playerAttackStateName = String.Empty;
 
         foreach (T PAS in Enum.GetValues(typeof(T)))
         {
             int dummy = Convert.ToInt32(PAS) - 1; //converts to INTEnumStateManipulator
 
-            if (PlayerAttackState == dummy)
+            if (playerAttackState == dummy)
             {
                 dummy++;
 
-                PlayerAttackState = dummy <= enumSize ? dummy : InitialStateOfTheEnum; //sets to the initial State of the Enum
+                playerAttackState = dummy <= enumSize ? dummy : initialStateOfTheEnum; //sets to the initial State of the Enum
 
-                _playerAttackStateName = Enum.GetName(typeof(T), PlayerAttackState);
+                playerAttackStateName = Enum.GetName(typeof(T), playerAttackState);
 
-                return true;
+                return (playerAttackState, playerAttackStateName, true);
             }
         }
 
-        return false;
+        return (playerAttackState, playerAttackStateName, false);
     }
 
-    private void SettingInitialAttackConfiguration(string canAttackStateName, bool leftMouseButtonPressed)
-    {
-        _playerAttackStateMachine.CanAttack(canAttackStateName, leftMouseButtonPressed);
-    }
     private void PlayerAttackMechanism<T>(bool isPlayerEligibleForStartingAttack)
     {
         if (isPlayerEligibleForStartingAttack) //cast Type <T>
         {
-            _playerAttackStateMachine.SetAttackState(attackStateName, _playerAttackState); //toggles state
+            _playerAttackStateMachine.SetAttackState(attackStateName, PlayerAttackState); //toggles state
 
             timeDifferencebetweenStates = TimeDifference(_timeForMouseClickEnd, _timeForMouseClickStart);
 
             _playerAttackStateMachine.TimeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName, timeDifferencebetweenStates);     //keeps track of time elapsed
 
-            if (IsEnumValueEqualToLengthOfEnum<T>(_playerAttackStateName) ||
-                (IsTimeDifferenceWithinRange(timeDifferencebetweenStates, TIME_DIFFERENCE_MAX) &&
-                _playerAttackStateName != _playerAttackStateMachine.GetStateNameThroughEnum(1))) //dont do it for the first attackState
-            {
-                ResetAttackStatuses();
-                return;
-            }
+        }
 
+        if (IsEnumValueEqualToLengthOfEnum<T>(PlayerAttackStateName) || (IsTimeDifferenceWithinRange(timeDifferencebetweenStates, TIME_DIFFERENCE_MAX) && PlayerAttackStateName != _playerAttackStateMachine.GetStateNameThroughEnum(1))) //dont do it for the first attackState
+        {
+            ResetAttackingState();
+            return;
         }
     }
 
@@ -223,12 +213,12 @@ public class AttackingScript : MonoBehaviour
     {
         return value > upperBoundary;
     }
-    private void ResetAttackStatuses()
+    private void ResetAttackingState()
     {
-        _playerAttackStateMachine.CanAttack(canAttackStateName, false);
-        _playerAttackStateMachine.CanAttack(jumpAttackStateName, false);
-        _playerAttackState = 0; //resets the attackingstate
+        PlayerAttackState = 0; //resets the attackingstate
         PlayerVariables.Instance.attackVariableEvent.Invoke(false);
+        _playerAttackStateMachine.CanAttack(canAttackStateName, PlayerVariables.Instance.IS_ATTACKING);
+        _playerAttackStateMachine.CanAttack(jumpAttackStateName, PlayerVariables.Instance.IS_ATTACKING);
     }
 
     private float TimeDifference(float EndTime, float StartTime)
@@ -250,9 +240,8 @@ public class AttackingScript : MonoBehaviour
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
         bool isBuying = OpenWares.Buying;
         bool isInventoryOpen = GameObjectCreator.GetInventoryOpenCloseManager().isOpenInventory;
-        bool isSliding = PlayerVariables.Instance.IS_SLIDING;
 
-        return !isDialogueOpen && !isBuying && !isInventoryOpen && !isSliding && !isJumping;
+        return !isDialogueOpen && !isBuying && !isInventoryOpen && !isJumping;
     }
     public void Icetail()
     {
@@ -266,5 +255,15 @@ public class AttackingScript : MonoBehaviour
         GameObjectInstantiator iceTrail = new(IceTrail2);
         iceTrail.InstantiateGameObject(transform.position, Quaternion.identity);
         iceTrail.setGameObjectParent(transform);
+    }
+
+    public bool PerformAction(bool value = false)
+    {
+        return true;
+    }
+
+    public bool CancelAction()
+    {
+        return true;
     }
 }

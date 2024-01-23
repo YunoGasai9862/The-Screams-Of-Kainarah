@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class JumpingController : MonoBehaviour, IReceiver<bool>
 {
@@ -21,12 +22,13 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     public float CharacterVelocityY { get => _characterVelocityY; set => _characterVelocityY = value; }
     public bool CancelAction()
     {
-        return false;
+        PlayerVariables.Instance.jumpVariableEvent.Invoke(false);
+        return true;
     }
 
     public bool PerformAction(bool value)
     {
-        _isJumpPressed = value;
+        _isJumpPressed = true;
         return true;
     }
     private void Awake()
@@ -56,7 +58,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         {
             PlayerVariables.Instance.jumpVariableEvent.Invoke(false);
             CharacterVelocityY = -JumpSpeed * .8f;
-
             _isJumpPressed = false; //fixed the issue of eternally looping at jumep on JUMP HOLD
 
         }
