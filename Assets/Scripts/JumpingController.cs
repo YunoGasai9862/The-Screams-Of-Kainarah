@@ -1,8 +1,13 @@
+using PlayerAnimationHandler;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public class JumpingController : MonoBehaviour, IReceiver<bool>
 {
+    private const float FALLING_SPEED = 0.8f;
+    private const float JUMPING_SPEED = 0.5f;
+    private const float MAX_FALL_TIME = 0.5f;
+
     private Rigidbody2D _rb;
     private PlayerAnimationMethods _animationHandler;
     private IOverlapChecker _movementHelperClass;
@@ -38,9 +43,9 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         _rb = GetComponent<Rigidbody2D>();
         onPlayerJumpEvent = new PlayerJumpEvent();
     }
-    private void Update()
+    private async void Update()
     {
-        _= HandleJumpingMechanism();
+        await HandleJumpingMechanism();
     }
     public async Task HandleJumpingMechanism()
     {
@@ -57,17 +62,14 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     {
         if (!PlayerVariables.Instance.IS_JUMPING && !LedgeGroundChecker(groundLayer, ledgeLayer)) //falling
         {
-            CharacterVelocityY = -JumpSpeed * .8f; //extra check
+            CharacterVelocityY = -JumpSpeed * FALLING_SPEED; //extra check
 
-            _animationHandler.JumpingFalling(PlayerVariables.Instance.IS_JUMPING); //falling naimation
-
+            _animationHandler.JumpingFallingAnimationHandler(false);
         }
 
-        if (!PlayerVariables.Instance.IS_JUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !_isJumpPressed) //on the ground
+        if (LedgeGroundChecker(groundLayer, ledgeLayer) && !_isJumpPressed) //on the ground
         {
             CharacterVelocityY = 0f;
-
-            _animationHandler.RunningWalkingAnimation(0);
 
             _timeCounter = 0;
         }
@@ -81,9 +83,9 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         {
             PlayerVariables.Instance.jumpVariableEvent.Invoke(true);
 
-            CharacterVelocityY = JumpSpeed * .5f;
+            CharacterVelocityY = JumpSpeed * JUMPING_SPEED;
 
-            _animationHandler.JumpingFalling(PlayerVariables.Instance.IS_JUMPING); //jumping animation
+            _animationHandler.JumpingFallingAnimationHandler(true); //jumping animation
         }
 
         if (await CanPlayerFall() || await MaxJumpTimeChecker()) //peak reached

@@ -31,6 +31,8 @@ public class PlayerActions : MonoBehaviour
     private float SlidingTimeBegin { get; set; }
     private float SlidingTimeEnd { get; set; }
     private float OriginalSpeed { get; set; }
+    public bool LeftMouseButtonPressed { get; set; }
+
 
     //Force = -2m * sqrt (g * h)
     private void Awake()
@@ -52,27 +54,13 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerMovement.Jump.canceled += Jump;
         _rocky2DActions.PlayerMovement.Slide.started += BeginSlideAction;
         _rocky2DActions.PlayerMovement.Slide.canceled += EndSlideAction;
+
         _rocky2DActions.PlayerAttack.Attack.started += HandlePlayerAttackStart;
         _rocky2DActions.PlayerAttack.Attack.canceled += HandlePlayerAttackCancel;
         _rocky2DActions.PlayerAttack.ThrowProjectile.started += ThrowDaggerInput;
         _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += ThrowDaggerInput;
 
 
-    }
-
-    private void ThrowDaggerInput(InputAction.CallbackContext context)
-    {
-        throw new NotImplementedException();
-    }
-
-    private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
-    {
-        throw new NotImplementedException();
-    }
-
-    private void HandlePlayerAttackStart(InputAction.CallbackContext context)
-    {
-        throw new NotImplementedException();
     }
 
     private void Start()
@@ -173,6 +161,23 @@ public class PlayerActions : MonoBehaviour
     }
 
     //implement boost feature with slide
+    //To-Do
 
+
+    //attacking mechanism centralized
+    private void ThrowDaggerInput(InputAction.CallbackContext context)
+    {
+
+    }
+
+    private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
+    {
+        LeftMouseButtonPressed = (PlayerVariables.Instance.IS_SLIDING == true) ? false : context.ReadValueAsButton();
+    }
+
+    private void HandlePlayerAttackStart(InputAction.CallbackContext context)
+    {
+        LeftMouseButtonPressed = (PlayerVariables.Instance.IS_SLIDING == true) ? false : context.ReadValueAsButton();
+    }
 
 }

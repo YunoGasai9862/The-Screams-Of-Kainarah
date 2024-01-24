@@ -5,7 +5,7 @@ public class PlayerAnimationMethods : MonoBehaviour
 {
     private AnimationStateMachine _stateMachine;
     private Animator _anim;
-    private float maxSlideTime = 0.4f;
+    private float _maxSlideTime = 0.4f;
 
     private void Awake()
     {
@@ -18,7 +18,7 @@ public class PlayerAnimationMethods : MonoBehaviour
     private void Update()
     {
         if (_anim != null && _anim.GetCurrentAnimatorStateInfo(0).IsName(AnimationConstants.SLIDING) &&
-            returnCurrentAnimation() > maxSlideTime)
+            returnCurrentAnimation() > _maxSlideTime)
         {
             PlayAnimation(AnimationConstants.SLIDING, false);  //for fixing the Sliding Issue
         }
@@ -41,21 +41,19 @@ public class PlayerAnimationMethods : MonoBehaviour
 
     public void RunningWalkingAnimation(float keystroke)
     {
-        AnimationStateKeeper.StateKeeper state;
-
         if (VectorChecker(keystroke))
         {
-            state = AnimationStateKeeper.StateKeeper.RUNNING;
+            AnimationStateKeeper.CurrentPlayerState = (int)AnimationStateKeeper.StateKeeper.RUNNING;
             SetMovementStates(true, false);
         }
         else
         {
-            state = AnimationStateKeeper.StateKeeper.IDLE;
+            AnimationStateKeeper.CurrentPlayerState = (int)AnimationStateKeeper.StateKeeper.IDLE;
             SetMovementStates(false, true);
         }
 
 
-        PlayAnimation(AnimationConstants.MOVEMENT, (int)state);
+        PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
     }
 
     private void SetMovementStates(bool isRunning, bool isWalking)
@@ -64,12 +62,12 @@ public class PlayerAnimationMethods : MonoBehaviour
         PlayerVariables.Instance.walkVariableEvent.Invoke(isWalking);
     }
 
-    public void JumpingFalling(bool keystroke)
+    public void JumpingFallingAnimationHandler(bool keystroke)
     {
-        AnimationStateKeeper.StateKeeper state = keystroke
-            ? AnimationStateKeeper.StateKeeper.JUMP
-            : AnimationStateKeeper.StateKeeper.FALL;
-        PlayAnimation(AnimationConstants.MOVEMENT, (int)state);
+        AnimationStateKeeper.CurrentPlayerState = keystroke
+            ? (int)AnimationStateKeeper.StateKeeper.JUMP
+            : (int)AnimationStateKeeper.StateKeeper.FALL;
+        PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
     }
 
     public void Sliding(bool keystroke)

@@ -937,9 +937,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterSpeed: 10
-  ledgeGrabController: {fileID: -7079114110776597852}
-  jumpingController: {fileID: 5169309916338779487}
-  slidingController: {fileID: -7060034625620182088}
 --- !u!114 &6549680331415743501
 MonoBehaviour:
   m_ObjectHideFlags: 0

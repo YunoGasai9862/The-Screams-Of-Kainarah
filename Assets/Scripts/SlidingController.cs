@@ -29,6 +29,8 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
     private Task Slide()
     {
+        PlayerVariables.Instance.slideVariableEvent.Invoke(true);
+
         if (PlayerVariables.Instance.IS_SLIDING && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, groundLayer))
         {
             onSlideEvent.Invoke(slidingSpeed); //posting for speed
@@ -46,8 +48,6 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
     async Task<bool> IReceiverAsync<bool>.PerformAction(bool value)
     {
-        PlayerVariables.Instance.slideVariableEvent.Invoke(true);
-
         if (!_playerAttackStateMachine.IsInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
         {
             await Slide();

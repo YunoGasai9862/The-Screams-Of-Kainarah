@@ -33,7 +33,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     [SerializeField] string jumpAttackStateName;
     [SerializeField] string daggerAttackName;
     [SerializeField] string pickableItemClassTag;
-    public bool LeftMouseButtonPressed { get; set; }
     private int PlayerAttackState { get; set; }
     private string PlayerAttackStateName { get; set; }
 
@@ -86,7 +85,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     {
         throwDagger = context.ReadValueAsButton();
 
-        _playerAttackStateMachine.SetAttackState(AnimationConstants.THROWDAGGER, throwDagger);
+        _playerAttackStateMachine.SetAttackState(AnimationConstants.THROW_DAGGER, throwDagger);
 
         GameObject daggerInventorySlot = CreateInventorySystem.GetSlotTheGameObjectIsAttachedTo("Dagger");
 
