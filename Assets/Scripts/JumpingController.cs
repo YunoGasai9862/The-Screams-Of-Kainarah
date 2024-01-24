@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class JumpingController : MonoBehaviour, IReceiver<bool>
 {
@@ -39,10 +38,43 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         _rb = GetComponent<Rigidbody2D>();
         onPlayerJumpEvent = new PlayerJumpEvent();
     }
-    private async void Update()
+    private void Update()
+    {
+        _= HandleJumpingMechanism();
+    }
+    public async Task HandleJumpingMechanism()
     {
         await HandleJumping();
+
+        await HandleFalling();
+
+        onPlayerJumpEvent.Invoke(CharacterVelocityY);
+
+        await Task.FromResult(true);
     }
+
+    public async Task HandleFalling()
+    {
+        if (!PlayerVariables.Instance.IS_JUMPING && !LedgeGroundChecker(groundLayer, ledgeLayer)) //falling
+        {
+            CharacterVelocityY = -JumpSpeed * .8f; //extra check
+
+            _animationHandler.JumpingFalling(PlayerVariables.Instance.IS_JUMPING); //falling naimation
+
+        }
+
+        if (!PlayerVariables.Instance.IS_JUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !_isJumpPressed) //on the ground
+        {
+            CharacterVelocityY = 0f;
+
+            _animationHandler.RunningWalkingAnimation(0);
+
+            _timeCounter = 0;
+        }
+
+        await Task.FromResult(true);
+    }
+
     public async Task HandleJumping()
     {
         if (await CanPlayerJump()) //jumping
@@ -57,15 +89,8 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         if (await CanPlayerFall() || await MaxJumpTimeChecker()) //peak reached
         {
             PlayerVariables.Instance.jumpVariableEvent.Invoke(false);
-            CharacterVelocityY = -JumpSpeed * .8f;
-            _isJumpPressed = false; //fixed the issue of eternally looping at jumep on JUMP HOLD
 
-        }
-
-        if (!PlayerVariables.Instance.IS_JUMPING && !LedgeGroundChecker(groundLayer, ledgeLayer)) //falling
-        {
-            CharacterVelocityY = -JumpSpeed * .8f; //extra check
-            _animationHandler.JumpingFalling(PlayerVariables.Instance.IS_JUMPING); //falling naimation
+            _isJumpPressed = false; //fixed the issue of eternally looping at jump on JUMP HOLD
 
         }
 
@@ -73,15 +98,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         {
             _timeCounter += Time.deltaTime;
         }
-
-        if (!PlayerVariables.Instance.IS_JUMPING && LedgeGroundChecker(groundLayer, ledgeLayer) && !_isJumpPressed) //on the ground
-        {
-            CharacterVelocityY = 0f;
-            _timeCounter = 0;
-        }
-
-        onPlayerJumpEvent.Invoke(CharacterVelocityY);
-        await Task.FromResult(true);
     }
 
     private Task<bool> CanPlayerJump()

@@ -52,11 +52,34 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerMovement.Jump.canceled += Jump;
         _rocky2DActions.PlayerMovement.Slide.started += BeginSlideAction;
         _rocky2DActions.PlayerMovement.Slide.canceled += EndSlideAction;
+        _rocky2DActions.PlayerAttack.Attack.started += HandlePlayerAttackStart;
+        _rocky2DActions.PlayerAttack.Attack.canceled += HandlePlayerAttackCancel;
+        _rocky2DActions.PlayerAttack.ThrowProjectile.started += ThrowDaggerInput;
+        _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += ThrowDaggerInput;
+
+
+    }
+
+    private void ThrowDaggerInput(InputAction.CallbackContext context)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void HandlePlayerAttackStart(InputAction.CallbackContext context)
+    {
+        throw new NotImplementedException();
     }
 
     private void Start()
     {
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
+        _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
+        _rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
 
         //event subscription
         JumpingController.onPlayerJumpEvent.AddListener(VelocityYEventHandler);

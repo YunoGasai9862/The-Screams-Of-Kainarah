@@ -53,9 +53,9 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
         _movementHelper = new MovementHelperClass();
 
-        _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
+      // _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
 
-        _rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
+        //_rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
 
         _rocky2DActions.PlayerAttack.Attack.started += HandlePlayerAttackStart;
 
