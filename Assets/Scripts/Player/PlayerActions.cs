@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-public class PlayerActions : MonoBehaviour 
+public class PlayerActions : MonoBehaviour
 {
     private const float MAX_SLIDING_TIME_ALLOW = 0.5f;
     private PlayerInput _playerInput;
@@ -16,8 +16,11 @@ public class PlayerActions : MonoBehaviour
     private IReceiverAsync<bool> _slideReceiver;
     private IReceiver<bool> _attackReceiver;
     private Command<bool> _attackCommand;
+    private float _timeForMouseClickStart=0f;
+    private float _timeForMouseClickEnd=0f;
 
     [SerializeField] float _characterSpeed = 10f;
+
     public LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
     public SlidingController SlidingController { get => GetComponent<SlidingController>(); }
     public JumpingController JumpingController { get => GetComponent<JumpingController>(); }
@@ -31,8 +34,9 @@ public class PlayerActions : MonoBehaviour
     private float SlidingTimeBegin { get; set; }
     private float SlidingTimeEnd { get; set; }
     private float OriginalSpeed { get; set; }
-    public bool LeftMouseButtonPressed { get; set; }
-
+    private bool LeftMouseButtonPressed { get; set; }
+    private float TimeForMouseClickStart { get => _timeForMouseClickStart; set => _timeForMouseClickStart = value; }
+    private float TimeForMouseClickEnd { get => _timeForMouseClickEnd; set => _timeForMouseClickEnd = value; }
 
     //Force = -2m * sqrt (g * h)
     private void Awake()
@@ -173,11 +177,13 @@ public class PlayerActions : MonoBehaviour
     private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
     {
         LeftMouseButtonPressed = (PlayerVariables.Instance.IS_SLIDING == true) ? false : context.ReadValueAsButton();
+        TimeForMouseClickStart = (float)context.time;
     }
 
     private void HandlePlayerAttackStart(InputAction.CallbackContext context)
     {
         LeftMouseButtonPressed = (PlayerVariables.Instance.IS_SLIDING == true) ? false : context.ReadValueAsButton();
+        TimeForMouseClickStart = (float)context.time;
     }
 
 }

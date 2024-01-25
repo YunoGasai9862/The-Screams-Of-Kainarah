@@ -2,6 +2,7 @@ using CoreCode;
 using NUnit.Framework.Internal;
 using PlayerAnimationHandler;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class AttackingController : MonoBehaviour, IReceiver<bool>
@@ -11,8 +12,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     private Animator _anim;
     private CapsuleCollider2D col;
     public static bool canthrowDagger = true;
-    private float _timeForMouseClickStart = 0;
-    private float _timeForMouseClickEnd = 0;
     private MovementHelperClass _movementHelper;
     private Rocky2DActions _rocky2DActions;
     private PlayerInput _playerInput;
@@ -33,8 +32,11 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     [SerializeField] string jumpAttackStateName;
     [SerializeField] string daggerAttackName;
     [SerializeField] string pickableItemClassTag;
+
+    public MouseClickEvent onMouseClickEvent = new MouseClickEvent();
     private int PlayerAttackState { get; set; }
     private string PlayerAttackStateName { get; set; }
+    private bool LeftMouseButtonPressed { get; set; }
 
     private void Awake()
     {
@@ -52,24 +54,15 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
         _movementHelper = new MovementHelperClass();
 
-      // _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
-
-        //_rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
-
-        _rocky2DActions.PlayerAttack.Attack.started += HandlePlayerAttackStart;
-
-        _rocky2DActions.PlayerAttack.Attack.canceled += HandlePlayerAttackCancel;
-
-        _rocky2DActions.PlayerAttack.ThrowProjectile.started += ThrowDaggerInput;
-
-        _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += ThrowDaggerInput;
-
         PlayerAttackState = 0;
     }
 
     private void Start()
     {
         _pickableItems = GameObject.FindWithTag(pickableItemClassTag).GetComponent<PickableItemsClass>();
+
+        //event subscription
+        onMouseClickEvent.AddListener(SetMouseClickBeginEndTime);
     }
 
     // Update is called once per frame
@@ -120,12 +113,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
     private void HandlePlayerAttackStart(InputAction.CallbackContext context)
     {
-        LeftMouseButtonPressed = (PlayerVariables.Instance.IS_SLIDING == true)? false: context.ReadValueAsButton();
-
         if (IsAttackPrerequisiteMet()) //ground attack
         {
-            _timeForMouseClickStart = (float)context.time;
-
             PlayerVariables.Instance.attackVariableEvent.Invoke(true);
             //keeps track of attacking state
             (PlayerAttackState, PlayerAttackStateName, _isPlayerEligibleForStartingAttack) = GetEnumStateAndName<PlayerAttackEnum.PlayerAttackSlash>( PlayerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
@@ -154,10 +143,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
     private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
     {
-        LeftMouseButtonPressed = (PlayerVariables.Instance.IS_SLIDING == true) ? false : context.ReadValueAsButton();
-
-        _timeForMouseClickEnd = (float)context.time;
-
         _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
         PlayerVariables.Instance.attackVariableEvent.Invoke(false);
@@ -195,7 +180,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         {
             _playerAttackStateMachine.SetAttackState(attackStateName, PlayerAttackState); //toggles state
 
-            timeDifferencebetweenStates = TimeDifference(_timeForMouseClickEnd, _timeForMouseClickStart);
+            timeDifferencebetweenStates = onMouseClickEvent.TimeDifferenceBetweenPressAndRelease();
 
             _playerAttackStateMachine.TimeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName, timeDifferencebetweenStates);     //keeps track of time elapsed
 
@@ -220,10 +205,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         _playerAttackStateMachine.CanAttack(jumpAttackStateName, PlayerVariables.Instance.IS_ATTACKING);
     }
 
-    private float TimeDifference(float EndTime, float StartTime)
-    {
-        return Math.Abs(EndTime - StartTime);
-    }
     private bool IsEnumValueEqualToLengthOfEnum<T>(string _playerAttackStateName)
     {
         return (int)Enum.Parse(typeof(T), _playerAttackStateName) == GetLenthofEnum<T>();
@@ -256,13 +237,20 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         iceTrail.setGameObjectParent(transform);
     }
 
-    public bool PerformAction(bool value = false)
+    public bool PerformAction(bool value)
     {
+        LeftMouseButtonPressed = value;
         return true;
     }
 
     public bool CancelAction()
     {
         return true;
+    }
+
+    public void SetMouseClickBeginEndTime(float startTime, float endTime)
+    {
+        onMouseClickEvent.ClickStartTime = startTime;
+        onMouseClickEvent.ClickEndTime = endTime;
     }
 }

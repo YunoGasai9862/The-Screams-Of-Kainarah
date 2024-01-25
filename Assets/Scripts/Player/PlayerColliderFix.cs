@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ColliderFix : MonoBehaviour
+public class PlayerColliderFix : MonoBehaviour
 {
     private SpriteRenderer _sr;
     private CapsuleCollider2D _collider;

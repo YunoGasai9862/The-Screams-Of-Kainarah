@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 396414190}
   - component: {fileID: 396414191}
-  - component: {fileID: 396414192}
+  - component: {fileID: 7544145492657213152}
   m_Layer: 7
   m_Name: Shadow
   m_TagString: Untagged
@@ -85,7 +85,7 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
---- !u!114 &396414192
+--- !u!114 &7544145492657213152
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 396414189}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edab7206b2e8a5a48ba818afc9a7b5da, type: 3}
+  m_Script: {fileID: 11500000, guid: df0cd5cd71545714dac62dfd60d5dbfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   initialoffsetY: -1
@@ -672,15 +672,15 @@ GameObject:
   - component: {fileID: 2357857119552702228}
   - component: {fileID: 2357857118627078222}
   - component: {fileID: 2357857118627078232}
-  - component: {fileID: 2357857119552702229}
   - component: {fileID: 3387488181997499512}
   - component: {fileID: 8744535595071973501}
-  - component: {fileID: 2357857118627078221}
   - component: {fileID: 6549680331415743501}
-  - component: {fileID: 2290307266042556730}
   - component: {fileID: -7079114110776597852}
   - component: {fileID: -7060034625620182088}
   - component: {fileID: 5169309916338779487}
+  - component: {fileID: 3772540289453430958}
+  - component: {fileID: 4678349112697046184}
+  - component: {fileID: 5161662302899238198}
   m_Layer: 7
   m_Name: Heroine
   m_TagString: Player
@@ -851,25 +851,6 @@ CapsuleCollider2D:
   m_Offset: {x: -0.76103115, y: -0.7776582}
   m_Size: {x: 0.7984257, y: 1.829885}
   m_Direction: 0
---- !u!114 &2357857119552702229
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2357857119552702225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c868b2ccd683da049b2b355d8a748e36, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sr: {fileID: 0}
-  InteractableTag: DialogueTrigger
-  TeleportTransition: {fileID: 0}
-  checkpointTags:
-  - CP1
-  - CP2
-  playerHealth: 100
 --- !u!114 &3387488181997499512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -924,19 +905,6 @@ MonoBehaviour:
     m_Bits: 8
   xDisplace: 12
   yDisplace: 14
---- !u!114 &2357857118627078221
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2357857119552702225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ba7c44513390474d97e023c8824ab9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _characterSpeed: 10
 --- !u!114 &6549680331415743501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -947,18 +915,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bfcd2735284f62d43a8d8a06fb03d652, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2290307266042556730
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2357857119552702225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22a95b7df80e5e24e90e058f190117c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &-7079114110776597852
@@ -1012,6 +968,48 @@ MonoBehaviour:
   onPlayerJumpEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3772540289453430958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e116a887bfc3e4584fb369516158e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sr: {fileID: 2357857119552702230}
+  InteractableTag: DialogueTrigger
+  TeleportTransition: {fileID: 0}
+  checkpointTags: []
+  playerHealth: 100
+--- !u!114 &4678349112697046184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afe0a9d3b8a6aed47afb17124abc2793, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5161662302899238198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab60c1316c33f34db139ccacbf1d3a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterSpeed: 10
 --- !u!1 &3485019726026848876
 GameObject:
   m_ObjectHideFlags: 0
