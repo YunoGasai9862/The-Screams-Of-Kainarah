@@ -9,23 +9,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a3668ab857cb5548aed0c99438ab834, type: 3}
+  m_Script: {fileID: 11500000, guid: cb0b3d41f0c40784d9435b41ad82821e, type: 3}
   m_Name: PlayerHittableItems
   m_EditorClassIdentifier: 
   colliderItems:
-  - canHitPlayer: 1
-    collider: {fileID: 257111450, guid: aaa7a0367a1ca144e8d5d870d46392c1, type: 3}
-    isItBasedOnAnimationName: 0
-    animationName: 
   - canHitPlayer: 1
     collider: {fileID: 6188736412772749654, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
     isItBasedOnAnimationName: 1
     animationName: attack
   - canHitPlayer: 1
-    collider: {fileID: 6188736412772749654, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
-    isItBasedOnAnimationName: 1
-    animationName: attack_02
+    collider: {fileID: 1878304655740957961, guid: 803d724f68d69054eb188a8553009955, type: 3}
+    isItBasedOnAnimationName: 0
+    animationName: attack
   - canHitPlayer: 1
     collider: {fileID: 257111450, guid: aaa7a0367a1ca144e8d5d870d46392c1, type: 3}
     isItBasedOnAnimationName: 0
-    animationName: attack_02
+    animationName: attack
+  - canHitPlayer: 1
+    collider: {fileID: 6188736412772749654, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
+    isItBasedOnAnimationName: 1
+    animationName: attack02

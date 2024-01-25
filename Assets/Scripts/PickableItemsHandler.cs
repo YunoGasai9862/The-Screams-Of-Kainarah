@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PickableItemsClass : MonoBehaviour
+public class PickableItemsHandler : MonoBehaviour
 {
     [SerializeField]
     public PickableItems pickableItems;
@@ -19,7 +19,6 @@ public class PickableItemsClass : MonoBehaviour
 
         return false;
     }
-
     public GameObject returnGameObjectForTheKey(string keyName)
     {
         for (int i = 0; i < pickableItems.pickableEntities.Length; i++)
@@ -34,7 +33,6 @@ public class PickableItemsClass : MonoBehaviour
 
         return null;
     }
-
 
     public bool shouldThisItemBeDisabled(string collisionObjectName)
     {

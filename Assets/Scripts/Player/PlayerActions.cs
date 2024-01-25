@@ -18,6 +18,7 @@ public class PlayerActions : MonoBehaviour
     private Command<bool> _attackCommand;
     private float _timeForMouseClickStart=0f;
     private float _timeForMouseClickEnd=0f;
+    private bool _daggerInput = false;
 
     [SerializeField] float _characterSpeed = 10f;
 
@@ -38,6 +39,7 @@ public class PlayerActions : MonoBehaviour
     private float TimeForMouseClickStart { get => _timeForMouseClickStart; set => _timeForMouseClickStart = value; }
     private float TimeForMouseClickEnd { get => _timeForMouseClickEnd; set => _timeForMouseClickEnd = value; }
 
+    private bool DaggerInput { get => _daggerInput; set => _daggerInput = value; }
     //Force = -2m * sqrt (g * h)
     private void Awake()
     {
@@ -61,8 +63,8 @@ public class PlayerActions : MonoBehaviour
 
         _rocky2DActions.PlayerAttack.Attack.started += HandlePlayerAttackStart;
         _rocky2DActions.PlayerAttack.Attack.canceled += HandlePlayerAttackCancel;
-        _rocky2DActions.PlayerAttack.ThrowProjectile.started += ThrowDaggerInput;
-        _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += ThrowDaggerInput;
+        _rocky2DActions.PlayerAttack.ThrowProjectile.started += HandleDaggerInput;
+        _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += HandleDaggerInput;
 
 
     }
@@ -169,9 +171,9 @@ public class PlayerActions : MonoBehaviour
 
 
     //attacking mechanism centralized
-    private void ThrowDaggerInput(InputAction.CallbackContext context)
+    private void HandleDaggerInput(InputAction.CallbackContext context)
     {
-
+        DaggerInput = context.ReadValueAsButton();
     }
 
     private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
@@ -184,6 +186,9 @@ public class PlayerActions : MonoBehaviour
     {
         LeftMouseButtonPressed = (PlayerVariables.Instance.IS_SLIDING == true) ? false : context.ReadValueAsButton();
         TimeForMouseClickStart = (float)context.time;
+
+        //send time stamps to the attacking controller
+        AttackingController.onMouseClickEvent.Invoke(TimeForMouseClickStart, TimeForMouseClickEnd);
     }
 
 }

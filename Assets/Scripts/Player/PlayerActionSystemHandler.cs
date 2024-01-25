@@ -6,7 +6,7 @@ using InventoryManagement = CreateInventorySystem;
 
 public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 {
-    [SerializeField] PickableItemsClass pickableItems;
+    [SerializeField] PickableItemsHandler pickableItems;
 
     Dictionary<String, Func<Collider2D, Task >> _playerActionHandlerDic;
 

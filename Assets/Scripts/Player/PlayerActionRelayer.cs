@@ -20,7 +20,7 @@ public class PlayerActionRelayer : AbstractEntity
     private Animator anim;
     private float ENEMYATTACK = 5f;
     private bool pickedUp;
-    private PickableItemsClass _pickableItems;
+    private PickableItemsHandler _pickableItems;
     private Interactable dialogue;
     private SemaphoreSlim _semaphoreSlim;
     private SemaphoreSlim _semaphoreSlimForCheckpoint;
@@ -59,7 +59,7 @@ public class PlayerActionRelayer : AbstractEntity
 
         _cancellationToken = _cancellationTokenSource.Token;
 
-        _pickableItems= GameObject.FindWithTag("PickableItemsManager").GetComponent<PickableItemsClass>();
+        _pickableItems= GameObject.FindWithTag("PickableItemsManager").GetComponent<PickableItemsHandler>();
 
         sr = GetComponent<SpriteRenderer>();
 
@@ -141,7 +141,6 @@ public class PlayerActionRelayer : AbstractEntity
     }
     private async void OnCollisionEnter2D(Collision2D collision) //FIX THIS TOO
     {
-       
         if (await CanPlayerBeAttacked(PlayerHittableItemScriptableObjectFetch, collision.collider))
         {
             Health -= ENEMYATTACK;

@@ -983,7 +983,9 @@ MonoBehaviour:
   sr: {fileID: 2357857119552702230}
   InteractableTag: DialogueTrigger
   TeleportTransition: {fileID: 0}
-  checkpointTags: []
+  checkpointTags:
+  - CP1
+  - CP2
   playerHealth: 100
 --- !u!114 &4678349112697046184
 MonoBehaviour:

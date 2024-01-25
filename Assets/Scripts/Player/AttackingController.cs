@@ -18,9 +18,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     private PlayerAttackStateMachine _playerAttackStateMachine;
     private bool _isPlayerEligibleForStartingAttack = false;
     private float timeDifferencebetweenStates;
-    private bool throwDagger = false;
     private SpriteRenderer _spriteRenderer;
-    private PickableItemsClass _pickableItems;
+    private PickableItemsHandler _pickableItems;
 
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
@@ -59,7 +58,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
     private void Start()
     {
-        _pickableItems = GameObject.FindWithTag(pickableItemClassTag).GetComponent<PickableItemsClass>();
+        _pickableItems = GameObject.FindWithTag(pickableItemClassTag).GetComponent<PickableItemsHandler>();
 
         //event subscription
         onMouseClickEvent.AddListener(SetMouseClickBeginEndTime);
@@ -74,10 +73,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         }
     }
 
-    private void ThrowDaggerInput(InputAction.CallbackContext context)
+    private void ThrowDaggerInput()
     {
-        throwDagger = context.ReadValueAsButton();
-
         _playerAttackStateMachine.SetAttackState(AnimationConstants.THROW_DAGGER, throwDagger);
 
         GameObject daggerInventorySlot = CreateInventorySystem.GetSlotTheGameObjectIsAttachedTo("Dagger");
@@ -111,9 +108,9 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         return _sr.flipX;
     }
 
-    private void HandlePlayerAttackStart(InputAction.CallbackContext context)
+    private void InitiatePlayerAttack()
     {
-        if (IsAttackPrerequisiteMet()) //ground attack
+        if (CanPlayerAttack()) //ground attack
         {
             PlayerVariables.Instance.attackVariableEvent.Invoke(true);
             //keeps track of attacking state
@@ -126,14 +123,14 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
         }
 
-        if (IsJumpAttackPrequisitesMet())
+        if (CanPlayerAttackWhileJumping())
         {
             _playerAttackStateMachine.SetAttackState(jumpAttackStateName, LeftMouseButtonPressed);
 
         }
     }
 
-    private bool IsJumpAttackPrequisitesMet()
+    private bool CanPlayerAttackWhileJumping()
     {
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
         bool isOnTheGround = _movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground);
@@ -141,7 +138,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         return isJumping && !isOnTheGround;
     }
 
-    private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
+    private void EndPlayerAttack()
     {
         _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
@@ -214,7 +211,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     {
         return Enum.GetNames(typeof(T)).Length;
     }
-    public bool IsAttackPrerequisiteMet()
+    public bool CanPlayerAttack()
     {
         bool isDialogueOpen = GameObjectCreator.GetDialogueManager().IsOpen();
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
