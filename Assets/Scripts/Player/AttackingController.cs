@@ -33,6 +33,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     [SerializeField] string pickableItemClassTag;
 
     public MouseClickEvent onMouseClickEvent = new MouseClickEvent();
+    public ThrowableProjectileEvent onThrowEvent = new ThrowableProjectileEvent();
     private int PlayerAttackState { get; set; }
     private string PlayerAttackStateName { get; set; }
     private bool LeftMouseButtonPressed { get; set; }
@@ -62,6 +63,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
         //event subscription
         onMouseClickEvent.AddListener(SetMouseClickBeginEndTime);
+        onThrowEvent.AddListener(CanPlayerThrowProjectile);
     }
 
     // Update is called once per frame
@@ -75,7 +77,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
     private void ThrowDaggerInput()
     {
-        _playerAttackStateMachine.SetAttackState(AnimationConstants.THROW_DAGGER, throwDagger);
+        _playerAttackStateMachine.SetAttackState(AnimationConstants.THROW_DAGGER, onThrowEvent.CanThrow);
 
         GameObject daggerInventorySlot = CreateInventorySystem.GetSlotTheGameObjectIsAttachedTo("Dagger");
 
@@ -249,5 +251,9 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     {
         onMouseClickEvent.ClickStartTime = startTime;
         onMouseClickEvent.ClickEndTime = endTime;
+    }
+    public void CanPlayerThrowProjectile(bool canThrow)
+    {
+        onThrowEvent.CanThrow = canThrow;
     }
 }

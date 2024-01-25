@@ -74,6 +74,8 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
             _timeCounter = 0;
         }
 
+        Debug.Log(_rb.gravityScale);
+
         await Task.FromResult(true);
     }
 
