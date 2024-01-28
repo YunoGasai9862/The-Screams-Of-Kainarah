@@ -16,12 +16,14 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
     private PlayerAttackStateMachine _playerAttackStateMachine;
     private CapsuleCollider2D _capsuleCollider;
     private Animator _anim;
+    private Rigidbody2D _rb;
 
     public OnSlidingEvent onSlideEvent=new OnSlidingEvent();
     void Start()
     {
         _animationHandler = GetComponent<PlayerAnimationMethods>();
         _movementHelperClass = new MovementHelperClass();
+        _rb = GetComponent<Rigidbody2D>();
         _anim = GetComponent<Animator>();
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
         _capsuleCollider= GetComponent<CapsuleCollider2D>();
@@ -29,8 +31,6 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
     private Task Slide()
     {
-        PlayerVariables.Instance.slideVariableEvent.Invoke(true);
-
         if (PlayerVariables.Instance.IS_SLIDING && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, groundLayer))
         {
             onSlideEvent.Invoke(slidingSpeed); //posting for speed
@@ -40,6 +40,8 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
         if (_animationHandler.returnCurrentAnimation() > MAX_ANIMATION_TIME && _animationHandler.isNameOfTheCurrentAnimation(AnimationConstants.SLIDING))
         {
+            PlayerVariables.Instance.slideVariableEvent.Invoke(false);
+
             _animationHandler.Sliding(false);
         }
 
@@ -48,8 +50,10 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
     async Task<bool> IReceiverAsync<bool>.PerformAction(bool value)
     {
-        if (!_playerAttackStateMachine.IsInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
+        if (await IsVelocityXGreaterThanZero(_rb) && !_playerAttackStateMachine.IsInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
         {
+            PlayerVariables.Instance.slideVariableEvent.Invoke(true);
+
             await Slide();
         }
         return await Task.FromResult(true);
@@ -59,5 +63,10 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
         PlayerVariables.Instance.slideVariableEvent.Invoke(false);
 
         return await Task.FromResult(true);
+    }
+
+    private Task<bool> IsVelocityXGreaterThanZero(Rigidbody2D rb)
+    {
+        return Task.FromResult(Mathf.Abs(rb.velocity.x) > 0);
     }
 }

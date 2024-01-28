@@ -11,15 +11,10 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
     private Animator _anim;
     private CapsuleCollider2D col;
-    public static bool canthrowDagger = true;
     private MovementHelperClass _movementHelper;
-    private Rocky2DActions _rocky2DActions;
-    private PlayerInput _playerInput;
     private PlayerAttackStateMachine _playerAttackStateMachine;
     private bool _isPlayerEligibleForStartingAttack = false;
     private float timeDifferencebetweenStates;
-    private SpriteRenderer _spriteRenderer;
-    private PickableItemsHandler _pickableItems;
 
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
@@ -29,11 +24,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     [SerializeField] string attackStateName;
     [SerializeField] string timeDifferenceStateName;
     [SerializeField] string jumpAttackStateName;
-    [SerializeField] string daggerAttackName;
-    [SerializeField] string pickableItemClassTag;
 
     public MouseClickEvent onMouseClickEvent = new MouseClickEvent();
-    public ThrowableProjectileEvent onThrowEvent = new ThrowableProjectileEvent();
     private int PlayerAttackState { get; set; }
     private string PlayerAttackStateName { get; set; }
     private bool LeftMouseButtonPressed { get; set; }
@@ -41,12 +33,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     private void Awake()
     {
         _anim = GetComponent<Animator>();
-
-        _spriteRenderer = GetComponent<SpriteRenderer>();   
-
-        _rocky2DActions = new Rocky2DActions();
-
-        _playerInput = GetComponent<PlayerInput>();
 
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
 
@@ -59,11 +45,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
     private void Start()
     {
-        _pickableItems = GameObject.FindWithTag(pickableItemClassTag).GetComponent<PickableItemsHandler>();
-
         //event subscription
         onMouseClickEvent.AddListener(SetMouseClickBeginEndTime);
-        onThrowEvent.AddListener(CanPlayerThrowProjectile);
     }
 
     // Update is called once per frame
@@ -74,42 +57,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
             ResetAttackingState();
         }
     }
-
-    private void ThrowDaggerInput()
-    {
-        _playerAttackStateMachine.SetAttackState(AnimationConstants.THROW_DAGGER, onThrowEvent.CanThrow);
-
-        GameObject daggerInventorySlot = CreateInventorySystem.GetSlotTheGameObjectIsAttachedTo("Dagger");
-
-        if (daggerInventorySlot != null)
-        {
-            ThrowDagger(_pickableItems.returnGameObjectForTheKey("Dagger"));
-        }
-
-    }
-
-    private async void ThrowDagger(GameObject prefab)
-    {
-        GameObjectInstantiator _daggerInstantiator = new(prefab);
-
-        GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(GetDaggerPositionWithOffset(2, -1), Quaternion.identity);
-
-        await CreateInventorySystem.ReduceQuantity(prefab.gameObject.tag);
-
-        _daggerGameObject.GetComponent<AttackEnemy>().throwDagger = true;
-    }
-
-    public Vector2 GetDaggerPositionWithOffset(float xOffset, float yOffset)
-    {
-        return IsPlayerFlipped(_spriteRenderer)? new Vector2(transform.position.x - xOffset, transform.position.y + yOffset) :
-            new Vector2(transform.position.x + xOffset, transform.position.y + yOffset);
-    }
-
-    public bool IsPlayerFlipped(SpriteRenderer _sr)
-    {
-        return _sr.flipX;
-    }
-
     private void InitiatePlayerAttack()
     {
         if (CanPlayerAttack()) //ground attack
@@ -131,7 +78,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
         }
     }
-
     private bool CanPlayerAttackWhileJumping()
     {
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
@@ -146,7 +92,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
         PlayerVariables.Instance.attackVariableEvent.Invoke(false);
         
-        _playerAttackStateMachine.SetAttackState(jumpAttackStateName, LeftMouseButtonPressed); //no jump attack
+        _playerAttackStateMachine.SetAttackState(jumpAttackStateName, PlayerVariables.Instance.IS_ATTACKING); //no jump attack
 
     }
     private (int, string, bool) GetEnumStateAndName<T>(int playerAttackState, int initialStateOfTheEnum)
@@ -191,7 +137,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
             return;
         }
     }
-
     private bool IsTimeDifferenceWithinRange(float value, float upperBoundary)
     {
         return value > upperBoundary;
@@ -239,11 +184,13 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     public bool PerformAction(bool value)
     {
         LeftMouseButtonPressed = value;
+        InitiatePlayerAttack();
         return true;
     }
 
     public bool CancelAction()
     {
+        EndPlayerAttack();
         return true;
     }
 
@@ -252,8 +199,5 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         onMouseClickEvent.ClickStartTime = startTime;
         onMouseClickEvent.ClickEndTime = endTime;
     }
-    public void CanPlayerThrowProjectile(bool canThrow)
-    {
-        onThrowEvent.CanThrow = canThrow;
-    }
+
 }

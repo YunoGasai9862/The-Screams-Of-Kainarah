@@ -31,12 +31,15 @@ public class PlayerAnimationMethods : MonoBehaviour
 
     private void PlayAnimation(string name, int state)
     {
-        _stateMachine.AnimationPlayMachineInt(name, state);
+        _stateMachine.AnimationPlayForInt(name, state);
     }
-
     private void PlayAnimation(string name, bool state)
     {
-        _stateMachine.AnimationPlayMachineBool(name, state);
+        _stateMachine.AnimationPlayForBool(name, state);
+    }
+    private void PlayAnimation(string name, float state)
+    {
+        _stateMachine.AnimationPlayForFloat(name, state);
     }
 
     public void RunningWalkingAnimation(float keystroke)
@@ -68,6 +71,10 @@ public class PlayerAnimationMethods : MonoBehaviour
             ? (int)AnimationStateKeeper.StateKeeper.JUMP
             : (int)AnimationStateKeeper.StateKeeper.FALL;
         PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
+    }
+    public void UpdateJumpTime(string parameterName, float jumpTime)
+    {
+        PlayAnimation(parameterName, jumpTime);
     }
 
     public void Sliding(bool keystroke)

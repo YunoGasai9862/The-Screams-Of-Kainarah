@@ -8,6 +8,7 @@ namespace PlayerAnimationHandler
         public const string SLIDING = "Sliding";
         public const string LEDGE_GRAB = "LedgeGrab";
         public const string THROW_DAGGER = "ThrowDagger";
+        public const string JUMP_TIME = "JumpTime";
     }
     public class AnimationStateKeeper
     {
@@ -21,21 +22,23 @@ namespace PlayerAnimationHandler
     }
     public class AnimationStateMachine
     {
-        private Animator animator; //each object will have its own AnimationStateMachine
+        private Animator _animator; //each object will have its own AnimationStateMachine
 
         public AnimationStateMachine(Animator animator)
         {
-            this.animator = animator;
+            this._animator = animator;
         }
-
-        public void AnimationPlayMachineInt(string constName, int state)
+        public void AnimationPlayForInt(string constName, int state)
         {
-            animator.SetInteger(constName, state);
-
+            _animator.SetInteger(constName, state);
         }
-        public void AnimationPlayMachineBool(string constName, bool state)
+        public void AnimationPlayForBool(string constName, bool state)
         {
-            animator.SetBool(constName, state);
+            _animator.SetBool(constName, state);
+        }
+        public void AnimationPlayForFloat(string constName, float state)
+        {
+            _animator.SetFloat(constName, state);
         }
 
     }

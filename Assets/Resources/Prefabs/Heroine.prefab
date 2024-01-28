@@ -681,6 +681,7 @@ GameObject:
   - component: {fileID: 3772540289453430958}
   - component: {fileID: 4678349112697046184}
   - component: {fileID: 5161662302899238198}
+  - component: {fileID: -5899582873674386158}
   m_Layer: 7
   m_Name: Heroine
   m_TagString: Player
@@ -875,8 +876,6 @@ MonoBehaviour:
   attackStateName: PlayerAttack
   timeDifferenceStateName: ElapsedTime
   jumpAttackStateName: AttackJ
-  daggerAttackName: ThrowDagger
-  pickableItemClassTag: PickableItemsManager
 --- !u!114 &8744535595071973501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1012,6 +1011,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterSpeed: 10
+--- !u!114 &-5899582873674386158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00cff5beb82ddd14c8a54298f385332c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickableItemClassTag: PickableItemsManager
 --- !u!1 &3485019726026848876
 GameObject:
   m_ObjectHideFlags: 0

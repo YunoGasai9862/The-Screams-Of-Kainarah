@@ -6,7 +6,7 @@ public class CommandAsync<T> : ICommand<T>
     {
         this._receiver = receiver;
     }
-    public void Cancel()
+    public void Cancel(T value = default)
     {
         this._receiver.CancelAction();
     }

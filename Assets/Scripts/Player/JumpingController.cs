@@ -24,6 +24,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
     public PlayerJumpEvent onPlayerJumpEvent;
     public float CharacterVelocityY { get => _characterVelocityY; set => _characterVelocityY = value; }
+    private float JumpTime { get => _timeCounter; } 
     public bool CancelAction()
     {
         PlayerVariables.Instance.jumpVariableEvent.Invoke(false);
@@ -46,6 +47,14 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     private async void Update()
     {
         await HandleJumpingMechanism();
+    }
+    private void FixedUpdate()
+    {
+        if (_rb.velocity.y > 0f) //how high the player can jump
+        {
+            _timeCounter += Time.fixedDeltaTime;
+        }
+      //  _animationHandler.UpdateJumpTime(AnimationConstants.JUMP_TIME, JumpTime);
     }
     public async Task HandleJumpingMechanism()
     {
@@ -74,8 +83,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
             _timeCounter = 0;
         }
 
-        Debug.Log(_rb.gravityScale);
-
         await Task.FromResult(true);
     }
 
@@ -96,11 +103,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
             _isJumpPressed = false; //fixed the issue of eternally looping at jump on JUMP HOLD
 
-        }
-
-        if (_rb.velocity.y > 0f) //how high the player can jump
-        {
-            _timeCounter += Time.deltaTime;
         }
     }
 

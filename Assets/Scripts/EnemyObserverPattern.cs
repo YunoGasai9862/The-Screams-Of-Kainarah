@@ -35,27 +35,27 @@ public class EnemyObserverPattern : MonoBehaviour, IObserverV2<Collider2D>
         _gameObjectCreator = new GameObjectInstantiator(Hit);
         enemyActionDictionary = new Dictionary<string, System.Action<object, object>>() //object is required here
         {
-            {"Sword",  (animName,  value) => playHitAnimation(animName, value)}, //lambda expression for passing values
-            {"Dagger", (animName,  value) => playHitAnimation(animName, value)},
-            {"Player", (animName,  value) =>  attackLogicInitiation(animName, value)}
+            {"Sword",  (animName,  value) => PlayHitAnimation(animName, value)}, //lambda expression for passing values
+            {"Dagger", (animName,  value) => PlayHitAnimation(animName, value)},
+            {"Player", (animName,  value) => AttackLogicInitiation(animName, value)}
 
         };
     }
 
-    private void playHitAnimation(object animName, object value)
+    private void PlayHitAnimation(object animName, object value)
     {
-        animationFinder(_enemyAnimationScriptableObject, (string)animName, value);
-        _stateTracker.AnimationPlayMachineBool((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
-        handleGameObjectCreation();
+        AnimationFinder(_enemyAnimationScriptableObject, (string)animName, value);
+        _stateTracker.AnimationPlayForBool((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
+        HandleGameObjectCreation();
  
     }
-    private void attackLogicInitiation(object animName, object value)
+    private void AttackLogicInitiation(object animName, object value)
     {
-        animationFinder(_enemyAnimationScriptableObject, (string)animName, value);
-        _stateTracker.AnimationPlayMachineBool((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
+        AnimationFinder(_enemyAnimationScriptableObject, (string)animName, value);
+        _stateTracker.AnimationPlayForBool((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
 
     }
-    private async void handleGameObjectCreation()
+    private async void HandleGameObjectCreation()
     {
         _gameObjectCreator.InstantiateGameObject(_enemyGameObject.transform.position, Quaternion.identity);
         await Task.Delay(1000);
@@ -79,7 +79,7 @@ public class EnemyObserverPattern : MonoBehaviour, IObserverV2<Collider2D>
         _observerScript.getenemyColliderSubjects.RemoveOberver(this);
 
     }
-    private void animationFinder<T>(EnemyAnimationScriptableObject enemy, string paramToSearch, T valueToSet)
+    private void AnimationFinder<T>(EnemyAnimationScriptableObject enemy, string paramToSearch, T valueToSet)
     {
         for(int i=0; i< enemy.eachAnimation.Length; i++)  
         {

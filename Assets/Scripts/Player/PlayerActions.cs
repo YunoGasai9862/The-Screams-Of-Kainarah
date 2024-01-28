@@ -10,22 +10,27 @@ public class PlayerActions : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private PlayerAnimationMethods _animationHandler;
     private Vector2 _keystrokeTrack;
-    private Command<bool> _jumpCommand;
-    private CommandAsync<bool> _slideCommand;
-    private IReceiver<bool> _jumpReceiver;
-    private IReceiverAsync<bool> _slideReceiver;
-    private IReceiver<bool> _attackReceiver;
-    private Command<bool> _attackCommand;
     private float _timeForMouseClickStart=0f;
     private float _timeForMouseClickEnd=0f;
     private bool _daggerInput = false;
+
+
+    private IReceiver<bool> _jumpReceiver;
+    private Command<bool> _jumpCommand;
+    private IReceiverAsync<bool> _slideReceiver;
+    private CommandAsync<bool> _slideCommand;
+    private IReceiver<bool> _attackReceiver;
+    private Command<bool> _attackCommand;
+    private IReceiver<bool> _throwingProjectileReceiver;
+    private Command<bool> _throwingProjectileCommand;
 
     [SerializeField] float _characterSpeed = 10f;
 
     public LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
     public SlidingController SlidingController { get => GetComponent<SlidingController>(); }
     public JumpingController JumpingController { get => GetComponent<JumpingController>(); }
-    public AttackingController AttackingController { get => GetComponent<AttackingController>(); } //implement all the actions together
+    public AttackingController AttackingController { get => GetComponent<AttackingController>(); } 
+    public ThrowingProjectileController ThrowingProjectileController { get => GetComponent<ThrowingProjectileController>(); } //implement all the actions together
 
     private bool GetJumpPressed { get; set; }
     private bool GetSlidePressed { get; set; }
@@ -38,7 +43,6 @@ public class PlayerActions : MonoBehaviour
     private bool LeftMouseButtonPressed { get; set; }
     private float TimeForMouseClickStart { get => _timeForMouseClickStart; set => _timeForMouseClickStart = value; }
     private float TimeForMouseClickEnd { get => _timeForMouseClickEnd; set => _timeForMouseClickEnd = value; }
-
     private bool DaggerInput { get => _daggerInput; set => _daggerInput = value; }
     //Force = -2m * sqrt (g * h)
     private void Awake()
@@ -47,12 +51,17 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animationHandler = GetComponent<PlayerAnimationMethods>();
+
         _jumpReceiver = GetComponent<JumpingController>();
         _slideReceiver = GetComponent<SlidingController>();
         _attackReceiver = GetComponent<AttackingController>();
+        _throwingProjectileReceiver = GetComponent<ThrowingProjectileController>();
+
         _attackCommand = new Command<bool>(_attackReceiver);
         _jumpCommand = new Command<bool>(_jumpReceiver);
         _slideCommand = new CommandAsync<bool>(_slideReceiver);
+        _throwingProjectileCommand = new Command<bool>(_throwingProjectileReceiver);
+
         _rb = GetComponent<Rigidbody2D>();
         OriginalSpeed = _characterSpeed;
 
@@ -68,7 +77,6 @@ public class PlayerActions : MonoBehaviour
 
 
     }
-
     private void Start()
     {
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
@@ -79,7 +87,6 @@ public class PlayerActions : MonoBehaviour
         JumpingController.onPlayerJumpEvent.AddListener(VelocityYEventHandler);
         SlidingController.onSlideEvent.AddListener(CharacterSpeedHandler);
     }
-  
     private void Update()
     {
         if (!GameObjectCreator.GetDialogueManager().IsOpen())
@@ -174,12 +181,20 @@ public class PlayerActions : MonoBehaviour
     private void HandleDaggerInput(InputAction.CallbackContext context)
     {
         DaggerInput = context.ReadValueAsButton();
+        ThrowingProjectileController.onThrowEvent.Invoke(DaggerInput);
+
+        _throwingProjectileCommand.Execute();
     }
 
     private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
     {
         LeftMouseButtonPressed = (PlayerVariables.Instance.IS_SLIDING == true) ? false : context.ReadValueAsButton();
-        TimeForMouseClickStart = (float)context.time;
+        TimeForMouseClickEnd = (float)context.time;
+
+        AttackingController.onMouseClickEvent.Invoke(TimeForMouseClickStart, TimeForMouseClickEnd);
+
+        _attackCommand.Cancel(LeftMouseButtonPressed);
+
     }
 
     private void HandlePlayerAttackStart(InputAction.CallbackContext context)
@@ -189,6 +204,9 @@ public class PlayerActions : MonoBehaviour
 
         //send time stamps to the attacking controller
         AttackingController.onMouseClickEvent.Invoke(TimeForMouseClickStart, TimeForMouseClickEnd);
+
+        //execute Attack
+        _attackCommand.Execute(LeftMouseButtonPressed);
     }
 
 }
