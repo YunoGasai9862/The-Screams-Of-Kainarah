@@ -6,9 +6,9 @@ namespace CoreCode
     {
         private Animator _animator;
 
-        public PlayerAttackStateMachine(Animator _animator)
+        public PlayerAttackStateMachine(Animator animator)
         {
-            this._animator = _animator;
+            this._animator = animator;
         }
 
         public Animator GetAnimator()
@@ -16,9 +16,9 @@ namespace CoreCode
             return _animator;
         }
 
-        public void SetAnimator(Animator _animator)
+        public void SetAnimator(Animator animator)
         {
-            this._animator = _animator;
+            this._animator = animator;
         }
 
         public void SetAttackState(string parameterName, int currentStateInt)
@@ -26,11 +26,10 @@ namespace CoreCode
             _animator.SetInteger(parameterName, currentStateInt);
         }
 
-        public void SetAttackState(string parameterName, bool currentStateInt)
+        public void SetAttackState(string parameterName, bool currentStateBool)
         {
-            _animator.SetBool(parameterName, currentStateInt);
+            _animator.SetBool(parameterName, currentStateBool);
         }
-
 
         public void TimeDifferenceRequiredBetweenTwoStates(string parameterName, float timePassed)
         {

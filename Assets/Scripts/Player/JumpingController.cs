@@ -17,20 +17,24 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     [SerializeField] LayerMask ledgeLayer;
     [SerializeField] float JumpSpeed;
     [SerializeField] float maxTimeJump;
+    [SerializeField] float maxJumpHeight;
 
     private float _characterVelocityY;
     private float _timeCounter;
     private bool _isJumpPressed;
+    private Vector3 _playerInitialPosition;
 
     public PlayerJumpEvent onPlayerJumpEvent;
     public float CharacterVelocityY { get => _characterVelocityY; set => _characterVelocityY = value; }
-    private float JumpTime { get => _timeCounter; } 
+    private float JumpTime { get => _timeCounter; }
+
+    private Vector3 PlayerInitialPosition { get => _playerInitialPosition; set=> _playerInitialPosition = value; }  
+
     public bool CancelAction()
     {
         PlayerVariables.Instance.jumpVariableEvent.Invoke(false);
         return true;
     }
-
     public bool PerformAction(bool value)
     {
         _isJumpPressed = true;
@@ -54,10 +58,12 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         {
             _timeCounter += Time.fixedDeltaTime;
         }
-      //  _animationHandler.UpdateJumpTime(AnimationConstants.JUMP_TIME, JumpTime);
+         //_animationHandler.UpdateJumpTime(AnimationConstants.JUMP_TIME, JumpTime);
     }
     public async Task HandleJumpingMechanism()
     {
+        await SetPlayerInitialPosition(_isJumpPressed);
+
         await HandleJumping();
 
         await HandleFalling();
@@ -97,12 +103,13 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
             _animationHandler.JumpingFallingAnimationHandler(true); //jumping animation
         }
 
-        if (await CanPlayerFall() || await MaxJumpTimeChecker()) //peak reached
+        if (await CanPlayerFall() || await MaxJumpHeightChecker(maxJumpHeight)) //peak reached
         {
             PlayerVariables.Instance.jumpVariableEvent.Invoke(false);
 
             _isJumpPressed = false; //fixed the issue of eternally looping at jump on JUMP HOLD
 
+            return;
         }
     }
 
@@ -115,6 +122,13 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(!isJumping, isOnLedgeOrGround, isJumpPressed));
     }
 
+    private Task SetPlayerInitialPosition(bool isJumpPressed)
+    {
+        if(LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed)
+            PlayerInitialPosition = transform.position;
+
+        return Task.CompletedTask;
+    }
     private Task<bool> CanPlayerFall()
     {
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
@@ -131,6 +145,16 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     public Task<bool> MaxJumpTimeChecker()
     {
         return Task.FromResult(_timeCounter > maxTimeJump);
+    }
+
+    public Task<bool> MaxJumpHeightChecker(float maxJumpHeight)
+    {
+        Debug.Log(PlayerInitialPosition);
+        if(transform.position.y >= PlayerInitialPosition.y + maxJumpHeight)
+        {
+            return Task.FromResult(true);
+        }
+        return Task.FromResult(false);
     }
 
 }

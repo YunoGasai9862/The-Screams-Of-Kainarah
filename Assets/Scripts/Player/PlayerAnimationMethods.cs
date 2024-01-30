@@ -41,24 +41,22 @@ public class PlayerAnimationMethods : MonoBehaviour
     {
         _stateMachine.AnimationPlayForFloat(name, state);
     }
-
     public void RunningWalkingAnimation(float keystroke)
     {
         if (VectorChecker(keystroke))
         {
             AnimationStateKeeper.CurrentPlayerState = (int)AnimationStateKeeper.StateKeeper.RUNNING;
             SetMovementStates(true, false);
+            PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
         }
         else
         {
             AnimationStateKeeper.CurrentPlayerState = (int)AnimationStateKeeper.StateKeeper.IDLE;
             SetMovementStates(false, true);
+            PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
         }
-
-
-        PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
     }
-
+    
     private void SetMovementStates(bool isRunning, bool isWalking)
     {
         PlayerVariables.Instance.runVariableEvent.Invoke(isRunning);
@@ -70,6 +68,7 @@ public class PlayerAnimationMethods : MonoBehaviour
         AnimationStateKeeper.CurrentPlayerState = keystroke
             ? (int)AnimationStateKeeper.StateKeeper.JUMP
             : (int)AnimationStateKeeper.StateKeeper.FALL;
+
         PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
     }
     public void UpdateJumpTime(string parameterName, float jumpTime)

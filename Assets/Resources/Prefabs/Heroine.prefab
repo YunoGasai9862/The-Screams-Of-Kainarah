@@ -964,6 +964,7 @@ MonoBehaviour:
     m_Bits: 8
   JumpSpeed: 20
   maxTimeJump: 0.3
+  maxJumpHeight: 3
   onPlayerJumpEvent:
     m_PersistentCalls:
       m_Calls: []

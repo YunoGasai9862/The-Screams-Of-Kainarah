@@ -41,6 +41,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     {
         GameObjectInstantiator _daggerInstantiator = new(prefab);
 
+        //fix dagger throw timing
         GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(GetDaggerPositionWithOffset(2, -1), Quaternion.identity);
 
         //same this too
