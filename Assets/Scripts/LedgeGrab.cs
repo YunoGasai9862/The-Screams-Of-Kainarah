@@ -8,6 +8,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private const float MAXIMUM_VELOCITY_X_FORCE = 12f;
     private const float FORCE = 30f;
     private const float MAX_TIME_FOR_LEDGE_GRAB = 0.3f;
+    private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
 
     private bool greenBox, redBox;
     public float redXOffset, redYoffset, redXSize, redYSize, greenXOffset, greenYOffset, greenXsize, greenYSize;
@@ -44,13 +45,13 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         greenXOffset = await GetBoxPosition(sr, greenXOffset);
         redXOffset = await GetBoxPosition(sr, redXOffset);
 
-        if (!_helperFunc.overlapAgainstLayerMaskChecker(ref col, groundMask) && greenBox &&
+        if (!_helperFunc.overlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
             PlayerVariables.Instance.IS_GRABBING)
         {
             _timeSpent += Time.deltaTime;
         }
 
-        if (TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB) || _helperFunc.overlapAgainstLayerMaskChecker(ref col, ledge))
+        if (TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB) || _helperFunc.overlapAgainstLayerMaskChecker(ref col, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
             PlayerVariables.Instance.grabVariableEvent.Invoke(false);
 

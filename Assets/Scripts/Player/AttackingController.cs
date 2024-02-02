@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 public class AttackingController : MonoBehaviour, IReceiver<bool>
 {
     private const float TIME_DIFFERENCE_MAX = 1.5f;
+    private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
 
     private Animator _anim;
     private CapsuleCollider2D col;
@@ -81,7 +82,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     private bool CanPlayerAttackWhileJumping()
     {
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
-        bool isOnTheGround = _movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground);
+        bool isOnTheGround = _movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
 
         return isJumping && !isOnTheGround;
     }

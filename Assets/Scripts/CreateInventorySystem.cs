@@ -34,15 +34,18 @@ public class CreateInventorySystem : MonoBehaviour
     [Header("Enter scale for each slot")]
     [SerializeField] float scale;
 
-    private static CreateInventorySystem instance;
-    public static List<GameObject> InventorySlots { set=> _inventorySlots=value; get=> _inventorySlots;}
-    public static float getScale { get => instance.scale; set => instance.scale = value; }
+    private static CreateInventorySystem _instance;
+    public static List<GameObject> InventorySlots { set => _inventorySlots = value; get => _inventorySlots; }
+    public static float getScale { get => _instance.scale; set => _instance.scale = value; }
     public static Dictionary<string, InventoryItem> GetInventoryItemsDict { get => _inventoryItemsDict; set => _inventoryItemsDict = value; }
+    public static CreateInventorySystem Instance { get => _instance; }
+
+    public InventoryManagemenetEvent inventoryManagementEvent = new InventoryManagemenetEvent();
 
     private void Awake()
     {
-        if(instance == null)
-            instance = this;
+        if(_instance == null)
+            _instance = this;
     }
     public static List<GameObject> GetInventoryList()
     {
@@ -51,13 +54,12 @@ public class CreateInventorySystem : MonoBehaviour
 
     void Start()
     {
-
         _inventorySlots = new List<GameObject>();
+        inventoryManagementEvent.AddListener(ShouldAddToInventory);
 
         _inventoryItemsDict = new Dictionary<string, InventoryItem>();
         _ = (startX == 0 && startY == 0 && increment == 0 && decrement == 0) ? _boxes.GenerateInventory(SizeOftheInventory, -250, 150, 100, -50, PanelObject, ScriptTobeAddedForItems, slotTag) :
                     _boxes.GenerateInventory(SizeOftheInventory, startX, startY, increment, decrement, PanelObject, ScriptTobeAddedForItems, slotTag);
-
     }
 
 
@@ -178,6 +180,11 @@ public class CreateInventorySystem : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void ShouldAddToInventory(bool value)
+    {
+
     }
 
 }

@@ -7,7 +7,7 @@ using static UnityEngine.Rendering.DebugUI;
 public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 {
     private const float MAX_ANIMATION_TIME = 0.6f;
-
+    private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
     [SerializeField] LayerMask groundLayer;
     [SerializeField] float slidingSpeed;
 
@@ -19,6 +19,8 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
     private Rigidbody2D _rb;
 
     public OnSlidingEvent onSlideEvent=new OnSlidingEvent();
+
+
     void Start()
     {
         _animationHandler = GetComponent<PlayerAnimationMethods>();
@@ -31,7 +33,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
     private Task Slide()
     {
-        if (PlayerVariables.Instance.IS_SLIDING && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, groundLayer))
+        if (PlayerVariables.Instance.IS_SLIDING && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, groundLayer, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
             onSlideEvent.Invoke(slidingSpeed); //posting for speed
 

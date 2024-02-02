@@ -6,7 +6,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 {
     private const float FALLING_SPEED = 0.8f;
     private const float JUMPING_SPEED = 0.5f;
-    private const float MAX_FALL_TIME = 0.5f;
+    private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
 
     private Rigidbody2D _rb;
     private PlayerAnimationMethods _animationHandler;
@@ -16,7 +16,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     [SerializeField] LayerMask groundLayer;
     [SerializeField] LayerMask ledgeLayer;
     [SerializeField] float JumpSpeed;
-    [SerializeField] float maxTimeJump;
     [SerializeField] float maxJumpHeight;
 
     private float _characterVelocityY;
@@ -26,8 +25,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
     public PlayerJumpEvent onPlayerJumpEvent;
     public float CharacterVelocityY { get => _characterVelocityY; set => _characterVelocityY = value; }
-    private float JumpTime { get => _timeCounter; }
-
     private Vector3 PlayerInitialPosition { get => _playerInitialPosition; set=> _playerInitialPosition = value; }  
 
     public bool CancelAction()
@@ -37,6 +34,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     }
     public bool PerformAction(bool value)
     {
+        SetPlayerInitialPosition(PlayerVariables.Instance.IS_JUMPING);
         _isJumpPressed = true;
         return true;
     }
@@ -62,8 +60,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     }
     public async Task HandleJumpingMechanism()
     {
-        await SetPlayerInitialPosition(_isJumpPressed);
-
         await HandleJumping();
 
         await HandleFalling();
@@ -79,7 +75,10 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         {
             CharacterVelocityY = -JumpSpeed * FALLING_SPEED; //extra check
 
+            _isJumpPressed = false;
+
             _animationHandler.JumpingFallingAnimationHandler(false);
+
         }
 
         if (LedgeGroundChecker(groundLayer, ledgeLayer) && !_isJumpPressed) //on the ground
@@ -103,13 +102,9 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
             _animationHandler.JumpingFallingAnimationHandler(true); //jumping animation
         }
 
-        if (await CanPlayerFall() || await MaxJumpHeightChecker(maxJumpHeight)) //peak reached
+        if (await CanPlayerFall(maxJumpHeight)) //peak reached
         {
             PlayerVariables.Instance.jumpVariableEvent.Invoke(false);
-
-            _isJumpPressed = false; //fixed the issue of eternally looping at jump on JUMP HOLD
-
-            return;
         }
     }
 
@@ -122,39 +117,34 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(!isJumping, isOnLedgeOrGround, isJumpPressed));
     }
 
-    private Task SetPlayerInitialPosition(bool isJumpPressed)
+    private Task SetPlayerInitialPosition(bool isJumping)
     {
-        if(LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumpPressed)
+        if(LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumping)
+        {
             PlayerInitialPosition = transform.position;
-
+        }
         return Task.CompletedTask;
     }
-    private Task<bool> CanPlayerFall()
+    private async Task<bool> CanPlayerFall(float maxJumpHeight)
     {
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
         bool isOnLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
         bool isJumpPressed = _isJumpPressed;
-
-        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(isJumping, !isOnLedgeOrGround, !isJumpPressed));
+        return MovementHelperFunctions.boolConditionAndTester(isJumping, !isOnLedgeOrGround, isJumpPressed, await MaxJumpHeightChecker(maxJumpHeight));
     }
     private bool LedgeGroundChecker(LayerMask ground, LayerMask ledge)
     {
-        return _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, ground)
-            || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, ledge);
-    }
-    public Task<bool> MaxJumpTimeChecker()
-    {
-        return Task.FromResult(_timeCounter > maxTimeJump);
+        return _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, ground, COLLIDER_DISTANCE_FROM_THE_LAYER)
+            || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER);
     }
 
-    public Task<bool> MaxJumpHeightChecker(float maxJumpHeight)
+    public async Task<bool> MaxJumpHeightChecker(float maxJumpHeight)
     {
-        Debug.Log(PlayerInitialPosition);
-        if(transform.position.y >= PlayerInitialPosition.y + maxJumpHeight)
+        if(transform.position.y >= PlayerInitialPosition.y + maxJumpHeight )
         {
-            return Task.FromResult(true);
+            return await Task.FromResult(true);
         }
-        return Task.FromResult(false);
+        return await Task.FromResult(false);
     }
 
 }
