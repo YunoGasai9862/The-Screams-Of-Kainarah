@@ -29,7 +29,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
         _playerAttackStateMachine.SetAttackState(AnimationConstants.THROW_DAGGER, onThrowEvent.CanThrow);
 
         //fix this too. Why the inventory logic is here?
-        GameObject daggerInventorySlot = CreateInventorySystem.GetSlotTheGameObjectIsAttachedTo("Dagger");
+        GameObject daggerInventorySlot = CreateInventorySystem.GetSlotGameObjectIsAttachedTo("Dagger");
 
         if (daggerInventorySlot != null)
         {

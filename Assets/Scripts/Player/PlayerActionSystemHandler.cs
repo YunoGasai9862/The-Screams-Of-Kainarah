@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using InventoryManagement = CreateInventorySystem;
 
 public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 {
@@ -25,7 +24,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     {
         GameObject temp = pickableItems.returnGameObjectForTheKey(collider.tag);
 
-        return await InventoryManagement.AddToInventorySystem(temp.GetComponent<SpriteRenderer>().sprite, temp.tag); //adds it to the inventory
+        return await InventoryManagementSystem.Instance.InventorySystem.AddToInventorySystem(temp.GetComponent<SpriteRenderer>().sprite, temp.tag); //adds it to the inventory
 
     }
 

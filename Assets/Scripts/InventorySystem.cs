@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class CreateInventorySystem : MonoBehaviour
+public class InventorySystem : MonoBehaviour
 {
     private const string QUANITY = "QUANTITY";
 
@@ -34,19 +34,10 @@ public class CreateInventorySystem : MonoBehaviour
     [Header("Enter scale for each slot")]
     [SerializeField] float scale;
 
-    private static CreateInventorySystem _instance;
     public static List<GameObject> InventorySlots { set => _inventorySlots = value; get => _inventorySlots; }
-    public static float getScale { get => _instance.scale; set => _instance.scale = value; }
+    public float GetScale { get => scale; set => scale = value; }
     public static Dictionary<string, InventoryItem> GetInventoryItemsDict { get => _inventoryItemsDict; set => _inventoryItemsDict = value; }
-    public static CreateInventorySystem Instance { get => _instance; }
 
-    public InventoryManagemenetEvent inventoryManagementEvent = new InventoryManagemenetEvent();
-
-    private void Awake()
-    {
-        if(_instance == null)
-            _instance = this;
-    }
     public static List<GameObject> GetInventoryList()
     {
         return _inventorySlots;
@@ -55,7 +46,6 @@ public class CreateInventorySystem : MonoBehaviour
     void Start()
     {
         _inventorySlots = new List<GameObject>();
-        inventoryManagementEvent.AddListener(ShouldAddToInventory);
 
         _inventoryItemsDict = new Dictionary<string, InventoryItem>();
         _ = (startX == 0 && startY == 0 && increment == 0 && decrement == 0) ? _boxes.GenerateInventory(SizeOftheInventory, -250, 150, 100, -50, PanelObject, ScriptTobeAddedForItems, slotTag) :
@@ -64,7 +54,7 @@ public class CreateInventorySystem : MonoBehaviour
 
 
     //use Dictionary Logic (Refactor)
-    public static async Task<bool> AddToInventorySystem(Sprite itemToBeAdded, string tag)
+    public async Task<bool> AddToInventorySystem(Sprite itemToBeAdded, string tag)
     {
         var itemTemp = new InventoryItem(itemToBeAdded, tag);
 
@@ -83,7 +73,7 @@ public class CreateInventorySystem : MonoBehaviour
         return true;
     }
 
-    private static async Task DisplayOnInventory(Dictionary<string, InventoryItem> dict, List<GameObject> slots)
+    private async Task DisplayOnInventory(Dictionary<string, InventoryItem> dict, List<GameObject> slots)
     {
         int x = 0;
 
@@ -110,7 +100,7 @@ public class CreateInventorySystem : MonoBehaviour
         }
 
     }
-    private static async Task WipeCleanInventory(List<GameObject> slots)
+    private async Task WipeCleanInventory(List<GameObject> slots)
     {
         foreach(var slot in slots)
         {
@@ -121,7 +111,7 @@ public class CreateInventorySystem : MonoBehaviour
         await Task.FromResult(true);
     }
 
-    private static async Task<bool> AddItemToTheSlot(GameObject parentSlot, InventoryItem item)
+    private async Task<bool> AddItemToTheSlot(GameObject parentSlot, InventoryItem item)
     {
         if(item.GetQuantity > 0)
         {
@@ -130,7 +120,7 @@ public class CreateInventorySystem : MonoBehaviour
             quantityBox.tag = item.GetTag; //the same as the added gameobject
 
            GameObject inventoryItem = new GameObject(item.GetTag);
-           inventoryItem.transform.localScale = new Vector3(getScale, getScale, getScale);
+           inventoryItem.transform.localScale = new Vector3(GetScale, GetScale, GetScale);
            inventoryItem.transform.SetParent(parentSlot.transform, false);
 
            Image sprite = inventoryItem.AddComponent<Image>();
@@ -142,7 +132,7 @@ public class CreateInventorySystem : MonoBehaviour
 
         return await Task.FromResult(true);
     }
-    public static GameObject GetSlotTheGameObjectIsAttachedTo(string tag)
+    public GameObject GetSlotGameObjectIsAttachedTo(string tag)
     {
         if(GetInventoryItemsDict.TryGetValue(tag, out InventoryItem value))
         {
@@ -152,7 +142,7 @@ public class CreateInventorySystem : MonoBehaviour
         return null;
     }
 
-    public static GameObject InstantiateQuanityBox(string textBoxName, string initialCount, float initialXSize, float initialYSize)
+    public GameObject InstantiateQuanityBox(string textBoxName, string initialCount, float initialXSize, float initialYSize)
     {
         GameObject textBox = new(textBoxName);
         textBox.AddComponent<TextMeshProUGUI>();
@@ -163,7 +153,7 @@ public class CreateInventorySystem : MonoBehaviour
     }
 
 
-    public static async Task<bool> ReduceQuantity(string tag)
+    public async Task<bool> ReduceQuantity(string tag)
     {
         if (GetInventoryItemsDict.TryGetValue(tag, out InventoryItem value))
         {
@@ -180,11 +170,6 @@ public class CreateInventorySystem : MonoBehaviour
             return true;
         }
         return false;
-    }
-
-    public void ShouldAddToInventory(bool value)
-    {
-
     }
 
 }
