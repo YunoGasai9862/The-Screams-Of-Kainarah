@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    private const string DIAMOND_TAG = "Crystal";
     private GameObject _insideObject;
     private Sprite _insideObjectSprite;
     [SerializeField] TMPro.TextMeshProUGUI Funds;
@@ -35,7 +36,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                 if (CheckIfFundsExists(Funds))
                 {
                     _insideObject = _insideObject.transform.GetChild(0).gameObject;
-                    _= InventoryManagementSystem.Instance.InventorySystem.AddToInventorySystem(_insideObject.GetComponent<SpriteRenderer>().sprite, _insideObject.tag); //the rest of the process is automated in that function
+                    InventoryManagementSystem.Instance.AddInventoryItemEvent.Invoke(_insideObject.GetComponent<SpriteRenderer>().sprite, _insideObject.tag); //the rest of the process is automated in that function
                     transact.Play();
                     DecreaseFunds(ref Funds);
                 } 
@@ -83,13 +84,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public async void DecreaseDiamondsFromInventory()
     {
-        GameObject _diamondObject = InventoryManagementSystem.Instance.InventorySystem.GetSlotGameObjectIsAttachedTo("Crystal");
-        if (_diamondObject != null)
-        {
-            GameObject _diamondObjectParent = _diamondObject.transform.parent.gameObject;
-           await InventoryManagementSystem.Instance.InventorySystem.ReduceQuantity(_diamondObjectParent.tag);
-
-        }
-
+         string funds = await InventoryManagementSystem.Instance.GetItemTagFromInventoryToDecreaseFunds(DIAMOND_TAG);  
+         InventoryManagementSystem.Instance.RemoveInventoryItemEvent.Invoke(funds);
     }
 }

@@ -183,11 +183,11 @@ public class PlayerActionRelayer : AbstractEntity
 
     private async Task ItemCollisionHandler(Collider2D collision)
     {
-        pickedUp = _pickableItems.didPlayerCollideWithaPickableItem(collision.tag);
+        pickedUp = _pickableItems.DidPlayerCollideWithaPickableItem(collision.tag);
 
         if (pickedUp)
         {
-            bool shouldBedisabled = _pickableItems.shouldThisItemBeDisabled(collision.tag);
+            bool shouldBedisabled = _pickableItems.ShouldThisItemBeDisabled(collision.tag);
 
             if (shouldBedisabled)
                 collision.gameObject.SetActive(false);

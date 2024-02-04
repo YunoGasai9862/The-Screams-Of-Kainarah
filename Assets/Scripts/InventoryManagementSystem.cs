@@ -12,32 +12,49 @@ public class InventoryManagementSystem : MonoBehaviour
     private InventorySystem InventorySystem { get => inventorySystem; }
     public static InventoryManagementSystem Instance { get => _instance; private set => _instance = value; }
 
-    public InventoryManagemenetEvent inventoryManagementEvent = new InventoryManagemenetEvent();
+    private AddInventoryItemEvent _addInventoryItemEvent = new();
+    private RemoveInventoryItemEvent _removeInventoryItemEvent = new();
+    public AddInventoryItemEvent AddInventoryItemEvent { get => _addInventoryItemEvent; set=>_addInventoryItemEvent = value; }
+    public RemoveInventoryItemEvent RemoveInventoryItemEvent { get => _removeInventoryItemEvent; set => _removeInventoryItemEvent = value; }
 
     public void Awake()
     {
         if(Instance == null)
             Instance = this;
 
-       inventoryManagementEvent.AddListener(AddToInventory);
+        AddInventoryItemEvent.AddListener(AddToInventory);
+        RemoveInventoryItemEvent.AddListener(RemoveFromInventory);
     }
-    //create multiple events for removal and addition!
-    public async void AddToInventory(bool value)
+    private async void AddToInventory(Sprite sprite, string itemTag)
     {
-        inventoryManagementEvent.ShouldAddToInventory = value;
-        await AddEntryToInventory();
-    }
-
-    private Task AddEntryToInventory()
-    {
-        if(inventoryManagementEvent.ShouldAddToInventory)
+        AddInventoryItemEvent.Sprite = sprite;
+        AddInventoryItemEvent.Item = itemTag;
+        if(AddInventoryItemEvent.Sprite != null && string.IsNullOrEmpty(AddInventoryItemEvent.Item))
         {
-
+            await InventorySystem.AddToInventorySystem(AddInventoryItemEvent.Sprite, AddInventoryItemEvent.Item);
         }
-        return Task.CompletedTask;
     }
-    public GameObject GetSlotGameObjectIsAttachedTo(string tag)
+    private async void RemoveFromInventory(string item)
     {
-        return InventorySystem.GetSlotGameObjectIsAttachedTo(tag);
+        RemoveInventoryItemEvent.Item = item;
+        if(!string.IsNullOrEmpty(RemoveInventoryItemEvent.Item))
+        {
+            await InventorySystem.ReduceQuantity(RemoveInventoryItemEvent.Item);
+        }
+    }
+    public Task<bool> DoesItemExistInInventory(string tag)
+    {
+        GameObject item = InventorySystem.GetSlotGameObjectIsAttachedTo(tag);
+        return item == null ? Task.FromResult(false) : Task.FromResult(true);
+    }
+    public Task<string> GetItemTagFromInventoryToDecreaseFunds(string tag)
+    {
+        GameObject item = InventorySystem.GetSlotGameObjectIsAttachedTo(tag);
+        return item == null ? Task.FromResult(String.Empty) :Task.FromResult(item.transform.parent.gameObject.tag);
+    }
+
+    public void AddToSlot(GameObject entity)
+    {
+        InventorySystem.InventorySlots.Add(entity);
     }
 }

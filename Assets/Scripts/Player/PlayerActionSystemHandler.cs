@@ -20,18 +20,18 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
              { "Dagger" , value => OnDaggerPickup(value) }
         };
     }
-    private async Task<bool> OnDaggerPickup(Collider2D collider)
+    private Task<bool> OnDaggerPickup(Collider2D collider)
     {
-        GameObject temp = pickableItems.returnGameObjectForTheKey(collider.tag);
-
-        return await InventoryManagementSystem.Instance.InventorySystem.AddToInventorySystem(temp.GetComponent<SpriteRenderer>().sprite, temp.tag); //adds it to the inventory
+        GameObject temp = pickableItems.ReturnGameObjectForTheKey(collider.tag);
+        InventoryManagementSystem.Instance.AddInventoryItemEvent.Invoke(temp.GetComponent<SpriteRenderer>().sprite, temp.tag);
+        return Task.FromResult(true); //adds it to the inventory
 
     }
 
     private async Task<bool> OnHealthPickup(Collider2D collider)
     {
         Vector2 _pickupPos = new(collider.transform.position.x, collider.transform.position.y - 1f);
-        GameObjectInstantiator _gameObject = pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(collider.tag), _pickupPos);
+        GameObjectInstantiator _gameObject = pickupEffectInstantiator(pickableItems.ReturnGameObjectForTheKey(collider.tag), _pickupPos);
         _gameObject.DestroyGameObject(3f);
         return await Task.FromResult(true);
 
@@ -39,7 +39,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 
     private async Task<bool> OnCrystalPickup(Collider2D collider)
     {
-        pickupEffectInstantiator(pickableItems.returnGameObjectForTheKey(collider.tag), collider.transform.position);
+        pickupEffectInstantiator(pickableItems.ReturnGameObjectForTheKey(collider.tag), collider.transform.position);
         return await Task.FromResult(true);
     }
 

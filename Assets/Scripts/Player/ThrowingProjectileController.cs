@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
 {
+    private const string DAGGER_ITEM_NAME = "Dagger";
+
     public ThrowableProjectileEvent onThrowEvent = new ThrowableProjectileEvent();
 
     private SpriteRenderer _spriteRenderer;
@@ -24,28 +26,24 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
 
         onThrowEvent.AddListener(CanPlayerThrowProjectile);
     }
-    private void ThrowDaggerHandler()
+    private async void ThrowDaggerHandler()
     {
         _playerAttackStateMachine.SetAttackState(AnimationConstants.THROW_DAGGER, onThrowEvent.CanThrow);
 
-        //fix this too. Why the inventory logic is here?
-        GameObject daggerInventorySlot = CreateInventorySystem.GetSlotGameObjectIsAttachedTo("Dagger");
+        bool doesDaggerExistInInventory = await InventoryManagementSystem.Instance.DoesItemExistInInventory(DAGGER_ITEM_NAME);
 
-        if (daggerInventorySlot != null)
-        {
-            ThrowDagger(_pickableItems.returnGameObjectForTheKey("Dagger"));
-        }
+        if (doesDaggerExistInInventory)
+            ThrowDagger(_pickableItems.ReturnGameObjectForTheKey(DAGGER_ITEM_NAME));
 
     }
-    private async void ThrowDagger(GameObject prefab)
+    private void ThrowDagger(GameObject prefab)
     {
         GameObjectInstantiator _daggerInstantiator = new(prefab);
 
         //fix dagger throw timing
         GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(GetDaggerPositionWithOffset(2, -1), Quaternion.identity);
 
-        //same this too
-        await CreateInventorySystem.ReduceQuantity(prefab.gameObject.tag);
+        InventoryManagementSystem.Instance.RemoveInventoryItemEvent.Invoke(prefab.gameObject.tag); //invoking event for removal
 
         //fix this. Why reference it here??
         _daggerGameObject.GetComponent<AttackEnemy>().throwDagger = true;

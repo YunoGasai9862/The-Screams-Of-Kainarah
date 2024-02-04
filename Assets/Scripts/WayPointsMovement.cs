@@ -28,7 +28,7 @@ public class WayPointsMovement : MonoBehaviour
         { 
             currentIndex++;
 
-            if(await isCurrentIndexValueWithinBounds())
+            if(await IsCurrentIndexValueWithinBounds())
             {
                 currentIndex = 0;
             }
@@ -60,7 +60,7 @@ public class WayPointsMovement : MonoBehaviour
     
     }
 
-    public Task<bool> isCurrentIndexValueWithinBounds()
+    public Task<bool> IsCurrentIndexValueWithinBounds()
     {
         return Task.FromResult(currentIndex >= Waypoints.Length);
     }

@@ -5,7 +5,7 @@ public class PickableItemsHandler : MonoBehaviour
 {
     [SerializeField]
     public PickableItems pickableItems;
-    public bool didPlayerCollideWithaPickableItem(string collisionObjectName)
+    public bool DidPlayerCollideWithaPickableItem(string collisionObjectName)
     {
         for (int i = 0; i < pickableItems.pickableEntities.Length; i++)
         {
@@ -19,7 +19,7 @@ public class PickableItemsHandler : MonoBehaviour
 
         return false;
     }
-    public GameObject returnGameObjectForTheKey(string keyName)
+    public GameObject ReturnGameObjectForTheKey(string keyName)
     {
         for (int i = 0; i < pickableItems.pickableEntities.Length; i++)
         {
@@ -34,7 +34,7 @@ public class PickableItemsHandler : MonoBehaviour
         return null;
     }
 
-    public bool shouldThisItemBeDisabled(string collisionObjectName)
+    public bool ShouldThisItemBeDisabled(string collisionObjectName)
     {
         for (int i = 0; i < pickableItems.pickableEntities.Length; i++)
         {

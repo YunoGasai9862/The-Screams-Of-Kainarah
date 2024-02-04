@@ -61,11 +61,11 @@ public class MoveCrystal : MonoBehaviour
         }
     }
 
-    private async void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Player") && !collision.CompareTag("Sword"))
         {
-           await InventoryManagementSystem.Instance.InventorySystem.AddToInventorySystem(gameObject.GetComponent<SpriteRenderer>().sprite, gameObject.tag);
+           InventoryManagementSystem.Instance.AddInventoryItemEvent.Invoke(gameObject.GetComponent<SpriteRenderer>().sprite, gameObject.tag);
         }
     }
 
