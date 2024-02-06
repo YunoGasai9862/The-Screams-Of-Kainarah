@@ -29,7 +29,7 @@ public class InventoryManagementSystem : MonoBehaviour
     {
         AddInventoryItemEvent.Sprite = sprite;
         AddInventoryItemEvent.Item = itemTag;
-        if(AddInventoryItemEvent.Sprite != null && string.IsNullOrEmpty(AddInventoryItemEvent.Item))
+        if (AddInventoryItemEvent.Sprite != null && !string.IsNullOrEmpty(AddInventoryItemEvent.Item))
         {
             await InventorySystem.AddToInventorySystem(AddInventoryItemEvent.Sprite, AddInventoryItemEvent.Item);
         }
