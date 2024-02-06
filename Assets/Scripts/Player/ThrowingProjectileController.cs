@@ -46,7 +46,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
         InventoryManagementSystem.Instance.RemoveInventoryItemEvent.Invoke(prefab.gameObject.tag); //invoking event for removal
 
         //fix this. Why reference it here??
-        _daggerGameObject.GetComponent<AttackEnemy>().throwDagger = true;
+        //_daggerGameObject.GetComponent<AttackEnemy>().throwDagger = true; //fix this
     }
 
     public Vector2 GetDaggerPositionWithOffset(float xOffset, float yOffset)
