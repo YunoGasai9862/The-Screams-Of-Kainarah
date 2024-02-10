@@ -170,16 +170,16 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     }
     public void Icetail()
     {
-        GameObjectInstantiator iceTrail = new(IceTrail);
+        InstantiatorController iceTrail = new(IceTrail);
         iceTrail.InstantiateGameObject(transform.position, Quaternion.identity);
-        iceTrail.setGameObjectParent(transform);
+        iceTrail.SetGameObjectParent(transform);
     }
 
     public void Icetail2()
     {
-        GameObjectInstantiator iceTrail = new(IceTrail2);
+        InstantiatorController iceTrail = new(IceTrail2);
         iceTrail.InstantiateGameObject(transform.position, Quaternion.identity);
-        iceTrail.setGameObjectParent(transform);
+        iceTrail.SetGameObjectParent(transform);
     }
 
     public bool PerformAction(bool value)

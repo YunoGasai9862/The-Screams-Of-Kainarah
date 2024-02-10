@@ -14,8 +14,8 @@ public class InventoryManagementSystem : MonoBehaviour
 
     private AddInventoryItemEvent _addInventoryItemEvent = new();
     private RemoveInventoryItemEvent _removeInventoryItemEvent = new();
-    public AddInventoryItemEvent AddInventoryItemEvent { get => _addInventoryItemEvent; set=>_addInventoryItemEvent = value; }
-    public RemoveInventoryItemEvent RemoveInventoryItemEvent { get => _removeInventoryItemEvent; set => _removeInventoryItemEvent = value; }
+    private AddInventoryItemEvent AddInventoryItemEvent { get => _addInventoryItemEvent; set=>_addInventoryItemEvent = value; }
+    private RemoveInventoryItemEvent RemoveInventoryItemEvent { get => _removeInventoryItemEvent; set => _removeInventoryItemEvent = value; }
 
     public void Awake()
     {
@@ -56,5 +56,14 @@ public class InventoryManagementSystem : MonoBehaviour
     public void AddToSlot(GameObject entity)
     {
         InventorySystem.InventorySlots.Add(entity);
+    }
+
+    public void AddInvoke(Sprite sprite, string itemTag)
+    {
+        AddInventoryItemEvent.Invoke(sprite, itemTag);
+    }
+    public void RemoveInvoke(string itemTag)
+    {
+        RemoveInventoryItemEvent.Invoke(itemTag);
     }
 }

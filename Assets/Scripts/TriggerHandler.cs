@@ -36,12 +36,10 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                 if (CheckIfFundsExists(Funds))
                 {
                     _insideObject = _insideObject.transform.GetChild(0).gameObject;
-                    InventoryManagementSystem.Instance.AddInventoryItemEvent.Invoke(_insideObject.GetComponent<SpriteRenderer>().sprite, _insideObject.tag); //the rest of the process is automated in that function
+                    InventoryManagementSystem.Instance.AddInvoke(_insideObject.GetComponent<SpriteRenderer>().sprite, _insideObject.tag); //the rest of the process is automated in that function
                     transact.Play();
                     DecreaseFunds(ref Funds);
                 } 
-
-
             }
 
         }
@@ -85,6 +83,6 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public async void DecreaseDiamondsFromInventory()
     {
          string funds = await InventoryManagementSystem.Instance.GetItemTagFromInventoryToDecreaseFunds(DIAMOND_TAG);  
-         InventoryManagementSystem.Instance.RemoveInventoryItemEvent.Invoke(funds);
+         InventoryManagementSystem.Instance.RemoveInvoke(funds);
     }
 }

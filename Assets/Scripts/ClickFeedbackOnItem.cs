@@ -13,7 +13,7 @@ public class ClickFeedbackOnItem : MonoBehaviour, IPointerUpHandler, ISerializab
 
         if (item.tag != slotTag)
         {
-           InventoryManagementSystem.Instance.RemoveInventoryItemEvent.Invoke(item.tag);
+           InventoryManagementSystem.Instance.RemoveInvoke(item.tag);
         }
     }
 }

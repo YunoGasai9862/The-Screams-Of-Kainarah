@@ -10,14 +10,17 @@ public class DaggerController : MonoBehaviour
     private bool _checker = true;
     private GameObject _player;
     private SpriteRenderer _daggerRenderer;
-    private DaggerOnThrowEvent _onThrowEvent = new DaggerOnThrowEvent();
+    private DaggerOnThrowEvent _onThrowEvent;
+    public void Awake()
+    {
+        _onThrowEvent = new DaggerOnThrowEvent();
+    }
     private void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _anim = GetComponent<Animator>();
         _daggerRenderer = GetComponent<SpriteRenderer>();
         _player = GameObject.FindWithTag("Player");
-        _onThrowEvent.AddListener(OnThrowEventHandler);
     }
 
     void Update()
@@ -25,7 +28,6 @@ public class DaggerController : MonoBehaviour
         if (_checker)
         {
             _elapsedTime += Time.deltaTime;
-
         }
 
         if (_elapsedTime > 1f)
@@ -50,8 +52,6 @@ public class DaggerController : MonoBehaviour
             _daggerRenderer.flipX = false;
             _rb.velocity = new Vector2(_daggerSpeed, 0);
             _onThrowEvent.DaggerInMotion = false;
-
-
         }
     }
 
@@ -59,17 +59,18 @@ public class DaggerController : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
-            // Destroy(collision.gameObject);
             _anim.SetBool("HitEnemy", true);
             Destroy(gameObject, .4f);
-
-
         }
-
     }
-
-    public void OnThrowEventHandler(bool isDaggerInMotion)
+    private void OnThrowEventHandler(bool isDaggerInMotion)
     {
         _onThrowEvent.DaggerInMotion = isDaggerInMotion;
+        _onThrowEvent.RemoveListener(OnThrowEventHandler);
+    }
+    public void Invoke(bool value)
+    {
+        _onThrowEvent.AddListener(OnThrowEventHandler);
+        _onThrowEvent.Invoke(value);
     }
 }

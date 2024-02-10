@@ -7,6 +7,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     private const string DAGGER_ITEM_NAME = "Dagger";
 
     public ThrowableProjectileEvent onThrowEvent = new ThrowableProjectileEvent();
+    public DaggerOnThrowEvent DaggerOnThrowEvent { get; private set; } = new();
 
     private SpriteRenderer _spriteRenderer;
     private PickableItemsHandler _pickableItems;
@@ -38,15 +39,17 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     }
     private void ThrowDagger(GameObject prefab)
     {
-        GameObjectInstantiator _daggerInstantiator = new(prefab);
+        InstantiatorController dagger = new(prefab);
 
         //fix dagger throw timing
-        GameObject _daggerGameObject = _daggerInstantiator.InstantiateGameObject(GetDaggerPositionWithOffset(2, -1), Quaternion.identity);
+        GameObject daggerGameObject = dagger.InstantiateGameObject(GetDaggerPositionWithOffset(2, -1), Quaternion.identity);
 
-        InventoryManagementSystem.Instance.RemoveInventoryItemEvent.Invoke(prefab.gameObject.tag); //invoking event for removal
+        InventoryManagementSystem.Instance.RemoveInvoke(prefab.gameObject.tag); //invoking event for removal
 
-        //fix this. Why reference it here??
-        //_daggerGameObject.GetComponent<AttackEnemy>().throwDagger = true; //fix this
+        DaggerController controller = daggerGameObject.GetComponent<DaggerController>();
+
+        controller.Invoke(true);
+
     }
 
     public Vector2 GetDaggerPositionWithOffset(float xOffset, float yOffset)

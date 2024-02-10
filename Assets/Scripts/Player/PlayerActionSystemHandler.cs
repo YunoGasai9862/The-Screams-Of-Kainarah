@@ -9,7 +9,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 
     Dictionary<String, Func<Collider2D, Task >> _playerActionHandlerDic;
 
-    private GameObjectInstantiator _gameObject;
+    private InstantiatorController _gameObject;
 
     private void Awake()
     {
@@ -23,7 +23,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     private Task<bool> OnDaggerPickup(Collider2D collider)
     {
         GameObject temp = pickableItems.ReturnGameObjectForTheKey(collider.tag);
-        InventoryManagementSystem.Instance.AddInventoryItemEvent.Invoke(temp.GetComponent<SpriteRenderer>().sprite, temp.tag);
+        InventoryManagementSystem.Instance.AddInvoke(temp.GetComponent<SpriteRenderer>().sprite, temp.tag);
         return Task.FromResult(true); //adds it to the inventory
 
     }
@@ -31,7 +31,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     private async Task<bool> OnHealthPickup(Collider2D collider)
     {
         Vector2 _pickupPos = new(collider.transform.position.x, collider.transform.position.y - 1f);
-        GameObjectInstantiator _gameObject = pickupEffectInstantiator(pickableItems.ReturnGameObjectForTheKey(collider.tag), _pickupPos);
+        InstantiatorController _gameObject = pickupEffectInstantiator(pickableItems.ReturnGameObjectForTheKey(collider.tag), _pickupPos);
         _gameObject.DestroyGameObject(3f);
         return await Task.FromResult(true);
 
@@ -52,7 +52,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     {
         PlayerObserverListenerHelper.ColliderSubjects.RemoveOberver(this); //Remove PlayerActionSystem as an observer when an event is handled/or the observer is no longer needed
     }
-    private GameObjectInstantiator pickupEffectInstantiator(GameObject prefab, Vector3 position)
+    private InstantiatorController pickupEffectInstantiator(GameObject prefab, Vector3 position)
     {
         _gameObject = new(prefab);
         _gameObject.InstantiateGameObject(position, Quaternion.identity);

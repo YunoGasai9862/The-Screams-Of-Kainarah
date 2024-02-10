@@ -17,7 +17,6 @@ public class LedgeGrabController : MonoBehaviour
     {
         _ledgeGrabCommand.Execute();
     }
-
     public void CancelLedgeGrab()
     {
         _ledgeGrabCommand.Cancel();

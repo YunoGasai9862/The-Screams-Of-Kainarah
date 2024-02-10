@@ -8,5 +8,7 @@ public class DaggerOnThrowEvent: UnityEvent<bool>
     {
         DaggerInMotion = isDaggerInMotion;
     }
-    public DaggerOnThrowEvent() { DaggerInMotion = false; }
+    public DaggerOnThrowEvent() { }
+
+
 }

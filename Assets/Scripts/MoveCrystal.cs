@@ -65,7 +65,7 @@ public class MoveCrystal : MonoBehaviour
     {
         if (collision.CompareTag("Player") && !collision.CompareTag("Sword"))
         {
-           InventoryManagementSystem.Instance.AddInventoryItemEvent.Invoke(gameObject.GetComponent<SpriteRenderer>().sprite, gameObject.tag);
+           InventoryManagementSystem.Instance.AddInvoke(gameObject.GetComponent<SpriteRenderer>().sprite, gameObject.tag);
         }
     }
 

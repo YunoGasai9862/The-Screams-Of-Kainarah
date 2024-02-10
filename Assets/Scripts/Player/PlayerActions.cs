@@ -107,6 +107,7 @@ public class PlayerActions : MonoBehaviour
             //ledge grab
             if (PlayerVariables.Instance.IS_GRABBING) //tackles the ledgeGrab
             {
+                Debug.Log("Here");
                 LedgeGrabController.PerformLedgeGrab();
                 return;
             }
