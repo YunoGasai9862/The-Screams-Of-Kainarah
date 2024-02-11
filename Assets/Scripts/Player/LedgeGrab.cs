@@ -6,7 +6,6 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private const float MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB = 1f;
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
     private const float MAXIMUM_VELOCITY_X_FORCE = 12f;
-    private const float FORCE = 30f;
     private const float MAX_TIME_FOR_LEDGE_GRAB = 0.3f;
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
 
@@ -17,7 +16,8 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private float startingGrav;
     [SerializeField] LayerMask groundMask;
     [SerializeField] LayerMask ledge;
-    [SerializeField] float xDisplace, yDisplace;
+    [SerializeField] Vector2 displacements;
+    [SerializeField] Vector2 ledgeGrabForces;
     private CapsuleCollider2D col;
     private Animator anim;
     private SpriteRenderer sr;
@@ -41,17 +41,16 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     // Update is called once per frame
     async void Update()
     {
-
         greenXOffset = await GetBoxPosition(sr, greenXOffset);
         redXOffset = await GetBoxPosition(sr, redXOffset);
 
-        if (!_helperFunc.overlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
+        if (!_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
             PlayerVariables.Instance.IS_GRABBING)
         {
             _timeSpent += Time.deltaTime;
         }
 
-        if (TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB) || _helperFunc.overlapAgainstLayerMaskChecker(ref col, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER))
+        if (TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB) || _helperFunc.OverlapAgainstLayerMaskChecker(ref col, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
             PlayerVariables.Instance.grabVariableEvent.Invoke(false);
 
@@ -72,16 +71,16 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private async void FixedUpdate()
     {
         int sign = sr.flipX ? -1 : 1;
-        await GrabLedge(sign, startingGrav, FORCE, GroundPositionBeforeLedgeGrab, new Vector2(MAXIMUM_VELOCITY_X_FORCE, MAXIMUM_VELOCITY_Y_FORCE));
+        await GrabLedge(sign, startingGrav, ledgeGrabForces, GroundPositionBeforeLedgeGrab, new Vector2(MAXIMUM_VELOCITY_X_FORCE, MAXIMUM_VELOCITY_Y_FORCE));
     }
 
     //grab ledge => hold space until the player lands on the ledge
-    public async Task HandleLedgeGrabCalculations(int sign, float startingGravity, float force, Vector2 groundPosition, Vector2 maximumVelocities)
+    public async Task HandleLedgeGrabCalculations(int sign, float startingGravity, Vector2 force, Vector2 groundPosition, Vector2 maximumVelocities)
     {
         if(rb.velocity.y < maximumVelocities.y)
-            rb.AddForce(Vector2.up * yDisplace * force * Time.fixedDeltaTime * rb.mass, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * displacements.x * ledgeGrabForces.x * rb.mass, ForceMode2D.Impulse);
         if(transform.position.y > groundPosition.y + MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB && rb.velocity.x < maximumVelocities.x)
-            rb.AddForce((sign) * Vector2.right * xDisplace * force * Time.fixedDeltaTime * rb.mass, ForceMode2D.Impulse);
+            rb.AddForce((sign) * Vector2.right * displacements.y * ledgeGrabForces.y * rb.mass, ForceMode2D.Impulse);
         rb.gravityScale = startingGravity;
         await Task.CompletedTask;
     }
@@ -121,14 +120,14 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     {
         return Task.CompletedTask;
     }
-    private async Task GrabLedge(int sign, float startingGrav, float force, Vector2 groundPositionBeforeLedgeGrab, Vector2 maximumVelocities)
+    private async Task GrabLedge(int sign, float startingGrav, Vector2 force, Vector2 groundPositionBeforeLedgeGrab, Vector2 maximumVelocities)
     {
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab")
            && CanGrab)
         {
             await HandleLedgeGrabCalculations(sign, startingGrav, force, groundPositionBeforeLedgeGrab, maximumVelocities);  //this is for setting the animation to false
-            anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
             PlayerVariables.Instance.grabVariableEvent.Invoke(false);
+            anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
         }
     }
 

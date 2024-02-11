@@ -33,7 +33,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
     private Task Slide()
     {
-        if (PlayerVariables.Instance.IS_SLIDING && _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, groundLayer, COLLIDER_DISTANCE_FROM_THE_LAYER))
+        if (PlayerVariables.Instance.IS_SLIDING && _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _capsuleCollider, groundLayer, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
             onSlideEvent.Invoke(slidingSpeed); //posting for speed
 

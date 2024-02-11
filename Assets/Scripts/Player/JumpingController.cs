@@ -1,4 +1,5 @@
 using PlayerAnimationHandler;
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -23,7 +24,8 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     private bool _isJumpPressed;
     private Vector3 _playerInitialPosition;
 
-    public PlayerJumpEvent onPlayerJumpEvent;
+    public PlayerJumpVelocityEvent onPlayerJumpEvent;
+    public PlayerJumpTimeEvent onPlayerJumpTimeEvent;
     public float CharacterVelocityY { get => _characterVelocityY; set => _characterVelocityY = value; }
     private Vector3 PlayerInitialPosition { get => _playerInitialPosition; set=> _playerInitialPosition = value; }  
 
@@ -44,7 +46,8 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         _capsuleCollider = GetComponent<CapsuleCollider2D>();
         _animationHandler = GetComponent<PlayerAnimationMethods>();
         _rb = GetComponent<Rigidbody2D>();
-        onPlayerJumpEvent = new PlayerJumpEvent();
+        onPlayerJumpEvent = new PlayerJumpVelocityEvent();
+        onPlayerJumpTimeEvent.AddListener(GetJumpActionTimings);
     }
     private async void Update()
     {
@@ -52,11 +55,12 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     }
     private void FixedUpdate()
     {
-        if (_rb.velocity.y > 0f) //how high the player can jump
+        if (_rb.velocity.y > 0f && PlayerVariables.Instance.IS_JUMPING) //how high the player can jump
         {
             _timeCounter += Time.fixedDeltaTime;
         }
-         //_animationHandler.UpdateJumpTime(AnimationConstants.JUMP_TIME, JumpTime);
+
+        _animationHandler.UpdateJumpTime(AnimationConstants.JUMP_TIME, _timeCounter);
     }
     public async Task HandleJumpingMechanism()
     {
@@ -68,6 +72,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
         await Task.FromResult(true);
     }
+
 
     public async Task HandleFalling()
     {
@@ -85,7 +90,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         {
             CharacterVelocityY = 0f;
 
-            _timeCounter = 0;
+            _timeCounter = 0f;
         }
 
         await Task.FromResult(true);
@@ -113,8 +118,9 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
         bool isOnLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
         bool isJumpPressed = _isJumpPressed;
+        float jumpTime = _timeCounter;
 
-        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(!isJumping, isOnLedgeOrGround, isJumpPressed));
+        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(!isJumping, isOnLedgeOrGround, isJumpPressed, jumpTime==0));
     }
 
     private Task SetPlayerInitialPosition(bool isJumping)
@@ -134,8 +140,8 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     }
     private bool LedgeGroundChecker(LayerMask ground, LayerMask ledge)
     {
-        return _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, ground, COLLIDER_DISTANCE_FROM_THE_LAYER)
-            || _movementHelperClass.overlapAgainstLayerMaskChecker(ref _capsuleCollider, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER);
+        return _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _capsuleCollider, ground, COLLIDER_DISTANCE_FROM_THE_LAYER)
+            || _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _capsuleCollider, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER);
     }
 
     public async Task<bool> MaxJumpHeightChecker(float maxJumpHeight)
@@ -145,6 +151,11 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
             return await Task.FromResult(true);
         }
         return await Task.FromResult(false);
+    }
+
+    public void GetJumpActionTimings(float beginTime, float endTime)
+    {
+
     }
 
 }

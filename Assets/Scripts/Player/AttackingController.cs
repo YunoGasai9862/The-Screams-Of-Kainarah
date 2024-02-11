@@ -82,7 +82,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     private bool CanPlayerAttackWhileJumping()
     {
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
-        bool isOnTheGround = _movementHelper.overlapAgainstLayerMaskChecker(ref col, Ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
+        bool isOnTheGround = _movementHelper.OverlapAgainstLayerMaskChecker(ref col, Ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
 
         return isJumping && !isOnTheGround;
     }

@@ -43,6 +43,9 @@ public class PlayerActions : MonoBehaviour
     private bool LeftMouseButtonPressed { get; set; }
     private float TimeForMouseClickStart { get => _timeForMouseClickStart; set => _timeForMouseClickStart = value; }
     private float TimeForMouseClickEnd { get => _timeForMouseClickEnd; set => _timeForMouseClickEnd = value; }
+
+    private float TimeForJumpActionBegin { get; set; }
+    private float TimeForJumpActionEnd { get; set; }
     private bool DaggerInput { get => _daggerInput; set => _daggerInput = value; }
     //Force = -2m * sqrt (g * h)
     private void Awake()
@@ -65,8 +68,8 @@ public class PlayerActions : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         OriginalSpeed = _characterSpeed;
 
-        _rocky2DActions.PlayerMovement.Jump.started += Jump; //i can add the same function
-        _rocky2DActions.PlayerMovement.Jump.canceled += Jump;
+        _rocky2DActions.PlayerMovement.Jump.started += BeginJumpAction; //i can add the same function
+        _rocky2DActions.PlayerMovement.Jump.canceled += EndJumpAction;
         _rocky2DActions.PlayerMovement.Slide.started += BeginSlideAction;
         _rocky2DActions.PlayerMovement.Slide.canceled += EndSlideAction;
 
@@ -107,9 +110,7 @@ public class PlayerActions : MonoBehaviour
             //ledge grab
             if (PlayerVariables.Instance.IS_GRABBING) //tackles the ledgeGrab
             {
-                Debug.Log("Here");
                 LedgeGrabController.PerformLedgeGrab();
-                return;
             }
 
             //sliding
@@ -158,10 +159,20 @@ public class PlayerActions : MonoBehaviour
         return keystroke.x >= 0 ? _sr.flipX = false : _sr.flipX = true; //flips the character
     }
 
-    private void Jump(InputAction.CallbackContext context)
+    private void BeginJumpAction(InputAction.CallbackContext context)
     {
         GetJumpPressed = GetSlidePressed? false: context.ReadValueAsButton();
+        TimeForJumpActionBegin = (float)context.time; 
+
     }
+
+    private void EndJumpAction(InputAction.CallbackContext context)
+    {
+        GetJumpPressed = GetSlidePressed? false : context.ReadValueAsButton();
+        TimeForJumpActionEnd = (float)context.time;
+       
+    }
+
 
     private void BeginSlideAction(InputAction.CallbackContext context)
     {

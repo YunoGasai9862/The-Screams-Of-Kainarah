@@ -902,8 +902,8 @@ MonoBehaviour:
   ledge:
     serializedVersion: 2
     m_Bits: 8
-  xDisplace: 12
-  yDisplace: 14
+  displacements: {x: 0.5, y: 0.5}
+  ledgeGrabForces: {x: 40, y: 20}
 --- !u!114 &6549680331415743501
 MonoBehaviour:
   m_ObjectHideFlags: 0
