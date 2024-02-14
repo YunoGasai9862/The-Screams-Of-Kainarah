@@ -6,8 +6,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
 {
     private const string DAGGER_ITEM_NAME = "Dagger";
 
-    public ThrowableProjectileEvent onThrowEvent = new ThrowableProjectileEvent();
-    public DaggerOnThrowEvent DaggerOnThrowEvent { get; private set; } = new();
+    private ThrowableProjectileEvent onThrowEvent = new ThrowableProjectileEvent();
 
     private SpriteRenderer _spriteRenderer;
     private PickableItemsHandler _pickableItems;
@@ -75,5 +74,9 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     public void CanPlayerThrowProjectile(bool canThrow)
     {
         onThrowEvent.CanThrow = canThrow;
+    }
+    public void InvokeThrowableProjectileEvent(bool canThrow)
+    {
+        onThrowEvent.Invoke(canThrow);
     }
 }

@@ -26,7 +26,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     [SerializeField] string timeDifferenceStateName;
     [SerializeField] string jumpAttackStateName;
 
-    public MouseClickEvent onMouseClickEvent = new MouseClickEvent();
+    private MouseClickEvent onMouseClickEvent = new MouseClickEvent();
     private int PlayerAttackState { get; set; }
     private string PlayerAttackStateName { get; set; }
     private bool LeftMouseButtonPressed { get; set; }
@@ -199,6 +199,10 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     {
         onMouseClickEvent.ClickStartTime = startTime;
         onMouseClickEvent.ClickEndTime = endTime;
+    }
+    public void InvokeOnMouseClickEvent(float startTime, float endTime)
+    {
+        onMouseClickEvent.Invoke(startTime, endTime);
     }
 
 }

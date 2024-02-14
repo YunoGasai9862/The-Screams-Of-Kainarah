@@ -20,7 +20,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     [SerializeField] float maxJumpHeight;
 
     private float _characterVelocityY;
-    private float _timeCounter;
     private bool _isJumpPressed;
     private Vector3 _playerInitialPosition;
 
@@ -46,7 +45,11 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         _capsuleCollider = GetComponent<CapsuleCollider2D>();
         _animationHandler = GetComponent<PlayerAnimationMethods>();
         _rb = GetComponent<Rigidbody2D>();
+    }
+    private void Start()
+    {
         onPlayerJumpEvent = new PlayerJumpVelocityEvent();
+        onPlayerJumpTimeEvent = new PlayerJumpTimeEvent();
         onPlayerJumpTimeEvent.AddListener(GetJumpActionTimings);
     }
     private async void Update()
@@ -55,12 +58,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     }
     private void FixedUpdate()
     {
-        if (_rb.velocity.y > 0f && PlayerVariables.Instance.IS_JUMPING) //how high the player can jump
-        {
-            _timeCounter += Time.fixedDeltaTime;
-        }
-
-        _animationHandler.UpdateJumpTime(AnimationConstants.JUMP_TIME, _timeCounter);
+        //_animationHandler.UpdateJumpTime(AnimationConstants.JUMP_TIME, _timeCounter);
     }
     public async Task HandleJumpingMechanism()
     {
@@ -89,8 +87,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         if (LedgeGroundChecker(groundLayer, ledgeLayer) && !_isJumpPressed) //on the ground
         {
             CharacterVelocityY = 0f;
-
-            _timeCounter = 0f;
         }
 
         await Task.FromResult(true);
@@ -118,9 +114,8 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
         bool isOnLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
         bool isJumpPressed = _isJumpPressed;
-        float jumpTime = _timeCounter;
 
-        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(!isJumping, isOnLedgeOrGround, isJumpPressed, jumpTime==0));
+        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(!isJumping, isOnLedgeOrGround, isJumpPressed));
     }
 
     private Task SetPlayerInitialPosition(bool isJumping)
@@ -153,9 +148,15 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         return await Task.FromResult(false);
     }
 
+    public void InvokeJumpTimeEvent(float beginTime, float endTime)
+    {
+        onPlayerJumpTimeEvent.Invoke(beginTime, endTime);
+    }
     public void GetJumpActionTimings(float beginTime, float endTime)
     {
-
+        onPlayerJumpTimeEvent.JumpActionBeginTime = beginTime;
+        onPlayerJumpTimeEvent.JumpActionEndTime = endTime;
+        Debug.Log(onPlayerJumpTimeEvent.IsJumpTimeWithinAcceptableRange());
     }
 
 }

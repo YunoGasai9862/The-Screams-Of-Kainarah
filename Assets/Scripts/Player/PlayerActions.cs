@@ -161,18 +161,17 @@ public class PlayerActions : MonoBehaviour
 
     private void BeginJumpAction(InputAction.CallbackContext context)
     {
-        GetJumpPressed = GetSlidePressed? false: context.ReadValueAsButton();
-        TimeForJumpActionBegin = (float)context.time; 
-
+        GetJumpPressed = GetSlidePressed ? false : context.ReadValueAsButton();
+        TimeForJumpActionBegin = (float)context.time;
     }
 
     private void EndJumpAction(InputAction.CallbackContext context)
     {
         GetJumpPressed = GetSlidePressed? false : context.ReadValueAsButton();
         TimeForJumpActionEnd = (float)context.time;
-       
+        Debug.Log($"End: Beging {TimeForJumpActionBegin} End {TimeForJumpActionEnd}");
+        JumpingController.InvokeJumpTimeEvent(TimeForJumpActionBegin, TimeForJumpActionEnd);
     }
-
 
     private void BeginSlideAction(InputAction.CallbackContext context)
     {
@@ -193,7 +192,7 @@ public class PlayerActions : MonoBehaviour
     private void HandleDaggerInput(InputAction.CallbackContext context)
     {
         DaggerInput = context.ReadValueAsButton();
-        ThrowingProjectileController.onThrowEvent.Invoke(DaggerInput);
+        ThrowingProjectileController.InvokeThrowableProjectileEvent(DaggerInput);
 
         _throwingProjectileCommand.Execute();
     }
@@ -203,7 +202,7 @@ public class PlayerActions : MonoBehaviour
         LeftMouseButtonPressed = (PlayerVariables.Instance.IS_SLIDING == true) ? false : context.ReadValueAsButton();
         TimeForMouseClickEnd = (float)context.time;
 
-        AttackingController.onMouseClickEvent.Invoke(TimeForMouseClickStart, TimeForMouseClickEnd);
+        AttackingController.InvokeOnMouseClickEvent(TimeForMouseClickStart, TimeForMouseClickEnd);
 
         _attackCommand.Cancel(LeftMouseButtonPressed);
 
@@ -215,7 +214,7 @@ public class PlayerActions : MonoBehaviour
         TimeForMouseClickStart = (float)context.time;
 
         //send time stamps to the attacking controller
-        AttackingController.onMouseClickEvent.Invoke(TimeForMouseClickStart, TimeForMouseClickEnd);
+        AttackingController.InvokeOnMouseClickEvent(TimeForMouseClickStart, TimeForMouseClickEnd);
 
         //execute Attack
         _attackCommand.Execute(LeftMouseButtonPressed);
