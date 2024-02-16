@@ -148,15 +148,18 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         return await Task.FromResult(false);
     }
 
-    public void InvokeJumpTimeEvent(float beginTime, float endTime)
+    public Task InvokeJumpTimeEvent(float beginTime, float endTime, bool isJumping)
     {
-        onPlayerJumpTimeEvent.Invoke(beginTime, endTime);
+        onPlayerJumpTimeEvent.Invoke(beginTime, endTime, isJumping);
+        return Task.CompletedTask;
     }
-    public void GetJumpActionTimings(float beginTime, float endTime)
+    public void GetJumpActionTimings(float beginTime, float maxTime, bool isJumping)
     {
         onPlayerJumpTimeEvent.JumpActionBeginTime = beginTime;
-        onPlayerJumpTimeEvent.JumpActionEndTime = endTime;
-        Debug.Log(onPlayerJumpTimeEvent.IsJumpTimeWithinAcceptableRange());
+        onPlayerJumpTimeEvent.MaxTimeToJump = maxTime;
+        onPlayerJumpTimeEvent.IsJumping = isJumping;
+        Debug.Log(onPlayerJumpTimeEvent.IsJumping);
+        StartCoroutine(onPlayerJumpTimeEvent.CanPlayerKeepJumping());
     }
 
 }

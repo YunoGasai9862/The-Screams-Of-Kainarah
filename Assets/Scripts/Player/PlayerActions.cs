@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerActions : MonoBehaviour
 {
     private const float MAX_SLIDING_TIME_ALLOW = 0.5f;
+    private const float MAX_JUMP_TIME = 0.3f;
     private PlayerInput _playerInput;
     private Rocky2DActions _rocky2DActions;
     private Rigidbody2D _rb;
@@ -43,9 +44,7 @@ public class PlayerActions : MonoBehaviour
     private bool LeftMouseButtonPressed { get; set; }
     private float TimeForMouseClickStart { get => _timeForMouseClickStart; set => _timeForMouseClickStart = value; }
     private float TimeForMouseClickEnd { get => _timeForMouseClickEnd; set => _timeForMouseClickEnd = value; }
-
     private float TimeForJumpActionBegin { get; set; }
-    private float TimeForJumpActionEnd { get; set; }
     private bool DaggerInput { get => _daggerInput; set => _daggerInput = value; }
     //Force = -2m * sqrt (g * h)
     private void Awake()
@@ -163,14 +162,13 @@ public class PlayerActions : MonoBehaviour
     {
         GetJumpPressed = GetSlidePressed ? false : context.ReadValueAsButton();
         TimeForJumpActionBegin = (float)context.time;
+        JumpingController.InvokeJumpTimeEvent(TimeForJumpActionBegin, MAX_JUMP_TIME, true);
     }
 
     private void EndJumpAction(InputAction.CallbackContext context)
     {
         GetJumpPressed = GetSlidePressed? false : context.ReadValueAsButton();
-        TimeForJumpActionEnd = (float)context.time;
-        Debug.Log($"End: Beging {TimeForJumpActionBegin} End {TimeForJumpActionEnd}");
-        JumpingController.InvokeJumpTimeEvent(TimeForJumpActionBegin, TimeForJumpActionEnd);
+        JumpingController.InvokeJumpTimeEvent(TimeForJumpActionBegin, MAX_JUMP_TIME, true);
     }
 
     private void BeginSlideAction(InputAction.CallbackContext context)

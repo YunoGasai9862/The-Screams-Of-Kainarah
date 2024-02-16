@@ -1,30 +1,28 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerJumpTimeEvent : UnityEvent<float, float>
+public class PlayerJumpTimeEvent : UnityEvent<float, float ,bool>
 {
     private float _jumpActionBeginTime;
-    private float _jumpActionEndTime;
-    private float _jumpTime;
+    private float _maxJumpTime;
+    private bool _isJumping = true;
 
-    private const float MAX_JUMP_TIME = 0.3f;
+    private float _jumpTime = 0f;
     public float JumpActionBeginTime { get => _jumpActionBeginTime; set => _jumpActionBeginTime = value; }
-    public float JumpActionEndTime { get => _jumpActionEndTime; set => _jumpActionEndTime = value; }
+    public bool IsJumping { get => _isJumping; set => _isJumping = value;}
+    public float MaxTimeToJump { get => _maxJumpTime; set => _maxJumpTime = value; }
     public PlayerJumpTimeEvent() { }
-    public bool IsJumpTimeWithinAcceptableRange()
+
+    public IEnumerator CanPlayerKeepJumping()
     {
-        return Mathf.Abs(JumpActionBeginTime - JumpActionEndTime) < MAX_JUMP_TIME;
-    }
-    public float CalculateTime(float beginTime)
-    {
-        if (beginTime + _jumpTime == MAX_JUMP_TIME)
+        while(JumpActionBeginTime + _jumpTime < JumpActionBeginTime + MaxTimeToJump && IsJumping)
         {
-            _jumpTime = 0;
-            return 0;
+            _jumpTime += Time.deltaTime;
         }
 
-        _jumpTime += Time.deltaTime;
-        return CalculateTime(beginTime);
+        _jumpTime = 0f;
+        IsJumping = false;
+        yield return new WaitForSeconds(0f);
     }
-
-}
+} 
