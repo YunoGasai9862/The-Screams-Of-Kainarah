@@ -44,7 +44,6 @@ public class PlayerActions : MonoBehaviour
     private bool LeftMouseButtonPressed { get; set; }
     private float TimeForMouseClickStart { get => _timeForMouseClickStart; set => _timeForMouseClickStart = value; }
     private float TimeForMouseClickEnd { get => _timeForMouseClickEnd; set => _timeForMouseClickEnd = value; }
-    private float TimeForJumpActionBegin { get; set; }
     private bool DaggerInput { get => _daggerInput; set => _daggerInput = value; }
     //Force = -2m * sqrt (g * h)
     private void Awake()
@@ -101,10 +100,7 @@ public class PlayerActions : MonoBehaviour
                 FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
 
             //jumping
-            if(GetJumpPressed)
-                _jumpCommand.Execute();
-            else
-                _jumpCommand.Cancel();
+            _jumpCommand.Execute(GetJumpPressed);
 
             //ledge grab
             if (PlayerVariables.Instance.IS_GRABBING) //tackles the ledgeGrab
@@ -161,14 +157,11 @@ public class PlayerActions : MonoBehaviour
     private void BeginJumpAction(InputAction.CallbackContext context)
     {
         GetJumpPressed = GetSlidePressed ? false : context.ReadValueAsButton();
-        TimeForJumpActionBegin = (float)context.time;
-        JumpingController.InvokeJumpTimeEvent(TimeForJumpActionBegin, MAX_JUMP_TIME, true);
     }
 
     private void EndJumpAction(InputAction.CallbackContext context)
     {
         GetJumpPressed = GetSlidePressed? false : context.ReadValueAsButton();
-        JumpingController.InvokeJumpTimeEvent(TimeForJumpActionBegin, MAX_JUMP_TIME, true);
     }
 
     private void BeginSlideAction(InputAction.CallbackContext context)

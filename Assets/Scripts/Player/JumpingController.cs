@@ -24,7 +24,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     private Vector3 _playerInitialPosition;
 
     public PlayerJumpVelocityEvent onPlayerJumpEvent;
-    public PlayerJumpTimeEvent onPlayerJumpTimeEvent;
     public float CharacterVelocityY { get => _characterVelocityY; set => _characterVelocityY = value; }
     private Vector3 PlayerInitialPosition { get => _playerInitialPosition; set=> _playerInitialPosition = value; }  
 
@@ -35,8 +34,8 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     }
     public bool PerformAction(bool value)
     {
+        _isJumpPressed = value;
         SetPlayerInitialPosition(PlayerVariables.Instance.IS_JUMPING);
-        _isJumpPressed = true;
         return true;
     }
     private void Awake()
@@ -49,8 +48,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     private void Start()
     {
         onPlayerJumpEvent = new PlayerJumpVelocityEvent();
-        onPlayerJumpTimeEvent = new PlayerJumpTimeEvent();
-        onPlayerJumpTimeEvent.AddListener(GetJumpActionTimings);
     }
     private async void Update()
     {
@@ -74,7 +71,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
     public async Task HandleFalling()
     {
-        if (!PlayerVariables.Instance.IS_JUMPING && !LedgeGroundChecker(groundLayer, ledgeLayer)) //falling
+        if (await CanPlayerFall(maxJumpHeight)) //falling
         {
             CharacterVelocityY = -JumpSpeed * FALLING_SPEED; //extra check
 
@@ -84,9 +81,9 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
         }
 
-        if (LedgeGroundChecker(groundLayer, ledgeLayer) && !_isJumpPressed) //on the ground
+        if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed) //on the ground
         {
-            CharacterVelocityY = 0f;
+            PlayerVariables.Instance.jumpVariableEvent.Invoke(false);
         }
 
         await Task.FromResult(true);
@@ -103,16 +100,12 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
             _animationHandler.JumpingFallingAnimationHandler(true); //jumping animation
         }
 
-        if (await CanPlayerFall(maxJumpHeight)) //peak reached
-        {
-            PlayerVariables.Instance.jumpVariableEvent.Invoke(false);
-        }
     }
 
     private Task<bool> CanPlayerJump()
     {
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
-        bool isOnLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
+        bool isOnLedgeOrGround = (IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer));
         bool isJumpPressed = _isJumpPressed;
 
         return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(!isJumping, isOnLedgeOrGround, isJumpPressed));
@@ -120,7 +113,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
     private Task SetPlayerInitialPosition(bool isJumping)
     {
-        if(LedgeGroundChecker(groundLayer, ledgeLayer) && !isJumping)
+        if((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !isJumping)
         {
             PlayerInitialPosition = transform.position;
         }
@@ -128,17 +121,17 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     }
     private async Task<bool> CanPlayerFall(float maxJumpHeight)
     {
-        bool isJumping = PlayerVariables.Instance.IS_JUMPING;
-        bool isOnLedgeOrGround = LedgeGroundChecker(groundLayer, ledgeLayer);
-        bool isJumpPressed = _isJumpPressed;
-        return MovementHelperFunctions.boolConditionAndTester(isJumping, !isOnLedgeOrGround, isJumpPressed, await MaxJumpHeightChecker(maxJumpHeight));
+        bool isOnLedgeOrGround = (IsOnTheGround(groundLayer) && IsOnTheLedge(ledgeLayer));
+        return MovementHelperFunctions.boolConditionAndTester(!isOnLedgeOrGround, await MaxJumpHeightChecker(maxJumpHeight));
     }
-    private bool LedgeGroundChecker(LayerMask ground, LayerMask ledge)
+    private bool IsOnTheGround(LayerMask ground)
     {
-        return _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _capsuleCollider, ground, COLLIDER_DISTANCE_FROM_THE_LAYER)
-            || _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _capsuleCollider, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER);
+        return _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _capsuleCollider, ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
     }
-
+    private bool IsOnTheLedge(LayerMask ledge)
+    {
+        return _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _capsuleCollider, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER);
+    }
     public async Task<bool> MaxJumpHeightChecker(float maxJumpHeight)
     {
         if(transform.position.y >= PlayerInitialPosition.y + maxJumpHeight )
@@ -146,20 +139,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
             return await Task.FromResult(true);
         }
         return await Task.FromResult(false);
-    }
-
-    public Task InvokeJumpTimeEvent(float beginTime, float endTime, bool isJumping)
-    {
-        onPlayerJumpTimeEvent.Invoke(beginTime, endTime, isJumping);
-        return Task.CompletedTask;
-    }
-    public void GetJumpActionTimings(float beginTime, float maxTime, bool isJumping)
-    {
-        onPlayerJumpTimeEvent.JumpActionBeginTime = beginTime;
-        onPlayerJumpTimeEvent.MaxTimeToJump = maxTime;
-        onPlayerJumpTimeEvent.IsJumping = isJumping;
-        Debug.Log(onPlayerJumpTimeEvent.IsJumping);
-        StartCoroutine(onPlayerJumpTimeEvent.CanPlayerKeepJumping());
     }
 
 }
