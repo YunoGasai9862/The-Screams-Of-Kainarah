@@ -40,7 +40,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
             _animationHandler.Sliding(true); //set animation
         }
 
-        if (_animationHandler.returnCurrentAnimation() > MAX_ANIMATION_TIME && _animationHandler.isNameOfTheCurrentAnimation(AnimationConstants.SLIDING))
+        if (_animationHandler.ReturnCurrentAnimation() > MAX_ANIMATION_TIME && _animationHandler.IsNameOfTheCurrentAnimation(AnimationConstants.SLIDING))
         {
             PlayerVariables.Instance.slideVariableEvent.Invoke(false);
 

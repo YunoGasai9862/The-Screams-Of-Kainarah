@@ -18,10 +18,11 @@ public class PlayerAnimationMethods : MonoBehaviour
     private void Update()
     {
         if (_anim != null && _anim.GetCurrentAnimatorStateInfo(0).IsName(AnimationConstants.SLIDING) &&
-            returnCurrentAnimation() > _maxSlideTime)
+            ReturnCurrentAnimation() > _maxSlideTime)
         {
             PlayAnimation(AnimationConstants.SLIDING, false);  //for fixing the Sliding Issue
         }
+
     }
 
     public bool VectorChecker(float compositionX)
@@ -43,20 +44,22 @@ public class PlayerAnimationMethods : MonoBehaviour
     }
     public void RunningWalkingAnimation(float keystroke)
     {
-        if (VectorChecker(keystroke))
+        if (VectorChecker(keystroke) && !PlayerVariables.Instance.IS_JUMPING)
         {
             AnimationStateKeeper.CurrentPlayerState = (int)AnimationStateKeeper.StateKeeper.RUNNING;
             SetMovementStates(true, false);
             PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
         }
-        else
+
+        if (!VectorChecker(keystroke) && !PlayerVariables.Instance.IS_JUMPING)
         {
             AnimationStateKeeper.CurrentPlayerState = (int)AnimationStateKeeper.StateKeeper.IDLE;
             SetMovementStates(false, true);
             PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
         }
+
     }
-    
+
     private void SetMovementStates(bool isRunning, bool isWalking)
     {
         PlayerVariables.Instance.runVariableEvent.Invoke(isRunning);
@@ -68,7 +71,6 @@ public class PlayerAnimationMethods : MonoBehaviour
         AnimationStateKeeper.CurrentPlayerState = keystroke
             ? (int)AnimationStateKeeper.StateKeeper.JUMP
             : (int)AnimationStateKeeper.StateKeeper.FALL;
-
         PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
     }
     public void UpdateJumpTime(string parameterName, float jumpTime)
@@ -81,12 +83,12 @@ public class PlayerAnimationMethods : MonoBehaviour
         PlayAnimation(AnimationConstants.SLIDING, keystroke);
     }
 
-    public float returnCurrentAnimation()
+    public float ReturnCurrentAnimation()
     {
         return _anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
     }
 
-    public bool isNameOfTheCurrentAnimation(string name)
+    public bool IsNameOfTheCurrentAnimation(string name)
     {
         return _anim.GetCurrentAnimatorStateInfo(0).IsName(name);
     }

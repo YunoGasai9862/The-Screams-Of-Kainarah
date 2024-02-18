@@ -44,28 +44,35 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         greenXOffset = await GetBoxPosition(sr, greenXOffset);
         redXOffset = await GetBoxPosition(sr, redXOffset);
 
+        //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
+        greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
+        redBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
+        //if the variable is public static and exists on the same object, you can access it with the name of the script!!
+
         if (!_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
             PlayerVariables.Instance.IS_GRABBING)
         {
             _timeSpent += Time.deltaTime;
         }
 
-        if (TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB) || _helperFunc.OverlapAgainstLayerMaskChecker(ref col, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER))
+        if(_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) || _helperFunc.OverlapAgainstLayerMaskChecker(ref col, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
-            PlayerVariables.Instance.grabVariableEvent.Invoke(false);
-
             _timeSpent = 0f;
         }
 
-        if (greenBox && !redBox && PlayerVariables.Instance.IS_JUMPING)
+        if (greenBox && !TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB) && !redBox)
         {
             PlayerVariables.Instance.grabVariableEvent.Invoke(true);
-        }
 
-        //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
-        greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
-        redBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
-        //if the variable is public static and exists on the same object, you can access it with the name of the script!!
+            anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
+        }else
+        {
+            PlayerVariables.Instance.grabVariableEvent.Invoke(false);
+
+            anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
+
+            rb.gravityScale = startingGrav;
+        }
 
     }
     private async void FixedUpdate()
@@ -77,7 +84,8 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     //grab ledge => hold space until the player lands on the ledge
     public async Task HandleLedgeGrabCalculations(int sign, float startingGravity, Vector2 force, Vector2 groundPosition, Vector2 maximumVelocities)
     {
-        if(rb.velocity.y < maximumVelocities.y)
+        rb.gravityScale = 0f;
+        if (rb.velocity.y < maximumVelocities.y)
             rb.AddForce(Vector2.up * displacements.x * ledgeGrabForces.x * rb.mass, ForceMode2D.Impulse);
         if(transform.position.y > groundPosition.y + MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB && rb.velocity.x < maximumVelocities.x)
             rb.AddForce((sign) * Vector2.right * displacements.y * ledgeGrabForces.y * rb.mass, ForceMode2D.Impulse);
@@ -100,9 +108,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     public bool PerformAction(bool value)
     {
         rb.velocity = new Vector2(0, 0);
-        rb.gravityScale = 0f;
-        PlayerVariables.Instance.grabVariableEvent.Invoke(true);
-        anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
+
         return true;
     }
 
