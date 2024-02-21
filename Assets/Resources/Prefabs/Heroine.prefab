@@ -894,7 +894,7 @@ MonoBehaviour:
   redYSize: 0.2
   greenXOffset: 0.09
   greenYOffset: -0.41
-  greenXsize: 0.59
+  greenXsize: 0.3
   greenYSize: 0.08
   groundMask:
     serializedVersion: 2
@@ -964,9 +964,6 @@ MonoBehaviour:
     m_Bits: 8
   JumpSpeed: 20
   maxJumpHeight: 2
-  onPlayerJumpEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &3772540289453430958
 MonoBehaviour:
   m_ObjectHideFlags: 0

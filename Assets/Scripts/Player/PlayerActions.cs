@@ -97,7 +97,10 @@ public class PlayerActions : MonoBehaviour
 
             //Flipping
             if (KeystrokeMagnitudeChecker(_keystrokeTrack))
-                FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
+            {
+                if(!PlayerVariables.Instance.IS_GRABBING)
+                    FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
+            }
 
             //jumping
             _jumpCommand.Execute(GetJumpPressed);

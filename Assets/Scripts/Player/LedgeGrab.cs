@@ -6,7 +6,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private const float MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB = 1f;
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
     private const float MAXIMUM_VELOCITY_X_FORCE = 12f;
-    private const float MAX_TIME_FOR_LEDGE_GRAB = 0.3f;
+    private const float MAX_TIME_FOR_LEDGE_GRAB = 0.2f;
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
 
     private bool greenBox, redBox;
@@ -41,12 +41,9 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     // Update is called once per frame
     async void Update()
     {
-        greenXOffset = await GetBoxPosition(sr, greenXOffset);
-        redXOffset = await GetBoxPosition(sr, redXOffset);
-
         //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
-        greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
-        redBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
+        greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, greenXOffset)), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
+        redBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, redXOffset)), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
         //if the variable is public static and exists on the same object, you can access it with the name of the script!!
 
         if (!_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
@@ -65,6 +62,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
             PlayerVariables.Instance.grabVariableEvent.Invoke(true);
 
             anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
+
         }else
         {
             PlayerVariables.Instance.grabVariableEvent.Invoke(false);
