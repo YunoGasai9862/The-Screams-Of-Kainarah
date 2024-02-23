@@ -152,9 +152,10 @@ public class PlayerActions : MonoBehaviour
         return _keystrokeTrack.magnitude != 0;
     }
 
-    private bool FlipCharacter(Vector2 keystroke, ref SpriteRenderer _sr)
+    private void FlipCharacter(Vector2 keystroke, ref SpriteRenderer _sr)
     {
-        return keystroke.x >= 0 ? _sr.flipX = false : _sr.flipX = true; //flips the character
+        transform.localScale = keystroke.x >= 0 ? new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z) : new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        //fix flipping tomorrow
     }
 
     private void BeginJumpAction(InputAction.CallbackContext context)

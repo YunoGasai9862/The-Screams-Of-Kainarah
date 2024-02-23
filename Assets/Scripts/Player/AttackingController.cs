@@ -11,7 +11,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
 
     private Animator _anim;
-    private CapsuleCollider2D col;
+    private Collider2D col;
     private MovementHelperClass _movementHelper;
     private PlayerAttackStateMachine _playerAttackStateMachine;
     private bool _isPlayerEligibleForStartingAttack = false;
@@ -37,7 +37,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
 
-        col = GetComponent<CapsuleCollider2D>();
+        col = GetComponent<PolygonCollider2D>();
 
         _movementHelper = new MovementHelperClass();
 

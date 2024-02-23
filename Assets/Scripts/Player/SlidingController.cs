@@ -14,7 +14,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
     private PlayerAnimationMethods _animationHandler;
     private IOverlapChecker _movementHelperClass;
     private PlayerAttackStateMachine _playerAttackStateMachine;
-    private CapsuleCollider2D _capsuleCollider;
+    private Collider2D _col;
     private Animator _anim;
     private Rigidbody2D _rb;
 
@@ -28,12 +28,12 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
         _rb = GetComponent<Rigidbody2D>();
         _anim = GetComponent<Animator>();
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
-        _capsuleCollider= GetComponent<CapsuleCollider2D>();
+        _col= GetComponent<PolygonCollider2D>();
     }
 
     private Task Slide()
     {
-        if (PlayerVariables.Instance.IS_SLIDING && _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _capsuleCollider, groundLayer, COLLIDER_DISTANCE_FROM_THE_LAYER))
+        if (PlayerVariables.Instance.IS_SLIDING && _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _col, groundLayer, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
             onSlideEvent.Invoke(slidingSpeed); //posting for speed
 

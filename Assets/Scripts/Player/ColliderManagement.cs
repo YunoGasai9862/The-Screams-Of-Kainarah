@@ -1,15 +1,14 @@
 using UnityEngine;
 
-public class PlayerColliderFix : MonoBehaviour
+public class ColliderManagement : MonoBehaviour
 {
+    [SerializeField] public Collider2D _collider;
     private SpriteRenderer _sr;
-    private CapsuleCollider2D _collider;
     private bool _isFixed = false;
 
     private void Awake()
     {
         _sr = GetComponent<SpriteRenderer>();
-        _collider = GetComponent<CapsuleCollider2D>();
     }
     void Update()
     {
@@ -29,11 +28,11 @@ public class PlayerColliderFix : MonoBehaviour
         return _sr.flipX;
     }
 
-    public void FixColliderOffset(ref CapsuleCollider2D bc2d)
+    public void FixColliderOffset(ref Collider2D collider)
     {
-        float temp = bc2d.offset.x;
+        float temp = collider.offset.x;
         temp *= -1;
-        bc2d.offset = new Vector2(temp, bc2d.offset.y);
+        collider.offset = new Vector2(temp, collider.offset.y);
         _isFixed = !_isFixed;
     }
 

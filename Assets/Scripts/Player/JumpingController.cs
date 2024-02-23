@@ -12,7 +12,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     private Rigidbody2D _rb;
     private PlayerAnimationMethods _animationHandler;
     private IOverlapChecker _movementHelperClass;
-    private CapsuleCollider2D _capsuleCollider;
+    private Collider2D _col;
 
     [SerializeField] LayerMask groundLayer;
     [SerializeField] LayerMask ledgeLayer;
@@ -41,7 +41,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     private void Awake()
     {
         _movementHelperClass = new MovementHelperClass();
-        _capsuleCollider = GetComponent<CapsuleCollider2D>();
+        _col = GetComponent<PolygonCollider2D>();
         _animationHandler = GetComponent<PlayerAnimationMethods>();
         _rb = GetComponent<Rigidbody2D>();
     }
@@ -122,11 +122,11 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     }
     private bool IsOnTheGround(LayerMask ground)
     {
-        return _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _capsuleCollider, ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
+        return _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _col, ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
     }
     private bool IsOnTheLedge(LayerMask ledge)
     {
-        return _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _capsuleCollider, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER);
+        return _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _col, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER);
     }
     public async Task<bool> MaxJumpHeightChecker(float maxJumpHeight)
     {
