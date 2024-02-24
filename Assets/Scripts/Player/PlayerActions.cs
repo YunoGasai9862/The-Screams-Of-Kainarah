@@ -45,6 +45,8 @@ public class PlayerActions : MonoBehaviour
     private float TimeForMouseClickStart { get => _timeForMouseClickStart; set => _timeForMouseClickStart = value; }
     private float TimeForMouseClickEnd { get => _timeForMouseClickEnd; set => _timeForMouseClickEnd = value; }
     private bool DaggerInput { get => _daggerInput; set => _daggerInput = value; }
+
+    private float KeyStrokeDifference { get; set; }
     //Force = -2m * sqrt (g * h)
     private void Awake()
     {
@@ -99,7 +101,7 @@ public class PlayerActions : MonoBehaviour
             if (KeystrokeMagnitudeChecker(_keystrokeTrack))
             {
                 if(!PlayerVariables.Instance.IS_GRABBING)
-                    FlipCharacter(_keystrokeTrack, ref _spriteRenderer);
+                    FlipCharacter(_keystrokeTrack);
             }
 
             //jumping
@@ -123,6 +125,9 @@ public class PlayerActions : MonoBehaviour
     {
         Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>(); //reads the value
 
+        if(keystroke.x!=0)
+            KeyStrokeDifference = GetKeyStrokeDifference(keystroke);
+
         CharacterVelocityX =  keystroke.x;
 
         CharacterControllerMove(CharacterVelocityX * CharacterSpeed, CharacterVelocityY);
@@ -133,7 +138,12 @@ public class PlayerActions : MonoBehaviour
 
         return keystroke;
     }
-    
+
+    private float GetKeyStrokeDifference(Vector2 keystroke)
+    {
+       return Vector2.zero.x + keystroke.x;
+    }
+
     private void VelocityYEventHandler(float characterVelocityY)
     {
         CharacterVelocityY = characterVelocityY;
@@ -152,11 +162,19 @@ public class PlayerActions : MonoBehaviour
         return _keystrokeTrack.magnitude != 0;
     }
 
-    private void FlipCharacter(Vector2 keystroke, ref SpriteRenderer _sr)
+    private void FlipCharacter(Vector2 keystroke)
     {
-        transform.localScale = keystroke.x >= 0 ? new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z) : new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        //fix flipping tomorrow
+        if (KeyStrokeDifference == -1 && transform.localScale.x < 0)
+        {
+            transform.localScale = new Vector3(1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+
+        }
+        else if (KeyStrokeDifference == 1 && transform.localScale.x < 0 || KeyStrokeDifference == -1 && transform.localScale.x > 0)
+        {
+            transform.localScale = new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        }
     }
+    
 
     private void BeginJumpAction(InputAction.CallbackContext context)
     {
