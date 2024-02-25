@@ -33,7 +33,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        col = GetComponent<PolygonCollider2D>();
+        col = GetComponent<CapsuleCollider2D>();
         startingGrav = rb.gravityScale;  //the initially gravity is stored in the array
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
@@ -61,11 +61,15 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         {
             PlayerVariables.Instance.grabVariableEvent.Invoke(true);
 
+            col.isTrigger = true;
+
             anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
 
         }else
         {
             PlayerVariables.Instance.grabVariableEvent.Invoke(false);
+
+            col.isTrigger = false;
 
             anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
 

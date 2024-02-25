@@ -1,9 +1,12 @@
 using UnityEngine.Events;
-
-public class PlayerJumpHeightEvent : UnityEvent<float>
+using System.Threading.Tasks;
+using System.Diagnostics;
+public class PlayerJumpTimeEvent : UnityEvent<bool>
 {
     public float MaxTime {set; get;}
-    public PlayerJumpHeightEvent(float maxTime)
+
+    public bool Fall { set; get; }
+    public PlayerJumpTimeEvent(float maxTime)
     {
         MaxTime = maxTime;
     }
@@ -12,7 +15,7 @@ public class PlayerJumpHeightEvent : UnityEvent<float>
     {
         if (timeEclipsed > MaxTime)
         {
-            //pass a variable from jumpingController, to force the player to fall. Put it in the conditional too
+            Invoke(true);
         }
     }
 }

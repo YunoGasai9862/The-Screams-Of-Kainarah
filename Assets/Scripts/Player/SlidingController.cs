@@ -28,7 +28,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
         _rb = GetComponent<Rigidbody2D>();
         _anim = GetComponent<Animator>();
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
-        _col= GetComponent<PolygonCollider2D>();
+        _col= GetComponent<CapsuleCollider2D>();
     }
 
     private Task Slide()

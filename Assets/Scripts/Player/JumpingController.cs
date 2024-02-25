@@ -8,6 +8,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     private const float FALLING_SPEED = 0.8f;
     private const float JUMPING_SPEED = 0.5f;
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
+    private const float MAX_JUMP_TIME = 0.3f;
 
     private Rigidbody2D _rb;
     private PlayerAnimationMethods _animationHandler;
@@ -24,8 +25,10 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     private Vector3 _playerInitialPosition;
 
     public PlayerJumpVelocityEvent onPlayerJumpEvent;
+    public PlayerJumpTimeEvent onPlayerJumpTimeEvent;
     public float CharacterVelocityY { get => _characterVelocityY; set => _characterVelocityY = value; }
-    private Vector3 PlayerInitialPosition { get => _playerInitialPosition; set=> _playerInitialPosition = value; }  
+    public Vector3 PlayerInitialPosition { get => _playerInitialPosition; set=> _playerInitialPosition = value; }
+    public float TimeEclipsed { get; set; }
 
     public bool CancelAction()
     {
@@ -41,18 +44,27 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     private void Awake()
     {
         _movementHelperClass = new MovementHelperClass();
-        _col = GetComponent<PolygonCollider2D>();
+        _col = GetComponent<CapsuleCollider2D>();
         _animationHandler = GetComponent<PlayerAnimationMethods>();
         _rb = GetComponent<Rigidbody2D>();
     }
     private void Start()
     {
         onPlayerJumpEvent = new PlayerJumpVelocityEvent();
+        onPlayerJumpTimeEvent = new PlayerJumpTimeEvent(MAX_JUMP_TIME);
+        onPlayerJumpTimeEvent.AddListener(MaxTimePassed);
         onPlayerJumpEvent.Invoke(CharacterVelocityY = -10f);
     }
     private async void Update()
     {
         await HandleJumpingMechanism();
+
+        if (PlayerVariables.Instance.IS_JUMPING && !PlayerVariables.Instance.IS_GRABBING)
+        {
+            TimeEclipsed += Time.deltaTime;
+        }
+
+        onPlayerJumpTimeEvent.ShouldFall(TimeEclipsed);
     }
     public async Task HandleJumpingMechanism()
     {
@@ -67,7 +79,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
     public async Task HandleFalling()
     {
-        if (await CanPlayerFall(maxJumpHeight) || !_isJumpPressed) //falling
+        if (await CanPlayerFall(maxJumpHeight) || !_isJumpPressed || onPlayerJumpTimeEvent.Fall) //falling
         {
             CharacterVelocityY = -JumpSpeed * FALLING_SPEED;
         }
@@ -80,6 +92,10 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed) //on the ground
         {
             PlayerVariables.Instance.jumpVariableEvent.Invoke(false);
+
+            onPlayerJumpTimeEvent.Fall = false;
+
+            TimeEclipsed = 0;
         }
 
         await Task.FromResult(true);
@@ -135,6 +151,11 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
             return await Task.FromResult(true);
         }
         return await Task.FromResult(false);
+    }
+
+    public void MaxTimePassed(bool value)
+    {
+        onPlayerJumpTimeEvent.Fall = value;
     }
 
     private Task<bool> IsYVelocityNegative(Rigidbody2D rb)

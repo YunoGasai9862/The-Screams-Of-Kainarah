@@ -37,7 +37,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
 
-        col = GetComponent<PolygonCollider2D>();
+        col = GetComponent<CapsuleCollider2D>();
 
         _movementHelper = new MovementHelperClass();
 
