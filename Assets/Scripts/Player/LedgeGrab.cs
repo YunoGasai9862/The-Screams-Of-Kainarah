@@ -86,6 +86,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     //grab ledge => hold space until the player lands on the ledge
     public async Task HandleLedgeGrabCalculations(int sign, float startingGravity, Vector2 force, Vector2 groundPosition, Vector2 maximumVelocities)
     {
+        //fix ledge grab
         rb.gravityScale = 0f;
         if (rb.velocity.y < maximumVelocities.y)
             rb.AddForce(Vector2.up * displacements.x * ledgeGrabForces.x * rb.mass, ForceMode2D.Impulse);

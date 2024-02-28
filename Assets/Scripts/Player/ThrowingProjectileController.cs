@@ -8,16 +8,16 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
 
     private ThrowableProjectileEvent onThrowEvent = new ThrowableProjectileEvent();
 
-    private SpriteRenderer _spriteRenderer;
     private PickableItemsHandler _pickableItems;
     private PlayerAttackStateMachine _playerAttackStateMachine;
     private Animator _anim;
+
+    public bool HalfAnimationReached {get; set;}
 
     [SerializeField] string pickableItemClassTag;
     private void Awake()
     {
         _anim= GetComponent<Animator>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
     }
     private void Start()
@@ -28,19 +28,20 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     }
     private async void ThrowDaggerHandler()
     {
+        bool daggerExistsInInventory = await InventoryManagementSystem.Instance.DoesItemExistInInventory(DAGGER_ITEM_NAME);
+
         _playerAttackStateMachine.SetAttackState(AnimationConstants.THROW_DAGGER, onThrowEvent.CanThrow);
 
-        bool doesDaggerExistInInventory = await InventoryManagementSystem.Instance.DoesItemExistInInventory(DAGGER_ITEM_NAME);
-
-        if (doesDaggerExistInInventory)
+        if (daggerExistsInInventory && HalfAnimationReached)
+        {
             ThrowDagger(_pickableItems.ReturnGameObjectForTheKey(DAGGER_ITEM_NAME));
+        }
 
     }
     private void ThrowDagger(GameObject prefab)
     {
         InstantiatorController dagger = new(prefab);
 
-        //fix dagger throw timing
         GameObject daggerGameObject = dagger.InstantiateGameObject(GetDaggerPositionWithOffset(2, -1), Quaternion.identity);
 
         InventoryManagementSystem.Instance.RemoveInvoke(prefab.gameObject.tag); //invoking event for removal
@@ -53,13 +54,13 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
 
     public Vector2 GetDaggerPositionWithOffset(float xOffset, float yOffset)
     {
-        return IsPlayerFlipped(_spriteRenderer) ? new Vector2(transform.position.x - xOffset, transform.position.y + yOffset) :
+        return IsPlayerFlipped(transform) ? new Vector2(transform.position.x - xOffset, transform.position.y + yOffset) :
             new Vector2(transform.position.x + xOffset, transform.position.y + yOffset);
     }
 
-    public bool IsPlayerFlipped(SpriteRenderer _sr)
+    public bool IsPlayerFlipped(Transform playerTransform)
     {
-        return _sr.flipX;
+        return playerTransform.localScale.x < 0 ? true : false; 
     }
     public bool CancelAction()
     {
@@ -78,5 +79,11 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     public void InvokeThrowableProjectileEvent(bool canThrow)
     {
         onThrowEvent.Invoke(canThrow);
+    }
+
+    public void HalfAnimationPassed()
+    {
+        //invoke click event here!
+        HalfAnimationReached = true;
     }
 }

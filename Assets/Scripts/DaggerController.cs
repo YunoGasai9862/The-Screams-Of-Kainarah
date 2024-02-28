@@ -39,7 +39,7 @@ public class DaggerController : MonoBehaviour
 
         }
 
-        if (_player.GetComponent<SpriteRenderer>().flipX && _onThrowEvent.DaggerInMotion)
+        if (IsPlayerFlipped(_player.transform) && _onThrowEvent.DaggerInMotion)
         {
             _daggerRenderer.flipX = true;
             _rb.velocity = new Vector2(-_daggerSpeed, 0);
@@ -47,7 +47,7 @@ public class DaggerController : MonoBehaviour
 
         }
 
-        if (!_player.GetComponent<SpriteRenderer>().flipX && _onThrowEvent.DaggerInMotion)
+        if (!IsPlayerFlipped(_player.transform) && _onThrowEvent.DaggerInMotion)
         {
             _daggerRenderer.flipX = false;
             _rb.velocity = new Vector2(_daggerSpeed, 0);
@@ -72,5 +72,10 @@ public class DaggerController : MonoBehaviour
     {
         _onThrowEvent.AddListener(OnThrowEventHandler);
         _onThrowEvent.Invoke(value);
+    }
+
+    public bool IsPlayerFlipped(Transform playerTransform)
+    {
+        return playerTransform.localScale.x < 0 ? true : false;
     }
 }
