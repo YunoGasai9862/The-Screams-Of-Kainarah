@@ -12,8 +12,6 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     private PlayerAttackStateMachine _playerAttackStateMachine;
     private Animator _anim;
 
-    public bool HalfAnimationReached {get; set;}
-
     [SerializeField] string pickableItemClassTag;
     private void Awake()
     {
@@ -32,7 +30,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
 
         _playerAttackStateMachine.SetAttackState(AnimationConstants.THROW_DAGGER, onThrowEvent.CanThrow);
 
-        if (daggerExistsInInventory && HalfAnimationReached)
+        if (daggerExistsInInventory)
         {
             ThrowDagger(_pickableItems.ReturnGameObjectForTheKey(DAGGER_ITEM_NAME));
         }
@@ -81,9 +79,4 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
         onThrowEvent.Invoke(canThrow);
     }
 
-    public void HalfAnimationPassed()
-    {
-        //invoke click event here!
-        HalfAnimationReached = true;
-    }
 }
