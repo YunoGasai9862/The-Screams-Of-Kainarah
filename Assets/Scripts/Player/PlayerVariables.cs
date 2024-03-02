@@ -1,4 +1,7 @@
 
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerVariables : MonoBehaviour
@@ -64,5 +67,18 @@ public class PlayerVariables : MonoBehaviour
     private void SetRunVariableState(bool variableState)
     {
         _isRunning = variableState;
+    }
+    public Task<List<string>> GetAllPlayerAnimations(Animation anim)
+    {
+        List<string> animationNames = new List<string>();
+        foreach(AnimationState state in anim)
+        {
+            animationNames.Add(state.name.ToString());
+        }
+        return Task.FromResult(animationNames);
+    }
+    public string GetAnimationState(List<string> animationNames, string animationToGet) 
+    {
+        return animationNames.Where(e => e.Equals(animationToGet)).FirstOrDefault();
     }
 }
