@@ -682,7 +682,6 @@ GameObject:
   - component: {fileID: 5161662302899238198}
   - component: {fileID: -5899582873674386158}
   - component: {fileID: -1774752956742986687}
-  - component: {fileID: 6165812961842915259}
   m_Layer: 7
   m_Name: Heroine
   m_TagString: Player
@@ -1023,35 +1022,6 @@ CapsuleCollider2D:
   m_Offset: {x: -0.69, y: -0.81}
   m_Size: {x: 0.5, y: 1.39}
   m_Direction: 0
---- !u!111 &6165812961842915259
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2357857119552702225}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Animation: {fileID: 0}
-  m_Animations:
-  - {fileID: 7400000, guid: bf365533177206643bd9bd2090bb9759, type: 2}
-  - {fileID: 7400000, guid: 3bbbc3800c5cbc1489e7ab713d95b62c, type: 2}
-  - {fileID: 7400000, guid: 4be273de61f768d4ab797ae1cd1131fa, type: 2}
-  - {fileID: 7400000, guid: 3955fb37ca3da4346b97ab2d5df8a72f, type: 2}
-  - {fileID: 7400000, guid: b9d6c9ed75e7dca41bae1fa9f8deb8b5, type: 2}
-  - {fileID: 7400000, guid: 019c694630d3329448099f6c7b532a09, type: 2}
-  - {fileID: 7400000, guid: 6b32a47e0b4a1094a8c783e8e9193d2e, type: 2}
-  - {fileID: 7400000, guid: 153c610b8af23014a9139e260dc7abb7, type: 2}
-  - {fileID: 7400000, guid: 7ae0ee5a73a40344b80687301176b094, type: 2}
-  - {fileID: 7400000, guid: e59e9621eb110484dba6744ff7f819c2, type: 2}
-  - {fileID: 7400000, guid: 498660c6f1fe4014f942052b001e941a, type: 2}
-  - {fileID: 7400000, guid: 684531e64b8014343b9c98a2a0e45d73, type: 2}
-  - {fileID: 7400000, guid: 86aee44d21fd544459023a7f7f5b04a7, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
-  m_AnimatePhysics: 0
-  m_UpdateMode: 0
-  m_CullingType: 0
 --- !u!1 &3485019726026848876
 GameObject:
   m_ObjectHideFlags: 0

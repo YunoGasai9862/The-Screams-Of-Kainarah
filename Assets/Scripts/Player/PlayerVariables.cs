@@ -68,17 +68,23 @@ public class PlayerVariables : MonoBehaviour
     {
         _isRunning = variableState;
     }
-    public Task<List<string>> GetAllPlayerAnimations(Animation anim)
+    private Task<List<string>> GetPlayerAnimationsList(Animator anim)
     {
+        var animationController = anim.runtimeAnimatorController;
+
         List<string> animationNames = new List<string>();
-        foreach(AnimationState state in anim)
+        
+        foreach(AnimationClip clip in animationController.animationClips)
         {
-            animationNames.Add(state.name.ToString());
+            animationNames.Add(clip.name);
         }
+
         return Task.FromResult(animationNames);
     }
-    public string GetAnimationState(List<string> animationNames, string animationToGet) 
+    public async Task<string> GetAnimationName(Animator anim, string search) 
     {
-        return animationNames.Where(e => e.Equals(animationToGet)).FirstOrDefault();
+        List<string> animationNames = await GetPlayerAnimationsList(anim);
+
+        return animationNames.Where(e => e.Equals(search) || e.Contains(search)).FirstOrDefault();
     }
 }

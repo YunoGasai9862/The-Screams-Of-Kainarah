@@ -21,8 +21,6 @@ public class PlayerActions : MonoBehaviour
     private Command<bool> _throwingProjectileCommand;
     private PlayerActionsModel _playerActionsModel;
     private Animator _animator;
-    private Animation _animation;
-    private List<string> playerAnimations;
 
     [SerializeField] float _characterSpeed = 10f;
 
@@ -46,7 +44,6 @@ public class PlayerActions : MonoBehaviour
         _attackReceiver = GetComponent<AttackingController>();
         _throwingProjectileReceiver = GetComponent<ThrowingProjectileController>();
         _animator= GetComponent<Animator>();
-        _animation = GetComponent<Animation>();
 
         _attackCommand = new Command<bool>(_attackReceiver);
         _jumpCommand = new Command<bool>(_jumpReceiver);
@@ -68,16 +65,12 @@ public class PlayerActions : MonoBehaviour
 
 
     }
-    private async void Start()
+    private void Start()
     {
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
         _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
         _rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
 
-        playerAnimations = await PlayerVariables.Instance.GetAllPlayerAnimations(_animation) ;
-
-        //event subscription
-        ProjectileThrowAnimationEvent.Instance.AddListener(DidHalfAnimationPass);
         JumpingController.onPlayerJumpEvent.AddListener(VelocityYEventHandler);
         SlidingController.onSlideEvent.AddListener(CharacterSpeedHandler);
     }
@@ -196,10 +189,7 @@ public class PlayerActions : MonoBehaviour
     private void HandleDaggerInput(InputAction.CallbackContext context)
     {
         _playerActionsModel.DaggerInput = context.ReadValueAsButton();
-
-        //invoke Animation Event
-        _= ProjectileThrowAnimationEvent.Instance.InvokeEvent(_animator, "", 0); //this is a little weird, but i need this for invoking the event at half the time
-
+            
         ThrowingProjectileController.InvokeThrowableProjectileEvent(_playerActionsModel.DaggerInput);
 
         _throwingProjectileCommand.Execute();
@@ -228,8 +218,4 @@ public class PlayerActions : MonoBehaviour
         _attackCommand.Execute(_playerActionsModel.LeftMouseButtonPressed);
     }
 
-    public void DidHalfAnimationPass(bool value)
-    {
-        _playerActionsModel.HalfAnimationReached = value;
-    }
 }

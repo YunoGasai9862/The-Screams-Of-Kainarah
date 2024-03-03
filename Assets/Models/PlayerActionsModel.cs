@@ -13,6 +13,5 @@ public class PlayerActionsModel
     public float TimeForMouseClickStart { get ; set; } = 0;
     public float TimeForMouseClickEnd { get; set; } = 0;
     public bool DaggerInput { get ; set; }
-    public bool HalfAnimationReached { get; set; }
     public float KeyStrokeDifference { get; set; }
 }

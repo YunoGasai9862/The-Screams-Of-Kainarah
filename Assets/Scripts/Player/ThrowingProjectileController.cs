@@ -1,5 +1,6 @@
 using CoreCode;
 using PlayerAnimationHandler;
+using System;
 using UnityEngine;
 
 public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
@@ -13,10 +14,11 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     private Animator _anim;
 
     [SerializeField] string pickableItemClassTag;
-    private void Awake()
+    private void Awake()   
     {
         _anim= GetComponent<Animator>();
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
+        ProjectileThrowAnimationEvent.GetInstance().AddListener(DidHalfAnimationPass);
     }
     private void Start()
     {
@@ -27,8 +29,6 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     private async void ThrowDaggerHandler()
     {
         bool daggerExistsInInventory = await InventoryManagementSystem.Instance.DoesItemExistInInventory(DAGGER_ITEM_NAME);
-
-        _playerAttackStateMachine.SetAttackState(AnimationConstants.THROW_DAGGER, onThrowEvent.CanThrow);
 
         if (daggerExistsInInventory)
         {
@@ -67,9 +67,15 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
 
     public bool PerformAction(bool value = false)
     {
-        ThrowDaggerHandler();
+        TriggerAnimation();
         return true;
     }
+
+    private void TriggerAnimation()
+    {
+        _playerAttackStateMachine.SetAttackState(AnimationConstants.THROW_DAGGER, onThrowEvent.CanThrow);
+    }
+
     public void CanPlayerThrowProjectile(bool canThrow)
     {
         onThrowEvent.CanThrow = canThrow;
@@ -78,5 +84,8 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     {
         onThrowEvent.Invoke(canThrow);
     }
-
+    public void DidHalfAnimationPass()
+    {
+        ThrowDaggerHandler();
+    }
 }
