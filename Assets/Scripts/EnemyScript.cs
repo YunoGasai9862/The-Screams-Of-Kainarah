@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using EnemyHittable;
-using static GameObjectCreator;
+using static SceneSingleton;
 using static SceneData;
 public class EnemyScript : AbstractEntity
 {

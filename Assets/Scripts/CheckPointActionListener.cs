@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using static CheckPoints;
-using static GameObjectCreator;
+using static SceneSingleton;
 
 public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
 {

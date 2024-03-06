@@ -3,7 +3,7 @@ using PlayerHittableItemsNS;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameObjectCreator : MonoBehaviour
+public class SceneSingleton : MonoBehaviour
 {
     [Header("Scriptable Objects")]
     [SerializeField] private DialogueEntityScriptableObject dialogueScriptableObject;
@@ -12,11 +12,17 @@ public class GameObjectCreator : MonoBehaviour
     [SerializeField] private CheckPoints checkpointsScriptableObject;
     [SerializeField] private EnemyHittableObjects enemyHittableObject;
 
+
+    [Header("Centralized Game Objects")]
+    [SerializeField] private EventStringMapper eventStringMapper;
+
+
     public static DialogueEntityScriptableObject DialogueEntityScriptableObjectFetch => _instance.dialogueScriptableObject;
     public static PlayerHittableItemsScriptableObject PlayerHittableItemScriptableObjectFetch => _instance.playerHittableItemsScriptableObject;
     public static EntitiesToReset EntitiesToResetScriptableObjectFetch => _instance.entitiesToResetScriptableObject;
     public static CheckPoints CheckPointsScriptableObjectFetch => _instance.checkpointsScriptableObject;
     public static EnemyHittableObjects EnemyHittableObjects => _instance.enemyHittableObject;
+    public static EventStringMapper EventStringMapper => _instance.eventStringMapper;
 
     private static DialogueManager _dialogueManager { get; set; }
     private static InventoryOpenCloseManager _inventoryOpenCloseManager { get; set; }
@@ -28,8 +34,11 @@ public class GameObjectCreator : MonoBehaviour
     private static SpawnPlayer _getSpawnPlayerScript { get; set; }
     private static CheckpointColliderListener _checkpointColliderListener { get; set; }
 
-    private static GameObjectCreator _instance;
+    private static SceneSingleton _instance;
     private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; }//fill only once
+
+
+    
 
     private void Awake()
     {

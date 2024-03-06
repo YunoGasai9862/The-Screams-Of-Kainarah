@@ -161,10 +161,10 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     }
     public bool CanPlayerAttack()
     {
-        bool isDialogueOpen = GameObjectCreator.GetDialogueManager().IsOpen();
+        bool isDialogueOpen = SceneSingleton.GetDialogueManager().IsOpen();
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
         bool isBuying = OpenWares.Buying;
-        bool isInventoryOpen = GameObjectCreator.GetInventoryOpenCloseManager().isOpenInventory;
+        bool isInventoryOpen = SceneSingleton.GetInventoryOpenCloseManager().isOpenInventory;
 
         return !isDialogueOpen && !isBuying && !isInventoryOpen && !isJumping;
     }

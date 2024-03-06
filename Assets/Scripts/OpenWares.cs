@@ -18,7 +18,7 @@ public class OpenWares : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        if (GameObjectCreator.GetDialogueManager().IsOpen() && !GameObjectCreator.GetInventoryOpenCloseManager().isOpenInventory)
+        if (SceneSingleton.GetDialogueManager().IsOpen() && !SceneSingleton.GetInventoryOpenCloseManager().isOpenInventory)
         {
             WaresPanel.SetActive(true);
             Buying = true;

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ProjectileThrowAnimationEvent: UnityEvent
+public class ProjectileThrowAnimationEvent: UnityEventWOT
 {
     private static ProjectileThrowAnimationEvent Instance = new ProjectileThrowAnimationEvent();
     public ProjectileThrowAnimationEvent() { }

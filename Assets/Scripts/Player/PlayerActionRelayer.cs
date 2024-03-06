@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static DialogueEntityScriptableObject;
-using static GameObjectCreator;
+using static SceneSingleton;
 using static CheckPoints;
 using static SceneData;
 using PlayerHittableItemsNS;
@@ -38,7 +38,7 @@ public class PlayerActionRelayer : AbstractEntity
     {
         try
         {
-            GameObjectCreator.InsertIntoGameStateHandlerList(this);
+            SceneSingleton.InsertIntoGameStateHandlerList(this);
         }
         catch (Exception ex)
         {
@@ -205,7 +205,7 @@ public class PlayerActionRelayer : AbstractEntity
         if (await GetOneOfTheCheckPoints(collision.tag, checkpointTags))
         {
             //call checkpoint replacement 
-            Checkpoint checkpoint = await GetCheckPointFromScriptableObject(GameObjectCreator.CheckPointsScriptableObjectFetch, collision.tag);
+            Checkpoint checkpoint = await GetCheckPointFromScriptableObject(SceneSingleton.CheckPointsScriptableObjectFetch, collision.tag);
 
             collision.gameObject.SetActive(false); //turn it off
 

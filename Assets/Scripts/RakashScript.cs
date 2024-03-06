@@ -31,7 +31,7 @@ public class RakashScript : AbstractEntity
         _player = GameObject.FindWithTag("Player");
         _anim = GetComponent<Animator>();
         _bC2 = GetComponent<BoxCollider2D>();
-        GameObjectCreator.InsertIntoGameStateHandlerList(this);
+        SceneSingleton.InsertIntoGameStateHandlerList(this);
     }
 
     // Update is called once per frame
@@ -39,7 +39,7 @@ public class RakashScript : AbstractEntity
     {
         CheckRotation();
 
-        if (GameObjectCreator.GetDialogueManager().IsOpen())
+        if (SceneSingleton.GetDialogueManager().IsOpen())
         {
             _anim.SetBool("walk", false);
         }
@@ -90,7 +90,7 @@ public class RakashScript : AbstractEntity
 
     private async void OnTriggerEnter2D(Collider2D collision)
     {
-        if (await EnemyHittableManager.IsEntityAnAttackObject(collision, GameObjectCreator.EnemyHittableObjects))
+        if (await EnemyHittableManager.IsEntityAnAttackObject(collision, SceneSingleton.EnemyHittableObjects))
         {
             _anim.SetTrigger("damage");
             Health -= 10;

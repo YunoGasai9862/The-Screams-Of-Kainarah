@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using static GameObjectCreator;
+using static SceneSingleton;
 
 public class CheckpointColliderListener : MonoBehaviour, IObserver<GameObject>
 {

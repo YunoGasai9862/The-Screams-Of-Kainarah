@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+[Serializable]
 public class EventStringMapper: MonoBehaviour
 {
     [Serializable]
@@ -13,5 +14,5 @@ public class EventStringMapper: MonoBehaviour
         public UnityEvent eventName;
     }
 
-   [SerializeField] EventMappings[] mappings;
+   [SerializeField] public EventMappings[] mappings;
 }

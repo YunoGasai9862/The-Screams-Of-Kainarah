@@ -167,7 +167,7 @@ public class GameStateManager : MonoBehaviour, IGameState
     {
         try
         {
-            gameStateHandlerObjects = GameObjectCreator.GameStateHandlerObjects(); //get all the objects
+            gameStateHandlerObjects = SceneSingleton.GameStateHandlerObjects(); //get all the objects
             await InvokeListeners(gameStateHandlerObjects);
 
             foreach (var objectToSave in this._sceneData.ObjectsToPersit)

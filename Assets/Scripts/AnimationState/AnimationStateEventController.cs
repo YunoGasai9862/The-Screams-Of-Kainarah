@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,6 +8,7 @@ public class AnimationStateEventController : StateMachineBehaviour
 {
     [SerializeField] float invokeTime;
     [SerializeField] string animationEventName;
+
     private bool _eventInvoke {get; set;}
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -21,9 +23,16 @@ public class AnimationStateEventController : StateMachineBehaviour
         if (animationTime > invokeTime && !_eventInvoke)
         {
             _eventInvoke = true;
+            var customEvent = GetCustomUnityEvent(SceneSingleton.EventStringMapper, animationEventName);
             ProjectileThrowAnimationEvent.GetInstance().Invoke();
             
         }
+    }
+
+    private UnityEvent GetCustomUnityEvent(EventStringMapper events, string animationEventName)
+    {
+        var eventFound = events.mappings.Where(e=> e.eventIdentifier == animationEventName).FirstOrDefault().eventName;
+        return eventFound;
     }
 
 
