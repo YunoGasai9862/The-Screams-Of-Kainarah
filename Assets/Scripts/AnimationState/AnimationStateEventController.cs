@@ -24,12 +24,11 @@ public class AnimationStateEventController : StateMachineBehaviour
         {
             _eventInvoke = true;
             var customEvent = GetCustomUnityEvent(SceneSingleton.EventStringMapper, animationEventName);
-            ProjectileThrowAnimationEvent.GetInstance().Invoke();
-            
+            customEvent.GetInstance().Invoke();
         }
     }
 
-    private UnityEvent GetCustomUnityEvent(EventStringMapper events, string animationEventName)
+    private UnityEventWOT GetCustomUnityEvent(EventStringMapper events, string animationEventName)
     {
         var eventFound = events.mappings.Where(e=> e.eventIdentifier == animationEventName).FirstOrDefault().eventName;
         return eventFound;

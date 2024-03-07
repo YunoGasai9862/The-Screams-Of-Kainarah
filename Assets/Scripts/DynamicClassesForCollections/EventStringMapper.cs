@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[Serializable]
-public class EventStringMapper: MonoBehaviour
+[CreateAssetMenu(fileName = "EventStringMapperScriptableObjectEntity", menuName = "Event String Mapper")]
+public class EventStringMapper: ScriptableObject
 {
     [Serializable]
     public class EventMappings
     {
         public string eventIdentifier;
-        public UnityEvent eventName;
+        public UnityEventWOT eventName;
     }
 
-   [SerializeField] public EventMappings[] mappings;
+   public List<EventMappings> mappings;
 }

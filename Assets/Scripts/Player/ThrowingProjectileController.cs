@@ -18,7 +18,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     {
         _anim= GetComponent<Animator>();
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
-        ProjectileThrowAnimationEvent.GetInstance().AddListener(DidHalfAnimationPass);
+        ProjectileThrowAnimationEvent.AddEventListener(DidHalfAnimationPass);
     }
     private void Start()
     {
