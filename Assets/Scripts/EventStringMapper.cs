@@ -14,5 +14,5 @@ public class EventStringMapper: ScriptableObject
         public UnityEventWOT eventName;
     }
 
-   public List<EventMappings> mappings;
+   public EventMappings[] mappings;
 }

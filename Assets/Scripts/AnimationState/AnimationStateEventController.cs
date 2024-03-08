@@ -24,7 +24,7 @@ public class AnimationStateEventController : StateMachineBehaviour
         {
             _eventInvoke = true;
             var customEvent = GetCustomUnityEvent(SceneSingleton.EventStringMapper, animationEventName);
-            customEvent.GetInstance().Invoke();
+           // customEvent.GetInstance().Invoke();
         }
     }
 

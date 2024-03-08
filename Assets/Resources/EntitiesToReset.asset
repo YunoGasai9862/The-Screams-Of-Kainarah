@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9665dcc3d918124789facb8f3d06535, type: 3}
   m_Name: EntitiesToReset
   m_EditorClassIdentifier: 
-  entitiesToReset: []
+  entitiesToReset:
+  - entity: {fileID: 0}
+    absractEntity: {fileID: 0}

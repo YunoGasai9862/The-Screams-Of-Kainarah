@@ -5,16 +5,16 @@ using UnityEngine.Events;
 
 public class ProjectileThrowAnimationEvent: UnityEventWOT
 {
-    private static ProjectileThrowAnimationEvent Instance = new ProjectileThrowAnimationEvent();
+    private static UnityEvent Instance = new UnityEvent();
     public ProjectileThrowAnimationEvent() { }
 
-    public override UnityEventWOT GetInstance()
+    public override UnityEvent GetInstance()
     {
         return Instance;
     }
     public static void AddEventListener(UnityAction value)
     {
-        Instance.AddListener(value);
+       Instance.AddListener(value);
     }
 
 }
