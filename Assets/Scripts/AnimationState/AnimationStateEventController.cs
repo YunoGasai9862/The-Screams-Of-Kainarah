@@ -8,6 +8,7 @@ public class AnimationStateEventController : StateMachineBehaviour
 {
     [SerializeField] float invokeTime;
     [SerializeField] string animationEventName;
+    private EventsHelper _eventHelper = new EventsHelper();
 
     private bool _eventInvoke {get; set;}
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -23,16 +24,11 @@ public class AnimationStateEventController : StateMachineBehaviour
         if (animationTime > invokeTime && !_eventInvoke)
         {
             _eventInvoke = true;
-            var customEvent = GetCustomUnityEvent(SceneSingleton.EventStringMapper, animationEventName);
-           // customEvent.GetInstance().Invoke();
+            var customEvent = _eventHelper.GetCustomUnityEvent(SceneSingleton.EventStringMapperScriptableObject, animationEventName);
+            customEvent.GetInstance().Invoke();
         }
     }
 
-    private UnityEventWOT GetCustomUnityEvent(EventStringMapper events, string animationEventName)
-    {
-        var eventFound = events.mappings.Where(e=> e.eventIdentifier == animationEventName).FirstOrDefault().eventName;
-        return eventFound;
-    }
 
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state

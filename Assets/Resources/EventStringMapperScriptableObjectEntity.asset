@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: EventStringMapperScriptableObjectEntity
   m_EditorClassIdentifier: 
   mappings:
-  - eventIdentifier: 
-    eventName: {fileID: 0}
+  - eventIdentifier: ProjectileThrowAnimationEvent
+    eventName: {fileID: 7831773867377136662, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}

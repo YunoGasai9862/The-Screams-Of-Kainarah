@@ -11,10 +11,9 @@ public class SceneSingleton : MonoBehaviour
     [SerializeField] private EntitiesToReset entitiesToResetScriptableObject;
     [SerializeField] private CheckPoints checkpointsScriptableObject;
     [SerializeField] private EnemyHittableObjects enemyHittableObject;
+    [SerializeField] private EventStringMapper eventStringMapperScriptableObject;
 
 
-    [Header("Centralized Game Objects")]
-    [SerializeField] private EventStringMapper eventStringMapper;
 
 
     public static DialogueEntityScriptableObject DialogueEntityScriptableObjectFetch => _instance.dialogueScriptableObject;
@@ -22,7 +21,7 @@ public class SceneSingleton : MonoBehaviour
     public static EntitiesToReset EntitiesToResetScriptableObjectFetch => _instance.entitiesToResetScriptableObject;
     public static CheckPoints CheckPointsScriptableObjectFetch => _instance.checkpointsScriptableObject;
     public static EnemyHittableObjects EnemyHittableObjects => _instance.enemyHittableObject;
-    public static EventStringMapper EventStringMapper => _instance.eventStringMapper;
+    public static EventStringMapper EventStringMapperScriptableObject => _instance.eventStringMapperScriptableObject;
 
     private static DialogueManager _dialogueManager { get; set; }
     private static InventoryOpenCloseManager _inventoryOpenCloseManager { get; set; }

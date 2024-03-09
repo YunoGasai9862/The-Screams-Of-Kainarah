@@ -37,6 +37,8 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         startingGrav = rb.gravityScale;  //the initially gravity is stored in the array
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
+
+        LedgeGrabAnimationEvent.AddEventListener(LedgeGrabEventAnimationKeeperListener);
     }
     // Update is called once per frame
     async void Update()
@@ -71,7 +73,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
 
             col.isTrigger = false;
 
-            anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
+            anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING); 
 
             rb.gravityScale = startingGrav;
         }
@@ -84,6 +86,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     }
 
     //grab ledge => hold space until the player lands on the ledge
+    //use Animation Ledge Grab keeper to make it more smooth!
     public async Task HandleLedgeGrabCalculations(int sign, float startingGravity, Vector2 force, Vector2 groundPosition, Vector2 maximumVelocities)
     {
         //fix ledge grab
@@ -138,6 +141,11 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
             PlayerVariables.Instance.grabVariableEvent.Invoke(false);
             anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
         }
+    }
+
+    private void LedgeGrabEventAnimationKeeperListener()
+    {
+
     }
 
     //using in animations
