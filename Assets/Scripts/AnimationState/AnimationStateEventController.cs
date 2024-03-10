@@ -8,6 +8,7 @@ public class AnimationStateEventController : StateMachineBehaviour
 {
     [SerializeField] float invokeTime;
     [SerializeField] string animationEventName;
+    [SerializeField] bool isUnityEventWithType;
     private EventsHelper _eventHelper = new EventsHelper();
 
     private bool _eventInvoke {get; set;}
@@ -20,12 +21,21 @@ public class AnimationStateEventController : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        var animationTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+        float animationTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
         if (animationTime > invokeTime && !_eventInvoke)
         {
             _eventInvoke = true;
-            var customEvent = _eventHelper.GetCustomUnityEvent(SceneSingleton.EventStringMapperScriptableObject, animationEventName);
-            customEvent.GetInstance().Invoke();
+            if (!isUnityEventWithType)
+            {
+                var customEvent = _eventHelper.GetCustomUnityEvent(SceneSingleton.EventStringMapperScriptableObject, animationEventName);
+                customEvent.GetInstance().Invoke();
+            }
+            else
+            {
+                var customEvent = _eventHelper.GetCustomUnityEventWithType(SceneSingleton.EventStringMapperScriptableObject, animationEventName);
+                customEvent.GetInstance().Invoke(true);
+            }
+
         }
     }
 

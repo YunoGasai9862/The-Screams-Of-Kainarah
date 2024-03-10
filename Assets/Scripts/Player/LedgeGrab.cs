@@ -91,6 +91,8 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     {
         //fix ledge grab
         rb.gravityScale = 0f;
+
+        //stick the player, but keep the animation until it finishes
         if (rb.velocity.y < maximumVelocities.y)
             rb.AddForce(Vector2.up * displacements.x * ledgeGrabForces.x * rb.mass, ForceMode2D.Impulse);
         if(transform.position.y > groundPosition.y + MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB && rb.velocity.x < maximumVelocities.x)
@@ -134,7 +136,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     }
     private async Task GrabLedge(int sign, float startingGrav, Vector2 force, Vector2 groundPositionBeforeLedgeGrab, Vector2 maximumVelocities)
     {
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("LedgeGrab")
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName(PlayerAnimationConstants.LEDGE_GRAB)
            && CanGrab)
         {
             await HandleLedgeGrabCalculations(sign, startingGrav, force, groundPositionBeforeLedgeGrab, maximumVelocities);  //this is for setting the animation to false
@@ -143,9 +145,9 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         }
     }
 
-    private void LedgeGrabEventAnimationKeeperListener()
+    private void LedgeGrabEventAnimationKeeperListener(bool value)
     {
-
+        Debug.Log("GRABBING");
     }
 
     //using in animations

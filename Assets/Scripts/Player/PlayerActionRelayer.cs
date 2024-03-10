@@ -82,7 +82,7 @@ public class PlayerActionRelayer : AbstractEntity
             await GetCheckPointSemaphore.WaitAsync();
             Debug.Log("Calling respawn");
             Debug.Log(GetCheckPointSemaphore.CurrentCount);
-            anim.SetBool("Death", true);
+            anim.SetBool(PlayerAnimationConstants.DEATH, true);
             await Task.Delay(TimeSpan.FromSeconds(0.1f));
             await GetPlayerObserverListenerObject().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, EntitiesToResetScriptableObjectFetch);
 

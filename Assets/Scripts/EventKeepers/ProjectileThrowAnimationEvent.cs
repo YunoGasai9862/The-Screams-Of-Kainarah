@@ -1,7 +1,7 @@
 
 using UnityEngine.Events;
 
-public class ProjectileThrowAnimationEvent: UnityEventWOT
+public class ProjectileThrowAnimationEvent : UnityEventWOT
 {
     private static UnityEvent _instance = new UnityEvent();
     public ProjectileThrowAnimationEvent() { }

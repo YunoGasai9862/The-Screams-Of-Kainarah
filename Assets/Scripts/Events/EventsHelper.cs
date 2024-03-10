@@ -4,8 +4,12 @@ public class EventsHelper
     public EventsHelper() { }
     public UnityEventWOT GetCustomUnityEvent(EventStringMapper events, string animationEventName)
     {
-        var eventFound = events.mappings.Where(e => e.eventIdentifier == animationEventName).FirstOrDefault().eventName;
+        var eventFound = events.mappingsWOT.Where(e => e.eventIdentifier == animationEventName).FirstOrDefault().eventNamWithoutType;
         return eventFound;
     }
-
+    public UnityEventWT<bool> GetCustomUnityEventWithType(EventStringMapper events, string animationEventName)
+    {
+        var eventFound = events.mappingWTBool.Where(e => e.eventIdentifier == animationEventName).FirstOrDefault().eventNameWithType;
+        return eventFound;
+    }
 }

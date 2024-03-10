@@ -1157,8 +1157,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bddcca39dfdaf64bbca10fed3afe6e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  invokeTime: 1
-  animationEventName: 
+  invokeTime: 0.4
+  animationEventName: LedgeGrabAnimationEvent
 --- !u!1107 &6693469414302260623
 AnimatorStateMachine:
   serializedVersion: 6

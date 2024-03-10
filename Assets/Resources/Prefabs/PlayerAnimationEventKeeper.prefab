@@ -9,7 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4043929545408888308}
-  - component: {fileID: 7831773867377136662}
+  - component: {fileID: 5037080545683520528}
+  - component: {fileID: 3172770440927488779}
   m_Layer: 0
   m_Name: PlayerAnimationEventKeeper
   m_TagString: Untagged
@@ -32,7 +33,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7831773867377136662
+--- !u!114 &5037080545683520528
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,5 +43,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 551205c74eb008c45b9b434393569f89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3172770440927488779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3298452107198694594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50ccf5be3ba290046b69d38d8a76e5af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
