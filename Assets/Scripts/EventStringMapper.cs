@@ -8,8 +8,11 @@ public class EventStringMapper: ScriptableObject
     public class EventMappingsWithoutType
     {
         public string eventIdentifier;
-        public UnityEventWOT eventNamWithoutType;
+        public UnityEventWOT eventNameWithoutType;
     }
+
+    //without Type
+    public EventMappingsWithoutType[] mappingsWOT;
 
     [Serializable]
     public class EventMappingsWithType<T>
@@ -17,9 +20,6 @@ public class EventStringMapper: ScriptableObject
         public string eventIdentifier;
         public UnityEventWT<T> eventNameWithType;
     }
-
-    //without Type
-    public EventMappingsWithoutType[] mappingsWOT;
 
     //with Type
     [Header("Unity Event (Bool)")]

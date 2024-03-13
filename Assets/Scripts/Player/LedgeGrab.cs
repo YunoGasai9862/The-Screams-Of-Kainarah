@@ -6,7 +6,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private const float MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB = 1f;
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
     private const float MAXIMUM_VELOCITY_X_FORCE = 12f;
-    private const float MAX_TIME_FOR_LEDGE_GRAB = 0.2f;
+    private const float MAX_TIME_FOR_LEDGE_GRAB = 1f;
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
 
     private bool greenBox, redBox;
@@ -89,9 +89,6 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     //use Animation Ledge Grab keeper to make it more smooth!
     public async Task HandleLedgeGrabCalculations(int sign, float startingGravity, Vector2 force, Vector2 groundPosition, Vector2 maximumVelocities)
     {
-        //fix ledge grab
-        rb.gravityScale = 0f;
-
         //stick the player, but keep the animation until it finishes
         if (rb.velocity.y < maximumVelocities.y)
             rb.AddForce(Vector2.up * displacements.x * ledgeGrabForces.x * rb.mass, ForceMode2D.Impulse);
@@ -107,6 +104,13 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         Gizmos.DrawWireCube(new Vector2(transform.position.x + (redXOffset * transform.localScale.x), transform.position.y + redYoffset), new Vector2(redXSize, redYSize));
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(new Vector2(transform.position.x + (greenXOffset * transform.localScale.x), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize));
+    }
+
+    private async Task SetGravityValue(Rigidbody2D rb, float value)
+    {
+        Debug.Log($"Setting to {value}");
+        rb.gravityScale = value;
+        await Task.FromResult(true);
     }
     private bool TimeSpentGrabbing(float timeSpent, float timeMargin)
     {
@@ -139,7 +143,8 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         if (anim.GetCurrentAnimatorStateInfo(0).IsName(PlayerAnimationConstants.LEDGE_GRAB)
            && CanGrab)
         {
-            await HandleLedgeGrabCalculations(sign, startingGrav, force, groundPositionBeforeLedgeGrab, maximumVelocities);  //this is for setting the animation to false
+            await SetGravityValue(rb, 0f);
+           // await HandleLedgeGrabCalculations(sign, startingGrav, force, groundPositionBeforeLedgeGrab, maximumVelocities);  //this is for setting the animation to false
             PlayerVariables.Instance.grabVariableEvent.Invoke(false);
             anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
         }
@@ -148,16 +153,18 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private void LedgeGrabEventAnimationKeeperListener(bool value)
     {
         Debug.Log("GRABBING");
+        //add logic here
     }
 
     //using in animations
     public Task StartLedgeGrab()
     {
         CanGrab = true;
+        Debug.Log("Here");
         GroundPositionBeforeLedgeGrab = transform.position;
         return Task.CompletedTask;
     }
-    public Task ShouldLedgeGrab()
+    public Task StopLedgeGrab()
     {
         CanGrab = false;
         return Task.CompletedTask;

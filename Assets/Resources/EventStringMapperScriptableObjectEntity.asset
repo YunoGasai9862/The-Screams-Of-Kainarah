@@ -13,12 +13,10 @@ MonoBehaviour:
   m_Name: EventStringMapperScriptableObjectEntity
   m_EditorClassIdentifier: 
   mappingsWOT:
-  - withoutTypeEvent: 0
-    eventIdentifier: ProjectileThrowAnimationEvent
-    eventNamWithoutType: {fileID: 5037080545683520528, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  - eventIdentifier: ProjectileThrowAnimationEvent
+    eventNameWithoutType: {fileID: 5037080545683520528, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
   mappingWTBool:
-  - withTypeEvent: 1
-    eventIdentifier: LedgeGrabAnimationEvent
+  - eventIdentifier: LedgeGrabAnimationEvent
     eventNameWithType: {fileID: 3172770440927488779, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
   mappingWTString: []
   mappingWTFloat: []
