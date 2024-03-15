@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -26,6 +27,8 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private Vector2 _groundPosition;
     public bool CanGrab { get => _canGrab; set => _canGrab = value; }
     public Vector2 GroundPositionBeforeLedgeGrab { get => _groundPosition; set => _groundPosition = value; }    
+
+    public bool StartCalculatingGrabLedgeDisplacement { get; set; }
     private void Awake()
     {
         _helperFunc = new MovementHelperClass();
@@ -65,7 +68,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
 
             col.isTrigger = true;
 
-            anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
+            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, PlayerVariables.Instance.IS_GRABBING);
 
         }else
         {
@@ -73,7 +76,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
 
             col.isTrigger = false;
 
-            anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING); 
+            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, PlayerVariables.Instance.IS_GRABBING); 
 
             rb.gravityScale = startingGrav;
         }
@@ -82,20 +85,34 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private async void FixedUpdate()
     {
         int sign = sr.flipX ? -1 : 1;
-        await GrabLedge(sign, startingGrav, ledgeGrabForces, GroundPositionBeforeLedgeGrab, new Vector2(MAXIMUM_VELOCITY_X_FORCE, MAXIMUM_VELOCITY_Y_FORCE));
+
+        await GrabLedge(anim, rb);
+
+        if(StartCalculatingGrabLedgeDisplacement)
+        {
+            await HandleLedgeGrabCalculations(sign, ledgeGrabForces, GroundPositionBeforeLedgeGrab, new Vector2(MAXIMUM_VELOCITY_X_FORCE, MAXIMUM_VELOCITY_Y_FORCE));
+
+            await SetGravityValue(rb, startingGrav);
+
+            StartCalculatingGrabLedgeDisplacement = false;
+        }
     }
 
     //grab ledge => hold space until the player lands on the ledge
     //use Animation Ledge Grab keeper to make it more smooth!
-    public async Task HandleLedgeGrabCalculations(int sign, float startingGravity, Vector2 force, Vector2 groundPosition, Vector2 maximumVelocities)
+    public async Task HandleLedgeGrabCalculations(int sign, Vector2 force, Vector2 groundPosition, Vector2 maximumVelocities)
     {
         //stick the player, but keep the animation until it finishes
         if (rb.velocity.y < maximumVelocities.y)
+        {
             rb.AddForce(Vector2.up * displacements.x * ledgeGrabForces.x * rb.mass, ForceMode2D.Impulse);
-        if(transform.position.y > groundPosition.y + MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB && rb.velocity.x < maximumVelocities.x)
+        }
+
+        if (transform.position.y > groundPosition.y + MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB && rb.velocity.x < maximumVelocities.x)
+        {
             rb.AddForce((sign) * Vector2.right * displacements.y * ledgeGrabForces.y * rb.mass, ForceMode2D.Impulse);
-        rb.gravityScale = startingGravity;
-        await Task.CompletedTask;
+        }
+        await Task.Delay(TimeSpan.FromSeconds(0.5));
     }
 
     private void OnDrawGizmosSelected()//drawing the boxes (extras)
@@ -108,7 +125,6 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
 
     private async Task SetGravityValue(Rigidbody2D rb, float value)
     {
-        Debug.Log($"Setting to {value}");
         rb.gravityScale = value;
         await Task.FromResult(true);
     }
@@ -138,35 +154,30 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     {
         return Task.CompletedTask;
     }
-    private async Task GrabLedge(int sign, float startingGrav, Vector2 force, Vector2 groundPositionBeforeLedgeGrab, Vector2 maximumVelocities)
+    private async Task GrabLedge(Animator anim, Rigidbody2D rb)
     {
         if (anim.GetCurrentAnimatorStateInfo(0).IsName(PlayerAnimationConstants.LEDGE_GRAB)
            && CanGrab)
         {
             await SetGravityValue(rb, 0f);
-           // await HandleLedgeGrabCalculations(sign, startingGrav, force, groundPositionBeforeLedgeGrab, maximumVelocities);  //this is for setting the animation to false
             PlayerVariables.Instance.grabVariableEvent.Invoke(false);
-            anim.SetBool("LedgeGrab", PlayerVariables.Instance.IS_GRABBING);
+            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, PlayerVariables.Instance.IS_GRABBING);
         }
     }
 
     private void LedgeGrabEventAnimationKeeperListener(bool value)
     {
-        Debug.Log("GRABBING");
-        //add logic here
-    }
+        StartCalculatingGrabLedgeDisplacement = true;
 
+        CanGrab = false;
+    }
+    
     //using in animations
     public Task StartLedgeGrab()
     {
         CanGrab = true;
-        Debug.Log("Here");
         GroundPositionBeforeLedgeGrab = transform.position;
         return Task.CompletedTask;
     }
-    public Task StopLedgeGrab()
-    {
-        CanGrab = false;
-        return Task.CompletedTask;
-    }
+
 }

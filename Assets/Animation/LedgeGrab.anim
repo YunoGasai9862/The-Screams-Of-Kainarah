@@ -86,10 +86,3 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 1.1333333
-    functionName: StopLedgeGrab
-    data: 
-    objectReferenceParameter: {fileID: 11500000, guid: c3761915aae53194e8fd04fdfbbea2f4, type: 3}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0

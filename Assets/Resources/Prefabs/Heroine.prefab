@@ -852,13 +852,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   redXOffset: 0.1
-  redYoffset: 0.87
-  redXSize: 0.2
+  redYoffset: 0.74
+  redXSize: 0.38
   redYSize: 0.2
   greenXOffset: 0.09
-  greenYOffset: -0.41
+  greenYOffset: -0.31
   greenXsize: 0.3
-  greenYSize: 0.08
+  greenYSize: -0.53
   groundMask:
     serializedVersion: 2
     m_Bits: 64
@@ -879,7 +879,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfcd2735284f62d43a8d8a06fb03d652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _collider: {fileID: 0}
+  _collider: {fileID: -1774752956742986687}
 --- !u!114 &-7079114110776597852
 MonoBehaviour:
   m_ObjectHideFlags: 0
