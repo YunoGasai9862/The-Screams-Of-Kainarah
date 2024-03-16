@@ -9,6 +9,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private const float MAXIMUM_VELOCITY_X_FORCE = 12f;
     private const float MAX_TIME_FOR_LEDGE_GRAB = 1f;
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
+    private const float VELOCITY_ASYNC_DELAY = 0.15f;
 
     private bool greenBox, redBox;
     public float redXOffset, redYoffset, redXSize, redYSize, greenXOffset, greenYOffset, greenXsize, greenYSize;
@@ -84,7 +85,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     }
     private async void FixedUpdate()
     {
-        int sign = sr.flipX ? -1 : 1;
+        int sign = await PlayerFlipped();
 
         await GrabLedge(anim, rb);
 
@@ -97,7 +98,6 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
             StartCalculatingGrabLedgeDisplacement = false;
         }
     }
-
     //grab ledge => hold space until the player lands on the ledge
     //use Animation Ledge Grab keeper to make it more smooth!
     public async Task HandleLedgeGrabCalculations(int sign, Vector2 force, Vector2 groundPosition, Vector2 maximumVelocities)
@@ -105,14 +105,21 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         //stick the player, but keep the animation until it finishes
         if (rb.velocity.y < maximumVelocities.y)
         {
-            rb.AddForce(Vector2.up * displacements.x * ledgeGrabForces.x * rb.mass, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * displacements.x * force.x * rb.mass, ForceMode2D.Impulse);
         }
+        await Task.Delay(TimeSpan.FromSeconds(VELOCITY_ASYNC_DELAY));
 
         if (transform.position.y > groundPosition.y + MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB && rb.velocity.x < maximumVelocities.x)
         {
-            rb.AddForce((sign) * Vector2.right * displacements.y * ledgeGrabForces.y * rb.mass, ForceMode2D.Impulse);
+            rb.AddForce((sign) * Vector2.right * displacements.y * force.y * rb.mass, ForceMode2D.Impulse);
         }
-        await Task.Delay(TimeSpan.FromSeconds(0.5));
+       await Task.Delay(TimeSpan.FromSeconds(VELOCITY_ASYNC_DELAY));
+    }
+
+
+    private Task<int> PlayerFlipped()
+    {
+        return transform.localScale.x < 0 ? Task.FromResult(-1) : Task.FromResult(1);
     }
 
     private void OnDrawGizmosSelected()//drawing the boxes (extras)
