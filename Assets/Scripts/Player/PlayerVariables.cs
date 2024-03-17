@@ -14,12 +14,14 @@ public class PlayerVariables : MonoBehaviour
     private bool _isRunning;
     private bool _isWalking;
     private bool _isGrabbing;
+    private bool _isFalling;
     public bool IS_JUMPING { get => _isJumping;  }
     public bool IS_ATTACKING { get => _isAttacking;  }
     public bool IS_SLIDING { get => _isSliding;  }
     public bool IS_RUNNING { get => _isRunning; }
     public bool IS_WALKING { get => _isWalking;  }
     public bool IS_GRABBING { get => _isGrabbing;  }
+    public bool IS_FALLING { get => _isFalling; }
     public static PlayerVariables Instance { get { return instance; } }
 
     public PlayerWalkVariableEvent walkVariableEvent = new PlayerWalkVariableEvent();
@@ -28,6 +30,7 @@ public class PlayerVariables : MonoBehaviour
     public PlayerGrabVariableEvent grabVariableEvent = new PlayerGrabVariableEvent();
     public PlayerAttackVariableEvent attackVariableEvent = new PlayerAttackVariableEvent();
     public PlayerJumpVariableEvent jumpVariableEvent = new PlayerJumpVariableEvent();
+    public PlayerFallVariableEvent fallVariableEvent = new PlayerFallVariableEvent();
 
     private void Awake()
     {
@@ -42,6 +45,7 @@ public class PlayerVariables : MonoBehaviour
         grabVariableEvent.AddListener(SetGrabVariableState);
         attackVariableEvent.AddListener(SetAttackVariableState);
         jumpVariableEvent.AddListener(SetJumpVariableState);
+        fallVariableEvent.AddListener(SetFallVariableState);
 
     }
     private void SetAttackVariableState(bool variableState)
@@ -68,6 +72,11 @@ public class PlayerVariables : MonoBehaviour
     {
         _isRunning = variableState;
     }
+    private void SetFallVariableState(bool variableState)
+    {
+        _isFalling = variableState;
+    }
+
     private Task<List<string>> GetPlayerAnimationsList(Animator anim)
     {
         var animationController = anim.runtimeAnimatorController;
@@ -86,5 +95,10 @@ public class PlayerVariables : MonoBehaviour
         List<string> animationNames = await GetPlayerAnimationsList(anim);
 
         return animationNames.Where(e => e.Equals(search) || e.Contains(search)).FirstOrDefault();
+    }
+
+    public Task<int> PlayerFlipped(Transform transform)
+    {
+        return transform.localScale.x < 0 ? Task.FromResult(-1) : Task.FromResult(1);
     }
 }

@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class LedgeGrab : MonoBehaviour, IReceiver<bool>
 {
-    private const float MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB = 1f;
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
-    private const float MAXIMUM_VELOCITY_X_FORCE = 12f;
     private const float MAX_TIME_FOR_LEDGE_GRAB = 1f;
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
     private const float VELOCITY_ASYNC_DELAY = 0.15f;
@@ -47,10 +45,8 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     // Update is called once per frame
     async void Update()
     {
-        //we dont need GreenYOffset* transform.localscale.y because the Y axis is fixed when rotating on X.axis, but we do need it for the X axis
         greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, greenXOffset)), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
         redBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, redXOffset)), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
-        //if the variable is public static and exists on the same object, you can access it with the name of the script!!
 
         if (!_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
             PlayerVariables.Instance.IS_GRABBING)
@@ -61,9 +57,11 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         if(_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) || _helperFunc.OverlapAgainstLayerMaskChecker(ref col, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
             _timeSpent = 0f;
+
+            PlayerVariables.Instance.fallVariableEvent.Invoke(false);
         }
 
-        if (greenBox && !TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB) && !redBox)
+        if (greenBox && !redBox && !TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB)  && !PlayerVariables.Instance.IS_FALLING)
         {
             PlayerVariables.Instance.grabVariableEvent.Invoke(true);
 
@@ -85,41 +83,29 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     }
     private async void FixedUpdate()
     {
-        int sign = await PlayerFlipped();
+        int sign = await PlayerVariables.Instance.PlayerFlipped(transform);
 
         await GrabLedge(anim, rb);
 
         if(StartCalculatingGrabLedgeDisplacement)
         {
-            await HandleLedgeGrabCalculations(sign, ledgeGrabForces, GroundPositionBeforeLedgeGrab, new Vector2(MAXIMUM_VELOCITY_X_FORCE, MAXIMUM_VELOCITY_Y_FORCE));
+            await HandleLedgeGrabCalculations(sign, ledgeGrabForces, new Vector2(0, MAXIMUM_VELOCITY_Y_FORCE));
+
+            PlayerVariables.Instance.fallVariableEvent.Invoke(true);
 
             await SetGravityValue(rb, startingGrav);
 
             StartCalculatingGrabLedgeDisplacement = false;
         }
     }
-    //grab ledge => hold space until the player lands on the ledge
-    //use Animation Ledge Grab keeper to make it more smooth!
-    public async Task HandleLedgeGrabCalculations(int sign, Vector2 force, Vector2 groundPosition, Vector2 maximumVelocities)
+    public async Task HandleLedgeGrabCalculations(int sign, Vector2 force, Vector2 maximumVelocities)
     {
-        //stick the player, but keep the animation until it finishes
         if (rb.velocity.y < maximumVelocities.y)
         {
-            rb.AddForce(Vector2.up * displacements.x * force.x * rb.mass, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * displacements.y * force.y * rb.mass, ForceMode2D.Impulse);
         }
+
         await Task.Delay(TimeSpan.FromSeconds(VELOCITY_ASYNC_DELAY));
-
-        if (transform.position.y > groundPosition.y + MAX_JUMP_HEIGHT_FROM_LEDGE_GRAB && rb.velocity.x < maximumVelocities.x)
-        {
-            rb.AddForce((sign) * Vector2.right * displacements.y * force.y * rb.mass, ForceMode2D.Impulse);
-        }
-       await Task.Delay(TimeSpan.FromSeconds(VELOCITY_ASYNC_DELAY));
-    }
-
-
-    private Task<int> PlayerFlipped()
-    {
-        return transform.localScale.x < 0 ? Task.FromResult(-1) : Task.FromResult(1);
     }
 
     private void OnDrawGizmosSelected()//drawing the boxes (extras)
@@ -133,6 +119,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private async Task SetGravityValue(Rigidbody2D rb, float value)
     {
         rb.gravityScale = value;
+
         await Task.FromResult(true);
     }
     private bool TimeSpentGrabbing(float timeSpent, float timeMargin)
@@ -150,6 +137,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     public bool CancelAction()
     {
         CancelLedgeGrab();
+
         return true;
     }
 

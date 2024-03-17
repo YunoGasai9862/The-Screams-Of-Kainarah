@@ -2,7 +2,6 @@ using CoreCode;
 using PlayerAnimationHandler;
 using System.Threading.Tasks;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 {
@@ -44,7 +43,10 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
         {
             PlayerVariables.Instance.slideVariableEvent.Invoke(false);
 
+            PlayerVariables.Instance.slideVariableEvent.PlayerSlideStateEventInvoke(true);
+
             _animationHandler.Sliding(false);
+
         }
 
         return Task.CompletedTask;

@@ -6,8 +6,6 @@ public class PlayerActionsModel
     public float CharacterVelocityY { get; set; }
     public float CharacterVelocityX { get; set; }
     public float CharacterSpeed { get; set; }
-    public float SlidingTimeBegin { get; set; }
-    public float SlidingTimeEnd { get; set; }
     public float OriginalSpeed { get; set; }
     public bool LeftMouseButtonPressed { get; set; }
     public float TimeForMouseClickStart { get ; set; } = 0;

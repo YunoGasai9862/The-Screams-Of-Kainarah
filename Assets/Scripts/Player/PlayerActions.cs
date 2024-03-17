@@ -98,7 +98,7 @@ public class PlayerActions : MonoBehaviour
             }
 
             //sliding
-            if(_playerActionsModel.GetSlidePressed)
+            if(_playerActionsModel.GetSlidePressed && !PlayerVariables.Instance.slideVariableEvent.PlayerFinishedSliding)
                 _slideCommand.Execute();
             else
                 _slideCommand.Cancel();
@@ -172,13 +172,13 @@ public class PlayerActions : MonoBehaviour
 
     private void BeginSlideAction(InputAction.CallbackContext context)
     {
-        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || PlayerVariables.Instance.IS_ATTACKING == true) ? false : context.ReadValueAsButton();
-        _playerActionsModel.SlidingTimeBegin = (float)context.time;
+        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || PlayerVariables.Instance.IS_ATTACKING == true)? false : context.ReadValueAsButton();
+
+        PlayerVariables.Instance.slideVariableEvent.SetPlayerSlideState(false);
     }
     private void EndSlideAction(InputAction.CallbackContext context)
     {
         _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || PlayerVariables.Instance.IS_ATTACKING == true) ? false : context.ReadValueAsButton();
-        _playerActionsModel.SlidingTimeEnd = (float)context.time;
     }
 
     //implement boost feature with slide

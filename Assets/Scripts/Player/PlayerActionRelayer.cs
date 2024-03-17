@@ -49,6 +49,7 @@ public class PlayerActionRelayer : AbstractEntity
     private void Awake()
     {
         MaxHealth = playerHealth;
+
         Health = MaxHealth;
 
         _semaphoreSlim = new SemaphoreSlim(1); //using at two places
@@ -242,7 +243,7 @@ public class PlayerActionRelayer : AbstractEntity
         RaycastHit hit; //using 3D raycast because of 3D object, portal
         Vector2 pos = transform.position;
 
-        int sign = sr.flipX ? -1 : 1;
+        int sign = await PlayerVariables.Instance.PlayerFlipped(transform);
 
         pos.x = transform.position.x + sign;
         Physics.Raycast(transform.position, transform.right * sign, out hit, 1f);
