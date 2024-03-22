@@ -27,7 +27,7 @@ public class PlayerActions : MonoBehaviour
     public LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
     public SlidingController SlidingController { get => GetComponent<SlidingController>(); }
     public JumpingController JumpingController { get => GetComponent<JumpingController>(); }
-    public AttackingController AttackingController { get => GetComponent<AttackingController>(); } 
+    public AttackingController AttackingController { get => GetComponent<AttackingController>(); }
     public ThrowingProjectileController ThrowingProjectileController { get => GetComponent<ThrowingProjectileController>(); } //implement all the actions together
 
 
@@ -43,7 +43,7 @@ public class PlayerActions : MonoBehaviour
         _slideReceiver = GetComponent<SlidingController>();
         _attackReceiver = GetComponent<AttackingController>();
         _throwingProjectileReceiver = GetComponent<ThrowingProjectileController>();
-        _animator= GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
 
         _attackCommand = new Command<bool>(_attackReceiver);
         _jumpCommand = new Command<bool>(_jumpReceiver);
@@ -63,8 +63,13 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerAttack.ThrowProjectile.started += HandleDaggerInput;
         _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += HandleDaggerInput;
 
+        _rocky2DActions.PlayerAttack.BoostAttack.started += HandleBoostAttack;
+        _rocky2DActions.PlayerAttack.BoostAttack.canceled += HandleBoostAttack;
+
+
 
     }
+
     private void Start()
     {
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
@@ -84,7 +89,7 @@ public class PlayerActions : MonoBehaviour
             //Flipping
             if (KeystrokeMagnitudeChecker(_keystrokeTrack))
             {
-                if(!PlayerVariables.Instance.IS_GRABBING)
+                if (!PlayerVariables.Instance.IS_GRABBING)
                     FlipCharacter(_keystrokeTrack);
             }
 
@@ -98,21 +103,23 @@ public class PlayerActions : MonoBehaviour
             }
 
             //sliding
-            if(_playerActionsModel.GetSlidePressed && !PlayerVariables.Instance.slideVariableEvent.PlayerFinishedSliding)
+            if (_playerActionsModel.GetSlidePressed && !PlayerVariables.Instance.slideVariableEvent.PlayerFinishedSliding)
                 _slideCommand.Execute();
             else
                 _slideCommand.Cancel();
         }
 
     }
+
+    #region Controller Mechnism
     private Vector2 PlayerMovement()
     {
         Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>(); //reads the value
 
-        if(keystroke.x!=0)
+        if (keystroke.x != 0)
             _playerActionsModel.KeyStrokeDifference = GetKeyStrokeDifference(keystroke);
 
-        _playerActionsModel.CharacterVelocityX =  keystroke.x;
+        _playerActionsModel.CharacterVelocityX = keystroke.x;
 
         CharacterControllerMove(_playerActionsModel.CharacterVelocityX * _playerActionsModel.CharacterSpeed, _playerActionsModel.CharacterVelocityY);
 
@@ -125,7 +132,7 @@ public class PlayerActions : MonoBehaviour
 
     private float GetKeyStrokeDifference(Vector2 keystroke)
     {
-       return Vector2.zero.x + keystroke.x;
+        return Vector2.zero.x + keystroke.x;
     }
 
     private void VelocityYEventHandler(float characterVelocityY)
@@ -146,20 +153,6 @@ public class PlayerActions : MonoBehaviour
         return _keystrokeTrack.magnitude != 0;
     }
 
-    private void FlipCharacter(Vector2 keystroke)
-    {
-        if (_playerActionsModel.KeyStrokeDifference == -1 && transform.localScale.x < 0)
-        {
-            transform.localScale = new Vector3(1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
-
-        }
-        else if (_playerActionsModel.KeyStrokeDifference == 1 && transform.localScale.x < 0 || _playerActionsModel.KeyStrokeDifference == -1 && transform.localScale.x > 0)
-        {
-            transform.localScale = new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        }
-    }
-    
-
     private void BeginJumpAction(InputAction.CallbackContext context)
     {
         _playerActionsModel.GetJumpPressed = _playerActionsModel.GetSlidePressed ? false : context.ReadValueAsButton();
@@ -172,7 +165,7 @@ public class PlayerActions : MonoBehaviour
 
     private void BeginSlideAction(InputAction.CallbackContext context)
     {
-        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || PlayerVariables.Instance.IS_ATTACKING == true)? false : context.ReadValueAsButton();
+        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || PlayerVariables.Instance.IS_ATTACKING == true) ? false : context.ReadValueAsButton();
 
         PlayerVariables.Instance.slideVariableEvent.SetPlayerSlideState(false);
     }
@@ -181,15 +174,11 @@ public class PlayerActions : MonoBehaviour
         _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || PlayerVariables.Instance.IS_ATTACKING == true) ? false : context.ReadValueAsButton();
     }
 
-    //implement boost feature with slide
-    //To-Do
-
-
     //attacking mechanism centralized
     private void HandleDaggerInput(InputAction.CallbackContext context)
     {
         _playerActionsModel.DaggerInput = context.ReadValueAsButton();
-            
+
         ThrowingProjectileController.InvokeThrowableProjectileEvent(_playerActionsModel.DaggerInput);
 
         _throwingProjectileCommand.Execute();
@@ -218,4 +207,27 @@ public class PlayerActions : MonoBehaviour
         _attackCommand.Execute(_playerActionsModel.LeftMouseButtonPressed);
     }
 
+    //boost v attack
+    private void HandleBoostAttack(InputAction.CallbackContext context)
+    {
+        _playerActionsModel.VBoostKeyPressed = context.ReadValueAsButton();
+    }
+
+    #endregion
+
+    #region Helper functions
+    private void FlipCharacter(Vector2 keystroke)
+    {
+        if (_playerActionsModel.KeyStrokeDifference == -1 && transform.localScale.x < 0)
+        {
+            transform.localScale = new Vector3(1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+
+        }
+        else if (_playerActionsModel.KeyStrokeDifference == 1 && transform.localScale.x < 0 || _playerActionsModel.KeyStrokeDifference == -1 && transform.localScale.x > 0)
+        {
+            transform.localScale = new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        }
+    }
+
+    #endregion
 }
