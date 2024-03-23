@@ -26,7 +26,9 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     [SerializeField] string timeDifferenceStateName;
     [SerializeField] string jumpAttackStateName;
 
-    private MouseClickEvent onMouseClickEvent = new MouseClickEvent();
+    private MouseClickEvent _onMouseClickEvent = new MouseClickEvent();
+
+    private PlayerBoostAttackEvent _playerBoostAttackEvent = new PlayerBoostAttackEvent();
     private int PlayerAttackState { get; set; }
     private string PlayerAttackStateName { get; set; }
     private bool LeftMouseButtonPressed { get; set; }
@@ -47,9 +49,9 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     private void Start()
     {
         //event subscription
-        onMouseClickEvent.AddListener(SetMouseClickBeginEndTime);
+        _onMouseClickEvent.AddListener(SetMouseClickBeginEndTime);
+        _playerBoostAttackEvent.AddListener(SetAttackBoostMode);
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -126,7 +128,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         {
             _playerAttackStateMachine.SetAttackState(attackStateName, PlayerAttackState); //toggles state
 
-            timeDifferencebetweenStates = onMouseClickEvent.TimeDifferenceBetweenPressAndRelease();
+            timeDifferencebetweenStates = _onMouseClickEvent.TimeDifferenceBetweenPressAndRelease();
 
             _playerAttackStateMachine.TimeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName, timeDifferencebetweenStates);     //keeps track of time elapsed
 
@@ -194,15 +196,23 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         EndPlayerAttack();
         return true;
     }
+    private void SetAttackBoostMode(bool shouldBoost, Animator anim)
+    {
+        Debug.Log(shouldBoost);
+    }
 
     public void SetMouseClickBeginEndTime(float startTime, float endTime)
     {
-        onMouseClickEvent.ClickStartTime = startTime;
-        onMouseClickEvent.ClickEndTime = endTime;
+        _onMouseClickEvent.ClickStartTime = startTime;
+        _onMouseClickEvent.ClickEndTime = endTime;
     }
     public void InvokeOnMouseClickEvent(float startTime, float endTime)
     {
-        onMouseClickEvent.Invoke(startTime, endTime);
+        _onMouseClickEvent.Invoke(startTime, endTime);
     }
 
+    public void InvokeBoostAttackEvent(bool shouldBoost, Animator anim)
+    {
+        _playerBoostAttackEvent.GetInstance().Invoke(shouldBoost, anim);
+    }
 }

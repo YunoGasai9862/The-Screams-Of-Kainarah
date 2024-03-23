@@ -1,11 +1,18 @@
+using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerBoostAttackEvent: UnityEventWT<bool>
+public class PlayerBoostAttackEvent: UnityEventWT<bool, Animator>
 {
-    PlayerBoostAttackEvent() { }
+    public UnityEvent<bool, Animator> _playerBoostAttackEvent = new UnityEvent<bool, Animator>();
+    public bool ShouldBoostAttack { get; set; }
+    public PlayerBoostAttackEvent() { }
 
-    public override UnityEvent<bool> GetInstance()
+    public override UnityEvent<bool, Animator> GetInstance()
     {
-        throw new System.NotImplementedException();
+        return _playerBoostAttackEvent;
+    }
+    public override void AddListener(UnityAction<bool, Animator> action)
+    {
+        _playerBoostAttackEvent.AddListener(action);
     }
 }

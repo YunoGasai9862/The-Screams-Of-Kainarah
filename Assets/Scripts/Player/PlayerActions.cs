@@ -66,8 +66,6 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerAttack.BoostAttack.started += HandleBoostAttack;
         _rocky2DActions.PlayerAttack.BoostAttack.canceled += HandleBoostAttack;
 
-
-
     }
 
     private void Start()
@@ -75,10 +73,14 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
         _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
         _rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
+        _rocky2DActions.PlayerAttack.BoostAttack.Enable();
 
         JumpingController.onPlayerJumpEvent.AddListener(VelocityYEventHandler);
         SlidingController.onSlideEvent.AddListener(CharacterSpeedHandler);
     }
+
+
+
     private void Update()
     {
         if (!SceneSingleton.GetDialogueManager().IsOpen())
@@ -211,6 +213,9 @@ public class PlayerActions : MonoBehaviour
     private void HandleBoostAttack(InputAction.CallbackContext context)
     {
         _playerActionsModel.VBoostKeyPressed = context.ReadValueAsButton();
+
+        AttackingController.InvokeBoostAttackEvent(_playerActionsModel.VBoostKeyPressed, _animator);
+
     }
 
     #endregion
