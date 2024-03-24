@@ -20,7 +20,6 @@ public class PlayerActions : MonoBehaviour
     private IReceiver<bool> _throwingProjectileReceiver;
     private Command<bool> _throwingProjectileCommand;
     private PlayerActionsModel _playerActionsModel;
-    private Animator _animator;
 
     [SerializeField] float _characterSpeed = 10f;
 
@@ -43,7 +42,6 @@ public class PlayerActions : MonoBehaviour
         _slideReceiver = GetComponent<SlidingController>();
         _attackReceiver = GetComponent<AttackingController>();
         _throwingProjectileReceiver = GetComponent<ThrowingProjectileController>();
-        _animator = GetComponent<Animator>();
 
         _attackCommand = new Command<bool>(_attackReceiver);
         _jumpCommand = new Command<bool>(_jumpReceiver);
@@ -63,8 +61,8 @@ public class PlayerActions : MonoBehaviour
         _rocky2DActions.PlayerAttack.ThrowProjectile.started += HandleDaggerInput;
         _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += HandleDaggerInput;
 
-        _rocky2DActions.PlayerAttack.BoostAttack.started += HandleBoostAttack;
-        _rocky2DActions.PlayerAttack.BoostAttack.canceled += HandleBoostAttack;
+        _rocky2DActions.PlayerAttack.BoostAttack.started += HandleBoostAttackStart;
+        _rocky2DActions.PlayerAttack.BoostAttack.canceled += HandleBoostAttackCancel;
 
     }
 
@@ -210,12 +208,15 @@ public class PlayerActions : MonoBehaviour
     }
 
     //boost v attack
-    private void HandleBoostAttack(InputAction.CallbackContext context)
+    private void HandleBoostAttackStart(InputAction.CallbackContext context)
     {
         _playerActionsModel.VBoostKeyPressed = context.ReadValueAsButton();
+        AttackingController.AlertBoostEventForKeyPressed(_playerActionsModel.VBoostKeyPressed);
 
-        AttackingController.InvokeBoostAttackEvent(_playerActionsModel.VBoostKeyPressed, _animator);
-
+    }
+    private void HandleBoostAttackCancel(InputAction.CallbackContext context)
+    {
+        _playerActionsModel.VBoostKeyPressed = context.ReadValueAsButton();
     }
 
     #endregion

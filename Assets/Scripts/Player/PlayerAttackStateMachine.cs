@@ -56,7 +56,6 @@ namespace CoreCode
             return false;
 
         }
-
         public bool GetCurrentState(string state)
         {
             return _animator.GetCurrentAnimatorStateInfo(0).IsName(state);

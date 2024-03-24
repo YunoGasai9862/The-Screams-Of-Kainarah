@@ -13,7 +13,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     private Animator _anim;
     private Collider2D col;
     private MovementHelperClass _movementHelper;
-    private PlayerAttackStateMachine _playerAttackStateMachine;
     private bool _isPlayerEligibleForStartingAttack = false;
     private float timeDifferencebetweenStates;
 
@@ -25,19 +24,26 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     [SerializeField] string attackStateName;
     [SerializeField] string timeDifferenceStateName;
     [SerializeField] string jumpAttackStateName;
+    [SerializeField] string booksAttackStateName;
 
     private MouseClickEvent _onMouseClickEvent = new MouseClickEvent();
 
     private PlayerBoostAttackEvent _playerBoostAttackEvent = new PlayerBoostAttackEvent();
-    private int PlayerAttackState { get; set; }
-    private string PlayerAttackStateName { get; set; }
-    private bool LeftMouseButtonPressed { get; set; }
+
+    public int PlayerAttackState { get; set; }
+    public string PlayerAttackStateName { get; set; }
+    public bool LeftMouseButtonPressed { get; set; }
+    public bool BoostKeyPressed { get; set; } 
+    public bool ShouldBoost { get; set; }
+
+
+    public PlayerAttackStateMachine PlayerAttackStateMachine { get; set; }    
 
     private void Awake()
     {
         _anim = GetComponent<Animator>();
 
-        _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
+        PlayerAttackStateMachine = new PlayerAttackStateMachine(_anim);
 
         col = GetComponent<CapsuleCollider2D>();
 
@@ -55,7 +61,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     // Update is called once per frame
     void Update()
     {
-        if (PlayerVariables.Instance.IS_SLIDING || _playerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
+        if (PlayerVariables.Instance.IS_SLIDING || PlayerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
         {
             ResetAttackingState();
         }
@@ -69,7 +75,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
             (PlayerAttackState, PlayerAttackStateName, _isPlayerEligibleForStartingAttack) = GetEnumStateAndName<PlayerAttackEnum.PlayerAttackSlash>( PlayerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
 
             //sets the initial configuration for the attacking system
-            _playerAttackStateMachine.CanAttack(canAttackStateName, LeftMouseButtonPressed);
+            PlayerAttackStateMachine.CanAttack(canAttackStateName, LeftMouseButtonPressed);
 
             PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>(_isPlayerEligibleForStartingAttack);
 
@@ -77,7 +83,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
         if (CanPlayerAttackWhileJumping())
         {
-            _playerAttackStateMachine.SetAttackState(jumpAttackStateName, LeftMouseButtonPressed);
+            PlayerAttackStateMachine.SetAttackState(jumpAttackStateName, LeftMouseButtonPressed);
 
         }
     }
@@ -94,8 +100,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
         PlayerVariables.Instance.attackVariableEvent.Invoke(false);
-        
-        _playerAttackStateMachine.SetAttackState(jumpAttackStateName, PlayerVariables.Instance.IS_ATTACKING); //no jump attack
+
+        PlayerAttackStateMachine.SetAttackState(jumpAttackStateName, PlayerVariables.Instance.IS_ATTACKING); //no jump attack
 
     }
     private (int, string, bool) GetEnumStateAndName<T>(int playerAttackState, int initialStateOfTheEnum)
@@ -126,15 +132,16 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     {
         if (isPlayerEligibleForStartingAttack) //cast Type <T>
         {
-            _playerAttackStateMachine.SetAttackState(attackStateName, PlayerAttackState); //toggles state
+            PlayerAttackStateMachine.SetAttackState(attackStateName, PlayerAttackState); //toggles state
 
             timeDifferencebetweenStates = _onMouseClickEvent.TimeDifferenceBetweenPressAndRelease();
 
-            _playerAttackStateMachine.TimeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName, timeDifferencebetweenStates);     //keeps track of time elapsed
+            PlayerAttackStateMachine.TimeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName, timeDifferencebetweenStates);     //keeps track of time elapsed
 
         }
 
-        if (IsEnumValueEqualToLengthOfEnum<T>(PlayerAttackStateName) || (IsTimeDifferenceWithinRange(timeDifferencebetweenStates, TIME_DIFFERENCE_MAX) && PlayerAttackStateName != _playerAttackStateMachine.GetStateNameThroughEnum(1))) //dont do it for the first attackState
+        if (IsEnumValueEqualToLengthOfEnum<T>(PlayerAttackStateName) || (IsTimeDifferenceWithinRange(timeDifferencebetweenStates, TIME_DIFFERENCE_MAX) &&
+            PlayerAttackStateName != PlayerAttackStateMachine.GetStateNameThroughEnum(1))) //dont do it for the first attackState
         {
             ResetAttackingState();
             return;
@@ -148,8 +155,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     {
         PlayerAttackState = 0; //resets the attackingstate
         PlayerVariables.Instance.attackVariableEvent.Invoke(false);
-        _playerAttackStateMachine.CanAttack(canAttackStateName, PlayerVariables.Instance.IS_ATTACKING);
-        _playerAttackStateMachine.CanAttack(jumpAttackStateName, PlayerVariables.Instance.IS_ATTACKING);
+        PlayerAttackStateMachine.CanAttack(canAttackStateName, PlayerVariables.Instance.IS_ATTACKING);
+        PlayerAttackStateMachine.CanAttack(jumpAttackStateName, PlayerVariables.Instance.IS_ATTACKING);
     }
 
     private bool IsEnumValueEqualToLengthOfEnum<T>(string _playerAttackStateName)
@@ -196,9 +203,9 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         EndPlayerAttack();
         return true;
     }
-    private void SetAttackBoostMode(bool shouldBoost, Animator anim)
+    private void SetAttackBoostMode(bool shouldBoost)
     {
-        Debug.Log(shouldBoost);
+        PlayerAttackStateMachine.SetAttackState(booksAttackStateName, shouldBoost);
     }
 
     public void SetMouseClickBeginEndTime(float startTime, float endTime)
@@ -211,8 +218,10 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         _onMouseClickEvent.Invoke(startTime, endTime);
     }
 
-    public void InvokeBoostAttackEvent(bool shouldBoost, Animator anim)
+    public void AlertBoostEventForKeyPressed(bool keyPressed)
     {
-        _playerBoostAttackEvent.GetInstance().Invoke(shouldBoost, anim);
+        BoostKeyPressed = keyPressed;
+        ShouldBoost = PlayerAttackState == 0 && BoostKeyPressed == false? false : true;
+        _playerBoostAttackEvent.Invoke(ShouldBoost);
     }
 }

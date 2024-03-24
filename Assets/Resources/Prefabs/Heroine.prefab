@@ -839,6 +839,8 @@ MonoBehaviour:
   attackStateName: PlayerAttack
   timeDifferenceStateName: ElapsedTime
   jumpAttackStateName: AttackJ
+  booksAttackStateName: BoostAttack
+  _playerBoostAttackEvent: {fileID: -7354200372664535441, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
 --- !u!114 &8744535595071973501
 MonoBehaviour:
   m_ObjectHideFlags: 0
