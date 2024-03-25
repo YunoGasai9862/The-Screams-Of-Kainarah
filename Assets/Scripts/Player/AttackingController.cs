@@ -177,6 +177,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
 
         return !isDialogueOpen && !isBuying && !isInventoryOpen && !isJumping;
     }
+
+    #region AnimationEventOnTheAnimationItself
     public void Icetail()
     {
         InstantiatorController iceTrail = new(IceTrail);
@@ -191,6 +193,13 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         iceTrail.SetGameObjectParent(transform);
     }
 
+    public void BoostAttackStateManagement()
+    {
+        ShouldBoost = false;
+        _playerBoostAttackEvent.Invoke(ShouldBoost);
+    }
+
+    #endregion
     public bool PerformAction(bool value)
     {
         LeftMouseButtonPressed = value;
