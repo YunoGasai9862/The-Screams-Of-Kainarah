@@ -27,7 +27,7 @@ public class PowerMode : MonoBehaviour
         
     }
 
-    private Task UpdatePowerUpPoints(float powerUpPoints)
+    private void UpdatePowerUpPoints(float powerUpPoints)
     {
         if (PowerUpPoints + powerUpPoints <= MAX_POWER_UP_POINTS)
             PowerUpPoints += powerUpPoints;
@@ -42,8 +42,8 @@ public class PowerMode : MonoBehaviour
     private Task UpdateSliderValue(float sliderValue)
     {
         //use slider
-        return Task.CompletedTask;
 
+        return Task.CompletedTask;
     }
 
 

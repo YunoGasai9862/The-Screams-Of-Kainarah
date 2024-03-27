@@ -840,7 +840,6 @@ MonoBehaviour:
   timeDifferenceStateName: ElapsedTime
   jumpAttackStateName: AttackJ
   booksAttackStateName: BoostAttack
-  _playerBoostAttackEvent: {fileID: -7354200372664535441, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
 --- !u!114 &8744535595071973501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -853,14 +852,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3761915aae53194e8fd04fdfbbea2f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  redXOffset: 0.1
-  redYoffset: 0.74
-  redXSize: 0.38
-  redYSize: 0.2
-  greenXOffset: 0.09
-  greenYOffset: -0.31
-  greenXsize: 0.3
-  greenYSize: -0.53
   groundMask:
     serializedVersion: 2
     m_Bits: 64
@@ -869,6 +860,15 @@ MonoBehaviour:
     m_Bits: 8
   displacements: {x: 0.5, y: 0.5}
   ledgeGrabForces: {x: 40, y: 50}
+  ledgradeAnimationEvent: {fileID: 3172770440927488779, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  redXOffset: 0.1
+  redYoffset: 0.74
+  redXSize: 0.38
+  redYSize: 0.2
+  greenXOffset: 0.09
+  greenYOffset: -0.31
+  greenXsize: 0.3
+  greenYSize: -0.53
 --- !u!114 &6549680331415743501
 MonoBehaviour:
   m_ObjectHideFlags: 0

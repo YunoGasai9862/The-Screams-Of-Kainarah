@@ -9,15 +9,19 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
     private const float VELOCITY_ASYNC_DELAY = 0.15f;
 
+
+    [SerializeField] LayerMask groundMask;
+    [SerializeField] LayerMask ledge;
+    [SerializeField] Vector2 displacements;
+    [SerializeField] Vector2 ledgeGrabForces;
+    [SerializeField] LedgeGrabAnimationEvent ledgradeAnimationEvent;
+
+
     private bool greenBox, redBox;
     public float redXOffset, redYoffset, redXSize, redYSize, greenXOffset, greenYOffset, greenXsize, greenYSize;
     private MovementHelperClass _helperFunc;
     private Rigidbody2D rb;
     private float startingGrav;
-    [SerializeField] LayerMask groundMask;
-    [SerializeField] LayerMask ledge;
-    [SerializeField] Vector2 displacements;
-    [SerializeField] Vector2 ledgeGrabForces;
     private Collider2D col;
     private Animator anim;
     private SpriteRenderer sr;
@@ -40,7 +44,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
 
-        LedgeGrabAnimationEvent.AddEventListener(LedgeGrabEventAnimationKeeperListener);
+        ledgradeAnimationEvent.AddListener(LedgeGrabEventAnimationKeeperListener);
     }
     // Update is called once per frame
     async void Update()
