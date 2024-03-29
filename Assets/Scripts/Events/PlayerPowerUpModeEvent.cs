@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
@@ -10,10 +11,15 @@ public class PlayerPowerUpModeEvent: UnityEventWT<float>
     }
     public override Task AddListener(UnityAction<float> unityAction)
     {
-        GetInstance().AddListener(unityAction);
-        
+        try
+        {
+            GetInstance().AddListener(unityAction);
+        }
+        catch(Exception ex)
+        {
+            return Task.FromException(ex);
+        }
 
-        //return anything here (an indication)
         return Task.CompletedTask;
     }
 }

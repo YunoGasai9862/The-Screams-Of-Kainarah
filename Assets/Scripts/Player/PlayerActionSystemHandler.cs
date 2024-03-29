@@ -6,10 +6,12 @@ using UnityEngine;
 public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 {
     [SerializeField] PickableItemsHandler pickableItems;
+    [SerializeField] PlayerPowerUpModeEvent playerPowerUpModeEvent;
 
     Dictionary<String, Func<Collider2D, Task >> _playerActionHandlerDic;
 
     private InstantiatorController _gameObject;
+    private float DIAMOND_PICK_UP_VALUE { get; set; } = 10f;
 
     private void Awake()
     {
@@ -40,6 +42,8 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     private async Task<bool> OnCrystalPickup(Collider2D collider)
     {
         pickupEffectInstantiator(pickableItems.ReturnGameObjectForTheKey(collider.tag), collider.transform.position);
+        //invoke event to increase boost bar
+        playerPowerUpModeEvent.GetInstance().Invoke(DIAMOND_PICK_UP_VALUE);
         return await Task.FromResult(true);
     }
 

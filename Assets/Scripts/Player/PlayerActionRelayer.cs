@@ -38,7 +38,7 @@ public class PlayerActionRelayer : AbstractEntity
     {
         try
         {
-            SceneSingleton.InsertIntoGameStateHandlerList(this);
+            InsertIntoGameStateHandlerList(this);
         }
         catch (Exception ex)
         {
