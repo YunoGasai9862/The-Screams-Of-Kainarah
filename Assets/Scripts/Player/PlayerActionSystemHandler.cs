@@ -11,7 +11,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     Dictionary<String, Func<Collider2D, Task >> _playerActionHandlerDic;
 
     private InstantiatorController _gameObject;
-    private float DIAMOND_PICK_UP_VALUE { get; set; } = 10f;
+    private float DIAMOND_PICK_UP_VALUE { get; set; } = 20f;
 
     private void Awake()
     {
