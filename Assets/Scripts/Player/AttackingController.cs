@@ -25,6 +25,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     [SerializeField] string timeDifferenceStateName;
     [SerializeField] string jumpAttackStateName;
     [SerializeField] string booksAttackStateName;
+    [SerializeField] PowerUpBarFillEvent powerUpBarFillEvent;
 
     private MouseClickEvent _onMouseClickEvent = new MouseClickEvent();
 
@@ -35,6 +36,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     public bool LeftMouseButtonPressed { get; set; }
     public bool BoostKeyPressed { get; set; } 
     public bool ShouldBoost { get; set; }
+    public bool PowerUpBarFilled { get; set; } = false;
 
 
     public PlayerAttackStateMachine PlayerAttackStateMachine { get; set; }    
@@ -57,6 +59,9 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         //event subscription
         _onMouseClickEvent.AddListener(SetMouseClickBeginEndTime);
         _playerBoostAttackEvent.AddListener(SetAttackBoostMode);
+
+        //Monobehavior event
+        powerUpBarFillEvent.AddListener(PowerUpFillMode);
     }
     // Update is called once per frame
     void Update()
@@ -230,7 +235,17 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     public void AlertBoostEventForKeyPressed(bool keyPressed)
     {
         BoostKeyPressed = keyPressed;
-        ShouldBoost = PlayerAttackState == 0 && BoostKeyPressed == false? false : true;
+        if (BoostKeyPressed && PowerUpBarFilled && PlayerAttackState >= 0)
+        {
+            ShouldBoost = true;
+        }
+        else
+            ShouldBoost = false;
+
         _playerBoostAttackEvent.Invoke(ShouldBoost);
+    }
+    public void PowerUpFillMode(bool filledUp)
+    {
+        PowerUpBarFilled = filledUp;
     }
 }

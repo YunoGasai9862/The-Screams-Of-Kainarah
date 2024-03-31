@@ -840,6 +840,7 @@ MonoBehaviour:
   timeDifferenceStateName: ElapsedTime
   jumpAttackStateName: AttackJ
   booksAttackStateName: BoostAttack
+  powerUpBarFillEvent: {fileID: 1602645987036078734, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
 --- !u!114 &8744535595071973501
 MonoBehaviour:
   m_ObjectHideFlags: 0
