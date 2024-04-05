@@ -10,6 +10,7 @@ public class PowerMode : MonoBehaviour
     [SerializeField] public Gradient gradient;
     [SerializeField] public PlayerPowerUpModeEvent powerUpEvent;
     [SerializeField] public PowerUpBarFillEvent powerUpBarFillEvent;
+    [SerializeField] public UIParticleSystemEvent uiParticleSystemEvent;
 
     private const float MAX_POWER_UP_POINTS = 100f;
     public float PowerUpPoints { get; set; } = 0;
@@ -31,7 +32,6 @@ public class PowerMode : MonoBehaviour
     }
     private Task SetGradientValue(Gradient gradient, Slider slider)
     {
-        Debug.Log(slider.value);
         fill.color = gradient.Evaluate(slider.value / 100.0f);
         return Task.CompletedTask;
     }
@@ -55,6 +55,7 @@ public class PowerMode : MonoBehaviour
         }
 
         PowerUpPoints += PointsDifference;
+        uiParticleSystemEvent.GetInstance().Invoke(PowerUpPoints);
         return Task.CompletedTask;
     }
 

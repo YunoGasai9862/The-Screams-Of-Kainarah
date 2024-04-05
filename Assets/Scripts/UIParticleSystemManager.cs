@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class UIParticleSystemManager : MonoBehaviour
 {
-    [SerializeField] ParticleSystemForceField particleSystemForceField;
-
-    private UIParticleSystemEvent _uiParticleSystemEvent = new UIParticleSystemEvent();
+    [SerializeField] ParticleSystemForceField particleSystemForceField; //play with it (customize it)
+    [SerializeField] UIParticleSystemEvent uiParticleSystemEvent;
 
     private void Awake()
     {
-        _uiParticleSystemEvent.AddListener(UpdateAlphaChannel);
+        uiParticleSystemEvent.AddListener(UpdateAlphaChannel);
     }
 
     void Start()
@@ -26,11 +25,7 @@ public class UIParticleSystemManager : MonoBehaviour
 
     public void UpdateAlphaChannel(float value)
     {
-
+        Debug.Log($"Particle UI System {value}");
     }
 
-    public UIParticleSystemEvent GetUIParticleSystemEventInstance()
-    {
-        return _uiParticleSystemEvent;
-    }
 }
