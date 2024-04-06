@@ -37,8 +37,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     public bool BoostKeyPressed { get; set; } 
     public bool ShouldBoost { get; set; }
     public bool PowerUpBarFilled { get; set; } = false;
-
-
     public PlayerAttackStateMachine PlayerAttackStateMachine { get; set; }    
 
     private void Awake()

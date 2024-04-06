@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 5037080545683520528}
   - component: {fileID: 3172770440927488779}
   - component: {fileID: 3373824308548697309}
-  - component: {fileID: 89110812463941533}
-  - component: {fileID: 423561552202705954}
+  - component: {fileID: 2517715538828987300}
+  - component: {fileID: 7865729328054661790}
   m_Layer: 0
   m_Name: PlayerAnimationEventKeeper
   m_TagString: Untagged
@@ -72,7 +72,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e9afd26cce60a748bf40a1399ef83c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &89110812463941533
+--- !u!114 &2517715538828987300
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -84,7 +84,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d38cb3dbbb79c0c48a21a47ef3edcf44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &423561552202705954
+--- !u!114 &7865729328054661790
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
