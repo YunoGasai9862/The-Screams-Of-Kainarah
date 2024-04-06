@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,8 +39,10 @@ public class UIParticleSystemManager : MonoBehaviour
 
     private async Task SetAlphaValue(Material psMaterial, float value)
     {
+ 
         Color temp = new Color(psMaterial.color.r, psMaterial.color.g, psMaterial.color.b, value);
-        psMaterial.color = temp;
+        // psMaterial.DOColor(temp, 10);
+        psMaterial.SetColor("_EmissionColor", temp);  //use it like tween
         await Task.Delay(TimeSpan.FromMilliseconds(500));
     }
 
