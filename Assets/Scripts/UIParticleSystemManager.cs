@@ -12,38 +12,43 @@ public class UIParticleSystemManager : MonoBehaviour
     [SerializeField] Material _psMaterial;
     private ParticleSystem _uiParticleSystem;
 
-    private void Awake()
+    public float InitialAlphaValue { get; set; }
+    public float NewAlphaValue { get; set; } = 0f;
+    private async void Awake()
     {
-        uiParticleSystemEvent.AddListener(UpdateAlphaChannel);
+        await uiParticleSystemEvent.AddListener(UpdateAlphaChannel);
         _uiParticleSystem = GetComponent<ParticleSystem>();
-        //_psMaterial = GetComponent<Material>(); 
-       
+        InitialAlphaValue = await GetMaterialsAlphaValue(_psMaterial);
     }
 
     async void Start()
     {
         await SetAlphaValue(_psMaterial, 0);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void UpdateAlphaChannel(float value)
     {
-        Debug.Log($"Particle UI System {value}");
-
+        Debug.Log($"Particle UI System {value}, newAlphaValue {NewAlphaValue}");
+        NewAlphaValue = NewAlphaValue + (value / 255.0f); //convert it to a scale of 1 
+        _= SetAlphaValue(_psMaterial, NewAlphaValue);
     }
 
     private async Task SetAlphaValue(Material psMaterial, float value)
     {
  
         Color temp = new Color(psMaterial.color.r, psMaterial.color.g, psMaterial.color.b, value);
-        // psMaterial.DOColor(temp, 10);
-        psMaterial.SetColor("_EmissionColor", temp);  //use it like tween
+        psMaterial.SetColor("_BaseColor", temp);  //use it like tween
         await Task.Delay(TimeSpan.FromMilliseconds(500));
     }
 
+    private Task<float> GetMaterialsAlphaValue(Material psMaterial)
+    {
+        Color materialsColor = psMaterial.GetColor("_BaseColor");
+        Debug.Log($"Initial Alpha Value: {materialsColor.a}");
+        return Task.FromResult(materialsColor.a);
+    }
+
+    private async void OnDisable()
+    {
+       await SetAlphaValue(_psMaterial, InitialAlphaValue);
+    }
 }
