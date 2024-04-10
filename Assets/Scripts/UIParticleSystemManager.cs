@@ -11,14 +11,17 @@ public class UIParticleSystemManager : MonoBehaviour
     [SerializeField] UIParticleSystemEvent uiParticleSystemEvent;
     [SerializeField] Material _psMaterial;
     private ParticleSystem _uiParticleSystem;
-
     public float InitialAlphaValue { get; set; }
     public float NewAlphaValue { get; set; } = 0f;
+    public AnimateProperty AnimatePropertyInstance {get; set;}
     private async void Awake()
     {
         await uiParticleSystemEvent.AddListener(UpdateAlphaChannel);
         _uiParticleSystem = GetComponent<ParticleSystem>();
         InitialAlphaValue = await GetMaterialsAlphaValue(_psMaterial);
+
+        if(AnimatePropertyInstance == null)
+            AnimatePropertyInstance = new AnimateProperty();
     }
 
     async void Start()
@@ -36,6 +39,7 @@ public class UIParticleSystemManager : MonoBehaviour
     {
  
         Color temp = new Color(psMaterial.color.r, psMaterial.color.g, psMaterial.color.b, value);
+        StartCoroutine(AnimatePropertyInstance.AnimColor(psMaterial.color, temp, 2f));
         psMaterial.SetColor("_BaseColor", temp);  //use it like tween
         await Task.Delay(TimeSpan.FromMilliseconds(500));
     }
