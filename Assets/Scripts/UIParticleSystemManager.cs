@@ -9,16 +9,18 @@ public class UIParticleSystemManager : MonoBehaviour
 {
     [SerializeField] ParticleSystemForceField particleSystemForceField; //play with it (customize it)
     [SerializeField] UIParticleSystemEvent uiParticleSystemEvent;
-    [SerializeField] Material _psMaterial;
+    [SerializeField] Material psMaterial;
     private ParticleSystem _uiParticleSystem;
     public float InitialAlphaValue { get; set; }
     public float NewAlphaValue { get; set; } = 0f;
     public AnimatePropertyColor AnimatePropertyColorInstance {get; set;}
+    public Material PSMaterial { get; set;}
     private async void Awake()
     {
         await uiParticleSystemEvent.AddListener(UpdateAlphaChannel);
         _uiParticleSystem = GetComponent<ParticleSystem>();
-        InitialAlphaValue = await GetMaterialsAlphaValue(_psMaterial);
+        PSMaterial = psMaterial;
+        InitialAlphaValue = await GetMaterialsAlphaValue(PSMaterial);
 
         if(AnimatePropertyColorInstance == null)
             AnimatePropertyColorInstance = new AnimatePropertyColor(ColorListener);
@@ -26,13 +28,13 @@ public class UIParticleSystemManager : MonoBehaviour
 
     async void Start()
     {
-        await SetAlphaValue(_psMaterial, 0);
+        await SetAlphaValue(PSMaterial, 0);
     }
     public void UpdateAlphaChannel(float value)
     {
         Debug.Log($"Particle UI System {value}, newAlphaValue {NewAlphaValue}");
         NewAlphaValue = NewAlphaValue + (value / 255.0f); //convert it to a scale of 1 
-        _= SetAlphaValue(_psMaterial, NewAlphaValue);
+        _= SetAlphaValue(PSMaterial, NewAlphaValue);
     }
 
     private async Task SetAlphaValue(Material psMaterial, float value)
@@ -40,7 +42,6 @@ public class UIParticleSystemManager : MonoBehaviour
  
         Color temp = new Color(psMaterial.color.r, psMaterial.color.g, psMaterial.color.b, value);
         StartCoroutine(AnimatePropertyColorInstance.AnimColor(psMaterial.color, temp, 2f));
-        psMaterial.SetColor("_BaseColor", temp);  //use it like tween
         await Task.Delay(TimeSpan.FromMilliseconds(500));
     }
 
@@ -53,11 +54,15 @@ public class UIParticleSystemManager : MonoBehaviour
 
     private void ColorListener(Color modifiedColor)
     {
-
+        //set the material value here
+        PSMaterial.SetColor("_BaseColor", modifiedColor);  //use it like tween
     }
 
     private async void OnDisable()
     {
-       await SetAlphaValue(_psMaterial, InitialAlphaValue);
+        if (isActiveAndEnabled)
+        {
+             await SetAlphaValue(PSMaterial, InitialAlphaValue);
+        }
     }
 }
