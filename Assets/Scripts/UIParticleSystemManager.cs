@@ -28,20 +28,20 @@ public class UIParticleSystemManager : MonoBehaviour
 
     async void Start()
     {
-        await SetAlphaValue(PSMaterial, 0);
+        await SetAlphaValueForParticles(PSMaterial, 0, 5f);
     }
     public void UpdateAlphaChannel(float value)
     {
         Debug.Log($"Particle UI System {value}, newAlphaValue {NewAlphaValue}");
         NewAlphaValue = NewAlphaValue + (value / 255.0f); //convert it to a scale of 1 
-        _= SetAlphaValue(PSMaterial, NewAlphaValue);
+        _= SetAlphaValueForParticles(PSMaterial, NewAlphaValue, 5f);
     }
 
-    private async Task SetAlphaValue(Material psMaterial, float value)
+    private async Task SetAlphaValueForParticles(Material psMaterial, float value, float duration)
     {
  
         Color temp = new Color(psMaterial.color.r, psMaterial.color.g, psMaterial.color.b, value);
-        StartCoroutine(AnimatePropertyColorInstance.AnimColor(psMaterial.color, temp, 2f));
+        StartCoroutine(AnimatePropertyColorInstance.AnimColor(psMaterial.color, temp, duration));
         await Task.Delay(TimeSpan.FromMilliseconds(500));
     }
 
@@ -55,6 +55,7 @@ public class UIParticleSystemManager : MonoBehaviour
     private void ColorListener(Color modifiedColor)
     {
         //set the material value here
+        Debug.Log($"Modified Color: {modifiedColor}");
         PSMaterial.SetColor("_BaseColor", modifiedColor);  //use it like tween
     }
 
@@ -62,7 +63,7 @@ public class UIParticleSystemManager : MonoBehaviour
     {
         if (isActiveAndEnabled)
         {
-             await SetAlphaValue(PSMaterial, InitialAlphaValue);
+             await SetAlphaValueForParticles(PSMaterial, InitialAlphaValue, 0f);
         }
     }
 }
