@@ -11,7 +11,7 @@ public class UIParticleSystemManager : MonoBehaviour
     [SerializeField] UIParticleSystemEvent uiParticleSystemEvent;
     [SerializeField] Material psMaterial;
     private ParticleSystem _uiParticleSystem;
-    public float InitialAlphaValue { get; set; }
+    public Color OriginalColor { get; set; }
     public float NewAlphaValue { get; set; } = 0f;
     public AnimatePropertyColor AnimatePropertyColorInstance {get; set;}
     public Material PSMaterial { get; set;}
@@ -20,7 +20,7 @@ public class UIParticleSystemManager : MonoBehaviour
         await uiParticleSystemEvent.AddListener(UpdateAlphaChannel);
         _uiParticleSystem = GetComponent<ParticleSystem>();
         PSMaterial = psMaterial;
-        InitialAlphaValue = await GetMaterialsAlphaValue(PSMaterial);
+        OriginalColor = await GetMaterialsOriginalColor(PSMaterial);
 
         if(AnimatePropertyColorInstance == null)
             AnimatePropertyColorInstance = new AnimatePropertyColor(ColorListener);
@@ -28,7 +28,7 @@ public class UIParticleSystemManager : MonoBehaviour
 
     async void Start()
     {
-        await SetAlphaValueForParticles(PSMaterial, 0, 5f);
+        await SetAlphaValueForParticles(PSMaterial, 0, 2f);
     }
     public void UpdateAlphaChannel(float value)
     {
@@ -45,11 +45,10 @@ public class UIParticleSystemManager : MonoBehaviour
         await Task.Delay(TimeSpan.FromMilliseconds(500));
     }
 
-    private Task<float> GetMaterialsAlphaValue(Material psMaterial)
+    private Task<Color> GetMaterialsOriginalColor(Material psMaterial)
     {
         Color materialsColor = psMaterial.GetColor("_BaseColor");
-        Debug.Log($"Initial Alpha Value: {materialsColor.a}");
-        return Task.FromResult(materialsColor.a);
+        return Task.FromResult(materialsColor);
     }
 
     private void ColorListener(Color modifiedColor)
@@ -59,11 +58,13 @@ public class UIParticleSystemManager : MonoBehaviour
         PSMaterial.SetColor("_BaseColor", modifiedColor);  //use it like tween
     }
 
+    private Task<Color> ResetColor()
+    {
+        return Task.FromResult(new Color(OriginalColor.r, OriginalColor.g, OriginalColor.b, OriginalColor.a));
+    }
+
     private async void OnDisable()
     {
-        if (isActiveAndEnabled)
-        {
-             await SetAlphaValueForParticles(PSMaterial, InitialAlphaValue, 0f);
-        }
+        PSMaterial.SetColor("_BaseColor", await ResetColor());
     }
 }

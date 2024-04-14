@@ -109,10 +109,10 @@ Material:
     - _UseUIAlphaClip: 0
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 1.0379064, g: 0.5042112, b: 0.4048889, a: 0.7111131}
+    - _BaseColor: {r: 0.9622642, g: 0.15505677, b: 0, a: 1}
     - _BaseColorAddSubDiff: {r: -1, g: 1, b: 0, a: 0}
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 1.0379064, g: 0.5042112, b: 0.4048889, a: 0.7111131}
+    - _Color: {r: 0.9622642, g: 0.15505677, b: 0, a: 1}
     - _EmissionColor: {r: 0.70627546, g: 0.14391243, b: 0.9245283, a: 50}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
