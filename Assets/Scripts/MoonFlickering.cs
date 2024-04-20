@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class MoonFlickering : LightObserverPattern
 {
@@ -11,15 +12,17 @@ public class MoonFlickering : LightObserverPattern
     public float innerRadiusMax;
     public float outerRadiusMin;
     public float outerRadiusMax;
+    public Light2D moonLight;
 
-    private LightEntity m_light= new LightEntity();
+    private LightEntity m_light = new LightEntity();
     private CancellationTokenSource m_cancellationTokenSource;
     private CancellationToken m_cancellationToken;
     private SemaphoreSlim _semaphoreSlim;
+
     private void Awake()
     {
         m_cancellationTokenSource = new CancellationTokenSource();
-        _semaphoreSlim= new SemaphoreSlim(1); //i already have one semaphoreSlim with 0 in another script, hence initializing it with 1
+        _semaphoreSlim = new SemaphoreSlim(1); //i already have one semaphoreSlim with 0 in another script, hence initializing it with 1
         m_cancellationToken = m_cancellationTokenSource.Token;
         m_light.canFlicker = canFlicker;
         m_light.LightName = transform.parent.name; //always add transform.parent.name
@@ -31,7 +34,9 @@ public class MoonFlickering : LightObserverPattern
     }
     async void Update()
     {
-         await MoonShimmer(m_light, m_cancellationToken);
+        // await MoonShimmer(m_light, m_cancellationToken);
+        await MoonFlicker(moonLight);
+
     }
     private async Task MoonShimmer(LightEntity entity, CancellationToken cancellationToken)
     {
@@ -48,7 +53,8 @@ public class MoonFlickering : LightObserverPattern
             {
                 return;
             }
-            finally {
+            finally
+            {
 
                 _semaphoreSlim.Release(); //it releases, allowing it to run again
             }
@@ -57,5 +63,10 @@ public class MoonFlickering : LightObserverPattern
     private void OnDisable()
     {
         m_cancellationTokenSource.Cancel();
+    }
+
+    private async Task MoonFlicker(Light2D light)
+    {
+        await LightFlickerHelper.ActivateContinuousShimmer(light, Time.time, 10f);
     }
 }

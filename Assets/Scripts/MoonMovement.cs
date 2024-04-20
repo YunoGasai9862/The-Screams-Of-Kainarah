@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -12,7 +10,7 @@ public class MoonMovement : MonoBehaviour
     [SerializeField] float XOffset, YOffset, ZOffset;
     [SerializeField] float distanceBetweenPlayerAndMoon;
 
-    private SemaphoreSlim semaphoreSlim= new SemaphoreSlim(1);
+    private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
 
@@ -20,13 +18,12 @@ public class MoonMovement : MonoBehaviour
     {
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
-
     }
 
 
     async void Update()
     {
-        await moveToFollowPlayer(gameObject.transform, distanceBetweenPlayerAndMoon, XOffset, YOffset, ZOffset, moonSpeed);   
+        await moveToFollowPlayer(gameObject.transform, distanceBetweenPlayerAndMoon, XOffset, YOffset, ZOffset, moonSpeed);
     }
 
     private async Task<bool> moveToFollowPlayer(Transform targetToFollow, float distanceBetweenPlayerAndMoon, float xOffset, float yOffset, float zOffset, float speed)
@@ -34,7 +31,7 @@ public class MoonMovement : MonoBehaviour
 
         await semaphoreSlim.WaitAsync();
         await Task.Delay(TimeSpan.FromSeconds(0f));
-        if(!cancellationToken.IsCancellationRequested)
+        if (!cancellationToken.IsCancellationRequested)
         {
             try
             {

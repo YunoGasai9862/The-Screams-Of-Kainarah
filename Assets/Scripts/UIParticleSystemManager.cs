@@ -1,7 +1,4 @@
-using DG.Tweening;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -13,8 +10,8 @@ public class UIParticleSystemManager : MonoBehaviour
     private ParticleSystem _uiParticleSystem;
     public Color OriginalColor { get; set; }
     public float NewAlphaValue { get; set; } = 0f;
-    public AnimatePropertyColor AnimatePropertyColorInstance {get; set;}
-    public Material PSMaterial { get; set;}
+    public AnimatePropertyColor AnimatePropertyColorInstance { get; set; }
+    public Material PSMaterial { get; set; }
     private async void Awake()
     {
         await uiParticleSystemEvent.AddListener(UpdateAlphaChannel);
@@ -22,24 +19,24 @@ public class UIParticleSystemManager : MonoBehaviour
         PSMaterial = psMaterial;
         OriginalColor = await GetMaterialsOriginalColor(PSMaterial);
 
-        if(AnimatePropertyColorInstance == null)
+        if (AnimatePropertyColorInstance == null)
             AnimatePropertyColorInstance = new AnimatePropertyColor(ColorListener);
     }
 
     async void Start()
     {
-        await SetAlphaValueForParticles(PSMaterial, 0, 2f);
+        await SetAlphaValueForParticles(PSMaterial, 0, 5f);
     }
     public void UpdateAlphaChannel(float value)
     {
         Debug.Log($"Particle UI System {value}, newAlphaValue {NewAlphaValue}");
         NewAlphaValue = NewAlphaValue + (value / 255.0f); //convert it to a scale of 1 
-        _= SetAlphaValueForParticles(PSMaterial, NewAlphaValue, 5f);
+        _ = SetAlphaValueForParticles(PSMaterial, NewAlphaValue, 5f);
     }
 
     private async Task SetAlphaValueForParticles(Material psMaterial, float value, float duration)
     {
- 
+
         Color temp = new Color(psMaterial.color.r, psMaterial.color.g, psMaterial.color.b, value);
         StartCoroutine(AnimatePropertyColorInstance.AnimColor(psMaterial.color, temp, duration));
         await Task.Delay(TimeSpan.FromMilliseconds(500));

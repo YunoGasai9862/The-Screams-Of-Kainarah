@@ -1,5 +1,3 @@
-
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -21,17 +19,11 @@ public class AnimatePropertyColor : IAnimatePropertyColor<Color>
         Color difference = GetDifference(initialColor, endColor);
         Color newValue = new Color(0, 0, 0, 0);
         Color sign = CalculateSign(difference);
-        Debug.Log(sign.a);
-        Color chunkSize = CalculateChunkSize(duration, difference);
-        Color tempChunkSize = chunkSize;
-        while (CheckIfUpdatedColorValueIsWithinRange(newValue, endColor, difference))
+        while (TimePassed < duration && CheckIfUpdatedColorValueIsWithinRange(newValue, endColor, difference))
         {
             TimePassed += Time.deltaTime;
-            float progress = Mathf.Clamp(TimePassed, 0, duration);
-            Debug.Log($"Progress: {progress}");
-            newValue = new Color(initialColor.r + (sign.r * tempChunkSize.r * TimePassed), initialColor.g + (sign.g * tempChunkSize.g * TimePassed), initialColor.b + (sign.b * tempChunkSize.b * TimePassed), initialColor.a + (sign.a * tempChunkSize.a * TimePassed));
-            tempChunkSize = tempChunkSize + chunkSize;
-            Debug.Log($"New Chunk Size = {chunkSize} TimePassed = {TimePassed}");
+            float clampedVal = Mathf.Clamp01(TimePassed / duration); //factor gives how much between 0 to 1 the time has passed -> remaining color transition -> use it in other scenarios!
+            newValue = new Color(initialColor.r + (sign.r * clampedVal), initialColor.g + (sign.g * clampedVal), initialColor.b + (sign.b * clampedVal), initialColor.a + (sign.a * clampedVal));
             _notifyColorChangeEvent.Invoke(newValue);
             yield return null;
         }
@@ -61,19 +53,5 @@ public class AnimatePropertyColor : IAnimatePropertyColor<Color>
         bool bCheck = difference.b >= 0 ? newValue.b <= endValue.b : newValue.b >= endValue.b;
         bool aCheck = difference.a >= 0 ? newValue.a <= endValue.a : newValue.a >= endValue.a;
         return rCheck && gCheck && bCheck && aCheck;
-    }
-
-    public Color CalculateChunkSize(double durationInSeconds, Color difference)
-    {
-        TimeSpan duration = TimeSpan.FromMilliseconds(durationInSeconds * 1000f);
-        return new Color(GetAbsoluteColorChunk(difference.r, duration.TotalMilliseconds),
-                        GetAbsoluteColorChunk(difference.g, duration.TotalMilliseconds),
-                        GetAbsoluteColorChunk(difference.b, duration.TotalMilliseconds),
-                        GetAbsoluteColorChunk(difference.a, duration.TotalMilliseconds));
-    }
-
-    public float GetAbsoluteColorChunk(float value, double duration)
-    {
-        return (float)(Math.Abs(value / duration));
     }
 }

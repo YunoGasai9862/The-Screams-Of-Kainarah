@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,5 +31,11 @@ public class LightFlickerHelper : MonoBehaviour
         float radius = Random.Range(minRadia, maxRadia);
         return Task.FromResult(radius);
 
+    }
+
+    public static Task<Light2D> ActivateContinuousShimmer(Light2D light, float time, float maxIntensity)
+    {
+        light.intensity = Mathf.PingPong(time, maxIntensity);
+        return Task.FromResult(light);
     }
 }
