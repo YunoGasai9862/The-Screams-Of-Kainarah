@@ -1,18 +1,16 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public abstract class RunAsyncCoroutineGeneric<T>: MonoBehaviour //attach it to the a GameObject
+public abstract class RunAsyncCoroutineGeneric<T> : MonoBehaviour //attach it to the a GameObject
 {
     private static readonly Queue<IAsyncEnumerator<T>> asyncEnumeratorCollection = new();
-
-    public static void RunTheAsyncCoroutine(IAsyncEnumerator<T> asyncEnumerator,  CancellationToken _token)
+    public static void RunTheAsyncCoroutine(IAsyncEnumerator<T> asyncEnumerator, CancellationToken _token)
     {
-   
+
         if (!_token.IsCancellationRequested)
-             asyncEnumeratorCollection.Enqueue(asyncEnumerator); //adds it to the Queue
+            asyncEnumeratorCollection.Enqueue(asyncEnumerator); //adds it to the Queue
         else
             return;
     }

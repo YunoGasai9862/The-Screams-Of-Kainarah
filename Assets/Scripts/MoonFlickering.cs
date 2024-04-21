@@ -67,6 +67,6 @@ public class MoonFlickering : LightObserverPattern
 
     private async Task MoonFlicker(Light2D light)
     {
-        await LightFlickerHelper.ActivateContinuousShimmer(light, Time.time, 10f);
+        //   await ActivateContinuousShimmer(light, Time.time, 2f);
     }
 }

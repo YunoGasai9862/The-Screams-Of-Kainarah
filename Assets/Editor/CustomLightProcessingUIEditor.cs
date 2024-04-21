@@ -1,16 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
-using UnityEngine;
 
-[CustomEditor(typeof(LightFlickering))]
-public class LightFlickerCustomUIEditor : Editor
+[CustomEditor(typeof(CustomLightProcessing))]
+public class CustomLightProcessingUIEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI(); //calls the base
 
-        LightFlickering lightFlicker = (LightFlickering)target;
+        CustomLightProcessing customLightProcessing = (CustomLightProcessing)target;
 
         SerializedProperty subjectExist = serializedObject.FindProperty("anySubjectThatIsNotifyingTheLight");
 
@@ -18,7 +15,7 @@ public class LightFlickerCustomUIEditor : Editor
 
         EditorGUI.BeginChangeCheck();
 
-        if(subjectExist.boolValue)
+        if (subjectExist.boolValue)
         {
             EditorGUILayout.PropertyField(subject);
         }

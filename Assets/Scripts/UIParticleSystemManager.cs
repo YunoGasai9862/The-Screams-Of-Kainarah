@@ -50,7 +50,6 @@ public class UIParticleSystemManager : MonoBehaviour
 
     private void ColorListener(Color modifiedColor)
     {
-        Debug.Log($"Modified Color: {modifiedColor}");
         PSMaterial.SetColor("_BaseColor", modifiedColor);
     }
 

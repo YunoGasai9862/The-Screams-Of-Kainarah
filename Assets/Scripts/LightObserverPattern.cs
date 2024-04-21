@@ -17,13 +17,13 @@ public class LightObserverPattern : MonoBehaviour
         subjectsToBeadded.Remove(subject);
     }
 
-    public async Task NotifyAllLightObserversAsync(LightEntity lightProperties, CancellationToken _cancellationToken, SemaphoreSlim semaphore=null)
+    public async Task NotifyAllLightObserversAsync(LightEntity lightProperties, CancellationToken _cancellationToken, SemaphoreSlim semaphore = null)
     {
         foreach (IObserverAsync<LightEntity> subject in subjectsToBeadded)
         {
             await subject.OnNotify(lightProperties, _cancellationToken);
 
-            if(semaphore!=null)
+            if (semaphore != null)
                 semaphore.Release();
 
             if (_cancellationToken.IsCancellationRequested)
