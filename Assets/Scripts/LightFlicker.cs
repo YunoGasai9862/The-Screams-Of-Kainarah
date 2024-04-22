@@ -6,11 +6,6 @@ using UnityEngine.Rendering.Universal;
 
 public class LightFlicker : MonoBehaviour, ILightPreprocess
 {
-    public LightPreProcessWrapper lightPreprocesser;
-    public void Awake()
-    {
-        lightPreprocesser = new LightPreProcessWrapper(this);
-    }
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(Light2D light, float minIntensity, float maxIntensity, SemaphoreSlim couroutineBlocker, float minInnnerRadius, float maxInnerRadius, float minOuterRadius, float maxOuterRadius)
     {
         float _lightFlickerValue = await GenerateLightIntensityAsync(minIntensity, maxIntensity);
