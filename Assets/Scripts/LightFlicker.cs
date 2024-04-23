@@ -31,10 +31,4 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess
         return Task.FromResult(radius);
 
     }
-
-    public Task<Light2D> ActivateContinuousShimmer(Light2D light, float time, float maxIntensity)
-    {
-        light.intensity = Mathf.PingPong(time, maxIntensity);
-        return Task.FromResult(light);
-    }
 }

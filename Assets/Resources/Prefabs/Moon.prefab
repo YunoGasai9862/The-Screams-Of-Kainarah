@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5073767169765330523}
   - component: {fileID: 6864766611724058526}
   - component: {fileID: 3892833020860078988}
-  - component: {fileID: 1810387075643027206}
   m_Layer: 0
   m_Name: MoonLight
   m_TagString: Untagged
@@ -100,25 +99,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxIntensity: 4
   minIntensity: 3
+  customLightPreprocessingImplementation: {fileID: 0}
   anySubjectThatIsNotifyingTheLight: 1
-  _subject: {fileID: 1810387075643027206}
---- !u!114 &1810387075643027206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2419437519602141298}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53c9444e8dda9cc41924b1cf1b4d8a98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canFlicker: 1
-  innerRadiusMin: 5.3
-  innerRadiusMax: 5.5
-  outerRadiusMin: 9.3
-  outerRadiusMax: 9.5
+  _subject: {fileID: 0}
 --- !u!1 &4890085813464346052
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,22 +2,23 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
-public class MoonFlickering : LightObserverPattern
+public class CelestialBodies : LightObserverPattern
 {
+    //remove all these fields and get it via event
     [SerializeField]
     public bool canFlicker;
     public float innerRadiusMin;
     public float innerRadiusMax;
     public float outerRadiusMin;
     public float outerRadiusMax;
-    public Light2D moonLight;
+    // public Light2D moonLight;
 
     private LightEntity m_light = new LightEntity();
     private CancellationTokenSource m_cancellationTokenSource;
     private CancellationToken m_cancellationToken;
     private SemaphoreSlim _semaphoreSlim;
+    private CelestialBodyEvent _celestialBodyEvent;
 
     private void Awake()
     {
@@ -34,11 +35,10 @@ public class MoonFlickering : LightObserverPattern
     }
     async void Update()
     {
-        // await MoonShimmer(m_light, m_cancellationToken);
-        await MoonFlicker(moonLight);
-
+        //continuous shimmer
+        await CelestialBodyLightEffects(m_light, m_cancellationToken);
     }
-    private async Task MoonShimmer(LightEntity entity, CancellationToken cancellationToken)
+    private async Task CelestialBodyLightEffects(LightEntity entity, CancellationToken cancellationToken)
     {
         await _semaphoreSlim.WaitAsync(); //waits for the thread to become available
         if (!m_cancellationTokenSource.IsCancellationRequested)
@@ -65,8 +65,4 @@ public class MoonFlickering : LightObserverPattern
         m_cancellationTokenSource.Cancel();
     }
 
-    private async Task MoonFlicker(Light2D light)
-    {
-        //   await ActivateContinuousShimmer(light, Time.time, 2f);
-    }
 }
