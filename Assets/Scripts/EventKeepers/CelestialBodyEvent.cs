@@ -14,3 +14,4 @@ public class CelestialBodyEvent : UnityEventWT<LightEntity>
     {
         return _celestialBodyEvent;
     }
+}
