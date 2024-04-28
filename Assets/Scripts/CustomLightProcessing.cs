@@ -55,16 +55,13 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>
         if (m_lightEntity != null)
         {
 
-            if (m_lightEntity.LightName == transform.parent.name && m_lightEntity.canFlicker)
+            if (m_lightEntity.LightName == transform.parent.name && m_lightEntity.useCustomTinkering)
             {
                 m_Semaphore = new SemaphoreSlim(0);
 
                 RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, Data.innerRadiusMin, Data.innerRadiusMax, Data.outerRadiusMin, Data.outerRadiusMax), _cancellationToken); //Async runner
 
-                await m_Semaphore.WaitAsync(); //similar to using a bool variable, initializing it with 0. The thread becomes lock, and released in the helper class function
-                //if the value becomes 0, everything else is put on hold, hence initializing it with 0
-
-                //successfully was able to do it! (Async convesion)
+                await m_Semaphore.WaitAsync();
 
                 if (_cancellationToken.IsCancellationRequested)
                 {
@@ -73,7 +70,7 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>
 
             }
 
-            if (m_lightEntity.LightName == transform.parent.name && !m_lightEntity.canFlicker)
+            if (m_lightEntity.LightName == transform.parent.name && !m_lightEntity.useCustomTinkering)
             {
                 StopAllCoroutines(); //the fix!
             }

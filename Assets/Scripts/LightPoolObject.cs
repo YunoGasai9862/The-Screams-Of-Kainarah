@@ -1,10 +1,9 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using System.Threading.Tasks;
 using System.Threading;
-using System;
+using System.Threading.Tasks;
+using UnityEngine;
 
 public class LightPoolObject : LightObserverPattern
 {
@@ -49,7 +48,7 @@ public class LightPoolObject : LightObserverPattern
         {
             LightEntity _temp = new(); //this fixed the issue!!!
             _temp.LightName = value.name;
-            _temp.canFlicker = false;
+            _temp.useCustomTinkering = false;
             _candleObjects[value] = _temp;
         }
 
@@ -63,11 +62,11 @@ public class LightPoolObject : LightObserverPattern
         {
             LightEntity _candle = new();
             _candle.LightName = dict[value].LightName;
-            _candle.canFlicker = false;
+            _candle.useCustomTinkering = false;
 
             if (Vector2.Distance(_player.transform.position, value.transform.position) < acceptedDistance)
             {
-                _candle.canFlicker = true;
+                _candle.useCustomTinkering = true;
             }
 
             try

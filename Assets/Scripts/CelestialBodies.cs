@@ -6,8 +6,7 @@ using UnityEngine;
 public class CelestialBodies : LightObserverPattern
 {
     [SerializeField] CelestialBodyEvent celestialBodyEvent;
-
-    private LightEntity m_light = new LightEntity();
+    public LightEntity MoonLight { get; set; } = new LightEntity();
     private CancellationTokenSource m_cancellationTokenSource;
     private CancellationToken m_cancellationToken;
     private SemaphoreSlim _semaphoreSlim;
@@ -17,14 +16,21 @@ public class CelestialBodies : LightObserverPattern
         m_cancellationTokenSource = new CancellationTokenSource();
         _semaphoreSlim = new SemaphoreSlim(1); //i already have one semaphoreSlim with 0 in another script, hence initializing it with 1
         m_cancellationToken = m_cancellationTokenSource.Token;
+
         celestialBodyEvent.AddListener(AddMoonLightProperties);
+    }
+
+
+    private async void Update()
+    {
+        await CelestialBodyLightEffects(MoonLight, m_cancellationToken);
     }
     private async Task CelestialBodyLightEffects(LightEntity entity, CancellationToken cancellationToken)
     {
         await _semaphoreSlim.WaitAsync(); //waits for the thread to become available
         if (!m_cancellationTokenSource.IsCancellationRequested)
         {
-            await Task.Delay(TimeSpan.FromSeconds(.5));
+            await Task.Delay(TimeSpan.FromSeconds(0.1));
 
             try
             {
@@ -45,10 +51,8 @@ public class CelestialBodies : LightObserverPattern
     {
         m_cancellationTokenSource.Cancel();
     }
-
-    private async void AddMoonLightProperties(LightEntity lightEntity)
+    private void AddMoonLightProperties(LightEntity lightEntity)
     {
-        await CelestialBodyLightEffects(m_light, m_cancellationToken);
+        MoonLight = lightEntity;
     }
-
 }
