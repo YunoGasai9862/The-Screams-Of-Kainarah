@@ -19,8 +19,6 @@ public class MoonMovement : MonoBehaviour
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
     }
-
-
     async void Update()
     {
         await moveToFollowPlayer(gameObject.transform, distanceBetweenPlayerAndMoon, XOffset, YOffset, ZOffset, moonSpeed);

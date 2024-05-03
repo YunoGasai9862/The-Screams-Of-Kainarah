@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using static CheckPoints;
@@ -14,7 +12,7 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
 
     private Dictionary<string, Func<Checkpoint, CheckPoints, Task>> _checkpointsDict = new Dictionary<string, Func<Checkpoint, CheckPoints, Task>>();
 
-    public Dictionary<string, Func<Checkpoint, CheckPoints, Task>> CheckpointDict { get => _checkpointsDict; set => _checkpointsDict = value; } 
+    public Dictionary<string, Func<Checkpoint, CheckPoints, Task>> CheckpointDict { get => _checkpointsDict; set => _checkpointsDict = value; }
 
     private async void Start()
     {
@@ -37,13 +35,14 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
     {
         //overwrite the values with the values sent in by the player
         //remove previous respawn checkpoint bools, and add the bool to the current one
-        for(int i=0;  i< checkPointsScriptableObjectFetch.checkpoints.Length; i++)
+        for (int i = 0; i < checkPointsScriptableObjectFetch.checkpoints.Length; i++)
         {
-            if(value.checkpoint.tag == checkPointsScriptableObjectFetch.checkpoints[i].checkpoint.tag)
+            if (value.checkpoint.tag == checkPointsScriptableObjectFetch.checkpoints[i].checkpoint.tag)
             {
                 checkPointsScriptableObjectFetch.checkpoints[i] = await SetAsCurrentRespawnCheckPoint(value, true); //update the value
-            }else
-                checkPointsScriptableObjectFetch.checkpoints[i] = await SetAsCurrentRespawnCheckPoint(checkPointsScriptableObjectFetch.checkpoints[i], false); 
+            }
+            else
+                checkPointsScriptableObjectFetch.checkpoints[i] = await SetAsCurrentRespawnCheckPoint(checkPointsScriptableObjectFetch.checkpoints[i], false);
         }
 
         await Task.Delay(TimeSpan.FromSeconds(0));
@@ -53,11 +52,11 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
     {
         Checkpoint newValue = new Checkpoint
         {
-           checkpoint = value.checkpoint,
-           finishLevelCheckpoint= value.finishLevelCheckpoint,
-           shouldResetPlayerAttributes= value.shouldResetPlayerAttributes,
-           shouldRespawn = shouldRespawn
-       };
+            checkpoint = value.checkpoint,
+            finishLevelCheckpoint = value.finishLevelCheckpoint,
+            shouldResetPlayerAttributes = value.shouldResetPlayerAttributes,
+            shouldRespawn = shouldRespawn
+        };
 
         return Task.FromResult(newValue);
     }
@@ -81,14 +80,14 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
         {
             cp.checkpoint.SetActive(true);
             cp.finishLevelCheckpoint = finishLevelBool;
-            cp.shouldRespawn= shouldRespawnBool;
+            cp.shouldRespawn = shouldRespawnBool;
             cp.shouldResetPlayerAttributes = shouldResetAttributesBool;
         }
 
     }
     public void OnNotify(Checkpoint Data, params object[] optional)
     {
-        if(CheckpointDict.TryGetValue(Data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task > value))
+        if (CheckpointDict.TryGetValue(Data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task> value))
         {
             value.Invoke(Data, CheckPointsScriptableObjectFetch); //invokes that particular function to reset checkpoints 
             //call the checkpoint => Save Game method

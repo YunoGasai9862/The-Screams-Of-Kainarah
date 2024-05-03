@@ -48,7 +48,7 @@ public class LightPoolObject : LightObserverPattern
         {
             LightEntity _temp = new(); //this fixed the issue!!!
             _temp.LightName = value.name;
-            _temp.useCustomTinkering = false;
+            _temp.UseCustomTinkering = false;
             _candleObjects[value] = _temp;
         }
 
@@ -62,11 +62,11 @@ public class LightPoolObject : LightObserverPattern
         {
             LightEntity _candle = new();
             _candle.LightName = dict[value].LightName;
-            _candle.useCustomTinkering = false;
+            _candle.UseCustomTinkering = false;
 
             if (Vector2.Distance(_player.transform.position, value.transform.position) < acceptedDistance)
             {
-                _candle.useCustomTinkering = true;
+                _candle.UseCustomTinkering = true;
             }
 
             try

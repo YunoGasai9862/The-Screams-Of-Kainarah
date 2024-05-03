@@ -12,7 +12,6 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>
     public float maxIntensity;
     public float minIntensity;
 
-
     //fix wrapper issue
     [Header("Add CustomLightProcessing Implementation")]
     [SerializeField]
@@ -55,11 +54,11 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>
         if (m_lightEntity != null)
         {
 
-            if (m_lightEntity.LightName == transform.parent.name && m_lightEntity.useCustomTinkering)
+            if (m_lightEntity.LightName == transform.parent.name && m_lightEntity.UseCustomTinkering)
             {
                 m_Semaphore = new SemaphoreSlim(0);
 
-                RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, Data.innerRadiusMin, Data.innerRadiusMax, Data.outerRadiusMin, Data.outerRadiusMax), _cancellationToken); //Async runner
+                RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, Data.InnerRadiusMax, Data.InnerRadiusMax, Data.OuterRadiusMax, Data.OuterRadiusMax), _cancellationToken); //Async runner
 
                 await m_Semaphore.WaitAsync();
 
@@ -70,11 +69,12 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>
 
             }
 
-            if (m_lightEntity.LightName == transform.parent.name && !m_lightEntity.useCustomTinkering)
+            if (m_lightEntity.LightName == transform.parent.name && !m_lightEntity.UseCustomTinkering)
             {
                 StopAllCoroutines(); //the fix!
             }
         }
 
     }
+
 }

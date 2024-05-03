@@ -13,23 +13,24 @@ public class MoonShimmer : MonoBehaviour, ILightPreprocess
     private void Awake()
     {
         _moonLightData.LightName = transform.parent.name;
-        _moonLightData.useCustomTinkering = true;
+        _moonLightData.UseCustomTinkering = true;
 
         celestialBodyEvent.GetInstance().Invoke(_moonLightData);
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(Light2D light, float minIntensity, float maxIntensity, SemaphoreSlim couroutineBlocker, float minInnnerRadius, float maxInnerRadius, float minOuterRadius, float maxOuterRadius)
     {
-        ActivateContinuousShimmer(light, Time.time, minIntensity, maxIntensity);
+        ActivateContinuousShimmer(light, Time.time, minIntensity, maxIntensity, minOuterRadius, maxOuterRadius);
         await Task.Delay(TimeSpan.FromMilliseconds(0));
 
         //release it here
         couroutineBlocker.Release();
         yield return new WaitForSeconds(0);
     }
-    public void ActivateContinuousShimmer(Light2D light, float time, float minIntensity, float maxIntensity)
+    public void ActivateContinuousShimmer(Light2D light, float time, float minIntensity, float maxIntensity, float minOuterRadius, float maxOuterRadius)
     {
-        //improve this logic
-        light.intensity = Math.Max(minIntensity, Mathf.PingPong(time, maxIntensity));
+        Debug.Log((minOuterRadius, maxOuterRadius));
+        light.intensity = Mathf.PingPong(time, maxIntensity) + minIntensity;
+
     }
 }
