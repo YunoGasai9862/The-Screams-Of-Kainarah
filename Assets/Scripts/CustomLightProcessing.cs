@@ -12,7 +12,6 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>
     public float maxIntensity;
     public float minIntensity;
 
-    //fix wrapper issue
     [Header("Add CustomLightProcessing Implementation")]
     [SerializeField]
     public LightPreProcessWrapper customLightPreprocessingImplementation;
@@ -58,7 +57,7 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>
             {
                 m_Semaphore = new SemaphoreSlim(0);
 
-                RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, Data.InnerRadiusMax, Data.InnerRadiusMax, Data.OuterRadiusMax, Data.OuterRadiusMax), _cancellationToken); //Async runner
+                RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, Data.InnerRadiusMin, Data.InnerRadiusMax, Data.OuterRadiusMin, Data.OuterRadiusMax), _cancellationToken); //Async runner
 
                 await m_Semaphore.WaitAsync();
 

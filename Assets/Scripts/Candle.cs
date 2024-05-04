@@ -20,6 +20,17 @@ public class LightEntity
         LightIntensity = lightIntensity;
     }
 
+    //use lightning from the script itself
+    public LightEntity(string lightName, bool useCustomTinkering, float innerRadiusMin, float innerRadiusMax, float outerRadiusMin, float outerRadiusMax)
+    {
+        LightName = lightName;
+        UseCustomTinkering = useCustomTinkering;
+        InnerRadiusMin = innerRadiusMin;
+        InnerRadiusMax = innerRadiusMax;
+        OuterRadiusMin = outerRadiusMin;
+        OuterRadiusMax = outerRadiusMax;
+    }
+
     public LightEntity()
     {
         InnerRadiusMin = LightEntityConstants.MIN_INNER_RADIUS;

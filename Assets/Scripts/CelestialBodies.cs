@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -6,7 +7,10 @@ using UnityEngine;
 public class CelestialBodies : LightObserverPattern
 {
     [SerializeField] CelestialBodyEvent celestialBodyEvent;
-    public LightEntity MoonLight { get; set; } = new LightEntity();
+    [SerializeField]
+    public float minOuterRadius, maxOuterRadius, minInnerRadius, maxInnerRadius;
+
+    public LightEntity MoonLight { get; set; }
     private CancellationTokenSource m_cancellationTokenSource;
     private CancellationToken m_cancellationToken;
     private SemaphoreSlim _semaphoreSlim;
@@ -17,7 +21,7 @@ public class CelestialBodies : LightObserverPattern
         _semaphoreSlim = new SemaphoreSlim(1); //i already have one semaphoreSlim with 0 in another script, hence initializing it with 1
         m_cancellationToken = m_cancellationTokenSource.Token;
 
-        celestialBodyEvent.AddListener(AddMoonLightProperties);
+        celestialBodyEvent.AddListener(AddLightProperties);
     }
 
 
@@ -51,8 +55,8 @@ public class CelestialBodies : LightObserverPattern
     {
         m_cancellationTokenSource.Cancel();
     }
-    private void AddMoonLightProperties(LightEntity lightEntity)
+    private void AddLightProperties(LightEntity lightEntity)
     {
-        MoonLight = lightEntity;
+        MoonLight = new LightEntity(lightEntity.LightName, lightEntity.UseCustomTinkering, minInnerRadius, maxInnerRadius, minOuterRadius, maxOuterRadius);
     }
 }
