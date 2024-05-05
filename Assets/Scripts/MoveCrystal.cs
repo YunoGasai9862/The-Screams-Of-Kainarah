@@ -12,6 +12,11 @@ public class MoveCrystal : MonoBehaviour
     private static bool increaseValue = false;
     private CancellationTokenSource _cancellationTokenSource;   
     private CancellationToken _cancellationToken;
+    Vector3 worldPosition;
+
+    //Movement fix
+    [SerializeField]
+    public Camera uiCamera;
     public static bool IncreaseValue { get => increaseValue; set => increaseValue = value; }
     void Start()
     {
@@ -19,19 +24,24 @@ public class MoveCrystal : MonoBehaviour
         _cancellationToken = _cancellationTokenSource.Token;
         _diamondUILocation = GameObject.FindWithTag("Diamond").GetComponent<RectTransform>();
 
-    }
+        worldPosition = uiCamera.ScreenToWorldPoint(_diamondUILocation.position);
+    }   
     // Update is called once per frame
     async void Update()
     {
-        MoveTheCrystalToTheGuiPanel();
 
-        bool isAtTheGuiPanel = await IsCrystalAtTheGuiPanel();
+        Vector3 uiElementScreenPoint = RectTransformUtility.WorldToScreenPoint(uiCamera, worldPosition);
+        transform.DOMove(uiElementScreenPoint, 0.2f).SetEase(Ease.InFlash);
 
-        if(isAtTheGuiPanel)
-        {
-            IncreaseValue = true;
-            Destroy(gameObject);
-        }
+        // MoveTheCrystalToTheGuiPanel();
+
+        //  bool isAtTheGuiPanel = await IsCrystalAtTheGuiPanel();
+
+        //   if(isAtTheGuiPanel)
+        // {
+        //     IncreaseValue = true;
+        ///      Destroy(gameObject);
+        //  }
     }
 
     public bool conditionsSatisfied(Transform transform, bool isMoving)
@@ -42,14 +52,15 @@ public class MoveCrystal : MonoBehaviour
     {
         if (conditionsSatisfied(transform, _isMoving))
         {
+            Debug.Log("Here");
             _diamondUILocaitonConverted = Camera.main.ScreenToWorldPoint(_diamondUILocation.position); //converts UI position to world position
+            Debug.Log(_diamondUILocaitonConverted);
             LocalPos = _diamondUILocaitonConverted;
             LocalPos.z = 0;
             LocalPos.x--;
-            transform.DOMove(LocalPos, .050f).SetEase(Ease.InFlash);
         }
 
-        await Task.Delay(10);
+       await Task.Delay(10);
 
     }
 
