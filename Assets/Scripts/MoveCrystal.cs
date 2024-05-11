@@ -12,11 +12,14 @@ public class MoveCrystal : MonoBehaviour
     private static bool increaseValue = false;
     private CancellationTokenSource _cancellationTokenSource;   
     private CancellationToken _cancellationToken;
-    Vector3 worldPosition;
+    private Vector3 _worldPosition;
+    private Vector3 _uiElementScreenPoint;
 
     //Movement fix
     [SerializeField]
     public Camera uiCamera;
+    public CrystalCollideEvent crystalCollideEvent;
+
     public static bool IncreaseValue { get => increaseValue; set => increaseValue = value; }
     void Start()
     {
@@ -24,14 +27,15 @@ public class MoveCrystal : MonoBehaviour
         _cancellationToken = _cancellationTokenSource.Token;
         _diamondUILocation = GameObject.FindWithTag("Diamond").GetComponent<RectTransform>();
 
-        worldPosition = uiCamera.ScreenToWorldPoint(_diamondUILocation.position);
+        crystalCollideEvent.AddListener(CrystalCollideListener);
+        _worldPosition = uiCamera.ScreenToWorldPoint(_diamondUILocation.position);
+        _uiElementScreenPoint = RectTransformUtility.WorldToScreenPoint(uiCamera, _worldPosition);
     }   
     // Update is called once per frame
     async void Update()
     {
 
-        Vector3 uiElementScreenPoint = RectTransformUtility.WorldToScreenPoint(uiCamera, worldPosition);
-        transform.DOMove(uiElementScreenPoint, 0.2f).SetEase(Ease.InFlash);
+        transform.DOMove(_uiElementScreenPoint, 0.2f).SetEase(Ease.InFlash);
 
         // MoveTheCrystalToTheGuiPanel();
 
@@ -83,6 +87,12 @@ public class MoveCrystal : MonoBehaviour
     public Task<bool> IsCrystalAtTheGuiPanel()
     {
         return Task.FromResult(((int)transform.position.x == (int)LocalPos.x));
+    }
+    
+    public void CrystalCollideListener(bool didCollide)
+    {
+        this.gameObject.GetComponent<Collider2D>().enabled = false;
+        //do other stuff
     }
 
     private void OnDisable()

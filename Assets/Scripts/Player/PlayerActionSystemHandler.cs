@@ -7,6 +7,8 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 {
     [SerializeField] PickableItemsHandler pickableItems;
     [SerializeField] PlayerPowerUpModeEvent playerPowerUpModeEvent;
+    [SerializeField] CrystalCollideEvent crystalCollideEvent;
+
 
     Dictionary<String, Func<Collider2D, Task >> _playerActionHandlerDic;
 
@@ -42,8 +44,9 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     private async Task<bool> OnCrystalPickup(Collider2D collider)
     {
         pickupEffectInstantiator(pickableItems.ReturnGameObjectForTheKey(collider.tag), collider.transform.position);
-        //invoke event to increase boost bar
         playerPowerUpModeEvent.GetInstance().Invoke(DIAMOND_PICK_UP_VALUE);
+        crystalCollideEvent.GetInstance().Invoke(true);
+
         return await Task.FromResult(true);
     }
 

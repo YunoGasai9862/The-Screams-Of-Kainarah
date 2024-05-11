@@ -180,6 +180,7 @@ public class PlayerActionRelayer : AbstractEntity
     {
         await ItemCollisionHandler(collision);
         await CheckpointCollisionHandler(collision);
+
     }
 
     private async Task ItemCollisionHandler(Collider2D collision)

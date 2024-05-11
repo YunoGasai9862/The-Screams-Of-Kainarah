@@ -196,4 +196,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiCamera: {fileID: 8017888587383622866, guid: 7a416d173f70e7042a5a9e4a3677ca04, type: 3}
-  targetTransform: {fileID: 6643746598923523031, guid: 751867395e4e79948890933fd686e55e, type: 3}
+  crystalCollideEvent: {fileID: 7238795315532383392, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}

@@ -5,11 +5,17 @@ public class AnimatePropertyVector3 : IAnimatePropertyVector<Vector3>
 {
     public IEnumerator AnimMovement(Vector3 initialPos, Vector3 finalPos, float duration)
     {
-        return null;
+        Vector3 currentPosition = initialPos;
+        while(currentPosition != finalPos)
+        {
+           
+        }
+
+        yield return new WaitForSeconds(0f);
     }
 
     public Vector3 GetDifference(Vector3 initialValue, Vector3 finalValue)
     {
-        return Vector3.zero;
+        return finalValue - initialValue;
     }
 }
