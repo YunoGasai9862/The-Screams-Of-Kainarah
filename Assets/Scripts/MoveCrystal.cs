@@ -35,8 +35,6 @@ public class MoveCrystal : MonoBehaviour
     async void Update()
     {
 
-        transform.DOMove(_uiElementScreenPoint, 0.2f).SetEase(Ease.InFlash);
-
         // MoveTheCrystalToTheGuiPanel();
 
         //  bool isAtTheGuiPanel = await IsCrystalAtTheGuiPanel();
@@ -80,7 +78,7 @@ public class MoveCrystal : MonoBehaviour
     {
         if (collision.CompareTag("Player") && !collision.CompareTag("Sword"))
         {
-           InventoryManagementSystem.Instance.AddInvoke(gameObject.GetComponent<SpriteRenderer>().sprite, gameObject.tag);
+           //InventoryManagementSystem.Instance.AddInvoke(gameObject.GetComponent<SpriteRenderer>().sprite, gameObject.tag);
         }
     }
 
@@ -89,10 +87,15 @@ public class MoveCrystal : MonoBehaviour
         return Task.FromResult(((int)transform.position.x == (int)LocalPos.x));
     }
     
-    public void CrystalCollideListener(bool didCollide)
+    public void CrystalCollideListener(Collider2D collider, bool didCollide)
     {
-        this.gameObject.GetComponent<Collider2D>().enabled = false;
-        //do other stuff
+        //gameObject.GetComponent<Collider2D>().enabled = false;
+        //use your own animation maybe?
+        if(collider.name == gameObject.name)
+        {
+            Debug.Log($"MOVE {didCollide}");
+            transform.DOMove(_uiElementScreenPoint, 1f).SetEase(Ease.InFlash);
+        }
     }
 
     private void OnDisable()

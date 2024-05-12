@@ -9,7 +9,6 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     [SerializeField] PlayerPowerUpModeEvent playerPowerUpModeEvent;
     [SerializeField] CrystalCollideEvent crystalCollideEvent;
 
-
     Dictionary<String, Func<Collider2D, Task >> _playerActionHandlerDic;
 
     private InstantiatorController _gameObject;
@@ -45,8 +44,8 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     {
         pickupEffectInstantiator(pickableItems.ReturnGameObjectForTheKey(collider.tag), collider.transform.position);
         playerPowerUpModeEvent.GetInstance().Invoke(DIAMOND_PICK_UP_VALUE);
-        crystalCollideEvent.GetInstance().Invoke(true);
-
+        //fix the logic here - it's happenign fine in Player class
+        await crystalCollideEvent.Invoke(collider, true);
         return await Task.FromResult(true);
     }
 

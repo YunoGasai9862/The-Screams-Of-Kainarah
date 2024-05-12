@@ -16,6 +16,7 @@ public class PlayerActionRelayer : AbstractEntity
     [SerializeField] GameObject TeleportTransition;
     [SerializeField] string[] checkpointTags;
     [SerializeField] float playerHealth;
+    [SerializeField] CrystalCollideEvent crystalCollideEvent;
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
@@ -179,6 +180,7 @@ public class PlayerActionRelayer : AbstractEntity
     private async void OnTriggerEnter2D(Collider2D collision)
     {
         await ItemCollisionHandler(collision);
+        await crystalCollideEvent.Invoke(collision, true);
         await CheckpointCollisionHandler(collision);
 
     }

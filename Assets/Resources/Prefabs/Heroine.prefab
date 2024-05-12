@@ -951,6 +951,7 @@ MonoBehaviour:
   - CP1
   - CP2
   playerHealth: 100
+  crystalCollideEvent: {fileID: 7238795315532383392, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
 --- !u!114 &4678349112697046184
 MonoBehaviour:
   m_ObjectHideFlags: 0
