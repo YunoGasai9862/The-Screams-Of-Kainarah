@@ -82,8 +82,6 @@ public class PlayerActionRelayer : AbstractEntity
         if (await IsPlayerDead(Health) && GetCheckPointSemaphore.CurrentCount!=0)
         {
             await GetCheckPointSemaphore.WaitAsync();
-            Debug.Log("Calling respawn");
-            Debug.Log(GetCheckPointSemaphore.CurrentCount);
             anim.SetBool(PlayerAnimationConstants.DEATH, true);
             await Task.Delay(TimeSpan.FromSeconds(0.1f));
             await GetPlayerObserverListenerObject().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, EntitiesToResetScriptableObjectFetch);
@@ -180,7 +178,6 @@ public class PlayerActionRelayer : AbstractEntity
     private async void OnTriggerEnter2D(Collider2D collision)
     {
         await ItemCollisionHandler(collision);
-        await crystalCollideEvent.Invoke(collision, true);
         await CheckpointCollisionHandler(collision);
 
     }

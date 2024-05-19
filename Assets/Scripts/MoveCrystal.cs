@@ -21,6 +21,8 @@ public class MoveCrystal : MonoBehaviour
     public CrystalCollideEvent crystalCollideEvent;
 
     public static bool IncreaseValue { get => increaseValue; set => increaseValue = value; }
+    public bool CrystalIsMoving { get; set; } = false;
+    public 
     void Start()
     {
         _cancellationTokenSource = new CancellationTokenSource();
@@ -30,70 +32,33 @@ public class MoveCrystal : MonoBehaviour
         crystalCollideEvent.AddListener(CrystalCollideListener);
         _worldPosition = uiCamera.ScreenToWorldPoint(_diamondUILocation.position);
         _uiElementScreenPoint = RectTransformUtility.WorldToScreenPoint(uiCamera, _worldPosition);
-    }   
-    // Update is called once per frame
-    async void Update()
-    {
-
-        // MoveTheCrystalToTheGuiPanel();
-
-        //  bool isAtTheGuiPanel = await IsCrystalAtTheGuiPanel();
-
-        //   if(isAtTheGuiPanel)
-        // {
-        //     IncreaseValue = true;
-        ///      Destroy(gameObject);
-        //  }
     }
 
-    public bool conditionsSatisfied(Transform transform, bool isMoving)
+    private async void Update()
     {
-        return transform != null && isMoving;
-    }
-    public async void MoveTheCrystalToTheGuiPanel()
-    {
-        if (conditionsSatisfied(transform, _isMoving))
+        if (CrystalIsMoving)
         {
-            Debug.Log("Here");
-            _diamondUILocaitonConverted = Camera.main.ScreenToWorldPoint(_diamondUILocation.position); //converts UI position to world position
-            Debug.Log(_diamondUILocaitonConverted);
-            LocalPos = _diamondUILocaitonConverted;
-            LocalPos.z = 0;
-            LocalPos.x--;
+            if(await IsCrystalAtTheGuiPanel())
+            {
+                IncreaseValue = true;
+                CrystalIsMoving = false;
+                Destroy(gameObject);
+            }
         }
 
-       await Task.Delay(10);
-
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player") && !collision.CompareTag("Sword"))
-        {
-            _isMoving = true;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player") && !collision.CompareTag("Sword"))
-        {
-           //InventoryManagementSystem.Instance.AddInvoke(gameObject.GetComponent<SpriteRenderer>().sprite, gameObject.tag);
-        }
     }
 
     public Task<bool> IsCrystalAtTheGuiPanel()
     {
-        return Task.FromResult(((int)transform.position.x == (int)LocalPos.x));
+        return Task.FromResult(((int)transform.position.x == (int)_uiElementScreenPoint.x));
     }
     
     public void CrystalCollideListener(Collider2D collider, bool didCollide)
     {
-        //gameObject.GetComponent<Collider2D>().enabled = false;
-        //use your own animation maybe?
         if(collider.name == gameObject.name)
         {
-            Debug.Log($"MOVE {didCollide}");
+            CrystalIsMoving = true;
+            InventoryManagementSystem.Instance.AddInvoke(gameObject.GetComponent<SpriteRenderer>().sprite, gameObject.tag);
             transform.DOMove(_uiElementScreenPoint, 1f).SetEase(Ease.InFlash);
         }
     }

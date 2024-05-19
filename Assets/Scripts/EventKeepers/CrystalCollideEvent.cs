@@ -18,7 +18,6 @@ public class CrystalCollideEvent : UnityEventWT<Collider2D, bool>
     }
     public override Task Invoke(Collider2D colliderValue, bool boolValue)
     {
-        Debug.Log(colliderValue.gameObject.name);
         GetInstance().Invoke(colliderValue , boolValue);
         return Task.CompletedTask;
     }
