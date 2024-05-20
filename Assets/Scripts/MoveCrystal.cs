@@ -36,6 +36,7 @@ public class MoveCrystal : MonoBehaviour
 
     private async void Update()
     {
+        //Get Diamond location on update - it changes
         if (CrystalIsMoving)
         {
             if(await IsCrystalAtTheGuiPanel())
