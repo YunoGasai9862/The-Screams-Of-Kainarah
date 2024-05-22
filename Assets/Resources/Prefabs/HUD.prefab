@@ -791,6 +791,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13983adbc4654dd40ab81fb2654f6c3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parentPosition: {fileID: 2861305478797151171}
+  uiCamera: {fileID: 0}
+  sourcePosition: {fileID: 8162986340322558163}
 --- !u!1 &1917199443490144308
 GameObject:
   m_ObjectHideFlags: 0
@@ -1271,6 +1274,7 @@ GameObject:
   - component: {fileID: 2720123254510807763}
   - component: {fileID: 227033613586514161}
   - component: {fileID: 4183922706492698714}
+  - component: {fileID: 9099364505502527555}
   m_Layer: 12
   m_Name: HUD
   m_TagString: HUD
@@ -1361,6 +1365,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &9099364505502527555
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4779648645916297774}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5439033364774224701
 GameObject:
   m_ObjectHideFlags: 0
