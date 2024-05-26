@@ -31,7 +31,9 @@ public class InventoryBagClickEvent : MonoBehaviour
 
         graphicRayCaster.Raycast(m_pointerEventData, m_rayCastResult);
 
-        await IterateOverRayCasts(m_rayCastResult);
+        Debug.Log((GetComponent<RectTransform>().position, m_pointerEventData.position));
+
+       // await IterateOverRayCasts(m_rayCastResult);
 
 
     }
