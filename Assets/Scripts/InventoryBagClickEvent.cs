@@ -5,45 +5,26 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventoryBagClickEvent : MonoBehaviour
+public class InventoryBagClickEvent : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    [SerializeField] RectTransform parentPosition;
-    [SerializeField] Camera uiCamera;
-    [SerializeField] RectTransform sourcePosition;
-    [SerializeField] GraphicRaycaster graphicRayCaster;
-    [SerializeField] EventSystem eventSystem;
-    private PointerEventData m_pointerEventData;
-    private List<RaycastResult> m_rayCastResult = new List<RaycastResult>();
 
     private Vector2 m_positionInCanvas;
-    // Start is called before the first frame update
-    void Start()
+
+    public void OnPointerClick(PointerEventData eventData)
     {
-        m_pointerEventData = new PointerEventData(eventSystem);
+        Debug.Log("CLICK");
     }
 
-   
-    async void Update()
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(parentPosition, Input.mousePosition, uiCamera, out m_positionInCanvas);
+        Debug.Log("ENTERING");
+    }
 
-        m_pointerEventData.position = m_positionInCanvas; //canvas position
-
-        graphicRayCaster.Raycast(m_pointerEventData, m_rayCastResult);
-
-        Debug.Log((GetComponent<RectTransform>().position, m_pointerEventData.position));
-
-       // await IterateOverRayCasts(m_rayCastResult);
-
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        Debug.Log("EXITING");
 
     }
 
-    private async Task IterateOverRayCasts(List<RaycastResult> raycastResult)
-    {
-        foreach(var raycast in raycastResult)
-        {
-            Debug.Log(raycast);
-            await Task.Delay(0);
-        }
-    }
+
 }
