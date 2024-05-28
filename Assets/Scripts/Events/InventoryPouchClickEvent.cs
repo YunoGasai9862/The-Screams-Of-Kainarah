@@ -6,13 +6,15 @@ using UnityEngine.Events;
 
 public class InventoryPouchClickEvent : UnityEventWT<bool>
 {
+    private UnityEvent<bool> m_inventoryClickEvent = new UnityEvent<bool>();
     public override Task AddListener(UnityAction<bool> action)
     {
-        throw new System.NotImplementedException();
+        m_inventoryClickEvent.AddListener(action);  
+        return Task.CompletedTask;
     }
 
     public override UnityEvent<bool> GetInstance()
     {
-        throw new System.NotImplementedException();
+        return m_inventoryClickEvent;
     }
 }

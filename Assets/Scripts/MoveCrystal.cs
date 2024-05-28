@@ -5,25 +5,28 @@ using UnityEngine;
 
 public class MoveCrystal : MonoBehaviour
 {
-    // Start is called before the first frame update
-    private RectTransform _diamondUILocation;
-    private static bool increaseValue = false;
-    private CancellationTokenSource _cancellationTokenSource;   
-    private CancellationToken _cancellationToken;
-    private Vector3 _worldPosition;
+    private const string DIAMONG_TAG = "Diamond";
+    private const float DELAY_DURATION = 5F;
+    private const float X_DEGREES = 45f;
+    private const float ERROR_TERM = 1f;
 
+    // Start is called before the first frame update
+    private RectTransform m_diamondUILocation;
+    private static bool m_increaseValue = false;
+    private CancellationTokenSource m_cancellationTokenSource;   
+    private CancellationToken m_cancellationToken;
     //Movement fix
     [SerializeField]
     public CrystalCollideEvent crystalCollideEvent;
 
-    public static bool IncreaseValue { get => increaseValue; set => increaseValue = value; }
+    public static bool IncreaseValue { get => m_increaseValue; set => m_increaseValue = value; }
     public bool CrystalIsMoving { get; set; } = false;
     public 
     void Start()
     {
-        _cancellationTokenSource = new CancellationTokenSource();
-        _cancellationToken = _cancellationTokenSource.Token;
-        _diamondUILocation = GameObject.FindWithTag("Diamond").GetComponent<RectTransform>();
+        m_cancellationTokenSource = new CancellationTokenSource();
+        m_cancellationToken = m_cancellationTokenSource.Token;
+        m_diamondUILocation = GameObject.FindWithTag(DIAMONG_TAG).GetComponent<RectTransform>();
 
         crystalCollideEvent.AddListener(CrystalCollideListener);
     }
@@ -31,9 +34,10 @@ public class MoveCrystal : MonoBehaviour
     private async void Update()
     {
         //Get Diamond location on update - it changes
+       
         if (CrystalIsMoving)
         {
-            if(await IsCrystalAtTheGuiPanel())
+            if (await IsCrystalAtTheGuiPanel(m_diamondUILocation.position))
             {
                 IncreaseValue = true;
                 CrystalIsMoving = false;
@@ -43,23 +47,25 @@ public class MoveCrystal : MonoBehaviour
 
     }
 
-    public Task<bool> IsCrystalAtTheGuiPanel()
+    public Task<bool> IsCrystalAtTheGuiPanel(Vector3 updatedCrystalUIPosition)
     {
-        return Task.FromResult(((int)transform.position.x == (int)_diamondUILocation.position.x));
+        float difference = updatedCrystalUIPosition.x - updatedCrystalUIPosition.x * Mathf.Sin(X_DEGREES);
+        return Task.FromResult(transform.position.x + difference + ERROR_TERM >= updatedCrystalUIPosition.x);
     }
-    
+
     public void CrystalCollideListener(Collider2D collider, bool didCollide)
     {
         if(collider.name == gameObject.name)
         {
             CrystalIsMoving = true;
             InventoryManagementSystem.Instance.AddInvoke(gameObject.GetComponent<SpriteRenderer>().sprite, gameObject.tag);
-            transform.DOMove(_diamondUILocation.position, 1f).SetEase(Ease.InFlash);
+
+            transform.DOMove(new Vector3(m_diamondUILocation.position.x * Mathf.Sin(X_DEGREES), m_diamondUILocation.position.y, m_diamondUILocation.position.z), DELAY_DURATION).SetEase(Ease.InFlash);
         }
     }
 
     private void OnDisable()
     {
-        _cancellationTokenSource.Cancel();
+        m_cancellationTokenSource.Cancel();
     }
 }
