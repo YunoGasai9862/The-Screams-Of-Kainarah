@@ -3,6 +3,12 @@ using UnityEngine;
 public class InventoryOpenCloseManager : MonoBehaviour
 {
     [SerializeField] GameObject InventoryPanel;
+    [SerializeField] InventoryPouchClickEvent inventoryPouchClickEvent;
+
+    private void Start()
+    {
+        inventoryPouchClickEvent.AddListener(ShouldInventoryBeVisible);
+    }
 
     public bool isOpenInventory = false;
     public void HandleInventory()
@@ -20,5 +26,9 @@ public class InventoryOpenCloseManager : MonoBehaviour
 
     }
 
+    public void ShouldInventoryBeVisible(bool visible)
+    {
+
+    }
 
 }
