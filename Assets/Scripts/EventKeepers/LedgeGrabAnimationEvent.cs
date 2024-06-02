@@ -2,15 +2,22 @@ using System.Threading.Tasks;
 using UnityEngine.Events;
 public class LedgeGrabAnimationEvent : UnityEventWT<bool>
 {
-    private UnityEvent<bool> _instance = new UnityEvent<bool>();
+    private UnityEvent<bool> m_ledgeGrabAnimationEvent = new UnityEvent<bool>();
     public override UnityEvent<bool> GetInstance()
     {
-        return _instance;
+        return m_ledgeGrabAnimationEvent;
     }
     public override Task AddListener(UnityAction<bool> action)
     {
-        _instance.AddListener(action);
+        m_ledgeGrabAnimationEvent.AddListener(action);
        
+        return Task.CompletedTask;
+    }
+
+    public override Task Invoke(bool value)
+    {
+        m_ledgeGrabAnimationEvent.Invoke(value);
+
         return Task.CompletedTask;
     }
 }

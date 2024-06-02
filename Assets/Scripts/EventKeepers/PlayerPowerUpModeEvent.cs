@@ -4,10 +4,10 @@ using UnityEngine.Events;
 
 public class PlayerPowerUpModeEvent: UnityEventWT<float>
 {
-    private UnityEvent<float> _playerPowerUpModeEvent = new UnityEvent<float>();
+    private UnityEvent<float> m_playerPowerUpModeEvent = new UnityEvent<float>();
     public override UnityEvent<float> GetInstance()
     {
-        return _playerPowerUpModeEvent;
+        return m_playerPowerUpModeEvent;
     }
     public override Task AddListener(UnityAction<float> unityAction)
     {
@@ -19,6 +19,13 @@ public class PlayerPowerUpModeEvent: UnityEventWT<float>
         {
             return Task.FromException(ex);
         }
+
+        return Task.CompletedTask;
+    }
+
+    public override Task Invoke(float value)
+    {
+        m_playerPowerUpModeEvent.Invoke(value);
 
         return Task.CompletedTask;
     }

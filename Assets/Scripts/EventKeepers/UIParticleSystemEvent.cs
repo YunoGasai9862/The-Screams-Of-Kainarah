@@ -4,12 +4,12 @@ using UnityEngine.Events;
 
 public class UIParticleSystemEvent: UnityEventWT<float>
 {
-    private UnityEvent<float> _particleSystemEvent = new UnityEvent<float>();
+    private UnityEvent<float> m_particleSystemEvent = new UnityEvent<float>();
     public override Task AddListener(UnityAction<float> action)
     {
         try
         {
-            _particleSystemEvent.AddListener(action);
+            m_particleSystemEvent.AddListener(action);
 
         }catch(Exception ex)
         {
@@ -20,6 +20,13 @@ public class UIParticleSystemEvent: UnityEventWT<float>
 
     public override UnityEvent<float> GetInstance()
     {
-        return _particleSystemEvent;
+        return m_particleSystemEvent;
+    }
+
+    public override Task Invoke(float value)
+    {
+        m_particleSystemEvent.Invoke(value);
+
+        return Task.CompletedTask;
     }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class InventoryOpenCloseManager : MonoBehaviour
+public class InventoryManager : MonoBehaviour
 {
     [SerializeField] GameObject InventoryPanel;
     [SerializeField] InventoryPouchClickEvent inventoryPouchClickEvent;
@@ -10,25 +10,25 @@ public class InventoryOpenCloseManager : MonoBehaviour
         inventoryPouchClickEvent.AddListener(ShouldInventoryBeVisible);
     }
 
-    public bool isOpenInventory = false;
+    public bool IsPouchOpen { get; set; } = false;
     public void HandleInventory()
     {
-        if (!isOpenInventory && !OpenWares.Buying)
+        if (!IsPouchOpen && !OpenWares.Buying)
         {
             InventoryPanel.SetActive(true);
-            isOpenInventory = true;
+            IsPouchOpen = true;
         }
         else
         {
             InventoryPanel.SetActive(false);
-            isOpenInventory = false;
+            IsPouchOpen = false;
         }
 
     }
 
     public void ShouldInventoryBeVisible(bool visible)
     {
-
+        InventoryPanel.SetActive(visible);
     }
 
 }

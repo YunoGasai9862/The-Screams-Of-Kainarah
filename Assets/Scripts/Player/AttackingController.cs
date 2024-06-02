@@ -176,7 +176,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
         bool isDialogueOpen = SceneSingleton.GetDialogueManager().IsOpen();
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
         bool isBuying = OpenWares.Buying;
-        bool isInventoryOpen = SceneSingleton.GetInventoryOpenCloseManager().isOpenInventory;
+        bool isInventoryOpen = SceneSingleton.GetInventoryManager().IsPouchOpen;
 
         return !isDialogueOpen && !isBuying && !isInventoryOpen && !isJumping;
     }

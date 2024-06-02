@@ -4,25 +4,26 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class InventoryPouchClickEvent : UnityEventWT<bool>
+public class InventoryPouchPanelEvent : UnityEventWT<bool>
 {
-    private UnityEvent<bool> m_inventoryClickEvent = new UnityEvent<bool>();
+    private UnityEvent<bool> m_inventoryPouchPanelEvent = new UnityEvent<bool>();
     public override Task AddListener(UnityAction<bool> action)
     {
-        m_inventoryClickEvent.AddListener(action);  
+        m_inventoryPouchPanelEvent.AddListener(action);
 
         return Task.CompletedTask;
     }
 
     public override UnityEvent<bool> GetInstance()
     {
-        return m_inventoryClickEvent;
+        return m_inventoryPouchPanelEvent;
     }
 
     public override Task Invoke(bool value)
     {
-        m_inventoryClickEvent.Invoke(value);
+        m_inventoryPouchPanelEvent.Invoke(value);
 
         return Task.CompletedTask;
     }
+
 }

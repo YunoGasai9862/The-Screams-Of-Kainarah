@@ -13,9 +13,6 @@ public class SceneSingleton : MonoBehaviour
     [SerializeField] private EnemyHittableObjects enemyHittableObject;
     [SerializeField] private EventStringMapper eventStringMapperScriptableObject;
 
-
-
-
     public static DialogueEntityScriptableObject DialogueEntityScriptableObjectFetch => _instance.dialogueScriptableObject;
     public static PlayerHittableItemsScriptableObject PlayerHittableItemScriptableObjectFetch => _instance.playerHittableItemsScriptableObject;
     public static EntitiesToReset EntitiesToResetScriptableObjectFetch => _instance.entitiesToResetScriptableObject;
@@ -24,7 +21,7 @@ public class SceneSingleton : MonoBehaviour
     public static EventStringMapper EventStringMapperScriptableObject => _instance.eventStringMapperScriptableObject;
 
     private static DialogueManager _dialogueManager { get; set; }
-    private static InventoryOpenCloseManager _inventoryOpenCloseManager { get; set; }
+    private static InventoryManager _inventoryManager { get; set; }
     private static PlayerActionRelayer _playerHelperClassForOtherPurposes { get; set; }
     private static PlayerObserverListener _playerObserverListener { get; set; }
     private static EnemyObserverListener _enemyObserverListener { get; set; }
@@ -48,7 +45,7 @@ public class SceneSingleton : MonoBehaviour
     private void Start()
     {
         _dialogueManager = FindFirstObjectByType<DialogueManager>();  //faster compared to FindObjectOfType
-        _inventoryOpenCloseManager = FindFirstObjectByType<InventoryOpenCloseManager>();
+        _inventoryManager = FindFirstObjectByType<InventoryManager>();
         _playerHelperClassForOtherPurposes = FindFirstObjectByType<PlayerActionRelayer>();
         _playerObserverListener = FindFirstObjectByType<PlayerObserverListener>();
         _enemyObserverListener = FindFirstObjectByType<EnemyObserverListener>();
@@ -67,9 +64,9 @@ public class SceneSingleton : MonoBehaviour
     {
         return _getSpawnPlayerScript;
     }
-    public static InventoryOpenCloseManager GetInventoryOpenCloseManager()
+    public static InventoryManager GetInventoryManager()
     {
-        return _inventoryOpenCloseManager;
+        return _inventoryManager;
     }
     public static List<IGameStateHandler> GameStateHandlerObjects()
     {

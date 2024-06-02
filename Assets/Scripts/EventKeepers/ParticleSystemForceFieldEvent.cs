@@ -13,4 +13,9 @@ public class ParticleSystemForceFieldEvent : UnityEventWT<ParticleSystemForceFie
     {
         throw new System.NotImplementedException();
     }
+
+    public override Task Invoke(ParticleSystemForceField value)
+    {
+        throw new System.NotImplementedException();
+    }
 }
