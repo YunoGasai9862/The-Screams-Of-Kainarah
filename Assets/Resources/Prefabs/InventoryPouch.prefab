@@ -60,7 +60,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 100
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!114 &3883733013876272135
 MonoBehaviour:
@@ -113,9 +113,10 @@ GameObject:
   - component: {fileID: 6272426019998577782}
   - component: {fileID: 1803385056822366327}
   - component: {fileID: 4543822590073354241}
+  - component: {fileID: 455763052548631243}
   m_Layer: 5
-  m_Name: Inventory
-  m_TagString: Untagged
+  m_Name: InventoryPouchPanel
+  m_TagString: InventoryPouchPanel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -177,3 +178,16 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &455763052548631243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7592565197395366313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d630eabf2e67d734f9e10961c0b6fc00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventoryPouchPanelEvent: {fileID: 0}
