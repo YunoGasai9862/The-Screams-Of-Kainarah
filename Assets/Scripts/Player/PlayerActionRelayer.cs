@@ -11,12 +11,13 @@ using static SceneData;
 using PlayerHittableItemsNS;
 public class PlayerActionRelayer : AbstractEntity
 {
+    private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
+
     [SerializeField] SpriteRenderer sr;
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
     [SerializeField] string[] checkpointTags;
     [SerializeField] float playerHealth;
-    [SerializeField] CrystalCollideEvent crystalCollideEvent;
 
     private Animator anim;
     private float ENEMYATTACK = 5f;

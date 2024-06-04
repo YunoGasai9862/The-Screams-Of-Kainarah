@@ -23,8 +23,8 @@ public class MoveCrystal : MonoBehaviour
     //Movement fix
     [SerializeField]
     public CrystalCollideEvent crystalCollideEvent;
+    public CrystalUIIncrementEvent crystalUIIncrementEvent;
 
-    public static bool IncreaseValue { get => m_increaseValue; set => m_increaseValue = value; }
     public bool CrystalIsMoving { get; set; } = false;
 
     public bool OutsideScreenBounds { get; set; } = false;
@@ -57,7 +57,6 @@ public class MoveCrystal : MonoBehaviour
 
             if (await IsCrystalAtTheGuiPanel(m_diamondUILocation.position))
             {
-                IncreaseValue = true;
                 CrystalIsMoving = false;
                 Destroy(gameObject);
             }
@@ -81,6 +80,7 @@ public class MoveCrystal : MonoBehaviour
         if(collider.name == gameObject.name)
         {
             CrystalIsMoving = true;
+
             InventoryManagementSystem.Instance.AddInvoke(gameObject.GetComponent<SpriteRenderer>().sprite, gameObject.tag);
 
             transform.DOMove(new Vector3(m_diamondUILocation.position.x * Mathf.Sin(X_DEGREES), m_diamondUILocation.position.y, m_diamondUILocation.position.z), DELAY_DURATION).SetEase(Ease.InFlash);

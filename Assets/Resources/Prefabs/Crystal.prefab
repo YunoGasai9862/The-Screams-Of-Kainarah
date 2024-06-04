@@ -195,5 +195,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa7cd17baf2af57459d2d2e8a248a0dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiCamera: {fileID: 8017888587383622866, guid: 7a416d173f70e7042a5a9e4a3677ca04, type: 3}
   crystalCollideEvent: {fileID: 7238795315532383392, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  crystalUIIncrementEvent: {fileID: 338922587902544974, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}

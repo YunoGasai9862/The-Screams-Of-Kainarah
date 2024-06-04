@@ -45,4 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InventoryPanel: {fileID: 0}
-  isOpenInventory: 0
+  inventoryPouchClickEvent: {fileID: 0}
+  inventoryPouchPanelEvent: {fileID: 0}

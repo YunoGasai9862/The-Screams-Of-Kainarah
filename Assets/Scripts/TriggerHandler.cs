@@ -75,7 +75,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         int funds= Int32.Parse(_text.text);
         funds--;
-        IncreaseDiamond.count--;
+        IncreaseCrystal.DiamondCount--;
         _text.text=funds.ToString("0");
         DecreaseDiamondsFromInventory();
     }
