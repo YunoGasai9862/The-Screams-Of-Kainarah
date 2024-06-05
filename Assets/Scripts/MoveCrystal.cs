@@ -6,14 +6,13 @@ using UnityEngine;
 public class MoveCrystal : MonoBehaviour
 {
     private const string DIAMONG_TAG = "Diamond";
-    private const float DELAY_DURATION = 3f;
+    private const float DELAY_DURATION = 10f;
     private const float X_DEGREES = 45f;
     private const float ERROR_TERM = 1f;
     private const float BOUNDS_ERROR_TERM = 5f;
 
     // Start is called before the first frame update
     private RectTransform m_diamondUILocation;
-    private static bool m_increaseValue = false;
     private CancellationTokenSource m_cancellationTokenSource;   
     private CancellationToken m_cancellationToken;
     private float m_heightOfCamera;

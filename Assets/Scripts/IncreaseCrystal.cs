@@ -6,6 +6,7 @@ public class IncreaseCrystal : MonoBehaviour
 
     [SerializeField] public CrystalUIIncrementEvent crystalUIIncrementEvent;
     public static int DiamondCount { get; set; } = 0;
+    
 
     void Start()
     {
@@ -14,10 +15,10 @@ public class IncreaseCrystal : MonoBehaviour
     }
     void IncrementCrystalCount(int increment)
     {
-        Debug.Log("INCREMENTING---");
         DiamondCount = int.Parse(m_diamondText.text) + increment;
-        Debug.Log(DiamondCount);
         m_diamondText.text = DiamondCount.ToString("0");
     }
+
+
 
 }

@@ -19,7 +19,6 @@ public class CrystalUIIncrementEvent : UnityEventWT<int>
 
     public override Task Invoke(int value)
     {
-        Debug.Log($"INVOKING: {value}");
         m_crystalUIIncrementEvent.Invoke(value);
 
         return Task.CompletedTask;

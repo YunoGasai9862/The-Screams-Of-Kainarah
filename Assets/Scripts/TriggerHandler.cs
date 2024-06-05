@@ -8,8 +8,7 @@ using UnityEngine.UI;
 public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     private const string DIAMOND_TAG = "Crystal";
-    private GameObject _insideObject;
-    private Sprite _insideObjectSprite;
+    private GameObject m_insideObject;
     [SerializeField] TMPro.TextMeshProUGUI Funds;
     private AudioSource transact;
 
@@ -30,13 +29,13 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if (OpenWares.Buying)
         {
-            _insideObject = eventData.pointerClick.transform.gameObject;
-            if (_insideObject.transform.childCount > 0)
+            m_insideObject = eventData.pointerClick.transform.gameObject;
+            if (m_insideObject.transform.childCount > 0)
             {
                 if (CheckIfFundsExists(Funds))
                 {
-                    _insideObject = _insideObject.transform.GetChild(0).gameObject;
-                    InventoryManagementSystem.Instance.AddInvoke(_insideObject.GetComponent<SpriteRenderer>().sprite, _insideObject.tag); //the rest of the process is automated in that function
+                    m_insideObject = m_insideObject.transform.GetChild(0).gameObject;
+                    InventoryManagementSystem.Instance.AddInvoke(m_insideObject.GetComponent<SpriteRenderer>().sprite, m_insideObject.tag); //the rest of the process is automated in that function
                     transact.Play();
                     DecreaseFunds(ref Funds);
                 } 
@@ -71,12 +70,10 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         return true;
 
     }
-    public void DecreaseFunds(ref TMPro.TextMeshProUGUI _text)
+    public void DecreaseFunds(ref TMPro.TextMeshProUGUI diamondText)
     {
-        int funds= Int32.Parse(_text.text);
-        funds--;
         IncreaseCrystal.DiamondCount--;
-        _text.text=funds.ToString("0");
+        diamondText.text = IncreaseCrystal.DiamondCount.ToString("0");
         DecreaseDiamondsFromInventory();
     }
 

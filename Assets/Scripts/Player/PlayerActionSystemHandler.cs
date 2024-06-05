@@ -7,7 +7,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 {
     [SerializeField] PickableItemsHandler pickableItems;
     [SerializeField] PlayerPowerUpModeEvent playerPowerUpModeEvent;
-    [SerializeField] IncreaseCrystal increaseCrystal;
+    [SerializeField] CrystalUIIncrementEvent crystalUIIncrementEvent;
 
     Dictionary<String, Func<Collider2D, Task >> _playerActionHandlerDic;
 
@@ -46,8 +46,15 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
        pickupEffectInstantiator(pickableItems.ReturnGameObjectForTheKey(collision.tag), collision.transform.position);
        playerPowerUpModeEvent.GetInstance().Invoke(DIAMOND_PICK_UP_VALUE);
        await collision.GetComponent<MoveCrystal>().crystalCollideEvent.Invoke(collision, true);
-       await increaseCrystal.crystalUIIncrementEvent.Invoke(CRYSTAL_UI_INCREMENT_VALUE);
+       await InvokeCrystalUIEvent(crystalUIIncrementEvent, CRYSTAL_UI_INCREMENT_VALUE);
        return await Task.FromResult(true);
+    }
+
+    private Task InvokeCrystalUIEvent(CrystalUIIncrementEvent crystalUIIncrementEvent, int crystalValue)
+    {
+        crystalUIIncrementEvent.Invoke(crystalValue);
+
+        return Task.CompletedTask;
     }
 
     private void OnEnable()

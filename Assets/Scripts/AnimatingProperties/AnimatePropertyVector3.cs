@@ -3,6 +3,14 @@ using UnityEngine;
 
 public class AnimatePropertyVector3 : IAnimatePropertyVector<Vector3>
 {
+
+    public enum MovementType
+    {
+        SLOW,
+        MEDIUM,
+        FAST
+    }
+
     public IEnumerator AnimMovement(Vector3 initialPos, Vector3 finalPos, float duration)
     {
         Vector3 currentPosition = initialPos;
