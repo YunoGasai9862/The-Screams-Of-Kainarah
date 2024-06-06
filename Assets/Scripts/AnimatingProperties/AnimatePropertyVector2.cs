@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class AnimatePropertyVector2 : IAnimatePropertyVector<Vector2>
 {
-    public IEnumerator AnimMovement(Vector2 initialPos, Vector2 finalPos, float duration)
+    public IEnumerator AnimMovement(Vector2 initialPos, Vector2 finalPos, float duration, IAnimateMovementType movementType)
     {
         return null;
     }

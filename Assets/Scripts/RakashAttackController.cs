@@ -1,8 +1,12 @@
 using System.Collections;
 using UnityEngine;
 
-public class RakashController : MonoBehaviour, IReceiver<bool>
+public class RakashAttackController : MonoBehaviour, IReceiver<bool>
 {
+    private void Start()
+    {
+
+    }
     public bool CancelAction()
     {
         return true;

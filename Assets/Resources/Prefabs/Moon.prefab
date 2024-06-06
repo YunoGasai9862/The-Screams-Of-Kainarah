@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 5073767169765330523}
   - component: {fileID: 6864766611724058526}
   - component: {fileID: 3892833020860078988}
+  - component: {fileID: 1526845105241640475}
+  - component: {fileID: 5127844461900350612}
   m_Layer: 0
   m_Name: MoonLight
   m_TagString: Untagged
@@ -50,7 +52,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.907
   m_Color: {r: 0.28773582, g: 0.5113981, b: 1, a: 1}
-  m_Intensity: 3.59
+  m_Intensity: 1.56
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 3be61372
@@ -97,11 +99,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeb9441562add3b4580ea9c0c79ce35e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxIntensity: 4
-  minIntensity: 3
-  customLightPreprocessingImplementation: {fileID: 0}
+  maxIntensity: 2.5
+  minIntensity: 1
+  customLightPreprocessingImplementation: {fileID: 1526845105241640475}
   anySubjectThatIsNotifyingTheLight: 1
   _subject: {fileID: 0}
+--- !u!114 &1526845105241640475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2419437519602141298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4196e67cd4d896438e1c7b086e653c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LightPreprocess: {fileID: 5127844461900350612}
+--- !u!114 &5127844461900350612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2419437519602141298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 710e5743279ef4642b92b22a2ce6c028, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  celestialBodyEvent: {fileID: 0}
 --- !u!1 &4890085813464346052
 GameObject:
   m_ObjectHideFlags: 0

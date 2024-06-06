@@ -3,22 +3,26 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using static SceneData;
-public class RakashScript : AbstractEntity
+public class RakashManager : AbstractEntity
 {
     private GameObject _player;
     private Animator _anim;
     private float _timeoverBody = 0f;
     private BoxCollider2D _bC2;
     private bool _onTopBossBool = false;
-    private IReceiver<bool> _receiver;
-    private Command<bool> _command;
+    private IReceiver<bool> m_rakashMovementControllerReceiver;
+    private Command<bool> m_rakashMovementControllerCommand;
+
+    private IReceiver<bool> m_rakashAttackControllerReceiver;
+    private Command<bool> m_rakashAttackControllerCommand;
+
     [SerializeField] GameObject bossDead;
     [SerializeField] string[] attackingAnimationNames;
     public override string EntityName { get => m_Name; set => m_Name = value; }
     public override float Health { get => m_health; set => m_health = value; }
     public override float MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
 
-    public RakashEvent onRakashEvent = new RakashEvent();
+    public EntityDistanceFromPlayer distanceFromPlayerEvent = new EntityDistanceFromPlayer();
 
     private void Awake()
     {
@@ -29,6 +33,13 @@ public class RakashScript : AbstractEntity
     void Start()
     {
         _player = GameObject.FindWithTag("Player");
+        m_rakashMovementControllerReceiver = GetComponent<RakashControllerMovement>();
+        m_rakashMovementControllerCommand = new Command<bool>(m_rakashMovementControllerReceiver);
+
+        m_rakashAttackControllerReceiver = GetComponent<RakashAttackController>();
+        m_rakashAttackControllerCommand = new Command<bool>(m_rakashAttackControllerReceiver);
+
+
         _anim = GetComponent<Animator>();
         _bC2 = GetComponent<BoxCollider2D>();
         SceneSingleton.InsertIntoGameStateHandlerList(this);

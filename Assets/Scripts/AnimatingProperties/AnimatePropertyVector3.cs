@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class AnimatePropertyVector3 : IAnimatePropertyVector<Vector3>
 {
-
+    //change this to another class for keeping movement types
     public enum MovementType
     {
         SLOW,
@@ -25,5 +25,10 @@ public class AnimatePropertyVector3 : IAnimatePropertyVector<Vector3>
     public Vector3 GetDifference(Vector3 initialValue, Vector3 finalValue)
     {
         return finalValue - initialValue;
+    }
+
+    public IEnumerator AnimMovement(Vector3 initialPos, Vector3 finalPos, float duration, IAnimateMovementType movementType)
+    {
+        throw new System.NotImplementedException();
     }
 }

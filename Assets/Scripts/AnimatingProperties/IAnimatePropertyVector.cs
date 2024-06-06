@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 public interface IAnimatePropertyVector<T>
 {
-    public abstract IEnumerator AnimMovement(T initialPos, T finalPos, float duration);
+    public abstract IEnumerator AnimMovement(T initialPos, T finalPos, float duration, IAnimateMovementType movementType);
     public abstract T GetDifference(T initialValue, T finalValue);
 
 }
