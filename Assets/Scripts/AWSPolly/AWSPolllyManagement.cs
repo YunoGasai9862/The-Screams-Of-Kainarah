@@ -19,8 +19,11 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
     private UnityWebRequestMultimediaManager UnityWebRequestMultimediaManager { get; set; } = new UnityWebRequestMultimediaManager();
 
-    private string AudioPath { get; set; } = "Audio.mp3";
+    //use memory space for writing
+    private string AudioPath { get; set; } = "AmazonNarrator.mp3";
 
+    [SerializeField]
+    AudioSource AudioSource;
 
     private async void Start()
     {
@@ -29,10 +32,15 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
         AmazonPollyClient = await EstablishConnection(Credentials, RegionEndpoint.EUCentral1);
 
         //use event system to invoke these, but for now check if it works on the start method
-        SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, "TESTING FOR THE FIRST TIMME", Engine.Neural, VoiceId.Aditi, OutputFormat.Mp3);
+        SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, "TESTING FOR THE FIRST TIMME", Engine.Neural, VoiceId.Bianca, OutputFormat.Mp3);
 
         //make this dynamic too, save the audio on a better pattern
         await SaveAudio(SynthesizeSpeechResponse, $"{Application.persistentDataPath}/{AudioPath}");
+
+        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio($"{Application.persistentDataPath}/{AudioPath}", AudioType.MPEG);
+
+        //for testing lets play it
+        AudioSource.Play();
 
     }
 
@@ -53,7 +61,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
     public Task SetCredentials()
     {
-        Credentials = new BasicAWSCredentials("", ""); //access and secret key
+        //use DB to fetch it
+        Credentials = new BasicAWSCredentials("", ""); //access and secret key to be fetched from firebase
 
         return Task.CompletedTask;
     }
