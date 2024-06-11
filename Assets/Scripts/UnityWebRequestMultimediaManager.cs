@@ -22,4 +22,10 @@ public class UnityWebRequestMultimediaManager : IUnityWebRequestMultimedia
             return audioClip;
         }
     }
+
+    public Task<TextAsset> GetTextAssetFile(string remoteURL)
+    {
+        //use it for accessing from firebase storage 
+        throw new System.NotImplementedException();
+    }
 }
