@@ -23,9 +23,21 @@ public class UnityWebRequestMultimediaManager : IUnityWebRequestMultimedia
         }
     }
 
-    public Task<TextAsset> GetTextAssetFile(string remoteURL)
+    public async Task<TextAsset> GetTextAssetFile(string remoteURL)
     {
         //use it for accessing from firebase storage 
-        throw new System.NotImplementedException();
+        using (UnityWebRequest uwr = UnityWebRequest.Get(remoteURL))
+        {
+            UnityWebRequestAsyncOperation webRequestAsyncOperation = uwr.SendWebRequest();
+
+            while (!webRequestAsyncOperation.isDone)
+            {
+                await Task.Yield();
+            }
+
+            string textFile = uwr.downloadHandler.text;
+
+            return new TextAsset(textFile);
+        }
     }
 }
