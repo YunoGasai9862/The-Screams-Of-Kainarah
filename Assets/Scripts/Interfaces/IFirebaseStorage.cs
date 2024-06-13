@@ -4,7 +4,11 @@ public interface IFirebaseStorage
 {
     abstract void InitializeFirebaseStorage();
 
-    abstract StorageReference GetReference(string url);
+    abstract StorageReference GetReference();
 
-    abstract void DownloadMedia(StorageReference fileReference);
+    abstract void SetFirebaseStorageLocation(string url);
+
+    abstract StorageReference SelectMedia(StorageReference storageReference, FileType fileType, string fileName);
+
+    abstract void DownloadMedia(StorageReference mediaReference, FileType fileType, string fileName);
 }
