@@ -1,4 +1,5 @@
 using Firebase.Storage;
+using System.Threading.Tasks;
 
 public interface IFirebaseStorage
 {
@@ -8,7 +9,7 @@ public interface IFirebaseStorage
 
     abstract void SetFirebaseStorageLocation(string url);
 
-    abstract StorageReference SelectMedia(StorageReference storageReference, FileType fileType, string fileName);
+    abstract Task<StorageReference> GetMediaReference(StorageReference storageReference, string fileName);
 
-    abstract void DownloadMedia(StorageReference mediaReference, FileType fileType, string fileName);
+    abstract Task DownloadMedia(StorageReference mediaReference, FileType fileType, string fileName);
 }
