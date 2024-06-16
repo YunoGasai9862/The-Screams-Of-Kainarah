@@ -1,15 +1,17 @@
 using Firebase.Storage;
+using System;
 using System.Threading.Tasks;
 
 public interface IFirebaseStorage
 {
     abstract void InitializeFirebaseStorage();
 
-    abstract StorageReference GetReference();
+    abstract StorageReference GetStorageReference();
+
+    abstract StorageReference GetMediaReference();
 
     abstract void SetFirebaseStorageLocation(string url);
 
-    abstract Task<StorageReference> GetMediaReference(StorageReference storageReference, string fileName);
+    abstract Task DownloadMedia(FileType fileType, string fileName);
 
-    abstract Task DownloadMedia(StorageReference mediaReference, FileType fileType, string fileName);
 }

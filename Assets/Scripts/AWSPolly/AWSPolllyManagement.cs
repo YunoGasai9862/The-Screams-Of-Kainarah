@@ -19,29 +19,46 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
     private UnityWebRequestMultimediaManager UnityWebRequestMultimediaManager { get; set; } = new UnityWebRequestMultimediaManager();
 
+
     //use memory space for writing
     private string AudioPath { get; set; } = "AmazonNarrator.mp3";
 
     [SerializeField]
     AudioSource AudioSource;
+    [SerializeField]
+    FirebaseStorageManager FirebaseStorageManager;
+    [SerializeField]
+    string FirebaseStorageURL;
+    [SerializeField]
+    string AWSKeysfileNameOnFireBase;
 
     private async void Start()
     {
-        await SetCredentials();
+        await SetupFirebaseStorageForAWSPrivateKeys();
+        
+       // await SetCredentials();
 
-        AmazonPollyClient = await EstablishConnection(Credentials, RegionEndpoint.EUCentral1);
+       // AmazonPollyClient = await EstablishConnection(Credentials, RegionEndpoint.EUCentral1);
 
         //use event system to invoke these, but for now check if it works on the start method
-        SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, "TESTING FOR THE FIRST TIMME", Engine.Neural, VoiceId.Bianca, OutputFormat.Mp3);
+        //SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, "TESTING FOR THE FIRST TIMME", Engine.Neural, VoiceId.Bianca, OutputFormat.Mp3);
 
         //make this dynamic too, save the audio on a better pattern
-        await SaveAudio(SynthesizeSpeechResponse, $"{Application.persistentDataPath}/{AudioPath}");
+        //await SaveAudio(SynthesizeSpeechResponse, $"{Application.persistentDataPath}/{AudioPath}");
 
-        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio($"{Application.persistentDataPath}/{AudioPath}", AudioType.MPEG);
+        //AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio($"{Application.persistentDataPath}/{AudioPath}", AudioType.MPEG);
 
         //for testing lets play it
-        AudioSource.Play();
+       // AudioSource.Play();
 
+    }
+    
+
+    public async Task SetupFirebaseStorageForAWSPrivateKeys()
+    {
+        FirebaseStorageManager.SetFirebaseStorageLocation(FirebaseStorageURL);
+
+        await FirebaseStorageManager.DownloadMedia(FileType.TEXT, AWSKeysfileNameOnFireBase);
     }
 
     public Task<AmazonPollyClient> EstablishConnection(BasicAWSCredentials credentials, RegionEndpoint endpoint)

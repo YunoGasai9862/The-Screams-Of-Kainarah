@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -26,18 +27,32 @@ public class UnityWebRequestMultimediaManager : IUnityWebRequestMultimedia
     public async Task<TextAsset> GetTextAssetFile(string remoteURL)
     {
         //use it for accessing from firebase storage 
-        using (UnityWebRequest uwr = UnityWebRequest.Get(remoteURL))
-        {
-            UnityWebRequestAsyncOperation webRequestAsyncOperation = uwr.SendWebRequest();
 
-            while (!webRequestAsyncOperation.isDone)
+        try
+        {
+            using (UnityWebRequest uwr = UnityWebRequest.Get(remoteURL))
             {
-                await Task.Yield();
+                Debug.Log(uwr);
+                UnityWebRequestAsyncOperation webRequestAsyncOperation = uwr.SendWebRequest();
+
+                Debug.Log(webRequestAsyncOperation);
+
+                while (!webRequestAsyncOperation.isDone)
+                {
+                    await Task.Yield();
+                }
+
+                string textFile = uwr.downloadHandler.text;
+
+                return new TextAsset(textFile);
             }
 
-            string textFile = uwr.downloadHandler.text;
+        }catch(Exception ex){
 
-            return new TextAsset(textFile);
+            Debug.Log($"Exception {ex.ToString()}");
         }
+
+        return null;
+
     }
 }
