@@ -58,7 +58,10 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     {
         FirebaseStorageManager.SetFirebaseStorageLocation(FirebaseStorageURL);
 
-        await FirebaseStorageManager.DownloadMedia(FileType.TEXT, AWSKeysfileNameOnFireBase);
+        TextAsset keys = await FirebaseStorageManager.DownloadMedia<TextAsset>(FileType.TEXT, AWSKeysfileNameOnFireBase);
+
+        Debug.Log(keys);
+        //now use helper to split them :)
     }
 
     public Task<AmazonPollyClient> EstablishConnection(BasicAWSCredentials credentials, RegionEndpoint endpoint)

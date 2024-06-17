@@ -1,4 +1,4 @@
-public static class MovementHelperFunctions
+public class MovementHelperFunctions
 {
     public static bool boolConditionAndTester(params bool[] boolsToCheckAgainst)
     {

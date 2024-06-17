@@ -65,11 +65,11 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage
         }
     }
 
-    public async Task DownloadMedia(FileType fileType, string fileName)
+    public async Task<T> DownloadMedia<T>(FileType fileType, string fileName)
     {
-        await SetMediaReference(fileName);
+        TaskCompletionSource<T> downloadMediaTCS = new TaskCompletionSource<T>();
 
-        Debug.Log(MediaStorageReference);
+        await SetMediaReference(fileName);
 
         if (MediaStorageReference == null)
         {
@@ -82,13 +82,19 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage
             //why main thread? Because UnityWebRequest requires us to be on the main thread
             if (!downloadResult.IsFaulted && !downloadResult.IsCanceled)
             {
-                await RelayMediaRequest(Convert.ToString(downloadResult.Result), fileType);
+               T mediaDownloaded =  await RelayMediaRequest<T>(Convert.ToString(downloadResult.Result), fileType);
+
+               downloadMediaTCS.SetResult((T)mediaDownloaded);
             }
         });
+
+        return await downloadMediaTCS.Task;
     }
 
-    public async Task RelayMediaRequest(string url, FileType fileType)
+    public async Task<T> RelayMediaRequest<T>(string url, FileType fileType)
     {
+        object media;
+        TaskCompletionSource<T> mediaRelayerTCS = new TaskCompletionSource<T>();
         switch (fileType)
         {
             case FileType.AUDIO:
@@ -98,13 +104,13 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage
             case FileType.IMAGE:
                 break;
             case FileType.TEXT:
-                Debug.Log(url);
-                TextAsset asset = await UnityWebRequestMultimediaManager.GetTextAssetFile(url);
-                Debug.Log(asset);
+                media = await UnityWebRequestMultimediaManager.GetTextAssetFile(url);
+                mediaRelayerTCS.SetResult((T)media);
                 break;
             default:
                 break;
         }
 
+        return await mediaRelayerTCS.Task;
     }
 }

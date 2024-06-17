@@ -12,6 +12,6 @@ public interface IFirebaseStorage
 
     abstract void SetFirebaseStorageLocation(string url);
 
-    abstract Task DownloadMedia(FileType fileType, string fileName);
+    abstract Task<T> DownloadMedia<T>(FileType fileType, string fileName);
 
 }
