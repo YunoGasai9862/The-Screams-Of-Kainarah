@@ -32,10 +32,7 @@ public class UnityWebRequestMultimediaManager : IUnityWebRequestMultimedia
         {
             using (UnityWebRequest uwr = UnityWebRequest.Get(remoteURL))
             {
-                Debug.Log(uwr);
                 UnityWebRequestAsyncOperation webRequestAsyncOperation = uwr.SendWebRequest();
-
-                Debug.Log(webRequestAsyncOperation);
 
                 while (!webRequestAsyncOperation.isDone)
                 {
