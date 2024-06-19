@@ -12,6 +12,9 @@ public class DialogueManager : MonoBehaviour
     public bool isOpen = false;
 
     private static Dialogues[] _dialogues = null;
+
+    [SerializeField]
+    public AWSPollyDialogueTriggerEvent m_AWSPollyDialogueTriggerEvent;
     void Start()
     {
         _storylineSentences = new Queue<string>();

@@ -3,6 +3,7 @@ using Firebase.Database;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
+using Newtonsoft.Json;
 
 public class FirebaseDatabaseManager : MonoBehaviour, IFirebaseDatabase
 {
@@ -15,18 +16,21 @@ public class FirebaseDatabaseManager : MonoBehaviour, IFirebaseDatabase
         FirebaseDatabaseReference = database.RootReference;
 
         //test to check
-        await Create(new Player(SystemInfo.deviceUniqueIdentifier, "Muhammad Bilal", "TES"), new UsersNode());
+        //Player player = new Player("Muhammad Bilal", "TES");
+       // UsersNode node = new UsersNode();
+       // await Create(player, node);
     }
 
-    public async Task Create(IEntity entity, INode firebaseNode)
+    //okay this is working, good!!
+    public async Task CreateEntity(IEntity entity, INode firebaseNode)
     {
         //to generate unique UID - use SystemInfo.deviceUniqueIdentifier
         try
         {
-            Debug.Log("Creating node for entity: " + entity.GetUID() + " in node: " + firebaseNode.GetNode());
-            string json = JsonUtility.ToJson(entity.ToString());
+            Debug.Log("Creating node for entity: " + SystemInfo.deviceUniqueIdentifier + " in node: " + firebaseNode.GetNode());
+            string json = JsonConvert.SerializeObject(entity);
             Debug.Log($"JSON: {json}");
-            await FirebaseDatabaseReference.Child(firebaseNode.GetNode()).Child(entity.GetUID()).SetRawJsonValueAsync(json);
+            await FirebaseDatabaseReference.Child(firebaseNode.GetNode()).Child(SystemInfo.deviceUniqueIdentifier).SetRawJsonValueAsync(json);
             Debug.Log("Node created successfully");
         }
         catch(Exception e)
@@ -41,4 +45,8 @@ public class FirebaseDatabaseManager : MonoBehaviour, IFirebaseDatabase
         return FirebaseDatabaseReference;
     }
 
+    public Task UpdateEntity(IEntity entity, INode firebaseNode)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -47,17 +47,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
         AmazonPollyClient = await EstablishConnection(Credentials, RegionEndpoint.EUCentral1);
 
-        //use event system to invoke these, but for now check if it works on the start method
-        SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, "TESTING FOR THE FIRST TIMME", Engine.Neural, VoiceId.Bianca, OutputFormat.Mp3);
-
-        //make this dynamic too, save the audio on a better pattern
-        await SaveAudio(SynthesizeSpeechResponse, $"{Application.persistentDataPath}/{AudioPath}");
-
-        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio($"{Application.persistentDataPath}/{AudioPath}", AudioType.MPEG);
-
-        //for testing lets play it
-        //AudioSource.Play();
-
     }
 
 
@@ -130,6 +119,19 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     {
         return client.SynthesizeSpeechAsync(request);
     }
+    
+    //this will be invoked by an event
+    public async void GenerateAIVoice(string text)
+    {
+        SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, text , Engine.Neural, VoiceId.Bianca, OutputFormat.Mp3);
+
+        await SaveAudio(SynthesizeSpeechResponse, $"{Application.persistentDataPath}/{AudioPath}");
+
+        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio($"{Application.persistentDataPath}/{AudioPath}", AudioType.MPEG);
+
+        AudioSource.Play();
+    }
+
 
     private Task SaveAudio(SynthesizeSpeechResponse response, string fullPath)
     {
@@ -137,4 +139,5 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
         return Task.CompletedTask;
     }
+
 }
