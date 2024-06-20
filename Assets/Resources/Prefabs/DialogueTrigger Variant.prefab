@@ -9,12 +9,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
+      propertyPath: bossDialogue.playername
+      value: 'Rakash:'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
       propertyPath: WizardPlayerConvo.Array.size
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
       propertyPath: wizardPlayerConvo.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
       propertyPath: bossDialogue.sentences.Array.size
@@ -45,6 +49,14 @@ PrefabInstance:
       value: 'Alisha:'
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
+      propertyPath: wizardPlayerConvo.Array.data[0].playername
+      value: 'Alisha:'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
+      propertyPath: wizardPlayerConvo.Array.data[1].playername
+      value: 'Wizard:'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
       propertyPath: WizardPlayerConvo.Array.data[0].sentences.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -58,6 +70,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
       propertyPath: WizardPlayerConvo.Array.data[3].sentences.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
+      propertyPath: wizardPlayerConvo.Array.data[0].sentences.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
+      propertyPath: wizardPlayerConvo.Array.data[1].sentences.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
@@ -86,6 +106,14 @@ PrefabInstance:
     - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
       propertyPath: 'WizardPlayerConvo.Array.data[3].sentences.Array.data[0]'
       value: I think so. Thanks.
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
+      propertyPath: 'wizardPlayerConvo.Array.data[0].sentences.Array.data[0]'
+      value: I need your help!
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103493442260144529, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
+      propertyPath: 'wizardPlayerConvo.Array.data[1].sentences.Array.data[0]'
+      value: What do you need child?
       objectReference: {fileID: 0}
     - target: {fileID: 6103493442260144530, guid: 35944630e78b48a42a2be05ce319ef49, type: 3}
       propertyPath: m_RootOrder

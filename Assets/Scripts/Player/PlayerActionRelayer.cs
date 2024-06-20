@@ -23,7 +23,7 @@ public class PlayerActionRelayer : AbstractEntity
     private float ENEMYATTACK = 5f;
     private bool pickedUp;
     private PickableItemsHandler _pickableItems;
-    private Interactable dialogue;
+    private Conversations dialogue;
     private SemaphoreSlim _semaphoreSlim;
     private SemaphoreSlim _semaphoreSlimForCheckpoint;
     private CancellationTokenSource _cancellationTokenSource;
@@ -68,16 +68,16 @@ public class PlayerActionRelayer : AbstractEntity
 
         anim = GetComponent<Animator>();
 
-        dialogue= GameObject.FindWithTag(InteractableTag).GetComponent<Interactable>(); 
+        dialogue= GameObject.FindWithTag(InteractableTag).GetComponent<Conversations>(); 
 
     }
 
     private async void Update()
     {
 
-        if (dialogue != null)
+        if (dialogue == null)
         {
-            dialogue = GameObject.FindWithTag(InteractableTag).GetComponent<Interactable>();
+            dialogue = GameObject.FindWithTag(InteractableTag).GetComponent<Conversations>();
         }
         
         if (await IsPlayerDead(Health) && GetCheckPointSemaphore.CurrentCount!=0)
@@ -106,7 +106,7 @@ public class PlayerActionRelayer : AbstractEntity
 
         await GetSemaphore.WaitAsync();
 
-        (bool inSight, DialogueEntity entity) = await isGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObjectFetch, _cancellationToken, GetSemaphore); //use of tuple return
+        (bool inSight, DialogueEntity entity) = await IsGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObjectFetch, _cancellationToken, GetSemaphore); //use of tuple return
 
         if (inSight && entity != null)
         {
@@ -114,7 +114,7 @@ public class PlayerActionRelayer : AbstractEntity
         }
 
     }
-    private async Task<(bool, DialogueEntity)> isGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObject scriptableObject, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim)
+    private async Task<(bool, DialogueEntity)> IsGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObject scriptableObject, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim)
     {
         bool inSight = false;
         DialogueEntity dialogueEntity = null;

@@ -38,9 +38,13 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     string FirebaseStorageURL;
     [SerializeField]
     string AWSKeysfileNameOnFireBase;
+    [SerializeField]
+    AWSPollyDialogueTriggerEvent m_AWSPollyDialogueTriggerEvent;
 
     private async void Start()
     {
+        await m_AWSPollyDialogueTriggerEvent.AddListener(GenerateAIVoice);
+
         await SetupFirebaseStorageForAWSPrivateKeys();
         
         await SetCredentials();
@@ -128,6 +132,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
         await SaveAudio(SynthesizeSpeechResponse, $"{Application.persistentDataPath}/{AudioPath}");
 
         AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio($"{Application.persistentDataPath}/{AudioPath}", AudioType.MPEG);
+
+        Debug.Log("PLAYING");
 
         AudioSource.Play();
     }

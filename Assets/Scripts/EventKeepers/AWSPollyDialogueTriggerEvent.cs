@@ -18,7 +18,7 @@ public class AWSPollyDialogueTriggerEvent : UnityEventWT<string>
 
     public override Task Invoke(string value)
     {
-        GetInstance().Invoke(value);
+        m_amazonPollyDialogueTriggerEvent.Invoke(value);
 
         return Task.CompletedTask;
     }

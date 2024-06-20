@@ -5,19 +5,21 @@ using UnityEngine;
 using UnityEngine.UI;
 public class DialogueManager : MonoBehaviour
 {
-    private Queue<string> _storylineSentences;
+    private Queue<string> m_storylineSentences;
     public TextMeshProUGUI myname;
     public Text maindialogue;
     public Animator myanimator;
     public bool isOpen = false;
 
-    private static Dialogues[] _dialogues = null;
+    private static Dialogues[] m_dialogues = null;
 
     [SerializeField]
     public AWSPollyDialogueTriggerEvent m_AWSPollyDialogueTriggerEvent;
+
+    //use event for IsOpen as well!
     void Start()
     {
-        _storylineSentences = new Queue<string>();
+        m_storylineSentences = new Queue<string>();
     }
 
     public void StartDialogue(Dialogues dialogue, Dialogues[] dialogues = null)
@@ -25,17 +27,17 @@ public class DialogueManager : MonoBehaviour
 
         if (dialogues != null)
         {
-            _dialogues = dialogues;
+            m_dialogues = dialogues;
 
         }
         isOpen = true;
         myanimator.SetBool("IsOpen", true);
-        _storylineSentences.Clear();  //clears the previous dialogues, if there are any
+        m_storylineSentences.Clear();  //clears the previous dialogues, if there are any
 
         myname.text = dialogue.playername;
         foreach (string sentence in dialogue.sentences)
         {
-            _storylineSentences.Enqueue(sentence);
+            m_storylineSentences.Enqueue(sentence);
         }
 
         DisplayNextSentence();
@@ -58,13 +60,13 @@ public class DialogueManager : MonoBehaviour
     }
     public void DisplayNextSentence()
     {
-        if (_storylineSentences.Count == 0) //if there's nothing in the queue
+        if (m_storylineSentences.Count == 0) //if there's nothing in the queue
         {
 
-            if (_dialogues != null && Interactable.MultipleDialogues[_dialogues] == false)
+            if (m_dialogues != null && Conversations.MultipleDialogues[m_dialogues] == false)
             {
 
-                StartCoroutine(Interactable.TriggerDialogue(_dialogues));
+                StartCoroutine(Conversations.TriggerDialogue(m_dialogues));
                 return;  //THIS WAS ALL I NEEDED, OMG!
                 //it fixed the issue, oh lord. 
                 //the problem was: it was trying to execute the rest of the code without exiting the function
@@ -77,11 +79,13 @@ public class DialogueManager : MonoBehaviour
 
         }
 
-        string sentence = _storylineSentences.Dequeue();
+        string dialogue = m_storylineSentences.Dequeue();
+
+        m_AWSPollyDialogueTriggerEvent.Invoke(dialogue);
         //if the user clicks on the continue earlier, it will stop all the coroutines and start with the new one=>new text
         StopAllCoroutines();
 
-        StartCoroutine(AnimateLetters(sentence));
+        StartCoroutine(AnimateLetters(dialogue));
 
 
     }

@@ -2,14 +2,14 @@ using UnityEngine;
 public class OpenWares : MonoBehaviour
 {
     [SerializeField] GameObject MagicCircle;
-    [SerializeField] Interactable checkingDialogue;
+    [SerializeField] Conversations checkingDialogue;
     [SerializeField] GameObject WaresPanel;
     public static bool Buying = false;
 
     // Update is called once per frame
     void Update()
     {
-        if (Interactable.MultipleDialogues[checkingDialogue.wizardPlayerConvo])
+        if (Conversations.MultipleDialogues[checkingDialogue.wizardPlayerConvo])
         {
             MagicCircle.SetActive(true);
         }
