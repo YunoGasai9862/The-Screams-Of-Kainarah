@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class UnityWebRequestMultimediaManager : IUnityWebRequestMultimedia
 {
-    public async Task<AudioClip> GetAudio(string path, AudioType audioType)
+    public async Task<AudioClip> GetAudio(string path, string audioClipName, AudioType audioType)
     {
         using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(path, audioType))
         {
@@ -19,6 +19,8 @@ public class UnityWebRequestMultimediaManager : IUnityWebRequestMultimedia
             }
 
             AudioClip audioClip = DownloadHandlerAudioClip.GetContent(uwr);
+
+            audioClip.name = audioClipName;
 
             return audioClip;
         }

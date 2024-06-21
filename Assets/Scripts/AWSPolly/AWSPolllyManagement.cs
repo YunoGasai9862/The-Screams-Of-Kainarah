@@ -125,15 +125,13 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     }
     
     //this will be invoked by an event
-    public async void GenerateAIVoice(string text)
+    public async void GenerateAIVoice(string text, VoiceId voiceId)
     {
-        SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, text , Engine.Neural, VoiceId.Bianca, OutputFormat.Mp3);
+        SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, text , Engine.Neural, voiceId, OutputFormat.Mp3);
 
         await SaveAudio(SynthesizeSpeechResponse, $"{Application.persistentDataPath}/{AudioPath}");
 
-        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio($"{Application.persistentDataPath}/{AudioPath}", AudioType.MPEG);
-
-        Debug.Log("PLAYING");
+        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio($"{Application.persistentDataPath}/{AudioPath}", AudioPath, AudioType.MPEG);
 
         AudioSource.Play();
     }

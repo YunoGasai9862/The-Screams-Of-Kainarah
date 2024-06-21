@@ -1,3 +1,4 @@
+using Amazon.Polly;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -81,7 +82,8 @@ public class DialogueManager : MonoBehaviour
 
         string dialogue = m_storylineSentences.Dequeue();
 
-        m_AWSPollyDialogueTriggerEvent.Invoke(dialogue);
+        //create a new class when refactoring to send in voices accordingly
+        m_AWSPollyDialogueTriggerEvent.Invoke(dialogue, VoiceId.Bianca);
         //if the user clicks on the continue earlier, it will stop all the coroutines and start with the new one=>new text
         StopAllCoroutines();
 
