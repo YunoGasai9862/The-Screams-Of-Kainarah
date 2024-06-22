@@ -38,6 +38,7 @@ public class Conversations : MonoBehaviour
         };
 
     }
+    //separate triggers from dialogue class
 
     public static IEnumerator TriggerDialogue(Dialogues dialogue)
     {
@@ -64,7 +65,6 @@ public class Conversations : MonoBehaviour
             }
             else
             {
-
                 FindFirstObjectByType<DialogueManager>().StartDialogue(dialogue[Dialoguecounter], dialogue);
                 Dialoguecounter++;
             }

@@ -173,7 +173,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     }
     public bool CanPlayerAttack()
     {
-        bool isDialogueOpen = SceneSingleton.GetDialogueManager().IsOpen();
+        bool isDialogueOpen = SceneSingleton.IsDialogueTakingPlace;
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
         bool isBuying = OpenWares.Buying;
         bool isInventoryOpen = SceneSingleton.GetInventoryManager().IsPouchOpen;

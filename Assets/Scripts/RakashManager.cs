@@ -50,7 +50,7 @@ public class RakashManager : AbstractEntity
     {
         CheckRotation();
 
-        if (SceneSingleton.GetDialogueManager().IsOpen())
+        if (SceneSingleton.IsDialogueTakingPlace)
         {
             _anim.SetBool("walk", false);
         }

@@ -12,6 +12,7 @@ public class SceneSingleton : MonoBehaviour
     [SerializeField] private CheckPoints checkpointsScriptableObject;
     [SerializeField] private EnemyHittableObjects enemyHittableObject;
     [SerializeField] private EventStringMapper eventStringMapperScriptableObject;
+    [SerializeField] public DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
 
     public static DialogueEntityScriptableObject DialogueEntityScriptableObjectFetch => _instance.dialogueScriptableObject;
     public static PlayerHittableItemsScriptableObject PlayerHittableItemScriptableObjectFetch => _instance.playerHittableItemsScriptableObject;
@@ -20,7 +21,6 @@ public class SceneSingleton : MonoBehaviour
     public static EnemyHittableObjects EnemyHittableObjects => _instance.enemyHittableObject;
     public static EventStringMapper EventStringMapperScriptableObject => _instance.eventStringMapperScriptableObject;
 
-    private static DialogueManager _dialogueManager { get; set; }
     private static InventoryManager _inventoryManager { get; set; }
     private static PlayerActionRelayer _playerHelperClassForOtherPurposes { get; set; }
     private static PlayerObserverListener _playerObserverListener { get; set; }
@@ -32,9 +32,7 @@ public class SceneSingleton : MonoBehaviour
 
     private static SceneSingleton _instance;
     private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; }//fill only once
-
-
-    
+    public static bool IsDialogueTakingPlace { get; set; }
 
     private void Awake()
     {
@@ -44,7 +42,6 @@ public class SceneSingleton : MonoBehaviour
 
     private void Start()
     {
-        _dialogueManager = FindFirstObjectByType<DialogueManager>();  //faster compared to FindObjectOfType
         _inventoryManager = FindFirstObjectByType<InventoryManager>();
         _playerHelperClassForOtherPurposes = FindFirstObjectByType<PlayerActionRelayer>();
         _playerObserverListener = FindFirstObjectByType<PlayerObserverListener>();
@@ -54,12 +51,10 @@ public class SceneSingleton : MonoBehaviour
         _getSpawnPlayerScript = FindFirstObjectByType<SpawnPlayer>();
         _checkpointColliderListener = FindFirstObjectByType<CheckpointColliderListener>();
         _gameStateHandlerObjects= new List<IGameStateHandler>();
-    }
-    public static DialogueManager GetDialogueManager()
-    {
-        return _dialogueManager;
-    }
 
+        //events
+        dialogueTakingPlaceEvent.AddListener(DialougeTakingPlace);
+    }
     public static SpawnPlayer PlayerSpawn()
     {
         return _getSpawnPlayerScript;
@@ -100,6 +95,10 @@ public class SceneSingleton : MonoBehaviour
     public static CheckpointColliderListener GetCheckPointColliderActionListenerObject()
     {
         return _checkpointColliderListener;
+    }
+    private void DialougeTakingPlace(bool isTakingPlace)
+    {
+        IsDialogueTakingPlace = isTakingPlace;
     }
 
 }

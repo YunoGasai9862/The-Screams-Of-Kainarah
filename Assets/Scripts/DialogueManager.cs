@@ -6,18 +6,20 @@ using UnityEngine;
 using UnityEngine.UI;
 public class DialogueManager : MonoBehaviour
 {
+
+    private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
+
     private Queue<string> m_storylineSentences;
     public TextMeshProUGUI myname;
     public Text maindialogue;
     public Animator myanimator;
-    public bool isOpen = false;
 
     private static Dialogues[] m_dialogues = null;
 
     [SerializeField]
-    public AWSPollyDialogueTriggerEvent m_AWSPollyDialogueTriggerEvent;
+    public AWSPollyDialogueTriggerEvent AWSPollyDialogueTriggerEvent;
+    public DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
 
-    //use event for IsOpen as well!
     void Start()
     {
         m_storylineSentences = new Queue<string>();
@@ -31,11 +33,13 @@ public class DialogueManager : MonoBehaviour
             m_dialogues = dialogues;
 
         }
-        isOpen = true;
-        myanimator.SetBool("IsOpen", true);
-        m_storylineSentences.Clear();  //clears the previous dialogues, if there are any
 
+        myanimator.SetBool(DIALOGUE_ANIMATION_NAME, true);
+        dialogueTakingPlaceEvent.Invoke(true);
+
+        m_storylineSentences.Clear();  //clears the previous dialogues, if there are any
         myname.text = dialogue.playername;
+
         foreach (string sentence in dialogue.sentences)
         {
             m_storylineSentences.Enqueue(sentence);
@@ -44,10 +48,7 @@ public class DialogueManager : MonoBehaviour
         DisplayNextSentence();
 
     }
-    public bool IsOpen()
-    {
-        return isOpen;
-    }
+
     IEnumerator AnimateLetters(string sentence)
     {
 
@@ -83,18 +84,17 @@ public class DialogueManager : MonoBehaviour
         string dialogue = m_storylineSentences.Dequeue();
 
         //create a new class when refactoring to send in voices accordingly
-        m_AWSPollyDialogueTriggerEvent.Invoke(dialogue, VoiceId.Bianca);
+        AWSPollyDialogueTriggerEvent.Invoke(dialogue, VoiceId.Emma);
         //if the user clicks on the continue earlier, it will stop all the coroutines and start with the new one=>new text
         StopAllCoroutines();
 
         StartCoroutine(AnimateLetters(dialogue));
-
-
     }
+
     void EndDialogue()
     {
-        myanimator.SetBool("IsOpen", false);
-        isOpen = false;
+        myanimator.SetBool(DIALOGUE_ANIMATION_NAME, false);
+        dialogueTakingPlaceEvent.Invoke(true);
     }
 
 

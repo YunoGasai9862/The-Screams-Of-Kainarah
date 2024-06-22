@@ -4,8 +4,8 @@ public class OpenWares : MonoBehaviour
     [SerializeField] GameObject MagicCircle;
     [SerializeField] Conversations checkingDialogue;
     [SerializeField] GameObject WaresPanel;
-    public static bool Buying = false;
 
+    public static bool Buying = false;
     // Update is called once per frame
     void Update()
     {
@@ -13,12 +13,10 @@ public class OpenWares : MonoBehaviour
         {
             MagicCircle.SetActive(true);
         }
-
-
     }
     private void OnMouseDown()
     {
-        if (SceneSingleton.GetDialogueManager().IsOpen() && !SceneSingleton.GetInventoryManager().IsPouchOpen)
+        if (SceneSingleton.IsDialogueTakingPlace && !SceneSingleton.GetInventoryManager().IsPouchOpen)
         {
             WaresPanel.SetActive(true);
             Buying = true;

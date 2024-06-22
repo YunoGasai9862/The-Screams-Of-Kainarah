@@ -81,7 +81,7 @@ public class PlayerActions : MonoBehaviour
 
     private void Update()
     {
-        if (!SceneSingleton.GetDialogueManager().IsOpen())
+        if (SceneSingleton.IsDialogueTakingPlace)
         {
             //movement
             _keystrokeTrack = PlayerMovement();
