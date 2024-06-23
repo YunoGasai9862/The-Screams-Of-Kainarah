@@ -33,11 +33,11 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueEntity>
 
         if(DialogueType(dialogues) == typeof(Dialogues))
         {
-            StartCoroutine(Conversations.TriggerDialogue((Dialogues)dialogues));
+            StartCoroutine(DialogueTriggerManager.TriggerDialogue((Dialogues)dialogues));
         }
         else
         {
-            StartCoroutine(Conversations.TriggerDialogue((Dialogues[])dialogues));
+            StartCoroutine(DialogueTriggerManager.TriggerDialogue((Dialogues[])dialogues));
         }
     }
     private void OnEnable()

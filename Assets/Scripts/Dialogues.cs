@@ -7,7 +7,7 @@ using UnityEngine;
 [System.Serializable]
 public class Dialogues
 {
-    public string playername;
+    public string entityName;
 
     [TextArea(3, 10)]
     public string[] sentences;

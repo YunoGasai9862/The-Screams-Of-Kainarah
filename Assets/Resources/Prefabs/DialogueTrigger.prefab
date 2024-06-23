@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 6103493442260144530}
   - component: {fileID: 6103493442260144529}
+  - component: {fileID: 6273881037355009449}
   m_Layer: 0
   m_Name: DialogueTrigger
-  m_TagString: Untagged
+  m_TagString: DialogueTrigger
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24,13 +25,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6103493442260144531}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6103493442260144529
 MonoBehaviour:
@@ -50,8 +51,27 @@ MonoBehaviour:
     - Ugh!
     - Where on Earth, am I!
     - I have to get out of here, as soon as possible.
-  BossDialogue:
+  bossDialogue:
     playername: 'Rakash:'
     sentences:
-    - You dare enter my dungeon!
-    - Your transgressions will be punished...
+    - What brings you here!!!!
+    - Begone!! Or Die!
+  wizardPlayerConvo:
+  - playername: 'Alisha:'
+    sentences:
+    - I need your help!
+  - playername: 'Wizard:'
+    sentences:
+    - What do you need child?
+--- !u!114 &6273881037355009449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6103493442260144531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c50b13fad7d5afe46b21205053330567, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

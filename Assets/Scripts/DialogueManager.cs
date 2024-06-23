@@ -38,7 +38,7 @@ public class DialogueManager : MonoBehaviour
         dialogueTakingPlaceEvent.Invoke(true);
 
         m_storylineSentences.Clear();  //clears the previous dialogues, if there are any
-        myname.text = dialogue.playername;
+        myname.text = dialogue.entityName;
 
         foreach (string sentence in dialogue.sentences)
         {
@@ -65,10 +65,10 @@ public class DialogueManager : MonoBehaviour
         if (m_storylineSentences.Count == 0) //if there's nothing in the queue
         {
 
-            if (m_dialogues != null && Conversations.MultipleDialogues[m_dialogues] == false)
+            if (m_dialogues != null && !Conversations.MultipleDialogues[m_dialogues].dialogueConcluded)
             {
 
-                StartCoroutine(Conversations.TriggerDialogue(m_dialogues));
+                StartCoroutine(DialogueTriggerManager.TriggerDialogue(m_dialogues));
                 return;  //THIS WAS ALL I NEEDED, OMG!
                 //it fixed the issue, oh lord. 
                 //the problem was: it was trying to execute the rest of the code without exiting the function

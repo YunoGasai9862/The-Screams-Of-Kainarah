@@ -1,3 +1,4 @@
+using Amazon.Polly;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,21 +15,22 @@ public class Conversations : MonoBehaviour
     public Dialogues[] wizardPlayerConvo;
 
     //dictionaries
-    public static Dictionary<Dialogues, bool> dialogueDictionary;
-    public static Dictionary<Dialogues[], bool> MultipleDialogues;
-
-    public static int Dialoguecounter = 0;
+    public static Dictionary<Dialogues, DialogueOptions> dialogueDictionary;
+    public static Dictionary<Dialogues[], DialogueOptions> MultipleDialogues;
 
     //getter
     public static Dictionary<string, object> GetDialoguesDict { get => dialoguesDictionary; }
 
+    //use scriptable object to keep dialogues now :) - more cleaner with Dialogues and their options -> refactoring
+
     private void Start()
     {
-        dialogueDictionary = new Dictionary<Dialogues, bool>();
-        MultipleDialogues = new Dictionary<Dialogues[], bool>();
-        dialogueDictionary.Add(dialogue, false);
-        dialogueDictionary.Add(bossDialogue, false);
-        MultipleDialogues.Add(wizardPlayerConvo, false);
+        dialogueDictionary = new Dictionary<Dialogues, DialogueOptions>();
+        MultipleDialogues = new Dictionary<Dialogues[], DialogueOptions>();
+
+        dialogueDictionary.Add(dialogue, new DialogueOptions { dialogueConcluded = false,  multipleDialogues = false, voiceId = VoiceId.Emma });
+        dialogueDictionary.Add(bossDialogue, new DialogueOptions { dialogueConcluded = false, multipleDialogues = false, voiceId = VoiceId.Enrique});
+        MultipleDialogues.Add(wizardPlayerConvo, new DialogueOptions { dialogueConcluded = false, multipleDialogues = true, voiceId = VoiceId.Jacek});
 
         dialoguesDictionary = new Dictionary<string, object>
         {
@@ -37,38 +39,5 @@ public class Conversations : MonoBehaviour
             {"Vendor", wizardPlayerConvo}
         };
 
-    }
-    //separate triggers from dialogue class
-
-    public static IEnumerator TriggerDialogue(Dialogues dialogue)
-    {
-        yield return new WaitForSeconds(.1f);
-        if (dialogueDictionary[dialogue] == false)
-        {
-            FindFirstObjectByType<DialogueManager>().StartDialogue(dialogue);
-            dialogueDictionary[dialogue] = true; //already played
-        }
-
-    }
-
-
-    public static IEnumerator TriggerDialogue(Dialogues[] dialogue)
-    {
-        if (MultipleDialogues[dialogue] == false)
-        {
-            if (dialogue.Length == Dialoguecounter)
-            {
-                MultipleDialogues[dialogue] = true;
-                Dialoguecounter = 0;
-                yield return null;
-
-            }
-            else
-            {
-                FindFirstObjectByType<DialogueManager>().StartDialogue(dialogue[Dialoguecounter], dialogue);
-                Dialoguecounter++;
-            }
-
-        }
     }
 }
