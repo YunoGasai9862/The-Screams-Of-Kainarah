@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Amazon;
 using Amazon.Polly.Model;
 using System;
+using System.IO;
 
 public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 {
@@ -26,6 +27,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     private FileUtils FileUtils { get; set; } = new FileUtils();
 
     private UnityWebRequestMultimediaManager UnityWebRequestMultimediaManager { get; set; } = new UnityWebRequestMultimediaManager();
+
+    private int VOICE_GENERATION_DELAY { get; set; } = 500;
 
     //use memory space for writing
     private string AudioPath { get; set; } = "AmazonNarrator.mp3";
@@ -92,19 +95,28 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
     public async Task<SynthesizeSpeechResponse> AWSSynthesizeSpeechCommunicator(AmazonPollyClient client, string text, Engine engine, VoiceId voiceId, OutputFormat outputFormat)
     {
+        TaskCompletionSource<SynthesizeSpeechRequest> synthesizeSpeechRequestTCS = new TaskCompletionSource<SynthesizeSpeechRequest>();
+
+        TaskCompletionSource<SynthesizeSpeechResponse> synthesizeSpeechResponseTCS = new TaskCompletionSource<SynthesizeSpeechResponse>();
+
         try
         {
             SynthesizeSpeechRequest request = PrepareSynthesizeSpeechRequestPacket(text, engine, voiceId, outputFormat);
 
-            SynthesizeSpeechResponse response = await PrepareSynthesizeSpeechResponsePacket(client, request);
+            synthesizeSpeechRequestTCS.SetResult(request);
 
-            return response;
+            SynthesizeSpeechResponse response = await PrepareSynthesizeSpeechResponsePacket(client, await synthesizeSpeechRequestTCS.Task);
+
+            synthesizeSpeechResponseTCS.SetResult(response);
+
 
         }catch(Exception ex)
         {
             Debug.Log($"Exception: {ex.Message}");
             throw ex;
         }
+
+        return await synthesizeSpeechResponseTCS.Task;
     }
 
     public SynthesizeSpeechRequest PrepareSynthesizeSpeechRequestPacket(string text, Engine engine, VoiceId voiceId, OutputFormat outputFormat)
@@ -127,15 +139,21 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     //this will be invoked by an event
     public async void GenerateAIVoice(string text, VoiceId voiceId)
     {
-        SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, text , Engine.Neural, voiceId, OutputFormat.Mp3);
+        //off load it to background
+
+        SynthesizeSpeechResponse = await Task.Run(() =>
+        AWSSynthesizeSpeechCommunicator(AmazonPollyClient, text, Engine.Neural, voiceId, OutputFormat.Mp3));
+
+        //maybe make it better?
+        await Task.Delay(VOICE_GENERATION_DELAY);
 
         await SaveAudio(SynthesizeSpeechResponse, $"{Application.persistentDataPath}/{AudioPath}");
 
         AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio($"{Application.persistentDataPath}/{AudioPath}", AudioPath, AudioType.MPEG);
 
         AudioSource.Play();
+   
     }
-
 
     private Task SaveAudio(SynthesizeSpeechResponse response, string fullPath)
     {

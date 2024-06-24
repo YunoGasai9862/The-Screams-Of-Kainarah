@@ -17,7 +17,6 @@ public class DialogueTriggerManager : MonoBehaviour
         yield return null;
     }
 
-
     public static IEnumerator TriggerDialogue(Dialogues[] dialogue)
     {
         if (!Conversations.MultipleDialogues[dialogue].dialogueConcluded)

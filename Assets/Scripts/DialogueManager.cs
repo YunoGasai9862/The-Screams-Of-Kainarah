@@ -94,7 +94,7 @@ public class DialogueManager : MonoBehaviour
     void EndDialogue()
     {
         myanimator.SetBool(DIALOGUE_ANIMATION_NAME, false);
-        dialogueTakingPlaceEvent.Invoke(true);
+        dialogueTakingPlaceEvent.Invoke(false);
     }
 
 
