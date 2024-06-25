@@ -1,0 +1,2 @@
+Separate Speech Async, and use events to notify that it has been completed. Once that is done then save the audio and generate the voice - that might help 
+Action item for tomorrow
