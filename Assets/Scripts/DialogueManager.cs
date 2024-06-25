@@ -1,6 +1,8 @@
 using Amazon.Polly;
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,9 +58,18 @@ public class DialogueManager : MonoBehaviour
 
         for (int i = 0; i < sentence.Length; i++)
         {
-            yield return new WaitForSeconds(.04f);
+            yield return new WaitForSeconds(.05f);
             maindialogue.text += sentence[i];
         }
+
+    }
+
+    public Task InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent, string sentence, VoiceId voiceId)
+    {
+        //once all the letters have animated, invoke voice
+        awsPollyDialogueTriggerEvent.Invoke(sentence, voiceId);
+
+        return Task.CompletedTask;
     }
     public void DisplayNextSentence()
     {
@@ -78,14 +89,12 @@ public class DialogueManager : MonoBehaviour
                 EndDialogue();
                 return;  //exits function
             }
-
         }
 
         string dialogue = m_storylineSentences.Dequeue();
 
-        //create a new class when refactoring to send in voices accordingly
-        AWSPollyDialogueTriggerEvent.Invoke(dialogue, VoiceId.Emma);
-        //if the user clicks on the continue earlier, it will stop all the coroutines and start with the new one=>new text
+        InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent, dialogue, VoiceId.Emma);
+
         StopAllCoroutines();
 
         StartCoroutine(AnimateLetters(dialogue));
