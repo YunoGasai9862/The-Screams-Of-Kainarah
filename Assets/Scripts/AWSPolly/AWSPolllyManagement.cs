@@ -32,9 +32,9 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     private int VOICE_GENERATION_DELAY { get; set; } = 500;
 
     private SemaphoreSlim AWSSemaphore { get; set; } = new SemaphoreSlim(1);
-
-    //use memory space for writing
     private string AudioPath { get; set; } = "AmazonNarrator.mp3";
+    private string PersistencePath { get; set; }
+
 
     [SerializeField]
     AudioSource AudioSource;
@@ -46,6 +46,11 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     string AWSKeysfileNameOnFireBase;
     [SerializeField]
     AWSPollyDialogueTriggerEvent m_AWSPollyDialogueTriggerEvent;
+
+    private void Awake()
+    {
+        PersistencePath = $"{Application.persistentDataPath}/{AudioPath}";
+    }
 
     private async void Start()
     {
@@ -106,21 +111,27 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
             SynthesizeSpeechResponse response = await PrepareSynthesizeSpeechResponsePacket(client, request);
 
+            if(response!=null && response.AudioStream != null)
+            {
+                return response;
+            }
             //look for more enhancements + better solutioning
-            await Task.Delay(VOICE_GENERATION_DELAY).ConfigureAwait(false);
+           // await Task.Delay(VOICE_GENERATION_DELAY).ConfigureAwait(false);
 
-            return response;
+           // return response;
 
         }
         catch (Exception ex)
         {
             Debug.Log($"Exception: {ex.Message}");
-            throw ex;
+            throw;
         }
         finally
         {
             AWSSemaphore.Release();
         }
+
+        return null;
     }
 
     public SynthesizeSpeechRequest PrepareSynthesizeSpeechRequestPacket(string text, Engine engine, VoiceId voiceId, OutputFormat outputFormat)
@@ -137,17 +148,17 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
     public async Task<SynthesizeSpeechResponse> PrepareSynthesizeSpeechResponsePacket(AmazonPollyClient client, SynthesizeSpeechRequest request)
     {
-        return await client.SynthesizeSpeechAsync(request);
+        return await client.SynthesizeSpeechAsync(request).ConfigureAwait(false);
     }
     
     //this will be invoked by an event
     public async void GenerateAIVoice(string text, VoiceId voiceId)
     {
-        SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, text, Engine.Neural, voiceId, OutputFormat.Mp3);
+        SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, text, Engine.Neural, voiceId, OutputFormat.Mp3).ConfigureAwait(false);
 
-        await SaveAudio(SynthesizeSpeechResponse, $"{Application.persistentDataPath}/{AudioPath}");
+        await SaveAudio(SynthesizeSpeechResponse, PersistencePath);
 
-        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio($"{Application.persistentDataPath}/{AudioPath}", AudioPath, AudioType.MPEG);
+        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(PersistencePath, AudioPath, AudioType.MPEG);
 
         AudioSource.Play();
    
