@@ -156,7 +156,9 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     {
         SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, text, Engine.Neural, voiceId, OutputFormat.Mp3).ConfigureAwait(false);
 
-        await SaveAudio(SynthesizeSpeechResponse, PersistencePath);
+        Debug.Log(SynthesizeSpeechResponse);
+
+        await SaveAudio(SynthesizeSpeechResponse, PersistencePath).ConfigureAwait(false);
 
         AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(PersistencePath, AudioPath, AudioType.MPEG);
 
