@@ -25,6 +25,10 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
     private SynthesizeSpeechResponse SynthesizeSpeechResponse { get; set; }
 
+    private CancellationTokenSource CancellationTokenSource { get; set; }
+
+    private CancellationToken CancellationToken { get; set; }
+
     private FileUtils FileUtils { get; set; } = new FileUtils();
 
     private UnityWebRequestMultimediaManager UnityWebRequestMultimediaManager { get; set; } = new UnityWebRequestMultimediaManager();
@@ -50,6 +54,10 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     private void Awake()
     {
         PersistencePath = $"{Application.persistentDataPath}/{AudioPath}";
+
+        CancellationTokenSource = new CancellationTokenSource();
+
+        CancellationToken = CancellationTokenSource.Token;
     }
 
     private async void Start()
@@ -160,10 +168,15 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
         await SaveAudio(SynthesizeSpeechResponse, PersistencePath).ConfigureAwait(false);
 
+        await MainThreadDispatcher.Instance.Enqueue(PlayAudio, CancellationToken);
+ 
+    }
+
+    private async void PlayAudio()
+    {
         AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(PersistencePath, AudioPath, AudioType.MPEG);
 
         AudioSource.Play();
-   
     }
 
     private Task SaveAudio(SynthesizeSpeechResponse response, string fullPath)

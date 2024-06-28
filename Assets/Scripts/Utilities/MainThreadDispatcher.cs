@@ -7,40 +7,25 @@ using UnityEngine;
 public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
 {
     private static MainThreadDispatcher _instance;
-    public static MainThreadDispatcher Instance 
-    { 
-        get 
-        {
-            if (_instance == null)
-            {
-                _instance = new GameObject("MainThreadDispatcher").AddComponent<MainThreadDispatcher>();
-
-                DontDestroyOnLoad(Instance.gameObject);
-            }
-
-            return _instance;
-        }
-    }
-    private CancellationTokenSource CancellationTokenSource { get; set; }
-    private CancellationToken CancellationToken { get; set; }
-
+    public static MainThreadDispatcher Instance { get; private set; }
     private SemaphoreSlim DispatcherSemaphore { get; set; }
 
     private static Queue<Action> enqueuedActions = new Queue<Action>();
 
     private void Awake()
     {
-        CancellationTokenSource = new CancellationTokenSource();
-
-        CancellationToken = CancellationTokenSource.Token;
-
         DispatcherSemaphore = new SemaphoreSlim(1); //1 Semaphore Slim is enough
+        _instance = GameObject.FindFirstObjectByType<MainThreadDispatcher>().GetComponent<MainThreadDispatcher>();  
+    }
+
+    private void Start()
+    {
+        Instance = _instance;
     }
 
     public void Update()
     {
-
-        Dispatcher(DispatcherSemaphore, enqueuedActions, CancellationToken);
+        Dispatcher(DispatcherSemaphore, enqueuedActions);
     }
 
     public Task Enqueue(Action action, CancellationToken cancellationToken)
@@ -53,6 +38,8 @@ public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
             {
                 lock (enqueuedActions) //restricts enqueuedActions to be used by single thread at a time
                 {
+                    Debug.Log($"Action {action}");
+
                     enqueuedActions.Enqueue(action);
                 }
             }
@@ -61,23 +48,28 @@ public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
         {
             Debug.LogException(ex);
 
-            CancellationTokenSource.Cancel();
-
             throw;
         }
 
         return Task.CompletedTask;
     }
 
-    public Task Dispatcher(SemaphoreSlim dispatcherSlim, Queue<Action> actionQueue, CancellationToken cancellationToken)
+    public Task Dispatcher(SemaphoreSlim dispatcherSlim, Queue<Action> actionQueue)
     {
-        dispatcherSlim.WaitAsync(cancellationToken);
-
         while (dispatcherSlim.CurrentCount > 0)
         {
+            dispatcherSlim.WaitAsync();
+
+            Debug.Log(dispatcherSlim.CurrentCount);
+
             lock (enqueuedActions)
             {
-                enqueuedActions.Dequeue().Invoke(); //invoke the action and dispatch it to the main thread
+                if(enqueuedActions.Count > 0)
+                {
+                    Debug.Log("HERE");
+
+                    actionQueue.Dequeue().Invoke(); //invoke the action and dispatch it to the main thread
+                }
             }
 
             dispatcherSlim.Release();
