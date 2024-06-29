@@ -9,11 +9,8 @@ public class FirebaseDatabaseManager : MonoBehaviour, IFirebaseDatabase
 {
     //use this later if ever required to use Firebase Database for inventory/user logins (quickly prototyping it for now)
     private DatabaseReference FirebaseDatabaseReference { get; set; }
-    private async void Start()
+    private void Start()
     {
-        FirebaseDatabase database = FirebaseDatabase.GetInstance(FirebaseApp.DefaultInstance, "https://the-screams-of-kainarah-default-rtdb.europe-west1.firebasedatabase.app/");
-        Debug.Log(database);
-        FirebaseDatabaseReference = database.RootReference;
 
         //test to check
         //Player player = new Player("Muhammad Bilal", "TES");
@@ -38,6 +35,14 @@ public class FirebaseDatabaseManager : MonoBehaviour, IFirebaseDatabase
             Debug.LogError(e);
         }
 
+    }
+
+    public Task SetupFirebaseDB()
+    {
+        FirebaseDatabase database = FirebaseDatabase.GetInstance(FirebaseApp.DefaultInstance, "https://the-screams-of-kainarah-default-rtdb.europe-west1.firebasedatabase.app/");
+         Debug.Log(database);
+        FirebaseDatabaseReference = database.RootReference;
+        return Task.CompletedTask;
     }
 
     public DatabaseReference GetDatabaseReference()
