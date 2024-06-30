@@ -4,26 +4,26 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public class MainThreadDispatcherEvent : UnityEventWT<Action, CancellationToken>
+public class MainThreadDispatcherEvent : UnityEventWT<Action>
 {
-    private UnityEvent<Action, CancellationToken> m_MainThreadDispatcherEvent = new UnityEvent<Action, CancellationToken>();
+    private UnityEvent<Action> m_MainThreadDispatcherEvent = new UnityEvent<Action>();
 
-    public override Task AddListener(UnityAction<Action, CancellationToken> action)
+    public override Task AddListener(UnityAction<Action> action)
     {
         m_MainThreadDispatcherEvent.AddListener(action);
 
         return Task.CompletedTask;
     }
 
-    public override UnityEvent<Action, CancellationToken> GetInstance()
+    public override UnityEvent<Action> GetInstance()
     {
         return m_MainThreadDispatcherEvent;
     }
 
-    public override Task Invoke(Action tValue, CancellationToken zValue)
+    public override Task Invoke(Action value)
     {
 
-        m_MainThreadDispatcherEvent.Invoke(tValue, zValue);
+        m_MainThreadDispatcherEvent.Invoke(value);
 
         return Task.CompletedTask;
     }

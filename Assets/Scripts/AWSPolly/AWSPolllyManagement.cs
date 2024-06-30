@@ -164,7 +164,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
         await SaveAudio(SynthesizeSpeechResponse, PersistencePath).ConfigureAwait(false);
 
-        await mainThreadDispatcherEvent.Invoke(PlayAudio, CancellationToken);
+        await mainThreadDispatcherEvent.Invoke(PlayAudio);
     }
 
     private async void PlayAudio()

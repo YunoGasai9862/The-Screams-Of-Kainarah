@@ -10,11 +10,11 @@ public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
 {
     private SemaphoreSlim DispatcherSemaphore { get; set; } = new SemaphoreSlim(1);
 
-    private Action DispatchEvent {  get; set; }
+    private Queue<Action> DispatchActions { get; set; } = new Queue<Action>();
+
+    private CancellationTokenSource CancellationTokenSource { get; set; }
 
     private CancellationToken CancellationToken { get; set; }
-
-    private bool RunOnMainThread { get; set; }
 
     [SerializeField]
     MainThreadDispatcherEvent mainThreadDispatcherEvent;
@@ -22,15 +22,17 @@ public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
     private void Start()
     {
         mainThreadDispatcherEvent.AddListener(DispatcherListener);
+
+        CancellationTokenSource = new CancellationTokenSource();
+        
+        CancellationToken = CancellationTokenSource.Token;
     }
 
     private void Update()
     {
-        if (RunOnMainThread)
+        while (DispatchActions.Count > 0)
         {
-            Dispatcher(DispatchEvent, CancellationToken);
-
-            RunOnMainThread = false;
+            Dispatcher(DispatchActions.Dequeue(), CancellationToken);
         }
     }
 
@@ -63,17 +65,13 @@ public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
         return null;
     }
 
-    public void DispatcherListener(Action action, CancellationToken token)
+    public void DispatcherListener(Action action)
     {
         if (action == null) throw new ApplicationException($"Action can't be null {action}");
 
-        lock (this)
+        lock (action)
         {
-            DispatchEvent = action;
-
-            CancellationToken = token;
-
-            RunOnMainThread = true;
+            DispatchActions.Enqueue(action);
         }
     }
 }
