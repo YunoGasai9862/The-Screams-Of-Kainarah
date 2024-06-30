@@ -7,23 +7,32 @@ public class UnityWebRequestMultimediaManager : IUnityWebRequestMultimedia
 {
     public async Task<AudioClip> GetAudio(string path, string audioClipName, AudioType audioType)
     {
-        using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(path, audioType))
+        try
         {
-
-            UnityWebRequestAsyncOperation webRequestAsyncOperation = uwr.SendWebRequest();
-
-            //await until the file is yield
-            while (!webRequestAsyncOperation.isDone)
+            using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(path, audioType))
             {
-                await Task.Yield();
+                UnityWebRequestAsyncOperation webRequestAsyncOperation = uwr.SendWebRequest();
+
+                //await until the file is yield
+                while (!webRequestAsyncOperation.isDone)
+                {
+                    await Task.Yield();
+                }
+
+                AudioClip audioClip = DownloadHandlerAudioClip.GetContent(uwr);
+
+                audioClip.name = audioClipName;
+
+                return audioClip;
             }
 
-            AudioClip audioClip = DownloadHandlerAudioClip.GetContent(uwr);
-
-            audioClip.name = audioClipName;
-
-            return audioClip;
+        }catch (Exception ex)
+        {
+            Debug.Log($"Exception {ex}");
         }
+
+        return null;
+
     }
 
     public async Task<TextAsset> GetTextAssetFile(string remoteURL)

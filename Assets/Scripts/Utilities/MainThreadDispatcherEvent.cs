@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.Events;
@@ -6,6 +7,7 @@ using UnityEngine.Events;
 public class MainThreadDispatcherEvent : UnityEventWT<Action, CancellationToken>
 {
     private UnityEvent<Action, CancellationToken> m_MainThreadDispatcherEvent = new UnityEvent<Action, CancellationToken>();
+
     public override Task AddListener(UnityAction<Action, CancellationToken> action)
     {
         m_MainThreadDispatcherEvent.AddListener(action);
@@ -20,7 +22,8 @@ public class MainThreadDispatcherEvent : UnityEventWT<Action, CancellationToken>
 
     public override Task Invoke(Action tValue, CancellationToken zValue)
     {
-        m_MainThreadDispatcherEvent?.Invoke(tValue, zValue);
+
+        m_MainThreadDispatcherEvent.Invoke(tValue, zValue);
 
         return Task.CompletedTask;
     }

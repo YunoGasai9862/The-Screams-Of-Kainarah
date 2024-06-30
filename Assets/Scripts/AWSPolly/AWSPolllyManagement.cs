@@ -8,6 +8,7 @@ using Amazon.Polly.Model;
 using System;
 using System.IO;
 using System.Threading;
+using System.Collections;
 
 public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 {
@@ -50,6 +51,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     string AWSKeysfileNameOnFireBase;
     [SerializeField]
     AWSPollyDialogueTriggerEvent m_AWSPollyDialogueTriggerEvent;
+    [SerializeField]
+    MainThreadDispatcherEvent mainThreadDispatcherEvent;
 
     private void Awake()
     {
@@ -71,7 +74,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
         AmazonPollyClient = await EstablishConnection(Credentials, RegionEndpoint.EUCentral1);
 
     }
-
 
     public async Task SetupFirebaseStorageForAWSPrivateKeys()
     {
@@ -123,10 +125,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
             {
                 return response;
             }
-            //look for more enhancements + better solutioning
-           // await Task.Delay(VOICE_GENERATION_DELAY).ConfigureAwait(false);
-
-           // return response;
 
         }
         catch (Exception ex)
@@ -164,13 +162,9 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     {
         SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, text, Engine.Neural, voiceId, OutputFormat.Mp3).ConfigureAwait(false);
 
-        Debug.Log(SynthesizeSpeechResponse);
-
         await SaveAudio(SynthesizeSpeechResponse, PersistencePath).ConfigureAwait(false);
-            
-        //use event drive approach now
-      //  await MainThreadDispatcher.Instance.Enqueue(PlayAudio, CancellationToken);
- 
+
+        await mainThreadDispatcherEvent.Invoke(PlayAudio, CancellationToken);
     }
 
     private async void PlayAudio()
@@ -178,6 +172,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
         AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(PersistencePath, AudioPath, AudioType.MPEG);
 
         AudioSource.Play();
+
+        File.Delete(PersistencePath);
     }
 
     private Task SaveAudio(SynthesizeSpeechResponse response, string fullPath)

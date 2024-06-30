@@ -1,28 +1,50 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
-public class MainThreadDispatcher : IMainThreadDispatcher
+public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
 {
     private SemaphoreSlim DispatcherSemaphore { get; set; } = new SemaphoreSlim(1);
 
-    public Task Dispatcher(Action actionQueue)
+    private Action DispatchEvent {  get; set; }
+
+    private CancellationToken CancellationToken { get; set; }
+
+    private bool RunOnMainThread { get; set; }
+
+    [SerializeField]
+    MainThreadDispatcherEvent mainThreadDispatcherEvent;
+
+    private void Start()
     {
-        if(DispatcherSemaphore.CurrentCount > 0)
+        mainThreadDispatcherEvent.AddListener(DispatcherListener);
+    }
+
+    private void Update()
+    {
+        if (RunOnMainThread)
         {
-            Debug.Log($"Before wait: {DispatcherSemaphore.CurrentCount}");
+            Dispatcher(DispatchEvent, CancellationToken);
 
+            RunOnMainThread = false;
+        }
+    }
+
+    public Task Dispatcher(Action action, CancellationToken cancellationToken)
+    {
+        if(DispatcherSemaphore.CurrentCount > 0 && !cancellationToken.IsCancellationRequested)
+        {
             DispatcherSemaphore.WaitAsync();
-
-            Debug.Log($"After wait: {DispatcherSemaphore.CurrentCount}");
 
             try
             {
-                lock (actionQueue)
+                lock (action)
                 {
-                    actionQueue?.Invoke(); //invoke the action and dispatch it to the main thread
+                    action.Invoke(); //invoke the action and dispatch it to the main thread
                 }
 
             }catch(Exception ex)
@@ -38,6 +60,20 @@ public class MainThreadDispatcher : IMainThreadDispatcher
 
         }
 
-        return Task.CompletedTask;
+        return null;
+    }
+
+    public void DispatcherListener(Action action, CancellationToken token)
+    {
+        if (action == null) throw new ApplicationException($"Action can't be null {action}");
+
+        lock (this)
+        {
+            DispatchEvent = action;
+
+            CancellationToken = token;
+
+            RunOnMainThread = true;
+        }
     }
 }

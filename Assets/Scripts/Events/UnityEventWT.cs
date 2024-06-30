@@ -15,5 +15,4 @@ public abstract class UnityEventWT<T, Z> : MonoBehaviour, ICustomUnityEventWT<T,
     public abstract UnityEvent<T, Z> GetInstance();
     public abstract Task AddListener(UnityAction<T, Z> action);
     public abstract Task Invoke(T tValue, Z zValue);
-
 }
