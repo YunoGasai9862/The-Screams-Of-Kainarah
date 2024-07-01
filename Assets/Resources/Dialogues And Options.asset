@@ -12,9 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd4694ff2528c7148a33c797f5d416b6, type: 3}
   m_Name: Dialogues And Options
   m_EditorClassIdentifier: 
-  dialogues:
-    entityName: 
-    sentences: []
-  dialogueOptions:
-    dialogueConcluded: 0
-    multipleDialogues: 0
+  exchange: []

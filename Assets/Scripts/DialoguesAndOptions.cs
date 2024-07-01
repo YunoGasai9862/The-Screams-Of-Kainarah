@@ -5,6 +5,12 @@ using UnityEngine;
 [Serializable]
 public class DialoguesAndOptions: ScriptableObject
 {
-    public Dialogues dialogues;
-    public DialogueOptions dialogueOptions;
+    [Serializable]
+    public class DialogueExchange
+    {
+        public Dialogues dialogues;
+        public DialogueOptions dialogueOptions;
+    }
+
+    public DialogueExchange[] exchange;
 }

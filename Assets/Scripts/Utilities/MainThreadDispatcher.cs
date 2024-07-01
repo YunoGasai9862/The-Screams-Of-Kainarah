@@ -28,12 +28,19 @@ public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
         CancellationToken = CancellationTokenSource.Token;
     }
 
-    private void Update()
+    private async void Update()
     {
-        while (DispatchActions.Count > 0)
+        await DispatchIterator(DispatchActions);
+    }
+
+    public Task DispatchIterator(Queue<Action> actions)
+    {
+        while(actions.Count > 0)
         {
             Dispatcher(DispatchActions.Dequeue(), CancellationToken);
         }
+
+        return Task.CompletedTask;
     }
 
     public Task Dispatcher(Action action, CancellationToken cancellationToken)
