@@ -7,6 +7,7 @@ public class DialogueOptions
     public bool dialogueConcluded;
     public bool multipleDialogues;
     public string voice;
+    //wont be visible in the UI
     public VoiceId voiceId;
     //call always when an entity is added to the scriptble object
     public void ParseVoiceId()

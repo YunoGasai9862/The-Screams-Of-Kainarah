@@ -9,6 +9,7 @@ public class DialoguesAndOptions: ScriptableObject
     public class DialogueExchange
     {
         public Dialogues dialogues;
+        public Dialogues[] multiDialogues;
         public DialogueOptions dialogueOptions;
     }
 

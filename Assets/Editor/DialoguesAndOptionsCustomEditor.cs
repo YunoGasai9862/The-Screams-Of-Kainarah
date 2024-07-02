@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -6,15 +6,18 @@ using UnityEngine;
 [CustomEditor(typeof(DialoguesAndOptions))]
 public class DialoguesAndOptionsCustomEditor : Editor
 {
+
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
 
         DialoguesAndOptions dialoguesAndOptions = (DialoguesAndOptions)target;
 
+        VoiceOptions();
+
         SerializedProperty array = serializedObject.FindProperty("exchange");
 
-        if(GUILayout.Button("Add Dialougue Exchange"))
+        if (GUILayout.Button("Add Dialougue Exchange"))
         {
             array.arraySize++;
         }
@@ -27,9 +30,27 @@ public class DialoguesAndOptionsCustomEditor : Editor
 
             SerializedProperty dialogueOptions = element.FindPropertyRelative("dialogueOptions");
 
-            EditorGUILayout.PropertyField(dialogues);
+            SerializedProperty multiDialogues = element.FindPropertyRelative("multiDialogues");
 
             EditorGUILayout.PropertyField(dialogueOptions);
+
+            SerializedProperty multipleDialogues = dialogueOptions.FindPropertyRelative("multipleDialogues");
+
+            EditorGUI.BeginChangeCheck();
+
+            //check if you can create an array dynamically instead of having a property like that
+
+            if(multipleDialogues.boolValue)
+            {
+                EditorGUILayout.PropertyField(multiDialogues);
+            }
+            else
+            {
+                EditorGUILayout.PropertyField(dialogues);
+            }
+
+            EditorGUI.EndChangeCheck();
+
 
             //continue with adding more labels/picking up and use it!!!
 
@@ -41,5 +62,34 @@ public class DialoguesAndOptionsCustomEditor : Editor
         }
 
         serializedObject.ApplyModifiedProperties();
+    }
+
+    public void VoiceOptions()
+    {
+        GUILayout.Label("Voice Options Available:");
+        GUILayout.Label(
+            "Aditi, Adriano, Amy, Andres, Aria,\n" +
+            "Arlet, Arthur, Astrid, Ayanda, Bianca,\n" +
+            "Brian, Burcu, Camila, Carla, Carmen,\n" +
+            "Celine, Chantal, Conchita, Cristiano, Daniel,\n" +
+            "Danielle, Dora, Elin, Emma, Enrique,\n" +
+            "Ewa, Filiz, Gabrielle, Geraint, Giorgio,\n" +
+            "Gregory, Gwyneth, Hala, Hannah, Hans,\n" +
+            "Hiujin, Ida, Ines, Isabelle, Ivy,\n" +
+            "Jacek, Jan, Joanna, Joey, Justin,\n" +
+            "Kajal, Karl, Kazuha, Kendra, Kevin,\n" +
+            "Kimberly, Laura, Lea, Liam, Lisa,\n" +
+            "Liv, Lotte, Lucia, Lupe, Mads,\n" +
+            "Maja, Marlene, Mathieu, Matthew, Maxim,\n" +
+            "Mia, Miguel, Mizuki, Naja, Niamh,\n" +
+            "Nicole, Ola, Olivia, Pedro, Penelope,\n" +
+            "Raveena, Remi, Ricardo, Ruben, Russell,\n" +
+            "Ruth, Salli, Seoyeon, Sergio, Sofie,\n" +
+            "Stephen, Suvi, Takumi, Tatyana, Thiago,\n" +
+            "Tomoko, Vicki, Vitoria, Zayd, Zeina,\n" +
+            "Zhiyu"
+        );
+
+        GUILayout.Space(10);
     }
 }

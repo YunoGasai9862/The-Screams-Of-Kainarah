@@ -86,6 +86,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
         AWS_ACCESS_KEY = splitKeys[AWS_ACCESS_KEY_INDEX];
 
         SECRET_AWS_ASCCESS_KEY = splitKeys[SECRET_AWS_ASCCESS_KEY_INDEX];
+
     }
 
     public Task<AmazonPollyClient> EstablishConnection(BasicAWSCredentials credentials, RegionEndpoint endpoint)
