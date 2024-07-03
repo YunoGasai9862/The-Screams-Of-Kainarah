@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class DialogueTriggerManager : MonoBehaviour
 {
-
     private static int m_dialogueCounter = 0;
     public static IEnumerator TriggerDialogue(Dialogues dialogue)
     {

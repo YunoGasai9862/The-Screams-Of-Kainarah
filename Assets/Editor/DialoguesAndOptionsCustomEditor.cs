@@ -24,6 +24,8 @@ public class DialoguesAndOptionsCustomEditor : Editor
 
         for(int i = 0; i< array.arraySize; i++)
         {
+            GUILayout.Label($"Dialogue: {i + 1}");
+
             SerializedProperty element = serializedObject.FindProperty("exchange").GetArrayElementAtIndex(i);
 
             SerializedProperty dialogues = element.FindPropertyRelative("dialogues");
@@ -38,10 +40,9 @@ public class DialoguesAndOptionsCustomEditor : Editor
 
             EditorGUI.BeginChangeCheck();
 
-            //check if you can create an array dynamically instead of having a property like that
-
             if(multipleDialogues.boolValue)
             {
+
                 EditorGUILayout.PropertyField(multiDialogues);
             }
             else
@@ -51,8 +52,7 @@ public class DialoguesAndOptionsCustomEditor : Editor
 
             EditorGUI.EndChangeCheck();
 
-
-            //continue with adding more labels/picking up and use it!!!
+            GUILayout.Space(30);
 
         }
 

@@ -23,7 +23,6 @@ public class PlayerActionRelayer : AbstractEntity
     private float ENEMYATTACK = 5f;
     private bool pickedUp;
     private PickableItemsHandler _pickableItems;
-    private Conversations dialogue;
     private SemaphoreSlim _semaphoreSlim;
     private SemaphoreSlim _semaphoreSlimForCheckpoint;
     private CancellationTokenSource _cancellationTokenSource;
@@ -68,17 +67,10 @@ public class PlayerActionRelayer : AbstractEntity
 
         anim = GetComponent<Animator>();
 
-        dialogue= GameObject.FindWithTag(InteractableTag).GetComponent<Conversations>(); 
-
     }
 
     private async void Update()
     {
-
-        if (dialogue == null)
-        {
-            dialogue = GameObject.FindWithTag(InteractableTag).GetComponent<Conversations>();
-        }
         
         if (await IsPlayerDead(Health) && GetCheckPointSemaphore.CurrentCount!=0)
         {
