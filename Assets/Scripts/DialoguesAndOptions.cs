@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Dialogues And Options", menuName = "Dialogue And Options")]
@@ -8,10 +9,9 @@ public class DialoguesAndOptions: ScriptableObject
     [Serializable]
     public class DialogueExchange
     {
-        public Dialogues dialogues;
-        public Dialogues[] multiDialogues;
+        public List<Dialogues> dialogues;
         public DialogueOptions dialogueOptions;
     }
 
-    public DialogueExchange[] exchange;
+    public List<DialogueExchange> exchange;
 }

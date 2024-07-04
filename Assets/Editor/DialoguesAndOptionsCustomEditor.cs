@@ -6,7 +6,7 @@ using UnityEngine;
 [CustomEditor(typeof(DialoguesAndOptions))]
 public class DialoguesAndOptionsCustomEditor : Editor
 {
-
+    private const int SINGLE_DIALOGUE_MAX_ARRAY_LENGTH = 1;
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
@@ -32,25 +32,23 @@ public class DialoguesAndOptionsCustomEditor : Editor
 
             SerializedProperty dialogueOptions = element.FindPropertyRelative("dialogueOptions");
 
-            SerializedProperty multiDialogues = element.FindPropertyRelative("multiDialogues");
+            SerializedProperty multiDialoguesBool = dialogueOptions.FindPropertyRelative("multipleDialogues");
 
-            EditorGUILayout.PropertyField(dialogueOptions);
 
-            SerializedProperty multipleDialogues = dialogueOptions.FindPropertyRelative("multipleDialogues");
+            //if we have more elements, what we can do is automatically check the multiple dialogue bool flag
 
-            EditorGUI.BeginChangeCheck();
-
-            if(multipleDialogues.boolValue)
+            if(dialogues.arraySize > SINGLE_DIALOGUE_MAX_ARRAY_LENGTH)
             {
-
-                EditorGUILayout.PropertyField(multiDialogues);
+                multiDialoguesBool.boolValue = true;
             }
             else
             {
-                EditorGUILayout.PropertyField(dialogues);
+                multiDialoguesBool.boolValue = false;
             }
 
-            EditorGUI.EndChangeCheck();
+            EditorGUILayout.PropertyField(dialogueOptions);
+
+            EditorGUILayout.PropertyField(dialogues);
 
             GUILayout.Space(30);
 

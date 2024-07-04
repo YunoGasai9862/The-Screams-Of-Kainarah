@@ -14,37 +14,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   exchange:
   - dialogues:
-      entityName: 'Alisha:'
+    - entityName: 'Alisha:'
       voice: Emma
       sentences:
       - Ugh, my head!
       - What is this place?
-      - This...it can't be! I need to get out of here as soon as possible...before
-    multiDialogues: []
+      - This...it can't be! I need to get out of here as soon as possible...
     dialogueOptions:
       dialogueConcluded: 0
       multipleDialogues: 0
-      triggeringObject: TriggerPoint1
+      triggeringObjectName: TriggerPoint1
   - dialogues:
-      entityName: 'Rakash:'
+    - entityName: 'Rakash:'
       voice: Zayd
       sentences:
-      - Finally....
+      - Finaly....
       - I have been waiting for you - I was told you'll come by, and see here you
         are with no one to guard your puny, little existence, HAHAHHAHAHA
-    multiDialogues: []
     dialogueOptions:
       dialogueConcluded: 0
       multipleDialogues: 0
-      triggeringObject: Boss
+      triggeringObjectName: Boss
   - dialogues:
-      entityName: 'Rakash:'
-      voice: 
-      sentences:
-      - Finally....
-      - I have been waiting for you - I was told you'll come by, and see here you
-        are with no one to guard your puny, little existence, HAHAHHAHAHA
-    multiDialogues:
     - entityName: 'Alisha:'
       voice: Emma
       sentences:
@@ -52,8 +43,8 @@ MonoBehaviour:
     - entityName: Wizard
       voice: Justin
       sentences:
-      - What is it that you seek, my child?
+      - What is it you seek, my child?
     dialogueOptions:
       dialogueConcluded: 0
       multipleDialogues: 1
-      triggeringObject: Vendor
+      triggeringObjectName: Vendor

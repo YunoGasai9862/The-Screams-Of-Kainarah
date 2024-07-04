@@ -5,18 +5,11 @@ using UnityEngine;
 public class DialogueTriggerManager : MonoBehaviour
 {
     private static int m_dialogueCounter = 0;
-    public static IEnumerator TriggerDialogue(Dialogues dialogue)
-    {
-        if (!Conversations.dialogueDictionary[dialogue].dialogueConcluded)
-        {
-            FindFirstObjectByType<DialogueManager>().StartDialogue(dialogue);
-            Conversations.dialogueDictionary[dialogue].dialogueConcluded = true; //already played
-        }
 
-        yield return null;
-    }
+    [SerializeField]
+    public DialoguesAndOptions DialoguesAndOptions;
 
-    public static IEnumerator TriggerDialogue(Dialogues[] dialogue)
+    public static IEnumerator TriggerDialogue(List<Dialogues> dialogues)
     {
         if (!Conversations.MultipleDialogues[dialogue].dialogueConcluded)
         {

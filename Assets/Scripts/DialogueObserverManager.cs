@@ -31,14 +31,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueEntity>
     {
         await Task.Delay(TimeSpan.FromSeconds(0.5));
 
-        if(DialogueType(dialogues) == typeof(Dialogues))
-        {
-            StartCoroutine(DialogueTriggerManager.TriggerDialogue((Dialogues)dialogues));
-        }
-        else
-        {
-            StartCoroutine(DialogueTriggerManager.TriggerDialogue((Dialogues[])dialogues));
-        }
+       StartCoroutine(DialogueTriggerManager.TriggerDialogue((Dialogues[])dialogues));
     }
     private void OnEnable()
     {
@@ -50,10 +43,6 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueEntity>
         PlayerObserverListenerHelper.DialogueEntites.RemoveOberver(this); 
     }
 
-    private Type DialogueType(object dialogues)
-    {
-        return dialogues.GetType();
-    }
     public void OnNotify(DialogueEntity Data, params object[] optional)
     {
         if(dialogueManagerActionDict.TryGetValue(Data.entity.tag, out var func))
