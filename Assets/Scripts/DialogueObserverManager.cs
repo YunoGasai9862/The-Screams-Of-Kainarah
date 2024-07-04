@@ -31,7 +31,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueEntity>
     {
         await Task.Delay(TimeSpan.FromSeconds(0.5));
 
-       StartCoroutine(DialogueTriggerManager.TriggerDialogue((Dialogues[])dialogues));
+       StartCoroutine(DialogueTriggerManager.TriggerDialogue(dialogues));
     }
     private void OnEnable()
     {
@@ -49,7 +49,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueEntity>
         {
             if (Data.shouldDialogueTrigger)
             {
-                object dialogues = Conversations.GetDialoguesDict[Data.entity.tag] is Dialogues ? (Dialogues)(Conversations.GetDialoguesDict[Data.entity.tag]) :
+                List<Dialogues> dialogues = Conversations.GetDialoguesDict[Data.entity.tag] is Dialogues ? (Dialogues)(Conversations.GetDialoguesDict[Data.entity.tag]) :
                     (Dialogues[])(Conversations.GetDialoguesDict[Data.entity.tag]);
 
                 func.Invoke(dialogues);  //solved it!! casting is needed to cast it to dialogues as in the dictionary its object
