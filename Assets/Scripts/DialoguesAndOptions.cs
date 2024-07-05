@@ -7,11 +7,12 @@ using UnityEngine;
 public class DialoguesAndOptions: ScriptableObject
 {
     [Serializable]
-    public class DialogueExchange
+    public class DialogueSystem
     {
         public List<Dialogues> dialogues;
         public DialogueOptions dialogueOptions;
+        public DialogueTriggeringEntity dialogueTriggeringEntity;
     }
 
-    public List<DialogueExchange> exchange;
+    public List<DialogueSystem> exchange;
 }

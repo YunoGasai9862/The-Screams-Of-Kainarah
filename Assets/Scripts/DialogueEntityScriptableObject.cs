@@ -7,13 +7,6 @@ using UnityEngine;
 public class DialogueEntityScriptableObject: ScriptableObject
 {
 
-    [Serializable]
-    public class DialogueEntity
-    {
-        public GameObject entity;
-        public bool shouldDialogueTrigger;
-        public bool multipleDialogues;
-    }
 
     public DialogueEntity[] entities;
 }

@@ -28,14 +28,13 @@ public class DialoguesAndOptionsCustomEditor : Editor
 
             SerializedProperty element = serializedObject.FindProperty("exchange").GetArrayElementAtIndex(i);
 
+            SerializedProperty dialogueTriggeringEntity = element.FindPropertyRelative("DialogueTriggeringEntity");
+
             SerializedProperty dialogues = element.FindPropertyRelative("dialogues");
 
             SerializedProperty dialogueOptions = element.FindPropertyRelative("dialogueOptions");
 
             SerializedProperty multiDialoguesBool = dialogueOptions.FindPropertyRelative("multipleDialogues");
-
-
-            //if we have more elements, what we can do is automatically check the multiple dialogue bool flag
 
             if(dialogues.arraySize > SINGLE_DIALOGUE_MAX_ARRAY_LENGTH)
             {
@@ -45,6 +44,8 @@ public class DialoguesAndOptionsCustomEditor : Editor
             {
                 multiDialoguesBool.boolValue = false;
             }
+
+            EditorGUILayout.PropertyField(dialogueTriggeringEntity);
 
             EditorGUILayout.PropertyField(dialogueOptions);
 

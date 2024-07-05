@@ -6,5 +6,5 @@ public class DialogueOptions
 {
     public bool dialogueConcluded;
     public bool multipleDialogues;
-    public string triggeringObjectName;
+    public bool shouldTriggerDialogue;
 }

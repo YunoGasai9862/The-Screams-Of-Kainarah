@@ -6,12 +6,9 @@ public class DialogueTriggerManager : MonoBehaviour
 {
     private static int m_dialogueCounter = 0;
 
-    [SerializeField]
-    public DialoguesAndOptions DialoguesAndOptions;
-
     public static IEnumerator TriggerDialogue(List<Dialogues> dialogues)
     {
-        if (!Conversations.MultipleDialogues[dialogue].dialogueConcluded)
+        if (!DialoguesAndOptions.MultipleDialogues[dialogue].dialogueConcluded)
         {
             if (dialogue.Length == m_dialogueCounter)
             {
