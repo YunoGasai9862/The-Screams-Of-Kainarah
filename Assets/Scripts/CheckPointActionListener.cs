@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using static CheckPoints;
-using static SceneSingleton;
 
 public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
 {
@@ -16,7 +15,7 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
 
     private async void Start()
     {
-        CheckpointDict = await PrefillCheckPointsDict(CheckPointsScriptableObjectFetch);
+        CheckpointDict = await PrefillCheckPointsDict(SceneSingleton.CheckPoints);
     }
 
     private Task<Dictionary<string, Func<Checkpoint, CheckPoints, Task>>> PrefillCheckPointsDict(CheckPoints checkPointsScriptableObjectFetch)
@@ -71,7 +70,7 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
         PlayerObserverListenerHelper.CheckPointsObserver.RemoveOberver(this);
 
         //reset checkpoints
-        ResetCheckpoints(CheckPointsScriptableObjectFetch, false, false, false);
+        ResetCheckpoints(SceneSingleton.CheckPoints, false, false, false);
     }
 
     private void ResetCheckpoints(CheckPoints checkPointsScriptableObjectFetch, bool finishLevelBool, bool shouldRespawnBool, bool shouldResetAttributesBool)
@@ -89,7 +88,7 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
     {
         if (CheckpointDict.TryGetValue(Data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task> value))
         {
-            value.Invoke(Data, CheckPointsScriptableObjectFetch); //invokes that particular function to reset checkpoints 
+            value.Invoke(Data, SceneSingleton.CheckPoints); //invokes that particular function to reset checkpoints 
             //call the checkpoint => Save Game method
             _ = GameStateManager.instance.SaveCheckPoint(saveFileName);
         }

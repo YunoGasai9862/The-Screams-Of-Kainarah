@@ -6,7 +6,7 @@ using UnityEngine;
 public class SceneSingleton : MonoBehaviour
 {
     [Header("Scriptable Objects")]
-    [SerializeField] private DialogueEntityScriptableObject dialogueScriptableObject;
+    [SerializeField] private DialoguesAndOptions dialogueAndOptions;
     [SerializeField] private PlayerHittableItemsScriptableObject playerHittableItemsScriptableObject;
     [SerializeField] private EntitiesToReset entitiesToResetScriptableObject;
     [SerializeField] private CheckPoints checkpointsScriptableObject;
@@ -14,12 +14,12 @@ public class SceneSingleton : MonoBehaviour
     [SerializeField] private EventStringMapper eventStringMapperScriptableObject;
     [SerializeField] public DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
 
-    public static DialogueEntityScriptableObject DialogueEntityScriptableObjectFetch => _instance.dialogueScriptableObject;
-    public static PlayerHittableItemsScriptableObject PlayerHittableItemScriptableObjectFetch => _instance.playerHittableItemsScriptableObject;
-    public static EntitiesToReset EntitiesToResetScriptableObjectFetch => _instance.entitiesToResetScriptableObject;
-    public static CheckPoints CheckPointsScriptableObjectFetch => _instance.checkpointsScriptableObject;
+    public static DialoguesAndOptions DialogueAndOptions => _instance.dialogueAndOptions;
+    public static PlayerHittableItemsScriptableObject PlayerHittableItems => _instance.playerHittableItemsScriptableObject;
+    public static EntitiesToReset EntitiesToReset => _instance.entitiesToResetScriptableObject;
+    public static CheckPoints CheckPoints => _instance.checkpointsScriptableObject;
     public static EnemyHittableObjects EnemyHittableObjects => _instance.enemyHittableObject;
-    public static EventStringMapper EventStringMapperScriptableObject => _instance.eventStringMapperScriptableObject;
+    public static EventStringMapper EventStringMapper => _instance.eventStringMapperScriptableObject;
 
     private static InventoryManager _inventoryManager { get; set; }
     private static PlayerActionRelayer _playerHelperClassForOtherPurposes { get; set; }

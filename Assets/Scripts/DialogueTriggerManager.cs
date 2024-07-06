@@ -6,9 +6,9 @@ public class DialogueTriggerManager : MonoBehaviour
 {
     private static int m_dialogueCounter = 0;
 
-    public static IEnumerator TriggerDialogue(List<Dialogues> dialogues)
+    public static IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        if (!DialoguesAndOptions.MultipleDialogues[dialogue].dialogueConcluded)
+        if (!dialogueSystem.dialogueOptions.dialogueConcluded)
         {
             if (dialogue.Length == m_dialogueCounter)
             {

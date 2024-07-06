@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using static SceneSingleton;
 
 public class CheckpointColliderListener : MonoBehaviour, IObserver<GameObject>
 {
@@ -28,7 +27,7 @@ public class CheckpointColliderListener : MonoBehaviour, IObserver<GameObject>
             {
                 _cancellationTokenSource = new CancellationTokenSource();
                 _cancellationToken = _cancellationTokenSource.Token;
-                await PlayerSpawn().ResetAnimationAndMaterialProperties(playerObject, _cancellationToken);
+                await SceneSingleton.PlayerSpawn().ResetAnimationAndMaterialProperties(playerObject, _cancellationToken);
                 await GameStateManager.instance.LoadLastCheckPoint(GameStateManager.instance.GetFileLocationToLoad, lockingThread); //make sure it happens only once
             }
         }
@@ -37,6 +36,6 @@ public class CheckpointColliderListener : MonoBehaviour, IObserver<GameObject>
     public void OnNotify(GameObject Data, params object[] optional) //passing it here, maybe think of a better approach later?
     {
         SemaphoreSlim lockingThread = optional[0] as SemaphoreSlim;
-        _ = RespawnPlayer(Data, CheckPointsScriptableObjectFetch, lockingThread);
+        _ = RespawnPlayer(Data, SceneSingleton.CheckPoints, lockingThread);
     }
 }

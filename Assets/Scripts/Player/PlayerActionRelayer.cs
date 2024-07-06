@@ -4,10 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static DialogueEntityScriptableObject;
-using static SceneSingleton;
 using static CheckPoints;
 using static SceneData;
+using static DialoguesAndOptions;
 using PlayerHittableItemsNS;
 public class PlayerActionRelayer : AbstractEntity
 {
@@ -39,7 +38,7 @@ public class PlayerActionRelayer : AbstractEntity
     {
         try
         {
-            InsertIntoGameStateHandlerList(this);
+            SceneSingleton.InsertIntoGameStateHandlerList(this);
         }
         catch (Exception ex)
         {
@@ -77,11 +76,11 @@ public class PlayerActionRelayer : AbstractEntity
             await GetCheckPointSemaphore.WaitAsync();
             anim.SetBool(PlayerAnimationConstants.DEATH, true);
             await Task.Delay(TimeSpan.FromSeconds(0.1f));
-            await GetPlayerObserverListenerObject().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, EntitiesToResetScriptableObjectFetch);
+            await SceneSingleton.GetPlayerObserverListenerObject().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, SceneSingleton.EntitiesToReset);
 
             if (!_cancellationTokenSource.IsCancellationRequested)
             {
-                await GetPlayerObserverListenerObject().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, GetCheckPointSemaphore);
+                await SceneSingleton.GetPlayerObserverListenerObject().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, GetCheckPointSemaphore);
 
             }
         }
@@ -98,29 +97,31 @@ public class PlayerActionRelayer : AbstractEntity
 
         await GetSemaphore.WaitAsync();
 
-        (bool inSight, DialogueEntity entity) = await IsGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObjectFetch, _cancellationToken, GetSemaphore); //use of tuple return
+        (bool inSight, DialogueSystem dialogueSystem) = await IsGameObjectInSightForDialogueTrigger(SceneSingleton.DialogueAndOptions, _cancellationToken, GetSemaphore); //use of tuple return
 
-        if (inSight && entity != null)
+        if (inSight && dialogueSystem != null)
         {
-            await GetPlayerObserverListenerObject().ListenerDelegator<DialogueEntity>(PlayerObserverListenerHelper.DialogueEntites, entity); //test this out
+            await SceneSingleton.GetPlayerObserverListenerObject().ListenerDelegator<DialogueSystem>(PlayerObserverListenerHelper.DialogueSystem, dialogueSystem); //test this out
         }
 
     }
-    private async Task<(bool, DialogueEntity)> IsGameObjectInSightForDialogueTrigger(DialogueEntityScriptableObject scriptableObject, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim)
+    private async Task<(bool, DialogueSystem)> IsGameObjectInSightForDialogueTrigger(DialoguesAndOptions dialogueAndOptions, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim)
     {
         bool inSight = false;
-        DialogueEntity dialogueEntity = null;
+        DialogueSystem dialogueSystem = null;
 
         try
         {
-            foreach (var item in scriptableObject.entities)
+            foreach (var item in dialogueAndOptions.exchange)
             {
                 await Task.Delay(TimeSpan.FromSeconds(.1f));
 
-                if (!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, item.entity.tag))
+                DialogueTriggeringEntity triggeringEntity = item.dialogueTriggeringEntity;
+
+                if (!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, triggeringEntity.entityTag))
                 {
                     inSight = true;
-                    dialogueEntity = item;
+                    dialogueSystem = item;
                     break;
                 }
             }
@@ -130,11 +131,11 @@ public class PlayerActionRelayer : AbstractEntity
             semaphoreSlim.Release();
         }
 
-        return (inSight, dialogueEntity);
+        return (inSight, dialogueSystem);
     }
     private async void OnCollisionEnter2D(Collision2D collision) //FIX THIS TOO
     {
-        if (await CanPlayerBeAttacked(PlayerHittableItemScriptableObjectFetch, collision.collider))
+        if (await CanPlayerBeAttacked(SceneSingleton.PlayerHittableItems, collision.collider))
         {
             Health -= ENEMYATTACK;
         }
@@ -188,10 +189,10 @@ public class PlayerActionRelayer : AbstractEntity
 
             bool shouldMusicBePlayed = true;
 
-            await GetPlayerObserverListenerObject().ListenerDelegator<bool>(PlayerObserverListenerHelper.BoolSubjects, shouldMusicBePlayed);
+            await SceneSingleton.GetPlayerObserverListenerObject().ListenerDelegator<bool>(PlayerObserverListenerHelper.BoolSubjects, shouldMusicBePlayed);
         }
 
-        await GetPlayerObserverListenerObject().ListenerDelegator<Collider2D>(PlayerObserverListenerHelper.ColliderSubjects, collision);
+        await SceneSingleton.GetPlayerObserverListenerObject().ListenerDelegator<Collider2D>(PlayerObserverListenerHelper.ColliderSubjects, collision);
 
     }
     private async Task CheckpointCollisionHandler(Collider2D collision)
@@ -199,11 +200,11 @@ public class PlayerActionRelayer : AbstractEntity
         if (await GetOneOfTheCheckPoints(collision.tag, checkpointTags))
         {
             //call checkpoint replacement 
-            Checkpoint checkpoint = await GetCheckPointFromScriptableObject(SceneSingleton.CheckPointsScriptableObjectFetch, collision.tag);
+            Checkpoint checkpoint = await GetCheckPointFromScriptableObject(SceneSingleton.CheckPoints, collision.tag);
 
             collision.gameObject.SetActive(false); //turn it off
 
-            await GetPlayerObserverListenerObject().ListenerDelegator<Checkpoint>(PlayerObserverListenerHelper.CheckPointsObserver, checkpoint);
+            await SceneSingleton.GetPlayerObserverListenerObject().ListenerDelegator<Checkpoint>(PlayerObserverListenerHelper.CheckPointsObserver, checkpoint);
 
         }
     }

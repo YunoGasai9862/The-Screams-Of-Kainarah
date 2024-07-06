@@ -5,6 +5,6 @@ using UnityEngine;
 [Serializable]
 public class DialogueTriggeringEntity
 {
-    public GameObject triggeringEntity;
-    public string triggeringEntityTag;
+    public GameObject entity;
+    public string entityTag;
 }
