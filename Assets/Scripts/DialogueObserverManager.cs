@@ -46,7 +46,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
 
     public void OnNotify(DialogueSystem Data, params object[] optional)
     {
-        if(dialogueManagerActionDict.TryGetValue(Data.dialogueTriggeringEntity.entity.tag, out var func))
+        if(dialogueManagerActionDict.TryGetValue(Data.dialogueTriggeringEntity.entityTag, out var func))
         {
             if (Data.dialogueOptions.shouldTriggerDialogue)
             {

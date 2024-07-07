@@ -16,8 +16,6 @@ public class DialogueManager : MonoBehaviour
     public Text maindialogue;
     public Animator myanimator;
 
-    private static Dialogues[] m_dialogues = null;
-
     [SerializeField]
     public AWSPollyDialogueTriggerEvent AWSPollyDialogueTriggerEvent;
     public DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
@@ -27,15 +25,8 @@ public class DialogueManager : MonoBehaviour
         m_storylineSentences = new Queue<string>();
     }
 
-    public void StartDialogue(Dialogues dialogue, Dialogues[] dialogues = null)
+    public void PrepareDialogueQueue(Dialogues dialogue)
     {
-
-        if (dialogues != null)
-        {
-            m_dialogues = dialogues;
-
-        }
-
         myanimator.SetBool(DIALOGUE_ANIMATION_NAME, true);
         dialogueTakingPlaceEvent.Invoke(true);
 
@@ -47,13 +38,10 @@ public class DialogueManager : MonoBehaviour
             m_storylineSentences.Enqueue(sentence);
         }
 
-        DisplayNextSentence();
-
     }
 
     IEnumerator AnimateLetters(string sentence)
     {
-
         maindialogue.text = string.Empty;
 
         for (int i = 0; i < sentence.Length; i++)
@@ -61,7 +49,6 @@ public class DialogueManager : MonoBehaviour
             yield return new WaitForSeconds(.05f);
             maindialogue.text += sentence[i];
         }
-
     }
 
     public Task InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent, string sentence, VoiceId voiceId)
@@ -71,24 +58,13 @@ public class DialogueManager : MonoBehaviour
 
         return Task.CompletedTask;
     }
-    public void DisplayNextSentence()
+    //do it recursively here instead
+    public void StartDialogue()
     {
         if (m_storylineSentences.Count == 0) //if there's nothing in the queue
         {
-
-            if (m_dialogues != null && !Conversations.MultipleDialogues[m_dialogues].dialogueConcluded)
-            {
-
-                StartCoroutine(DialogueTriggerManager.TriggerDialogue(m_dialogues));
-                return;  //THIS WAS ALL I NEEDED, OMG!
-                //it fixed the issue, oh lord. 
-                //the problem was: it was trying to execute the rest of the code without exiting the function
-            }
-            else
-            {
-                EndDialogue();
-                return;  //exits function
-            }
+            EndDialogue();
+            return;  //exits function
         }
 
         string dialogue = m_storylineSentences.Dequeue();
@@ -98,6 +74,9 @@ public class DialogueManager : MonoBehaviour
         StopAllCoroutines();
 
         StartCoroutine(AnimateLetters(dialogue));
+
+        //call it again, recursively
+        StartDialogue();
     }
 
     void EndDialogue()

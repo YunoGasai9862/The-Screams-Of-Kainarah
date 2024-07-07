@@ -23,7 +23,10 @@ MonoBehaviour:
     dialogueOptions:
       dialogueConcluded: 0
       multipleDialogues: 0
-      triggeringObjectName: TriggerPoint1
+      shouldTriggerDialogue: 1
+    dialogueTriggeringEntity:
+      entity: {fileID: 2370432743021307287, guid: 314d8d53d6c0c4b4dae663477b80e0eb, type: 3}
+      entityTag: TriggerPoint1
   - dialogues:
     - entityName: 'Rakash:'
       voice: Zayd
@@ -34,7 +37,10 @@ MonoBehaviour:
     dialogueOptions:
       dialogueConcluded: 0
       multipleDialogues: 0
-      triggeringObjectName: Boss
+      shouldTriggerDialogue: 1
+    dialogueTriggeringEntity:
+      entity: {fileID: 7097680049040053745, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
+      entityTag: Boss
   - dialogues:
     - entityName: 'Alisha:'
       voice: Emma
@@ -47,4 +53,7 @@ MonoBehaviour:
     dialogueOptions:
       dialogueConcluded: 0
       multipleDialogues: 1
-      triggeringObjectName: Vendor
+      shouldTriggerDialogue: 1
+    dialogueTriggeringEntity:
+      entity: {fileID: 2162997534625558111, guid: ced37d8fda09e2e4393f3ca890a8df38, type: 3}
+      entityTag: Vendor

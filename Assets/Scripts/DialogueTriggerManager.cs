@@ -8,21 +8,27 @@ public class DialogueTriggerManager : MonoBehaviour
 
     public static IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        if (!dialogueSystem.dialogueOptions.dialogueConcluded)
+        foreach(Dialogues dialogue in dialogueSystem.dialogues)
         {
-            if (dialogue.Length == m_dialogueCounter)
+            if (!dialogueSystem.dialogueOptions.dialogueConcluded)
             {
-                Conversations.MultipleDialogues[dialogue].dialogueConcluded = true;
-                m_dialogueCounter = 0;
-                yield return null;
+                SceneSingleton.GetDialogueManager().PrepareDialogueQueue(dialogue);
+
+                if (dialogue.sentences.Length == m_dialogueCounter)
+                {
+                    //use event from dialogue Manager instead
+                    dialogueSystem.dialogueOptions.dialogueConcluded = true;
+                    m_dialogueCounter = 0;
+                    yield return null;
+
+                }
+                else
+                {
+                    SceneSingleton.GetDialogueManager().StartDialogue();
+                    m_dialogueCounter++;
+                }
 
             }
-            else
-            {
-                FindFirstObjectByType<DialogueManager>().StartDialogue(dialogue[m_dialogueCounter], dialogue);
-                m_dialogueCounter++;
-            }
-
         }
     }
 }

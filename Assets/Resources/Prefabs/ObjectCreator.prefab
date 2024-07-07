@@ -44,8 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b8060f21902ba94fa918b03b689063e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueScriptableObject: {fileID: 11400000, guid: ae73224639778ea4fb6fd69c41f72e5b, type: 2}
+  dialogueAndOptions: {fileID: 11400000, guid: 399be5f2e16fa6147acdfdb4b6cf785b, type: 2}
   playerHittableItemsScriptableObject: {fileID: 11400000, guid: 4c9aa242ac42d29478150fb7c866aaf9, type: 2}
   entitiesToResetScriptableObject: {fileID: 11400000, guid: 50c604442b511894a9160942727c4b56, type: 2}
   checkpointsScriptableObject: {fileID: 11400000, guid: b3b15cce297a58c428a52063bce83689, type: 2}
   enemyHittableObject: {fileID: 11400000, guid: 717a65d109ef0bf4fbb68f126e57dccd, type: 2}
+  eventStringMapperScriptableObject: {fileID: 11400000, guid: 899a6aea60b3d104eabcaddbafb365d9, type: 2}
+  dialogueTakingPlaceEvent: {fileID: 0}

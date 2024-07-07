@@ -1,6 +1,4 @@
 using System;
-using Amazon.Polly;
-using UnityEngine;
 [Serializable]
 public class DialogueOptions
 {

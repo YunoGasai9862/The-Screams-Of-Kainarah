@@ -28,7 +28,7 @@ public class DialoguesAndOptionsCustomEditor : Editor
 
             SerializedProperty element = serializedObject.FindProperty("exchange").GetArrayElementAtIndex(i);
 
-            SerializedProperty dialogueTriggeringEntity = element.FindPropertyRelative("DialogueTriggeringEntity");
+            SerializedProperty dialogueTriggeringEntity = element.FindPropertyRelative("dialogueTriggeringEntity");
 
             SerializedProperty dialogues = element.FindPropertyRelative("dialogues");
 

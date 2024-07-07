@@ -30,6 +30,8 @@ public class SceneSingleton : MonoBehaviour
     private static SpawnPlayer _getSpawnPlayerScript { get; set; }
     private static CheckpointColliderListener _checkpointColliderListener { get; set; }
 
+    private static DialogueManager _dialogueManager { get; set; }
+
     private static SceneSingleton _instance;
     private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; }//fill only once
     public static bool IsDialogueTakingPlace { get; set; }
@@ -50,6 +52,7 @@ public class SceneSingleton : MonoBehaviour
         _checkpointActionListener = FindFirstObjectByType<CheckPointActionListener>();
         _getSpawnPlayerScript = FindFirstObjectByType<SpawnPlayer>();
         _checkpointColliderListener = FindFirstObjectByType<CheckpointColliderListener>();
+        _dialogueManager = FindFirstObjectByType<DialogueManager>();
         _gameStateHandlerObjects= new List<IGameStateHandler>();
 
         //events
@@ -83,6 +86,11 @@ public class SceneSingleton : MonoBehaviour
     public static EnemyObserverListener GetEnemyOberverListenerObject()
     {
         return _enemyObserverListener;
+    }
+
+    public static DialogueManager GetDialogueManager()
+    {
+        return _dialogueManager;
     }
     public static EntitiesToResetActionListener GetEntitiesToResetListenerObject()
     {
