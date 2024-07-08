@@ -116,9 +116,9 @@ public class PlayerActionRelayer : AbstractEntity
             {
                 await Task.Delay(TimeSpan.FromSeconds(.1f));
 
-                DialogueTriggeringEntity triggeringEntity = item.dialogueTriggeringEntity;
+                DialogueTriggeringEntity triggeringEntity = item.DialogueTriggeringEntity;
 
-                if (!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, triggeringEntity.entityTag))
+                if (!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, triggeringEntity.EntityTag))
                 {
                     inSight = true;
                     dialogueSystem = item;

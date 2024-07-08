@@ -31,9 +31,9 @@ public class DialogueManager : MonoBehaviour
         dialogueTakingPlaceEvent.Invoke(true);
 
         m_storylineSentences.Clear();  //clears the previous dialogues, if there are any
-        myname.text = dialogue.entityName;
+        myname.text = dialogue.EntityName;
 
-        foreach (string sentence in dialogue.sentences)
+        foreach (string sentence in dialogue.Sentences)
         {
             m_storylineSentences.Enqueue(sentence);
         }

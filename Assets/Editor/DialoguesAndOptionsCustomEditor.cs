@@ -28,13 +28,13 @@ public class DialoguesAndOptionsCustomEditor : Editor
 
             SerializedProperty element = serializedObject.FindProperty("exchange").GetArrayElementAtIndex(i);
 
-            SerializedProperty dialogueTriggeringEntity = element.FindPropertyRelative("dialogueTriggeringEntity");
+            SerializedProperty dialogueTriggeringEntity = element.FindPropertyRelative("_dialogueTriggeringEntity");
 
-            SerializedProperty dialogues = element.FindPropertyRelative("dialogues");
+            SerializedProperty dialogues = element.FindPropertyRelative("_dialogues");
 
-            SerializedProperty dialogueOptions = element.FindPropertyRelative("dialogueOptions");
+            SerializedProperty dialogueOptions = element.FindPropertyRelative("_dialogueOptions");
 
-            SerializedProperty multiDialoguesBool = dialogueOptions.FindPropertyRelative("multipleDialogues");
+            SerializedProperty multiDialoguesBool = dialogueOptions.FindPropertyRelative("_multipleDialogues");
 
             if(dialogues.arraySize > SINGLE_DIALOGUE_MAX_ARRAY_LENGTH)
             {

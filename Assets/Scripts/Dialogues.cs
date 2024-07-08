@@ -1,4 +1,5 @@
 using Amazon.Polly;
+using NUnit.Framework;
 using System;
 using UnityEngine;
 
@@ -6,25 +7,35 @@ using UnityEngine;
 [Serializable]
 public class Dialogues
 {
-    public string entityName;
+    [SerializeField]
+    private string _entityName;
+    [SerializeField]
+    private string _voice;
+    private VoiceId _voiceId;
 
-    public string voice;
+    public string EntityName { get => _entityName; }
+
+    public string Voice { get => _voice; }
     //wont be visible in the UI
-    public VoiceId voiceId;
+    public VoiceId VoiceID { get => _voiceId; set => _voiceId = value; }
     //call always when an entity is added to the scriptble object
-
+    [SerializeField]
     [TextArea(3, 10)]
-    public string[] sentences;
+    private string[] _sentences;
+
+    public string[] Sentences { get => _sentences; }
+
+
     public void ParseVoiceId()
     {
-        if (Enum.TryParse(typeof(VoiceId), voice, out object finalVoiceId))
+        if (Enum.TryParse(typeof(VoiceId), Voice, out object finalVoiceId))
         {
-            voiceId = (VoiceId)finalVoiceId;
+            VoiceID = (VoiceId)finalVoiceId;
         }
         else
         {
             Debug.Log($"Failed Parsing: - defaulting to Emma");
-            voiceId = VoiceId.Emma;
+            VoiceID = VoiceId.Emma;
         }
     }
 }

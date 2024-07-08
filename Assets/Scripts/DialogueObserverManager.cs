@@ -24,7 +24,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
 
         foreach (var item in dialogueAndOptions.exchange)
         {
-            dictionary.Add(item.dialogueTriggeringEntity.entity.tag, dialogues => TriggerDialogue(dialogues));
+            dictionary.Add(item.DialogueTriggeringEntity.Entity.tag, dialogues => TriggerDialogue(dialogues));
         }
         return dictionary;
     }
@@ -46,9 +46,9 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
 
     public void OnNotify(DialogueSystem Data, params object[] optional)
     {
-        if(dialogueManagerActionDict.TryGetValue(Data.dialogueTriggeringEntity.entityTag, out var func))
+        if(dialogueManagerActionDict.TryGetValue(Data.DialogueTriggeringEntity.EntityTag, out var func))
         {
-            if (Data.dialogueOptions.shouldTriggerDialogue)
+            if (Data.DialogueOptions.ShouldTriggerDialogue)
             {
                 func.Invoke(Data);  //solved it!! casting is needed to cast it to dialogues as in the dictionary its object
             }

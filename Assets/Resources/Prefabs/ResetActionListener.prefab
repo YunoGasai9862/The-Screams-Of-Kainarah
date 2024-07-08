@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2347036514327025005}
   - component: {fileID: 4380411697788162264}
+  - component: {fileID: 3134071699754072525}
   m_Layer: 0
   m_Name: ResetActionListener
   m_TagString: Untagged
@@ -42,5 +43,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 18567da29c1a99f42a7b4a3aa93246fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3134071699754072525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7305614670026015203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 024f8e8b2a5c23f419a34689ad534d48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

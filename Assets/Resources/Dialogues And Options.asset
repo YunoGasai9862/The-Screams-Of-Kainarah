@@ -13,47 +13,25 @@ MonoBehaviour:
   m_Name: Dialogues And Options
   m_EditorClassIdentifier: 
   exchange:
-  - dialogues:
-    - entityName: 'Alisha:'
-      voice: Emma
-      sentences:
-      - Ugh, my head!
-      - What is this place?
-      - This...it can't be! I need to get out of here as soon as possible...
-    dialogueOptions:
-      dialogueConcluded: 0
-      multipleDialogues: 0
-      shouldTriggerDialogue: 1
-    dialogueTriggeringEntity:
-      entity: {fileID: 2370432743021307287, guid: 314d8d53d6c0c4b4dae663477b80e0eb, type: 3}
-      entityTag: TriggerPoint1
-  - dialogues:
-    - entityName: 'Rakash:'
-      voice: Zayd
-      sentences:
-      - Finaly....
-      - I have been waiting for you - I was told you'll come by, and see here you
-        are with no one to guard your puny, little existence, HAHAHHAHAHA
-    dialogueOptions:
-      dialogueConcluded: 0
-      multipleDialogues: 0
-      shouldTriggerDialogue: 1
-    dialogueTriggeringEntity:
-      entity: {fileID: 7097680049040053745, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
-      entityTag: Boss
-  - dialogues:
-    - entityName: 'Alisha:'
-      voice: Emma
-      sentences:
-      - I, I need your help...
-    - entityName: Wizard
-      voice: Justin
-      sentences:
-      - What is it you seek, my child?
-    dialogueOptions:
-      dialogueConcluded: 0
-      multipleDialogues: 1
-      shouldTriggerDialogue: 1
-    dialogueTriggeringEntity:
-      entity: {fileID: 2162997534625558111, guid: ced37d8fda09e2e4393f3ca890a8df38, type: 3}
-      entityTag: Vendor
+  - _dialogues:
+    - _entityName: 
+      _voice: 
+      _sentences:
+      - 
+    _dialogueOptions:
+      _dialogueConcluded: 0
+      _multipleDialogues: 0
+      _shouldTriggerDialogue: 0
+  - _dialogues: []
+    _dialogueOptions:
+      _dialogueConcluded: 0
+      _multipleDialogues: 0
+      _shouldTriggerDialogue: 0
+  - _dialogues:
+    - _entityName: 
+      _voice: 
+      _sentences: []
+    _dialogueOptions:
+      _dialogueConcluded: 0
+      _multipleDialogues: 0
+      _shouldTriggerDialogue: 0

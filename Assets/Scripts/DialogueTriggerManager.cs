@@ -1,23 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class DialogueTriggerManager : MonoBehaviour
 {
     private static int m_dialogueCounter = 0;
 
+    private SemaphoreSlim m_semaphoreSlim = new SemaphoreSlim(1); 
+    // use this for dialogue, to make it not run fast/use ASYNC for each sentence
+
     public static IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        foreach(Dialogues dialogue in dialogueSystem.dialogues)
+        foreach(Dialogues dialogue in dialogueSystem.Dialogues)
         {
-            if (!dialogueSystem.dialogueOptions.dialogueConcluded)
+            Debug.Log("Initiating");
+
+            if (!dialogueSystem.DialogueOptions.DialogueConcluded)
             {
                 SceneSingleton.GetDialogueManager().PrepareDialogueQueue(dialogue);
 
-                if (dialogue.sentences.Length == m_dialogueCounter)
+                if (dialogue.Sentences.Length == m_dialogueCounter)
                 {
                     //use event from dialogue Manager instead
-                    dialogueSystem.dialogueOptions.dialogueConcluded = true;
+                    dialogueSystem.DialogueOptions.DialogueConcluded = true;
                     m_dialogueCounter = 0;
                     yield return null;
 
