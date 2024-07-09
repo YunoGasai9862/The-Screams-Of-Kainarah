@@ -14,24 +14,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   exchange:
   - _dialogues:
-    - _entityName: 
-      _voice: 
+    - _entityName: 'Alisha:'
+      _voice: Emma
       _sentences:
-      - 
+      - Ugh, my head!
+      - What is this place?
+      - This...it can't be! I need to get out of here as soon as possible...
     _dialogueOptions:
       _dialogueConcluded: 0
       _multipleDialogues: 0
-      _shouldTriggerDialogue: 0
-  - _dialogues: []
-    _dialogueOptions:
-      _dialogueConcluded: 0
-      _multipleDialogues: 0
-      _shouldTriggerDialogue: 0
+      _shouldTriggerDialogue: 1
+    _dialogueTriggeringEntity:
+      _entity: {fileID: 2370432743021307287, guid: 314d8d53d6c0c4b4dae663477b80e0eb, type: 3}
+      _entityTag: TriggerPoint1
   - _dialogues:
-    - _entityName: 
-      _voice: 
-      _sentences: []
+    - _entityName: 'Rakash:'
+      _voice: Zayd
+      _sentences:
+      - Finally...
+      - I have been waiting for you - i was told you'll come by, and see here you
+        are with no one to guard your puny, little existence, HAHAHAHAH
     _dialogueOptions:
       _dialogueConcluded: 0
       _multipleDialogues: 0
-      _shouldTriggerDialogue: 0
+      _shouldTriggerDialogue: 1
+    _dialogueTriggeringEntity:
+      _entity: {fileID: 7097680049040053745, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
+      _entityTag: Boss
+  - _dialogues:
+    - _entityName: 'Alisha:'
+      _voice: Emma
+      _sentences:
+      - I...I need your help, please!
+    - _entityName: Wizard
+      _voice: Justin
+      _sentences:
+      - What is it you seek, my child?
+    _dialogueOptions:
+      _dialogueConcluded: 0
+      _multipleDialogues: 1
+      _shouldTriggerDialogue: 1
+    _dialogueTriggeringEntity:
+      _entity: {fileID: 2162997534625558111, guid: ced37d8fda09e2e4393f3ca890a8df38, type: 3}
+      _entityTag: Vendor

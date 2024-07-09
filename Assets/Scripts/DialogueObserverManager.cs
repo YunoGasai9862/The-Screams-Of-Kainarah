@@ -11,6 +11,9 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
     [Header("Dialogues And Options")]
     [SerializeField] DialoguesAndOptions DialoguesAndOptions;
 
+    [Header("Triggering Event")]
+    [SerializeField] DialogueTriggerEvent dialogueTriggerEvent;
+
     Dictionary<string, Func<DialogueSystem, Task>> dialogueManagerActionDict; //Func -> the type of parameter it will take that is Dialogues,and the return type will be Task. It's c# delegation
 
     private void Start()
@@ -32,7 +35,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
     {
         await Task.Delay(TimeSpan.FromSeconds(0.5));
 
-       StartCoroutine(DialogueTriggerManager.TriggerDialogue(dialogueSystem));
+        await dialogueTriggerEvent.Invoke(dialogueSystem);
     }
     private void OnEnable()
     {
