@@ -8,12 +8,12 @@ public class DialogueResetActionListener : MonoBehaviour, IObserver<DialoguesAnd
 {
     private void OnEnable()
     {
-        PlayerObserverListenerHelper.DialogueAndOptions.AddObserver(this);
+        ResetNotifierSubjects.DialogueAndOptions.AddObserver(this);
     }
 
     private void OnDisable()
     {
-        PlayerObserverListenerHelper.DialogueAndOptions.RemoveOberver(this);
+        ResetNotifierSubjects.DialogueAndOptions.RemoveOberver(this);
     }
 
     private Task ResetDialogueSystem(DialoguesAndOptions Data)
@@ -30,6 +30,7 @@ public class DialogueResetActionListener : MonoBehaviour, IObserver<DialoguesAnd
     {
         if (Data != null)
         {
+            Debug.Log("HERE");
             await ResetDialogueSystem(Data);    
         }
     }

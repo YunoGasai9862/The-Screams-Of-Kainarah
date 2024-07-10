@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerObserverListener : MonoBehaviour //try something new (delegates)
+public class EntityListenerDelegator : MonoBehaviour 
 {
     public async Task<bool> ListenerDelegator<T>(SubjectsToBeNotified<T> subjectsToNofity, T dataType, SemaphoreSlim lockingThread=null)
     {

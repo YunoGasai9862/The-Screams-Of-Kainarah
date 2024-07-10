@@ -76,11 +76,11 @@ public class PlayerActionRelayer : AbstractEntity
             await GetCheckPointSemaphore.WaitAsync();
             anim.SetBool(PlayerAnimationConstants.DEATH, true);
             await Task.Delay(TimeSpan.FromSeconds(0.1f));
-            await SceneSingleton.GetPlayerObserverListenerObject().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, SceneSingleton.EntitiesToReset);
+            await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, SceneSingleton.EntitiesToReset);
 
             if (!_cancellationTokenSource.IsCancellationRequested)
             {
-                await SceneSingleton.GetPlayerObserverListenerObject().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, GetCheckPointSemaphore);
+                await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, GetCheckPointSemaphore);
 
             }
         }
@@ -101,7 +101,7 @@ public class PlayerActionRelayer : AbstractEntity
 
         if (inSight && dialogueSystem != null)
         {
-            await SceneSingleton.GetPlayerObserverListenerObject().ListenerDelegator<DialogueSystem>(PlayerObserverListenerHelper.DialogueSystem, dialogueSystem); //test this out
+            await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<DialogueSystem>(PlayerObserverListenerHelper.DialogueSystem, dialogueSystem); //test this out
         }
 
     }
@@ -189,10 +189,10 @@ public class PlayerActionRelayer : AbstractEntity
 
             bool shouldMusicBePlayed = true;
 
-            await SceneSingleton.GetPlayerObserverListenerObject().ListenerDelegator<bool>(PlayerObserverListenerHelper.BoolSubjects, shouldMusicBePlayed);
+            await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<bool>(PlayerObserverListenerHelper.BoolSubjects, shouldMusicBePlayed);
         }
 
-        await SceneSingleton.GetPlayerObserverListenerObject().ListenerDelegator<Collider2D>(PlayerObserverListenerHelper.ColliderSubjects, collision);
+        await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<Collider2D>(PlayerObserverListenerHelper.ColliderSubjects, collision);
 
     }
     private async Task CheckpointCollisionHandler(Collider2D collision)
@@ -204,7 +204,7 @@ public class PlayerActionRelayer : AbstractEntity
 
             collision.gameObject.SetActive(false); //turn it off
 
-            await SceneSingleton.GetPlayerObserverListenerObject().ListenerDelegator<Checkpoint>(PlayerObserverListenerHelper.CheckPointsObserver, checkpoint);
+            await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<Checkpoint>(PlayerObserverListenerHelper.CheckPointsObserver, checkpoint);
 
         }
     }

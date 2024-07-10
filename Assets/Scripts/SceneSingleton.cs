@@ -23,7 +23,7 @@ public class SceneSingleton : MonoBehaviour
 
     private static InventoryManager _inventoryManager { get; set; }
     private static PlayerActionRelayer _playerHelperClassForOtherPurposes { get; set; }
-    private static PlayerObserverListener _playerObserverListener { get; set; }
+    private static EntityListenerDelegator _entityListenerDelegator { get; set; }
     private static EnemyObserverListener _enemyObserverListener { get; set; }
     private static EntitiesToResetActionListener _entitiesToResetActionListener { get; set; }
     private static CheckPointActionListener _checkpointActionListener { get; set; }
@@ -46,7 +46,7 @@ public class SceneSingleton : MonoBehaviour
     {
         _inventoryManager = FindFirstObjectByType<InventoryManager>();
         _playerHelperClassForOtherPurposes = FindFirstObjectByType<PlayerActionRelayer>();
-        _playerObserverListener = FindFirstObjectByType<PlayerObserverListener>();
+        _entityListenerDelegator = FindFirstObjectByType<EntityListenerDelegator>();
         _enemyObserverListener = FindFirstObjectByType<EnemyObserverListener>();
         _entitiesToResetActionListener = FindFirstObjectByType<EntitiesToResetActionListener>();
         _checkpointActionListener = FindFirstObjectByType<CheckPointActionListener>();
@@ -79,9 +79,9 @@ public class SceneSingleton : MonoBehaviour
         return _playerHelperClassForOtherPurposes;
     }
 
-    public static PlayerObserverListener GetPlayerObserverListenerObject()
+    public static EntityListenerDelegator GetEntityListenerDelegator()
     {
-        return _playerObserverListener;
+        return _entityListenerDelegator;
     }
     public static EnemyObserverListener GetEnemyOberverListenerObject()
     {
