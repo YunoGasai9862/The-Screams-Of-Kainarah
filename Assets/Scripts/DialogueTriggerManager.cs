@@ -17,7 +17,8 @@ public class DialogueTriggerManager : MonoBehaviour
 
     private IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        foreach(Dialogues dialogue in dialogueSystem.Dialogues)
+
+        foreach (Dialogues dialogue in dialogueSystem.Dialogues)
         {
             Debug.Log("Initiating");
 
@@ -35,15 +36,22 @@ public class DialogueTriggerManager : MonoBehaviour
                 }
                 else
                 {
+                    SemaphoreSlim.Wait();
                     SceneSingleton.GetDialogueManager().StartDialogue();
+                    //pass semaphoreSlim to start dialogue
+                    yield return new WaitUntil(() => SemaphoreSlim.CurrentCount > 0);
                     DialogueCounter++;
                 }
             }
         }
+        SemaphoreSlim.Release();
     }
 
     public void TriggerCoroutine(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        StartCoroutine(TriggerDialogue(dialogueSystem));
+        if (SemaphoreSlim.CurrentCount != 0)
+        {
+            StartCoroutine(TriggerDialogue(dialogueSystem));
+        }
     }
 }
