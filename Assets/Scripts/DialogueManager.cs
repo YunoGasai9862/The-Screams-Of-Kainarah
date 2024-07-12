@@ -1,7 +1,9 @@
 using Amazon.Polly;
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -38,6 +40,8 @@ public class DialogueManager : MonoBehaviour
             m_storylineSentences.Enqueue(sentence);
         }
 
+        Debug.Log($"StorylinesCount: {m_storylineSentences.Count}");
+
     }
 
     IEnumerator AnimateLetters(string sentence)
@@ -49,6 +53,7 @@ public class DialogueManager : MonoBehaviour
             yield return new WaitForSeconds(.05f);
             maindialogue.text += sentence[i];
         }
+
     }
 
     public Task InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent, string sentence, VoiceId voiceId)
@@ -59,24 +64,40 @@ public class DialogueManager : MonoBehaviour
         return Task.CompletedTask;
     }
     //do it recursively here instead
-    public void StartDialogue()
+    public async Task StartDialogue(SemaphoreSlim dialogueSemaphore, CancellationTokenSource cancellationTokenSource)
     {
-        if (m_storylineSentences.Count == 0) //if there's nothing in the queue
+        try
         {
-            EndDialogue();
-            return;  //exits function
+            if (m_storylineSentences.Count == 0) //if there's nothing in the queue
+            {
+                EndDialogue();
+
+                Debug.Log("Ending Dialogue");
+
+                dialogueSemaphore.Release();
+
+                return;  //exits function
+            }
+
+            string dialogue = m_storylineSentences.Dequeue();
+
+            await InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent, dialogue, VoiceId.Emma);
+
+            StopAllCoroutines();
+
+            StartCoroutine(AnimateLetters(dialogue));
+
+            //call it again, recursively
+
+           await StartDialogue(dialogueSemaphore, cancellationTokenSource);
+
+        }catch(Exception ex)
+        {
+            cancellationTokenSource.Cancel();
+
+            throw ex;
         }
 
-        string dialogue = m_storylineSentences.Dequeue();
-
-        InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent, dialogue, VoiceId.Emma);
-
-        StopAllCoroutines();
-
-        StartCoroutine(AnimateLetters(dialogue));
-
-        //call it again, recursively
-        StartDialogue();
     }
 
     void EndDialogue()

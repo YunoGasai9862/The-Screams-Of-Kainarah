@@ -7,22 +7,33 @@ public class DialogueTriggerManager : MonoBehaviour
     private int DialogueCounter { get; set; } = 0;
     private SemaphoreSlim SemaphoreSlim { get; set;} =  new SemaphoreSlim(1);     // use this for dialogue, to make it not run fast/use ASYNC for each sentence
 
+    private CancellationToken CancellationToken { get; set; }
+
+    private CancellationTokenSource CancellationTokenSource { get; set; }
+
+    private bool test = true;
+
     [SerializeField]
     DialogueTriggerEvent dialogueTriggerEvent;
 
     private void Start()
     {
         dialogueTriggerEvent.AddListener(TriggerCoroutine);
-    }
 
+        CancellationTokenSource = new CancellationTokenSource();
+
+        CancellationToken = CancellationTokenSource.Token;  
+    }
+    //bring back the displayNext functionality - we are doing that we a button click!!! - found the issue
     private IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
+        Debug.Log($"DialogueSystemReceived: {dialogueSystem.Dialogues.Count}");
 
         foreach (Dialogues dialogue in dialogueSystem.Dialogues)
         {
             Debug.Log("Initiating");
 
-            if (!dialogueSystem.DialogueOptions.DialogueConcluded)
+            if (!dialogueSystem.DialogueOptions.DialogueConcluded && !CancellationToken.IsCancellationRequested)
             {
                 SceneSingleton.GetDialogueManager().PrepareDialogueQueue(dialogue);
 
@@ -37,21 +48,22 @@ public class DialogueTriggerManager : MonoBehaviour
                 else
                 {
                     SemaphoreSlim.Wait();
-                    SceneSingleton.GetDialogueManager().StartDialogue();
+                    Debug.Log($"Count Before: {SemaphoreSlim.CurrentCount}");
+                    _= SceneSingleton.GetDialogueManager().StartDialogue(SemaphoreSlim, CancellationTokenSource);
                     //pass semaphoreSlim to start dialogue
-                    yield return new WaitUntil(() => SemaphoreSlim.CurrentCount > 0);
+                    Debug.Log($"Count After: {SemaphoreSlim.CurrentCount}");
                     DialogueCounter++;
                 }
             }
         }
-        SemaphoreSlim.Release();
     }
 
     public void TriggerCoroutine(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        if (SemaphoreSlim.CurrentCount != 0)
+        if (SemaphoreSlim.CurrentCount != 0 && test)
         {
             StartCoroutine(TriggerDialogue(dialogueSystem));
+            test = false;
         }
     }
 }
