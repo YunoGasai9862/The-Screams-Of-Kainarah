@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ParticleSystemForceFieldEvent : UnityEventWT<ParticleSystemForceField>
+public class ParticleSystemForceFieldEvent : UnityEventWTAsync<ParticleSystemForceField>
 {
     public override Task AddListener(UnityAction<ParticleSystemForceField> action)
     {

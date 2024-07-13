@@ -99,7 +99,7 @@ public class PlayerActionRelayer : AbstractEntity
 
         (bool inSight, DialogueSystem dialogueSystem) = await IsGameObjectInSightForDialogueTrigger(SceneSingleton.DialogueAndOptions, _cancellationToken, GetSemaphore); //use of tuple return
 
-        if (inSight && dialogueSystem != null)
+        if (inSight && dialogueSystem != null && !dialogueSystem.DialogueOptions.DialogueConcluded)
         {
             await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<DialogueSystem>(PlayerObserverListenerHelper.DialogueSystem, dialogueSystem); //test this out
         }

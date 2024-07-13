@@ -18,7 +18,7 @@ public class EventStringMapper: ScriptableObject
     public class EventMappingsWithType<T>
     {
         public string eventIdentifier;
-        public UnityEventWT<T> eventNameWithType;
+        public UnityEventWTAsync<T> eventNameWithType;
     }
 
     //with Type

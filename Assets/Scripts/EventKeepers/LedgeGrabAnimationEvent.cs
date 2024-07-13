@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using UnityEngine.Events;
-public class LedgeGrabAnimationEvent : UnityEventWT<bool>
+public class LedgeGrabAnimationEvent : UnityEventWTAsync<bool>
 {
     private UnityEvent<bool> m_ledgeGrabAnimationEvent = new UnityEvent<bool>();
     public override UnityEvent<bool> GetInstance()

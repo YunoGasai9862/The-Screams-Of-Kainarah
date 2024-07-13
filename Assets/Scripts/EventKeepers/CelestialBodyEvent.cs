@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public class CelestialBodyEvent : UnityEventWT<LightEntity>
+public class CelestialBodyEvent : UnityEventWTAsync<LightEntity>
 {
     private UnityEvent<LightEntity> m_celestialBodyEvent = new UnityEvent<LightEntity>();
     public override Task AddListener(UnityAction<LightEntity> action)

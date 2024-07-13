@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using UnityEngine.Events;
 using UnityEngine;
 
-public class CrystalUIIncrementEvent : UnityEventWT<int>
+public class CrystalUIIncrementEvent : UnityEventWTAsync<int>
 {
     private UnityEvent<int> m_crystalUIIncrementEvent = new UnityEvent<int>();
     public override Task AddListener(UnityAction<int> action)

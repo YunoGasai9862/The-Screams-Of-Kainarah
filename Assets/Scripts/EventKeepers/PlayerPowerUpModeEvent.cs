@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public class PlayerPowerUpModeEvent: UnityEventWT<float>
+public class PlayerPowerUpModeEvent: UnityEventWTAsync<float>
 {
     private UnityEvent<float> m_playerPowerUpModeEvent = new UnityEvent<float>();
     public override UnityEvent<float> GetInstance()

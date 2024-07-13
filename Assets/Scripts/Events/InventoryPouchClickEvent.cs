@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class InventoryPouchClickEvent : UnityEventWT<bool>
+public class InventoryPouchClickEvent : UnityEventWTAsync<bool>
 {
     private UnityEvent<bool> m_inventoryClickEvent = new UnityEvent<bool>();
     public override Task AddListener(UnityAction<bool> action)

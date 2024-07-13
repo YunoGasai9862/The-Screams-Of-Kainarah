@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public class MainThreadDispatcherEvent : UnityEventWT<Action>
+public class MainThreadDispatcherEvent : UnityEventWTAsync<Action>
 {
     private UnityEvent<Action> m_MainThreadDispatcherEvent = new UnityEvent<Action>();
 

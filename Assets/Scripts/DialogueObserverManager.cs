@@ -53,7 +53,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
         {
             if (Data.DialogueOptions.ShouldTriggerDialogue)
             {
-                func.Invoke(Data);  //solved it!! casting is needed to cast it to dialogues as in the dictionary its object
+                func.Invoke(Data); 
             }
         }
     }

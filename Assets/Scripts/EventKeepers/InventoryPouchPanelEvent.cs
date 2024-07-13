@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class InventoryPouchPanelEvent : UnityEventWT<bool>
+public class InventoryPouchPanelEvent : UnityEventWTAsync<bool>
 {
     private UnityEvent<bool> m_inventoryPouchPanelEvent = new UnityEvent<bool>();
     public override Task AddListener(UnityAction<bool> action)

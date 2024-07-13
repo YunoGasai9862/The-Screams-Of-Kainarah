@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using UnityEngine.Events;
 using System;
 
-public class CrystalCollideEvent : UnityEventWT<Collider2D, bool>
+public class CrystalCollideEvent : UnityEventWTAsync<Collider2D, bool>
 {
     private UnityEvent<Collider2D, bool> _crystalCollideEvent = new UnityEvent<Collider2D, bool>();
     public override Task AddListener(UnityAction<Collider2D, bool> action)

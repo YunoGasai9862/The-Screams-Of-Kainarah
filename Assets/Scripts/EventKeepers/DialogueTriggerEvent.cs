@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public class DialogueTriggerEvent : UnityEventWT<DialoguesAndOptions.DialogueSystem>
+public class DialogueTriggerEvent : UnityEventWTAsync<DialoguesAndOptions.DialogueSystem>
 {
     private UnityEvent<DialoguesAndOptions.DialogueSystem> m_dialogueTriggerEvent = new UnityEvent<DialoguesAndOptions.DialogueSystem>();
     public override Task AddListener(UnityAction<DialoguesAndOptions.DialogueSystem> action)

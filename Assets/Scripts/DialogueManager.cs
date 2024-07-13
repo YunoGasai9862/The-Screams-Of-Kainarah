@@ -18,9 +18,13 @@ public class DialogueManager : MonoBehaviour
     public Text maindialogue;
     public Animator myanimator;
 
+    private bool NextDialogue { get; set; } = false;
+
     [SerializeField]
     public AWSPollyDialogueTriggerEvent AWSPollyDialogueTriggerEvent;
     public DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
+    public NextDialogueTriggerEvent nextDialogueTriggerEvent;
+    //use this new logic now
 
     void Start()
     {
@@ -30,9 +34,11 @@ public class DialogueManager : MonoBehaviour
     public void PrepareDialogueQueue(Dialogues dialogue)
     {
         myanimator.SetBool(DIALOGUE_ANIMATION_NAME, true);
+
         dialogueTakingPlaceEvent.Invoke(true);
 
         m_storylineSentences.Clear();  //clears the previous dialogues, if there are any
+
         myname.text = dialogue.EntityName;
 
         foreach (string sentence in dialogue.Sentences)
@@ -40,11 +46,9 @@ public class DialogueManager : MonoBehaviour
             m_storylineSentences.Enqueue(sentence);
         }
 
-        Debug.Log($"StorylinesCount: {m_storylineSentences.Count}");
-
     }
 
-    IEnumerator AnimateLetters(string sentence)
+    private IEnumerator AnimateLetters(string sentence)
     {
         maindialogue.text = string.Empty;
 
@@ -64,39 +68,31 @@ public class DialogueManager : MonoBehaviour
         return Task.CompletedTask;
     }
     //do it recursively here instead
-    public async Task StartDialogue(SemaphoreSlim dialogueSemaphore, CancellationTokenSource cancellationTokenSource)
+    public IEnumerator StartDialogue(SemaphoreSlim dialogueSemaphore)
     {
-        try
+
+        if (m_storylineSentences.Count == 0) //if there's nothing in the queue
         {
-            if (m_storylineSentences.Count == 0) //if there's nothing in the queue
-            {
-                EndDialogue();
+            EndDialogue();
 
-                Debug.Log("Ending Dialogue");
+            dialogueSemaphore.Release();
 
-                dialogueSemaphore.Release();
-
-                return;  //exits function
-            }
-
-            string dialogue = m_storylineSentences.Dequeue();
-
-            await InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent, dialogue, VoiceId.Emma);
-
-            StopAllCoroutines();
-
-            StartCoroutine(AnimateLetters(dialogue));
-
-            //call it again, recursively
-
-           await StartDialogue(dialogueSemaphore, cancellationTokenSource);
-
-        }catch(Exception ex)
-        {
-            cancellationTokenSource.Cancel();
-
-            throw ex;
+            yield return null;  
         }
+
+        string dialogue = m_storylineSentences.Dequeue();
+
+        InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent, dialogue, VoiceId.Emma);
+
+        StopAllCoroutines();
+
+        StartCoroutine(AnimateLetters(dialogue));
+
+        //call it again, recursively only if the button is pressed
+
+        yield return new WaitUntil(() => NextDialogue == true);
+
+        StartCoroutine(StartDialogue(dialogueSemaphore));
 
     }
 

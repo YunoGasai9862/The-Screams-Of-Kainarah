@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public class UIParticleSystemEvent: UnityEventWT<float>
+public class UIParticleSystemEvent: UnityEventWTAsync<float>
 {
     private UnityEvent<float> m_particleSystemEvent = new UnityEvent<float>();
     public override Task AddListener(UnityAction<float> action)

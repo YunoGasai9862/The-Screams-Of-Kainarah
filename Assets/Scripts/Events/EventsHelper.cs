@@ -8,7 +8,7 @@ public class EventsHelper
         var eventFound = events.mappingsWOT.Where(e => e.eventIdentifier == animationEventName).FirstOrDefault().eventNameWithoutType;
         return eventFound;
     }
-    public UnityEventWT<bool> GetCustomUnityEventWithType(EventStringMapper events, string animationEventName)
+    public UnityEventWTAsync<bool> GetCustomUnityEventWithType(EventStringMapper events, string animationEventName)
     {
         var eventFound = events.mappingWTBool.Where(e => e.eventIdentifier == animationEventName).FirstOrDefault().eventNameWithType;
         return eventFound;

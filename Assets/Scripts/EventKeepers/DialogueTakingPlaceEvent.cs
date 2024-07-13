@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public class DialogueTakingPlaceEvent : UnityEventWT<bool>
+public class DialogueTakingPlaceEvent : UnityEventWTAsync<bool>
 {
     private UnityEvent<bool> m_DialogueTakingPlaceEvent = new UnityEvent<bool>();
     public override Task AddListener(UnityAction<bool> action)

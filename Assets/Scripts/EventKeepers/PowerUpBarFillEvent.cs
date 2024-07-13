@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public class PowerUpBarFillEvent: UnityEventWT<bool>
+public class PowerUpBarFillEvent: UnityEventWTAsync<bool>
 {
     private UnityEvent<bool> m_powerUpBarFillEvent = new UnityEvent<bool>();
 

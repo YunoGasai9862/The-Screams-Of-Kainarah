@@ -2,7 +2,7 @@ using Amazon.Polly;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public class AWSPollyDialogueTriggerEvent : UnityEventWT<string, VoiceId>
+public class AWSPollyDialogueTriggerEvent : UnityEventWTAsync<string, VoiceId>
 {
     private UnityEvent<string, VoiceId> m_amazonPollyDialogueTriggerEvent = new UnityEvent<string, VoiceId>();    
     public override Task AddListener(UnityAction<string, VoiceId> action)
