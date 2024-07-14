@@ -24,11 +24,12 @@ public class DialogueManager : MonoBehaviour
     public AWSPollyDialogueTriggerEvent AWSPollyDialogueTriggerEvent;
     public DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
     public NextDialogueTriggerEvent nextDialogueTriggerEvent;
-    //use this new logic now
 
     void Start()
     {
         m_storylineSentences = new Queue<string>();
+
+        nextDialogueTriggerEvent.AddListener(ShouldProceedToNextDialogue);
     }
 
     public void PrepareDialogueQueue(Dialogues dialogue)
@@ -50,11 +51,13 @@ public class DialogueManager : MonoBehaviour
 
     private IEnumerator AnimateLetters(string sentence)
     {
+        //fix this - it shouldn't keep animation previous sentences
         maindialogue.text = string.Empty;
 
         for (int i = 0; i < sentence.Length; i++)
         {
             yield return new WaitForSeconds(.05f);
+
             maindialogue.text += sentence[i];
         }
 
@@ -71,7 +74,7 @@ public class DialogueManager : MonoBehaviour
     public IEnumerator StartDialogue(SemaphoreSlim dialogueSemaphore)
     {
 
-        if (m_storylineSentences.Count == 0) //if there's nothing in the queue
+        if (m_storylineSentences.Count == 0) 
         {
             EndDialogue();
 
@@ -80,15 +83,16 @@ public class DialogueManager : MonoBehaviour
             yield return null;  
         }
 
+        NextDialogue = false;
+
         string dialogue = m_storylineSentences.Dequeue();
 
         InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent, dialogue, VoiceId.Emma);
 
-        StopAllCoroutines();
+        // StopAllCoroutines(); //find a way to fix that - if the animation is in progress, skip altogether and
+        //jump to the next one better approach
 
         StartCoroutine(AnimateLetters(dialogue));
-
-        //call it again, recursively only if the button is pressed
 
         yield return new WaitUntil(() => NextDialogue == true);
 
@@ -96,10 +100,15 @@ public class DialogueManager : MonoBehaviour
 
     }
 
-    void EndDialogue()
+    private void EndDialogue()
     {
         myanimator.SetBool(DIALOGUE_ANIMATION_NAME, false);
         dialogueTakingPlaceEvent.Invoke(false);
+    }
+
+    private void ShouldProceedToNextDialogue(bool value)
+    {
+        NextDialogue = value;
     }
 
 

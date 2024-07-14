@@ -30,7 +30,6 @@ public class DialogueResetActionListener : MonoBehaviour, IObserver<DialoguesAnd
     {
         if (Data != null)
         {
-            Debug.Log("HERE");
             await ResetDialogueSystem(Data);    
         }
     }

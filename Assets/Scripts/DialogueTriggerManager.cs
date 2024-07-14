@@ -17,6 +17,7 @@ public class DialogueTriggerManager : MonoBehaviour
     //bring back the displayNext functionality - we are doing that we a button click!!! - found the issue
     private IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
+
         foreach (Dialogues dialogue in dialogueSystem.Dialogues)
         {
             if (!dialogueSystem.DialogueOptions.DialogueConcluded)
@@ -35,7 +36,7 @@ public class DialogueTriggerManager : MonoBehaviour
                 {
                     SemaphoreSlim.Wait();
 
-                    SceneSingleton.GetDialogueManager().StartDialogue(SemaphoreSlim);
+                    StartCoroutine(SceneSingleton.GetDialogueManager().StartDialogue(SemaphoreSlim));
 
                     DialogueCounter++;
                 }
@@ -45,6 +46,7 @@ public class DialogueTriggerManager : MonoBehaviour
 
     public void TriggerCoroutine(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
+        Debug.Log($"Dialogue Taking Place {SceneSingleton.IsDialogueTakingPlace}");
         //ensures only onc
         if(SceneSingleton.IsDialogueTakingPlace == false)
             StartCoroutine(TriggerDialogue(dialogueSystem));
