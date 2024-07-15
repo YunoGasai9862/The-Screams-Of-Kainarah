@@ -12,6 +12,7 @@ public class DialogueManager : MonoBehaviour
 {
 
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
+    private const float ANIMATION_DELAY = 100;
 
     private Queue<string> m_storylineSentences;
     public TextMeshProUGUI myname;
@@ -49,18 +50,18 @@ public class DialogueManager : MonoBehaviour
 
     }
 
-    private IEnumerator AnimateLetters(string sentence)
+    private async Task AnimateLetters(string sentence, float animationDelay)
     {
         //fix this - it shouldn't keep animation previous sentences
         maindialogue.text = string.Empty;
 
         for (int i = 0; i < sentence.Length; i++)
         {
-            yield return new WaitForSeconds(.05f);
-
+            Debug.Log($"Inside Coroutine {NextDialogue}");
+            await Task.Delay(TimeSpan.FromMilliseconds(animationDelay));
+            if(NextDialogue)
             maindialogue.text += sentence[i];
         }
-
     }
 
     public Task InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent, string sentence, VoiceId voiceId)
@@ -92,7 +93,7 @@ public class DialogueManager : MonoBehaviour
         // StopAllCoroutines(); //find a way to fix that - if the animation is in progress, skip altogether and
         //jump to the next one better approach
 
-        StartCoroutine(AnimateLetters(dialogue));
+        _= AnimateLetters(dialogue, ANIMATION_DELAY);
 
         yield return new WaitUntil(() => NextDialogue == true);
 
@@ -108,6 +109,7 @@ public class DialogueManager : MonoBehaviour
 
     private void ShouldProceedToNextDialogue(bool value)
     {
+        Debug.Log($"Inside Event {value}");
         NextDialogue = value;
     }
 
