@@ -12,7 +12,7 @@ public class DialogueManager : MonoBehaviour
 {
 
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
-    private const float ANIMATION_DELAY = 100;
+    private const float ANIMATION_DELAY = 0.05f;
 
     private Queue<string> m_storylineSentences;
     public TextMeshProUGUI myname;
@@ -50,28 +50,24 @@ public class DialogueManager : MonoBehaviour
 
     }
 
-    private async Task AnimateLetters(string sentence, float animationDelay)
+    private IEnumerator AnimateLetters(string sentence, float animationDelay)
     {
-        //fix this - it shouldn't keep animation previous sentences
         maindialogue.text = string.Empty;
 
         for (int i = 0; i < sentence.Length; i++)
         {
-            Debug.Log($"Inside Coroutine {NextDialogue}");
-            await Task.Delay(TimeSpan.FromMilliseconds(animationDelay));
-            if(NextDialogue)
+            yield return new WaitForSeconds(animationDelay);
             maindialogue.text += sentence[i];
         }
     }
 
     public Task InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent, string sentence, VoiceId voiceId)
     {
-        //once all the letters have animated, invoke voice
         awsPollyDialogueTriggerEvent.Invoke(sentence, voiceId);
 
         return Task.CompletedTask;
     }
-    //do it recursively here instead
+
     public IEnumerator StartDialogue(SemaphoreSlim dialogueSemaphore)
     {
 
@@ -81,24 +77,24 @@ public class DialogueManager : MonoBehaviour
 
             dialogueSemaphore.Release();
 
-            yield return null;  
+            yield return null;
         }
+        else
+        {
+            NextDialogue = false;
 
-        NextDialogue = false;
+            string dialogue = m_storylineSentences.Dequeue();
 
-        string dialogue = m_storylineSentences.Dequeue();
+            InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent, dialogue, VoiceId.Emma);
 
-        InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent, dialogue, VoiceId.Emma);
+            Coroutine animateLetter = StartCoroutine(AnimateLetters(dialogue, ANIMATION_DELAY));
 
-        // StopAllCoroutines(); //find a way to fix that - if the animation is in progress, skip altogether and
-        //jump to the next one better approach
+            yield return new WaitUntil(() => NextDialogue == true);
 
-        _= AnimateLetters(dialogue, ANIMATION_DELAY);
+            StopCoroutine(animateLetter);
 
-        yield return new WaitUntil(() => NextDialogue == true);
-
-        StartCoroutine(StartDialogue(dialogueSemaphore));
-
+            StartCoroutine(StartDialogue(dialogueSemaphore));
+        }
     }
 
     private void EndDialogue()
@@ -109,7 +105,6 @@ public class DialogueManager : MonoBehaviour
 
     private void ShouldProceedToNextDialogue(bool value)
     {
-        Debug.Log($"Inside Event {value}");
         NextDialogue = value;
     }
 

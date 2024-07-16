@@ -24,8 +24,10 @@ public class DialogueTriggerManager : MonoBehaviour
             {
                 SceneSingleton.GetDialogueManager().PrepareDialogueQueue(dialogue);
 
-                if (dialogue.Sentences.Length == DialogueCounter)
+                if (dialogueSystem.Dialogues.Count == DialogueCounter)
                 {
+                    Debug.Log("Inside");
+
                     dialogueSystem.DialogueOptions.DialogueConcluded = true;
 
                     DialogueCounter = 0;
