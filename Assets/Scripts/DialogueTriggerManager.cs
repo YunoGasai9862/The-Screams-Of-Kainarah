@@ -8,26 +8,30 @@ public class DialogueTriggerManager : MonoBehaviour
     private SemaphoreSlim SemaphoreSlim { get; set;} =  new SemaphoreSlim(1);     // use this for dialogue, to make it not run fast/use ASYNC for each sentence
 
     [SerializeField]
-    DialogueTriggerEvent dialogueTriggerEvent;
+    public DialogueTriggerEvent dialogueTriggerEvent;
+    public DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
+
+    private bool test = false;
+
 
     private void Start()
     {
         dialogueTriggerEvent.AddListener(TriggerCoroutine);
     }
-    //bring back the displayNext functionality - we are doing that we a button click!!! - found the issue
+
     private IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
+        dialogueTakingPlaceEvent.Invoke(true);
 
         foreach (Dialogues dialogue in dialogueSystem.Dialogues)
         {
-            if (!dialogueSystem.DialogueOptions.DialogueConcluded)
+            if (dialogueSystem.DialogueOptions.DialogueConcluded == false)
             {
                 SceneSingleton.GetDialogueManager().PrepareDialogueQueue(dialogue);
 
                 if (dialogueSystem.Dialogues.Count == DialogueCounter)
                 {
-                    Debug.Log("Inside");
-
+                    Debug.Log("Concluded");
                     dialogueSystem.DialogueOptions.DialogueConcluded = true;
 
                     DialogueCounter = 0;
@@ -41,16 +45,29 @@ public class DialogueTriggerManager : MonoBehaviour
                     StartCoroutine(SceneSingleton.GetDialogueManager().StartDialogue(SemaphoreSlim));
 
                     DialogueCounter++;
+
+                    Debug.Log(DialogueCounter);
                 }
             }
+
+            yield return new WaitUntil(() => SemaphoreSlim.CurrentCount > 0);
+
+            Debug.Log("FINALLY");
+        }
+        
+        if(SemaphoreSlim.CurrentCount > 0)
+        {
+            dialogueTakingPlaceEvent.Invoke(false);
         }
     }
 
     public void TriggerCoroutine(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        Debug.Log($"Dialogue Taking Place {SceneSingleton.IsDialogueTakingPlace}");
-        //ensures only onc
-        if(SceneSingleton.IsDialogueTakingPlace == false)
-            StartCoroutine(TriggerDialogue(dialogueSystem));
+        Debug.Log(SceneSingleton.IsDialogueTakingPlace);
+        if(SceneSingleton.IsDialogueTakingPlace == false && test == false)
+        {
+            test = true;
+            Coroutine triggerDialogueCoroutine = StartCoroutine(TriggerDialogue(dialogueSystem));
+        }
     }
 }

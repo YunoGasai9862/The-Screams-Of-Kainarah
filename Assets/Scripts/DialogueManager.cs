@@ -23,22 +23,19 @@ public class DialogueManager : MonoBehaviour
 
     [SerializeField]
     public AWSPollyDialogueTriggerEvent AWSPollyDialogueTriggerEvent;
-    public DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
     public NextDialogueTriggerEvent nextDialogueTriggerEvent;
+    public DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
 
     void Start()
     {
         m_storylineSentences = new Queue<string>();
 
         nextDialogueTriggerEvent.AddListener(ShouldProceedToNextDialogue);
+        dialogueTakingPlaceEvent.AddListener(EndDialogue);
     }
 
     public void PrepareDialogueQueue(Dialogues dialogue)
     {
-        myanimator.SetBool(DIALOGUE_ANIMATION_NAME, true);
-
-        dialogueTakingPlaceEvent.Invoke(true);
-
         m_storylineSentences.Clear();  //clears the previous dialogues, if there are any
 
         myname.text = dialogue.EntityName;
@@ -73,8 +70,6 @@ public class DialogueManager : MonoBehaviour
 
         if (m_storylineSentences.Count == 0) 
         {
-            EndDialogue();
-
             dialogueSemaphore.Release();
 
             yield return null;
@@ -97,10 +92,9 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    private void EndDialogue()
+    private void EndDialogue(bool dialogueTakingPlace)
     {
-        myanimator.SetBool(DIALOGUE_ANIMATION_NAME, false);
-        dialogueTakingPlaceEvent.Invoke(false);
+        myanimator.SetBool(DIALOGUE_ANIMATION_NAME, dialogueTakingPlace);
     }
 
     private void ShouldProceedToNextDialogue(bool value)
