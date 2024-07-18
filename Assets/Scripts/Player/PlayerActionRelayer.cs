@@ -17,6 +17,8 @@ public class PlayerActionRelayer : AbstractEntity
     [SerializeField] GameObject TeleportTransition;
     [SerializeField] string[] checkpointTags;
     [SerializeField] float playerHealth;
+    [SerializeField]
+    MainThreadDispatcherEvent mainThreadDispatcherEvent;
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
@@ -97,11 +99,11 @@ public class PlayerActionRelayer : AbstractEntity
 
         await GetSemaphore.WaitAsync();
 
-        (bool inSight, DialogueSystem dialogueSystem) = await IsGameObjectInSightForDialogueTrigger(SceneSingleton.DialogueAndOptions, _cancellationToken, GetSemaphore); //use of tuple return
+        (bool inSight, DialogueSystem dialogueSystem) = await IsGameObjectInSightForDialogueTrigger(SceneSingleton.DialogueAndOptions, _cancellationToken, GetSemaphore).ConfigureAwait(false); //use of tuple return
 
         if (inSight && dialogueSystem != null && !dialogueSystem.DialogueOptions.DialogueConcluded)
         {
-            await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<DialogueSystem>(PlayerObserverListenerHelper.DialogueSystem, dialogueSystem); //test this out
+           SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<DialogueSystem>(PlayerObserverListenerHelper.DialogueSystem, dialogueSystem); //test this out
         }
 
     }
@@ -109,27 +111,23 @@ public class PlayerActionRelayer : AbstractEntity
     {
         bool inSight = false;
         DialogueSystem dialogueSystem = null;
+        Debug.Log("EXECUTING");
 
-        try
+        foreach (var item in dialogueAndOptions.exchange)
         {
-            foreach (var item in dialogueAndOptions.exchange)
+            await Task.Delay(TimeSpan.FromSeconds(1f));
+
+            DialogueTriggeringEntity triggeringEntity = item.DialogueTriggeringEntity;
+
+            if (!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, triggeringEntity.EntityTag, 3f))
             {
-                await Task.Delay(TimeSpan.FromSeconds(.1f));
-
-                DialogueTriggeringEntity triggeringEntity = item.DialogueTriggeringEntity;
-
-                if (!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, triggeringEntity.EntityTag))
-                {
-                    inSight = true;
-                    dialogueSystem = item;
-                    break;
-                }
+                inSight = true;
+                dialogueSystem = item;
+                break;
             }
         }
-        finally
-        {
-            semaphoreSlim.Release();
-        }
+
+        semaphoreSlim.Release();
 
         return (inSight, dialogueSystem);
     }

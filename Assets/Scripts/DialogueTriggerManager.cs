@@ -11,9 +11,6 @@ public class DialogueTriggerManager : MonoBehaviour
     public DialogueTriggerEvent dialogueTriggerEvent;
     public DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
 
-    private bool test = false;
-
-
     private void Start()
     {
         dialogueTriggerEvent.AddListener(TriggerCoroutine);
@@ -25,6 +22,7 @@ public class DialogueTriggerManager : MonoBehaviour
 
         foreach (Dialogues dialogue in dialogueSystem.Dialogues)
         {
+            Debug.Log("EXECUTING FOR LOOP");
             if (dialogueSystem.DialogueOptions.DialogueConcluded == false)
             {
                 SceneSingleton.GetDialogueManager().PrepareDialogueQueue(dialogue);
@@ -51,22 +49,17 @@ public class DialogueTriggerManager : MonoBehaviour
             }
 
             yield return new WaitUntil(() => SemaphoreSlim.CurrentCount > 0);
+        }
 
-            Debug.Log("FINALLY");
-        }
-        
-        if(SemaphoreSlim.CurrentCount > 0)
-        {
-            dialogueTakingPlaceEvent.Invoke(false);
-        }
+        dialogueTakingPlaceEvent.Invoke(false);
+
     }
 
     public void TriggerCoroutine(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        Debug.Log(SceneSingleton.IsDialogueTakingPlace);
-        if(SceneSingleton.IsDialogueTakingPlace == false && test == false)
+        if(SceneSingleton.IsDialogueTakingPlace == false && dialogueSystem.DialogueOptions.DialogueConcluded == false)
         {
-            test = true;
+            Debug.Log("INSIDE");
             Coroutine triggerDialogueCoroutine = StartCoroutine(TriggerDialogue(dialogueSystem));
         }
     }
