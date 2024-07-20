@@ -34,7 +34,8 @@ public class PlayerActionRelayer : AbstractEntity
 
     public SemaphoreSlim GetCheckPointSemaphore { get => _semaphoreSlimForCheckpoint; set => _semaphoreSlimForCheckpoint = value; }
     public SemaphoreSlim GetSemaphore { get => _semaphoreSlim; set => _semaphoreSlim = value; }
-
+    private DialogueSystem DialogueSystemFetched { get; set; }
+    private bool InSight { get; set; }
 
     private void Start()
     {
@@ -99,37 +100,32 @@ public class PlayerActionRelayer : AbstractEntity
 
         await GetSemaphore.WaitAsync();
 
-        (bool inSight, DialogueSystem dialogueSystem) = await IsGameObjectInSightForDialogueTrigger(SceneSingleton.DialogueAndOptions, _cancellationToken, GetSemaphore).ConfigureAwait(false); //use of tuple return
+        await IsGameObjectInSightForDialogueTrigger(SceneSingleton.DialogueAndOptions, _cancellationToken, GetSemaphore);
 
-        if (inSight && dialogueSystem != null && !dialogueSystem.DialogueOptions.DialogueConcluded)
+        if (InSight && DialogueSystemFetched != null && !DialogueSystemFetched.DialogueOptions.DialogueConcluded)
         {
-           SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<DialogueSystem>(PlayerObserverListenerHelper.DialogueSystem, dialogueSystem); //test this out
+          await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<DialogueSystem>(PlayerObserverListenerHelper.DialogueSystem, DialogueSystemFetched);
         }
 
     }
-    private async Task<(bool, DialogueSystem)> IsGameObjectInSightForDialogueTrigger(DialoguesAndOptions dialogueAndOptions, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim)
+    private Task IsGameObjectInSightForDialogueTrigger(DialoguesAndOptions dialogueAndOptions, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim)
     {
-        bool inSight = false;
-        DialogueSystem dialogueSystem = null;
-        Debug.Log("EXECUTING");
+        InSight = false;
+        DialogueSystemFetched = null;
 
         foreach (var item in dialogueAndOptions.exchange)
         {
-            await Task.Delay(TimeSpan.FromSeconds(1f));
-
-            DialogueTriggeringEntity triggeringEntity = item.DialogueTriggeringEntity;
-
-            if (!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, triggeringEntity.EntityTag, 3f))
+            if (!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, item.DialogueTriggeringEntity.EntityTag, 3f))
             {
-                inSight = true;
-                dialogueSystem = item;
+                InSight = true;
+                DialogueSystemFetched = item;
                 break;
             }
         }
 
         semaphoreSlim.Release();
 
-        return (inSight, dialogueSystem);
+        return Task.CompletedTask;
     }
     private async void OnCollisionEnter2D(Collision2D collision) //FIX THIS TOO
     {

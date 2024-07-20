@@ -22,31 +22,29 @@ public class DialogueTriggerManager : MonoBehaviour
 
         foreach (Dialogues dialogue in dialogueSystem.Dialogues)
         {
-            Debug.Log("EXECUTING FOR LOOP");
-            if (dialogueSystem.DialogueOptions.DialogueConcluded == false)
+        
+            SceneSingleton.GetDialogueManager().PrepareDialogueQueue(dialogue);
+
+            if (dialogueSystem.Dialogues.Count == DialogueCounter)
             {
-                SceneSingleton.GetDialogueManager().PrepareDialogueQueue(dialogue);
+                Debug.Log("Concluded");
+                dialogueSystem.DialogueOptions.DialogueConcluded = true;
 
-                if (dialogueSystem.Dialogues.Count == DialogueCounter)
-                {
-                    Debug.Log("Concluded");
-                    dialogueSystem.DialogueOptions.DialogueConcluded = true;
+                DialogueCounter = 0;
 
-                    DialogueCounter = 0;
-
-                    yield return null;
-                }
-                else
-                {
-                    SemaphoreSlim.Wait();
-
-                    StartCoroutine(SceneSingleton.GetDialogueManager().StartDialogue(SemaphoreSlim));
-
-                    DialogueCounter++;
-
-                    Debug.Log(DialogueCounter);
-                }
+                yield return null;
             }
+            else
+            {
+                SemaphoreSlim.WaitAsync();
+
+                StartCoroutine(SceneSingleton.GetDialogueManager().StartDialogue(SemaphoreSlim));
+
+                DialogueCounter++;
+
+                Debug.Log(DialogueCounter);
+            }
+            
 
             yield return new WaitUntil(() => SemaphoreSlim.CurrentCount > 0);
         }

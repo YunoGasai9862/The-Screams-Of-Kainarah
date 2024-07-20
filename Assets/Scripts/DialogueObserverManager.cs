@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 using static DialoguesAndOptions;
 
@@ -14,27 +13,8 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
     [Header("Triggering Event")]
     [SerializeField] DialogueTriggerEvent dialogueTriggerEvent;
 
-    Dictionary<string, Func<DialogueSystem, Task>> dialogueManagerActionDict; //Func -> the type of parameter it will take that is Dialogues,and the return type will be Task. It's c# delegation
-
-    private void Start()
-    {
-        dialogueManagerActionDict = PrefilDictionaryFromTheScriptableObject(DialoguesAndOptions);
-    }
-
-    private Dictionary<string, Func<DialogueSystem, Task>> PrefilDictionaryFromTheScriptableObject(DialoguesAndOptions dialogueAndOptions)
-    {
-        var dictionary = new Dictionary<string, Func<DialogueSystem, Task>>();
-
-        foreach (var item in dialogueAndOptions.exchange)
-        {
-            dictionary.Add(item.DialogueTriggeringEntity.Entity.tag, dialogues => TriggerDialogue(dialogues));
-        }
-        return dictionary;
-    }
     private async Task TriggerDialogue(DialogueSystem dialogueSystem)
     {
-        await Task.Delay(TimeSpan.FromSeconds(0.5));
-
         await dialogueTriggerEvent.Invoke(dialogueSystem);
     }
     private void OnEnable()
@@ -47,14 +27,11 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
         PlayerObserverListenerHelper.DialogueSystem.RemoveOberver(this); 
     }
 
-    public void OnNotify(DialogueSystem Data, params object[] optional)
+    public async void OnNotify(DialogueSystem Data, params object[] optional)
     {
-        if(dialogueManagerActionDict.TryGetValue(Data.DialogueTriggeringEntity.EntityTag, out var func))
+        if (Data.DialogueOptions.ShouldTriggerDialogue)
         {
-            if (Data.DialogueOptions.ShouldTriggerDialogue)
-            {
-                func.Invoke(Data); 
-            }
+            await TriggerDialogue(Data);
         }
     }
 
