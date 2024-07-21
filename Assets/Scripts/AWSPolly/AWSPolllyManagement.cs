@@ -37,7 +37,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     private int VOICE_GENERATION_DELAY { get; set; } = 500;
 
     private SemaphoreSlim AWSSemaphore { get; set; } = new SemaphoreSlim(1);
-    private string AudioPath { get; set; } = "AmazonNarrator.mp3";
+    private string AudioPath { get; set; }
     private string PersistencePath { get; set; }
 
 
@@ -56,7 +56,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
     private void Awake()
     {
-        PersistencePath = $"{Application.persistentDataPath}/{AudioPath}";
+        
+        PersistencePath = $"{Application.persistentDataPath}";
 
         CancellationTokenSource = new CancellationTokenSource();
 
@@ -65,7 +66,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
     private async void Start()
     {
-        await m_AWSPollyDialogueTriggerEvent.AddListener(GenerateAIVoice);
+        await m_AWSPollyDialogueTriggerEvent.AddListener(ProcessAndSaveAINotes);
 
         await SetupFirebaseStorageForAWSPrivateKeys();
         
@@ -158,13 +159,17 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
         return await client.SynthesizeSpeechAsync(request).ConfigureAwait(false);
     }
     
-    //this will be invoked by an event
-    public async void GenerateAIVoice(string text, VoiceId voiceId)
+    public async void ProcessAndSaveAINotes(AWSPollyAudioPacket awsPollyAudioPacket)
     {
-        SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, text, Engine.Neural, voiceId, OutputFormat.Mp3).ConfigureAwait(false);
+        SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, awsPollyAudioPacket.DialogueText, Engine.Neural, awsPollyAudioPacket.AudioVoiceId, OutputFormat.Mp3).ConfigureAwait(false);
 
-        await SaveAudio(SynthesizeSpeechResponse, PersistencePath).ConfigureAwait(false);
+        await SaveAudio(SynthesizeSpeechResponse, $"{PersistencePath}\\{awsPollyAudioPacket.AudioName}.mp3").ConfigureAwait(false);
 
+    }
+
+    //update this method too
+    public async Task InvokeAIVoice() 
+    {
         await mainThreadDispatcherEvent.Invoke(PlayAudio);
     }
 

@@ -60,7 +60,8 @@ public class DialogueManager : MonoBehaviour
 
     public Task InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent, string sentence, VoiceId voiceId)
     {
-        awsPollyDialogueTriggerEvent.Invoke(sentence, voiceId);
+        //fix audio name here
+        awsPollyDialogueTriggerEvent.Invoke(new AWSPollyAudioPacket { AudioName = "", AudioVoiceId= voiceId, DialogueText = sentence });
 
         return Task.CompletedTask;
     }

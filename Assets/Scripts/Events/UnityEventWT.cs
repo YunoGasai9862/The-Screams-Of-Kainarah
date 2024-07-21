@@ -16,6 +16,13 @@ public abstract class UnityEventWTAsync<T, Z> : MonoBehaviour, ICustomUnityEvent
     public abstract Task AddListener(UnityAction<T, Z> action);
     public abstract Task Invoke(T tValue, Z zValue);
 }
+//max - instead use classes then
+public abstract class UnityEventWTAsync<X, Y, Z> : MonoBehaviour, ICustomUnityEventWTAsync<X, Y, Z>
+{
+    public abstract UnityEvent<X, Y, Z> GetInstance();
+    public abstract Task AddListener(UnityAction<X, Y, Z> action);
+    public abstract Task Invoke(X xValue, Y yValue, Z zValue);
+}
 
 public abstract class UnityEventWT<T>: MonoBehaviour, ICustomUnityEvent<T>
 {

@@ -2,24 +2,24 @@ using Amazon.Polly;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public class AWSPollyDialogueTriggerEvent : UnityEventWTAsync<string, VoiceId>
+public class AWSPollyDialogueTriggerEvent : UnityEventWTAsync<AWSPollyAudioPacket>
 {
-    private UnityEvent<string, VoiceId> m_amazonPollyDialogueTriggerEvent = new UnityEvent<string, VoiceId>();    
-    public override Task AddListener(UnityAction<string, VoiceId> action)
+    private UnityEvent<AWSPollyAudioPacket> m_amazonPollyDialogueTriggerEvent = new UnityEvent<AWSPollyAudioPacket>();    
+    public override Task AddListener(UnityAction<AWSPollyAudioPacket> awsPollyAudioPacket)
     {
-        m_amazonPollyDialogueTriggerEvent.AddListener(action);
+        m_amazonPollyDialogueTriggerEvent.AddListener(awsPollyAudioPacket);
 
         return Task.CompletedTask;
     }
 
-    public override UnityEvent<string, VoiceId> GetInstance()
+    public override UnityEvent<AWSPollyAudioPacket> GetInstance()
     {
         return m_amazonPollyDialogueTriggerEvent;
     }
 
-    public override Task Invoke(string value, VoiceId voiceId)
+    public override Task Invoke(AWSPollyAudioPacket awsPollyAudioPacket )
     {
-        m_amazonPollyDialogueTriggerEvent.Invoke(value, voiceId);
+        m_amazonPollyDialogueTriggerEvent.Invoke(awsPollyAudioPacket);
 
         return Task.CompletedTask;
     }

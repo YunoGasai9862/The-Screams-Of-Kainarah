@@ -13,7 +13,14 @@ public interface ICustomUnityEventWTAsync<T, Z>
     Task Invoke(T tValue, Z zValue);
 }
 
- public interface ICustomUnityEvent<T>
+public interface ICustomUnityEventWTAsync<X, Y, Z>
+{
+    UnityEvent<X, Y, Z> GetInstance();
+    Task Invoke(X xValue, Y yValue, Z zValue);
+}
+
+
+public interface ICustomUnityEvent<T>
 {
     UnityEvent<T> GetInstance();
     void Invoke(T value);   
