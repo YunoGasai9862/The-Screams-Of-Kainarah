@@ -11,9 +11,14 @@ public class Dialogues
     private string _entityName;
     [SerializeField]
     private string _voice;
+    [SerializeField]
+    private string _audioPath;
+
     private VoiceId _voiceId;
 
     public string EntityName { get => _entityName; }
+
+    public string AudioPath { get => _audioPath; set => _audioPath = value; }
 
     public string Voice { get => _voice; }
     //wont be visible in the UI
@@ -39,3 +44,4 @@ public class Dialogues
         }
     }
 }
+

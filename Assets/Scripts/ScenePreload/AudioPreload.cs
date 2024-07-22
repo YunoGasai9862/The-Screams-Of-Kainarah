@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
-
 public class AudioPreload: MonoBehaviour, IPreloadAudio<DialoguesAndOptions>
 {
     [SerializeField]
@@ -15,7 +14,10 @@ public class AudioPreload: MonoBehaviour, IPreloadAudio<DialoguesAndOptions>
     }
     public Task PreloadAudio(DialoguesAndOptions dialogueAndOptions)
     {
+        foreach(DialoguesAndOptions.DialogueSystem dialogueSystem in dialogueAndOptions.exchange)
+        {
 
+        }
 
         return Task.CompletedTask;
     }

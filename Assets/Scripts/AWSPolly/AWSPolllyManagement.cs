@@ -37,6 +37,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     private int VOICE_GENERATION_DELAY { get; set; } = 500;
 
     private SemaphoreSlim AWSSemaphore { get; set; } = new SemaphoreSlim(1);
+    
     private string AudioPath { get; set; }
     private string PersistencePath { get; set; }
 
@@ -167,7 +168,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
     }
 
-    //update this method too
+    //update this method too - invoke to send in audio Path as well
     public async Task InvokeAIVoice() 
     {
         await mainThreadDispatcherEvent.Invoke(PlayAudio);
@@ -178,8 +179,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
         AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(PersistencePath, AudioPath, AudioType.MPEG);
 
         AudioSource.Play();
-
-        File.Delete(PersistencePath);
     }
 
     private Task SaveAudio(SynthesizeSpeechResponse response, string fullPath)
