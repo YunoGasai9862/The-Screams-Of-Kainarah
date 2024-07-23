@@ -12,24 +12,13 @@ public class Dialogues
     [SerializeField]
     private string _voice;
     [SerializeField]
-    private string _audioPath;
-
+    private TextAudioPath[] _textAudioPath;
     private VoiceId _voiceId;
 
     public string EntityName { get => _entityName; }
-
-    public string AudioPath { get => _audioPath; set => _audioPath = value; }
-
+    public TextAudioPath[] TextAudioPath { get => _textAudioPath; set => _textAudioPath = value; }
     public string Voice { get => _voice; }
-    //wont be visible in the UI
     public VoiceId VoiceID { get => _voiceId; set => _voiceId = value; }
-    //call always when an entity is added to the scriptble object
-    [SerializeField]
-    [TextArea(3, 10)]
-    private string[] _sentences;
-
-    public string[] Sentences { get => _sentences; }
-
 
     public void ParseVoiceId()
     {

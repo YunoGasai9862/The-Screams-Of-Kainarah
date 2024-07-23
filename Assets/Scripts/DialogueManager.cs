@@ -40,9 +40,9 @@ public class DialogueManager : MonoBehaviour
 
         myname.text = dialogue.EntityName;
 
-        foreach (string sentence in dialogue.Sentences)
+        foreach (TextAudioPath textAudioPath in dialogue.TextAudioPath)
         {
-            m_storylineSentences.Enqueue(sentence);
+            m_storylineSentences.Enqueue(textAudioPath.Sentence);
         }
 
     }

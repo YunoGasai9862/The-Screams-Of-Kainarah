@@ -1,3 +1,4 @@
+using Amazon.Polly;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -36,7 +37,6 @@ public class DialoguesAndOptionsCustomEditor : Editor
 
             SerializedProperty multiDialoguesBool = dialogueOptions.FindPropertyRelative("_multipleDialogues");
 
-           // SerializedProperty audioPath = dialogues.FindPropertyRelative("_audioPath");
 
             if(dialogues.arraySize > SINGLE_DIALOGUE_MAX_ARRAY_LENGTH)
             {
@@ -46,11 +46,6 @@ public class DialoguesAndOptionsCustomEditor : Editor
             {
                 multiDialoguesBool.boolValue = false;
             }
-
-            //disable Audio Path Editing - automated
-          //  GUI.enabled = false;
-          //  EditorGUILayout.PropertyField(audioPath);
-         //   GUI.enabled = true;
 
             EditorGUILayout.PropertyField(dialogueTriggeringEntity);
 
