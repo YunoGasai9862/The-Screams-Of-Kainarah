@@ -18,7 +18,6 @@ MonoBehaviour:
       _voice: 
       _textAudioPath:
       - _sentence: 
-      - _sentence: 
     _dialogueOptions:
       _dialogueConcluded: 0
       _multipleDialogues: 0
@@ -29,7 +28,8 @@ MonoBehaviour:
   - _dialogues:
     - _entityName: 'Rakash:'
       _voice: Zayd
-      _textAudioPath: []
+      _textAudioPath:
+      - _sentence: 
     _dialogueOptions:
       _dialogueConcluded: 0
       _multipleDialogues: 0

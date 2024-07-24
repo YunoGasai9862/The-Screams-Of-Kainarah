@@ -9,8 +9,8 @@ public class TextAudioPath
     [TextArea(3, 10)]
     private string _sentence;
 
-    [HideInInspector]
-    private string _audioPath;
+    [ReadOnly]
+    public string _audioPath;
 
     public string Sentence { get => _sentence; }
     public string AudioPath { get => _audioPath; set => _audioPath = value; }
