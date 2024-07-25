@@ -16,7 +16,12 @@ public class AudioPreload: MonoBehaviour, IPreloadAudio<DialoguesAndOptions>
     {
         foreach(DialoguesAndOptions.DialogueSystem dialogueSystem in dialogueAndOptions.exchange)
         {
+            foreach(Dialogues dialogues in dialogueSystem.Dialogues)
+            {
+                //find a better way to not iterate through all those for loops???? any way to expose just all those textAudioPaths?
+            }
 
+           // awsPollyDialogueTriggerEvent.Invoke()
         }
 
         return Task.CompletedTask;

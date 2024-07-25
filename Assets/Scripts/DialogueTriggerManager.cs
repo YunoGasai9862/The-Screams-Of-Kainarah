@@ -23,8 +23,6 @@ public class DialogueTriggerManager : MonoBehaviour
         foreach (Dialogues dialogue in dialogueSystem.Dialogues)
         {
         
-            SceneSingleton.GetDialogueManager().PrepareDialogueQueue(dialogue);
-
             if (dialogueSystem.Dialogues.Count == DialogueCounter)
             {
                 Debug.Log("Concluded");
@@ -36,6 +34,8 @@ public class DialogueTriggerManager : MonoBehaviour
             }
             else
             {
+                SceneSingleton.GetDialogueManager().PrepareDialoguesQueue(dialogue);
+
                 SemaphoreSlim.WaitAsync();
 
                 StartCoroutine(SceneSingleton.GetDialogueManager().StartDialogue(SemaphoreSlim));

@@ -10,9 +10,9 @@ public class TextAudioPath
     private string _sentence;
 
     [ReadOnly]
-    public string _audioPath;
+    public string audioPath;
 
     public string Sentence { get => _sentence; }
-    public string AudioPath { get => _audioPath; set => _audioPath = value; }
+    public string AudioPath { get => audioPath; set => audioPath = value; }
 
 }

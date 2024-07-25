@@ -14,12 +14,14 @@ public class DialogueManager : MonoBehaviour
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
     private const float ANIMATION_DELAY = 0.05f;
 
-    private Queue<string> m_storylineSentences;
+    private Queue<TextAudioPath> m_storylineSentences;
     public TextMeshProUGUI myname;
     public Text maindialogue;
     public Animator myanimator;
 
     private bool NextDialogue { get; set; } = false;
+
+    private VoiceId InterlocutorVoice { get; set; }
 
     [SerializeField]
     public AWSPollyDialogueTriggerEvent AWSPollyDialogueTriggerEvent;
@@ -28,13 +30,13 @@ public class DialogueManager : MonoBehaviour
 
     void Start()
     {
-        m_storylineSentences = new Queue<string>();
+        m_storylineSentences = new Queue<TextAudioPath>();
 
         nextDialogueTriggerEvent.AddListener(ShouldProceedToNextDialogue);
         dialogueTakingPlaceEvent.AddListener(EndDialogue);
     }
 
-    public void PrepareDialogueQueue(Dialogues dialogue)
+    public async void PrepareDialoguesQueue(Dialogues dialogue)
     {
         m_storylineSentences.Clear();  //clears the previous dialogues, if there are any
 
@@ -42,9 +44,21 @@ public class DialogueManager : MonoBehaviour
 
         foreach (TextAudioPath textAudioPath in dialogue.TextAudioPath)
         {
-            m_storylineSentences.Enqueue(textAudioPath.Sentence);
+            m_storylineSentences.Enqueue(textAudioPath);
         }
 
+        await PrepareInterlocutorVoice(dialogue);
+
+    }
+
+    private Task PrepareInterlocutorVoice(Dialogues dialogue)
+    {
+        //parses and assign the returned voiceID to the property inside the Dialogues class
+        dialogue.ParseVoiceId();
+
+        InterlocutorVoice = dialogue.VoiceID;
+
+        return Task.CompletedTask;
     }
 
     private IEnumerator AnimateLetters(string sentence, float animationDelay)
@@ -58,10 +72,9 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public Task InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent, string sentence, VoiceId voiceId)
+    public Task InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent, AWSPollyAudioPacket awsPollyAudioPacket)
     {
-        //fix audio name here
-        awsPollyDialogueTriggerEvent.Invoke(new AWSPollyAudioPacket { AudioName = "", AudioVoiceId= voiceId, DialogueText = sentence });
+        awsPollyDialogueTriggerEvent.Invoke(awsPollyAudioPacket);
 
         return Task.CompletedTask;
     }
@@ -79,11 +92,11 @@ public class DialogueManager : MonoBehaviour
         {
             NextDialogue = false;
 
-            string dialogue = m_storylineSentences.Dequeue();
+            TextAudioPath dialogue = m_storylineSentences.Dequeue();
 
-            InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent, dialogue, VoiceId.Emma);
+            InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent, new AWSPollyAudioPacket { DialogueText = dialogue.Sentence, AudioVoiceId = InterlocutorVoice, AudioName = dialogue.AudioPath });
 
-            Coroutine animateLetter = StartCoroutine(AnimateLetters(dialogue, ANIMATION_DELAY));
+            Coroutine animateLetter = StartCoroutine(AnimateLetters(dialogue.Sentence, ANIMATION_DELAY));
 
             yield return new WaitUntil(() => NextDialogue == true);
 
