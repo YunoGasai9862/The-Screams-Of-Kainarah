@@ -18,6 +18,11 @@ MonoBehaviour:
       _voice: 
       _textAudioPath:
       - _sentence: 
+        audioPath: 
+      - _sentence: 
+        audioPath: 
+      - _sentence: 
+        audioPath: 
     _dialogueOptions:
       _dialogueConcluded: 0
       _multipleDialogues: 0
@@ -30,6 +35,7 @@ MonoBehaviour:
       _voice: Zayd
       _textAudioPath:
       - _sentence: 
+        audioPath: 
     _dialogueOptions:
       _dialogueConcluded: 0
       _multipleDialogues: 0

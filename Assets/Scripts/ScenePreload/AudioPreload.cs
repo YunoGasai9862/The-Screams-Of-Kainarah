@@ -1,4 +1,7 @@
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 public class AudioPreload: MonoBehaviour, IPreloadAudio<DialoguesAndOptions>
@@ -12,18 +15,31 @@ public class AudioPreload: MonoBehaviour, IPreloadAudio<DialoguesAndOptions>
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UI
         await PreloadAudio(dialogueAndOptions);
     }
-    public Task PreloadAudio(DialoguesAndOptions dialogueAndOptions)
+    public async Task PreloadAudio(DialoguesAndOptions dialogueAndOptions)
     {
-        foreach(DialoguesAndOptions.DialogueSystem dialogueSystem in dialogueAndOptions.exchange)
+        
+        foreach(Dialogues dialogues in await ExtractTextAudioPaths(dialogueAndOptions))
         {
-            foreach(Dialogues dialogues in dialogueSystem.Dialogues)
+            foreach(TextAudioPath textAudio in dialogues.TextAudioPath)
             {
-                //find a better way to not iterate through all those for loops???? any way to expose just all those textAudioPaths?
+                //generate Audio Name etc look later
+                await awsPollyDialogueTriggerEvent.Invoke(new AWSPollyAudioPacket { AudioName = "", AudioVoiceId = dialogues.VoiceID, DialogueText = textAudio.Sentence });
+                //once generated, write back the audio path here
             }
-
-           // awsPollyDialogueTriggerEvent.Invoke()
         }
+    }
 
-        return Task.CompletedTask;
+    private Task<List<Dialogues>> ExtractTextAudioPaths(DialoguesAndOptions dialoguesAndOptions)
+    {
+        List<TextAudioPath> textAudioPath = new List<TextAudioPath>();
+        TaskCompletionSource<List<Dialogues>> tcs = new TaskCompletionSource<List<Dialogues>>();   
+        Task.Run(() =>
+        {
+            tcs.SetResult(dialoguesAndOptions.exchange.
+               SelectMany(dialogues => dialogues.Dialogues).ToList());
+
+        });
+
+        return tcs.Task;
     }
 }
