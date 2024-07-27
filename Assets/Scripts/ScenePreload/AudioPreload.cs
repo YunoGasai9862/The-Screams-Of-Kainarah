@@ -20,10 +20,11 @@ public class AudioPreload: MonoBehaviour, IPreloadAudio<DialoguesAndOptions>
         
         foreach(Dialogues dialogues in await ExtractTextAudioPaths(dialogueAndOptions))
         {
-            foreach(TextAudioPath textAudio in dialogues.TextAudioPath)
+            for(int i=0; i< dialogues.TextAudioPath.Length; i++)
             {
-                //generate Audio Name etc look later
-                await awsPollyDialogueTriggerEvent.Invoke(new AWSPollyAudioPacket { AudioName = "", AudioVoiceId = dialogues.VoiceID, DialogueText = textAudio.Sentence });
+                await awsPollyDialogueTriggerEvent.Invoke(new AWSPollyAudioPacket { AudioName = $"{dialogues.EntityName}-{dialogues.VoiceID}-{i}", AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence });
+
+
                 //once generated, write back the audio path here
             }
         }
