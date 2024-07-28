@@ -1,34 +1,55 @@
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-public class AudioPreload: MonoBehaviour, IPreloadAudio<DialoguesAndOptions>
+public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>
 {
+
+    private string PersistencePath { get; set; }
+
+    private bool AudioGenerated { get; set; }
+
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
     DialoguesAndOptions dialogueAndOptions;
+    AudioGeneratedEvent audioGeneratedEvent;
 
-    private async void Start()
+    private void Awake()
+    {
+        PersistencePath = Application.persistentDataPath;
+    }
+
+    private void Start()
     {
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UI
-        await PreloadAudio(dialogueAndOptions);
+         audioGeneratedEvent.AddListener(AudioGeneratedListener);
+         StartCoroutine(PreloadAudio(dialogueAndOptions));
+
     }
-    public async Task PreloadAudio(DialoguesAndOptions dialogueAndOptions)
+    public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
     {
-        
-        foreach(Dialogues dialogues in await ExtractTextAudioPaths(dialogueAndOptions))
+        Task<List<Dialogues>> extractedTextAudioPaths = ExtractTextAudioPaths(dialogueAndOptions);
+
+        yield return new WaitUntil(() => extractedTextAudioPaths.IsCompleted);
+
+        foreach (Dialogues dialogues in extractedTextAudioPaths.Result)
         {
-            for(int i=0; i< dialogues.TextAudioPath.Length; i++)
+            for (int i = 0; i < dialogues.TextAudioPath.Length; i++)
             {
-                await awsPollyDialogueTriggerEvent.Invoke(new AWSPollyAudioPacket { AudioName = $"{dialogues.EntityName}-{dialogues.VoiceID}-{i}", AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence });
+                string audioName = $"{dialogues.EntityName}-{dialogues.VoiceID}-{i}";
 
+                awsPollyDialogueTriggerEvent.Invoke(new AWSPollyAudioPacket { AudioPath = $"{PersistencePath}\\{audioName}", AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence });
 
-                //once generated, write back the audio path here
+                yield return new WaitUntil(() => AudioGenerated == true);
+
+                dialogues.TextAudioPath[i].AudioPath = $"{PersistencePath}\\{audioName}";
             }
         }
     }
+
 
     private Task<List<Dialogues>> ExtractTextAudioPaths(DialoguesAndOptions dialoguesAndOptions)
     {
@@ -43,4 +64,10 @@ public class AudioPreload: MonoBehaviour, IPreloadAudio<DialoguesAndOptions>
 
         return tcs.Task;
     }
+
+    private void AudioGeneratedListener(bool audioGenerated)
+    {
+        AudioGenerated = audioGenerated;
+    }
 }
+

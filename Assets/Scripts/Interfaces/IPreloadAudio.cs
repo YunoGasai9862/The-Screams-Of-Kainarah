@@ -1,7 +1,5 @@
-using System.Threading.Tasks;
-using UnityEngine;
-
+using System.Collections;
 public interface IPreloadAudio<T>
 {
-    abstract Task PreloadAudio(T value);
+    abstract IEnumerator PreloadAudio(T value);
 }

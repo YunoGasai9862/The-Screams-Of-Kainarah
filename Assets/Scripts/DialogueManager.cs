@@ -94,7 +94,7 @@ public class DialogueManager : MonoBehaviour
 
             TextAudioPath dialogue = m_storylineSentences.Dequeue();
 
-            InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent, new AWSPollyAudioPacket { DialogueText = dialogue.Sentence, AudioVoiceId = InterlocutorVoice, AudioName = dialogue.AudioPath });
+            InvokeAIVoiceEvent(AWSPollyDialogueTriggerEvent, new AWSPollyAudioPacket { DialogueText = dialogue.Sentence, AudioVoiceId = InterlocutorVoice, AudioPath = dialogue.AudioPath });
 
             Coroutine animateLetter = StartCoroutine(AnimateLetters(dialogue.Sentence, ANIMATION_DELAY));
 

@@ -38,9 +38,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
     private SemaphoreSlim AWSSemaphore { get; set; } = new SemaphoreSlim(1);
     
-    private string AudioPath { get; set; }
-    private string PersistencePath { get; set; }
-
 
     [SerializeField]
     AudioSource AudioSource;
@@ -58,8 +55,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     private void Awake()
     {
         
-        PersistencePath = $"{Application.persistentDataPath}";
-
         CancellationTokenSource = new CancellationTokenSource();
 
         CancellationToken = CancellationTokenSource.Token;
@@ -164,19 +159,20 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     {
         SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, awsPollyAudioPacket.DialogueText, Engine.Neural, awsPollyAudioPacket.AudioVoiceId, OutputFormat.Mp3).ConfigureAwait(false);
 
-        await SaveAudio(SynthesizeSpeechResponse, $"{PersistencePath}\\{awsPollyAudioPacket.AudioName}.mp3").ConfigureAwait(false);
+        await SaveAudio(SynthesizeSpeechResponse, awsPollyAudioPacket.AudioPath).ConfigureAwait(false);
 
     }
 
     //update this method too - invoke to send in audio Path as well
     public async Task InvokeAIVoice() 
     {
+        //fix this
         await mainThreadDispatcherEvent.Invoke(PlayAudio);
     }
 
-    private async void PlayAudio()
+    private async void PlayAudio(AWSPollyAudioPacket awsPollyAudioPacket)
     {
-        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(PersistencePath, AudioPath, AudioType.MPEG);
+        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(awsPollyAudioPacket.AudioPath, awsPollyAudioPacket.AudioName, AudioType.MPEG);
 
         AudioSource.Play();
     }
