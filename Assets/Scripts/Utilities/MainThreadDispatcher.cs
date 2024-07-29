@@ -42,7 +42,7 @@ public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
         return Task.CompletedTask;
     }
 
-    public Task Dispatcher(Action action, CancellationToken cancellationToken)
+    public Task Dispatcher(Action<object> action, object parameter = null ,CancellationToken cancellationToken)
     {
         if(DispatcherSemaphore.CurrentCount > 0 && !cancellationToken.IsCancellationRequested)
         {
@@ -52,7 +52,7 @@ public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
             {
                 lock (action)
                 {
-                    action.Invoke(); //invoke the action and dispatch it to the main thread
+                    action.Invoke(parameter); //invoke the action and dispatch it to the main thread
                 }
 
             }catch(Exception ex)

@@ -170,9 +170,16 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
         await mainThreadDispatcherEvent.Invoke(PlayAudio);
     }
 
-    private async void PlayAudio(AWSPollyAudioPacket awsPollyAudioPacket)
+    private async void PlayAudio(object awsPollyAudioPacket)
     {
-        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(awsPollyAudioPacket.AudioPath, awsPollyAudioPacket.AudioName, AudioType.MPEG);
+        if (awsPollyAudioPacket is not AWSPollyAudioPacket)
+        {
+            throw new ApplicationException("Play Audio accepts on objects of AWSPollyAudioPacket!");
+        }
+
+        AWSPollyAudioPacket audioPacket = (AWSPollyAudioPacket)(awsPollyAudioPacket);
+
+        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(audioPacket.AudioPath, audioPacket.AudioName, AudioType.MPEG);
 
         AudioSource.Play();
     }
