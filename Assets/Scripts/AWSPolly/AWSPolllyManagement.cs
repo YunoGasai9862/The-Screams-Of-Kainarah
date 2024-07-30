@@ -164,22 +164,22 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     }
 
     //update this method too - invoke to send in audio Path as well
-    public async Task InvokeAIVoice() 
+    public async Task InvokeAIVoice(AWSPollyAudioPacket awsPollyAudioPacket) 
     {
-        //fix this
-        await mainThreadDispatcherEvent.Invoke(PlayAudio);
+        CustomActions customActions = new CustomActions
+        {
+            Action = action => PlayAudio((AWSPollyAudioPacket)action),
+            Parameter = awsPollyAudioPacket
+
+        };
+
+        await mainThreadDispatcherEvent.Invoke(customActions);
     }
 
-    private async void PlayAudio(object awsPollyAudioPacket)
+
+    private async void PlayAudio(AWSPollyAudioPacket awsPollyAudioPacket)
     {
-        if (awsPollyAudioPacket is not AWSPollyAudioPacket)
-        {
-            throw new ApplicationException("Play Audio accepts on objects of AWSPollyAudioPacket!");
-        }
-
-        AWSPollyAudioPacket audioPacket = (AWSPollyAudioPacket)(awsPollyAudioPacket);
-
-        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(audioPacket.AudioPath, audioPacket.AudioName, AudioType.MPEG);
+        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(awsPollyAudioPacket.AudioPath, awsPollyAudioPacket.AudioName, AudioType.MPEG);
 
         AudioSource.Play();
     }

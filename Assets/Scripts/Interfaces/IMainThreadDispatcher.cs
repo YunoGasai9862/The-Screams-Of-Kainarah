@@ -5,6 +5,6 @@ using System.Threading.Tasks;
 
 public interface IMainThreadDispatcher
 {
-    abstract Task Dispatcher(Action<object> action, object parameter = null, CancellationToken cancellationToken);
+    abstract Task Dispatcher(CustomActions customActions, CancellationToken cancellationToken);
 
 }

@@ -9,7 +9,7 @@ public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
 {
     private SemaphoreSlim DispatcherSemaphore { get; set; } = new SemaphoreSlim(1);
 
-    private Queue<Action> DispatchActions { get; set; } = new Queue<Action>();
+    private Queue<CustomActions> DispatchActions { get; set; } = new Queue<CustomActions>();
 
     private CancellationTokenSource CancellationTokenSource { get; set; }
 
@@ -32,9 +32,9 @@ public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
         await DispatchIterator(DispatchActions);
     }
 
-    public Task DispatchIterator(Queue<Action> actions)
+    public Task DispatchIterator(Queue<CustomActions> customActions)
     {
-        while(actions.Count > 0)
+        while(customActions.Count > 0)
         {
             Dispatcher(DispatchActions.Dequeue(), CancellationToken);
         }
@@ -42,7 +42,7 @@ public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
         return Task.CompletedTask;
     }
 
-    public Task Dispatcher(Action<object> action, object parameter = null ,CancellationToken cancellationToken)
+    public Task Dispatcher(CustomActions customActions, CancellationToken cancellationToken)
     {
         if(DispatcherSemaphore.CurrentCount > 0 && !cancellationToken.IsCancellationRequested)
         {
@@ -50,9 +50,9 @@ public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
 
             try
             {
-                lock (action)
+                lock (customActions)
                 {
-                    action.Invoke(parameter); //invoke the action and dispatch it to the main thread
+                    customActions.Action.Invoke(customActions.Parameter); //invoke the action and dispatch it to the main thread
                 }
 
             }catch(Exception ex)
@@ -71,13 +71,13 @@ public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
         return null;
     }
 
-    public void DispatcherListener(Action action)
+    public void DispatcherListener(CustomActions customActions)
     {
-        if (action == null) throw new ApplicationException($"Action can't be null {action}");
+        if (customActions == null) throw new ApplicationException($"Action can't be null {customActions}");
 
-        lock (action)
+        lock (customActions)
         {
-            DispatchActions.Enqueue(action);
+            DispatchActions.Enqueue(customActions);
         }
     }
 }
