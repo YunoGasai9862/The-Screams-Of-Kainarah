@@ -51,6 +51,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     AWSPollyDialogueTriggerEvent m_AWSPollyDialogueTriggerEvent;
     [SerializeField]
     MainThreadDispatcherEvent mainThreadDispatcherEvent;
+    [SerializeField]
+    AudioGeneratedEvent audioGeneratedEvent;
 
     private void Awake()
     {
@@ -160,6 +162,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
         SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, awsPollyAudioPacket.DialogueText, Engine.Neural, awsPollyAudioPacket.AudioVoiceId, OutputFormat.Mp3).ConfigureAwait(false);
 
         await SaveAudio(SynthesizeSpeechResponse, awsPollyAudioPacket.AudioPath).ConfigureAwait(false);
+
+        await audioGeneratedEvent.Invoke(true);
 
     }
 

@@ -1,12 +1,10 @@
-using NUnit.Framework;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 public class GameLoad : MonoBehaviour
 {
     [SerializeField]
-    AssetReference[] gameAddressables;
+    AssetAddressablesAndType[] gameAddressables;
     private void Start()
     {
 
@@ -14,6 +12,11 @@ public class GameLoad : MonoBehaviour
 
     private async Task PreloadAssets()
     {
+        foreach(AssetAddressablesAndType gameAddressable in gameAddressables)
+        {
+           // gameAddressable.LoadAssetAsync<gaAssetReferenceeADdr>
+        }
+
         await Task.CompletedTask;
     }
 }

@@ -10,7 +10,7 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>
 
     private string PersistencePath { get; set; }
 
-    private bool AudioGenerated { get; set; }
+    private bool AudioGenerated { get; set; } = false;
 
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
@@ -46,6 +46,8 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>
                 yield return new WaitUntil(() => AudioGenerated == true);
 
                 dialogues.TextAudioPath[i].AudioPath = $"{PersistencePath}\\{audioName}";
+
+                AudioGenerated = false;
             }
         }
     }
