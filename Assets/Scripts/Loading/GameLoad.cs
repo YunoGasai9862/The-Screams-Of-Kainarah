@@ -1,30 +1,22 @@
 using System.Threading.Tasks;
-using System;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using System.Collections.Generic;
+using static AssetAddressableAndType;
 
 public class GameLoad : MonoBehaviour
 {
     [SerializeField]
-    AssetAddressableAndType[] gameAddressables;
-    private void Start()
-    {
-
-    }
+    AssetAddressableAndType gameAddressables;
 
     private async Task PreloadAssets()
     {
-        foreach(AssetAddressableAndType gameAddressable in gameAddressables)
+        foreach(AddressableAndType gameAddressable in gameAddressables.addressablesAndTypes)
         {
-          Type type = gameAddressable.AssetType;
+            AsyncOperationHandle<object> handler = gameAddressable.AssetAddress.LoadAssetAsync<object>();
+
+            await handler.Task;
         }
 
-        await Task.CompletedTask;
     }
-
-    //use this approach to load assets
-    private async Task LoadAssetType<T>()
-    {
-       
-    }  
 }
