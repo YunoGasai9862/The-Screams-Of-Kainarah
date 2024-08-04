@@ -1,9 +1,7 @@
 using UnityEngine;
 using System;
-public class AssetType: MonoBehaviour, IAssetType<GameObject>
+public abstract class AssetType: MonoBehaviour, IAssetType
 {
-    public Type GetAssetType()
-    {
-        return typeof(GameObject);
-    }
+    public abstract Type GetAssetType();
 }
+

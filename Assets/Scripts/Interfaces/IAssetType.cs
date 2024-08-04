@@ -1,5 +1,5 @@
 using System;
-public interface IAssetType<T>: IAssetTypeAbstract
+public interface IAssetType
 {
-   new public abstract Type GetAssetType();
-}
+   public abstract Type GetAssetType();
+} 

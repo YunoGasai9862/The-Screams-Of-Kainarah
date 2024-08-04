@@ -11,7 +11,7 @@ public class AssetAddressableAndType: ScriptableObject
         [SerializeField]
         private AssetReference _assetAddress;
         [SerializeReference]
-        private IAssetTypeAbstract _assetType;
+        private AssetType _assetType;
         public AssetReference AssetAddress { get => _assetAddress; set => _assetAddress = value; }
        // public IAssetTypeAbstract AssetType { get => _assetType; set => _assetType = value; }
 
