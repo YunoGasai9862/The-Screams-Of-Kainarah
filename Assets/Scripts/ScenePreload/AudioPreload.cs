@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IAssetType<GameObject>
+public class AudioPreload : AssetType, IPreloadAudio<DialoguesAndOptions>
 {
 
     private string PersistencePath { get; set; }
@@ -70,11 +70,6 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     private void AudioGeneratedListener(bool audioGenerated)
     {
         AudioGenerated = audioGenerated;
-    }
-
-    public Type GetAssetType()
-    {
-        return typeof(GameObject);
     }
 }
 
