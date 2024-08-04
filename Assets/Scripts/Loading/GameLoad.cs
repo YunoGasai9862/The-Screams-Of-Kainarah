@@ -15,6 +15,10 @@ public class GameLoad : MonoBehaviour
         {
             AsyncOperationHandle<object> handler = gameAddressable.AssetAddress.LoadAssetAsync<object>();
 
+            object asset = handler.Result;
+
+            //convert.changeType
+
             await handler.Task;
         }
 
