@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using System.Collections.Generic;
 using static AssetAddressableAndType;
+using System;
 
 public class GameLoad : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class GameLoad : MonoBehaviour
 
             object asset = handler.Result;
 
-            //convert.changeType
+            Convert.ChangeType(asset, typeof(AssetType));
 
             await handler.Task;
         }
