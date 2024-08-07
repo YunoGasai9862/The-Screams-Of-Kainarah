@@ -10,6 +10,13 @@ public class GameLoad : MonoBehaviour
     [SerializeField]
     AssetAddressableAndType gameAddressables;
 
+    public AssetTypeParser AssetTypeParser { get; set; }
+
+    private void Awake()
+    {
+        AssetTypeParser = new AssetTypeParser();    
+    }
+
     private async Task PreloadAssets()
     {
         foreach(AddressableAndType gameAddressable in gameAddressables.addressablesAndTypes)
@@ -18,7 +25,7 @@ public class GameLoad : MonoBehaviour
 
             object asset = handler.Result;
 
-            Convert.ChangeType(asset, typeof(AssetType));
+            AssetTypeParser.ParseType(asset, gameAddressable.AssetType);
 
             await handler.Task;
         }
