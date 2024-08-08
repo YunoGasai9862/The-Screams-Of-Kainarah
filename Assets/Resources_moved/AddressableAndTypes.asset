@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   addressablesAndTypes:
   - _assetAddress:
-      m_AssetGUID: 
+      m_AssetGUID: dcfb91314fa429145a308d707bf9d85d
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
-    _assetType: {fileID: 0}
+    _assetType: {fileID: 3505954786686626709, guid: dcfb91314fa429145a308d707bf9d85d, type: 3}

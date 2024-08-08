@@ -12,9 +12,11 @@ public class GameLoad : MonoBehaviour
 
     public AssetTypeParser AssetTypeParser { get; set; }
 
-    private void Awake()
+    private async void Awake()
     {
-        AssetTypeParser = new AssetTypeParser();    
+        AssetTypeParser = new AssetTypeParser();
+
+        await PreloadAssets();
     }
 
     private async Task PreloadAssets()
@@ -23,11 +25,16 @@ public class GameLoad : MonoBehaviour
         {
             AsyncOperationHandle<object> handler = gameAddressable.AssetAddress.LoadAssetAsync<object>();
 
+            await handler.Task;
+
             object asset = handler.Result;
 
-            AssetTypeParser.ParseType(asset, gameAddressable.AssetType);
+            dynamic parsedAsset = AssetTypeParser.ParseType(asset, gameAddressable.AssetType);
 
-            await handler.Task;
+            //instantiate the object first - on awake those methods will run automatically
+            Instantiate(parsedAsset);   
+
+            await Task.CompletedTask;
         }
 
     }
