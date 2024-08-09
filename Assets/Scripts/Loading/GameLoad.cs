@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using System.Collections.Generic;
 using static AssetAddressableAndType;
 using System;
 
@@ -29,7 +28,7 @@ public class GameLoad : MonoBehaviour
 
             object asset = handler.Result;
 
-            dynamic parsedAsset = AssetTypeParser.ParseType(asset, gameAddressable.AssetType);
+            AssetType parsedAsset = AssetTypeParser.ParseType(asset, gameAddressable.AssetType);
 
             //instantiate the object first - on awake those methods will run automatically
             Instantiate(parsedAsset);   

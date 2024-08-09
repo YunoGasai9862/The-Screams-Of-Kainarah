@@ -1,7 +1,6 @@
-using System;
 
-public interface IAssetTypeParser
+public interface IAssetTypeParser<T>
 {
-    public dynamic ParseType(object asset, AssetType assetType);
+    public T ParseType(object asset, AssetType assetType);
 
 }

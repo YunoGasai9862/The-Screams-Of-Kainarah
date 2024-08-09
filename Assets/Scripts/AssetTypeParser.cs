@@ -1,21 +1,18 @@
 using System;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-public class AssetTypeParser: IAssetTypeParser
+public class AssetTypeParser: IAssetTypeParser<AssetType>
 {
-    public dynamic ParseType(object asset, AssetType assetType)
+    public AssetType ParseType(object asset, AssetType assetType)
     {
-        
-        switch (assetType.GetType().Name)
+        if(assetType.GetType() == typeof(GameObject))
         {
-            case nameof(GameObject):
-                return asset as GameObject;
-            case nameof(ScriptableObject):
-                return asset as ScriptableObject;
-            default:
-                break;
+            return new GenericAssetType<GameObject> { Asset = asset as GameObject };
+
+        }else if(assetType.GetType() == typeof(ScriptableObject)){
+
+            return new GenericAssetType<ScriptableObject> { Asset = asset as ScriptableObject };    
         }
-     
+        
         return null;
     }
 
