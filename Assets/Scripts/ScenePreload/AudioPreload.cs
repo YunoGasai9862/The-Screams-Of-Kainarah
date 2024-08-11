@@ -26,8 +26,6 @@ public class AudioPreload : AssetActionOnPreload<GameObject, DialoguesAndOptions
     {
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UI
          audioGeneratedEvent.AddListener(AudioGeneratedListener);
-         StartCoroutine(PreloadAudio(dialogueAndOptions));
-
     }
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
     {
@@ -70,6 +68,16 @@ public class AudioPreload : AssetActionOnPreload<GameObject, DialoguesAndOptions
     private void AudioGeneratedListener(bool audioGenerated)
     {
         AudioGenerated = audioGenerated;
+    }
+
+    public void Preload(DialoguesAndOptions dialogueAndOptions)
+    {
+        StartCoroutine(PreloadAudio(dialogueAndOptions));
+    }
+
+    private void OnEnable()
+    {
+        SetAction(Preload);
     }
 }
 

@@ -1,6 +1,6 @@
 using System;
 
-public interface IAction<T>
+public interface IAction
 {
-    public Action<T> ExecuteActionOnLoad { get; set; }
+    public Action ExecuteActionOnLoad { get; }
 }

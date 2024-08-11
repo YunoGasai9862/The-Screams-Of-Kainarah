@@ -1,6 +1,5 @@
 using System;
-
-public class AssetActionOnPreload<T, Action>: GenericAssetType<T>, IAction<Action>
+public abstract class AssetActionOnPreload: AssetType, IAction
 {
-    public Action<Action> ExecuteActionOnLoad { get; set; }
+    public Action ExecuteActionOnLoad { get; }
 }
