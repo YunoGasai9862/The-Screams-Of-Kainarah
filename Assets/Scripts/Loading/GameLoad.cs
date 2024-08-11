@@ -28,10 +28,7 @@ public class GameLoad : MonoBehaviour
 
             object asset = handler.Result;
 
-            AssetType parsedAsset = AssetTypeParser.ParseType(asset, gameAddressable.AssetType);
-
-            //instantiate the object first - on awake those methods will run automatically
-            Instantiate(parsedAsset);   
+            AssetType parsedAsset = AssetTypeParser.ParseType(asset, gameAddressable.AssetType);  
 
             await Task.CompletedTask;
         }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-public class AudioPreload : GenericAssetType<GameObject>, IPreloadAudio<DialoguesAndOptions>
+public class AudioPreload : AssetActionOnPreload<GameObject, DialoguesAndOptions>, IPreloadAudio<DialoguesAndOptions>
 {
 
     private string PersistencePath { get; set; }
