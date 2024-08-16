@@ -1,16 +1,17 @@
-using NUnit.Framework;
-using System;
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-public class AudioPreload : GenericAssetType<GameObject, DialoguesAndOptions>, IPreloadAudio<DialoguesAndOptions>
+using UnityEngine.AddressableAssets;
+public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IAssetPreload
 {
-
     private string PersistencePath { get; set; }
 
     private bool AudioGenerated { get; set; } = false;
+
+    public AssetReference AssetAddress { get; set; }
 
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
@@ -73,11 +74,6 @@ public class AudioPreload : GenericAssetType<GameObject, DialoguesAndOptions>, I
     public void Preload(DialoguesAndOptions dialogueAndOptions)
     {
         StartCoroutine(PreloadAudio(dialogueAndOptions));
-    }
-
-    private void OnEnable()
-    {
-        SetAction(Preload);
     }
 }
 

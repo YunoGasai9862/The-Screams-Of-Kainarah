@@ -10,10 +10,7 @@ public class AssetAddressableAndType: ScriptableObject
     {
         [SerializeField]
         private AssetReference _assetAddress;
-        [SerializeReference]
-        private AssetType _assetType;
         public AssetReference AssetAddress { get => _assetAddress; set => _assetAddress = value; }
-        public AssetType AssetType { get => _assetType; set => _assetType = value; }
 
     }
 

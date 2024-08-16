@@ -2,37 +2,23 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
+using System;
 
-public class GameLoad<T, TAction> : MonoBehaviour, IGameLoad<T,TAction>
+public class GameLoad : MonoBehaviour
 {
-    [SerializeField]
-    AssetAddressableAndType gameAddressables;
-    IAssetPreload[] assets;
-
-    public AssetTypeParser AssetTypeParser { get; set; }
-
-    private void Awake()
+    //polish this
+    private async Task PreloadAsset<T, TAction>(T objectType, Action<TAction> action, TAction value, IAssetPreload asset)
     {
-        AssetTypeParser = new AssetTypeParser();
-         
-       // await PreloadAssets();
-    }
+        AssetReference assetReference = asset.AssetAddress;
 
-    //continue with this appraoch
-    private async Task PreloadAssets(T objectType, TAction action)
-    {
-        foreach (IAssetPreload asset in assets)
-        {
-            AssetReference assetReference = asset.AssetAddress;
+        AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(assetReference);
 
-            AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(assetReference);
+        await handler.Task;
 
-            await handler.Task;
+        T loadedAsset = handler.Result;
 
-            T loadedAsset = handler.Result;
+        action.Invoke(value);
 
-            Addressables.Release(handler);
-        }
-
+        Addressables.Release(handler);
     }
 }
