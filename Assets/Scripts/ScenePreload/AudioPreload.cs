@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IAssetPreload
+public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IAssetPreload, IEntityPreload
 {
     private string PersistencePath { get; set; }
 
@@ -75,5 +75,12 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     {
         StartCoroutine(PreloadAudio(dialogueAndOptions));
     }
+
+    public Task EntityPreload(ActionPreloader actionPreloader)
+    {
+      
+        return Task.CompletedTask;
+    }
+
 }
 
