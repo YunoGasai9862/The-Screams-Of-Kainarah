@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IAssetPreload, IEntityPreload
+public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IEntityPreload
 {
     private string PersistencePath { get; set; }
 
@@ -17,10 +17,14 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
     DialoguesAndOptions dialogueAndOptions;
     AudioGeneratedEvent audioGeneratedEvent;
+    [SerializeField]
+    AssetReference assetReference;
 
     private void Awake()
     {
         PersistencePath = Application.persistentDataPath;
+
+        AssetAddress = assetReference;
     }
 
     private void Start()
@@ -76,10 +80,12 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
         StartCoroutine(PreloadAudio(dialogueAndOptions));
     }
 
-    public Task EntityPreload(ActionPreloader actionPreloader)
+    public async Task EntityPreload(ActionPreloader actionPreloader)
     {
-      
-        return Task.CompletedTask;
+
+        //add this to the ActionPreloader Array or create a class or scriptable object so they can be executed
+        //send action + address
+        await actionPreloader.PreloadAssetWithAction<GameObject, DialoguesAndOptions>(this, Preload, dialogueAndOptions);
     }
 
 }

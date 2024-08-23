@@ -29,7 +29,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dcfb91314fa429145a308d707bf9d85d
-    m_Address: Prefabs/AudioPreload
+    m_Address: Assets/Resources_moved/Prefabs/AudioPreload.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

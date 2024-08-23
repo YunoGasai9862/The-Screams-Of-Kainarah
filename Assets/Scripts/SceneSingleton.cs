@@ -31,6 +31,7 @@ public class SceneSingleton : MonoBehaviour
     private static CheckpointColliderListener _checkpointColliderListener { get; set; }
 
     private static ActionPreloader _actionPreloader { get; set; }
+    private static GameLoad _gameloader { get; set; }
 
     private static DialogueManager _dialogueManager { get; set; }
 
@@ -47,6 +48,7 @@ public class SceneSingleton : MonoBehaviour
     private void Start()
     {
         _actionPreloader = FindFirstObjectByType<ActionPreloader>();
+        _gameloader = FindFirstObjectByType<GameLoad>();
         _inventoryManager = FindFirstObjectByType<InventoryManager>();
         _playerHelperClassForOtherPurposes = FindFirstObjectByType<PlayerActionRelayer>();
         _entityListenerDelegator = FindFirstObjectByType<EntityListenerDelegator>();
@@ -77,6 +79,11 @@ public class SceneSingleton : MonoBehaviour
     public static ActionPreloader GetActionPreloaderManager()
     {
         return _actionPreloader;
+    }
+
+    public static GameLoad GetGameLoader()
+    {
+        return _gameloader;
     }
 
     public static void InsertIntoGameStateHandlerList(IGameStateHandler handler)

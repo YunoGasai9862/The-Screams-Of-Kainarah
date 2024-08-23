@@ -6,24 +6,17 @@ using System;
 
 public class GameLoad : MonoBehaviour, IGameLoad
 {
-    [SerializeField]
-    IEntityPreload[] entitiesPreload;
-
-    //refactor more to grab IAssetPreload directly from IEntityPreload - group them!
-    public async Task PreloadAsset<T>(T objectType, IAssetPreload asset)
+    public async Task PreloadAsset<T>(IEntityPreload entityPreload)
     {
-        foreach(IEntityPreload entityPreload in entitiesPreload)
-        {
-            AssetReference assetReference = asset.AssetAddress;
+        AssetReference assetReference = entityPreload.AssetAddress;
 
-            AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(assetReference);
+        AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(assetReference);
 
-            await handler.Task;
+        await handler.Task;
 
-            T loadedAsset = handler.Result;
+        T loadedAsset = handler.Result;
 
-            Addressables.Release(handler);
-        }
-
+        Addressables.Release(handler);
     }
+
 }

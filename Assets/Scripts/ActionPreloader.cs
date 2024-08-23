@@ -4,18 +4,25 @@ using UnityEngine;
 
 public class ActionPreloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction
 {
-    public async Task PreloadAssetWithAction<T, TAction>(T objectType, IAssetPreload asset, Action<TAction> action, TAction value)
+    [SerializeField]
+    IEntityPreload entities;
+
+    private void Awake()
     {
-        //use event driven approach!!
-       // await .PreloadAsset(objectType, asset);
+        
+    }
+
+    //array needed so i can group them, and on start of this script, that array will be executed!
+    public async Task PreloadAssetWithAction<T, TAction>(IEntityPreload asset, Action<TAction> action, TAction value)
+    {
+        await SceneSingleton.GetGameLoader().PreloadAsset<T>(asset);
 
         action.Invoke(value);
     }
 
-    public async Task PreloadAssetWithAction<T>(T objectType, IAssetPreload asset, Action action)
+    public async Task PreloadAssetWithAction<T>(IEntityPreload asset, Action action)
     {
-        //use event driven approach!!
-       // await SceneSingleton.GetGameLoadManager().PreloadAsset(objectType, asset);
+        await SceneSingleton.GetGameLoader().PreloadAsset<T>(asset);
 
         action.Invoke();
     }
