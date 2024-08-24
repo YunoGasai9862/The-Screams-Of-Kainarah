@@ -1,30 +1,37 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class ActionPreloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction
 {
     [SerializeField]
-    IEntityPreload entities;
+    List<PreloadEntity> entities;
 
-    private void Awake()
+    private async void Awake()
     {
-        
+        await PreloadEntities(entities);
     }
-
-    //array needed so i can group them, and on start of this script, that array will be executed!
-    public async Task PreloadAssetWithAction<T, TAction>(IEntityPreload asset, Action<TAction> action, TAction value)
+    public async Task PreloadAssetWithAction<T, TAction>(AssetReference assetReference, Action<TAction> action, TAction value)
     {
-        await SceneSingleton.GetGameLoader().PreloadAsset<T>(asset);
+        await SceneSingleton.GetGameLoader().PreloadAsset<T>(assetReference);
 
         action.Invoke(value);
     }
 
-    public async Task PreloadAssetWithAction<T>(IEntityPreload asset, Action action)
+    public async Task PreloadAssetWithAction<T>(AssetReference assetReference, Action action)
     {
-        await SceneSingleton.GetGameLoader().PreloadAsset<T>(asset);
+        await SceneSingleton.GetGameLoader().PreloadAsset<T>(assetReference);
 
         action.Invoke();
     }
 
+    private async Task PreloadEntities(List<PreloadEntity> entities)
+    {
+        foreach (var entity in entities)
+        {
+            await entity.entityPreload.EntityPreloadAction(this);
+        }
+    }
 }

@@ -5,26 +5,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IEntityPreload
+public class AudioPreload : EntityPreload, IPreloadAudio<DialoguesAndOptions>
 {
     private string PersistencePath { get; set; }
 
     private bool AudioGenerated { get; set; } = false;
 
-    public AssetReference AssetAddress { get; set; }
-
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
     DialoguesAndOptions dialogueAndOptions;
     AudioGeneratedEvent audioGeneratedEvent;
-    [SerializeField]
-    AssetReference assetReference;
 
     private void Awake()
     {
         PersistencePath = Application.persistentDataPath;
-
-        AssetAddress = assetReference;
     }
 
     private void Start()
@@ -80,12 +74,10 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
         StartCoroutine(PreloadAudio(dialogueAndOptions));
     }
 
-    public async Task EntityPreload(ActionPreloader actionPreloader)
+    public override async Task EntityPreloadAction(ActionPreloader actionPreloader)
     {
-
-        //add this to the ActionPreloader Array or create a class or scriptable object so they can be executed
-        //send action + address
-        await actionPreloader.PreloadAssetWithAction<GameObject, DialoguesAndOptions>(this, Preload, dialogueAndOptions);
+        //rest looks good, do something about sending asset reference, or perhaps separate it somehow!
+        //await actionPreloader.PreloadAssetWithAction<GameObject, DialoguesAndOptions>(this, Preload, dialogueAndOptions);
     }
 
 }
