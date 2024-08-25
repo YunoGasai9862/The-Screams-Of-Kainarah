@@ -9,9 +9,9 @@ public class PreloadEntity
     [SerializeField]
     private AssetReference m_assetReference;
     [SerializeField]
-    private EntityPreload m_entityPreload;
+    private EntityPreload m_entity;
 
     public AssetReference AssetAddress { get => m_assetReference;}
 
-    public EntityPreload entityPreload { get => m_entityPreload;}
+    public EntityPreload Entity { get => m_entity; }
 }

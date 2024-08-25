@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 public interface IGameState
 {
-    Task LoadGame(string saveFileName, Semaphore lockingThread);
+    Task LoadGame(string saveFileName, SemaphoreSlim lockingThread);
     Task SaveGame(string fileName); //for manipulating
     Task SaveCheckPoint(string saveFileName);
     Task  RestartLevel();

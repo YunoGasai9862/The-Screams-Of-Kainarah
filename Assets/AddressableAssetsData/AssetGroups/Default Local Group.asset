@@ -23,11 +23,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - ScriptableObjects
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d04ad8ea3e139ba4f93300b1ad085728
-    m_Address: Assets/Resources_moved/AddressableAndTypes.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dcfb91314fa429145a308d707bf9d85d
     m_Address: Assets/Resources_moved/Prefabs/AudioPreload.prefab
     m_ReadOnly: 0

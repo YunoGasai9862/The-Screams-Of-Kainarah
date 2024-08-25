@@ -54,7 +54,7 @@ public class GameStateManager : MonoBehaviour, IGameState
         SceneManager.LoadScene(buildIndex + 1);
     }
 
-    public async Task LoadGame(string saveFileName, Semaphore lockingThread) //implement LoadGame with Json etc by saving states
+    public async Task LoadGame(string saveFileName, SemaphoreSlim lockingThread) //implement LoadGame with Json etc by saving states
     {
         //load the whole scene
         string saveFileLocation = Path.Combine(Application.persistentDataPath, saveFileName);
