@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-public class ActionPreloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction
+public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction
 {
     public async Task PreloadAssetWithAction<T, TAction>(AssetReference assetReference, Action<TAction> action, TAction value)
     {
@@ -20,7 +20,8 @@ public class ActionPreloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGen
         action.Invoke();
     }
 
-    private async Task PreloadAsset<T>(AssetReference assetReference)
+    //preload without any action
+    public async Task PreloadAsset<T>(AssetReference assetReference)
     {
         await SceneSingleton.GetGameLoader().PreloadAsset<T>(assetReference);
     }

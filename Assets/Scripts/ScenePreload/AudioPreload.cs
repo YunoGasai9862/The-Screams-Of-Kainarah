@@ -74,9 +74,9 @@ public class AudioPreload : EntityPreload, IPreloadAudio<DialoguesAndOptions>
         StartCoroutine(PreloadAudio(dialogueAndOptions));
     }
 
-    public override async Task EntityPreloadAction(AssetReference assetReference, ActionPreloader actionPreloader)
+    public override async Task EntityPreloadAction(AssetReference assetReference, Preloader preloader)
     {
-        await actionPreloader.PreloadAssetWithAction<GameObject, DialoguesAndOptions>(assetReference, Preload, dialogueAndOptions);
+        await preloader.PreloadAssetWithAction<GameObject, DialoguesAndOptions>(assetReference, Preload, dialogueAndOptions);
     }
 
 }

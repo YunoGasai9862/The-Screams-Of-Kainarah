@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
+using UnityEngine.AddressableAssets;
 
 [CreateAssetMenu(fileName = "Dialogues And Options", menuName = "Dialogue And Options")]
 [Serializable]
-public class DialoguesAndOptions: ScriptableObject
+public class DialoguesAndOptions: ScriptableObject, IEntityPreloadAction
 {
     [Serializable]
     public class DialogueSystem
@@ -22,4 +24,10 @@ public class DialoguesAndOptions: ScriptableObject
     }
 
     public List<DialogueSystem> exchange;
+
+    public async Task EntityPreloadAction(AssetReference assetReference, Preloader preloader)
+    {
+        await preloader.PreloadAsset<DialoguesAndOptions>(assetReference);
+    }
+
 }

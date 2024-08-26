@@ -30,7 +30,7 @@ public class SceneSingleton : MonoBehaviour
     private static SpawnPlayer _getSpawnPlayerScript { get; set; }
     private static CheckpointColliderListener _checkpointColliderListener { get; set; }
 
-    private static ActionPreloader _actionPreloader { get; set; }
+    private static Preloader _preloader { get; set; }
     private static GameLoad _gameloader { get; set; }
 
     private static DialogueManager _dialogueManager { get; set; }
@@ -47,7 +47,7 @@ public class SceneSingleton : MonoBehaviour
 
     private void Start()
     {
-        _actionPreloader = FindFirstObjectByType<ActionPreloader>();
+        _preloader = FindFirstObjectByType<Preloader>();
         _gameloader = FindFirstObjectByType<GameLoad>();
         _inventoryManager = FindFirstObjectByType<InventoryManager>();
         _playerHelperClassForOtherPurposes = FindFirstObjectByType<PlayerActionRelayer>();
@@ -76,9 +76,9 @@ public class SceneSingleton : MonoBehaviour
         return _gameStateHandlerObjects;
     }
 
-    public static ActionPreloader GetActionPreloaderManager()
+    public static Preloader GetPreloader()
     {
-        return _actionPreloader;
+        return _preloader;
     }
 
     public static GameLoad GetGameLoader()

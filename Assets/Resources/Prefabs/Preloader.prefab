@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4246301786867455621}
   - component: {fileID: 4789912798196523552}
   m_Layer: 0
-  m_Name: ActionPreloader
+  m_Name: Preloader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
