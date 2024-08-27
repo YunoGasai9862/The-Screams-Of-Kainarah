@@ -24,7 +24,7 @@ MonoBehaviour:
       - _sentence: 
         audioPath: 
     _dialogueOptions:
-      _dialogueConcluded: 0
+      _dialogueConcluded: 1
       _multipleDialogues: 0
       _shouldTriggerDialogue: 1
     _dialogueTriggeringEntity:

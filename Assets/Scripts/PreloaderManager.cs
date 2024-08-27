@@ -6,7 +6,7 @@ public class PreloaderManager: MonoBehaviour
 {
     [SerializeField]
     Preloader preloader;
-    //fix this for scriptable objects now (they are not monobehavior)
+
     [SerializeField]
     List<PreloadEntity> preloadEntities;
 
