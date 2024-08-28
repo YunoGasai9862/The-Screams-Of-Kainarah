@@ -18,7 +18,9 @@ public class PreloaderManager: MonoBehaviour
     {
         foreach (var preloadEntity in preloadEntities)
         {
-            await preloadEntity.Entity.EntityPreloadAction(preloadEntity.AssetAddress, preloader);
+            //separate this somehow now!
+            await preloadEntity.EntityMB.EntityPreloadAction(preloadEntity.AssetAddress, preloader);
+            await preloadEntity.EntitySO.EntityPreloadAction(preloadEntity.AssetAddress, preloader);
         }
     }
 }

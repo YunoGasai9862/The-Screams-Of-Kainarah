@@ -8,10 +8,19 @@ public class PreloadEntity
 {
     [SerializeField]
     private AssetReference m_assetReference;
-    [SerializeReference]
-    private IEntityPreloadAction m_entity;
+    [SerializeField]
+    private EntityPreloadMonoBehavior m_entityMB;
+    [SerializeField]
+    private EntityPreloadScriptableObject m_entitySO;
+    [SerializeField]
+    private bool m_isMonoBehavior;
 
     public AssetReference AssetAddress { get => m_assetReference;}
 
-    public IEntityPreloadAction Entity { get => m_entity; }
+    public EntityPreloadMonoBehavior EntityMB { get => m_entityMB; }
+
+    public EntityPreloadScriptableObject EntitySO { get => m_entitySO; }
+
+    public bool IsMonoBehavior { get => m_isMonoBehavior;  }
+
 }

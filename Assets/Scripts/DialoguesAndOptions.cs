@@ -6,7 +6,7 @@ using UnityEngine.AddressableAssets;
 
 [CreateAssetMenu(fileName = "Dialogues And Options", menuName = "Dialogue And Options")]
 [Serializable]
-public class DialoguesAndOptions: ScriptableObject, IEntityPreloadAction
+public class DialoguesAndOptions: EntityPreloadScriptableObject
 {
     [Serializable]
     public class DialogueSystem
@@ -25,7 +25,7 @@ public class DialoguesAndOptions: ScriptableObject, IEntityPreloadAction
 
     public List<DialogueSystem> exchange;
 
-    public async Task EntityPreloadAction(AssetReference assetReference, Preloader preloader)
+    public override async Task EntityPreloadAction(AssetReference assetReference, Preloader preloader)
     {
         await preloader.PreloadAsset<DialoguesAndOptions>(assetReference);
     }
