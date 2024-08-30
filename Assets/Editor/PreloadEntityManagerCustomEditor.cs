@@ -1,4 +1,5 @@
 
+using Cinemachine.Editor;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -13,25 +14,49 @@ public class PreloadEntityManagerCustomEditor : Editor
 
         PreloaderManager preloadManager = (PreloaderManager)target;
 
+        GUILayout.Label("Reference Preloader For Preloading:");
+        SerializedProperty preloader = serializedObject.FindProperty("preloader");
+        EditorGUILayout.PropertyField(preloader);
+
         SerializedProperty arraySize = serializedObject.FindProperty("preloadEntities");
+
+        GUILayout.Label("Array For Preloading Entities:");
+
+        if (GUILayout.Button("Add Preload Entity"))
+        {
+            arraySize.arraySize++;
+        }
 
         for(int i=0; i< arraySize.arraySize; i++)
         {
-            SerializedProperty elements = serializedObject.FindProperty("preloadEntities").GetArrayElementAtIndex(i);
+            SerializedProperty element = serializedObject.FindProperty("preloadEntities").GetArrayElementAtIndex(i);
 
-            SerializedProperty assetReference = elements.FindPropertyRelative("m_assetReference");
-            SerializedProperty entityMB = elements.FindPropertyRelative("m_entityMB");
-            SerializedProperty entitySO = elements.FindPropertyRelative("m_entitySO");
-            SerializedProperty isMonoBehaviour = elements.FindPropertyRelative("m_isMonoBehavior");
+            SerializedProperty assetReference = element.FindPropertyRelative("m_assetReference");
+            SerializedProperty isMonoBehaviour = element.FindPropertyRelative("m_isMonoBehavior");
+            SerializedProperty entityMB = element.FindPropertyRelative("m_entityMB");
+            SerializedProperty entitySO = element.FindPropertyRelative("m_entitySO");
 
             EditorGUILayout.PropertyField(assetReference);
-            EditorGUILayout.PropertyField(entityMB);
-            EditorGUILayout.PropertyField(entitySO);
             EditorGUILayout.PropertyField(isMonoBehaviour);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(GetEntityPreloadingType(isMonoBehaviour, entityMB, entitySO));
+            EditorGUI.indentLevel--;
+
+            GUILayout.Space(10);
+
 
         }
 
+        if (GUILayout.Button("Delete Preload Entity"))
+        {
+            arraySize.arraySize--;
+        }
 
         serializedObject.ApplyModifiedProperties();
+    }
+
+    private SerializedProperty GetEntityPreloadingType(SerializedProperty isMonoBehavior, SerializedProperty entityMB, SerializedProperty entitySO)
+    {
+        return isMonoBehavior.boolValue ? entityMB : entitySO;
     }
 }

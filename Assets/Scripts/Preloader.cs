@@ -20,7 +20,6 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
         action.Invoke();
     }
 
-    //preload without any action
     public async Task PreloadAsset<T>(AssetReference assetReference)
     {
         await SceneSingleton.GetGameLoader().PreloadAsset<T>(assetReference);

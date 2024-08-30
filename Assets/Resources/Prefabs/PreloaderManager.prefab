@@ -51,22 +51,14 @@ MonoBehaviour:
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
-    m_entityMB: {fileID: 0}
+    m_entityMB: {fileID: 3505954786686626709, guid: dcfb91314fa429145a308d707bf9d85d, type: 3}
     m_entitySO: {fileID: 0}
-    m_isMonoBehavior: 0
+    m_isMonoBehavior: 1
   - m_assetReference:
       m_AssetGUID: 399be5f2e16fa6147acdfdb4b6cf785b
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     m_entityMB: {fileID: 0}
-    m_entitySO: {fileID: 0}
-    m_isMonoBehavior: 0
-  - m_assetReference:
-      m_AssetGUID: 399be5f2e16fa6147acdfdb4b6cf785b
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    m_entityMB: {fileID: 0}
-    m_entitySO: {fileID: 0}
+    m_entitySO: {fileID: 11400000, guid: 399be5f2e16fa6147acdfdb4b6cf785b, type: 2}
     m_isMonoBehavior: 0
