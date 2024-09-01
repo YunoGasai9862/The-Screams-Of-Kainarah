@@ -32,14 +32,14 @@ public class PreloadEntityManagerCustomEditor : Editor
             SerializedProperty element = serializedObject.FindProperty("preloadEntities").GetArrayElementAtIndex(i);
 
             SerializedProperty assetReference = element.FindPropertyRelative("m_assetReference");
-            SerializedProperty isMonoBehaviour = element.FindPropertyRelative("m_isMonoBehavior");
+            SerializedProperty entityType = element.FindPropertyRelative("m_entityType");
             SerializedProperty entityMB = element.FindPropertyRelative("m_entityMB");
             SerializedProperty entitySO = element.FindPropertyRelative("m_entitySO");
 
             EditorGUILayout.PropertyField(assetReference);
-            EditorGUILayout.PropertyField(isMonoBehaviour);
+            EditorGUILayout.PropertyField(entityType);
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(GetEntityPreloadingType(isMonoBehaviour, entityMB, entitySO));
+            EditorGUILayout.PropertyField(GetEntityPreloadingType(entityType, entityMB, entitySO));
             EditorGUI.indentLevel--;
 
             GUILayout.Space(10);
@@ -55,8 +55,10 @@ public class PreloadEntityManagerCustomEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 
-    private SerializedProperty GetEntityPreloadingType(SerializedProperty isMonoBehavior, SerializedProperty entityMB, SerializedProperty entitySO)
+    private SerializedProperty GetEntityPreloadingType(SerializedProperty entityType, SerializedProperty entityMB, SerializedProperty entitySO)
     {
-        return isMonoBehavior.boolValue ? entityMB : entitySO;
+        EntityType preloadEntityType = (EntityType)entityType.enumValueIndex;
+
+        return preloadEntityType.Equals(EntityType.MonoBehavior) ? entityMB : entitySO;
     }
 }

@@ -21,20 +21,23 @@ public class PreloadEntity
 
     public EntityPreloadScriptableObject EntitySO { get => m_entitySO; }
 
-    public EntityType EntityType { get => m_entityType; }
+    public EntityType PreloadEntityType { get => m_entityType; }
 
 
     public IEntityPreloadAction GetEntityToPreload()
     {
-        // return m_isMonoBehavior ? m_entityMB : m_entitySO;
+        switch (PreloadEntityType)
+        {
+            case EntityType.MonoBehavior:
+                return m_entityMB;
+
+            case EntityType.ScriptableObject:
+                return m_entitySO;
+
+            default:
+                break;
+        }
         return null;
     }
 
-}
-
-//use Enum type!! This is better, why didn't you think this before?
-public enum EntityType
-{
-    MonoBehavior,
-    ScriptableObject
 }
