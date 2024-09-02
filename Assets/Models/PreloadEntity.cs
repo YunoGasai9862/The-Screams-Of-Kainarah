@@ -23,16 +23,15 @@ public class PreloadEntity
 
     public EntityType PreloadEntityType { get => m_entityType; }
 
-
     public IEntityPreloadAction GetEntityToPreload()
     {
         switch (PreloadEntityType)
         {
             case EntityType.MonoBehavior:
-                return m_entityMB;
+                return EntityMB;
 
             case EntityType.ScriptableObject:
-                return m_entitySO;
+                return EntitySO;
 
             default:
                 break;
