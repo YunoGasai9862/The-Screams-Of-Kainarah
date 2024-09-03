@@ -27,7 +27,7 @@ public class DialoguesAndOptions: EntityPreloadScriptableObject
 
     public override async Task EntityPreloadAction(AssetReference assetReference, EntityType entityType, Preloader preloader)
     {
-        await preloader.PreloadAsset<DialoguesAndOptions>(assetReference);
+        await preloader.PreloadAsset<DialoguesAndOptions>(assetReference, entityType);
     }
 
 }

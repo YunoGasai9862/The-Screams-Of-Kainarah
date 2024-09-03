@@ -9,17 +9,6 @@ public static class HelperFunctions
         return aspectRatio * _mainCamera.orthographicSize;
     }
 
-    public static bool isWithinOneOfTheAttackStates<T>(PlayerAttackEnum.PlayerAttackSlash _attackState, Animator _playerAnimator)
-    {
-        int Size = System.Enum.GetValues(typeof(T)).Length;
-        for (int i = 0; i < Size; i++)
-        {
-            //do it tomorrow
-        }
-
-        return false;
-    }
-
     public static IEnumerator TuneDownIntensityToZero(Light2D _light)
     {
         while (_light.intensity > 0f)
@@ -60,4 +49,11 @@ public static class HelperFunctions
             animator.SetTrigger(triggerName);
         }
     }
+
+    public static bool IsEntityMonoBehavior(EntityType entityType)
+    {
+        return entityType.Equals(EntityType.MonoBehavior);
+    }
+
+
 }

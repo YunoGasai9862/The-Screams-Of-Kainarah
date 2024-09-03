@@ -76,7 +76,7 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     public override async Task EntityPreloadAction(AssetReference assetReference, EntityType entityType, Preloader preloader)
     {
-        await preloader.PreloadAssetWithAction<GameObject, DialoguesAndOptions>(assetReference, Preload, dialogueAndOptions);
+        await preloader.PreloadAssetWithAction<GameObject, DialoguesAndOptions>(assetReference, entityType, Preload, dialogueAndOptions);
     }
 
 }
