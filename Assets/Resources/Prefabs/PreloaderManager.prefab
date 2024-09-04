@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preloader: {fileID: 0}
+  gameLoad: {fileID: 7226046976263496530, guid: 28738748b9cab064583cc7cacfd7cd56, type: 3}
   preloadEntities:
   - m_assetReference:
       m_AssetGUID: dcfb91314fa429145a308d707bf9d85d

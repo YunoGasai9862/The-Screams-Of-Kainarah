@@ -18,6 +18,10 @@ public class PreloadEntityManagerCustomEditor : Editor
         SerializedProperty preloader = serializedObject.FindProperty("preloader");
         EditorGUILayout.PropertyField(preloader);
 
+        GUILayout.Label("Reference Gameload For Instantiation:");
+        SerializedProperty gameload = serializedObject.FindProperty("gameLoad");
+        EditorGUILayout.PropertyField(gameload);
+
         SerializedProperty arraySize = serializedObject.FindProperty("preloadEntities");
 
         GUILayout.Label("Array For Preloading Entities:");

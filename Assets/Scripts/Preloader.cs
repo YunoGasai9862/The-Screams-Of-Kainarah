@@ -22,6 +22,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
 
     public async Task PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
     {
+        Debug.Log($"Asset Reference: {assetReference} EntityType: {entityType}");
         await SceneSingleton.GetGameLoader().PreloadAsset<T>(assetReference, entityType);
     }
 }

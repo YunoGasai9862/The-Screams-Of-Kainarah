@@ -23,6 +23,11 @@ public class PreloadEntity
 
     public EntityType PreloadEntityType { get => m_entityType; }
 
+    public override string ToString()
+    {
+        return $"Asset Reference: {AssetAddress}, EntityType: {PreloadEntityType}, EntityMB: {EntityMB}, EntitySO: {EntitySO}";
+    }
+
     public IEntityPreloadAction GetEntityToPreload()
     {
         switch (PreloadEntityType)

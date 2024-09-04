@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7226046976263496530}
   m_Layer: 0
   m_Name: GamePreload
-  m_TagString: Untagged
+  m_TagString: GamePreload
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,4 +44,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47c583ba0debe7c489264efa12f6278e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameAddressables: {fileID: 11400000, guid: d04ad8ea3e139ba4f93300b1ad085728, type: 2}

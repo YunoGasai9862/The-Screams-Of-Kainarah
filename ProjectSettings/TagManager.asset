@@ -42,6 +42,7 @@ TagManager:
   - CP2
   - HUD
   - InventoryPouchPanel
+  - GamePreload
   layers:
   - Default
   - TransparentFX

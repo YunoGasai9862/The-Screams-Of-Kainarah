@@ -14,14 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   exchange:
   - _dialogues:
-    - _entityName: 
-      _voice: 
+    - _entityName: Elaila
+      _voice: Carmen
       _textAudioPath:
-      - _sentence: 
-        audioPath: 
-      - _sentence: 
-        audioPath: 
-      - _sentence: 
+      - _sentence: Hey, how are you!
         audioPath: 
     _dialogueOptions:
       _dialogueConcluded: 1
