@@ -18,6 +18,7 @@ public class PreloaderManager: MonoBehaviour
         //please use event system to instantiate it!
         //Instantiate(gameLoad);
 
+        //intsantiate - add to pool, and directly use it from the pool so we wont get null reference!!
         await PreloadEntities(preloadEntities, preloader);
     }
     private async Task PreloadEntities(PreloadEntity[] preloadEntities, Preloader preloader)
