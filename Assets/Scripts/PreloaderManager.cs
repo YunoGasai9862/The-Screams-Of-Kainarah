@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class PreloaderManager: MonoBehaviour
 {
@@ -13,12 +13,12 @@ public class PreloaderManager: MonoBehaviour
     [SerializeField]
     PreloadEntity[] preloadEntities;
 
+    [SerializeField]
+    ObjectPoolEvent objectPoolEvent;
+
     private async void Awake()
     {
-        //please use event system to instantiate it!
-        //Instantiate(gameLoad);
-
-        //intsantiate - add to pool, and directly use it from the pool so we wont get null reference!!
+        await InstantiateAndPoolGameLoad();
         await PreloadEntities(preloadEntities, preloader);
     }
     private async Task PreloadEntities(PreloadEntity[] preloadEntities, Preloader preloader)
@@ -28,5 +28,15 @@ public class PreloaderManager: MonoBehaviour
             Debug.Log($"Preload Entity: {preloadEntity.ToString()}");
             await preloadEntity.GetEntityToPreload().EntityPreloadAction(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
         }
+    }
+
+    private async Task InstantiateAndPoolGameLoad()
+    {
+        GameLoad gameLoadObject = Instantiate(gameLoad);
+
+        EntityPool entityPool = await EntityPool.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject.gameObject);
+
+        await objectPoolEvent.Invoke(entityPool);
+
     }
 }

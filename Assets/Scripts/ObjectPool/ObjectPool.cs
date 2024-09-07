@@ -4,22 +4,48 @@ using System.Collections.Generic;
 
 public class ObjectPool: MonoBehaviour, IObjectPool
 {
+
+    [SerializeField]
+    ObjectPoolEvent objectPoolEvent;
+
     private Queue<EntityPool> entityPoolQueue = new Queue<EntityPool>();
-    public Task Pool(EntityPool entityPool)
+
+    private Dictionary<string, EntityPool> entityPoolDict = new Dictionary<string, EntityPool>();   
+
+    private void Start()
     {
-        return Task.CompletedTask;
-    }
-    public Task UnPool(string name)
-    {
-        return Task.CompletedTask;
-    }
-    public Task<EntityPool> GetEntityPool(string name)
-    {
-        return null;
+        objectPoolEvent.AddListener(InvokeEntityPool);
     }
 
-    public void InvokeEntityPool(EntityPool entityPool)
+    public Task Pool(EntityPool entityPool)
     {
         entityPoolQueue.Enqueue(entityPool);
+
+        return Task.CompletedTask;
+    }
+    public Task UnPool(string tag)
+    {
+        EntityPool entityPool = new EntityPool();
+
+        entityPoolDict.TryGetValue(tag, out entityPool);
+
+        entityPoolQueue.Enqueue(entityPool);
+
+        return Task.CompletedTask;
+    }
+    public Task<EntityPool> GetEntityPool(string tag)
+    {
+        EntityPool entityPool = new EntityPool();
+
+        entityPoolDict.TryGetValue(tag, out entityPool);
+
+        return Task.FromResult(entityPool);
+    }
+
+    public async void InvokeEntityPool(EntityPool entityPool)
+    {
+        entityPoolDict.Add(entityPool.Tag, entityPool);
+
+        await Pool(entityPool);
     }
 }
