@@ -8,7 +8,12 @@ public class ObjectPool: MonoBehaviour, IObjectPool
     [SerializeField]
     ObjectPoolEvent objectPoolEvent;
 
-    private Dictionary<string, EntityPool> entityPoolDict = new Dictionary<string, EntityPool>();   
+    private Dictionary<string, EntityPool> entityPoolDict = new Dictionary<string, EntityPool>();
+
+    private void OnEnable()
+    {
+        
+    }
 
     private void Start()
     {

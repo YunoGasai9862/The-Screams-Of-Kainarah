@@ -25,6 +25,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     {
         Debug.Log($"Asset Reference: {assetReference} EntityType: {entityType}");
         //use game pool to grab the object
+
         //await SceneSingleton.GetGameLoader().PreloadAsset<T>(assetReference, entityType);
     }
 }
