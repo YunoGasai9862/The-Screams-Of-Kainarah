@@ -4,15 +4,16 @@ using System.Collections.Generic;
 
 public class ObjectPool: MonoBehaviour, IObjectPool
 {
-
     [SerializeField]
     ObjectPoolEvent objectPoolEvent;
+    [SerializeField]
+    ObjectPoolActiveEvent objectPoolActiveEvent;
 
     private Dictionary<string, EntityPool> entityPoolDict = new Dictionary<string, EntityPool>();
 
     private void OnEnable()
     {
-        
+        objectPoolActiveEvent.Invoke(this);
     }
 
     private void Start()

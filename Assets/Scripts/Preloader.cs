@@ -6,7 +6,17 @@ using UnityEngine.AddressableAssets;
 
 public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction
 {
-    private GameLoad m_gameLoad;
+    [SerializeField]
+    ObjectPoolActiveEvent objectPoolActiveEvent;
+
+    private GameLoad PooledGameLoad { get; set; }
+    private EntityPool EntityPool { get; set; }
+
+    private void OnEnable()
+    {
+        objectPoolActiveEvent.AddListener(ObjectPoolActiveEventListener);
+    }
+
     public async Task PreloadAssetWithAction<T, TAction>(AssetReference assetReference, EntityType entityType, Action<TAction> action, TAction value)
     {
         await PreloadAsset<T>(assetReference, entityType);
@@ -24,8 +34,19 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     public async Task PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
     {
         Debug.Log($"Asset Reference: {assetReference} EntityType: {entityType}");
-        //use game pool to grab the object
 
-        //await SceneSingleton.GetGameLoader().PreloadAsset<T>(assetReference, entityType);
+        await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
+    }
+
+    private async void ObjectPoolActiveEventListener(ObjectPool objectPoolReference)
+    {
+        EntityPool = await objectPoolReference.GetEntityPool(Constants.GAME_PRELOAD);
+
+        if (EntityPool.Entity.GetComponent<GameLoad>() == null)
+        {
+            throw new ApplicationException("Game Load Not Found!");
+        }
+
+        PooledGameLoad = EntityPool.Entity.GetComponent<GameLoad>();
     }
 }
