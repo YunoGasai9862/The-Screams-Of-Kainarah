@@ -25,8 +25,8 @@ public class PreloaderManager: MonoBehaviour
     {
         foreach (var preloadEntity in preloadEntities)
         {
-            Debug.Log($"Preload Entity: {preloadEntity.ToString()}");
-            await preloadEntity.GetEntityToPreload().EntityPreloadAction(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
+            //Debug.Log($"Preload Entity: {preloadEntity.ToString()}");
+            //await preloadEntity.GetEntityToPreload().EntityPreloadAction(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
         }
     }
 
@@ -34,7 +34,7 @@ public class PreloaderManager: MonoBehaviour
     {
         GameLoad gameLoadObject = Instantiate(gameLoad);
 
-        EntityPool entityPool = await EntityPool.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject.gameObject);
+        EntityPool entityPool =  await EntityPool.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject.gameObject);
 
         await objectPoolEvent.Invoke(entityPool);
 

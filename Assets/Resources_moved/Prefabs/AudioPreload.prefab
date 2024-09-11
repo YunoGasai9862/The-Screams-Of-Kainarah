@@ -45,8 +45,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   awsPollyDialogueTriggerEvent: {fileID: 0}
-  assetReference:
-    m_AssetGUID: dcfb91314fa429145a308d707bf9d85d
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0

@@ -35,12 +35,18 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     {
         Debug.Log($"Asset Reference: {assetReference} EntityType: {entityType}");
 
-        await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
+       // await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
     }
 
     private async void ObjectPoolActiveEventListener(ObjectPool objectPoolReference)
     {
+        Debug.Log("CALLING OBJECT POOL ACTIVE LISTENER");
+
+        Debug.Log(objectPoolReference.gameObject);
+
         EntityPool = await objectPoolReference.GetEntityPool(Constants.GAME_PRELOAD);
+
+        Debug.Log($"EntityPool: {EntityPool.ToString()}");
 
         if (EntityPool.Entity.GetComponent<GameLoad>() == null)
         {

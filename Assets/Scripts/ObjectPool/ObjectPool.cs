@@ -14,11 +14,8 @@ public class ObjectPool: MonoBehaviour, IObjectPool
     private void OnEnable()
     {
         objectPoolActiveEvent.Invoke(this);
-    }
-
-    private void Start()
-    {
         objectPoolEvent.AddListener(InvokeEntityPool);
+
     }
 
     public Task Pool(EntityPool entityPool)
@@ -38,18 +35,19 @@ public class ObjectPool: MonoBehaviour, IObjectPool
 
         return Task.CompletedTask;
     }
-    public Task<EntityPool> GetEntityPool(string tag)
+    public async Task<EntityPool> GetEntityPool(string tag)
     {
         EntityPool entityPool = new EntityPool();
 
-        TaskCompletionSource<EntityPool> tcs = new TaskCompletionSource<EntityPool>();
-
         if (entityPoolDict.TryGetValue(tag, out entityPool))
         {
-            tcs.SetResult(entityPool);
+            return entityPool;
         }
+        //foudn the error fix this tomorrow!!
 
-        return tcs.Task;
+        Debug.Log($"CHECKING ENTITY POOL : {entityPool.ToString()}");
+
+        return null;
     }
 
     public Task Activate(string tag)

@@ -11,6 +11,12 @@ public class EntityPool
     public GameObject Entity { get ; set ; }
     public static Task<EntityPool> From(string name, string tag, GameObject entity)
     {
-        return Task.FromResult(new EntityPool { Name = name, Tag = tag, Entity = entity });
+        EntityPool entityPool = new EntityPool { Name = name, Tag = tag, Entity = entity };
+        return Task.FromResult(entityPool);
+    }
+    
+    public override string ToString()
+    {
+        return $"Name: {Name}, Tag: {Tag}, GameObject: {Entity}";
     }
 }
