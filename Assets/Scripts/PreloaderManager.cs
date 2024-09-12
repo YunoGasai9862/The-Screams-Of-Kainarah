@@ -16,6 +16,9 @@ public class PreloaderManager: MonoBehaviour
     [SerializeField]
     ObjectPoolEvent objectPoolEvent;
 
+    [SerializeField]
+    GameLoadPoolEvent gameLoadPoolEvent;
+
     private async void Awake()
     {
         await InstantiateAndPoolGameLoad();
@@ -37,6 +40,8 @@ public class PreloaderManager: MonoBehaviour
         EntityPool entityPool =  await EntityPool.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject.gameObject);
 
         await objectPoolEvent.Invoke(entityPool);
+
+        await gameLoadPoolEvent.Invoke(true);
 
     }
 }

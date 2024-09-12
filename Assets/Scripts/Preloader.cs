@@ -9,12 +9,18 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     [SerializeField]
     ObjectPoolActiveEvent objectPoolActiveEvent;
 
+    [SerializeField]
+    GameLoadPoolEvent GameLoadPoolEvent;
+
     private GameLoad PooledGameLoad { get; set; }
     private EntityPool EntityPool { get; set; }
+    private ObjectPool ObjectPoolReference { get; set; }
+
 
     private void OnEnable()
     {
         objectPoolActiveEvent.AddListener(ObjectPoolActiveEventListener);
+        GameLoadPoolEvent.AddListener(GameLoadPoolEventListener);
     }
 
     public async Task PreloadAssetWithAction<T, TAction>(AssetReference assetReference, EntityType entityType, Action<TAction> action, TAction value)
@@ -38,13 +44,14 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
        // await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
     }
 
-    private async void ObjectPoolActiveEventListener(ObjectPool objectPoolReference)
+    private void ObjectPoolActiveEventListener(ObjectPool objectPoolReference)
     {
-        Debug.Log("CALLING OBJECT POOL ACTIVE LISTENER");
+        ObjectPoolReference = objectPoolReference;
+    }
 
-        Debug.Log(objectPoolReference.gameObject);
-
-        EntityPool = await objectPoolReference.GetEntityPool(Constants.GAME_PRELOAD);
+    private async void GameLoadPoolEventListener(bool value)
+    {
+        EntityPool = await ObjectPoolReference.GetEntityPool(Constants.GAME_PRELOAD);
 
         Debug.Log($"EntityPool: {EntityPool.ToString()}");
 

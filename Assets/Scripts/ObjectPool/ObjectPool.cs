@@ -20,8 +20,9 @@ public class ObjectPool: MonoBehaviour, IObjectPool
 
     public Task Pool(EntityPool entityPool)
     {
+        Debug.Log($"Adding {entityPool.Tag} {entityPool}");
         entityPoolDict.Add(entityPool.Tag, entityPool);
-
+        Debug.Log($"New Size {entityPoolDict.Count}");
         return Task.CompletedTask;
     }
     public Task UnPool(string tag)
@@ -39,10 +40,13 @@ public class ObjectPool: MonoBehaviour, IObjectPool
     {
         EntityPool entityPool = new EntityPool();
 
+        Debug.Log($"Size Of Pool {entityPoolDict.Count}");
+
         if (entityPoolDict.TryGetValue(tag, out entityPool))
         {
             return entityPool;
         }
+
         //foudn the error fix this tomorrow!!
 
         Debug.Log($"CHECKING ENTITY POOL : {entityPool.ToString()}");
