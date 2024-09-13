@@ -14,15 +14,15 @@ public class ObjectPool: MonoBehaviour, IObjectPool
     private void OnEnable()
     {
         objectPoolActiveEvent.Invoke(this);
+
         objectPoolEvent.AddListener(InvokeEntityPool);
 
     }
 
     public Task Pool(EntityPool entityPool)
     {
-        Debug.Log($"Adding {entityPool.Tag} {entityPool}");
         entityPoolDict.Add(entityPool.Tag, entityPool);
-        Debug.Log($"New Size {entityPoolDict.Count}");
+
         return Task.CompletedTask;
     }
     public Task UnPool(string tag)
@@ -40,18 +40,14 @@ public class ObjectPool: MonoBehaviour, IObjectPool
     {
         EntityPool entityPool = new EntityPool();
 
-        Debug.Log($"Size Of Pool {entityPoolDict.Count}");
+        TaskCompletionSource<EntityPool> tcs = new TaskCompletionSource<EntityPool>();
 
         if (entityPoolDict.TryGetValue(tag, out entityPool))
         {
-            return entityPool;
+            tcs.SetResult(entityPool);
         }
 
-        //foudn the error fix this tomorrow!!
-
-        Debug.Log($"CHECKING ENTITY POOL : {entityPool.ToString()}");
-
-        return null;
+        return await tcs.Task;
     }
 
     public Task Activate(string tag)
@@ -63,6 +59,7 @@ public class ObjectPool: MonoBehaviour, IObjectPool
         if (entityPoolDict.TryGetValue(tag, out entityPool))
         {
             entityPool.Entity.SetActive(true);
+
             tcs.SetResult(entityPool);
         }
 
@@ -77,6 +74,7 @@ public class ObjectPool: MonoBehaviour, IObjectPool
         if (entityPoolDict.TryGetValue(tag, out entityPool))
         {
             entityPool.Entity.SetActive(false);
+
             tcs.SetResult(entityPool);
         }
 

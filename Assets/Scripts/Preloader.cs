@@ -41,7 +41,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     {
         Debug.Log($"Asset Reference: {assetReference} EntityType: {entityType}");
 
-       // await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
+        await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
     }
 
     private void ObjectPoolActiveEventListener(ObjectPool objectPoolReference)
@@ -52,8 +52,6 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     private async void GameLoadPoolEventListener(bool value)
     {
         EntityPool = await ObjectPoolReference.GetEntityPool(Constants.GAME_PRELOAD);
-
-        Debug.Log($"EntityPool: {EntityPool.ToString()}");
 
         if (EntityPool.Entity.GetComponent<GameLoad>() == null)
         {

@@ -13,7 +13,9 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
+    [SerializeField]
     DialoguesAndOptions dialogueAndOptions;
+    [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
 
     private void Awake()
@@ -24,6 +26,8 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     private void Start()
     {
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UI
+        //Here's the time issue! The game object is not active, look at tomorrow!!
+         Debug.Log("Audio Preload Activated!");
          audioGeneratedEvent.AddListener(AudioGeneratedListener);
     }
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
@@ -76,6 +80,12 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     public override async Task EntityPreloadAction(AssetReference assetReference, EntityType entityType, Preloader preloader)
     {
+        Debug.Log("Within EntityPreload Action: Audio Preload");
+
+        //find a way to pass the audio and options directly here??? 
+
+        //or separate scriptable objects loading - they should be preloaded first
+
         await preloader.PreloadAssetWithAction<GameObject, DialoguesAndOptions>(assetReference, entityType, Preload, dialogueAndOptions);
     }
 
