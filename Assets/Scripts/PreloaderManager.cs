@@ -29,7 +29,9 @@ public class PreloaderManager: MonoBehaviour
         foreach (var preloadEntity in preloadEntities)
         {
              Debug.Log($"Preload Entity: {preloadEntity.ToString()}");
-             
+
+            //instantiate first
+
              await preloadEntity.GetEntityToPreload().EntityPreloadAction(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
         }
     }

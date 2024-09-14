@@ -4,5 +4,5 @@ using System;
 using UnityEngine.AddressableAssets;
 public interface IPreloadWithAction
 {
-    public Task PreloadAssetWithAction<T>(AssetReference assetReference, EntityType entityType, Action action);
+    public Task ExecuteAction<TAction>(Action<TAction> action, TAction value);
 }

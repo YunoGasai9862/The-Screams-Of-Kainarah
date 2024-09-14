@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -20,28 +19,29 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     private void OnEnable()
     {
         objectPoolActiveEvent.AddListener(ObjectPoolActiveEventListener);
+
         GameLoadPoolEvent.AddListener(GameLoadPoolEventListener);
     }
 
-    public async Task PreloadAssetWithAction<T, TAction>(AssetReference assetReference, EntityType entityType, Action<TAction> action, TAction value)
+    public Task ExecuteAction<TAction>(Action<TAction> action, TAction value)
     {
-        await PreloadAsset<T>(assetReference, entityType);
-
         action.Invoke(value);
+
+        return Task.CompletedTask;
     }
 
-    public async Task PreloadAssetWithAction<T>(AssetReference assetReference, EntityType entityType, Action action)
+    public Task ExecuteGenericAction<T>(Action action)
     {
-        await PreloadAsset<T>(assetReference, entityType);
-
         action.Invoke();
+
+        return Task.CompletedTask;
     }
 
-    public async Task PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
+    public async Task<UnityEngine.Object> PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
     {
-        Debug.Log($"Asset Reference: {assetReference} EntityType: {entityType}");
+         Debug.Log($"Asset Reference: {assetReference} EntityType: {entityType}");
 
-        await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
+         return await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
     }
 
     private void ObjectPoolActiveEventListener(ObjectPool objectPoolReference)

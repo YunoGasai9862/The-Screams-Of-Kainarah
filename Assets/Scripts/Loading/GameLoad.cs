@@ -5,7 +5,7 @@ using UnityEngine.AddressableAssets;
 
 public class GameLoad : MonoBehaviour, IGameLoad
 {
-    public async Task PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
+    public async Task<Object> PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
     {
         AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(assetReference);
 
@@ -17,20 +17,23 @@ public class GameLoad : MonoBehaviour, IGameLoad
 
         Debug.Log($"Loaded Asset: {loadedAsset}");
 
-        await ProcessPreloadedAsset<T>(loadedAsset, entityType);
+        Object preloadedObject = await ProcessPreloadedAsset<T>(loadedAsset, entityType);
 
         Addressables.Release(handler);
+
+        return preloadedObject;
     }
 
 
-    public Task ProcessPreloadedAsset<T>(T loadedAsset, EntityType entityType)
+    public Task<Object> ProcessPreloadedAsset<T>(T loadedAsset, EntityType entityType)
     {
         if (HelperFunctions.IsEntityMonoBehavior(entityType))
         {
             Debug.Log($"Instantiating MonoBehavior! {loadedAsset}");
-            GameObject loadedAssetGO = Instantiate(loadedAsset as  GameObject);
+
+            return Task.FromResult((Object)Instantiate(loadedAsset as  GameObject));
         }
 
-        return Task.CompletedTask;
+        return null;
     }
 } 
