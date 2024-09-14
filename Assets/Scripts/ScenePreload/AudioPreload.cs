@@ -91,7 +91,7 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
         GameObject audioPreloadInstance = (GameObject) await preloader.PreloadAsset<GameObject>(assetReference, entityType);
 
-        await preloader.PreloadAssetWithAction<GameObject, DialoguesAndOptions>(assetReference, entityType, Preload, dialogueAndOptions);
+        //await preloader.PreloadAssetWithAction<GameObject, DialoguesAndOptions>(assetReference, entityType, Preload, dialogueAndOptions);
     }
 
 }
