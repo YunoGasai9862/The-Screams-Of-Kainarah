@@ -25,9 +25,11 @@ public class DialoguesAndOptions: EntityPreloadScriptableObject
 
     public List<DialogueSystem> exchange;
 
-    public override async Task EntityPreloadAction(AssetReference assetReference, EntityType entityType, Preloader preloader)
+    public override async Task<Tuple<EntityType, dynamic>> EntityPreloadAction(AssetReference assetReference, EntityType entityType, Preloader preloader)
     {
         await preloader.PreloadAsset<DialoguesAndOptions>(assetReference, entityType);
+
+        return null;
     }
 
 }

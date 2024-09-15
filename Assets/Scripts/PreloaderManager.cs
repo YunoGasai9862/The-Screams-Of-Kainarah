@@ -33,6 +33,9 @@ public class PreloaderManager: MonoBehaviour
             //instantiate first
 
              await preloadEntity.GetEntityToPreload().EntityPreloadAction(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
+
+            //refresh the instance, and then use another interface to execute the action - separate preloading from action executing
+
         }
     }
 

@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,7 +82,7 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
         StartCoroutine(PreloadAudio(dialogueAndOptions));
     }
 
-    public override async Task EntityPreloadAction(AssetReference assetReference, EntityType entityType, Preloader preloader)
+    public override async Task<Tuple<EntityType, dynamic>> EntityPreloadAction(AssetReference assetReference, EntityType entityType, Preloader preloader)
     {
         Debug.Log($"Within EntityPreload Action: Audio Preload {gameObject}");
 
@@ -92,6 +93,9 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
         GameObject audioPreloadInstance = (GameObject) await preloader.PreloadAsset<GameObject>(assetReference, entityType);
 
         //await preloader.PreloadAssetWithAction<GameObject, DialoguesAndOptions>(assetReference, entityType, Preload, dialogueAndOptions);
+
+        // try this maybE?
+        return new Tuple<EntityType, dynamic>(EntityType.MonoBehavior , audioPreloadInstance);
     }
 
 }

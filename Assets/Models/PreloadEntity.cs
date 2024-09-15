@@ -17,7 +17,7 @@ public class PreloadEntity
 
     public AssetReference AssetAddress { get => m_assetReference;}
 
-    public EntityPreloadMonoBehavior EntityMB { get => m_entityMB; }
+    public EntityPreloadMonoBehavior EntityMB { get => m_entityMB; set => m_entityMB = value; }
 
     public EntityPreloadScriptableObject EntitySO { get => m_entitySO; }
 
