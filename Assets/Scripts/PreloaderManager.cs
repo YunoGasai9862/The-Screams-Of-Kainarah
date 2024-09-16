@@ -26,13 +26,15 @@ public class PreloaderManager: MonoBehaviour
     }
     private async Task PreloadEntities(PreloadEntity[] preloadEntities, Preloader preloader)
     {
-        foreach (var preloadEntity in preloadEntities)
+        foreach (PreloadEntity preloadEntity in preloadEntities)
         {
              Debug.Log($"Preload Entity: {preloadEntity.ToString()}");
 
             //instantiate first
 
-             await preloadEntity.GetEntityToPreload().EntityPreloadAction(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
+             dynamic instance = await preloadEntity.GetEntityToPreload().EntityPreloadAction(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
+
+             await RefreshInstance(instance, preloadEntity);
 
             //refresh the instance, and then use another interface to execute the action - separate preloading from action executing
 
@@ -49,5 +51,24 @@ public class PreloaderManager: MonoBehaviour
 
         await gameLoadPoolEvent.Invoke(true);
 
+    }
+
+    private async Task<PreloadEntity> RefreshInstance(dynamic instance, PreloadEntity preloadEntity)
+    {
+        return await RefreshOnType(instance, preloadEntity);
+    }
+
+    private Task RefreshOnType(dynamic instance, PreloadEntity preloadEntity)
+    {
+        switch (preloadEntity.PreloadEntityType)
+        {
+            case EntityType.MonoBehavior:
+                preloadEntity.EntityMB = (EntityPreloadMonoBehavior)instance;
+                break;
+
+            default:
+                break;
+        }
+        return Task.CompletedTask;
     }
 }
