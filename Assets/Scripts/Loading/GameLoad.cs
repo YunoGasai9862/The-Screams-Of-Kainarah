@@ -34,6 +34,6 @@ public class GameLoad : MonoBehaviour, IGameLoad
             return Task.FromResult((Object)Instantiate(loadedAsset as  GameObject));
         }
 
-        return null;
+        return Task.FromResult(new Object());
     }
 } 

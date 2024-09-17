@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -28,10 +29,6 @@ public class PreloaderManager: MonoBehaviour
     {
         foreach (PreloadEntity preloadEntity in preloadEntities)
         {
-             Debug.Log($"Preload Entity: {preloadEntity.ToString()}");
-
-            //instantiate first
-
              dynamic instance = await preloadEntity.GetEntityToPreload().EntityPreloadAction(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
 
              await RefreshInstance(instance, preloadEntity);
@@ -53,17 +50,20 @@ public class PreloaderManager: MonoBehaviour
 
     }
 
-    private async Task<PreloadEntity> RefreshInstance(dynamic instance, PreloadEntity preloadEntity)
+    private async Task RefreshInstance(dynamic instance, PreloadEntity preloadEntity)
     {
-        return await RefreshOnType(instance, preloadEntity);
+        (EntityType entityType, dynamic dynamicInstance) = (Tuple<EntityType, dynamic>) instance;
+
+        await RefreshOnType(dynamicInstance, entityType, preloadEntity);
     }
 
-    private Task RefreshOnType(dynamic instance, PreloadEntity preloadEntity)
+    private Task RefreshOnType(dynamic instance, EntityType entityType, PreloadEntity preloadEntity)
     {
-        switch (preloadEntity.PreloadEntityType)
+        switch (entityType)
         {
             case EntityType.MonoBehavior:
-                preloadEntity.EntityMB = (EntityPreloadMonoBehavior)instance;
+                GameObject castedObject = instance as GameObject;
+                preloadEntity.EntityMB = castedObject.GetComponent<EntityPreloadMonoBehavior>();
                 break;
 
             default:
