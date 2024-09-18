@@ -34,7 +34,6 @@ public class PreloaderManager: MonoBehaviour
              await RefreshInstance(instance, preloadEntity);
 
             //refresh the instance, and then use another interface to execute the action - separate preloading from action executing
-
         }
     }
 

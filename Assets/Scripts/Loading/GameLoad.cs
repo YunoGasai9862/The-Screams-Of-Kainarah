@@ -9,13 +9,9 @@ public class GameLoad : MonoBehaviour, IGameLoad
     {
         AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(assetReference);
 
-        Debug.Log($"Handler: {handler}");
-
         await handler.Task;
 
         T loadedAsset = handler.Result;
-
-        Debug.Log($"Loaded Asset: {loadedAsset}");
 
         Object preloadedObject = await ProcessPreloadedAsset<T>(loadedAsset, entityType);
 
@@ -29,8 +25,6 @@ public class GameLoad : MonoBehaviour, IGameLoad
     {
         if (HelperFunctions.IsEntityMonoBehavior(entityType))
         {
-            Debug.Log($"Instantiating MonoBehavior! {loadedAsset}");
-
             return Task.FromResult((Object)Instantiate(loadedAsset as  GameObject));
         }
 

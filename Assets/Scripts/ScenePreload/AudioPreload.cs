@@ -21,7 +21,6 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     private void Awake()
     {
-        Debug.Log("Audio Preload Awake!");
         PersistencePath = Application.persistentDataPath;
     }
 
@@ -29,7 +28,6 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     {
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UI
         //Here's the time issue! The game object is not active, look at tomorrow!!
-         Debug.Log($"Audio Preload Activated! {gameObject}");
          audioGeneratedEvent.AddListener(AudioGeneratedListener);
     }
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
@@ -77,26 +75,19 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     public void Preload(DialoguesAndOptions dialogueAndOptions)
     {
-        Debug.Log($"Starting Coroutine {gameObject}");
-
         StartCoroutine(PreloadAudio(dialogueAndOptions));
     }
 
     public override async Task<Tuple<EntityType, dynamic>> EntityPreloadAction(AssetReference assetReference, EntityType entityType, Preloader preloader)
     {
-        Debug.Log($"Within EntityPreload Action: Audio Preload {gameObject}");
-
         //find a way to pass the audio and options directly here??? 
-
-        //or separate scriptable objects loading - they should be preloaded first
 
         GameObject audioPreloadInstance = (GameObject) await preloader.PreloadAsset<GameObject>(assetReference, entityType);
 
-        //await preloader.PreloadAssetWithAction<GameObject, DialoguesAndOptions>(assetReference, entityType, Preload, dialogueAndOptions);
-
-        // try this maybE?
         return new Tuple<EntityType, dynamic>(EntityType.MonoBehavior , audioPreloadInstance);
     }
+
+    //use an event to use preloader + send it for action
 
 }
 

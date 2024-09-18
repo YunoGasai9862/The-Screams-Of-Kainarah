@@ -39,8 +39,6 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
 
     public async Task<UnityEngine.Object> PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
     {
-         Debug.Log($"Asset Reference: {assetReference} EntityType: {entityType}");
-
          return await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
     }
 

@@ -27,9 +27,9 @@ public class DialoguesAndOptions: EntityPreloadScriptableObject
 
     public override async Task<Tuple<EntityType, dynamic>> EntityPreloadAction(AssetReference assetReference, EntityType entityType, Preloader preloader)
     {
-        await preloader.PreloadAsset<DialoguesAndOptions>(assetReference, entityType);
+        UnityEngine.Object emptyObject = await preloader.PreloadAsset<DialoguesAndOptions>(assetReference, entityType);
 
-        return null;
+        return new Tuple<EntityType, dynamic>(entityType, emptyObject);
     }
 
 }
