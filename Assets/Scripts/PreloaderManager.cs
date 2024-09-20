@@ -20,6 +20,9 @@ public class PreloaderManager: MonoBehaviour
     [SerializeField]
     GameLoadPoolEvent gameLoadPoolEvent;
 
+    [SerializeField]
+    AssetPreloadEvent assetPreloadEvent;
+
     private async void Awake()
     {
         await InstantiateAndPoolGameLoad();
@@ -29,11 +32,12 @@ public class PreloaderManager: MonoBehaviour
     {
         foreach (PreloadEntity preloadEntity in preloadEntities)
         {
-             dynamic instance = await preloadEntity.GetEntityToPreload().EntityPreloadAction(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
+             dynamic instance = await preloadEntity.GetEntityToPreload().EntityPreload(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
 
-             await RefreshInstance(instance, preloadEntity);
+            bool assetValueRefreshed = await RefreshInstance(instance, preloadEntity);
 
-            //refresh the instance, and then use another interface to execute the action - separate preloading from action executing
+            await InvokeAssetPreloadEvent(assetValueRefreshed, preloader);
+
         }
     }
 
@@ -49,25 +53,34 @@ public class PreloaderManager: MonoBehaviour
 
     }
 
-    private async Task RefreshInstance(dynamic instance, PreloadEntity preloadEntity)
+    private async Task<bool> RefreshInstance(dynamic instance, PreloadEntity preloadEntity)
     {
         (EntityType entityType, dynamic dynamicInstance) = (Tuple<EntityType, dynamic>) instance;
 
-        await RefreshOnType(dynamicInstance, entityType, preloadEntity);
+        bool assetValueRefreshed = await RefreshOnType(dynamicInstance, entityType, preloadEntity);
+
+        return assetValueRefreshed;
     }
 
-    private Task RefreshOnType(dynamic instance, EntityType entityType, PreloadEntity preloadEntity)
+    private Task<bool> RefreshOnType(dynamic instance, EntityType entityType, PreloadEntity preloadEntity)
     {
         switch (entityType)
         {
             case EntityType.MonoBehavior:
                 GameObject castedObject = instance as GameObject;
                 preloadEntity.EntityMB = castedObject.GetComponent<EntityPreloadMonoBehavior>();
-                break;
+                return Task.FromResult(true);
 
             default:
                 break;
         }
-        return Task.CompletedTask;
+        return Task.FromResult(false);
+    }
+
+    private async Task InvokeAssetPreloadEvent(bool preloaded, Preloader preloader)
+    {
+        Debug.Log("Invoking Event");
+        //there's time issue, check it!!!
+        await assetPreloadEvent.Invoke(preloaded, preloader);
     }
 }

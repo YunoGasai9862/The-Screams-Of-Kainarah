@@ -30,7 +30,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
         return Task.CompletedTask;
     }
 
-    public Task ExecuteGenericAction<T>(Action action)
+    public Task ExecuteGenericAction(Action action)
     {
         action.Invoke();
 

@@ -28,7 +28,7 @@ public class PreloadEntity
         return $"Asset Reference: {AssetAddress}, EntityType: {PreloadEntityType}, EntityMB: {EntityMB}, EntitySO: {EntitySO}";
     }
 
-    public IEntityPreloadAction GetEntityToPreload()
+    public IEntityPreload GetEntityToPreload()
     {
         switch (PreloadEntityType)
         {

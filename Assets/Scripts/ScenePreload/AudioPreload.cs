@@ -18,6 +18,8 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     DialoguesAndOptions dialogueAndOptions;
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
+    [SerializeField]
+    AssetPreloadEvent assetPreloadEvent;
 
     private void Awake()
     {
@@ -27,8 +29,9 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     private void Start()
     {
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UI
-        //Here's the time issue! The game object is not active, look at tomorrow!!
          audioGeneratedEvent.AddListener(AudioGeneratedListener);
+         Debug.Log("Adding Listener");
+         assetPreloadEvent.AddListener(AssetPreloadedEvent);
     }
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
     {
@@ -78,16 +81,23 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
         StartCoroutine(PreloadAudio(dialogueAndOptions));
     }
 
-    public override async Task<Tuple<EntityType, dynamic>> EntityPreloadAction(AssetReference assetReference, EntityType entityType, Preloader preloader)
+    public override async Task<Tuple<EntityType, dynamic>> EntityPreload(AssetReference assetReference, EntityType entityType, Preloader preloader)
     {
-        //find a way to pass the audio and options directly here??? 
+        //find a way to pass the audio and options directly here???  - this is left!
 
         GameObject audioPreloadInstance = (GameObject) await preloader.PreloadAsset<GameObject>(assetReference, entityType);
 
         return new Tuple<EntityType, dynamic>(EntityType.MonoBehavior , audioPreloadInstance);
     }
 
-    //use an event to use preloader + send it for action
+    public void AssetPreloadedEvent(bool preloaded, Preloader preloader)
+    {
+        Debug.Log("Entering Preloaded Asset Event");
 
+        if (preloaded)
+        {
+            preloader.ExecuteAction<DialoguesAndOptions>(Preload, dialogueAndOptions);
+        }
+    }
 }
 
