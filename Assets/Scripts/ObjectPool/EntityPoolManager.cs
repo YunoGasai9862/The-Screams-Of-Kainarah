@@ -2,14 +2,14 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class ObjectPool: MonoBehaviour, IObjectPool
+public class EntityPoolManager: MonoBehaviour, IEntityPool
 {
     [SerializeField]
-    ObjectPoolEvent objectPoolEvent;
+    EntityPoolEvent objectPoolEvent;
     [SerializeField]
     ObjectPoolActiveEvent objectPoolActiveEvent;
 
-    private Dictionary<string, EntityPool> entityPoolDict = new Dictionary<string, EntityPool>();
+    private Dictionary<string, dynamic> entityPoolDict = new Dictionary<string, dynamic>();
 
     private void OnEnable()
     {
@@ -19,7 +19,7 @@ public class ObjectPool: MonoBehaviour, IObjectPool
 
     }
 
-    public Task Pool(EntityPool entityPool)
+    public Task Pool<T>(EntityPool<T> entityPool)
     {
         entityPoolDict.Add(entityPool.Tag, entityPool);
 
@@ -81,7 +81,7 @@ public class ObjectPool: MonoBehaviour, IObjectPool
         return tcs.Task;
     }
 
-    public async void InvokeEntityPool(EntityPool entityPool)
+    public async void InvokeEntityPool<T>(EntityPool<T> entityPool)
     {
         await Pool(entityPool);
     }

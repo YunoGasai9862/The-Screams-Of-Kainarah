@@ -15,13 +15,11 @@ public class PreloaderManager: MonoBehaviour
     PreloadEntity[] preloadEntities;
 
     [SerializeField]
-    ObjectPoolEvent objectPoolEvent;
+    EntityPoolEvent objectPoolEvent;
 
     [SerializeField]
     GameLoadPoolEvent gameLoadPoolEvent;
 
-    [SerializeField]
-    AssetPreloadEvent assetPreloadEvent;
 
     private async void Awake()
     {
@@ -32,11 +30,9 @@ public class PreloaderManager: MonoBehaviour
     {
         foreach (PreloadEntity preloadEntity in preloadEntities)
         {
-             dynamic instance = await preloadEntity.GetEntityToPreload().EntityPreload(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
+            dynamic instance = await preloadEntity.GetEntityToPreload().EntityPreload(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
 
             bool assetValueRefreshed = await RefreshInstance(instance, preloadEntity);
-
-            await InvokeAssetPreloadEvent(assetValueRefreshed, preloader);
 
         }
     }
@@ -75,12 +71,5 @@ public class PreloaderManager: MonoBehaviour
                 break;
         }
         return Task.FromResult(false);
-    }
-
-    private async Task InvokeAssetPreloadEvent(bool preloaded, Preloader preloader)
-    {
-        Debug.Log("Invoking Event");
-        //there's time issue, check it!!!
-        await assetPreloadEvent.Invoke(preloaded, preloader);
     }
 }

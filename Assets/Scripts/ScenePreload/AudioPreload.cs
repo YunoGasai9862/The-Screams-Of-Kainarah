@@ -18,8 +18,6 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     DialoguesAndOptions dialogueAndOptions;
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
-    [SerializeField]
-    AssetPreloadEvent assetPreloadEvent;
 
     private void Awake()
     {
@@ -30,8 +28,9 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     {
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UI
          audioGeneratedEvent.AddListener(AudioGeneratedListener);
-         Debug.Log("Adding Listener");
-         assetPreloadEvent.AddListener(AssetPreloadedEvent);
+        //once instantiated, then use invoke it here -> dont use reference for dialogueAndOptions, use EntityPool or Some sort of pool to get the dialogueAndOptions
+        //once the pooling is done, use an event from the pooling that pooling is done, all the objects can retrieve whatever they want to
+         
     }
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
     {
@@ -83,21 +82,9 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     public override async Task<Tuple<EntityType, dynamic>> EntityPreload(AssetReference assetReference, EntityType entityType, Preloader preloader)
     {
-        //find a way to pass the audio and options directly here???  - this is left!
-
         GameObject audioPreloadInstance = (GameObject) await preloader.PreloadAsset<GameObject>(assetReference, entityType);
 
         return new Tuple<EntityType, dynamic>(EntityType.MonoBehavior , audioPreloadInstance);
-    }
-
-    public void AssetPreloadedEvent(bool preloaded, Preloader preloader)
-    {
-        Debug.Log("Entering Preloaded Asset Event");
-
-        if (preloaded)
-        {
-            preloader.ExecuteAction<DialoguesAndOptions>(Preload, dialogueAndOptions);
-        }
     }
 }
 

@@ -30,11 +30,6 @@ public class PreloadEntityManagerCustomEditor : Editor
         SerializedProperty gamePoolEvent = serializedObject.FindProperty("gameLoadPoolEvent");
         EditorGUILayout.PropertyField(gamePoolEvent);
 
-        GUILayout.Label("Reference AssetPreload Event:");
-        SerializedProperty assetPreloadEvent = serializedObject.FindProperty("assetPreloadEvent");
-        EditorGUILayout.PropertyField(assetPreloadEvent);
-
-
         SerializedProperty arraySize = serializedObject.FindProperty("preloadEntities");
 
         GUILayout.Label("Array For Preloading Entities:");
