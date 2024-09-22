@@ -15,7 +15,7 @@ public class PreloaderManager: MonoBehaviour
     PreloadEntity[] preloadEntities;
 
     [SerializeField]
-    EntityPoolEvent objectPoolEvent;
+    EntityPoolEvent entityPoolEvent;
 
     [SerializeField]
     GameLoadPoolEvent gameLoadPoolEvent;
@@ -41,9 +41,9 @@ public class PreloaderManager: MonoBehaviour
     {
         GameLoad gameLoadObject = Instantiate(gameLoad);
 
-        EntityPool entityPool =  await EntityPool.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject.gameObject);
+        EntityPool<dynamic> entityPool =  await EntityPool<dynamic>.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject.gameObject);
 
-        await objectPoolEvent.Invoke(entityPool);
+        await entityPoolEvent.Invoke(entityPool);
 
         await gameLoadPoolEvent.Invoke(true);
 

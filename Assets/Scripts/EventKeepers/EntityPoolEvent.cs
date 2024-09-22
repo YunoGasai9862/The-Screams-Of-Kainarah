@@ -2,22 +2,22 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class EntityPoolEvent : UnityEventWTAsync<EntityPool<GameObject>>
+public class EntityPoolEvent : UnityEventWTAsync<EntityPool<dynamic>>
 {
-    private UnityEvent<EntityPool<GameObject>> m_objectPoolEvent = new UnityEvent<EntityPool<GameObject>>();    
-    public override UnityEvent<EntityPool<GameObject>> GetInstance()
+    private UnityEvent<EntityPool<dynamic>> m_entityPoolEvent = new UnityEvent<EntityPool<dynamic>>();    
+    public override UnityEvent<EntityPool<dynamic>> GetInstance()
     {
-        return m_objectPoolEvent;
+        return m_entityPoolEvent;
     }
-    public override Task AddListener(UnityAction<EntityPool<GameObject>> action)
+    public override Task AddListener(UnityAction<EntityPool<dynamic>> action)
     {
-        m_objectPoolEvent.AddListener(action);
+        m_entityPoolEvent.AddListener(action);
 
         return Task.CompletedTask;
     }
-    public override Task Invoke(EntityPool<GameObject> value)
+    public override Task Invoke(EntityPool<dynamic> value)
     {
-        m_objectPoolEvent.Invoke(value);
+        m_entityPoolEvent.Invoke(value);
 
         return Task.CompletedTask;
     }

@@ -6,19 +6,19 @@ using UnityEngine.AddressableAssets;
 public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction
 {
     [SerializeField]
-    ObjectPoolActiveEvent objectPoolActiveEvent;
+    EntityPoolManagerActiveEvent entityPoolManagerActiveEvent;
 
     [SerializeField]
     GameLoadPoolEvent GameLoadPoolEvent;
 
     private GameLoad PooledGameLoad { get; set; }
-    private EntityPool EntityPool { get; set; }
-    private ObjectPool ObjectPoolReference { get; set; }
+    private EntityPool<GameObject> EntityPool { get; set; }
+    private EntityPoolManager EntityPoolManagerReference { get; set; }
 
 
     private void OnEnable()
     {
-        objectPoolActiveEvent.AddListener(ObjectPoolActiveEventListener);
+        entityPoolManagerActiveEvent.AddListener(EntityPoolManagerActiveEventListener);
 
         GameLoadPoolEvent.AddListener(GameLoadPoolEventListener);
     }
@@ -42,14 +42,14 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
          return await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
     }
 
-    private void ObjectPoolActiveEventListener(ObjectPool objectPoolReference)
+    private void EntityPoolManagerActiveEventListener(EntityPoolManager entityPoolManager)
     {
-        ObjectPoolReference = objectPoolReference;
+        EntityPoolManagerReference = entityPoolManager;
     }
 
     private async void GameLoadPoolEventListener(bool value)
     {
-        EntityPool = await ObjectPoolReference.GetEntityPool(Constants.GAME_PRELOAD);
+        EntityPool = await EntityPoolManagerReference.GetEntityPool<GameObject>(Constants.GAME_PRELOAD);
 
         if (EntityPool.Entity.GetComponent<GameLoad>() == null)
         {
