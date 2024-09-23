@@ -22,9 +22,9 @@ public class PreloadEntityManagerCustomEditor : Editor
         SerializedProperty gameload = serializedObject.FindProperty("gameLoad");
         EditorGUILayout.PropertyField(gameload);
 
-        GUILayout.Label("Reference Object Pool Event:");
-        SerializedProperty objectPool = serializedObject.FindProperty("objectPoolEvent");
-        EditorGUILayout.PropertyField(objectPool);
+        GUILayout.Label("Reference Entity Pool Event:");
+        SerializedProperty entityPoolEvent = serializedObject.FindProperty("entityPoolEvent");
+        EditorGUILayout.PropertyField(entityPoolEvent);
 
         GUILayout.Label("Reference GameLoad Pool Event:");
         SerializedProperty gamePoolEvent = serializedObject.FindProperty("gameLoadPoolEvent");

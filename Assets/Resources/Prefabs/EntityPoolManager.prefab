@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1170334297112827771}
   - component: {fileID: 5899497143227170355}
   m_Layer: 0
-  m_Name: ObjectPool
+  m_Name: EntityPoolManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,4 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63e034b9414a8924ca224e8907934f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectPoolEvent: {fileID: 0}
+  entityPoolEvent: {fileID: 0}
+  entityPoolManagerActiveEvent: {fileID: 0}

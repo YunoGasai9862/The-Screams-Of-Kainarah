@@ -49,7 +49,9 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
 
     private async void GameLoadPoolEventListener(bool value)
     {
-        EntityPool = await EntityPoolManagerReference.GetEntityPool<GameObject>(Constants.GAME_PRELOAD);
+        var entityPool = await EntityPoolManagerReference.GetEntityPool<GameObject>(Constants.GAME_PRELOAD);
+
+        Debug.Log($"Game Load Pool Event: {EntityPool}");
 
         if (EntityPool.Entity.GetComponent<GameLoad>() == null)
         {

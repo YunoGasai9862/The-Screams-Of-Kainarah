@@ -38,16 +38,20 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
     }
     public async Task<EntityPool<T>> GetEntityPool<T>(string tag)
     {
-        dynamic entityPool = new EntityPool<T>();
-
         TaskCompletionSource<EntityPool<T>> tcs = new TaskCompletionSource<EntityPool<T>>();
 
-        if (entityPoolDict.TryGetValue(tag, out entityPool))
+        if (entityPoolDict.TryGetValue(tag, out var entityPool))
         {
-            tcs.SetResult(entityPool);
+           
+           Debug.Log($"Entity Pool {entityPool} Tag: {tag} Type {entityPool.GetType()}");
+
+           bool resultSet = tcs.TrySetResult(entityPool as EntityPool<T>);
+
+           Debug.Log($"Task Await: {await tcs.Task as EntityPool<GameObject>} Result Set: {resultSet}");
         }
 
-        return await tcs.Task;
+
+        return await tcs.Task as EntityPool<T>;
     }
 
     public Task Activate<T>(string tag)
@@ -60,7 +64,7 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
         {
             entityPool.Entity.SetActive(true);
 
-            tcs.SetResult(entityPool);
+            tcs.SetResult(entityPool as EntityPool<T>);
         }
 
         return tcs.Task;
@@ -75,7 +79,7 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
         {
             entityPool.Entity.SetActive(false);
 
-            tcs.SetResult(entityPool);
+            tcs.SetResult(entityPool as EntityPool<T>);
         }
 
         return tcs.Task;

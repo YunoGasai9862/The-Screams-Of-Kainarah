@@ -41,7 +41,7 @@ public class PreloaderManager: MonoBehaviour
     {
         GameLoad gameLoadObject = Instantiate(gameLoad);
 
-        EntityPool<dynamic> entityPool =  await EntityPool<dynamic>.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject.gameObject);
+        dynamic entityPool =  await EntityPool<UnityEngine.GameObject>.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject.gameObject);
 
         await entityPoolEvent.Invoke(entityPool);
 
