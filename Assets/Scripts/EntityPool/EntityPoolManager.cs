@@ -9,7 +9,7 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
     [SerializeField]
     EntityPoolManagerActiveEvent entityPoolManagerActiveEvent;
 
-    private Dictionary<string, dynamic> entityPoolDict = new Dictionary<string, dynamic>();
+    private Dictionary<string, AbstractEntityPool> entityPoolDict = new Dictionary<string, AbstractEntityPool>();
 
     private void OnEnable()
     {
@@ -19,73 +19,65 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
 
     }
 
-    public Task Pool<T>(EntityPool<T> entityPool)
+    public Task Pool(AbstractEntityPool entityPool)
     {
         entityPoolDict.Add(entityPool.Tag, entityPool);
 
         return Task.CompletedTask;
     }
-    public Task UnPool<T>(string tag)
+    public Task UnPool(string tag)
     {
-        dynamic entityPool = new EntityPool<T>();
-
-        if (entityPoolDict.TryGetValue(tag, out entityPool))
+        if (entityPoolDict.TryGetValue(tag, out AbstractEntityPool entityPool))
         {
             entityPoolDict.Remove(tag);
         }
 
         return Task.CompletedTask;
     }
-    public async Task<EntityPool<T>> GetEntityPool<T>(string tag)
+    public async Task<AbstractEntityPool> GetEntityPool(string tag)
     {
-        TaskCompletionSource<EntityPool<T>> tcs = new TaskCompletionSource<EntityPool<T>>();
+        TaskCompletionSource<AbstractEntityPool> tcs = new TaskCompletionSource<AbstractEntityPool>();
 
-        if (entityPoolDict.TryGetValue(tag, out var entityPool))
+        if (entityPoolDict.TryGetValue(tag, out AbstractEntityPool entityPool))
         {
            
-           Debug.Log($"Entity Pool {entityPool} Tag: {tag} Type {entityPool.GetType()}");
-
-           bool resultSet = tcs.TrySetResult(entityPool as EntityPool<T>);
+           bool resultSet = tcs.TrySetResult(entityPool);
 
            Debug.Log($"Task Await: {await tcs.Task as EntityPool<GameObject>} Result Set: {resultSet}");
         }
 
 
-        return await tcs.Task as EntityPool<T>;
+        return await tcs.Task;
     }
 
-    public Task Activate<T>(string tag)
+    public Task Activate(string tag)
     {
-        dynamic entityPool = new EntityPool<T>();
+        TaskCompletionSource<AbstractEntityPool> tcs = new TaskCompletionSource<AbstractEntityPool>();
 
-        TaskCompletionSource<EntityPool<T>> tcs = new TaskCompletionSource<EntityPool<T>>();
-
-        if (entityPoolDict.TryGetValue(tag, out entityPool))
+        if (entityPoolDict.TryGetValue(tag, out AbstractEntityPool entityPool))
         {
             entityPool.Entity.SetActive(true);
 
-            tcs.SetResult(entityPool as EntityPool<T>);
+            tcs.SetResult(entityPool);
         }
 
         return tcs.Task;
     }
-    public Task Deactivate<T>(string tag)
+    public Task Deactivate(string tag)
     {
-        dynamic entityPool = new EntityPool<T>();
+        TaskCompletionSource<AbstractEntityPool> tcs = new TaskCompletionSource<AbstractEntityPool>();
 
-        TaskCompletionSource<EntityPool<T>> tcs = new TaskCompletionSource<EntityPool<T>>();
-
-        if (entityPoolDict.TryGetValue(tag, out entityPool))
+        if (entityPoolDict.TryGetValue(tag, out AbstractEntityPool entityPool))
         {
             entityPool.Entity.SetActive(false);
 
-            tcs.SetResult(entityPool as EntityPool<T>);
+            tcs.SetResult(entityPool);
         }
 
         return tcs.Task;
     }
 
-    public async void InvokeEntityPool<T>(EntityPool<T> entityPool)
+    public async void InvokeEntityPool(AbstractEntityPool entityPool)
     {
         await Pool(entityPool);
     }

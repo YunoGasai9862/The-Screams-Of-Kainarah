@@ -4,11 +4,9 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 [Serializable]
-public class EntityPool<T>
+public class EntityPool<T> : AbstractEntityPool
 {
-    public string Name { get; set;}
-    public string Tag { get; set; }
-    public T Entity { get ; set ; }
+    public new T Entity { get ; set ; }
     public static Task<EntityPool<T>> From(string name, string tag, T entity)
     {
         EntityPool<T> entityPool = new EntityPool<T> { Name = name, Tag = tag, Entity = entity };
