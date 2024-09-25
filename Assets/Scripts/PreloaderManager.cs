@@ -34,6 +34,9 @@ public class PreloaderManager: MonoBehaviour
 
             bool assetValueRefreshed = await RefreshInstance(instance, preloadEntity);
 
+            //start pooling them
+            await AddToPool(preloadEntity);
+
         }
     }
 
@@ -47,6 +50,25 @@ public class PreloaderManager: MonoBehaviour
 
         await gameLoadPoolEvent.Invoke(true);
 
+    }
+
+    private async Task Pool<T>(string name, T entity, string tag)
+    {
+        EntityPool<T> entityPool = await EntityPool<T>.From(name, tag, entity);
+
+        await entityPoolEvent.Invoke(entityPool);
+    }
+
+    private async Task AddToPool(PreloadEntity preloadEntity)
+    {
+        if (HelperFunctions.IsEntityMonoBehavior(preloadEntity.PreloadEntityType))
+        {
+            await Pool(preloadEntity.EntityMB.gameObject.name, preloadEntity.EntityMB.gameObject, preloadEntity.EntityMB.gameObject.tag);
+
+        }else
+        {
+            await Pool(preloadEntity.EntitySO.name, preloadEntity.EntitySO, preloadEntity.EntitySO.name);
+        }
     }
 
     private async Task<bool> RefreshInstance(dynamic instance, PreloadEntity preloadEntity)

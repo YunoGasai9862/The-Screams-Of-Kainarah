@@ -51,8 +51,6 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     {
         EntityPool = await EntityPoolManagerReference.GetEntityPool(Constants.GAME_PRELOAD) as EntityPool<GameObject>;
 
-        Debug.Log($"Game Load Pool Event: {EntityPool}");
-
         if (EntityPool.Entity.GetComponent<GameLoad>() == null)
         {
             throw new ApplicationException("Game Load Not Found!");

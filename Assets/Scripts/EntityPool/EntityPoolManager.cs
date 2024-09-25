@@ -16,12 +16,13 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
         entityPoolManagerActiveEvent.Invoke(this);
 
         entityPoolEvent.AddListener(InvokeEntityPool);
-
     }
 
     public Task Pool(AbstractEntityPool entityPool)
     {
         entityPoolDict.Add(entityPool.Tag, entityPool);
+
+        Debug.Log($"Pool county {entityPoolDict.Count}");
 
         return Task.CompletedTask;
     }
@@ -40,13 +41,8 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
 
         if (entityPoolDict.TryGetValue(tag, out AbstractEntityPool entityPool))
         {
-           
            bool resultSet = tcs.TrySetResult(entityPool);
-
-           Debug.Log($"Task Await: {await tcs.Task as EntityPool<GameObject>} Result Set: {resultSet}");
         }
-
-
         return await tcs.Task;
     }
 
