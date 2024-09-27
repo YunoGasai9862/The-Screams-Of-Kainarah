@@ -10,6 +10,7 @@ public class EntityPool<T> : AbstractEntityPool
     public static Task<EntityPool<T>> From(string name, string tag, T entity)
     {
         EntityPool<T> entityPool = new EntityPool<T> { Name = name, Tag = tag, Entity = entity };
+
         return Task.FromResult(entityPool);
     }
     

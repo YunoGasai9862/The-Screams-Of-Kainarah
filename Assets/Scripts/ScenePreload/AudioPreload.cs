@@ -12,12 +12,18 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     private bool AudioGenerated { get; set; } = false;
 
+    private EntityPoolManager EntityPoolManager { get; set; }
+
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
     [SerializeField]
     DialoguesAndOptions dialogueAndOptions;
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
+    [SerializeField]
+    PreloadingCompletionEvent preloadingCompletionEvent;
+    [SerializeField]
+    EntityPoolManagerActiveEvent entityPoolManagerActiveEvent;
 
     private void Awake()
     {
@@ -27,10 +33,7 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     private void Start()
     {
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UI
-         audioGeneratedEvent.AddListener(AudioGeneratedListener);
-        //once instantiated, then use invoke it here -> dont use reference for dialogueAndOptions, use EntityPool or Some sort of pool to get the dialogueAndOptions
-        //once the pooling is done, use an event from the pooling that pooling is done, all the objects can retrieve whatever they want to
-         
+         audioGeneratedEvent.AddListener(AudioGeneratedListener);         
     }
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
     {
@@ -85,6 +88,12 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
         GameObject audioPreloadInstance = (GameObject) await preloader.PreloadAsset<GameObject>(assetReference, entityType);
 
         return new Tuple<EntityType, dynamic>(EntityType.MonoBehavior , audioPreloadInstance);
+    }
+
+    public void PreloadingCompletionEventListener(bool value)
+    {
+        //query the game pool here to grab Dialogue And Options
+
     }
 }
 

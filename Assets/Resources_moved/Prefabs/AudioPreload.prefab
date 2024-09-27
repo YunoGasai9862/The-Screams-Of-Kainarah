@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3505954786686626709}
   m_Layer: 0
   m_Name: AudioPreload
-  m_TagString: Untagged
+  m_TagString: AudioPreload
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -47,4 +47,4 @@ MonoBehaviour:
   awsPollyDialogueTriggerEvent: {fileID: 4626976237779173983, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
   dialogueAndOptions: {fileID: 11400000, guid: 399be5f2e16fa6147acdfdb4b6cf785b, type: 2}
   audioGeneratedEvent: {fileID: 8677537925411909685, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
-  assetPreloadEvent: {fileID: 8193634553229218944, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  entityPoolReadyEvent: {fileID: 8408686988314371113, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}

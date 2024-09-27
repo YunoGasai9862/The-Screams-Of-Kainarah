@@ -22,8 +22,6 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
     {
         entityPoolDict.Add(entityPool.Tag, entityPool);
 
-        Debug.Log($"Pool county {entityPoolDict.Count}");
-
         return Task.CompletedTask;
     }
     public Task UnPool(string tag)

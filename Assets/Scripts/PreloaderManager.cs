@@ -20,6 +20,8 @@ public class PreloaderManager: MonoBehaviour
     [SerializeField]
     GameLoadPoolEvent gameLoadPoolEvent;
 
+    [SerializeField]
+    PreloadingCompletionEvent preloadingCompletionEvent;
 
     private async void Awake()
     {
@@ -38,6 +40,8 @@ public class PreloaderManager: MonoBehaviour
             await AddToPool(preloadEntity);
 
         }
+
+        await preloadingCompletionEvent.Invoke(true);
     }
 
     private async Task InstantiateAndPoolGameLoad()

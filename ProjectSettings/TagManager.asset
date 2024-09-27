@@ -43,6 +43,7 @@ TagManager:
   - HUD
   - InventoryPouchPanel
   - GamePreload
+  - AudioPreload
   layers:
   - Default
   - TransparentFX
