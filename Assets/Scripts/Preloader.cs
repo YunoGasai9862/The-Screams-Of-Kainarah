@@ -5,8 +5,6 @@ using UnityEngine.AddressableAssets;
 
 public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction
 {
-    [SerializeField]
-    EntityPoolManagerActiveEvent entityPoolManagerActiveEvent;
 
     [SerializeField]
     GameLoadPoolEvent GameLoadPoolEvent;
@@ -18,9 +16,12 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
 
     private void OnEnable()
     {
-        entityPoolManagerActiveEvent.AddListener(EntityPoolManagerActiveEventListener);
-
         GameLoadPoolEvent.AddListener(GameLoadPoolEventListener);
+    }
+
+    private void Start()
+    {
+        EntityPoolManagerReference = SceneSingleton.EntityPoolManager;
     }
 
     public Task ExecuteAction<TAction>(Action<TAction> action, TAction value)
@@ -42,14 +43,11 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
          return await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
     }
 
-    private void EntityPoolManagerActiveEventListener(EntityPoolManager entityPoolManager)
-    {
-        EntityPoolManagerReference = entityPoolManager;
-    }
-
     private async void GameLoadPoolEventListener(bool value)
     {
-        EntityPool = await EntityPoolManagerReference.GetEntityPool(Constants.GAME_PRELOAD) as EntityPool<GameObject>;
+        Debug.Log(EntityPoolManagerReference);
+
+        EntityPool = await EntityPoolManagerReference.GetPooledEntity(Constants.GAME_PRELOAD) as EntityPool<GameObject>;
 
         if (EntityPool.Entity.GetComponent<GameLoad>() == null)
         {

@@ -13,9 +13,12 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
 
     private void OnEnable()
     {
-        entityPoolManagerActiveEvent.Invoke(this);
-
         entityPoolEvent.AddListener(InvokeEntityPool);
+    }
+
+    private void Start()
+    {
+        entityPoolManagerActiveEvent.Invoke(this);
     }
 
     public Task Pool(AbstractEntityPool entityPool)
@@ -33,7 +36,7 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
 
         return Task.CompletedTask;
     }
-    public async Task<AbstractEntityPool> GetEntityPool(string tag)
+    public async Task<AbstractEntityPool> GetPooledEntity(string tag)
     {
         TaskCompletionSource<AbstractEntityPool> tcs = new TaskCompletionSource<AbstractEntityPool>();
 

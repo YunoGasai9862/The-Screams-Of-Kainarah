@@ -14,6 +14,8 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     private EntityPoolManager EntityPoolManager { get; set; }
 
+    private EntityPool<ScriptableObject> DialoguesAndOptions { get; set; }
+
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
     [SerializeField]
@@ -22,8 +24,6 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     AudioGeneratedEvent audioGeneratedEvent;
     [SerializeField]
     PreloadingCompletionEvent preloadingCompletionEvent;
-    [SerializeField]
-    EntityPoolManagerActiveEvent entityPoolManagerActiveEvent;
 
     private void Awake()
     {
@@ -90,10 +90,16 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
         return new Tuple<EntityType, dynamic>(EntityType.MonoBehavior , audioPreloadInstance);
     }
 
-    public void PreloadingCompletionEventListener(bool value)
+    public async void PreloadingCompletionEventListener(bool value)
     {
-        //query the game pool here to grab Dialogue And Options
+        DialoguesAndOptions = await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS) as EntityPool<ScriptableObject>;
 
+        Debug.Log($"{DialoguesAndOptions.ToString()}");
+    }
+
+    public void EntityPoolManagerActiveEvent(EntityPoolManager entityPoolManager)
+    {
+        EntityPoolManager = entityPoolManager;
     }
 }
 

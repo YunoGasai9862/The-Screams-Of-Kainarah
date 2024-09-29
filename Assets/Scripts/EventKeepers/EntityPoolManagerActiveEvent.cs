@@ -10,12 +10,15 @@ public class EntityPoolManagerActiveEvent: UnityEventWTAsync<EntityPoolManager>
     }
     public override Task AddListener(UnityAction<EntityPoolManager> action)
     {
+        Debug.Log($"Adding Listener {action}");
+
         m_objectPool.AddListener(action);
 
         return Task.CompletedTask;
     }
     public override Task Invoke(EntityPoolManager value)
     {
+        Debug.Log($"Invoking {value}");
         m_objectPool.Invoke(value);
 
         return Task.CompletedTask;

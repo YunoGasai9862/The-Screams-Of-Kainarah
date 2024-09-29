@@ -12,7 +12,8 @@ public class SceneSingleton : MonoBehaviour
     [SerializeField] private CheckPoints checkpointsScriptableObject;
     [SerializeField] private EnemyHittableObjects enemyHittableObject;
     [SerializeField] private EventStringMapper eventStringMapperScriptableObject;
-    [SerializeField] public DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
+    [SerializeField] private DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
+    [SerializeField] private EntityPoolManagerActiveEvent entityPoolManagerActiveEvent;
 
     public static DialoguesAndOptions DialogueAndOptions => _instance.dialogueAndOptions;
     public static PlayerHittableItemsScriptableObject PlayerHittableItems => _instance.playerHittableItemsScriptableObject;
@@ -30,12 +31,12 @@ public class SceneSingleton : MonoBehaviour
     private static SpawnPlayer _getSpawnPlayerScript { get; set; }
     private static CheckpointColliderListener _checkpointColliderListener { get; set; }
 
-    private static Preloader _preloader { get; set; }
     private static DialogueManager _dialogueManager { get; set; }
 
     private static SceneSingleton _instance;
     private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; }//fill only once
     public static bool IsDialogueTakingPlace { get; set; }
+    public static EntityPoolManager EntityPoolManager { get; set; }
 
     private void Awake()
     {
@@ -45,7 +46,6 @@ public class SceneSingleton : MonoBehaviour
 
     private void Start()
     {
-        _preloader = FindFirstObjectByType<Preloader>();
         _inventoryManager = FindFirstObjectByType<InventoryManager>();
         _playerHelperClassForOtherPurposes = FindFirstObjectByType<PlayerActionRelayer>();
         _entityListenerDelegator = FindFirstObjectByType<EntityListenerDelegator>();
@@ -59,6 +59,7 @@ public class SceneSingleton : MonoBehaviour
 
         //events
         dialogueTakingPlaceEvent.AddListener(DialougeTakingPlace);
+        entityPoolManagerActiveEvent.AddListener(EntityPoolManagerActive);
     }
     public static SpawnPlayer PlayerSpawn()
     {
@@ -73,10 +74,6 @@ public class SceneSingleton : MonoBehaviour
         return _gameStateHandlerObjects;
     }
 
-    public static Preloader GetPreloader()
-    {
-        return _preloader;
-    }
     public static void InsertIntoGameStateHandlerList(IGameStateHandler handler)
     {
         _gameStateHandlerObjects.Add(handler);
@@ -114,6 +111,11 @@ public class SceneSingleton : MonoBehaviour
     private void DialougeTakingPlace(bool isTakingPlace)
     {
         IsDialogueTakingPlace = isTakingPlace;
+    }
+
+    private void EntityPoolManagerActive(EntityPoolManager entityPoolManager)
+    {
+        EntityPoolManager = entityPoolManager;
     }
 
 }
