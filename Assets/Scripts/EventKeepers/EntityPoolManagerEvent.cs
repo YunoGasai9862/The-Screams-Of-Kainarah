@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
-public class EntityPoolManagerActiveEvent: UnityEventWTAsync<EntityPoolManager>
+public class EntityPoolManagerEvent : UnityEventWTAsync<EntityPoolManager>
 {
     private UnityEvent<EntityPoolManager> m_objectPool = new UnityEvent<EntityPoolManager>();
     public override UnityEvent<EntityPoolManager> GetInstance()
@@ -10,15 +10,12 @@ public class EntityPoolManagerActiveEvent: UnityEventWTAsync<EntityPoolManager>
     }
     public override Task AddListener(UnityAction<EntityPoolManager> action)
     {
-        Debug.Log($"Adding Listener {action}");
-
         m_objectPool.AddListener(action);
 
         return Task.CompletedTask;
     }
     public override Task Invoke(EntityPoolManager value)
     {
-        Debug.Log($"Invoking {value}");
         m_objectPool.Invoke(value);
 
         return Task.CompletedTask;

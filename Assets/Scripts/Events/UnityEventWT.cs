@@ -10,6 +10,13 @@ public abstract class UnityEventWTAsync<T> : MonoBehaviour, ICustomUnityEventWTA
     public abstract Task Invoke(T value);
 }
 
+public abstract class UnityEventWTAsync : MonoBehaviour, ICustomUnityEventWTAsync
+{
+    public abstract UnityEvent GetInstance();
+    public abstract Task AddListener(UnityAction action);
+    public abstract Task Invoke();
+}
+
 public abstract class UnityEventWTAsync<T, Z> : MonoBehaviour, ICustomUnityEventWTAsync<T, Z>
 {
     public abstract UnityEvent<T, Z> GetInstance();

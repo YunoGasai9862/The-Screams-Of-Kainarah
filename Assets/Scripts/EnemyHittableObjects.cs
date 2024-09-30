@@ -14,7 +14,7 @@ namespace EnemyHittable
             public GameObject instantiateAfterAttack;
             public string ObjectTag;
         }
-
+         
         public HittableObjects[] elements; //better to create an array so i can store many Elements
 
     }

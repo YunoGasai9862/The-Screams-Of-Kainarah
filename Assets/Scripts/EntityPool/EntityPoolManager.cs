@@ -7,18 +7,15 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
     [SerializeField]
     EntityPoolEvent entityPoolEvent;
     [SerializeField]
-    EntityPoolManagerActiveEvent entityPoolManagerActiveEvent;
+    EntityPoolManagerEvent entityPoolManagerEvent;
+    [SerializeField]
+    SceneSingletonActiveEvent sceneSingletonActiveEvent;
 
     private Dictionary<string, AbstractEntityPool> entityPoolDict = new Dictionary<string, AbstractEntityPool>();
 
     private void OnEnable()
     {
         entityPoolEvent.AddListener(InvokeEntityPool);
-    }
-
-    private void Start()
-    {
-        entityPoolManagerActiveEvent.Invoke(this);
     }
 
     public Task Pool(AbstractEntityPool entityPool)
@@ -74,8 +71,13 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
         return tcs.Task;
     }
 
-    public async void InvokeEntityPool(AbstractEntityPool entityPool)
+    private async void InvokeEntityPool(AbstractEntityPool entityPool)
     {
         await Pool(entityPool);
+    }
+
+    private void SceneSingletonActiveEventListener(bool value)
+    {
+        entityPoolManagerEvent.Invoke(this);
     }
 }

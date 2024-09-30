@@ -12,8 +12,11 @@ public class SceneSingleton : MonoBehaviour
     [SerializeField] private CheckPoints checkpointsScriptableObject;
     [SerializeField] private EnemyHittableObjects enemyHittableObject;
     [SerializeField] private EventStringMapper eventStringMapperScriptableObject;
+
+    [Header("Events")]
     [SerializeField] private DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
-    [SerializeField] private EntityPoolManagerActiveEvent entityPoolManagerActiveEvent;
+    [SerializeField] private EntityPoolManagerEvent entityPoolManagerEvent;
+    [SerializeField] private SceneSingletonActiveEvent sceneSingletonActiveEvent;
 
     public static DialoguesAndOptions DialogueAndOptions => _instance.dialogueAndOptions;
     public static PlayerHittableItemsScriptableObject PlayerHittableItems => _instance.playerHittableItemsScriptableObject;
@@ -59,7 +62,10 @@ public class SceneSingleton : MonoBehaviour
 
         //events
         dialogueTakingPlaceEvent.AddListener(DialougeTakingPlace);
-        entityPoolManagerActiveEvent.AddListener(EntityPoolManagerActive);
+        entityPoolManagerEvent.AddListener(EntityPoolManagerEvent);
+
+        //scene singleton related invocations
+        sceneSingletonActiveEvent.Invoke();
     }
     public static SpawnPlayer PlayerSpawn()
     {
@@ -113,7 +119,7 @@ public class SceneSingleton : MonoBehaviour
         IsDialogueTakingPlace = isTakingPlace;
     }
 
-    private void EntityPoolManagerActive(EntityPoolManager entityPoolManager)
+    private void EntityPoolManagerEvent(EntityPoolManager entityPoolManager)
     {
         EntityPoolManager = entityPoolManager;
     }
