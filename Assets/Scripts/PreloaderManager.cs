@@ -9,23 +9,17 @@ public class PreloaderManager: MonoBehaviour
     Preloader preloader;
 
     [SerializeField]
-    GameLoad gameLoad;
-
-    [SerializeField]
     PreloadEntity[] preloadEntities;
 
     [SerializeField]
     EntityPoolEvent entityPoolEvent;
 
     [SerializeField]
-    GameLoadPoolEvent gameLoadPoolEvent;
-
-    [SerializeField]
     PreloadingCompletionEvent preloadingCompletionEvent;
 
     private async void Awake()
     {
-        await InstantiateAndPoolGameLoad();
+        //preloader manager instantiates preloader - do this
         await PreloadEntities(preloadEntities, preloader);
     }
     private async Task PreloadEntities(PreloadEntity[] preloadEntities, Preloader preloader)
@@ -42,18 +36,6 @@ public class PreloaderManager: MonoBehaviour
         }
 
         await preloadingCompletionEvent.Invoke(true);
-    }
-
-    private async Task InstantiateAndPoolGameLoad()
-    {
-        GameLoad gameLoadObject = Instantiate(gameLoad);
-
-        EntityPool<UnityEngine.GameObject> entityPool =  await EntityPool<UnityEngine.GameObject>.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject.gameObject);
-
-        await entityPoolEvent.Invoke(entityPool);
-
-        await gameLoadPoolEvent.Invoke(true);
-
     }
 
     private async Task Pool<T>(string name, T entity, string tag)

@@ -5,6 +5,14 @@ using UnityEngine.AddressableAssets;
 
 public class GameLoad : MonoBehaviour, IGameLoad
 {
+    [SerializeField]
+    GameLoadPoolEvent gameLoadPoolEvent;
+
+    private void Start()
+    {
+        gameLoadPoolEvent.Invoke();
+    }
+
     public async Task<Object> PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
     {
         AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(assetReference);
@@ -19,7 +27,6 @@ public class GameLoad : MonoBehaviour, IGameLoad
 
         return preloadedObject;
     }
-
 
     public Task<Object> ProcessPreloadedAsset<T>(T loadedAsset, EntityType entityType)
     {

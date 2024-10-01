@@ -1,21 +1,21 @@
 using System.Threading.Tasks;
 using UnityEngine.Events;
-public class GameLoadPoolEvent : UnityEventWTAsync<bool>
+public class GameLoadPoolEvent : UnityEventWTAsync
 {
-    private UnityEvent<bool> m_gameLoadPoolEvent = new UnityEvent<bool>();
-    public override UnityEvent<bool> GetInstance()
+    private UnityEvent m_gameLoadPoolEvent = new UnityEvent();
+    public override UnityEvent GetInstance()
     {
         return m_gameLoadPoolEvent;
     }
-    public override Task AddListener(UnityAction<bool> action)
+    public override Task AddListener(UnityAction action)
     {
         m_gameLoadPoolEvent.AddListener(action);
 
         return Task.CompletedTask;
     }
-    public override Task Invoke(bool value)
+    public override Task Invoke()
     {
-        m_gameLoadPoolEvent.Invoke(value);
+        m_gameLoadPoolEvent.Invoke();
 
         return Task.CompletedTask;
     }

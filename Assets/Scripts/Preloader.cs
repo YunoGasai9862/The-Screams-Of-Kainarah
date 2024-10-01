@@ -43,7 +43,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
          return await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
     }
 
-    private async void GameLoadPoolEventListener(bool value)
+    private async void GameLoadPoolEventListener()
     {
         Debug.Log(EntityPoolManagerReference);
 
