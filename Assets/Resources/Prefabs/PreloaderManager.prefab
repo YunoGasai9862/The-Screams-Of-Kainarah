@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4042689492567070130}
-  - component: {fileID: 3955742443505530161}
+  - component: {fileID: 7430137639672289772}
   m_Layer: 0
   m_Name: PreloaderManager
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3955742443505530161
+--- !u!114 &7430137639672289772
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,11 +41,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1297102180274029325}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42e10103d58ac514b8b39d8b90334fde, type: 3}
+  m_Script: {fileID: 11500000, guid: 16009595bc0e9554da60565946ddd00f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preloader: {fileID: 0}
-  gameLoad: {fileID: 7226046976263496530, guid: 28738748b9cab064583cc7cacfd7cd56, type: 3}
+  preloader: {fileID: 8653862812376476672, guid: 73d21ff0e657b6d468da55e9905ac64c, type: 3}
   preloadEntities:
   - m_assetReference:
       m_AssetGUID: dcfb91314fa429145a308d707bf9d85d
@@ -63,5 +62,6 @@ MonoBehaviour:
     m_entityMB: {fileID: 0}
     m_entitySO: {fileID: 11400000, guid: 399be5f2e16fa6147acdfdb4b6cf785b, type: 2}
     m_entityType: 1
-  entityPoolEvent: {fileID: 0}
-  gameLoadPoolEvent: {fileID: 0}
+  entityPoolEvent: {fileID: 6988686072070732633, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  preloadingCompletionEvent: {fileID: 8408686988314371113, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  executingPreloadingEvent: {fileID: 3697975506600083185, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}

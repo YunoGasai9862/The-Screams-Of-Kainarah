@@ -7,12 +7,22 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager
     GameLoad gameLoad;
 
     [SerializeField]
+    GameLoadPoolEvent gameLoadPoolEvent;
+
+    [SerializeField]
     EntityPoolEvent entityPoolEvent;
+
+    [SerializeField]
+    ExecutingPreloadingEvent executingPreloadingEvent;
 
     private async void Awake()
     {
         await InstantiateAndPoolGameLoad(gameLoad, entityPoolEvent);
-        //use game load manager to signal to preload manager that it can proceed wtih preloading
+    }
+
+    private void Start()
+    {
+        gameLoadPoolEvent.AddListener(GameLoadPoolEventListener);
     }
 
     public async Task InstantiateAndPoolGameLoad(GameLoad gameLoad, EntityPoolEvent entityPoolEvent)
@@ -22,5 +32,10 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager
         EntityPool<UnityEngine.GameObject> entityPool = await EntityPool<UnityEngine.GameObject>.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject.gameObject);
 
         await entityPoolEvent.Invoke(entityPool);
+    }
+
+    public void GameLoadPoolEventListener()
+    {
+        executingPreloadingEvent.Invoke();
     }
 }

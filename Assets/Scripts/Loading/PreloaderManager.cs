@@ -17,10 +17,18 @@ public class PreloaderManager: MonoBehaviour
     [SerializeField]
     PreloadingCompletionEvent preloadingCompletionEvent;
 
+    [SerializeField]
+    ExecutingPreloadingEvent executingPreloadingEvent;
+
+    private Preloader PreloaderInstance { get; set; }
+
     private async void Awake()
     {
-        //preloader manager instantiates preloader - do this
-        await PreloadEntities(preloadEntities, preloader);
+        //preloader manager instantiates preloader
+        PreloaderInstance = await InstantiatePreloader(preloader);
+
+        //add event
+        await executingPreloadingEvent.AddListener(ExecutePreloadingEventListener);
     }
     private async Task PreloadEntities(PreloadEntity[] preloadEntities, Preloader preloader)
     {
@@ -79,5 +87,17 @@ public class PreloaderManager: MonoBehaviour
                 break;
         }
         return Task.FromResult(false);
+    }
+
+    private async void ExecutePreloadingEventListener()
+    {
+        await PreloadEntities(preloadEntities, PreloaderInstance);
+    }
+
+    private Task<Preloader> InstantiatePreloader(Preloader preloader)
+    {
+       GameObject preloaderInstance = Instantiate(preloader.gameObject);
+
+        return Task.FromResult(preloaderInstance.GetComponent<Preloader>());
     }
 }

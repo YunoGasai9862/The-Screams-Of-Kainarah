@@ -6,18 +6,10 @@ using UnityEngine.AddressableAssets;
 public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction
 {
 
-    [SerializeField]
-    GameLoadPoolEvent GameLoadPoolEvent;
-
     private GameLoad PooledGameLoad { get; set; }
     private EntityPool<GameObject> EntityPool { get; set; }
     private EntityPoolManager EntityPoolManagerReference { get; set; }
 
-
-    private void OnEnable()
-    {
-        GameLoadPoolEvent.AddListener(GameLoadPoolEventListener);
-    }
 
     private void Start()
     {
@@ -43,6 +35,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
          return await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
     }
 
+    //use this differently now, it's not an event
     private async void GameLoadPoolEventListener()
     {
         Debug.Log(EntityPoolManagerReference);
