@@ -15,27 +15,33 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager
     [SerializeField]
     ExecutingPreloadingEvent executingPreloadingEvent;
 
-    private async void Awake()
+ 
+    private async void Start()
     {
-        await InstantiateAndPoolGameLoad(gameLoad, entityPoolEvent);
+        Debug.Log("GameLoadManager Started");
+
+        await gameLoadPoolEvent.AddListener(GameLoadPoolEventListener);
+
+        gameLoad = await InstantiateAndPoolGameLoad(gameLoad, entityPoolEvent);
     }
 
-    private void Start()
+    public async Task<GameLoad> InstantiateAndPoolGameLoad(GameLoad gameLoad, EntityPoolEvent entityPoolEvent)
     {
-        gameLoadPoolEvent.AddListener(GameLoadPoolEventListener);
-    }
+        GameObject gameLoadObject = Instantiate(gameLoad.gameObject);
 
-    public async Task InstantiateAndPoolGameLoad(GameLoad gameLoad, EntityPoolEvent entityPoolEvent)
-    {
-        GameLoad gameLoadObject = Instantiate(gameLoad);
+        EntityPool<UnityEngine.GameObject> entityPool = await EntityPool<UnityEngine.GameObject>.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject);
 
-        EntityPool<UnityEngine.GameObject> entityPool = await EntityPool<UnityEngine.GameObject>.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject.gameObject);
+        Debug.Log("GameLoad Instantiated");
 
         await entityPoolEvent.Invoke(entityPool);
+
+        return gameLoadObject.GetComponent<GameLoad>();
     }
 
     public void GameLoadPoolEventListener()
     {
+        Debug.Log("Here");
+
         executingPreloadingEvent.Invoke();
     }
 }

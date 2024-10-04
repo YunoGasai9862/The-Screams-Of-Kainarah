@@ -10,6 +10,8 @@ public class GameLoad : MonoBehaviour, IGameLoad
 
     private void Start()
     {
+        Debug.Log("Invoking");
+
         gameLoadPoolEvent.Invoke();
     }
 

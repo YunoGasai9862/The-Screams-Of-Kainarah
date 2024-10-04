@@ -24,10 +24,8 @@ public class PreloaderManager: MonoBehaviour
 
     private async void Awake()
     {
-        //preloader manager instantiates preloader
         PreloaderInstance = await InstantiatePreloader(preloader);
 
-        //add event
         await executingPreloadingEvent.AddListener(ExecutePreloadingEventListener);
     }
     private async Task PreloadEntities(PreloadEntity[] preloadEntities, Preloader preloader)
@@ -38,7 +36,6 @@ public class PreloaderManager: MonoBehaviour
 
             bool assetValueRefreshed = await RefreshInstance(instance, preloadEntity);
 
-            //start pooling them
             await AddToPool(preloadEntity);
 
         }

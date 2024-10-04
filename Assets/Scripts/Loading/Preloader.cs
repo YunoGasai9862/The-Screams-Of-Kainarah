@@ -10,7 +10,6 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     private EntityPool<GameObject> EntityPool { get; set; }
     private EntityPoolManager EntityPoolManagerReference { get; set; }
 
-
     private void Start()
     {
         EntityPoolManagerReference = SceneSingleton.EntityPoolManager;
