@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using System;
 using UnityEngine.Events;
 using UnityEngine;
 public class GameLoadPoolEvent : UnityEventWTAsync
@@ -10,17 +11,32 @@ public class GameLoadPoolEvent : UnityEventWTAsync
     }
     public override Task AddListener(UnityAction action)
     {
-        Debug.Log("Adding Listener");
+        try
+        {
+            Debug.Log($"Adding Listener {action.Method}");
 
-        m_gameLoadPoolEvent.AddListener(action);
+            m_gameLoadPoolEvent.AddListener(action);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
+        }
 
         return Task.CompletedTask;
     }
     public override Task Invoke()
     {
-        m_gameLoadPoolEvent.Invoke();
+        try
+        {
+            m_gameLoadPoolEvent.Invoke();
 
-        Debug.Log("Invoked");
+            Debug.Log("Invoked");
+
+        }catch(Exception ex)
+        {
+            Debug.LogException(ex);
+        }
+
 
         return Task.CompletedTask;
     }

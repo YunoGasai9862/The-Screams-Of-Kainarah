@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using UnityEngine.Events;
-public class ExecutingPreloadingEvent : UnityEventWTAsync
+public class ExecutePreloadingEvent : UnityEventWTAsync
 {
     private UnityEvent m_executingPreloadingEvent = new UnityEvent();
     public override UnityEvent GetInstance()

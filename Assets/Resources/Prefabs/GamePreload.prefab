@@ -45,3 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameLoadPoolEvent: {fileID: 1580956232204949069, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  executePreloadingEvent: {fileID: 3697975506600083185, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}

@@ -8,7 +8,7 @@ public class GameLoad : MonoBehaviour, IGameLoad
     [SerializeField]
     GameLoadPoolEvent gameLoadPoolEvent;
 
-    private void Start()
+    private void Awake()
     {
         Debug.Log("Invoking");
 

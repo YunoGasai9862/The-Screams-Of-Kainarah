@@ -1,10 +1,11 @@
 using UnityEngine;
+using System;
 using System.Threading.Tasks;
 
 public class GameLoadManager: MonoBehaviour, IGameLoadManager
 {
     [SerializeField]
-    GameLoad gameLoad;
+    GameObject gameLoad;
 
     [SerializeField]
     GameLoadPoolEvent gameLoadPoolEvent;
@@ -13,7 +14,7 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager
     EntityPoolEvent entityPoolEvent;
 
     [SerializeField]
-    ExecutingPreloadingEvent executingPreloadingEvent;
+    ExecutePreloadingEvent executePreloadingEvent;
 
  
     private async void Start()
@@ -23,25 +24,34 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager
         await gameLoadPoolEvent.AddListener(GameLoadPoolEventListener);
 
         gameLoad = await InstantiateAndPoolGameLoad(gameLoad, entityPoolEvent);
+
     }
 
-    public async Task<GameLoad> InstantiateAndPoolGameLoad(GameLoad gameLoad, EntityPoolEvent entityPoolEvent)
+    public async Task<GameObject> InstantiateAndPoolGameLoad(GameObject gameLoad, EntityPoolEvent entityPoolEvent)
     {
-        GameObject gameLoadObject = Instantiate(gameLoad.gameObject);
+        try
+        {
+            GameObject gameLoadObject = Instantiate(gameLoad.gameObject);
 
-        EntityPool<UnityEngine.GameObject> entityPool = await EntityPool<UnityEngine.GameObject>.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject);
+            EntityPool<UnityEngine.GameObject> entityPool = await EntityPool<UnityEngine.GameObject>.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject);
 
-        Debug.Log("GameLoad Instantiated");
+            await entityPoolEvent.Invoke(entityPool);
 
-        await entityPoolEvent.Invoke(entityPool);
+            return gameLoadObject;
 
-        return gameLoadObject.GetComponent<GameLoad>();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
+        }
+
+        return null;
     }
 
     public void GameLoadPoolEventListener()
     {
         Debug.Log("Here");
 
-        executingPreloadingEvent.Invoke();
+        executePreloadingEvent.Invoke();
     }
 }

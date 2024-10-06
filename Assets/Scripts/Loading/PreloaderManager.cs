@@ -18,7 +18,7 @@ public class PreloaderManager: MonoBehaviour
     PreloadingCompletionEvent preloadingCompletionEvent;
 
     [SerializeField]
-    ExecutingPreloadingEvent executingPreloadingEvent;
+    ExecutePreloadingEvent executePreloadingEvent;
 
     private Preloader PreloaderInstance { get; set; }
 
@@ -26,7 +26,7 @@ public class PreloaderManager: MonoBehaviour
     {
         PreloaderInstance = await InstantiatePreloader(preloader);
 
-        await executingPreloadingEvent.AddListener(ExecutePreloadingEventListener);
+        await executePreloadingEvent.AddListener(ExecutePreloadingEventListener);
     }
     private async Task PreloadEntities(PreloadEntity[] preloadEntities, Preloader preloader)
     {
