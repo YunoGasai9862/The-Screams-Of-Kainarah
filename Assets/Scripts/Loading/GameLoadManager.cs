@@ -8,22 +8,30 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager
     GameObject gameLoad;
 
     [SerializeField]
-    GameLoadPoolEvent gameLoadPoolEvent;
-
-    [SerializeField]
     EntityPoolEvent entityPoolEvent;
 
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
 
- 
+    public delegate void InvokePreloadingExecution();
+
+    public InvokePreloadingExecution invokePreloadingExecution;
+
     private async void Start()
     {
         Debug.Log("GameLoadManager Started");
 
-        await gameLoadPoolEvent.AddListener(GameLoadPoolEventListener);
+        gameLoad =  await InstantiateAndPoolGameLoad(gameLoad, entityPoolEvent);
 
-        gameLoad = await InstantiateAndPoolGameLoad(gameLoad, entityPoolEvent);
+        //make it child of manager
+
+        invokePreloadingExecution += InvokePreloading;
+
+    }
+
+    public void InvokePreloading()
+    {
+        executePreloadingEvent.Invoke();
 
     }
 
@@ -31,7 +39,7 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager
     {
         try
         {
-            GameObject gameLoadObject = Instantiate(gameLoad.gameObject);
+            GameObject gameLoadObject = Instantiate(gameLoad);
 
             EntityPool<UnityEngine.GameObject> entityPool = await EntityPool<UnityEngine.GameObject>.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject);
 
@@ -46,12 +54,5 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager
         }
 
         return null;
-    }
-
-    public void GameLoadPoolEventListener()
-    {
-        Debug.Log("Here");
-
-        executePreloadingEvent.Invoke();
     }
 }

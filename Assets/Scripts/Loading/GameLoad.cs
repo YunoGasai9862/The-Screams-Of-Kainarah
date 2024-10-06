@@ -5,15 +5,6 @@ using UnityEngine.AddressableAssets;
 
 public class GameLoad : MonoBehaviour, IGameLoad
 {
-    [SerializeField]
-    GameLoadPoolEvent gameLoadPoolEvent;
-
-    private void Awake()
-    {
-        Debug.Log("Invoking");
-
-        gameLoadPoolEvent.Invoke();
-    }
 
     public async Task<Object> PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
     {
