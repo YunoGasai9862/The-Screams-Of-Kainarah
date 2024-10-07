@@ -5,6 +5,22 @@ using UnityEngine.AddressableAssets;
 
 public class GameLoad : MonoBehaviour, IGameLoad
 {
+    private GameLoadManager GameLoadManagerReference { get; set; }
+
+    private async void Start()
+    {
+        GameLoadManagerReference = gameObject.GetComponentInParent<GameLoadManager>();
+
+        await InvokeGameLoadManagerMethod();
+    }
+
+    private Task InvokeGameLoadManagerMethod()
+    {
+
+        GameLoadManagerReference.InvokeCustomMethod();
+
+        return Task.CompletedTask;
+    }
 
     public async Task<Object> PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
     {

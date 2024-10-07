@@ -1,8 +1,9 @@
 using UnityEngine;
 using System;
 using System.Threading.Tasks;
+using static IDeletegate;
 
-public class GameLoadManager: MonoBehaviour, IGameLoadManager
+public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDeletegate
 {
     [SerializeField]
     GameObject gameLoad;
@@ -13,9 +14,7 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
 
-    public delegate void InvokePreloadingExecution();
-
-    public InvokePreloadingExecution invokePreloadingExecution;
+    public InvokeMethod InvokeCustomMethod { get ; set ; }
 
     private async void Start()
     {
@@ -23,16 +22,14 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager
 
         gameLoad =  await InstantiateAndPoolGameLoad(gameLoad, entityPoolEvent);
 
-        //make it child of manager
+        await SetGameLoadAsChild(gameLoad);
 
-        invokePreloadingExecution += InvokePreloading;
-
+        InvokeCustomMethod += InvokePreloading;
     }
 
-    public void InvokePreloading()
+    private void InvokePreloading()
     {
         executePreloadingEvent.Invoke();
-
     }
 
     public async Task<GameObject> InstantiateAndPoolGameLoad(GameObject gameLoad, EntityPoolEvent entityPoolEvent)
@@ -54,5 +51,12 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager
         }
 
         return null;
+    }
+
+    private Task SetGameLoadAsChild(GameObject gameLoad)
+    {
+        gameLoad.transform.parent = gameObject.transform;
+
+        return Task.CompletedTask;
     }
 }
