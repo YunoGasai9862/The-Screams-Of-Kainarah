@@ -18,11 +18,9 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDeletegate
 
     private async void Start()
     {
-        Debug.Log("GameLoadManager Started");
-
         gameLoad =  await InstantiateAndPoolGameLoad(gameLoad, entityPoolEvent);
 
-        await SetGameLoadAsChild(gameLoad);
+        await HelperFunctions.SetAsParent(gameLoad, gameObject);
 
         InvokeCustomMethod += InvokePreloading;
     }
@@ -53,10 +51,4 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDeletegate
         return null;
     }
 
-    private Task SetGameLoadAsChild(GameObject gameLoad)
-    {
-        gameLoad.transform.parent = gameObject.transform;
-
-        return Task.CompletedTask;
-    }
 }

@@ -5,14 +5,13 @@ using UnityEngine.AddressableAssets;
 
 public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction
 {
-
     private GameLoad PooledGameLoad { get; set; }
     private EntityPool<GameObject> EntityPool { get; set; }
     private EntityPoolManager EntityPoolManagerReference { get; set; }
 
-    private void Start()
+    private async void Start()
     {
-        EntityPoolManagerReference = SceneSingleton.EntityPoolManager;
+        await InitializePoolObjects();
     }
 
     public Task ExecuteAction<TAction>(Action<TAction> action, TAction value)
@@ -34,10 +33,9 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
          return await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
     }
 
-    //use this differently now, it's not an event
-    private async void GameLoadPoolEventListener()
+    private async Task InitializePoolObjects()
     {
-        Debug.Log(EntityPoolManagerReference);
+        EntityPoolManagerReference = SceneSingleton.EntityPoolManager;
 
         EntityPool = await EntityPoolManagerReference.GetPooledEntity(Constants.GAME_PRELOAD) as EntityPool<GameObject>;
 

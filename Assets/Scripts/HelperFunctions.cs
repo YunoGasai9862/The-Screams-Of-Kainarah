@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine.Rendering.Universal;
 public static class HelperFunctions
 {
@@ -55,5 +56,11 @@ public static class HelperFunctions
         return entityType.Equals(EntityType.MonoBehavior);
     }
 
+    public static Task SetAsParent(GameObject child, GameObject parent)
+    {
+        child.transform.parent = parent.transform;
+
+        return Task.CompletedTask;
+    }
 
 }

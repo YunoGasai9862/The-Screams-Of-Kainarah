@@ -16,6 +16,8 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
     private void OnEnable()
     {
         entityPoolEvent.AddListener(InvokeEntityPool);
+
+        sceneSingletonActiveEvent.AddListener(SceneSingletonActiveEventListener);
     }
 
     public Task Pool(AbstractEntityPool entityPool)
@@ -76,7 +78,7 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
         await Pool(entityPool);
     }
 
-    private void SceneSingletonActiveEventListener(bool value)
+    private void SceneSingletonActiveEventListener()
     {
         entityPoolManagerEvent.Invoke(this);
     }

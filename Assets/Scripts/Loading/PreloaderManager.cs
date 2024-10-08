@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 public class PreloaderManager: MonoBehaviour
 {
@@ -22,9 +21,11 @@ public class PreloaderManager: MonoBehaviour
 
     private Preloader PreloaderInstance { get; set; }
 
-    private async void Awake()
+    private async void Start()
     {
         PreloaderInstance = await InstantiatePreloader(preloader);
+
+        await HelperFunctions.SetAsParent(PreloaderInstance.gameObject, gameObject);
 
         await executePreloadingEvent.AddListener(ExecutePreloadingEventListener);
     }
@@ -93,7 +94,7 @@ public class PreloaderManager: MonoBehaviour
 
     private Task<Preloader> InstantiatePreloader(Preloader preloader)
     {
-       GameObject preloaderInstance = Instantiate(preloader.gameObject);
+        GameObject preloaderInstance = Instantiate(preloader.gameObject);
 
         return Task.FromResult(preloaderInstance.GetComponent<Preloader>());
     }

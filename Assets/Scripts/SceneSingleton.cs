@@ -122,8 +122,6 @@ public class SceneSingleton : MonoBehaviour
     private void EntityPoolManagerEvent(EntityPoolManager entityPoolManager)
     {
         EntityPoolManager = entityPoolManager;
-
-        Debug.Log($"Got the Entity Pool Manager {EntityPoolManager}");
     }
 
 }
