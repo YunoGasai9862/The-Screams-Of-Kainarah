@@ -3,31 +3,31 @@ using UnityEngine.Events;
 
 public interface ICustomUnityEventWTAsync<T>
 {
-    UnityEvent<T> GetInstance();
-    Task Invoke(T value);
+    public UnityEvent<T> GetInstance();
+    public Task Invoke(T value);
 }
 
 public interface ICustomUnityEventWTAsync
 {
-    UnityEvent GetInstance();
-    Task Invoke();
+    public UnityEvent GetInstance();
+    public Task Invoke();
 }
 
 public interface ICustomUnityEventWTAsync<T, Z>
 {
-    UnityEvent<T, Z> GetInstance();
-    Task Invoke(T tValue, Z zValue);
+    public UnityEvent<T, Z> GetInstance();
+    public Task Invoke(T tValue, Z zValue);
 }
 
 public interface ICustomUnityEventWTAsync<X, Y, Z>
 {
-    UnityEvent<X, Y, Z> GetInstance();
-    Task Invoke(X xValue, Y yValue, Z zValue);
+    public UnityEvent<X, Y, Z> GetInstance();
+    public Task Invoke(X xValue, Y yValue, Z zValue);
 }
 
 
 public interface ICustomUnityEvent<T>
 {
-    UnityEvent<T> GetInstance();
-    void Invoke(T value);   
+    public UnityEvent<T> GetInstance();
+    public void Invoke(T value);   
 }

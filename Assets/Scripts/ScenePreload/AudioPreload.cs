@@ -33,7 +33,10 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     private void Start()
     {
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UI
-         audioGeneratedEvent.AddListener(AudioGeneratedListener);         
+         audioGeneratedEvent.AddListener(AudioGeneratedListener);
+
+        //debug this again tomorrow, or use delegates, not sure what might be happening
+         preloadingCompletionEvent.AddListener(PreloadingCompletionEventListener);
     }
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
     {
@@ -87,19 +90,25 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     {
         GameObject audioPreloadInstance = (GameObject) await preloader.PreloadAsset<GameObject>(assetReference, entityType);
 
+        await preloadingCompletionEvent.Invoke();
+
         return new Tuple<EntityType, dynamic>(EntityType.MonoBehavior , audioPreloadInstance);
     }
 
-    public async void PreloadingCompletionEventListener(bool value)
+    public async void PreloadingCompletionEventListener()
     {
+        Debug.Log("Here");
+
+        EntityPoolManager = await GetEntityManager();
+
         DialoguesAndOptions = await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS) as EntityPool<ScriptableObject>;
 
         Debug.Log($"{DialoguesAndOptions.ToString()}");
     }
 
-    public void EntityPoolManagerActiveEvent(EntityPoolManager entityPoolManager)
+    public Task<EntityPoolManager> GetEntityManager()
     {
-        EntityPoolManager = entityPoolManager;
+        return Task.FromResult(SceneSingleton.EntityPoolManager);
     }
 }
 

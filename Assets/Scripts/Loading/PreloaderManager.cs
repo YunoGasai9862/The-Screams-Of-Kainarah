@@ -41,7 +41,7 @@ public class PreloaderManager: MonoBehaviour
 
         }
 
-        await preloadingCompletionEvent.Invoke(true);
+        await preloadingCompletionEvent.Invoke();
     }
 
     private async Task Pool<T>(string name, T entity, string tag)
