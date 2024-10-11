@@ -28,15 +28,16 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     private void Awake()
     {
         PersistencePath = Application.persistentDataPath;
+
+        //OMG this worked!!
+        preloadingCompletionEvent.AddListener(PreloadingCompletionEventListener);
     }
+
 
     private void Start()
     {
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UI
          audioGeneratedEvent.AddListener(AudioGeneratedListener);
-
-        //debug this again tomorrow, or use delegates, not sure what might be happening
-         preloadingCompletionEvent.AddListener(PreloadingCompletionEventListener);
     }
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
     {

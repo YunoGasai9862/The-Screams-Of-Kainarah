@@ -9,7 +9,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     private EntityPool<GameObject> EntityPool { get; set; }
     private EntityPoolManager EntityPoolManagerReference { get; set; }
 
-    private async void Start()
+    private async void Awake()
     {
         await InitializePoolObjects();
     }

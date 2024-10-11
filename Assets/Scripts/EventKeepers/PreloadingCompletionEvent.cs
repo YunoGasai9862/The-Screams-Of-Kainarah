@@ -12,16 +12,12 @@ public class PreloadingCompletionEvent : UnityEventWTAsync
     }
     public override Task AddListener(UnityAction action)
     {
-        Debug.Log("Adding Listener");
-
         m_preloadingCompletionEvent.AddListener(action);
 
         return Task.CompletedTask;
     }
     public override Task Invoke()
     {
-        Debug.Log("Invoking Preloading Complete Event");
-
         m_preloadingCompletionEvent.Invoke();
 
         return Task.CompletedTask;
