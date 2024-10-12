@@ -40,8 +40,6 @@ public class PreloaderManager: MonoBehaviour
             await AddToPool(preloadEntity);
 
         }
-
-        await preloadingCompletionEvent.Invoke();
     }
 
     private async Task Pool<T>(string name, T entity, string tag)
@@ -90,6 +88,9 @@ public class PreloaderManager: MonoBehaviour
     private async void ExecutePreloadingEventListener()
     {
         await PreloadEntities(preloadEntities, PreloaderInstance);
+
+        //use a delegate to invoke that :))
+        await preloadingCompletionEvent.Invoke();
     }
 
     private Task<Preloader> InstantiatePreloader(Preloader preloader)

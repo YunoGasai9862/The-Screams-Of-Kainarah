@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAndOptions>
+public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAndOptions>, IDeletegate
 {
     private string PersistencePath { get; set; }
 
@@ -15,6 +15,9 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     private EntityPoolManager EntityPoolManager { get; set; }
 
     private EntityPool<ScriptableObject> DialoguesAndOptions { get; set; }
+    
+    //use this and invoke in Preloader? Try this now
+    public IDeletegate.InvokeMethod InvokeCustomMethod { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
@@ -29,7 +32,6 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     {
         PersistencePath = Application.persistentDataPath;
 
-        //OMG this worked!!
         preloadingCompletionEvent.AddListener(PreloadingCompletionEventListener);
     }
 
@@ -91,20 +93,18 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     {
         GameObject audioPreloadInstance = (GameObject) await preloader.PreloadAsset<GameObject>(assetReference, entityType);
 
-        await preloadingCompletionEvent.Invoke();
-
         return new Tuple<EntityType, dynamic>(EntityType.MonoBehavior , audioPreloadInstance);
     }
 
     public async void PreloadingCompletionEventListener()
     {
-        Debug.Log("Here");
+        Debug.Log("Inside Preloading Completion Event");
 
         EntityPoolManager = await GetEntityManager();
 
         DialoguesAndOptions = await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS) as EntityPool<ScriptableObject>;
 
-        Debug.Log($"{DialoguesAndOptions.ToString()}");
+        Debug.Log(DialoguesAndOptions);
     }
 
     public Task<EntityPoolManager> GetEntityManager()
