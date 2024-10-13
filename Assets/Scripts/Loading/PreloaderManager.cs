@@ -14,10 +14,10 @@ public class PreloaderManager: MonoBehaviour
     EntityPoolEvent entityPoolEvent;
 
     [SerializeField]
-    PreloadingCompletionEvent preloadingCompletionEvent;
+    ExecutePreloadingEvent executePreloadingEvent;
 
     [SerializeField]
-    ExecutePreloadingEvent executePreloadingEvent;
+    ExecuteDelegatesEvent executeDelegatesEvent;
 
     private Preloader PreloaderInstance { get; set; }
 
@@ -89,8 +89,7 @@ public class PreloaderManager: MonoBehaviour
     {
         await PreloadEntities(preloadEntities, PreloaderInstance);
 
-        //use a delegate to invoke that :))
-        await preloadingCompletionEvent.Invoke();
+
     }
 
     private Task<Preloader> InstantiatePreloader(Preloader preloader)

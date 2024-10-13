@@ -16,8 +16,7 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     private EntityPool<ScriptableObject> DialoguesAndOptions { get; set; }
     
-    //use this and invoke in Preloader? Try this now
-    public IDeletegate.InvokeMethod InvokeCustomMethod { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public IDeletegate.InvokeMethod InvokeCustomMethod { get; set; }
 
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
@@ -25,14 +24,11 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     DialoguesAndOptions dialogueAndOptions;
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
-    [SerializeField]
-    PreloadingCompletionEvent preloadingCompletionEvent;
 
     private void Awake()
     {
         PersistencePath = Application.persistentDataPath;
 
-        preloadingCompletionEvent.AddListener(PreloadingCompletionEventListener);
     }
 
 
@@ -40,6 +36,8 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     {
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UI
          audioGeneratedEvent.AddListener(AudioGeneratedListener);
+
+        InvokeCustomMethod += GetDialoguesAndOptions;
     }
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
     {
@@ -96,7 +94,7 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
         return new Tuple<EntityType, dynamic>(EntityType.MonoBehavior , audioPreloadInstance);
     }
 
-    public async void PreloadingCompletionEventListener()
+    public async void GetDialoguesAndOptions()
     {
         Debug.Log("Inside Preloading Completion Event");
 
@@ -104,7 +102,6 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
         DialoguesAndOptions = await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS) as EntityPool<ScriptableObject>;
 
-        Debug.Log(DialoguesAndOptions);
     }
 
     public Task<EntityPoolManager> GetEntityManager()

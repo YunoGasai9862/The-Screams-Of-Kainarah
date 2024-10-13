@@ -26,10 +26,6 @@ public class PreloadEntityManagerCustomEditor : Editor
         SerializedProperty executePreloadingEvent = serializedObject.FindProperty("executePreloadingEvent");
         EditorGUILayout.PropertyField(executePreloadingEvent);
 
-        GUILayout.Label("Reference Preloading Completion Event:");
-        SerializedProperty preloadingCompletionEvent = serializedObject.FindProperty("preloadingCompletionEvent");
-        EditorGUILayout.PropertyField(preloadingCompletionEvent);
-
         SerializedProperty arraySize = serializedObject.FindProperty("preloadEntities");
 
         GUILayout.Label("Array For Preloading Entities:");
