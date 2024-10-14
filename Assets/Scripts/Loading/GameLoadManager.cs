@@ -1,9 +1,9 @@
 using UnityEngine;
 using System;
 using System.Threading.Tasks;
-using static IDeletegate;
+using static IDelegate;
 
-public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDeletegate
+public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate
 {
     [SerializeField]
     GameObject gameLoad;

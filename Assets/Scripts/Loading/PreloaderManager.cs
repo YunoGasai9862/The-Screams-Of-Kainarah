@@ -17,7 +17,7 @@ public class PreloaderManager: MonoBehaviour
     ExecutePreloadingEvent executePreloadingEvent;
 
     [SerializeField]
-    ExecuteDelegatesEvent executeDelegatesEvent;
+    PreloadEntitiesEvent preloadEntitiesEvent;
 
     private Preloader PreloaderInstance { get; set; }
 

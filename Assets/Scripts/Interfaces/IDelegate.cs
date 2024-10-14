@@ -1,4 +1,4 @@
-public interface IDeletegate
+public interface IDelegate
 {
     public delegate void InvokeMethod();
 

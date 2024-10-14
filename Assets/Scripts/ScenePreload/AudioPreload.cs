@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAndOptions>, IDeletegate
+public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAndOptions>, IDelegate
 {
     private string PersistencePath { get; set; }
 
@@ -16,7 +16,7 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     private EntityPool<ScriptableObject> DialoguesAndOptions { get; set; }
     
-    public IDeletegate.InvokeMethod InvokeCustomMethod { get; set; }
+    public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
 
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;

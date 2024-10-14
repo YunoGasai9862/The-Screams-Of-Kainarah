@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
 public interface IDelegateExecutor
 {
-    public Task ExecuteDelegateMethod(IDeletegate delegateMethod);
+    public Task ExecuteDelegateMethod(IDelegate delegateMethod);
 }
