@@ -62,6 +62,6 @@ MonoBehaviour:
     m_entityMB: {fileID: 0}
     m_entitySO: {fileID: 11400000, guid: 399be5f2e16fa6147acdfdb4b6cf785b, type: 2}
     m_entityType: 1
-  entityPoolEvent: {fileID: 6988686072070732633, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
-  preloadingCompletionEvent: {fileID: 8408686988314371113, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
-  executingPreloadingEvent: {fileID: 3697975506600083185, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  entityPoolEvent: {fileID: 0}
+  executePreloadingEvent: {fileID: 0}
+  preloadEntitiesEvent: {fileID: 0}

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DelegateExecutor: MonoBehaviour, IDelegateExecutor
 {
+
     [SerializeField]
     PreloadEntitiesEvent preloadEntitiesEvent;
 
@@ -19,22 +20,22 @@ public class DelegateExecutor: MonoBehaviour, IDelegateExecutor
         return Task.CompletedTask;
     }
 
-    private Task ExecuteDelegates(PreloadEntity[] preloadEntities)
+    private async Task ExecuteDelegates(PreloadEntity[] preloadEntities)
     {
         foreach (PreloadEntity preloadEntity in preloadEntities)
         {
             //for now only for game objects
-            bool idelegateExists = preloadEntity.EntityMB.gameObject.GetComponents<IDelegate>().Any();
+            IDelegate delegateObject = preloadEntity.EntityMB.gameObject.GetComponent<IDelegate>();
 
-            // if more than implemented, throw exception error due to ambiguity, for preloading we only need one
+            Debug.Log($"Found Delegate: {delegateObject}");
 
+            await ExecuteDelegateMethod(delegateObject);
         }
-
-        return Task.CompletedTask;
     }
 
     private async void PreloadEntitiesEventListener(PreloadEntity[] preloadEntities)
     {
+        Debug.Log("Executing Preload Entities Event Listener");
         await ExecuteDelegates(preloadEntities);
     }
     

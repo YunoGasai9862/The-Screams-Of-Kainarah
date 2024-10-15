@@ -4,7 +4,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 
 [Serializable]
-public class PreloadEntity
+public class PreloadEntity //might need to extend for multiple scripts in future
 {
     [SerializeField]
     private AssetReference m_assetReference;

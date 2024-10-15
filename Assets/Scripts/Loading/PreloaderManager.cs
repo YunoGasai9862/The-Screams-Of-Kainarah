@@ -89,7 +89,7 @@ public class PreloaderManager: MonoBehaviour
     {
         await PreloadEntities(preloadEntities, PreloaderInstance);
 
-
+        await preloadEntitiesEvent.Invoke(preloadEntities);
     }
 
     private Task<Preloader> InstantiatePreloader(Preloader preloader)
