@@ -96,7 +96,7 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     public async void GetDialoguesAndOptions()
     {
-        Debug.Log("Inside Preloading Completion Event");
+        Debug.Log("Inside Get Dialogues And Options");
 
         EntityPoolManager = await GetEntityManager();
 
