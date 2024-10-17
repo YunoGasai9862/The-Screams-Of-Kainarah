@@ -9,7 +9,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     private EntityPool<GameObject> EntityPool { get; set; }
     private EntityPoolManager EntityPoolManagerReference { get; set; }
 
-    private async void Start()
+    private async void Awake()
     {
         await InitializePoolObjects();
     }
@@ -31,6 +31,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     public async Task<UnityEngine.Object> PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
     {
         Debug.Log($"Pooled Game Object: {PooledGameLoad}");
+
          return await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
     }
 
