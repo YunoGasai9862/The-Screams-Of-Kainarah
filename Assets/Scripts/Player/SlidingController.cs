@@ -71,6 +71,6 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
     private Task<bool> IsVelocityXGreaterThanZero(Rigidbody2D rb)
     {
-        return Task.FromResult(Mathf.Abs(rb.velocity.x) > 0);
+        return Task.FromResult(Mathf.Abs(rb.linearVelocity.x) > 0);
     }
 }

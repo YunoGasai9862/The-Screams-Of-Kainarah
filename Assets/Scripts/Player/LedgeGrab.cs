@@ -104,7 +104,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     }
     public async Task HandleLedgeGrabCalculations(int sign, Vector2 force, Vector2 maximumVelocities)
     {
-        if (rb.velocity.y < maximumVelocities.y)
+        if (rb.linearVelocity.y < maximumVelocities.y)
         {
             rb.AddForce(Vector2.up * displacements.y * force.y * rb.mass, ForceMode2D.Impulse);
         }
@@ -133,7 +133,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
 
     public bool PerformAction(bool value)
     {
-        rb.velocity = new Vector2(0, 0);
+        rb.linearVelocity = new Vector2(0, 0);
 
         return true;
     }

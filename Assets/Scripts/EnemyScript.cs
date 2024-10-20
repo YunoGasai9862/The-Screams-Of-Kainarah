@@ -60,7 +60,7 @@ public class EnemyScript : AbstractEntity
         {
             wayPointsMovementScript.shouldMove = false;
 
-            gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+            gameObject.GetComponent<Rigidbody2D>().linearVelocity = new Vector2(0, 0);
 
             if(!cancellationToken.IsCancellationRequested)
                 await GetEnemyOberverListenerObject().EnemyActionDelegator(playerCollider, gameObject, animationAttackParam, true);

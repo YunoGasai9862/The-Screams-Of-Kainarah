@@ -99,6 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxIntensity: 1
   minIntensity: 0.7
+  customLightPreprocessingImplementation: {fileID: 0}
   anySubjectThatIsNotifyingTheLight: 1
   _subject: {fileID: 0}
 --- !u!1 &7066635810158497453
@@ -152,6 +153,9 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

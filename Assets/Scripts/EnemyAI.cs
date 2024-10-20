@@ -174,12 +174,12 @@ public class EnemyAI : MonoBehaviour
         }
         Vector3 rotation = await flipCharacter(0, 0, 0);
 
-        if (_rb.velocity.x > .05f)
+        if (_rb.linearVelocity.x > .05f)
         {
             transform.localRotation = Quaternion.Euler(rotation.x, rotation.y, rotation.z);
         }
 
-        if (_rb.velocity.x < -.05f)
+        if (_rb.linearVelocity.x < -.05f)
         {
             transform.localRotation = Quaternion.Euler(rotation.x, rotation.y - 180, rotation.z);
 

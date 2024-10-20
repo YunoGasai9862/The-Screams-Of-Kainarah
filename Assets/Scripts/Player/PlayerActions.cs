@@ -145,7 +145,7 @@ public class PlayerActions : MonoBehaviour
     }
     private void CharacterControllerMove(float CharacterPositionX, float CharacterPositionY)
     {
-        _rb.velocity = new Vector2(CharacterPositionX, CharacterPositionY);
+        _rb.linearVelocity = new Vector2(CharacterPositionX, CharacterPositionY);
     }
 
     private bool KeystrokeMagnitudeChecker(Vector2 _keystrokeTrack)

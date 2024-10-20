@@ -4,5 +4,5 @@ public interface INotifcation
 {
     public Task NotifyEntity();
 
-    public Task UpdateNotifyList();
+    public Task UpdateNotifyList(string tag, bool isActive);
 }

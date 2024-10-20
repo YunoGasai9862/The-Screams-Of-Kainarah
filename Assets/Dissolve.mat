@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 7
+  version: 9
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -55,7 +55,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Fade: 0
-    - _FadeIn: 1.011769
+    - _FadeIn: 1.1025889
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Scale: 60
@@ -63,3 +63,4 @@ Material:
     - _Color: {r: 0.18723765, g: 2.9960794, b: 0.07066223, a: 1}
     - _Fade: {r: -0.35, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

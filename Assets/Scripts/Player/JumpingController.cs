@@ -160,7 +160,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
     private Task<bool> IsYVelocityNegative(Rigidbody2D rb)
     {
-        return rb.velocity.y < 0 ? Task.FromResult(true) : Task.FromResult(false);
+        return rb.linearVelocity.y < 0 ? Task.FromResult(true) : Task.FromResult(false);
     }
 
 }

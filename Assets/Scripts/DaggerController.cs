@@ -42,7 +42,7 @@ public class DaggerController : MonoBehaviour
         if (IsPlayerFlipped(_player.transform) && _onThrowEvent.DaggerInMotion)
         {
             _daggerRenderer.flipX = true;
-            _rb.velocity = new Vector2(-_daggerSpeed, 0);
+            _rb.linearVelocity = new Vector2(-_daggerSpeed, 0);
             _onThrowEvent.DaggerInMotion = false;
 
         }
@@ -50,7 +50,7 @@ public class DaggerController : MonoBehaviour
         if (!IsPlayerFlipped(_player.transform) && _onThrowEvent.DaggerInMotion)
         {
             _daggerRenderer.flipX = false;
-            _rb.velocity = new Vector2(_daggerSpeed, 0);
+            _rb.linearVelocity = new Vector2(_daggerSpeed, 0);
             _onThrowEvent.DaggerInMotion = false;
         }
     }

@@ -4,17 +4,31 @@
 //check if the entire list state is set to true
 //if so send notification to preload manager, that it can start with prelaoding
 //to avoid null exceptions
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 public class NotificationManager: MonoBehaviour, INotifcation
 {
+    [SerializeField]
+    public List<NotifyEntity> notifyEntities;
+
     public Task NotifyEntity()
     {
         return Task.CompletedTask;
     }
 
-    public Task UpdateNotifyList()
+    public Task UpdateNotifyList(string tag, bool isActive)
     {
+        NotifyEntity notifyEntity = notifyEntities.Where(notifyEntity => notifyEntity.Tag == tag).FirstOrDefault();
+
+        if (notifyEntity == null)
+        {
+            throw new System.Exception($"Notify Entity with {tag} doesn't exist!");
+        }
+
+        notifyEntity.IsActive = isActive;
+
         return Task.CompletedTask;
     }
 }
