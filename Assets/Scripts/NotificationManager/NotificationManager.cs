@@ -13,7 +13,10 @@ public class NotificationManager: MonoBehaviour, INotifcation
     [SerializeField]
     public List<NotifyEntity> notifyEntities;
 
-    public Task NotifyEntity()
+    [SerializeField]
+    public List<Listener> notifyingEntities;
+
+    public Task NotifyEntity(List<IListenerEntity> notifyingEntities)
     {
         return Task.CompletedTask;
     }
