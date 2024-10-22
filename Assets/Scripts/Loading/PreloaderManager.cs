@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PreloaderManager: MonoBehaviour
+public class PreloaderManager: Listener
 {
     [SerializeField]
     Preloader preloader;
@@ -97,5 +97,12 @@ public class PreloaderManager: MonoBehaviour
         GameObject preloaderInstance = Instantiate(preloader.gameObject);
 
         return Task.FromResult(preloaderInstance.GetComponent<Preloader>());
+    }
+
+    public override Task Listen()
+    {
+        preloadEntitiesEvent.Invoke(preloadEntities);
+
+        return Task.CompletedTask;
     }
 }
