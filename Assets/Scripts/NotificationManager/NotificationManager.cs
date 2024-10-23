@@ -5,6 +5,7 @@
 //if so send notification to preload manager, that it can start with prelaoding
 //to avoid null exceptions
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -16,9 +17,25 @@ public class NotificationManager: MonoBehaviour, INotifcation
     [SerializeField]
     public List<Listener> notifyingEntities;
 
+    private List<IListenerEntity> ListenerEntities { get; set;}
+
+    private int ListenerEntityCount { get; set; }
+
+    private async void Start()
+    {
+        ListenerEntities = await FilterOutListenerEntities(notifyingEntities);
+    }
+
+    private void Update()
+    {
+        // mechanism to stop as well if all of those are true
+    }
+
     public Task NotifyEntity(List<IListenerEntity> notifyingEntities)
     {
-        return Task.CompletedTask;
+       IEnumerable<Task> tasks = notifyingEntities.Select(notifyingEntity => notifyingEntity.Listen());
+
+        return Task.WhenAll(tasks);
     }
 
     public Task UpdateNotifyList(string tag, bool isActive)
@@ -33,5 +50,10 @@ public class NotificationManager: MonoBehaviour, INotifcation
         notifyEntity.IsActive = isActive;
 
         return Task.CompletedTask;
+    }
+
+    private Task<List<IListenerEntity>> FilterOutListenerEntities(List<Listener> notifyingEntities)
+    {
+        return Task.FromResult(notifyingEntities.Select(notifyingEntity => notifyingEntity.gameObject.GetComponent<IListenerEntity>()).Where(component => component != null).ToList());
     }
 }
