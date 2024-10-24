@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-public class NotificationManager: MonoBehaviour, INotifcation
+public class NotificationManager: MonoBehaviour, INotification
 {
     [SerializeField]
     public List<NotifyEntity> notifyEntities;
@@ -19,41 +19,40 @@ public class NotificationManager: MonoBehaviour, INotifcation
 
     private List<IListenerEntity> ListenerEntities { get; set;}
 
-    private int ListenerEntityCount { get; set; }
-
-    private async void Start()
-    {
-        ListenerEntities = await FilterOutListenerEntities(notifyingEntities);
-    }
-
-    private void Update()
-    {
-        // mechanism to stop as well if all of those are true
-    }
 
     public Task NotifyEntity(List<IListenerEntity> notifyingEntities)
     {
-       IEnumerable<Task> tasks = notifyingEntities.Select(notifyingEntity => notifyingEntity.Listen());
+        IEnumerable<Task> tasks = notifyingEntities.Select(notifyingEntity => notifyingEntity.Listen());
 
         return Task.WhenAll(tasks);
     }
 
-    public Task UpdateNotifyList(string tag, bool isActive)
+    public async Task PingNotificationManager(NotifyEntity notifyEntity)
     {
-        NotifyEntity notifyEntity = notifyEntities.Where(notifyEntity => notifyEntity.Tag == tag).FirstOrDefault();
+        NotifyEntity entity = notifyEntities.Where(ne => ne.Tag == notifyEntity.Tag).FirstOrDefault();
 
-        if (notifyEntity == null)
+        if (entity == null)
         {
-            throw new System.Exception($"Notify Entity with {tag} doesn't exist!");
+            throw new System.Exception($"Notify Entity with {entity.Tag} doesn't exist!");
         }
 
-        notifyEntity.IsActive = isActive;
+        entity.IsActive = notifyEntity.IsActive;
 
-        return Task.CompletedTask;
+        await CheckIfAllEntitiesAreActive(notifyEntities);
     }
 
     private Task<List<IListenerEntity>> FilterOutListenerEntities(List<Listener> notifyingEntities)
     {
         return Task.FromResult(notifyingEntities.Select(notifyingEntity => notifyingEntity.gameObject.GetComponent<IListenerEntity>()).Where(component => component != null).ToList());
+    }
+
+    private async Task CheckIfAllEntitiesAreActive(List<NotifyEntity> entities)
+    {
+        if (entities.All(entity => entity.IsActive))
+        {
+            ListenerEntities = await FilterOutListenerEntities(notifyingEntities);
+
+            await NotifyEntity(ListenerEntities);
+        }
     }
 }

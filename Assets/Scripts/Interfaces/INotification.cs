@@ -2,9 +2,9 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-public interface INotifcation
+public interface INotification
 {
     public Task NotifyEntity(List<IListenerEntity> notifyingEntities);
 
-    public Task UpdateNotifyList(string tag, bool isActive);
+    public Task PingNotificationManager(NotifyEntity notifyEntity);
 }
