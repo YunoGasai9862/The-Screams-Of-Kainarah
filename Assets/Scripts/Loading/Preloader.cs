@@ -30,8 +30,6 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
 
     public async Task<UnityEngine.Object> PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
     {
-        Debug.Log($"Pooled Game Object: {PooledGameLoad}");
-
          return await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
     }
 
@@ -40,8 +38,6 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
         EntityPoolManagerReference = SceneSingleton.EntityPoolManager;
 
         EntityPool = await EntityPoolManagerReference.GetPooledEntity(Constants.GAME_PRELOAD) as EntityPool<GameObject>;
-
-        Debug.Log($"Entity Pool {EntityPool}");
 
         if (EntityPool.Entity.GetComponent<GameLoad>() == null)
         {

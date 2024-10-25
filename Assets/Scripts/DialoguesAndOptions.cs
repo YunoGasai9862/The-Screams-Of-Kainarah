@@ -8,6 +8,7 @@ using UnityEngine.AddressableAssets;
 [Serializable]
 public class DialoguesAndOptions: EntityPreloadScriptableObject
 {
+
     [Serializable]
     public class DialogueSystem
     {
@@ -28,6 +29,8 @@ public class DialoguesAndOptions: EntityPreloadScriptableObject
     public override async Task<Tuple<EntityType, dynamic>> EntityPreload(AssetReference assetReference, EntityType entityType, Preloader preloader)
     {
         UnityEngine.Object emptyObject = await preloader.PreloadAsset<DialoguesAndOptions>(assetReference, entityType);
+
+        Debug.Log("Scriptable Object is Enabled");
 
         return new Tuple<EntityType, dynamic>(entityType, emptyObject);
     }

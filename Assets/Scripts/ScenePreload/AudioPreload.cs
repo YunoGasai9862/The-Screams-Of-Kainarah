@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAndOptions>, IDelegate
+public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAndOptions>, IDelegate, IActiveNotifier
 {
     private string PersistencePath { get; set; }
 
@@ -30,7 +30,6 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
         PersistencePath = Application.persistentDataPath;
 
     }
-
 
     private void Start()
     {
@@ -96,17 +95,24 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     public async void GetDialoguesAndOptions()
     {
-        Debug.Log("Inside Get Dialogues And Options");
-
         EntityPoolManager = await GetEntityManager();
 
-        DialoguesAndOptions = await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS) as EntityPool<ScriptableObject>;
+        //fix this
+        //DialoguesAndOptions = await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS) as EntityPool<ScriptableObject>;
 
+        var test = await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
+
+        Debug.Log(test);
     }
 
     public Task<EntityPoolManager> GetEntityManager()
     {
         return Task.FromResult(SceneSingleton.EntityPoolManager);
+    }
+
+    public Task NotifyAboutActiviation()
+    {
+        throw new NotImplementedException();
     }
 }
 

@@ -24,6 +24,8 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
     {
         entityPoolDict.Add(entityPool.Tag, entityPool);
 
+        Debug.Log(entityPool.ToString());
+
         return Task.CompletedTask;
     }
     public Task UnPool(string tag)
@@ -43,6 +45,7 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
         {
            bool resultSet = tcs.TrySetResult(entityPool);
         }
+
         return await tcs.Task;
     }
 
