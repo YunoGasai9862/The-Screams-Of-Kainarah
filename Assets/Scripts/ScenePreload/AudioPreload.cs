@@ -110,7 +110,7 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
         return Task.FromResult(SceneSingleton.EntityPoolManager);
     }
 
-    public Task NotifyAboutActiviation()
+    public Task NotifyAboutActivation()
     {
         throw new NotImplementedException();
     }

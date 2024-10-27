@@ -55,9 +55,12 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
 
         if (entityPoolDict.TryGetValue(tag, out AbstractEntityPool entityPool))
         {
-            entityPool.Entity.SetActive(true);
-
-            tcs.SetResult(entityPool);
+            if (entityPool.Entity is MonoBehaviour)
+            {
+                GameObject EntityAsGameObject = (GameObject)entityPool.Entity;
+                EntityAsGameObject.SetActive(true);
+                tcs.SetResult(entityPool);
+            }
         }
 
         return tcs.Task;
@@ -68,9 +71,12 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
 
         if (entityPoolDict.TryGetValue(tag, out AbstractEntityPool entityPool))
         {
-            entityPool.Entity.SetActive(false);
-
-            tcs.SetResult(entityPool);
+            if (entityPool.Entity is MonoBehaviour)
+            {
+                GameObject EntityAsGameObject = (GameObject)entityPool.Entity;
+                EntityAsGameObject.SetActive(false);
+                tcs.SetResult(entityPool);
+            }
         }
 
         return tcs.Task;

@@ -9,7 +9,7 @@ public abstract class AbstractEntityPool
     [field: NonSerialized]
     //this gets serialized, and so does the same field name in the child class, hence adding nonSerialized here
     //Unit doesn't handle new keyword as c# does
-    public GameObject Entity { get; set; }
+    public UnityEngine.Object Entity { get; set; }
 
     public override string ToString()
     {

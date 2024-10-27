@@ -1,10 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 [Serializable]
-public class EntityPool<T> : AbstractEntityPool
+public class EntityPool<T> : AbstractEntityPool where T: UnityEngine.Object
 {
     public new T Entity { get ; set ; }
     public static Task<EntityPool<T>> From(string name, string tag, T entity)
@@ -12,6 +11,11 @@ public class EntityPool<T> : AbstractEntityPool
         EntityPool<T> entityPool = new EntityPool<T> { Name = name, Tag = tag, Entity = entity };
 
         return Task.FromResult(entityPool);
+    }
+
+    public T CastTo()
+    {
+        return (T) base.Entity;
     }
     
     public override string ToString()

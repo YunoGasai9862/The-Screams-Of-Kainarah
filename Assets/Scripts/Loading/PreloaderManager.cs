@@ -42,9 +42,9 @@ public class PreloaderManager: Listener
         }
     }
 
-    private async Task Pool<T>(string name, T entity, string tag)
+    private async Task Pool(string name, UnityEngine.Object entity, string tag)
     {
-        EntityPool<T> entityPool = await EntityPool<T>.From(name, tag, entity);
+        EntityPool<UnityEngine.Object> entityPool = await EntityPool<UnityEngine.Object>.From(name, tag, entity);
 
         await entityPoolEvent.Invoke(entityPool);
     }
