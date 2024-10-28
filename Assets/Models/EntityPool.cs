@@ -13,13 +13,8 @@ public class EntityPool<T> : AbstractEntityPool where T: UnityEngine.Object
         return Task.FromResult(entityPool);
     }
 
-    public T CastTo()
-    {
-        return (T) base.Entity;
-    }
-    
     public override string ToString()
     {
-        return $"Name: {Name}, Tag: {Tag}, GameObject: {Entity}";
+        return $"Name: {Name}, Tag: {Tag}, {typeof(T)}: {Entity}";
     }
 }

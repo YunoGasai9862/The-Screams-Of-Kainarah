@@ -14,16 +14,16 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     private EntityPoolManager EntityPoolManager { get; set; }
 
-    private EntityPool<ScriptableObject> DialoguesAndOptions { get; set; }
+    private DialoguesAndOptions DialoguesAndOptions { get; set; }
     
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
 
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
     [SerializeField]
-    DialoguesAndOptions dialogueAndOptions;
-    [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
+    [SerializeField]
+    NotifyEntityListenerEvent notifyEntityListenerEvent;
 
     private void Awake()
     {
@@ -33,8 +33,8 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     private void Start()
     {
-        //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UI
-         audioGeneratedEvent.AddListener(AudioGeneratedListener);
+        //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UIIActiveNotifier
+        audioGeneratedEvent.AddListener(AudioGeneratedListener);
 
         InvokeCustomMethod += GetDialoguesAndOptions;
     }
@@ -97,12 +97,9 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     {
         EntityPoolManager = await GetEntityManager();
 
-        //fix this
-        //DialoguesAndOptions = await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS) as EntityPool<ScriptableObject>;
+        EntityPool<UnityEngine.Object> dialogues = (EntityPool<UnityEngine.Object>) await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
 
-        var test = await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
-
-        Debug.Log(test);
+        DialoguesAndOptions = (DialoguesAndOptions) (dialogues.Entity as ScriptableObject);
     }
 
     public Task<EntityPoolManager> GetEntityManager()
@@ -112,7 +109,9 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     public Task NotifyAboutActivation()
     {
-        throw new NotImplementedException();
+        notifyEntityListenerEvent.Invoke(new NotifyEntity { IsActive = true, Tag = this.gameObject.tag });
+
+        return Task.CompletedTask;
     }
 }
 
