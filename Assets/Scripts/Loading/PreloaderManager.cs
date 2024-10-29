@@ -88,8 +88,6 @@ public class PreloaderManager: Listener
     private async void ExecutePreloadingEventListener()
     {
         await PreloadEntities(preloadEntities, PreloaderInstance);
-
-        await preloadEntitiesEvent.Invoke(preloadEntities);
     }
 
     private Task<Preloader> InstantiatePreloader(Preloader preloader)

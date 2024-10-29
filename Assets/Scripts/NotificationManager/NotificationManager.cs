@@ -17,7 +17,14 @@ public class NotificationManager: MonoBehaviour, INotification
     [SerializeField]
     public List<Listener> notifyingEntities;
 
+    [SerializeField]
+    NotifyEntityListenerEvent notifyEntityListenerEvent;
     private List<IListenerEntity> ListenerEntities { get; set;}
+
+    private void Start()
+    {
+        notifyEntityListenerEvent.AddListener(NotifyEntityListener);
+    }
 
 
     public Task NotifyEntity(List<IListenerEntity> notifyingEntities)
@@ -54,5 +61,10 @@ public class NotificationManager: MonoBehaviour, INotification
 
             await NotifyEntity(ListenerEntities);
         }
+    }
+
+    private async void NotifyEntityListener(NotifyEntity notifyEntity)
+    {
+        await PingNotificationManager(notifyEntity);
     }
 }

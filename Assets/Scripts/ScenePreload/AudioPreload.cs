@@ -31,10 +31,12 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     }
 
-    private void Start()
+    private async void Start()
     {
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UIIActiveNotifier
-        audioGeneratedEvent.AddListener(AudioGeneratedListener);
+        await audioGeneratedEvent.AddListener(AudioGeneratedListener);
+
+        await NotifyAboutActivation();
 
         InvokeCustomMethod += GetDialoguesAndOptions;
     }

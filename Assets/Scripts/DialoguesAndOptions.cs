@@ -6,8 +6,10 @@ using UnityEngine.AddressableAssets;
 
 [CreateAssetMenu(fileName = "Dialogues And Options", menuName = "Dialogue And Options")]
 [Serializable]
-public class DialoguesAndOptions: EntityPreloadScriptableObject
+public class DialoguesAndOptions: EntityPreloadScriptableObject, IActiveNotifier
 {
+    [SerializeField]
+    NotifyEntityListenerEvent notifyEntityListenerEvent;
 
     [Serializable]
     public class DialogueSystem
@@ -34,5 +36,15 @@ public class DialoguesAndOptions: EntityPreloadScriptableObject
 
         return new Tuple<EntityType, dynamic>(entityType, emptyObject);
     }
+    private async void OnEnable()
+    {
+        await NotifyAboutActivation();
+    }
 
+    public Task NotifyAboutActivation()
+    {
+        notifyEntityListenerEvent.Invoke(new NotifyEntity { IsActive = true, Tag = this.name });
+
+        return Task.CompletedTask; 
+    }
 }
