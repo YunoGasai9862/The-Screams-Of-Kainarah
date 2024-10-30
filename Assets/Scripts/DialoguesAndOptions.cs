@@ -32,13 +32,9 @@ public class DialoguesAndOptions: EntityPreloadScriptableObject, IActiveNotifier
     {
         UnityEngine.Object emptyObject = await preloader.PreloadAsset<DialoguesAndOptions>(assetReference, entityType);
 
-        Debug.Log("Scriptable Object is Enabled");
+        await NotifyAboutActivation();
 
         return new Tuple<EntityType, dynamic>(entityType, emptyObject);
-    }
-    private async void OnEnable()
-    {
-        await NotifyAboutActivation();
     }
 
     public Task NotifyAboutActivation()

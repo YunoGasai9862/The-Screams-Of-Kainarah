@@ -36,6 +36,8 @@ public class NotificationManager: MonoBehaviour, INotification
 
     public async Task PingNotificationManager(NotifyEntity notifyEntity)
     {
+        Debug.Log("Here");
+
         NotifyEntity entity = notifyEntities.Where(ne => ne.Tag == notifyEntity.Tag).FirstOrDefault();
 
         if (entity == null)
@@ -65,6 +67,8 @@ public class NotificationManager: MonoBehaviour, INotification
 
     private async void NotifyEntityListener(NotifyEntity notifyEntity)
     {
+        Debug.Log("Getting Notified");
+
         await PingNotificationManager(notifyEntity);
     }
 }

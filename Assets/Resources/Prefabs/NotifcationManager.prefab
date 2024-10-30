@@ -45,5 +45,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   notifyEntities:
-  - m_tag: 
+  - m_tag: Dialogues And Options
     m_isActive: 0
+  - m_tag: AudioPreload
+    m_isActive: 0
+  notifyingEntities:
+  - {fileID: 0}
+  notifyEntityListenerEvent: {fileID: 0}

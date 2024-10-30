@@ -45,6 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   awsPollyDialogueTriggerEvent: {fileID: 4626976237779173983, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
-  dialogueAndOptions: {fileID: 11400000, guid: 399be5f2e16fa6147acdfdb4b6cf785b, type: 2}
   audioGeneratedEvent: {fileID: 8677537925411909685, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
-  preloadingCompletionEvent: {fileID: 8408686988314371113, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  notifyEntityListenerEvent: {fileID: 421877277700624015, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}

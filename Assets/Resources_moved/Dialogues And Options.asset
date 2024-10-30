@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd4694ff2528c7148a33c797f5d416b6, type: 3}
   m_Name: Dialogues And Options
   m_EditorClassIdentifier: 
+  notifyEntityListenerEvent: {fileID: 421877277700624015, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
   exchange:
   - _dialogues:
     - _entityName: Elaila
@@ -20,7 +21,7 @@ MonoBehaviour:
       - _sentence: Hey, how are you!
         audioPath: 
     _dialogueOptions:
-      _dialogueConcluded: 1
+      _dialogueConcluded: 0
       _multipleDialogues: 0
       _shouldTriggerDialogue: 1
     _dialogueTriggeringEntity:

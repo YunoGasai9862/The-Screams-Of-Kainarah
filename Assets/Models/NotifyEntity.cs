@@ -16,4 +16,9 @@ public class NotifyEntity
 
     public bool IsActive { get => m_isActive; set => m_isActive = value; }
 
+    public override string ToString()
+    {
+        return $"Tag: {Tag}, IsActive {IsActive}";
+    }
+
 }

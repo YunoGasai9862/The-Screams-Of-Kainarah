@@ -24,8 +24,6 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
     {
         entityPoolDict.Add(entityPool.Tag, entityPool);
 
-        Debug.Log(entityPool.ToString());
-
         return Task.CompletedTask;
     }
     public Task UnPool(string tag)
