@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-public class NotificationManager: MonoBehaviour, INotification
+public class NotificationManager: MonoBehaviour, INotification, IDelegate
 {
     [SerializeField]
     public List<NotifyEntity> notifyEntities;
@@ -20,8 +20,10 @@ public class NotificationManager: MonoBehaviour, INotification
     [SerializeField]
     NotifyEntityListenerEvent notifyEntityListenerEvent;
     private List<IListenerEntity> ListenerEntities { get; set;}
+    //call this in the event maybe? try and see, i know bad solution!
+    public IDelegate.InvokeMethod InvokeCustomMethod { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
-    private void Start()
+    private void Awake()
     {
         notifyEntityListenerEvent.AddListener(NotifyEntityListener);
     }

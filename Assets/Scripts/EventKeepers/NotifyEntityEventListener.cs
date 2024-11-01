@@ -3,6 +3,10 @@ using UnityEngine;
 using UnityEngine.Events;
 public class NotifyEntityListenerEvent : UnityEventWTAsync<NotifyEntity>
 {
+    //try something with this!!
+    [SerializeField]
+    NotificationManager notificationManager;
+
     private UnityEvent<NotifyEntity> m_notifyEntityEvent = new UnityEvent<NotifyEntity>();
     public override UnityEvent<NotifyEntity> GetInstance()
     {
@@ -21,6 +25,8 @@ public class NotifyEntityListenerEvent : UnityEventWTAsync<NotifyEntity>
         Debug.Log($"Invoking {value.ToString()}");
 
         m_notifyEntityEvent.Invoke(value);
+
+        notificationManager.
 
         return Task.CompletedTask;
     }
