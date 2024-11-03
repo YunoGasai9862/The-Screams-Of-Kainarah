@@ -44,6 +44,7 @@ TagManager:
   - InventoryPouchPanel
   - GamePreload
   - AudioPreload
+  - NotificationManager
   layers:
   - Default
   - TransparentFX

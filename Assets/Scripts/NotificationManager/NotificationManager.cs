@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 public class NotificationManager: MonoBehaviour, INotification, IDelegate
 {
     [SerializeField]
@@ -18,16 +19,15 @@ public class NotificationManager: MonoBehaviour, INotification, IDelegate
     public List<Listener> notifyingEntities;
 
     [SerializeField]
-    NotifyEntityListenerEvent notifyEntityListenerEvent;
+    public NotifyEntityListenerEvent notifyEntityListenerEvent;
     private List<IListenerEntity> ListenerEntities { get; set;}
     //call this in the event maybe? try and see, i know bad solution!
-    public IDelegate.InvokeMethod InvokeCustomMethod { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
 
-    private void Awake()
+    private async void Start()
     {
-        notifyEntityListenerEvent.AddListener(NotifyEntityListener);
+        //InvokeCustomMethod += NotifyEntityListener;
     }
-
 
     public Task NotifyEntity(List<IListenerEntity> notifyingEntities)
     {
@@ -38,8 +38,6 @@ public class NotificationManager: MonoBehaviour, INotification, IDelegate
 
     public async Task PingNotificationManager(NotifyEntity notifyEntity)
     {
-        Debug.Log("Here");
-
         NotifyEntity entity = notifyEntities.Where(ne => ne.Tag == notifyEntity.Tag).FirstOrDefault();
 
         if (entity == null)
@@ -73,4 +71,6 @@ public class NotificationManager: MonoBehaviour, INotification, IDelegate
 
         await PingNotificationManager(notifyEntity);
     }
+
+    //private InvokeCustomMethod()
 }

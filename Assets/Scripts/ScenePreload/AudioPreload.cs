@@ -116,9 +116,5 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
         return Task.CompletedTask;
     }
 
-    private async void OnEnable()
-    {
-        await NotifyAboutActivation();
-    }
 }
 

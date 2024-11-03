@@ -26,8 +26,6 @@ public class NotifyEntityListenerEvent : UnityEventWTAsync<NotifyEntity>
 
         m_notifyEntityEvent.Invoke(value);
 
-        notificationManager.
-
         return Task.CompletedTask;
     }
 }

@@ -46,4 +46,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   awsPollyDialogueTriggerEvent: {fileID: 4626976237779173983, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
   audioGeneratedEvent: {fileID: 8677537925411909685, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
-  notifyEntityListenerEvent: {fileID: 421877277700624015, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  notifyEntityListenerEvent: {fileID: 2063257503554402792, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
