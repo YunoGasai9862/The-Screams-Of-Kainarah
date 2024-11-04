@@ -30,7 +30,6 @@ GameObject:
   - component: {fileID: 6041249357206473742}
   - component: {fileID: 3697975506600083185}
   - component: {fileID: 3848061398546724695}
-  - component: {fileID: 2063257503554402792}
   m_Layer: 0
   m_Name: PlayerAnimationEventKeeper
   m_TagString: Untagged
@@ -303,17 +302,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5367986bf5615d94c90ccde000e4a2a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2063257503554402792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3298452107198694594}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 581a6622123564443bfeeb187e796e86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

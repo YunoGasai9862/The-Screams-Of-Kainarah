@@ -5,11 +5,9 @@
 //if so send notification to preload manager, that it can start with prelaoding
 //to avoid null exceptions
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
 public class NotificationManager: MonoBehaviour, INotification, IDelegate
 {
     [SerializeField]
@@ -19,7 +17,7 @@ public class NotificationManager: MonoBehaviour, INotification, IDelegate
     public List<Listener> notifyingEntities;
 
     [SerializeField]
-    public NotifyEntityListenerEvent notifyEntityListenerEvent;
+    public NotifyEntityMediator notifyEntityListenerEvent;
     private List<IListenerEntity> ListenerEntities { get; set;}
     //call this in the event maybe? try and see, i know bad solution!
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }

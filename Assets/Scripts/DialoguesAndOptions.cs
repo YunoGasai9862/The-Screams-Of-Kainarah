@@ -9,7 +9,7 @@ using UnityEngine.AddressableAssets;
 public class DialoguesAndOptions: EntityPreloadScriptableObject, IActiveNotifier
 {
     [SerializeField]
-    NotifyEntityListenerEvent notifyEntityListenerEvent;
+    NotifyEntityMediator notifyEntityListenerEvent;
 
     [Serializable]
     public class DialogueSystem

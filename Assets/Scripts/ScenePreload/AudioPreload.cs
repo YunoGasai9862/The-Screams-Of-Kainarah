@@ -23,7 +23,7 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
     [SerializeField]
-    NotifyEntityListenerEvent notifyEntityListenerEvent;
+    NotifyEntityMediator notifyEntityListenerEvent;
 
     private void Awake()
     {
