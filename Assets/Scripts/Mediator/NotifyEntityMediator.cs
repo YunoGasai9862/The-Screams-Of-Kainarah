@@ -5,19 +5,19 @@ using UnityEngine;
 using UnityEngine.Events;
 public class NotifyEntityMediator: MonoBehaviour
 {
-    private List<NotifyEntity> NotifyEntities { get; set; } = new List<NotifyEntity>();
+    private List<NotifyPackage> NotifyEntities { get; set; } = new List<NotifyPackage>();
 
-    private UnityEvent<NotifyEntity> m_notifyEntityEvent = new UnityEvent<NotifyEntity>();
+    private UnityEvent<NotifyPackage> m_notifyEntityEvent = new UnityEvent<NotifyPackage>();
 
     private async void Awake()
     {
         await AddListener(AppendNotifyEntity);
     }
-    public UnityEvent<NotifyEntity> GetInstance()
+    public UnityEvent<NotifyPackage> GetInstance()
     {
         return m_notifyEntityEvent;
     }
-    public Task AddListener(UnityAction<NotifyEntity> action)
+    public Task AddListener(UnityAction<NotifyPackage> action)
     {
         Debug.Log("Adding Listener");
 
@@ -25,7 +25,7 @@ public class NotifyEntityMediator: MonoBehaviour
 
         return Task.CompletedTask;
     }
-    public Task Invoke(NotifyEntity value)
+    public Task Invoke(NotifyPackage value)
     {
         Debug.Log($"Invoking {value.ToString()}");
 
@@ -34,8 +34,8 @@ public class NotifyEntityMediator: MonoBehaviour
         return Task.CompletedTask;
     }
 
-    private void AppendNotifyEntity(NotifyEntity notifyEntity)
+    private void AppendNotifyEntity(NotifyPackage notifyPackage)
     {
-        NotifyEntities.Add(notifyEntity);
+        NotifyEntities.Add(notifyPackage);
     }
 }

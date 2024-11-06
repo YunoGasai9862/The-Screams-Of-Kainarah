@@ -6,5 +6,5 @@ public interface INotification
 {
     public Task NotifyEntity(List<IListenerEntity> notifyingEntities);
 
-    public Task PingNotificationManager(NotifyEntity notifyEntity);
+    public Task PingNotificationManager(NotifierEntity notifierEntity);
 }

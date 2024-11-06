@@ -39,7 +39,7 @@ public class DialoguesAndOptions: EntityPreloadScriptableObject, IActiveNotifier
 
     public Task NotifyAboutActivation()
     {
-        notifyEntityListenerEvent.Invoke(new NotifyEntity { IsActive = true, Tag = this.name });
+        notifyEntityListenerEvent.Invoke(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
 
         return Task.CompletedTask; 
     }

@@ -1,7 +1,12 @@
 public class NotifyPackage
 {
-    public string Tag { get; set; }
+    public string EntityNameToNotify { get; set; }
 
-    public NotifyEntity NEntity {get; set; }
+    public NotifierEntity NotifierEntity {get; set; }
+
+    public override string ToString()
+    {
+        return $"Tag: {EntityNameToNotify}, NotifierEntity {NotifierEntity.ToString()}";
+    }
 
 }

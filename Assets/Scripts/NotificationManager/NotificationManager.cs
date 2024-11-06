@@ -8,24 +8,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-public class NotificationManager: MonoBehaviour, INotification, IDelegate
+public class NotificationManager: MonoBehaviour, INotification
 {
     [SerializeField]
-    public List<NotifyEntity> notifyEntities;
+    public List<NotifierEntity> notifyEntities;
 
     [SerializeField]
     public List<Listener> notifyingEntities;
 
     [SerializeField]
-    public NotifyEntityMediator notifyEntityListenerEvent;
+    public NotifyEntityMediator notifyEntityMediator;
     private List<IListenerEntity> ListenerEntities { get; set;}
-    //call this in the event maybe? try and see, i know bad solution!
-    public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
-
-    private async void Start()
-    {
-        //InvokeCustomMethod += NotifyEntityListener;
-    }
 
     public Task NotifyEntity(List<IListenerEntity> notifyingEntities)
     {
@@ -34,9 +27,9 @@ public class NotificationManager: MonoBehaviour, INotification, IDelegate
         return Task.WhenAll(tasks);
     }
 
-    public async Task PingNotificationManager(NotifyEntity notifyEntity)
+    public async Task PingNotificationManager(NotifierEntity notifyEntity)
     {
-        NotifyEntity entity = notifyEntities.Where(ne => ne.Tag == notifyEntity.Tag).FirstOrDefault();
+        NotifierEntity entity = notifyEntities.Where(ne => ne.Tag == notifyEntity.Tag).FirstOrDefault();
 
         if (entity == null)
         {
@@ -53,7 +46,7 @@ public class NotificationManager: MonoBehaviour, INotification, IDelegate
         return Task.FromResult(notifyingEntities.Select(notifyingEntity => notifyingEntity.gameObject.GetComponent<IListenerEntity>()).Where(component => component != null).ToList());
     }
 
-    private async Task CheckIfAllEntitiesAreActive(List<NotifyEntity> entities)
+    private async Task CheckIfAllEntitiesAreActive(List<NotifierEntity> entities)
     {
         if (entities.All(entity => entity.IsActive))
         {
@@ -63,12 +56,11 @@ public class NotificationManager: MonoBehaviour, INotification, IDelegate
         }
     }
 
-    private async void NotifyEntityListener(NotifyEntity notifyEntity)
+    private async void NotifyEntityListener(NotifierEntity notifyEntity)
     {
         Debug.Log("Getting Notified");
 
         await PingNotificationManager(notifyEntity);
     }
 
-    //private InvokeCustomMethod()
 }

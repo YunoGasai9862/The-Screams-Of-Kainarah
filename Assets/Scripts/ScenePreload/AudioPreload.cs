@@ -23,7 +23,7 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
     [SerializeField]
-    NotifyEntityMediator notifyEntityListenerEvent;
+    NotifyEntityMediator notifyEntityMediator;
 
     private void Awake()
     {
@@ -111,7 +111,7 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     public Task NotifyAboutActivation()
     {
-        notifyEntityListenerEvent.Invoke(new NotifyEntity { IsActive = true, Tag = this.gameObject.tag });
+        notifyEntityMediator.Invoke(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
 
         return Task.CompletedTask;
     }

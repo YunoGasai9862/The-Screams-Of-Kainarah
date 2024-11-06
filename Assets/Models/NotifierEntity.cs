@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class NotifyEntity
+public class NotifierEntity
 {
     [SerializeField]
     private string m_tag;
