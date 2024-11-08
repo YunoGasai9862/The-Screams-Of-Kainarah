@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-public class NotificationManager: MonoBehaviour, INotification
+public class NotificationManager: MonoBehaviour, INotification, INotificationManager, IDelegate
 {
     [SerializeField]
     public List<NotifierEntity> notifyEntities;
@@ -19,6 +19,7 @@ public class NotificationManager: MonoBehaviour, INotification
     [SerializeField]
     public NotifyEntityMediator notifyEntityMediator;
     private List<IListenerEntity> ListenerEntities { get; set;}
+    public IDelegate.InvokeMethod InvokeCustomMethod { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     public Task NotifyEntity(List<IListenerEntity> notifyingEntities)
     {

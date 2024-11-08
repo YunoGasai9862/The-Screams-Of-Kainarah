@@ -6,9 +6,11 @@ using UnityEngine.Events;
 public class NotifyEntityMediator: MonoBehaviour
 {
     private List<NotifyPackage> NotifyEntities { get; set; } = new List<NotifyPackage>();
+    private List<INotificationManager> NotificationManagers { get; set; } = new List<INotificationManager> { };
 
     private UnityEvent<NotifyPackage> m_notifyEntityEvent = new UnityEvent<NotifyPackage>();
 
+    //get the list of Managers
     private async void Awake()
     {
         await AddListener(AppendNotifyEntity);
