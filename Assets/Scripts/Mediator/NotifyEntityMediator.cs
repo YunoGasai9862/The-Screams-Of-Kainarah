@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
@@ -39,5 +40,10 @@ public class NotifyEntityMediator: MonoBehaviour
     private void AppendNotifyEntity(NotifyPackage notifyPackage)
     {
         NotifyEntities.Add(notifyPackage);
+    }
+
+    private  GameObject[] GetAllNotificationManagers()
+    {
+        return (GameObject[])FindObjectsByType(typeof(INotificationManager), FindObjectsSortMode.None);
     }
 }

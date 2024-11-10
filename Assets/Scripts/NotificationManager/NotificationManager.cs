@@ -4,11 +4,12 @@
 //check if the entire list state is set to true
 //if so send notification to preload manager, that it can start with prelaoding
 //to avoid null exceptions
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-public class NotificationManager: MonoBehaviour, INotification, INotificationManager, IDelegate
+public class NotificationManager: NotifierEntityDelegate, INotification, INotificationManager
 {
     [SerializeField]
     public List<NotifierEntity> notifyEntities;
@@ -16,10 +17,14 @@ public class NotificationManager: MonoBehaviour, INotification, INotificationMan
     [SerializeField]
     public List<Listener> notifyingEntities;
 
-    [SerializeField]
-    public NotifyEntityMediator notifyEntityMediator;
     private List<IListenerEntity> ListenerEntities { get; set;}
-    public IDelegate.InvokeMethod InvokeCustomMethod { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+
+    public override IGenericDelegate<NotifierEntity>.InvokeMethod InvokeCustomMethod { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    private void Start()
+    {
+        InvokeCustomMethod += InvokePingNotificationManagerMethod;
+    }
 
     public Task NotifyEntity(List<IListenerEntity> notifyingEntities)
     {
@@ -57,11 +62,10 @@ public class NotificationManager: MonoBehaviour, INotification, INotificationMan
         }
     }
 
-    private async void NotifyEntityListener(NotifierEntity notifyEntity)
+    private async void InvokePingNotificationManagerMethod(NotifierEntity notifyEntity)
     {
         Debug.Log("Getting Notified");
 
         await PingNotificationManager(notifyEntity);
     }
-
 }
