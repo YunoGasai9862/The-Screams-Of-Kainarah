@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3355325899707369363
+--- !u!1 &8947370710196415704
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,42 +8,39 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3369645607164886702}
-  - component: {fileID: 3505954786686626709}
+  - component: {fileID: 3151411972578339954}
+  - component: {fileID: 6444422951397592158}
   m_Layer: 0
-  m_Name: AudioPreload
-  m_TagString: AudioPreload
+  m_Name: Mediator
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3369645607164886702
+--- !u!4 &3151411972578339954
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3355325899707369363}
+  m_GameObject: {fileID: 8947370710196415704}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.268114, y: 8.479204, z: -0.26747847}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3505954786686626709
+--- !u!114 &6444422951397592158
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3355325899707369363}
+  m_GameObject: {fileID: 8947370710196415704}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38a7b191fd00d22439fd4a35a608f8e6, type: 3}
+  m_Script: {fileID: 11500000, guid: a565243a860b975428f15ea683f25ef7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  awsPollyDialogueTriggerEvent: {fileID: 4626976237779173983, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
-  audioGeneratedEvent: {fileID: 8677537925411909685, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
-  notifyEntityMediator: {fileID: 6444422951397592158, guid: befef71b16325d7489f61b81a77a9f65, type: 3}

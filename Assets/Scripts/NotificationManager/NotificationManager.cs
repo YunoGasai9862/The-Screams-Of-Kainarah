@@ -19,7 +19,7 @@ public class NotificationManager: NotifierEntityDelegate, INotification, INotifi
 
     private List<IListenerEntity> ListenerEntities { get; set;}
 
-    public override IGenericDelegate<NotifierEntity>.InvokeMethod InvokeCustomMethod { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public override IGenericDelegate<NotifierEntity>.InvokeMethod InvokeCustomMethod { get; set; }
 
     private void Start()
     {
