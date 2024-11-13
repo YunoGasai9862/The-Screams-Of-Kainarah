@@ -28,8 +28,7 @@ public partial class @Rocky2DActions: IInputActionCollection2, IDisposable
             ""id"": ""1398ab2b-20bc-4bc2-87a1-9453e3b82550"",
             ""actions"": [
                 {
-                    ""name"": ""Movement"",
-                    ""type"": ""Value"",
+                    ""name"": ""Movement""                   ""type"": ""Value"",
                     ""id"": ""3ac71ab7-bd58-4662-9291-9264614ef17f"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
