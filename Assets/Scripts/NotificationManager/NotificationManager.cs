@@ -68,4 +68,9 @@ public class NotificationManager: NotifierEntityDelegate, INotification, INotifi
 
         await PingNotificationManager(notifyEntity);
     }
+
+    public Task RelayNotification()
+    {
+        return Task.CompletedTask;
+    }
 }

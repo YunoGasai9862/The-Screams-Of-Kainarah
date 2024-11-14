@@ -6,8 +6,8 @@ using UnityEngine.Events;
 public class NotifyEntityMediator: MonoBehaviour
 {
     private List<NotifyPackage> NotifyEntities { get; set; } = new List<NotifyPackage>();
-    private List<INotificationManager> NotificationManagers { get; set; }
     private List<NotificationManagerPackage> NotificationManagerPackages { get; set; }
+    private Dictionary<GameObject, INotificationManager> NotificationManagers { get; set; } = new Dictionary<GameObject, INotificationManager>();
 
     private UnityEvent<NotifyPackage> m_notifyEntityEvent = new UnityEvent<NotifyPackage>();
 
@@ -18,7 +18,7 @@ public class NotifyEntityMediator: MonoBehaviour
 
     private async void Start()
     {
-        (NotificationManagers, NotificationManagerPackages) = await GetAllNotificationManagersAndPackages();
+         NotificationManagerPackages = await GetNotificationPackages();
     }
 
     public UnityEvent<NotifyPackage> GetInstance()
@@ -47,17 +47,19 @@ public class NotifyEntityMediator: MonoBehaviour
         NotifyEntities.Add(notifyPackage);
     }
 
-    private async Task<(List<INotificationManager>, List<NotificationManagerPackage>)> GetAllNotificationManagersAndPackages()
+    private async Task<List<NotificationManagerPackage>> GetNotificationPackages()
     {
         MonoBehaviour[] monoBehaviorObjects = (MonoBehaviour[])FindObjectsByType(typeof(MonoBehaviour), FindObjectsSortMode.None);
 
-        List<GameObject> notificationManagerObject = monoBehaviorObjects.Select(mb => mb.gameObject).Where(mb => mb.GetComponent<INotificationManager>() != null).ToList();
+        Dictionary<GameObject, INotificationManager> NotificationManagers = monoBehaviorObjects.Select(mb => mb.gameObject).Where(mb => mb.GetComponent<INotificationManager>() != null).ToDictionary(
 
-        List<INotificationManager> notificationManagers = notificationManagerObject.Select(mb => mb.GetComponent<INotificationManager>()).ToList();
+                gameObject => gameObject,
+                gameObject => gameObject.GetComponent<INotificationManager>()
+        );
 
-        List<NotificationManagerPackage> notificationManagerPackages = await CreateNotificationManagerPackages(notificationManagerObject);
+        List<NotificationManagerPackage> notificationManagerPackages = await CreateNotificationManagerPackages(NotificationManagers);
 
-        return (notificationManagers, notificationManagerPackages);
+        return notificationManagerPackages;
     }
 
     private Task InvokeCustomMethods(List<INotificationManager> notificationManagers)
@@ -65,13 +67,14 @@ public class NotifyEntityMediator: MonoBehaviour
         return Task.CompletedTask;
     }
 
-    private Task<List<NotificationManagerPackage>> CreateNotificationManagerPackages(List<GameObject> notificationManagerObjects)
+    private Task<List<NotificationManagerPackage>> CreateNotificationManagerPackages(Dictionary<GameObject, INotificationManager> notificationManagerObjects)
     {
         List<NotificationManagerPackage> notificationManagerPackages = new List<NotificationManagerPackage>();
 
-        foreach(GameObject notificationManagerObject in notificationManagerObjects)
+        foreach(KeyValuePair<GameObject, INotificationManager> notificationManager in notificationManagerObjects)
         {
-           // notificationManagerPackages.Add(new NotificationManagerPackage { INotificationManager = notificationManager, NotificationManagerObject = notificationManager });
+
+            notificationManagerPackages.Add(new NotificationManagerPackage { INotificationManager = notificationManager.Value, NotificationManagerObject = notificationManager.Key });
         }
 
         return Task.FromResult(notificationManagerPackages);
