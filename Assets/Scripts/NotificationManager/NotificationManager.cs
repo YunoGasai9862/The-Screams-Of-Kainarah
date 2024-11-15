@@ -73,4 +73,10 @@ public class NotificationManager: NotifierEntityDelegate, INotification, INotifi
     {
         return Task.CompletedTask;
     }
+
+    //use this to create mappings for each incoming notifications!
+    public Type EntityType()
+    {
+        return typeof(NotifierEntity);
+    }
 }
