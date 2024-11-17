@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -5,20 +6,19 @@ using UnityEngine;
 using UnityEngine.Events;
 public class NotifyEntityMediator: MonoBehaviour
 {
-    private List<NotifyPackage> NotifyEntities { get; set; } = new List<NotifyPackage>();
     private List<NotificationManagerPackage> NotificationManagerPackages { get; set; }
     private Dictionary<GameObject, INotificationManager> NotificationManagers { get; set; } = new Dictionary<GameObject, INotificationManager>();
 
+    private Dictionary<INotificationManager, Type> NotificationManagersAndNotifierTypes { get; set; } = new Dictionary<INotificationManager, Type>();
+ 
     private UnityEvent<NotifyPackage> m_notifyEntityEvent = new UnityEvent<NotifyPackage>();
 
     private async void Awake()
     {
-        await AddListener(AppendNotifyEntity);
-    }
+        await AddListener(NotifiyManager);
 
-    private async void Start()
-    {
-         NotificationManagerPackages = await GetNotificationPackages();
+        //maybe use a coroutine to halt the thread until this gets completed - we dont want race conditions
+        await PrefillLookupDictionaries();
     }
 
     public UnityEvent<NotifyPackage> GetInstance()
@@ -42,9 +42,9 @@ public class NotifyEntityMediator: MonoBehaviour
         return Task.CompletedTask;
     }
 
-    private void AppendNotifyEntity(NotifyPackage notifyPackage)
+    private void NotifiyManager(NotifyPackage notifyPackage)
     {
-        NotifyEntities.Add(notifyPackage);
+        //continue here for calling manager
     }
 
     private async Task<List<NotificationManagerPackage>> GetNotificationPackages()
@@ -78,5 +78,24 @@ public class NotifyEntityMediator: MonoBehaviour
         }
 
         return Task.FromResult(notificationManagerPackages);
+    }
+
+    private Task<Dictionary<INotificationManager, Type>> GenerateINotificationManagerAndNotifierTypeMap(List<NotificationManagerPackage> notificationManagerPackages)
+    {
+        Dictionary<INotificationManager, Type> notifcationManagerAndNotifierDict = new Dictionary<INotificationManager, Type>();
+
+        foreach(NotificationManagerPackage notificationManagerPackage in notificationManagerPackages)
+        {
+            notifcationManagerAndNotifierDict[notificationManagerPackage.INotificationManager] = notificationManagerPackage.GetType();
+        }
+
+        return Task.FromResult(notifcationManagerAndNotifierDict);
+    }
+
+    private async Task PrefillLookupDictionaries()
+    {
+        NotificationManagerPackages = await GetNotificationPackages();
+
+        NotificationManagersAndNotifierTypes = await GenerateINotificationManagerAndNotifierTypeMap(NotificationManagerPackages);
     }
 }
