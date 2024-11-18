@@ -15,7 +15,7 @@ public class NotifyEntityMediator: MonoBehaviour
 
     private async void Awake()
     {
-        await AddListener(NotifiyManager);
+        await AddListener(NotifyManager);
 
         //maybe use a coroutine to halt the thread until this gets completed - we dont want race conditions
         await PrefillLookupDictionaries();
@@ -42,9 +42,35 @@ public class NotifyEntityMediator: MonoBehaviour
         return Task.CompletedTask;
     }
 
-    private void NotifiyManager(NotifyPackage notifyPackage)
+    private void NotifyManager(NotifyPackage notifyPackage)
     {
-        //continue here for calling manager
+        Debug.Log($"{notifyPackage.ToString()}");
+
+        INotificationManager notificationManager = NotificationManagers.Where(keyValuePair => keyValuePair.Key.tag == notifyPackage.EntityNameToNotify).Select(keyValuePair => keyValuePair.Value).SingleOrDefault();
+
+        if (notificationManager == null)
+        {
+            throw new Exception($"Notification Script is Null for: {notifyPackage.EntityNameToNotify}");
+        }
+
+        if (NotificationManagersAndNotifierTypes.TryGetValue(notificationManager, out Type notificationType)) {
+           
+            //cast here
+            //notifyPackage = (notificationType)notifyPackage.NotifierEntity;    
+
+        }
+
+    }
+
+    private Task CastTo(Type notifyPackageType, NotifyPackage notifyPackage)
+    {
+        switch (notifyPackageType)
+        {
+            case Type _ when notifyPackageType == typeof(NotifierEntity):
+                return Task.CompletedTask;
+        }
+
+        return Task.CompletedTask;
     }
 
     private async Task<List<NotificationManagerPackage>> GetNotificationPackages()
