@@ -11,38 +11,21 @@ public class NotifyEntityMediator: MonoBehaviour
 
     private Dictionary<INotificationManager, Type> NotificationManagersAndNotifierTypes { get; set; } = new Dictionary<INotificationManager, Type>();
  
-    private UnityEvent<NotifyPackage> m_notifyEntityEvent = new UnityEvent<NotifyPackage>();
-
-    private async void Awake()
+    private async void Start()
     {
-        await AddListener(NotifyManager);
-
         //maybe use a coroutine to halt the thread until this gets completed - we dont want race conditions
         await PrefillLookupDictionaries();
     }
 
-    public UnityEvent<NotifyPackage> GetInstance()
-    {
-        return m_notifyEntityEvent;
-    }
-    public Task AddListener(UnityAction<NotifyPackage> action)
-    {
-        Debug.Log("Adding Listener");
-
-        m_notifyEntityEvent.AddListener(action);
-
-        return Task.CompletedTask;
-    }
-    public Task Invoke(NotifyPackage value)
+    public async Task Invoke(NotifyPackage value)
     {
         Debug.Log($"Invoking {value.ToString()}");
 
-        m_notifyEntityEvent.Invoke(value);
-
-        return Task.CompletedTask;
+        //check why this is not being called :)
+        await NotifyManager(value);
     }
 
-    private void NotifyManager(NotifyPackage notifyPackage)
+    private async Task NotifyManager(NotifyPackage notifyPackage)
     {
         Debug.Log($"{notifyPackage.ToString()}");
 
@@ -54,23 +37,27 @@ public class NotifyEntityMediator: MonoBehaviour
         }
 
         if (NotificationManagersAndNotifierTypes.TryGetValue(notificationManager, out Type notificationType)) {
-           
-            //cast here
-            //notifyPackage = (notificationType)notifyPackage.NotifierEntity;    
 
+            //cast here
+            notifyPackage = await CastTo(notificationType, notifyPackage);
+            Debug.Log(notifyPackage);
         }
 
     }
 
-    private Task CastTo(Type notifyPackageType, NotifyPackage notifyPackage)
+    private Task<NotifyPackage> CastTo(Type notifyPackageType, NotifyPackage notifyPackage)
     {
         switch (notifyPackageType)
         {
             case Type _ when notifyPackageType == typeof(NotifierEntity):
-                return Task.CompletedTask;
+                notifyPackage.NotifierEntity = (NotifierEntity)notifyPackage.NotifierEntity;
+                break;
+
+            default:
+                break;
         }
 
-        return Task.CompletedTask;
+        return Task.FromResult(notifyPackage);
     }
 
     private async Task<List<NotificationManagerPackage>> GetNotificationPackages()

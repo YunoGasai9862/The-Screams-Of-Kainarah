@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd4694ff2528c7148a33c797f5d416b6, type: 3}
   m_Name: Dialogues And Options
   m_EditorClassIdentifier: 
-  notifyEntityListenerEvent: {fileID: 2063257503554402792, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  notifyEntityListenerEvent: {fileID: 6444422951397592158, guid: befef71b16325d7489f61b81a77a9f65, type: 3}
   exchange:
   - _dialogues:
     - _entityName: Elaila
