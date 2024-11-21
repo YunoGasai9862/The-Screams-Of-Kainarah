@@ -17,6 +17,7 @@ public class EntityPoolEvent : UnityEventWTAsync<AbstractEntityPool>
     }
     public override Task Invoke(AbstractEntityPool value)
     {
+        Debug.Log(value.ToString());
         m_entityPoolEvent.Invoke(value);
 
         return Task.CompletedTask;

@@ -22,8 +22,6 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
-    [SerializeField]
-    NotifyEntityMediator notifyEntityMediator;
 
     private void Awake()
     {
@@ -109,11 +107,11 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
         return Task.FromResult(SceneSingleton.EntityPoolManager);
     }
 
-    public Task NotifyAboutActivation()
+    public async Task NotifyAboutActivation()
     {
-        notifyEntityMediator.Invoke(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
+        //maybe try adding that to game pool and use that reference to invoke? that's the only solution i can think of!
+        //await notifyEntityMediator.Invoke(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
 
-        return Task.CompletedTask;
     }
 
 }
