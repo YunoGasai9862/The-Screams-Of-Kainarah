@@ -4,12 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
-public class NotifyEntityMediator: MonoBehaviour
+public class NotifyEntityMediator: MonoBehaviour, IMediator
 {
-
-    [SerializeField]
-    EntityPoolEvent entityPoolEvent;
-
     private List<NotificationManagerPackage> NotificationManagerPackages { get; set; }
     private Dictionary<GameObject, INotificationManager> NotificationManagers { get; set; } = new Dictionary<GameObject, INotificationManager>();
 
@@ -19,19 +15,9 @@ public class NotifyEntityMediator: MonoBehaviour
     {
         //maybe use a coroutine to halt the thread until this gets completed - we dont want race conditions
         await PrefillLookupDictionaries();
-
-        await entityPoolEvent.Invoke(await EntityPool<UnityEngine.GameObject>.From(this.name, this.tag, this.gameObject));
     }
 
-    public async Task Invoke(NotifyPackage value)
-    {
-        Debug.Log($"Invoking {value.ToString()}"); //the scriptable object is able to call - but not the game object, maybe just use the scene single to fetch it  - much better
-
-        //check why this is not being called :)
-        await NotifyManager(value);
-    }
-
-    private async Task NotifyManager(NotifyPackage notifyPackage)
+    public async Task NotifyManager(NotifyPackage notifyPackage)
     {
         Debug.Log($"{notifyPackage.ToString()}");
 
@@ -117,4 +103,5 @@ public class NotifyEntityMediator: MonoBehaviour
 
         NotificationManagersAndNotifierTypes = await GenerateINotificationManagerAndNotifierTypeMap(NotificationManagerPackages);
     }
+
 }

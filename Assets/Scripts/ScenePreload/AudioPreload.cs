@@ -18,6 +18,8 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
     
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
 
+    private IMediator Mediator { get; set; }
+    
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
     [SerializeField]
@@ -109,9 +111,14 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     public async Task NotifyAboutActivation()
     {
-        //maybe try adding that to game pool and use that reference to invoke? that's the only solution i can think of!
-        //await notifyEntityMediator.Invoke(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
+        Mediator = (IMediator)FindObjectsByType(typeof(IMediator), FindObjectsSortMode.None).SingleOrDefault();
 
+        if (Mediator == null)
+        {
+            throw new ApplicationException("Mediator Doesn't Exist!");
+        }
+
+        await Mediator.NotifyManager(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
     }
 
 }
