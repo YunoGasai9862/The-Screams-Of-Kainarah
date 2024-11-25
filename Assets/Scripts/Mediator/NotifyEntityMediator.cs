@@ -30,7 +30,6 @@ public class NotifyEntityMediator: MonoBehaviour, IMediator
 
         if (NotificationManagersAndNotifierTypes.TryGetValue(notificationManager, out Type notificationType)) {
 
-            //cast here
             notifyPackage = await CastTo(notificationType, notifyPackage);
             Debug.Log(notifyPackage);
         }
@@ -102,6 +101,11 @@ public class NotifyEntityMediator: MonoBehaviour, IMediator
         NotificationManagerPackages = await GetNotificationPackages();
 
         NotificationManagersAndNotifierTypes = await GenerateINotificationManagerAndNotifierTypeMap(NotificationManagerPackages);
+    }
+
+    private Task PingListeners()
+    {
+        return Task.CompletedTask;
     }
 
 }

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 using UnityEngine.AddressableAssets;
+using System.Linq;
 
 [CreateAssetMenu(fileName = "Dialogues And Options", menuName = "Dialogue And Options")]
 [Serializable]
 public class DialoguesAndOptions: EntityPreloadScriptableObject, IActiveNotifier
 {
-    [SerializeField]
-    NotifyEntityMediator notifyEntityListenerEvent;
+    private IMediator Mediator { get; set; }
 
     [Serializable]
     public class DialogueSystem
@@ -37,10 +37,15 @@ public class DialoguesAndOptions: EntityPreloadScriptableObject, IActiveNotifier
         return new Tuple<EntityType, dynamic>(entityType, emptyObject);
     }
 
-    public Task NotifyAboutActivation()
+    public async Task NotifyAboutActivation()
     {
-        notifyEntityListenerEvent.Invoke(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
+        Mediator = (IMediator)FindObjectsByType(typeof(IMediator), FindObjectsSortMode.None).SingleOrDefault();
 
-        return Task.CompletedTask; 
+        if (Mediator == null)
+        {
+            throw new ApplicationException("Mediator Doesn't Exist!");
+        }
+
+        await Mediator.NotifyManager(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
     }
 }
