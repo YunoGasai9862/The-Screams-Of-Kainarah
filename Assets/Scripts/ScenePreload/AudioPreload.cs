@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAndOptions>, IDelegate, IActiveNotifier
+public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAndOptions>, IMediatorNotificationListener, IDelegate, IActiveNotifier
 {
     private string PersistencePath { get; set; }
 
@@ -111,15 +111,26 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     public async Task NotifyAboutActivation()
     {
-        Mediator = (IMediator)FindObjectsByType(typeof(IMediator), FindObjectsSortMode.None).SingleOrDefault();
+        NotifyEntityMediator notifyEntityMediator = (NotifyEntityMediator)FindObjectsByType(typeof(NotifyEntityMediator), FindObjectsSortMode.None).SingleOrDefault();
+
+        if (notifyEntityMediator == null)
+        {
+            throw new ApplicationException("Mediator Doesn't Exist!");
+        }
+
+        Mediator = notifyEntityMediator.GetComponent<IMediator>(); 
 
         if (Mediator == null)
         {
-            throw new ApplicationException("Mediator Doesn't Exist!");
+            throw new ApplicationException("Mediator interface implementation doesn't Exist!");
         }
 
         await Mediator.NotifyManager(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
     }
 
+    public Task MediatorNotificationListener()
+    {
+        throw new NotImplementedException();
+    }
 }
 
