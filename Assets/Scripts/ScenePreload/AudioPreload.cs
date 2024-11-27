@@ -36,8 +36,6 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UIIActiveNotifier
         await audioGeneratedEvent.AddListener(AudioGeneratedListener);
 
-        await NotifyAboutActivation();
-
         InvokeCustomMethod += GetDialoguesAndOptions;
     }
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
@@ -111,26 +109,15 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
 
     public async Task NotifyAboutActivation()
     {
-        NotifyEntityMediator notifyEntityMediator = (NotifyEntityMediator)FindObjectsByType(typeof(NotifyEntityMediator), FindObjectsSortMode.None).SingleOrDefault();
-
-        if (notifyEntityMediator == null)
-        {
-            throw new ApplicationException("Mediator Doesn't Exist!");
-        }
-
-        Mediator = notifyEntityMediator.GetComponent<IMediator>(); 
-
-        if (Mediator == null)
-        {
-            throw new ApplicationException("Mediator interface implementation doesn't Exist!");
-        }
-
+        //dont use this bilal, maybe initiliaze in order, get the mediator out there first and let it scream so the childs can know that its active, and then they can relay anyting back to it.
+        //let mediator notify the objecst - it should be initialized at last especially during the preloading period
         await Mediator.NotifyManager(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
     }
 
-    public Task MediatorNotificationListener()
+    public async Task MediatorNotificationListener()
     {
-        throw new NotImplementedException();
+        //lets call this here when mediator pings back
+        await NotifyAboutActivation();
     }
 }
 
