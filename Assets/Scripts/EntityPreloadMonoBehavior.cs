@@ -6,5 +6,8 @@ public abstract class EntityPreloadMonoBehavior: MonoBehaviour, IEntityPreload, 
 {
     private EntityType m_entityType;
     public EntityType EntityIdentifier { get => m_entityType; set => m_entityType = EntityType.MonoBehavior; }
-    public abstract Task<Tuple<EntityType, dynamic>> EntityPreload(AssetReference assetReference, EntityType entityType, Preloader preloader);
+    public virtual Task<Tuple<EntityType, dynamic>> EntityPreload(AssetReference assetReference, EntityType entityType, Preloader preloader)
+    {
+        return null;
+    }
 }
