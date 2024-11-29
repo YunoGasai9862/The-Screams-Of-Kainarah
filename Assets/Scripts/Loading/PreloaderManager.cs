@@ -35,6 +35,8 @@ public class PreloaderManager: Listener
         {
             dynamic instance = await preloadEntity.GetEntityToPreload().EntityPreload(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
 
+            Debug.Log(instance);
+
             bool assetValueRefreshed = await RefreshInstance(instance, preloadEntity);
 
             await AddToPool(preloadEntity);

@@ -109,4 +109,10 @@ public class NotifyEntityMediator: EntityPreloadMonoBehavior, IMediator
         return Task.CompletedTask;
     }
 
+    public override async Task<Tuple<EntityType, dynamic>> EntityPreload(AssetReference assetReference, EntityType entityType, Preloader preloader)
+    {
+        GameObject mediatorPreloadInstance = (GameObject) await preloader.PreloadAsset<GameObject>(assetReference, entityType);
+
+        return new Tuple<EntityType, dynamic>(EntityType.MonoBehavior, mediatorPreloadInstance);
+    }
 }
