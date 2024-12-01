@@ -11,11 +11,16 @@ public class NotifyEntityMediator: EntityPreloadMonoBehavior, IMediator
     private Dictionary<GameObject, INotificationManager> NotificationManagers { get; set; } = new Dictionary<GameObject, INotificationManager>();
 
     private Dictionary<INotificationManager, Type> NotificationManagersAndNotifierTypes { get; set; } = new Dictionary<INotificationManager, Type>();
+
+    private MonoBehaviour[] MonoBehaviors { get; set; }
+    private List<IMediatorNotificationListener> NotificationListeners { get; set; } 
  
     private async void Start()
     {
         //maybe use a coroutine to halt the thread until this gets completed - we dont want race conditions
         await PrefillLookupDictionaries();
+
+        await PingListeners(MonoBehaviors);
     }
 
     public async Task NotifyManager(NotifyPackage notifyPackage)
@@ -52,11 +57,9 @@ public class NotifyEntityMediator: EntityPreloadMonoBehavior, IMediator
         return Task.FromResult(notifyPackage);
     }
 
-    private async Task<List<NotificationManagerPackage>> GetNotificationPackages()
+    private async Task<List<NotificationManagerPackage>> GetNotificationPackages(MonoBehaviour[] monobehaviors)
     {
-        MonoBehaviour[] monoBehaviorObjects = (MonoBehaviour[])FindObjectsByType(typeof(MonoBehaviour), FindObjectsSortMode.None);
-
-        Dictionary<GameObject, INotificationManager> NotificationManagers = monoBehaviorObjects.Select(mb => mb.gameObject).Where(mb => mb.GetComponent<INotificationManager>() != null).ToDictionary(
+        Dictionary<GameObject, INotificationManager> NotificationManagers = monobehaviors.Select(mb => mb.gameObject).Where(mb => mb.GetComponent<INotificationManager>() != null).ToDictionary(
 
                 gameObject => gameObject,
                 gameObject => gameObject.GetComponent<INotificationManager>()
@@ -65,6 +68,12 @@ public class NotifyEntityMediator: EntityPreloadMonoBehavior, IMediator
         List<NotificationManagerPackage> notificationManagerPackages = await CreateNotificationManagerPackages(NotificationManagers);
 
         return notificationManagerPackages;
+    }
+
+    private Task<MonoBehaviour[]> QueryMonobehaviors()
+    {
+        return Task.FromResult((MonoBehaviour[])FindObjectsByType(typeof(MonoBehaviour), FindObjectsSortMode.None));
+
     }
 
     private Task InvokeCustomMethods(List<INotificationManager> notificationManagers)
@@ -99,13 +108,18 @@ public class NotifyEntityMediator: EntityPreloadMonoBehavior, IMediator
 
     private async Task PrefillLookupDictionaries()
     {
-        NotificationManagerPackages = await GetNotificationPackages();
+        MonoBehaviors = await QueryMonobehaviors();
+
+        NotificationManagerPackages = await GetNotificationPackages(MonoBehaviors);
 
         NotificationManagersAndNotifierTypes = await GenerateINotificationManagerAndNotifierTypeMap(NotificationManagerPackages);
+
     }
 
-    private Task PingListeners()
+    private Task PingListeners(MonoBehaviour[] monobehaviors)
     {
+        NotificationListeners = monobehaviors.Where(mb => mb.GetComponent<IMediatorNotificationListener>() != null).Select(mb => mb.GetComponent<IMediatorNotificationListener>()).ToList();
+
         return Task.CompletedTask;
     }
 
