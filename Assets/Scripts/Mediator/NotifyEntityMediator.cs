@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
-public class NotifyEntityMediator: EntityPreloadMonoBehavior, IMediator
+public class NotifyEntityMediator : EntityPreloadMonoBehavior, IMediator
 {
     private List<NotificationManagerPackage> NotificationManagerPackages { get; set; }
     private Dictionary<GameObject, INotificationManager> NotificationManagers { get; set; } = new Dictionary<GameObject, INotificationManager>();
@@ -13,14 +13,16 @@ public class NotifyEntityMediator: EntityPreloadMonoBehavior, IMediator
     private Dictionary<INotificationManager, Type> NotificationManagersAndNotifierTypes { get; set; } = new Dictionary<INotificationManager, Type>();
 
     private MonoBehaviour[] MonoBehaviors { get; set; }
-    private List<IMediatorNotificationListener> NotificationListeners { get; set; } 
- 
+
+    private ScriptableObject[] ScriptableObjects { get; set; }
+    private List<IMediatorNotificationListener> NotificationListeners { get; set; }
+
     private async void Start()
     {
         //maybe use a coroutine to halt the thread until this gets completed - we dont want race conditions
         await PrefillLookupDictionaries();
 
-        await PingListeners(MonoBehaviors);
+        await PingListeners(MonoBehaviors, ScriptableObjects);
     }
 
     public async Task NotifyManager(NotifyPackage notifyPackage)
@@ -73,7 +75,11 @@ public class NotifyEntityMediator: EntityPreloadMonoBehavior, IMediator
     private Task<MonoBehaviour[]> QueryMonobehaviors()
     {
         return Task.FromResult((MonoBehaviour[])FindObjectsByType(typeof(MonoBehaviour), FindObjectsSortMode.None));
+    }
 
+    private Task<ScriptableObject[]> QueryScriptableObjects()
+    {
+        return Task.FromResult((ScriptableObject[])FindObjectsByType(typeof(ScriptableObject), FindObjectsSortMode.None));
     }
 
     private Task InvokeCustomMethods(List<INotificationManager> notificationManagers)
@@ -110,17 +116,26 @@ public class NotifyEntityMediator: EntityPreloadMonoBehavior, IMediator
     {
         MonoBehaviors = await QueryMonobehaviors();
 
+        ScriptableObjects = await QueryScriptableObjects();
+
         NotificationManagerPackages = await GetNotificationPackages(MonoBehaviors);
 
         NotificationManagersAndNotifierTypes = await GenerateINotificationManagerAndNotifierTypeMap(NotificationManagerPackages);
 
     }
 
-    private Task PingListeners(MonoBehaviour[] monobehaviors)
+    private async Task PingListeners(MonoBehaviour[] monobehaviors, ScriptableObject[] scriptableObjects)
     {
+        Debug.Log("Inside Ping Listeners");
+
         NotificationListeners = monobehaviors.Where(mb => mb.GetComponent<IMediatorNotificationListener>() != null).Select(mb => mb.GetComponent<IMediatorNotificationListener>()).ToList();
 
-        return Task.CompletedTask;
+        // add interface check!
+        //NotificationListeners.AddRange(ScriptableObjects.Where(mb => mb)
+
+        Debug.Log($"Count of Listeners: {NotificationListeners.Count}");
+
+        await Task.WhenAll(NotificationListeners.Select(listener => listener.MediatorNotificationListener()));
     }
 
     public override async Task<Tuple<EntityType, dynamic>> EntityPreload(AssetReference assetReference, EntityType entityType, Preloader preloader)
