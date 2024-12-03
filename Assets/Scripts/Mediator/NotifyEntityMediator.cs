@@ -79,6 +79,7 @@ public class NotifyEntityMediator : EntityPreloadMonoBehavior, IMediator
 
     private Task<ScriptableObject[]> QueryScriptableObjects()
     {
+        //load all scriptable objects as assets and then query. THis can only be used if the object is in scene!!
         return Task.FromResult((ScriptableObject[])FindObjectsByType(typeof(ScriptableObject), FindObjectsSortMode.None));
     }
 
@@ -118,20 +119,37 @@ public class NotifyEntityMediator : EntityPreloadMonoBehavior, IMediator
 
         ScriptableObjects = await QueryScriptableObjects();
 
+        foreach(var so  in ScriptableObjects)
+        {
+            Debug.Log($"Scriptable Objects {so.ToString()}");
+        }
+
         NotificationManagerPackages = await GetNotificationPackages(MonoBehaviors);
 
         NotificationManagersAndNotifierTypes = await GenerateINotificationManagerAndNotifierTypeMap(NotificationManagerPackages);
 
     }
 
+    private Task<List<IMediatorNotificationListener>> GetIMediatorNotificationListenersFromMonoBehaviors(MonoBehaviour[] monobehaviors)
+    {
+        return Task.FromResult(monobehaviors.Where(mb => mb.GetComponent<IMediatorNotificationListener>() != null).Select(mb => mb.GetComponent<IMediatorNotificationListener>()).ToList());
+    }
+
+    private Task<List<IMediatorNotificationListener>> GetIMediatorNotificationListenersFromScriptableObjects(ScriptableObject[] scriptableObjects)
+    {
+        var test = scriptableObjects.Where(so => so is IMediatorNotificationListener).Cast<IMediatorNotificationListener>().ToList();
+        Debug.Log($"{test.Count}");
+        return Task.FromResult(scriptableObjects.Where(so => so is IMediatorNotificationListener).Select(so => so).Cast<IMediatorNotificationListener>().ToList());
+    }
+
+
     private async Task PingListeners(MonoBehaviour[] monobehaviors, ScriptableObject[] scriptableObjects)
     {
         Debug.Log("Inside Ping Listeners");
 
-        NotificationListeners = monobehaviors.Where(mb => mb.GetComponent<IMediatorNotificationListener>() != null).Select(mb => mb.GetComponent<IMediatorNotificationListener>()).ToList();
+        NotificationListeners = await GetIMediatorNotificationListenersFromMonoBehaviors(monobehaviors);
 
-        // add interface check!
-        //NotificationListeners.AddRange(ScriptableObjects.Where(mb => mb)
+        NotificationListeners.AddRange(await GetIMediatorNotificationListenersFromScriptableObjects(scriptableObjects)); ;
 
         Debug.Log($"Count of Listeners: {NotificationListeners.Count}");
 
