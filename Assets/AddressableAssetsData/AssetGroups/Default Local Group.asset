@@ -21,6 +21,36 @@ MonoBehaviour:
     m_SerializedLabels:
     - ScriptableObjects
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cc1420013048a64eb6013b035deb691
+    m_Address: PickableItems
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4c9aa242ac42d29478150fb7c866aaf9
+    m_Address: PlayerHittableItems
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50c604442b511894a9160942727c4b56
+    m_Address: EntitiesToReset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5d279bb17986aab498190ab6f4f2ab56
+    m_Address: EnemyAnimationScriptableObjectEntity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 717a65d109ef0bf4fbb68f126e57dccd
+    m_Address: EnemyHittableObjectsScriptableEntity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3b15cce297a58c428a52063bce83689
+    m_Address: CheckpointsScriptableObject
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: befef71b16325d7489f61b81a77a9f65
     m_Address: Prefabs/Mediator
     m_ReadOnly: 0

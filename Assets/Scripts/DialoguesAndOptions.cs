@@ -37,7 +37,7 @@ public class DialoguesAndOptions: EntityPreloadScriptableObject, IActiveNotifier
 
     public async Task NotifyAboutActivation()
     {
-        await Mediator.NotifyManager(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
+       await Mediator.NotifyManager(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
     }
 
     public async Task MediatorNotificationListener()

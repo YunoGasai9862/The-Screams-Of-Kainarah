@@ -16,10 +16,6 @@ public class DialoguesAndOptionsCustomEditor : Editor
 
         VoiceOptions();
 
-        SerializedProperty notifyEntityListenerEvent = serializedObject.FindProperty("notifyEntityListenerEvent");
-
-        EditorGUILayout.PropertyField(notifyEntityListenerEvent);
-
         SerializedProperty array = serializedObject.FindProperty("exchange");
 
         if (GUILayout.Button("Add Dialougue Exchange"))

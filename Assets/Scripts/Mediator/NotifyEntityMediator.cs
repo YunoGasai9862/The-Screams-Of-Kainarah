@@ -17,9 +17,13 @@ public class NotifyEntityMediator : EntityPreloadMonoBehavior, IMediator
     private ScriptableObject[] ScriptableObjects { get; set; }
     private List<IMediatorNotificationListener> NotificationListeners { get; set; }
 
+    private List<EntityPool<ScriptableObject>> PreloadedScriptableObjects { get; set; }
+
     private async void Start()
     {
         //maybe use a coroutine to halt the thread until this gets completed - we dont want race conditions
+
+
         await PrefillLookupDictionaries();
 
         await PingListeners(MonoBehaviors, ScriptableObjects);
@@ -80,7 +84,13 @@ public class NotifyEntityMediator : EntityPreloadMonoBehavior, IMediator
     private Task<ScriptableObject[]> QueryScriptableObjects()
     {
         //load all scriptable objects as assets and then query. THis can only be used if the object is in scene!!
-        return Task.FromResult((ScriptableObject[])FindObjectsByType(typeof(ScriptableObject), FindObjectsSortMode.None));
+        //just preload them all, and from EntityPool, Query them!!
+
+        return null;
+    }
+    private Task<List<EntityPool<ScriptableObject>>> GetPreloadedScriptableObjects()
+    {
+        return null;
     }
 
     private Task InvokeCustomMethods(List<INotificationManager> notificationManagers)
