@@ -1,9 +1,11 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 namespace PlayerHittableItemsNS
 {
     [CreateAssetMenu(fileName = "PlayerHittableItems", menuName = "Player Hittable Items Object")]
-    public class PlayerHittableItemsScriptableObject : ScriptableObject
+    public class PlayerHittableItemsScriptableObject : EntityPreloadScriptableObject
     {
         [Serializable]
         public class playerHittableItems
