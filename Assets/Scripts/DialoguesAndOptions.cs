@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 using System.Linq;
 
+[Asset(AssetType = Asset.PRELOADING)]
 [CreateAssetMenu(fileName = "Dialogues And Options", menuName = "Dialogue And Options")]
 [Serializable]
 public class DialoguesAndOptions: EntityPreloadScriptableObject, IActiveNotifier, IMediatorNotificationListener

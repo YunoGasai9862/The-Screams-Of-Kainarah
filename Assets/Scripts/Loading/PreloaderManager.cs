@@ -33,6 +33,7 @@ public class PreloaderManager: Listener
     {
         foreach (PreloadEntity preloadEntity in preloadEntities)
         {
+            //use reflection here!
             dynamic instance = await preloadEntity.GetEntityToPreload().EntityPreload(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
 
             bool assetValueRefreshed = await RefreshInstance(instance, preloadEntity);

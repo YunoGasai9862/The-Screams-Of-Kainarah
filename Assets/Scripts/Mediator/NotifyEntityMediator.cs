@@ -23,7 +23,6 @@ public class NotifyEntityMediator : EntityPreloadMonoBehavior, IMediator
     {
         //maybe use a coroutine to halt the thread until this gets completed - we dont want race conditions
 
-
         await PrefillLookupDictionaries();
 
         await PingListeners(MonoBehaviors, ScriptableObjects);
