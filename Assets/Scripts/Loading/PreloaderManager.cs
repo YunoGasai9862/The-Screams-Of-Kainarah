@@ -1,6 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using System.Reflection;
 using UnityEngine;
+using System.Linq;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 public class PreloaderManager: Listener
 {
@@ -41,6 +45,34 @@ public class PreloaderManager: Listener
             await AddToPool(preloadEntity);
 
         }
+    }
+
+    private async Task PreloadAssets()
+    {
+        Type[] types = Assembly.GetExecutingAssembly().GetTypes();
+
+        foreach (Type type in types)
+        {
+            IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(field => Attribute.IsDefined(field, typeof(AssetAttribute)));
+
+            foreach (FieldInfo field in fields)
+            {
+                AssetAttribute attribute = field.GetCustomAttribute<AssetAttribute>();
+
+                if (attribute != null && attribute.AssetType == Asset.PRELOADING)
+                {
+                    if (typeof(ScriptableObject).IsAssignableFrom(type))
+                    {
+
+                    }else if (typeof(MonoBehaviour).IsAssignableFrom(type))
+                    {
+
+                    }
+                }
+            }
+        }
+
     }
 
     private async Task Pool(string name, UnityEngine.Object entity, string tag)
