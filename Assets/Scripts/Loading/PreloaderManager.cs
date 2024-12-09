@@ -27,11 +27,13 @@ public class PreloaderManager: Listener
 
     private async void Start()
     {
-        PreloaderInstance = await InstantiatePreloader(preloader);
+        await PreloadAssets();
 
-        await HelperFunctions.SetAsParent(PreloaderInstance.gameObject, gameObject);
+        //PreloaderInstance = await InstantiatePreloader(preloader);
 
-        await executePreloadingEvent.AddListener(ExecutePreloadingEventListener);
+        //await HelperFunctions.SetAsParent(PreloaderInstance.gameObject, gameObject);
+
+        //await executePreloadingEvent.AddListener(ExecutePreloadingEventListener);
     }
     private async Task PreloadEntities(PreloadEntity[] preloadEntities, Preloader preloader)
     {
@@ -47,32 +49,38 @@ public class PreloaderManager: Listener
         }
     }
 
-    private async Task PreloadAssets()
+    private Task PreloadAssets()
     {
-        Type[] types = Assembly.GetExecutingAssembly().GetTypes();
-
-        foreach (Type type in types)
+        try
         {
-            IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(field => Attribute.IsDefined(field, typeof(AssetAttribute)));
+            Type[] types = Assembly.GetExecutingAssembly().GetTypes();
 
-            foreach (FieldInfo field in fields)
+            foreach (Type type in types)
             {
-                AssetAttribute attribute = field.GetCustomAttribute<AssetAttribute>();
+                AssetAttribute attribute = type.GetCustomAttribute<AssetAttribute>();
+                Debug.Log($"Type {type}, Attribute {attribute}");
 
                 if (attribute != null && attribute.AssetType == Asset.PRELOADING)
                 {
                     if (typeof(ScriptableObject).IsAssignableFrom(type))
                     {
+                        //okay this worked! continue on this :) u found the issue!
+                        string assetKey = type.Name;
+                        Debug.Log(assetKey);
 
-                    }else if (typeof(MonoBehaviour).IsAssignableFrom(type))
+                    }
+                    else if (typeof(MonoBehaviour).IsAssignableFrom(type))
                     {
 
                     }
                 }
             }
+        }catch (Exception ex)
+        {
+            Debug.Log(ex.ToString());   
         }
 
+        return Task.CompletedTask;
     }
 
     private async Task Pool(string name, UnityEngine.Object entity, string tag)
