@@ -51,28 +51,40 @@ public class PreloaderManager: Listener
 
     private Task PreloadAssets()
     {
+        List<AssetInfo> assets = new List<AssetInfo>();
         try
         {
             Type[] types = Assembly.GetExecutingAssembly().GetTypes();
 
             foreach (Type type in types)
             {
-                AssetAttribute attribute = type.GetCustomAttribute<AssetAttribute>();
-                Debug.Log($"Type {type}, Attribute {attribute}");
+                AssetAttribute attribute = type.GetCustomAttribute<AssetAttribute>() ?? new AssetAttribute(Asset.NONE);
 
-                if (attribute != null && attribute.AssetType == Asset.PRELOADING)
+                switch(attribute.AssetType)
                 {
-                    if (typeof(ScriptableObject).IsAssignableFrom(type))
-                    {
-                        //okay this worked! continue on this :) u found the issue!
-                        string assetKey = type.Name;
-                        Debug.Log(assetKey);
+                    case Asset.PRELOADING_SCRIPTABLE_OBJECT:
+                            break;
 
-                    }
-                    else if (typeof(MonoBehaviour).IsAssignableFrom(type))
-                    {
+                    case Asset.PRELOADING_MONOBEHAVIOR:
+                            break;
 
-                    }
+                    case Asset.NONE:
+                            break;
+
+                    default:
+                        break;
+                }
+
+                if (typeof(ScriptableObject).IsAssignableFrom(type))
+                {
+                    //okay this worked! continue on this :) u found the issue!
+                    string assetKey = type.Name;
+                    Debug.Log(assetKey);
+
+                }
+                else if (typeof(MonoBehaviour).IsAssignableFrom(type))
+                {
+
                 }
             }
         }catch (Exception ex)
