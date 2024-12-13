@@ -22,6 +22,7 @@ public class GameLoad : MonoBehaviour, IGameLoad
         return Task.CompletedTask;
     }
 
+    //modify this to load on name/or type!
     public async Task<Object> PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
     {
         AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(assetReference);

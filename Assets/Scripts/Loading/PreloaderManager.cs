@@ -49,7 +49,7 @@ public class PreloaderManager: Listener
         }
     }
 
-    private Task PreloadAssets()
+    private async Task PreloadAssets()
     {
         List<AssetInfo> assets = new List<AssetInfo>();
         try
@@ -60,36 +60,36 @@ public class PreloaderManager: Listener
             {
                 AssetAttribute attribute = type.GetCustomAttribute<AssetAttribute>() ?? new AssetAttribute(Asset.NONE);
 
-                switch(attribute.AssetType)
-                {
-                    case Asset.PRELOADING_SCRIPTABLE_OBJECT:
-                            break;
-
-                    case Asset.PRELOADING_MONOBEHAVIOR:
-                            break;
-
-                    case Asset.NONE:
-                            break;
-
-                    default:
-                        break;
-                }
-
-                if (typeof(ScriptableObject).IsAssignableFrom(type))
-                {
-                    //okay this worked! continue on this :) u found the issue!
-                    string assetKey = type.Name;
-                    Debug.Log(assetKey);
-
-                }
-                else if (typeof(MonoBehaviour).IsAssignableFrom(type))
-                {
-
-                }
+                await PreloadOnAssetType(attribute, type);
             }
         }catch (Exception ex)
         {
             Debug.Log(ex.ToString());   
+        }
+
+    }
+
+    private Task PreloadOnAssetType(AssetAttribute attribute, Type type)
+    {
+        switch (attribute.AssetType)
+        {
+            case Asset.PRELOADING_SCRIPTABLE_OBJECT:
+                AssetInfo assetInfo = new AssetInfo()
+                {
+                    Type = type,
+                    AssetType = Asset.PRELOADING_SCRIPTABLE_OBJECT,
+                };
+                //use addressables now to load on name!
+                break;
+
+            case Asset.PRELOADING_MONOBEHAVIOR:
+                break;
+
+            case Asset.NONE:
+                break;
+
+            default:
+                break;
         }
 
         return Task.CompletedTask;
