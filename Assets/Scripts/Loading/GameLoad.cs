@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
+using System;
 
 public class GameLoad : MonoBehaviour, IGameLoad
 {
@@ -22,29 +23,39 @@ public class GameLoad : MonoBehaviour, IGameLoad
         return Task.CompletedTask;
     }
 
-    //modify this to load on name/or type!
-    public async Task<Object> PreloadAsset<T>(AssetReference assetReference, EntityType entityType)
+    public async Task<UnityEngine.Object> PreloadAsset<T>(dynamic label, EntityType entityType)
     {
-        AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(assetReference);
+        AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(label);
 
         await handler.Task;
 
         T loadedAsset = handler.Result;
 
-        Object preloadedObject = await ProcessPreloadedAsset<T>(loadedAsset, entityType);
+        UnityEngine.Object preloadedObject = await ProcessPreloadedAsset<T>(loadedAsset, entityType);
 
         Addressables.Release(handler);
 
         return preloadedObject;
     }
 
-    public Task<Object> ProcessPreloadedAsset<T>(T loadedAsset, EntityType entityType)
+    private Task<Exception> CheckType(dynamic label)
+    {
+        if (label.GetType() != typeof(AssetReference) && label.GetType()!= typeof(string))
+        {
+            return Task.FromResult(new Exception("Label should be of AssetReference or string"));
+        }
+
+        return null;
+    }
+   
+
+    public Task<UnityEngine.Object> ProcessPreloadedAsset<T>(T loadedAsset, EntityType entityType)
     {
         if (HelperFunctions.IsEntityMonoBehavior(entityType))
         {
-            return Task.FromResult((Object)Instantiate(loadedAsset as  GameObject));
+            return Task.FromResult((UnityEngine.Object)Instantiate(loadedAsset as  GameObject));
         }
 
-        return Task.FromResult(new Object());
+        return Task.FromResult(new UnityEngine.Object());
     }
 } 

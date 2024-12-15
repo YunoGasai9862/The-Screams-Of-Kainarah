@@ -3,5 +3,5 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 public interface IGameLoad
 {
-    public Task<Object> PreloadAsset<T>(AssetReference assetReference, EntityType entityType);
+    public Task<Object> PreloadAsset<T>(dynamic label, EntityType entityType);
 }

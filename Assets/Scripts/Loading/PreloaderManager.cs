@@ -58,7 +58,7 @@ public class PreloaderManager: Listener
 
             foreach (Type type in types)
             {
-                AssetAttribute attribute = type.GetCustomAttribute<AssetAttribute>() ?? new AssetAttribute(Asset.NONE);
+                AssetAttribute attribute = type.GetCustomAttribute<AssetAttribute>() ?? new AssetAttribute(Asset.NONE, string.Empty);
 
                 await PreloadOnAssetType(attribute, type);
             }
@@ -78,6 +78,7 @@ public class PreloaderManager: Listener
                 {
                     Type = type,
                     AssetType = Asset.PRELOADING_SCRIPTABLE_OBJECT,
+                    Label = attribute.AddressLabel
                 };
                 //use addressables now to load on name!
                 break;
