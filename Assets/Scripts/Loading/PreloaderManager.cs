@@ -27,9 +27,10 @@ public class PreloaderManager: Listener
 
     private async void Start()
     {
+        PreloaderInstance = await InstantiatePreloader(preloader);
+
         await PreloadAssets();
 
-        //PreloaderInstance = await InstantiatePreloader(preloader);
 
         //await HelperFunctions.SetAsParent(PreloaderInstance.gameObject, gameObject);
 
@@ -51,7 +52,6 @@ public class PreloaderManager: Listener
 
     private async Task PreloadAssets()
     {
-        List<AssetInfo> assets = new List<AssetInfo>();
         try
         {
             Type[] types = Assembly.GetExecutingAssembly().GetTypes();
@@ -60,40 +60,15 @@ public class PreloaderManager: Listener
             {
                 AssetAttribute attribute = type.GetCustomAttribute<AssetAttribute>() ?? new AssetAttribute(Asset.NONE, string.Empty);
 
-                await PreloadOnAssetType(attribute, type);
+                //update this for both scriptable objects, etc + update method too to get something else instead of EntityType!!
+                PreloaderInstance.PreloadAsset<UnityEngine.Object>(attribute.AddressLabel, EntityType.MonoBehavior);
+
             }
         }catch (Exception ex)
         {
             Debug.Log(ex.ToString());   
         }
 
-    }
-
-    private Task PreloadOnAssetType(AssetAttribute attribute, Type type)
-    {
-        switch (attribute.AssetType)
-        {
-            case Asset.PRELOADING_SCRIPTABLE_OBJECT:
-                AssetInfo assetInfo = new AssetInfo()
-                {
-                    Type = type,
-                    AssetType = Asset.PRELOADING_SCRIPTABLE_OBJECT,
-                    Label = attribute.AddressLabel
-                };
-                //use addressables now to load on name!
-                break;
-
-            case Asset.PRELOADING_MONOBEHAVIOR:
-                break;
-
-            case Asset.NONE:
-                break;
-
-            default:
-                break;
-        }
-
-        return Task.CompletedTask;
     }
 
     private async Task Pool(string name, UnityEngine.Object entity, string tag)

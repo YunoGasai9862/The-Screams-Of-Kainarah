@@ -29,7 +29,7 @@ public class DialoguesAndOptions: EntityPreloadScriptableObject, IActiveNotifier
 
     public List<DialogueSystem> exchange;
 
-    public override async Task<Tuple<EntityType, dynamic>> EntityPreload(AssetReference assetReference, EntityType entityType, Preloader preloader)
+    public override async Task<Tuple<EntityType, dynamic>> EntityPreload(dynamic assetReference, EntityType entityType, Preloader preloader)
     {
         UnityEngine.Object emptyObject = await preloader.PreloadAsset<DialoguesAndOptions>(assetReference, entityType);
 

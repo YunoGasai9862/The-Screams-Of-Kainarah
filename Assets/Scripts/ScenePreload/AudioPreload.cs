@@ -86,7 +86,7 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
         StartCoroutine(PreloadAudio(dialogueAndOptions));
     }
 
-    public override async Task<Tuple<EntityType, dynamic>> EntityPreload(AssetReference assetReference, EntityType entityType, Preloader preloader)
+    public override async Task<Tuple<EntityType, dynamic>> EntityPreload(dynamic assetReference, EntityType entityType, Preloader preloader)
     {
         GameObject audioPreloadInstance = (GameObject) await preloader.PreloadAsset<GameObject>(assetReference, entityType);
 

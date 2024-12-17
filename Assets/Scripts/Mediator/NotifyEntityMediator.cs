@@ -165,7 +165,7 @@ public class NotifyEntityMediator : EntityPreloadMonoBehavior, IMediator
         await Task.WhenAll(NotificationListeners.Select(listener => listener.MediatorNotificationListener()));
     }
 
-    public override async Task<Tuple<EntityType, dynamic>> EntityPreload(AssetReference assetReference, EntityType entityType, Preloader preloader)
+    public override async Task<Tuple<EntityType, dynamic>> EntityPreload(dynamic assetReference, EntityType entityType, Preloader preloader)
     {
         GameObject mediatorPreloadInstance = (GameObject) await preloader.PreloadAsset<GameObject>(assetReference, entityType);
 

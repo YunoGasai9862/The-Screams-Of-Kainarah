@@ -25,6 +25,11 @@ public class GameLoad : MonoBehaviour, IGameLoad
 
     public async Task<UnityEngine.Object> PreloadAsset<T>(dynamic label, EntityType entityType)
     {
+        if(!CheckType(label))
+        {
+            throw new ExceptionList.TypeMistMatchException("Label should be of AssetReference or string");
+        }
+
         AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(label);
 
         await handler.Task;
@@ -38,14 +43,14 @@ public class GameLoad : MonoBehaviour, IGameLoad
         return preloadedObject;
     }
 
-    private Task<Exception> CheckType(dynamic label)
+    private Task<bool> CheckType(dynamic label)
     {
         if (label.GetType() != typeof(AssetReference) && label.GetType()!= typeof(string))
         {
-            return Task.FromResult(new Exception("Label should be of AssetReference or string"));
+            return Task.FromResult(false);
         }
 
-        return null;
+        return Task.FromResult(true);
     }
    
 
