@@ -41,9 +41,9 @@ public class PreloaderManager: Listener
         foreach (PreloadEntity preloadEntity in preloadEntities)
         {
             //use reflection here!
-            dynamic instance = await preloadEntity.GetEntityToPreload().EntityPreload(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
-
-            bool assetValueRefreshed = await RefreshInstance(instance, preloadEntity);
+          //  dynamic instance = await preloadEntity.GetEntityToPreload().EntityPreload(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
+          
+          //  bool assetValueRefreshed = await RefreshInstance(instance, preloadEntity);
 
             await AddToPool(preloadEntity);
 
@@ -59,9 +59,15 @@ public class PreloaderManager: Listener
             foreach (Type type in types)
             {
                 AssetAttribute attribute = type.GetCustomAttribute<AssetAttribute>() ?? new AssetAttribute(Asset.NONE, string.Empty);
-
                 //update this for both scriptable objects, etc + update method too to get something else instead of EntityType!!
-                PreloaderInstance.PreloadAsset<UnityEngine.Object>(attribute.AddressLabel, EntityType.MonoBehavior);
+
+                if (string.IsNullOrEmpty(attribute.AddressLabel) || attribute.AssetType.Equals(Asset.NONE))
+                {
+                    continue;
+                }
+
+                UnityEngine.Object value = await PreloaderInstance.PreloadAsset<UnityEngine.Object>(attribute.AddressLabel, attribute.AssetType);
+                Debug.Log(value);
 
             }
         }catch (Exception ex)
@@ -80,14 +86,14 @@ public class PreloaderManager: Listener
 
     private async Task AddToPool(PreloadEntity preloadEntity)
     {
-        if (HelperFunctions.IsEntityMonoBehavior(preloadEntity.PreloadEntityType))
-        {
-            await Pool(preloadEntity.EntityMB.gameObject.name, preloadEntity.EntityMB.gameObject, preloadEntity.EntityMB.gameObject.tag);
+       // if (HelperFunctions.IsEntityMonobehavior(preloadEntity.PreloadEntityType))
+     //   {
+         //   await Pool(preloadEntity.EntityMB.gameObject.name, preloadEntity.EntityMB.gameObject, preloadEntity.EntityMB.gameObject.tag);
 
-        }else
-        {
-            await Pool(preloadEntity.EntitySO.name, preloadEntity.EntitySO, preloadEntity.EntitySO.name);
-        }
+     //   }else
+      //  {
+        //    await Pool(preloadEntity.EntitySO.name, preloadEntity.EntitySO, preloadEntity.EntitySO.name);
+       // }
     }
 
     private async Task<bool> RefreshInstance(dynamic instance, PreloadEntity preloadEntity)

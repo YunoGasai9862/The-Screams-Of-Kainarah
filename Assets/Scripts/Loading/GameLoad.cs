@@ -23,42 +23,34 @@ public class GameLoad : MonoBehaviour, IGameLoad
         return Task.CompletedTask;
     }
 
-    public async Task<UnityEngine.Object> PreloadAsset<T>(dynamic label, EntityType entityType)
+    public async Task<UnityEngine.Object> PreloadAsset<T>(string label, Asset assetType)
     {
-        if(!CheckType(label))
-        {
-            throw new ExceptionList.TypeMistMatchException("Label should be of AssetReference or string");
-        }
-
         AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(label);
 
         await handler.Task;
 
         T loadedAsset = handler.Result;
 
-        UnityEngine.Object preloadedObject = await ProcessPreloadedAsset<T>(loadedAsset, entityType);
+        UnityEngine.Object preloadedObject = await ProcessPreloadedAsset<T>(loadedAsset, assetType);
 
         Addressables.Release(handler);
 
         return preloadedObject;
     }
 
-    private Task<bool> CheckType(dynamic label)
+    public Task<UnityEngine.Object> ProcessPreloadedAsset<T>(T loadedAsset, Asset assetType)
     {
-        if (label.GetType() != typeof(AssetReference) && label.GetType()!= typeof(string))
+        switch (assetType)
         {
-            return Task.FromResult(false);
-        }
+            case Asset.MONOBEHAVIOR:
+                return Task.FromResult((UnityEngine.Object)Instantiate(loadedAsset as GameObject));
 
-        return Task.FromResult(true);
-    }
-   
+            case Asset.SCRIPTABLE_OBJECT:
+                break;
 
-    public Task<UnityEngine.Object> ProcessPreloadedAsset<T>(T loadedAsset, EntityType entityType)
-    {
-        if (HelperFunctions.IsEntityMonoBehavior(entityType))
-        {
-            return Task.FromResult((UnityEngine.Object)Instantiate(loadedAsset as  GameObject));
+            default:
+                break;
+
         }
 
         return Task.FromResult(new UnityEngine.Object());

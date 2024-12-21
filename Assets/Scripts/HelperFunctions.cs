@@ -51,9 +51,9 @@ public static class HelperFunctions
         }
     }
 
-    public static bool IsEntityMonoBehavior(EntityType entityType)
+    public static bool IsEntityMonobehavior(Asset assetType)
     {
-        return entityType.Equals(EntityType.MonoBehavior);
+        return assetType.Equals(Asset.MONOBEHAVIOR);
     }
 
     public static Task SetAsParent(GameObject child, GameObject parent)

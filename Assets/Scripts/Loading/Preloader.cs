@@ -28,9 +28,10 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
         return Task.CompletedTask;
     }
 
-    public async Task<UnityEngine.Object> PreloadAsset<T>(dynamic assetReference, EntityType entityType)
+    public async Task<UnityEngine.Object> PreloadAsset<T>(string label, Asset asset)
     {
-         return await PooledGameLoad.PreloadAsset<T>(assetReference, entityType);
+        Debug.Log($"{label} {asset}");
+        return await PooledGameLoad.PreloadAsset<T>(label, asset);
     }
 
     private async Task InitializePoolObjects()

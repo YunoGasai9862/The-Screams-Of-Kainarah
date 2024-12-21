@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 using System.Linq;
 
-[Asset(AssetType = Asset.PRELOADING_SCRIPTABLE_OBJECT, AddressLabel = "Preload")]
+[Asset(AssetType = Asset.SCRIPTABLE_OBJECT, AddressLabel = "Preload")]
 [CreateAssetMenu(fileName = "Dialogues And Options", menuName = "Dialogue And Options")]
 [Serializable]
 public class DialoguesAndOptions: EntityPreloadScriptableObject, IActiveNotifier, IMediatorNotificationListener
@@ -29,11 +29,12 @@ public class DialoguesAndOptions: EntityPreloadScriptableObject, IActiveNotifier
 
     public List<DialogueSystem> exchange;
 
-    public override async Task<Tuple<EntityType, dynamic>> EntityPreload(dynamic assetReference, EntityType entityType, Preloader preloader)
+    public override async Task<Tuple<EntityType, dynamic>> EntityPreload(dynamic assetReference, Asset entityType, Preloader preloader)
     {
-        UnityEngine.Object emptyObject = await preloader.PreloadAsset<DialoguesAndOptions>(assetReference, entityType);
+        // UnityEngine.Object emptyObject = await preloader.PreloadAsset<DialoguesAndOptions>(assetReference, entityType);
 
-        return new Tuple<EntityType, dynamic>(entityType, emptyObject);
+        // return new Tuple<EntityType, dynamic>(entityType, emptyObject);
+        return null;
     }
 
     public async Task NotifyAboutActivation()
