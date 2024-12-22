@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using UnityEngine.AddressableAssets;
 
 public class PreloaderManager: Listener
 {
@@ -58,16 +59,16 @@ public class PreloaderManager: Listener
 
             foreach (Type type in types)
             {
-                AssetAttribute attribute = type.GetCustomAttribute<AssetAttribute>() ?? new AssetAttribute(Asset.NONE, string.Empty);
+                AssetAttribute attribute = type.GetCustomAttribute<AssetAttribute>();
                 //update this for both scriptable objects, etc + update method too to get something else instead of EntityType!!
 
-                if (string.IsNullOrEmpty(attribute.AddressLabel) || attribute.AssetType.Equals(Asset.NONE))
+                if (attribute == null)
                 {
                     continue;
                 }
 
-                UnityEngine.Object value = await PreloaderInstance.PreloadAsset<UnityEngine.Object>(attribute.AddressLabel, attribute.AssetType);
-                Debug.Log(value);
+                UnityEngine.Object preloadedAsset = await PreloadOnAssetType(attribute);
+                Debug.Log(preloadedAsset);
 
             }
         }catch (Exception ex)
@@ -103,6 +104,26 @@ public class PreloaderManager: Listener
         bool assetValueRefreshed = await RefreshOnType(dynamicInstance, entityType, preloadEntity);
 
         return assetValueRefreshed;
+    }
+
+    private async Task<UnityEngine.Object> PreloadOnAssetType(AssetAttribute attribute)
+    {
+        switch (attribute.AssetType)
+        {
+            case Asset.SCRIPTABLE_OBJECT:
+                return await PreloaderInstance.PreloadAsset<ScriptableObject, string>(attribute.AddressLabel, attribute.AssetType);
+
+            case Asset.MONOBEHAVIOR:
+                return await PreloaderInstance.PreloadAsset<GameObject, string>(attribute.AddressLabel, attribute.AssetType);
+
+            case Asset.NONE:
+                break;
+
+            default:
+                break;
+        }
+
+        return new UnityEngine.Object();
     }
 
     private Task<bool> RefreshOnType(dynamic instance, EntityType entityType, PreloadEntity preloadEntity)

@@ -23,7 +23,7 @@ public class GameLoad : MonoBehaviour, IGameLoad
         return Task.CompletedTask;
     }
 
-    public async Task<UnityEngine.Object> PreloadAsset<T>(string label, Asset assetType)
+    public async Task<UnityEngine.Object> PreloadAsset<T, Z>(Z label, Asset assetType) where T : UnityEngine.Object
     {
         AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(label);
 
@@ -38,15 +38,15 @@ public class GameLoad : MonoBehaviour, IGameLoad
         return preloadedObject;
     }
 
-    public Task<UnityEngine.Object> ProcessPreloadedAsset<T>(T loadedAsset, Asset assetType)
+    public Task<UnityEngine.Object> ProcessPreloadedAsset<T>(T loadedAsset, Asset assetType) where T : UnityEngine.Object
     {
         switch (assetType)
         {
             case Asset.MONOBEHAVIOR:
-                return Task.FromResult((UnityEngine.Object)Instantiate(loadedAsset as GameObject));
+                return Task.FromResult((UnityEngine.Object) Instantiate(loadedAsset as GameObject));
 
             case Asset.SCRIPTABLE_OBJECT:
-                break;
+                return Task.FromResult((UnityEngine.Object)(loadedAsset as ScriptableObject));
 
             default:
                 break;
