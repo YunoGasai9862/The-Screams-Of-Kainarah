@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+
+[Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "Audio")]
 public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAndOptions>, IMediatorNotificationListener, IDelegate, IActiveNotifier
 {
     private string PersistencePath { get; set; }

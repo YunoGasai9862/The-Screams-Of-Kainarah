@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-[Asset(AssetType = Asset.SCRIPTABLE_OBJECT, AddressLabel = "Preload")]
+[Asset(AssetType = Asset.SCRIPTABLE_OBJECT, AddressLabel = "CheckPoints")]
 [CreateAssetMenu(fileName = "CheckpointsScriptableObject", menuName ="Checkpoints Scriptable Object")]
 public class CheckPoints : ScriptableObject {
 

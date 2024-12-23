@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -31,6 +32,11 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     public async Task<UnityEngine.Object> PreloadAsset<T, Z>(Z label, Asset asset) where T: UnityEngine.Object
     {
         return await PooledGameLoad.PreloadAsset<T, Z>(label, asset);
+    }
+
+    public async Task<List<UnityEngine.Object>> PreloadAssets<Z>(Z label, Asset asset)
+    {
+        return await PooledGameLoad.PreloadAssets<Z>(label, asset);
     }
 
     private async Task InitializePoolObjects()

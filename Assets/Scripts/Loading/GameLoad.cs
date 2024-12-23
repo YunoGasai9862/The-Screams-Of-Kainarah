@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public class GameLoad : MonoBehaviour, IGameLoad
 {
@@ -36,6 +38,26 @@ public class GameLoad : MonoBehaviour, IGameLoad
         Addressables.Release(handler);
 
         return preloadedObject;
+    }
+
+    public async Task<List<UnityEngine.Object>> PreloadAssets<Z>(Z label, Asset assetType)
+    {
+        List<UnityEngine.Object> assets = new List<UnityEngine.Object>();
+
+        AsyncOperationHandle<IList<UnityEngine.Object>> handler = Addressables.LoadAssetsAsync<UnityEngine.Object>(label, null);
+
+        await handler.Task;
+
+        IList<UnityEngine.Object> loadedAsset = handler.Result.ToList();
+
+        foreach(UnityEngine.Object asset in loadedAsset)
+        {
+           assets.Append(await ProcessPreloadedAsset<UnityEngine.Object>(asset, assetType));
+        }
+
+        Addressables.Release(handler);
+
+        return assets;
     }
 
     public Task<UnityEngine.Object> ProcessPreloadedAsset<T>(T loadedAsset, Asset assetType) where T : UnityEngine.Object

@@ -60,7 +60,6 @@ public class PreloaderManager: Listener
             foreach (Type type in types)
             {
                 AssetAttribute attribute = type.GetCustomAttribute<AssetAttribute>();
-                //update this for both scriptable objects, etc + update method too to get something else instead of EntityType!!
 
                 if (attribute == null)
                 {
@@ -68,8 +67,7 @@ public class PreloaderManager: Listener
                 }
 
                 UnityEngine.Object preloadedAsset = await PreloadOnAssetType(attribute);
-                Debug.Log(preloadedAsset);
-
+                Debug.Log($"Asset: {preloadedAsset}");
             }
         }catch (Exception ex)
         {
