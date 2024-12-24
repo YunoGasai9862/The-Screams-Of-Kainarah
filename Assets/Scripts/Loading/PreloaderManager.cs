@@ -2,10 +2,6 @@ using System;
 using System.Threading.Tasks;
 using System.Reflection;
 using UnityEngine;
-using System.Linq;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using UnityEngine.AddressableAssets;
 
 public class PreloaderManager: Listener
 {
@@ -30,28 +26,12 @@ public class PreloaderManager: Listener
     {
         PreloaderInstance = await InstantiatePreloader(preloader);
 
-        await PreloadAssets();
+        await HelperFunctions.SetAsParent(PreloaderInstance.gameObject, gameObject);
 
-
-        //await HelperFunctions.SetAsParent(PreloaderInstance.gameObject, gameObject);
-
-        //await executePreloadingEvent.AddListener(ExecutePreloadingEventListener);
-    }
-    private async Task PreloadEntities(PreloadEntity[] preloadEntities, Preloader preloader)
-    {
-        foreach (PreloadEntity preloadEntity in preloadEntities)
-        {
-            //use reflection here!
-          //  dynamic instance = await preloadEntity.GetEntityToPreload().EntityPreload(preloadEntity.AssetAddress, preloadEntity.PreloadEntityType, preloader);
-          
-          //  bool assetValueRefreshed = await RefreshInstance(instance, preloadEntity);
-
-            await AddToPool(preloadEntity);
-
-        }
+        await executePreloadingEvent.AddListener(ExecutePreloadingEventListener);
     }
 
-    private async Task PreloadAssets()
+    private async Task PreloadAssets(Preloader preloader)
     {
         try
         {
@@ -66,8 +46,8 @@ public class PreloaderManager: Listener
                     continue;
                 }
 
-                UnityEngine.Object preloadedAsset = await PreloadOnAssetType(attribute);
-                Debug.Log($"Asset: {preloadedAsset}");
+                dynamic preloadedAsset = await PreloadOnAssetType(attribute, preloader);
+                await AddToPool(preloadedAsset);
             }
         }catch (Exception ex)
         {
@@ -83,36 +63,29 @@ public class PreloaderManager: Listener
         await entityPoolEvent.Invoke(entityPool);
     }
 
-    private async Task AddToPool(PreloadEntity preloadEntity)
+    private async Task AddToPool(dynamic entity)
     {
-       // if (HelperFunctions.IsEntityMonobehavior(preloadEntity.PreloadEntityType))
-     //   {
-         //   await Pool(preloadEntity.EntityMB.gameObject.name, preloadEntity.EntityMB.gameObject, preloadEntity.EntityMB.gameObject.tag);
+        if (entity.GetType() == typeof(GameObject))
+        {
+           GameObject goEntity = (GameObject)entity;
+           await Pool(goEntity.name, goEntity.gameObject, goEntity.tag);
 
-     //   }else
-      //  {
-        //    await Pool(preloadEntity.EntitySO.name, preloadEntity.EntitySO, preloadEntity.EntitySO.name);
-       // }
+        }else if (entity.GetType() == typeof(ScriptableObject))
+        {
+            ScriptableObject soEntity = (ScriptableObject)entity;
+            await Pool(soEntity.name, soEntity, soEntity.name);
+        }
     }
 
-    private async Task<bool> RefreshInstance(dynamic instance, PreloadEntity preloadEntity)
-    {
-        (EntityType entityType, dynamic dynamicInstance) = (Tuple<EntityType, dynamic>) instance;
-
-        bool assetValueRefreshed = await RefreshOnType(dynamicInstance, entityType, preloadEntity);
-
-        return assetValueRefreshed;
-    }
-
-    private async Task<UnityEngine.Object> PreloadOnAssetType(AssetAttribute attribute)
+    private async Task<dynamic> PreloadOnAssetType(AssetAttribute attribute, Preloader preloader)
     {
         switch (attribute.AssetType)
         {
             case Asset.SCRIPTABLE_OBJECT:
-                return await PreloaderInstance.PreloadAsset<ScriptableObject, string>(attribute.AddressLabel, attribute.AssetType);
+                 return (ScriptableObject) await preloader.PreloadAsset<ScriptableObject, string>(attribute.AddressLabel, attribute.AssetType);
 
             case Asset.MONOBEHAVIOR:
-                return await PreloaderInstance.PreloadAsset<GameObject, string>(attribute.AddressLabel, attribute.AssetType);
+                return (GameObject) await preloader.PreloadAsset<GameObject, string>(attribute.AddressLabel, attribute.AssetType);
 
             case Asset.NONE:
                 break;
@@ -123,25 +96,9 @@ public class PreloaderManager: Listener
 
         return new UnityEngine.Object();
     }
-
-    private Task<bool> RefreshOnType(dynamic instance, EntityType entityType, PreloadEntity preloadEntity)
-    {
-        switch (entityType)
-        {
-            case EntityType.MonoBehavior:
-                GameObject castedObject = instance as GameObject;
-                preloadEntity.EntityMB = castedObject.GetComponent<EntityPreloadMonoBehavior>();
-                return Task.FromResult(true);
-
-            default:
-                break;
-        }
-        return Task.FromResult(false);
-    }
-
     private async void ExecutePreloadingEventListener()
     {
-        await PreloadEntities(preloadEntities, PreloaderInstance);
+        await PreloadAssets(PreloaderInstance);
     }
 
     private Task<Preloader> InstantiatePreloader(Preloader preloader)
