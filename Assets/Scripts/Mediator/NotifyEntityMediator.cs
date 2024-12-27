@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
-public class NotifyEntityMediator : EntityPreloadMonoBehavior, IMediator
+public class NotifyEntityMediator : MonoBehaviour, IMediator
 {
     private List<NotificationManagerPackage> NotificationManagerPackages { get; set; }
     private Dictionary<GameObject, INotificationManager> NotificationManagers { get; set; } = new Dictionary<GameObject, INotificationManager>();

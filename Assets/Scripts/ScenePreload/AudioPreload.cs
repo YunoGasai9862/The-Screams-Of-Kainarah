@@ -5,10 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 [Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "Audio")]
-public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAndOptions>, IMediatorNotificationListener, IDelegate, IActiveNotifier
+public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IMediatorNotificationListener, IDelegate, IActiveNotifier
 {
     private string PersistencePath { get; set; }
 
@@ -88,21 +87,13 @@ public class AudioPreload : EntityPreloadMonoBehavior, IPreloadAudio<DialoguesAn
         StartCoroutine(PreloadAudio(dialogueAndOptions));
     }
 
-    public override async Task<Tuple<EntityType, dynamic>> EntityPreload(dynamic assetReference, Asset entityType, Preloader preloader)
-    {
-        //GameObject audioPreloadInstance = (GameObject) await preloader.PreloadAsset<GameObject>(assetReference, entityType);
-
-        //return new Tuple<EntityType, dynamic>(EntityType.MonoBehavior , audioPreloadInstance);
-        return null;
-    }
-
     public async void GetDialoguesAndOptions()
     {
         EntityPoolManager = await GetEntityManager();
 
         EntityPool<UnityEngine.Object> dialogues = (EntityPool<UnityEngine.Object>) await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
 
-        DialoguesAndOptions = (DialoguesAndOptions) (dialogues.Entity as ScriptableObject);
+        DialoguesAndOptions = (DialoguesAndOptions) (dialogues.Entity as Di);
     }
 
     public Task<EntityPoolManager> GetEntityManager()

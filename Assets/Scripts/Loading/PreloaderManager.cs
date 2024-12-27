@@ -9,16 +9,10 @@ public class PreloaderManager: Listener
     Preloader preloader;
 
     [SerializeField]
-    PreloadEntity[] preloadEntities;
-
-    [SerializeField]
     EntityPoolEvent entityPoolEvent;
 
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
-
-    [SerializeField]
-    PreloadEntitiesEvent preloadEntitiesEvent;
 
     private Preloader PreloaderInstance { get; set; }
 
@@ -56,24 +50,24 @@ public class PreloaderManager: Listener
 
     }
 
-    private async Task Pool(string name, UnityEngine.Object entity, string tag)
+    private async Task Pool<T>(string name, T entity, string tag)
     {
-        EntityPool<UnityEngine.Object> entityPool = await EntityPool<UnityEngine.Object>.From(name, tag, entity);
+        EntityPool<T> entityPool = await EntityPool<T>.From(name, tag, entity);
 
         await entityPoolEvent.Invoke(entityPool);
     }
 
     private async Task AddToPool(dynamic entity)
     {
-        if (entity.GetType() == typeof(GameObject))
+        if (entity is GameObject)
         {
            GameObject goEntity = (GameObject)entity;
-           await Pool(goEntity.name, goEntity.gameObject, goEntity.tag);
+           await Pool<GameObject>(goEntity.name, goEntity.gameObject, goEntity.tag);
 
-        }else if (entity.GetType() == typeof(ScriptableObject))
+        }else if (entity is ScriptableObject)
         {
             ScriptableObject soEntity = (ScriptableObject)entity;
-            await Pool(soEntity.name, soEntity, soEntity.name);
+            await Pool<ScriptableObject>(soEntity.name, soEntity, soEntity.name);
         }
     }
 
@@ -82,7 +76,7 @@ public class PreloaderManager: Listener
         switch (attribute.AssetType)
         {
             case Asset.SCRIPTABLE_OBJECT:
-                 return (ScriptableObject) await preloader.PreloadAsset<ScriptableObject, string>(attribute.AddressLabel, attribute.AssetType);
+                return (ScriptableObject) await preloader.PreloadAsset<ScriptableObject, string>(attribute.AddressLabel, attribute.AssetType);
 
             case Asset.MONOBEHAVIOR:
                 return (GameObject) await preloader.PreloadAsset<GameObject, string>(attribute.AddressLabel, attribute.AssetType);
@@ -110,8 +104,7 @@ public class PreloaderManager: Listener
 
     public override Task Listen()
     {
-        preloadEntitiesEvent.Invoke(preloadEntities);
-
+        //do it some other way
         return Task.CompletedTask;
     }
 }

@@ -11,7 +11,7 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
     [SerializeField]
     SceneSingletonActiveEvent sceneSingletonActiveEvent;
 
-    private Dictionary<string, AbstractEntityPool> entityPoolDict = new Dictionary<string, AbstractEntityPool>();
+    private Dictionary<string, dynamic> entityPoolDict = new Dictionary<string, dynamic>();
 
     private void OnEnable()
     {
@@ -20,7 +20,7 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
         sceneSingletonActiveEvent.AddListener(SceneSingletonActiveEventListener);
     }
 
-    public Task Pool(AbstractEntityPool entityPool)
+    public Task Pool<T>(EntityPool<T> entityPool)
     {
         entityPoolDict.Add(entityPool.Tag, entityPool);
 
@@ -82,7 +82,7 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
         return tcs.Task;
     }
 
-    private async void InvokeEntityPool(AbstractEntityPool entityPool)
+    private async void InvokeEntityPool(EntityPool<T> entityPool)
     {
         await Pool(entityPool);
     }

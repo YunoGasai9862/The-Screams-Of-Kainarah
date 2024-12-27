@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Serializable]
-public class EntityPool<T> : AbstractEntityPool where T: UnityEngine.Object
+public class EntityPool<T> : AbstractEntityPool
 {
     public new T Entity { get ; set ; }
     public static Task<EntityPool<T>> From(string name, string tag, T entity)
