@@ -2,25 +2,21 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class EntityPoolManager: MonoBehaviour, IEntityPool
+public class EntityPoolManager: MonoBehaviour, IEntityPoolManager
 {
-    [SerializeField]
-    EntityPoolEvent entityPoolEvent;
     [SerializeField]
     EntityPoolManagerEvent entityPoolManagerEvent;
     [SerializeField]
     SceneSingletonActiveEvent sceneSingletonActiveEvent;
 
-    private Dictionary<string, dynamic> entityPoolDict = new Dictionary<string, dynamic>();
+    private Dictionary<string, EntityPool> entityPoolDict = new Dictionary<string, EntityPool();
 
     private void OnEnable()
     {
-        entityPoolEvent.AddListener(InvokeEntityPool);
-
         sceneSingletonActiveEvent.AddListener(SceneSingletonActiveEventListener);
     }
 
-    public Task Pool<T>(EntityPool<T> entityPool)
+    public Task Pool(EntityPool entityPool)
     {
         entityPoolDict.Add(entityPool.Tag, entityPool);
 
@@ -29,19 +25,19 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
         return Task.CompletedTask;
     }
     public Task UnPool(string tag)
-    {
-        if (entityPoolDict.TryGetValue(tag, out AbstractEntityPool entityPool))
+    { 
+        if (entityPoolDict.TryGetValue(tag, out EntityPool entityPool)) 
         {
             entityPoolDict.Remove(tag);
         }
 
         return Task.CompletedTask;
     }
-    public async Task<AbstractEntityPool> GetPooledEntity(string tag)
+    public async Task<EntityPool> GetPooledEntity(string tag)
     {
-        TaskCompletionSource<AbstractEntityPool> tcs = new TaskCompletionSource<AbstractEntityPool>();
+        TaskCompletionSource<EntityPool> tcs = new TaskCompletionSource<EntityPool>();
 
-        if (entityPoolDict.TryGetValue(tag, out AbstractEntityPool entityPool))
+        if (entityPoolDict.TryGetValue(tag, out EntityPool entityPool))
         {
            bool resultSet = tcs.TrySetResult(entityPool);
         }
@@ -51,9 +47,9 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
 
     public Task Activate(string tag)
     {
-        TaskCompletionSource<AbstractEntityPool> tcs = new TaskCompletionSource<AbstractEntityPool>();
+        TaskCompletionSource<EntityPool> tcs = new TaskCompletionSource<EntityPool>();
 
-        if (entityPoolDict.TryGetValue(tag, out AbstractEntityPool entityPool))
+        if (entityPoolDict.TryGetValue(tag, out EntityPool entityPool))
         {
             if (entityPool.Entity is MonoBehaviour)
             {
@@ -67,9 +63,9 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
     }
     public Task Deactivate(string tag)
     {
-        TaskCompletionSource<AbstractEntityPool> tcs = new TaskCompletionSource<AbstractEntityPool>();
+        TaskCompletionSource<EntityPool> tcs = new TaskCompletionSource<EntityPool>();
 
-        if (entityPoolDict.TryGetValue(tag, out AbstractEntityPool entityPool))
+        if (entityPoolDict.TryGetValue(tag, out EntityPool entityPool))
         {
             if (entityPool.Entity is MonoBehaviour)
             {
@@ -80,11 +76,6 @@ public class EntityPoolManager: MonoBehaviour, IEntityPool
         }
 
         return tcs.Task;
-    }
-
-    private async void InvokeEntityPool(EntityPool<T> entityPool)
-    {
-        await Pool(entityPool);
     }
 
     private void SceneSingletonActiveEventListener()

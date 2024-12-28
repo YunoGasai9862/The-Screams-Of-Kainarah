@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 [CreateAssetMenu(fileName = "PickableItems", menuName = "Scriptable Pickable Items")]
-public class PickableItems : EntityPreloadScriptableObject
+public class PickableItems : ScriptableObject
 {
 
     [Serializable]
