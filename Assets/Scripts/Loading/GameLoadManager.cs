@@ -9,16 +9,20 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate
     GameObject gameLoad;
 
     [SerializeField]
-    EntityPoolEvent entityPoolEvent;
+    EntityPoolManagerEvent entityPoolManagerEvent;
 
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
+
+    private EntityPoolManager EntityPoolManager { get; set; }
 
     public InvokeMethod InvokeCustomMethod { get ; set ; }
 
     private async void Start()
     {
-        gameLoad =  await InstantiateAndPoolGameLoad(gameLoad, entityPoolEvent);
+        await entityPoolManagerEvent.AddListener(EntityPoolManagementEvent);
+
+        gameLoad =  await InstantiateAndPoolGameLoad(gameLoad, EntityPoolManager);
 
         await HelperFunctions.SetAsParent(gameLoad, gameObject);
 
@@ -30,15 +34,13 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate
         executePreloadingEvent.Invoke();
     }
 
-    public async Task<GameObject> InstantiateAndPoolGameLoad(GameObject gameLoad, EntityPoolEvent entityPoolEvent)
+    public async Task<GameObject> InstantiateAndPoolGameLoad(GameObject gameLoad, EntityPoolManager entityPoolManager)
     {
         try
         {
             GameObject gameLoadObject = Instantiate(gameLoad);
 
-            EntityPool<UnityEngine.GameObject> entityPool = await EntityPool<UnityEngine.GameObject>.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject);
-
-            await entityPoolEvent.Invoke(entityPool);
+            await entityPoolManager.Pool(await EntityPool.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject));
 
             return gameLoadObject;
 
@@ -49,6 +51,10 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate
         }
 
         return null;
+    }
+    private void EntityPoolManagementEvent(EntityPoolManager entityPoolManager)
+    {
+        EntityPoolManager = entityPoolManager;
     }
 
 }

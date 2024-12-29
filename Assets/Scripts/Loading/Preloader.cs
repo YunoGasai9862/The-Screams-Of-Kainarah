@@ -7,7 +7,7 @@ using UnityEngine.AddressableAssets;
 public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction
 {
     private GameLoad PooledGameLoad { get; set; }
-    private EntityPool<GameObject> EntityPool { get; set; }
+    private EntityPool EntityPool { get; set; }
     private EntityPoolManager EntityPoolManagerReference { get; set; }
 
     private async void Awake()
@@ -43,13 +43,13 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     {
         EntityPoolManagerReference = SceneSingleton.EntityPoolManager;
 
-        EntityPool = await EntityPoolManagerReference.GetPooledEntity(Constants.GAME_PRELOAD) as EntityPool<GameObject>;
+        EntityPool = await EntityPoolManagerReference.GetPooledEntity(Constants.GAME_PRELOAD);
 
-        if (EntityPool.Entity.GetComponent<GameLoad>() == null)
+        if (((GameObject)(EntityPool.Entity)).GetComponent<GameLoad>() == null)
         {
             throw new ApplicationException("Game Load Not Found!");
         }
 
-        PooledGameLoad = EntityPool.Entity.GetComponent<GameLoad>();
+        PooledGameLoad = ((GameObject)EntityPool.Entity).GetComponent<GameLoad>();
     }
 }

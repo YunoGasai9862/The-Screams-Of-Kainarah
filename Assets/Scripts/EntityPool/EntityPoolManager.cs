@@ -9,7 +9,7 @@ public class EntityPoolManager: MonoBehaviour, IEntityPoolManager
     [SerializeField]
     SceneSingletonActiveEvent sceneSingletonActiveEvent;
 
-    private Dictionary<string, EntityPool> entityPoolDict = new Dictionary<string, EntityPool();
+    private Dictionary<string, EntityPool> entityPoolDict = new Dictionary<string, EntityPool>();
 
     private void OnEnable()
     {

@@ -9,15 +9,19 @@ public class PreloaderManager: Listener
     Preloader preloader;
 
     [SerializeField]
-    EntityPoolEvent entityPoolEvent;
+    EntityPoolManagerEvent entityPoolManagerEvent;
 
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
+
+    EntityPoolManager EntityPoolManager { get; set; }
 
     private Preloader PreloaderInstance { get; set; }
 
     private async void Start()
     {
+        await entityPoolManagerEvent.AddListener(EntityPoolManagementEvent);
+
         PreloaderInstance = await InstantiatePreloader(preloader);
 
         await HelperFunctions.SetAsParent(PreloaderInstance.gameObject, gameObject);
@@ -50,24 +54,17 @@ public class PreloaderManager: Listener
 
     }
 
-    private async Task Pool<T>(string name, T entity, string tag)
-    {
-        EntityPool<T> entityPool = await EntityPool<T>.From(name, tag, entity);
-
-        await entityPoolEvent.Invoke(entityPool);
-    }
-
     private async Task AddToPool(dynamic entity)
     {
         if (entity is GameObject)
         {
            GameObject goEntity = (GameObject)entity;
-           await Pool<GameObject>(goEntity.name, goEntity.gameObject, goEntity.tag);
+           await EntityPoolManager.Pool(await EntityPool.From(goEntity.name, goEntity.tag, goEntity.gameObject));
 
         }else if (entity is ScriptableObject)
         {
             ScriptableObject soEntity = (ScriptableObject)entity;
-            await Pool<ScriptableObject>(soEntity.name, soEntity, soEntity.name);
+            await EntityPoolManager.Pool(await EntityPool.From(soEntity.name, soEntity.name, soEntity));
         }
     }
 
@@ -100,6 +97,11 @@ public class PreloaderManager: Listener
         GameObject preloaderInstance = Instantiate(preloader.gameObject);
 
         return Task.FromResult(preloaderInstance.GetComponent<Preloader>());
+    }
+
+    private void EntityPoolManagementEvent(EntityPoolManager entityPoolManager)
+    {
+        EntityPoolManager = entityPoolManager;
     }
 
     public override Task Listen()

@@ -17,7 +17,7 @@ public class NotifyEntityMediator : MonoBehaviour, IMediator
     private ScriptableObject[] ScriptableObjects { get; set; }
     private List<IMediatorNotificationListener> NotificationListeners { get; set; }
 
-    private List<EntityPool<ScriptableObject>> PreloadedScriptableObjects { get; set; }
+    private List<EntityPool> PreloadedScriptableObjects { get; set; }
 
     private async void Start()
     {
@@ -87,7 +87,7 @@ public class NotifyEntityMediator : MonoBehaviour, IMediator
 
         return null;
     }
-    private Task<List<EntityPool<ScriptableObject>>> GetPreloadedScriptableObjects()
+    private Task<List<EntityPool>> GetPreloadedScriptableObjects()
     {
         return null;
     }
@@ -165,12 +165,4 @@ public class NotifyEntityMediator : MonoBehaviour, IMediator
         await Task.WhenAll(NotificationListeners.Select(listener => listener.MediatorNotificationListener()));
     }
 
-    public override async Task<Tuple<EntityType, dynamic>> EntityPreload(dynamic assetReference, Asset entityType, Preloader preloader)
-    {
-        // GameObject mediatorPreloadInstance = (GameObject) await preloader.PreloadAsset<GameObject>(assetReference, entityType);
-
-        //return new Tuple<EntityType, dynamic>(EntityType.MonoBehavior, mediatorPreloadInstance);
-
-        return null;
-    }
 }

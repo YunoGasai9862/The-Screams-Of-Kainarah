@@ -5,7 +5,7 @@ using UnityEngine.AddressableAssets;
 namespace PlayerHittableItemsNS
 {
     [CreateAssetMenu(fileName = "PlayerHittableItems", menuName = "Player Hittable Items Object")]
-    public class PlayerHittableItemsScriptableObject : EntityPreloadScriptableObject
+    public class PlayerHittableItemsScriptableObject : ScriptableObject
     {
         [Serializable]
         public class playerHittableItems

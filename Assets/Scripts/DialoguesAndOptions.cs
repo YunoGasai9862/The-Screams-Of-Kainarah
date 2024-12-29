@@ -8,7 +8,7 @@ using System.Linq;
 [Asset(AssetType = Asset.SCRIPTABLE_OBJECT, AddressLabel = "DialoguesAndOptions")]
 [CreateAssetMenu(fileName = "Dialogues And Options", menuName = "Dialogue And Options")]
 [Serializable]
-public class DialoguesAndOptions: EntityPreloadScriptableObject, IActiveNotifier, IMediatorNotificationListener
+public class DialoguesAndOptions: ScriptableObject, IActiveNotifier, IMediatorNotificationListener
 {
     private IMediator Mediator { get; set; }
 
@@ -28,14 +28,6 @@ public class DialoguesAndOptions: EntityPreloadScriptableObject, IActiveNotifier
     }
 
     public List<DialogueSystem> exchange;
-
-    public override async Task<Tuple<EntityType, dynamic>> EntityPreload(dynamic assetReference, Asset entityType, Preloader preloader)
-    {
-        // UnityEngine.Object emptyObject = await preloader.PreloadAsset<DialoguesAndOptions>(assetReference, entityType);
-
-        // return new Tuple<EntityType, dynamic>(entityType, emptyObject);
-        return null;
-    }
 
     public async Task NotifyAboutActivation()
     {
