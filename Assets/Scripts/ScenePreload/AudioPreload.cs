@@ -91,9 +91,9 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     {
         EntityPoolManager = await GetEntityManager();
 
-        EntityPool<UnityEngine.Object> dialogues = (EntityPool<UnityEngine.Object>) await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
+        EntityPool dialogues = await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
 
-        DialoguesAndOptions = (DialoguesAndOptions) (dialogues.Entity as Di);
+        DialoguesAndOptions = (DialoguesAndOptions) (dialogues.Entity);
     }
 
     public Task<EntityPoolManager> GetEntityManager()

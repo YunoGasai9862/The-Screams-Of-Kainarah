@@ -2,8 +2,9 @@ using System;
 using System.Threading.Tasks;
 using System.Reflection;
 using UnityEngine;
+using System.Collections.Generic;
 
-public class PreloaderManager: Listener
+public class PreloaderManager : Listener
 {
     [SerializeField]
     Preloader preloader;
@@ -13,6 +14,8 @@ public class PreloaderManager: Listener
 
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
+
+    private List<UnityEngine.Object> PreloadedEntities {get; set;}
 
     EntityPoolManager EntityPoolManager { get; set; }
 
@@ -45,7 +48,7 @@ public class PreloaderManager: Listener
                 }
 
                 dynamic preloadedAsset = await PreloadOnAssetType(attribute, preloader);
-                await AddToPool(preloadedAsset);
+                PreloadedEntities.Add(await AddToPool(preloadedAsset));
             }
         }catch (Exception ex)
         {
@@ -54,18 +57,22 @@ public class PreloaderManager: Listener
 
     }
 
-    private async Task AddToPool(dynamic entity)
+    private async Task<UnityEngine.Object> AddToPool(dynamic entity)
     {
         if (entity is GameObject)
         {
            GameObject goEntity = (GameObject)entity;
            await EntityPoolManager.Pool(await EntityPool.From(goEntity.name, goEntity.tag, goEntity.gameObject));
+           return goEntity;
 
         }else if (entity is ScriptableObject)
         {
             ScriptableObject soEntity = (ScriptableObject)entity;
             await EntityPoolManager.Pool(await EntityPool.From(soEntity.name, soEntity.name, soEntity));
+            return soEntity;
         }
+
+        return null;
     }
 
     private async Task<dynamic> PreloadOnAssetType(AssetAttribute attribute, Preloader preloader)

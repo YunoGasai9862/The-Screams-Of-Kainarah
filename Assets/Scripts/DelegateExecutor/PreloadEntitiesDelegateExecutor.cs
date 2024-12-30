@@ -7,11 +7,11 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
 {
 
     [SerializeField]
-    PreloadEntitiesEvent preloadEntitiesEvent;
+    PreloadedEntitiesEvent preloadedEntitiesEvent;
 
     private void Start()
     {
-        preloadEntitiesEvent.AddListener(PreloadEntitiesEventListener);
+        preloadedEntitiesEvent.AddListener(PreloadEntitiesEventListener);
     }
 
     public Task ExecuteDelegateMethod(IDelegate delegateMethod)
@@ -21,39 +21,37 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
         return Task.CompletedTask;
     }
 
-    private async Task ExecuteDelegates(PreloadEntity[] preloadEntities)
+    private async Task ExecuteDelegates(List<UnityEngine.Object> preloadedEntities)
     {
-        await ExecuteDelegatesForScriptableObjects(preloadEntities.Where(pe => pe.EntitySO != null).ToList());
+        await ExecuteDelegatesForScriptableObjects(preloadedEntities.Where(pe => pe is ScriptableObject).Cast<ScriptableObject>().ToList()); //casting is needed
 
-        await ExecuteDelegatesForGameObjects(preloadEntities.Where(pe => pe.EntityMB != null).ToList());
+        await ExecuteDelegatesForGameObjects(preloadedEntities.Where(pe => pe is GameObject).Cast<GameObject>().ToList());
     }
 
-    private Task ExecuteDelegatesForScriptableObjects(List<PreloadEntity> preloadEntities)
+    private Task ExecuteDelegatesForScriptableObjects(List<ScriptableObject> preloadEntities)
     {
         //for now nothing
         return Task.CompletedTask;
     }
 
-    private async Task ExecuteDelegatesForGameObjects(List<PreloadEntity> preloadEntities)
+    private async Task ExecuteDelegatesForGameObjects(List<GameObject> preloadedEntities)
     {
-        foreach (PreloadEntity preloadEntity in preloadEntities)
+        foreach (GameObject preloadEntity in preloadedEntities)
         {
-
-            IDelegate delegateObject = preloadEntity.EntityMB.gameObject.GetComponent<IDelegate>();
+            IDelegate delegateObject = preloadEntity.gameObject.GetComponent<IDelegate>();
 
             Debug.Log($"Found Delegate: {delegateObject}");
 
             await ExecuteDelegateMethod(delegateObject);
-     
+    
         }
-
     }
 
-    private async void PreloadEntitiesEventListener(PreloadEntity[] preloadEntities)
+    private async void PreloadEntitiesEventListener(List<UnityEngine.Object> preloadedEntities)
     {
         Debug.Log("Executing Preload Entities Event Listener");
 
-        await ExecuteDelegates(preloadEntities);
+        await ExecuteDelegates(preloadedEntities);
     }
     
 }
