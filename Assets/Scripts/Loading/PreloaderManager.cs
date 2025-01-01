@@ -15,6 +15,9 @@ public class PreloaderManager : Listener
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
 
+    [SerializeField]
+    PreloadedEntitiesEvent preloadedEntitiesEvent;
+
     private List<UnityEngine.Object> PreloadedEntities {get; set;}
 
     EntityPoolManager EntityPoolManager { get; set; }
@@ -29,7 +32,7 @@ public class PreloaderManager : Listener
 
         await HelperFunctions.SetAsParent(PreloaderInstance.gameObject, gameObject);
 
-        await executePreloadingEvent.AddListener(ExecutePreloadingEventListener);
+        await executePreloadingEvent.AddListener(ExecutePreloading);
     }
 
     private async Task PreloadAssets(Preloader preloader)
@@ -94,9 +97,11 @@ public class PreloaderManager : Listener
 
         return new UnityEngine.Object();
     }
-    private async void ExecutePreloadingEventListener()
+    private async void ExecutePreloading()
     {
         await PreloadAssets(PreloaderInstance);
+
+        await preloadedEntitiesEvent.Invoke(PreloadedEntities);
     }
 
     private Task<Preloader> InstantiatePreloader(Preloader preloader)

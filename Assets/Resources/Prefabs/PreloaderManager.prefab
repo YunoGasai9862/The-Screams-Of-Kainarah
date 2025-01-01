@@ -45,52 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preloader: {fileID: 4044415038464856714, guid: 73d21ff0e657b6d468da55e9905ac64c, type: 3}
-  preloadEntities:
-  - m_assetReference:
-      m_AssetGUID: dcfb91314fa429145a308d707bf9d85d
-      m_SubObjectName: 
-      m_SubObjectGUID: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    m_entityMB: {fileID: 3505954786686626709, guid: dcfb91314fa429145a308d707bf9d85d, type: 3}
-    m_entitySO: {fileID: 0}
-    m_entityType: 0
-  - m_assetReference:
-      m_AssetGUID: 399be5f2e16fa6147acdfdb4b6cf785b
-      m_SubObjectName: 
-      m_SubObjectGUID: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    m_entityMB: {fileID: 0}
-    m_entitySO: {fileID: 11400000, guid: 399be5f2e16fa6147acdfdb4b6cf785b, type: 2}
-    m_entityType: 1
-  - m_assetReference:
-      m_AssetGUID: befef71b16325d7489f61b81a77a9f65
-      m_SubObjectName: 
-      m_SubObjectGUID: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    m_entityMB: {fileID: 6444422951397592158, guid: befef71b16325d7489f61b81a77a9f65, type: 3}
-    m_entitySO: {fileID: 11400000, guid: 399be5f2e16fa6147acdfdb4b6cf785b, type: 2}
-    m_entityType: 0
-  - m_assetReference:
-      m_AssetGUID: 4c9aa242ac42d29478150fb7c866aaf9
-      m_SubObjectName: 
-      m_SubObjectGUID: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    m_entityMB: {fileID: 6444422951397592158, guid: befef71b16325d7489f61b81a77a9f65, type: 3}
-    m_entitySO: {fileID: 11400000, guid: 4c9aa242ac42d29478150fb7c866aaf9, type: 2}
-    m_entityType: 1
-  - m_assetReference:
-      m_AssetGUID: 3cc1420013048a64eb6013b035deb691
-      m_SubObjectName: 
-      m_SubObjectGUID: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    m_entityMB: {fileID: 6444422951397592158, guid: befef71b16325d7489f61b81a77a9f65, type: 3}
-    m_entitySO: {fileID: 11400000, guid: 3cc1420013048a64eb6013b035deb691, type: 2}
-    m_entityType: 1
-  entityPoolEvent: {fileID: 0}
+  entityPoolManagerEvent: {fileID: 0}
   executePreloadingEvent: {fileID: 0}
-  preloadEntitiesEvent: {fileID: 0}
+  preloadedEntitiesEvent: {fileID: 0}

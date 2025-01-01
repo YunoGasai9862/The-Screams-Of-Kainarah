@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06663b0249271164dbc34672ac2a18bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preloadEntitiesEvent: {fileID: 0}
+  preloadedEntitiesEvent: {fileID: 0}

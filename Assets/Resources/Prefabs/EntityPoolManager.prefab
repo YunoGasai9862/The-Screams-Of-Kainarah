@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63e034b9414a8924ca224e8907934f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityPoolEvent: {fileID: 0}
-  entityPoolManagerActiveEvent: {fileID: 0}
+  entityPoolManagerEvent: {fileID: 0}
+  sceneSingletonActiveEvent: {fileID: 0}
