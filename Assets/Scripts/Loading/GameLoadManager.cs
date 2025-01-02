@@ -9,20 +9,13 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate
     GameObject gameLoad;
 
     [SerializeField]
-    EntityPoolManagerEvent entityPoolManagerEvent;
-
-    [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
-
-    private EntityPoolManager EntityPoolManager { get; set; }
 
     public InvokeMethod InvokeCustomMethod { get ; set ; }
 
     private async void Start()
     {
-        await entityPoolManagerEvent.AddListener(EntityPoolManagementEvent);
-
-        gameLoad =  await InstantiateAndPoolGameLoad(gameLoad, EntityPoolManager);
+        gameLoad =  await InstantiateAndPoolGameLoad(gameLoad, SceneSingleton.EntityPoolManager);
 
         await HelperFunctions.SetAsParent(gameLoad, gameObject);
 
@@ -51,10 +44,6 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate
         }
 
         return null;
-    }
-    private void EntityPoolManagementEvent(EntityPoolManager entityPoolManager)
-    {
-        EntityPoolManager = entityPoolManager;
     }
 
 }

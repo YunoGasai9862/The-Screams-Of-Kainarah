@@ -10,9 +10,6 @@ public class PreloaderManager : Listener
     Preloader preloader;
 
     [SerializeField]
-    EntityPoolManagerEvent entityPoolManagerEvent;
-
-    [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
 
     [SerializeField]
@@ -20,13 +17,11 @@ public class PreloaderManager : Listener
 
     private List<UnityEngine.Object> PreloadedEntities {get; set;}
 
-    EntityPoolManager EntityPoolManager { get; set; }
-
     private Preloader PreloaderInstance { get; set; }
 
     private async void Start()
     {
-        await entityPoolManagerEvent.AddListener(EntityPoolManagementEvent);
+        PreloadedEntities = new List<UnityEngine.Object>();
 
         PreloaderInstance = await InstantiatePreloader(preloader);
 
@@ -51,6 +46,7 @@ public class PreloaderManager : Listener
                 }
 
                 dynamic preloadedAsset = await PreloadOnAssetType(attribute, preloader);
+                Debug.Log($"Preloaded Asset {preloadedAsset}");
                 PreloadedEntities.Add(await AddToPool(preloadedAsset));
             }
         }catch (Exception ex)
@@ -62,20 +58,23 @@ public class PreloaderManager : Listener
 
     private async Task<UnityEngine.Object> AddToPool(dynamic entity)
     {
+        Debug.Log($"Dynamic: {entity}");
         if (entity is GameObject)
         {
            GameObject goEntity = (GameObject)entity;
-           await EntityPoolManager.Pool(await EntityPool.From(goEntity.name, goEntity.tag, goEntity.gameObject));
+           await SceneSingleton.EntityPoolManager.Pool(await EntityPool.From(goEntity.name, goEntity.tag, goEntity.gameObject));
            return goEntity;
 
         }else if (entity is ScriptableObject)
         {
+            Debug.Log("Inside Scriptable");
             ScriptableObject soEntity = (ScriptableObject)entity;
-            await EntityPoolManager.Pool(await EntityPool.From(soEntity.name, soEntity.name, soEntity));
+            Debug.Log($"SO Entity {soEntity}");
+            await SceneSingleton.EntityPoolManager.Pool(await EntityPool.From(soEntity.name, soEntity.name, soEntity));
             return soEntity;
         }
 
-        return null;
+        return new UnityEngine.Object();
     }
 
     private async Task<dynamic> PreloadOnAssetType(AssetAttribute attribute, Preloader preloader)
@@ -110,12 +109,6 @@ public class PreloaderManager : Listener
 
         return Task.FromResult(preloaderInstance.GetComponent<Preloader>());
     }
-
-    private void EntityPoolManagementEvent(EntityPoolManager entityPoolManager)
-    {
-        EntityPoolManager = entityPoolManager;
-    }
-
     public override Task Listen()
     {
         //do it some other way

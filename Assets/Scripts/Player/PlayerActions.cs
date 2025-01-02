@@ -77,8 +77,6 @@ public class PlayerActions : MonoBehaviour
         SlidingController.onSlideEvent.AddListener(CharacterSpeedHandler);
     }
 
-
-
     private void Update()
     {
         if (!SceneSingleton.IsDialogueTakingPlace)
