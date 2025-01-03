@@ -80,6 +80,7 @@ public class EntityPoolManager: MonoBehaviour, IEntityPoolManager
 
     private void SceneSingletonActiveEventListener()
     {
+        Debug.Log("This!");
         entityPoolManagerEvent.Invoke(this);
     }
 }

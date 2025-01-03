@@ -11,13 +11,14 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
 
+    [SerializeField]
+    SceneSingletonActiveEvent sceneSingletonActiveEvent;
+
     public InvokeMethod InvokeCustomMethod { get ; set ; }
 
     private async void Start()
     {
-        gameLoad =  await InstantiateAndPoolGameLoad(gameLoad, SceneSingleton.EntityPoolManager);
-
-        await HelperFunctions.SetAsParent(gameLoad, gameObject);
+        await sceneSingletonActiveEvent.AddListener(Run);
 
         InvokeCustomMethod += InvokePreloading;
     }
@@ -44,6 +45,12 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate
         }
 
         return null;
+    }
+    private async void Run()
+    {
+        gameLoad = await InstantiateAndPoolGameLoad(gameLoad, SceneSingleton.EntityPoolManager);
+
+        await HelperFunctions.SetAsParent(gameLoad, gameObject);
     }
 
 }
