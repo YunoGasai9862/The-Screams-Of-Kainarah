@@ -20,8 +20,6 @@ public class EntityPoolManager: MonoBehaviour, IEntityPoolManager
     {
         entityPoolDict.Add(entityPool.Tag, entityPool);
 
-        Debug.Log($"{entityPool.ToString()}");
-
         return Task.CompletedTask;
     }
     public Task UnPool(string tag)
@@ -80,7 +78,6 @@ public class EntityPoolManager: MonoBehaviour, IEntityPoolManager
 
     private void SceneSingletonActiveEventListener()
     {
-        Debug.Log("This!");
         entityPoolManagerEvent.Invoke(this);
     }
 }

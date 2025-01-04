@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class PreloaderManager : Listener
+public class PreloaderManager : MonoBehaviour
 {
     [SerializeField]
     Preloader preloader;
@@ -58,7 +58,6 @@ public class PreloaderManager : Listener
 
     private async Task<UnityEngine.Object> AddToPool(dynamic entity)
     {
-        Debug.Log($"Dynamic: {entity}");
         if (entity is GameObject)
         {
            GameObject goEntity = (GameObject)entity;
@@ -67,9 +66,7 @@ public class PreloaderManager : Listener
 
         }else if (entity is ScriptableObject)
         {
-            Debug.Log("Inside Scriptable");
             ScriptableObject soEntity = (ScriptableObject)entity;
-            Debug.Log($"SO Entity {soEntity}");
             await SceneSingleton.EntityPoolManager.Pool(await EntityPool.From(soEntity.name, soEntity.name, soEntity));
             return soEntity;
         }
@@ -108,10 +105,5 @@ public class PreloaderManager : Listener
         GameObject preloaderInstance = Instantiate(preloader.gameObject);
 
         return Task.FromResult(preloaderInstance.GetComponent<Preloader>());
-    }
-    public override Task Listen()
-    {
-        //do it some other way
-        return Task.CompletedTask;
     }
 }

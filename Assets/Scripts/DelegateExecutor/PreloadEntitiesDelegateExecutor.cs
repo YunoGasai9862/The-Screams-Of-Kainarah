@@ -40,7 +40,7 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
         {
             IDelegate delegateObject = preloadEntity.gameObject.GetComponent<IDelegate>();
 
-            Debug.Log($"Found Delegate: {delegateObject}");
+            Debug.Log($"Found Delegate: {delegateObject} InvokeCustomMethod {delegateObject.InvokeCustomMethod}");
 
             await ExecuteDelegateMethod(delegateObject);
     
@@ -49,8 +49,6 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
 
     private async void PreloadEntitiesEventListener(List<UnityEngine.Object> preloadedEntities)
     {
-        Debug.Log("Executing Preload Entities Event Listener");
-
         await ExecuteDelegates(preloadedEntities);
     }
     

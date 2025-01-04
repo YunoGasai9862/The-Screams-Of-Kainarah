@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "Audio")]
-public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IMediatorNotificationListener, IDelegate, IActiveNotifier
+public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate
 {
     private string PersistencePath { get; set; }
 
@@ -18,8 +18,6 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     private DialoguesAndOptions DialoguesAndOptions { get; set; }
     
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
-
-    private IMediator Mediator { get; set; }
     
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
@@ -30,15 +28,14 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     {
         PersistencePath = Application.persistentDataPath;
 
+        InvokeCustomMethod += GetDialoguesAndOptions;
     }
-
     private async void Start()
     {
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UIIActiveNotifier
         await audioGeneratedEvent.AddListener(AudioGeneratedListener);
-
-        InvokeCustomMethod += GetDialoguesAndOptions;
     }
+
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
     {
         Task<List<Dialogues>> extractedTextAudioPaths = ExtractTextAudioPaths(dialogueAndOptions);
@@ -99,19 +96,6 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     public Task<EntityPoolManager> GetEntityManager()
     {
         return Task.FromResult(SceneSingleton.EntityPoolManager);
-    }
-
-    public async Task NotifyAboutActivation()
-    {
-        //dont use this bilal, maybe initiliaze in order, get the mediator out there first and let it scream so the childs can know that its active, and then they can relay anyting back to it.
-        //let mediator notify the objecst - it should be initialized at last especially during the preloading period
-        await Mediator.NotifyManager(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
-    }
-
-    public async Task MediatorNotificationListener()
-    {
-        //lets call this here when mediator pings back
-        await NotifyAboutActivation();
     }
 }
 

@@ -8,10 +8,8 @@ using System.Linq;
 [Asset(AssetType = Asset.SCRIPTABLE_OBJECT, AddressLabel = "DialoguesAndOptions")]
 [CreateAssetMenu(fileName = "Dialogues And Options", menuName = "Dialogue And Options")]
 [Serializable]
-public class DialoguesAndOptions: ScriptableObject, IActiveNotifier, IMediatorNotificationListener
+public class DialoguesAndOptions: ScriptableObject
 {
-    private IMediator Mediator { get; set; }
-
     [Serializable]
     public class DialogueSystem
     {
@@ -28,14 +26,4 @@ public class DialoguesAndOptions: ScriptableObject, IActiveNotifier, IMediatorNo
     }
 
     public List<DialogueSystem> exchange;
-
-    public async Task NotifyAboutActivation()
-    {
-       await Mediator.NotifyManager(new NotifyPackage { EntityNameToNotify = "NotificationManager", NotifierEntity = new NotifierEntity { IsActive = true, Tag = this.name } });
-    }
-
-    public async Task MediatorNotificationListener()
-    {
-        await NotifyAboutActivation();
-    }
 }
