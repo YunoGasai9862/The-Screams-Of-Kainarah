@@ -123,5 +123,4 @@ public class SceneSingleton : MonoBehaviour
     {
         EntityPoolManager = entityPoolManager;
     }
-
 }

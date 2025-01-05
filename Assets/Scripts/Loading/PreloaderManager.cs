@@ -95,6 +95,8 @@ public class PreloaderManager : MonoBehaviour
     }
     private async void ExecutePreloading()
     {
+        Debug.Log("Here");
+
         await PreloadAssets(PreloaderInstance);
 
         await preloadedEntitiesEvent.Invoke(PreloadedEntities);

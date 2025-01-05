@@ -5,6 +5,7 @@ using UnityEngine.AddressableAssets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 public class GameLoad : MonoBehaviour, IGameLoad
 {
@@ -19,6 +20,8 @@ public class GameLoad : MonoBehaviour, IGameLoad
 
     private Task InvokeGameLoadManagerMethod()
     {
+
+        Debug.Log("Here!!");
 
         GameLoadManagerReference.InvokeCustomMethod();
 

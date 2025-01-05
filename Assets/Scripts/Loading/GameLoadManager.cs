@@ -2,8 +2,9 @@ using UnityEngine;
 using System;
 using System.Threading.Tasks;
 using static IDelegate;
+using System.Threading;
 
-public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate
+public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate, IObserverAsync<SceneSingleton>
 {
     [SerializeField]
     GameObject gameLoad;
@@ -53,4 +54,8 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate
         await HelperFunctions.SetAsParent(gameLoad, gameObject);
     }
 
+    public Task OnNotify(SceneSingleton Data, CancellationToken _token)
+    {
+        throw new NotImplementedException();
+    }
 }

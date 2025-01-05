@@ -30,7 +30,6 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
 
     private Task ExecuteDelegatesForScriptableObjects(List<ScriptableObject> preloadEntities)
     {
-        //for now nothing
         return Task.CompletedTask;
     }
 
