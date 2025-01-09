@@ -7,10 +7,16 @@
 
 //or we are using the subjects, then only ping back that particular subject, instead of all of them!!!
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 public class SceneSingletonDelegator : IDelegator
 {
+    private Observers<SceneSingleton> m_observers = new Observers<SceneSingleton>();    
+
+    private Queue<Action> pendingCalls = new Queue<Action>();
     public Task NotifyListenerAsync()
     {
         throw new System.NotImplementedException();
