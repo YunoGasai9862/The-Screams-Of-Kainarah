@@ -11,18 +11,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine;
 
-public class SceneSingletonDelegator : IDelegator
+public class SceneSingletonDelegator : IDelegator<SceneSingleton>
 {
-    private Observers<SceneSingleton> m_observers = new Observers<SceneSingleton>();    
+    [SerializeField]
+    SceneSingleton sceneSingleton;
 
-    private Queue<Action> pendingCalls = new Queue<Action>();
+    private Observers<SceneSingleton> m_observers = new Observers<SceneSingleton>();
+
+    public Observers<SceneSingleton> Observers { get => m_observers;  set => m_observers = value; }
+
     public Task NotifyListenerAsync()
     {
         throw new System.NotImplementedException();
     }
 
-    public Task NotifySubjectAsync()
+    public Task NotifySubjectsAsync()
     {
         throw new System.NotImplementedException();
     }

@@ -1,7 +1,8 @@
 using System.Threading.Tasks;
-public interface IDelegator
+public interface IDelegator<T>
 {
-    public Task NotifySubjectAsync();
+    public Observers<T> Observers { get; set; }
+    public Task NotifySubjectsAsync();
 
     public Task NotifyListenerAsync();
 }

@@ -53,27 +53,4 @@ public class SubjectsToBeNotifiedV2<T> //for player
 
 }
 
-public class Observers<T>
-{
-    private Queue<IObserver<T>> m_observers = new Queue<IObserver<T>>();
-
-    public Queue<IObserver<T>> ObserverEntities { set => m_observers = value; get => m_observers; }
-
-    public void EnqueueSubject(IObserver<T> observer)
-    {
-        m_observers.Enqueue(observer);
-    }
-
-    public void DequeueSubject(IObserver<T> observer)
-    {
-        m_observers.Dequeue();
-    }
-    public void NotifyObservers(T value, SemaphoreSlim lockingThread = null)
-    {
-        foreach (var observer in m_observers)
-        {
-            observer.OnNotify(value, lockingThread);
-        }
-    }
-}
 
