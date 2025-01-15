@@ -5,17 +5,17 @@ using UnityEngine;
 
 public class EnemyObserverListener : MonoBehaviour
 {
-    private SubjectsToBeNotifiedV2<Collider2D> enemyColliderSubjects=new();
+    private ObserverExtended<Collider2D, bool, string> enemyColliderSubjects=new();
     private EnemyObserverPattern enemyObserverPattern;
 
-    public SubjectsToBeNotifiedV2<Collider2D> getenemyColliderSubjects {get=> enemyColliderSubjects;}
+    public ObserverExtended<Collider2D, bool, string> getenemyColliderSubjects {get=> enemyColliderSubjects;}
 
     private void Awake()
     {
         enemyObserverPattern = FindFirstObjectByType<EnemyObserverPattern>();
     }
 
-    public async Task<bool> EnemyActionDelegator<Z, Y>(Collider2D collider, GameObject enemyObject, Z animName, Y animValue)
+    public async Task<bool> EnemyActionDelegator(Collider2D collider, GameObject enemyObject, string animName, bool animValue)
     {
         enemyObserverPattern.enemyGameObject = enemyObject; //sets it for use    
         getenemyColliderSubjects.NotifyObservers(collider, animName, animValue);

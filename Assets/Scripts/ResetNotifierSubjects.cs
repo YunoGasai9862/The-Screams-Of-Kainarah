@@ -1,7 +1,7 @@
 public class ResetNotifierSubjects
 {
-    private static SubjectsToBeNotified<DialoguesAndOptions> _dialogueAndOptions = new SubjectsToBeNotified<DialoguesAndOptions>();
+    private static ObserverList<DialoguesAndOptions> _dialogueAndOptions = new ObserverList<DialoguesAndOptions>();
 
-    public static SubjectsToBeNotified<DialoguesAndOptions> DialogueAndOptions { get => _dialogueAndOptions; }
+    public static ObserverList<DialoguesAndOptions> DialogueAndOptions { get => _dialogueAndOptions; }
 
 }

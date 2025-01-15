@@ -13,22 +13,22 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class SceneSingletonDelegator : IDelegator<SceneSingleton>
+public class SceneSingletonDelegator : IDelegatorAsync<SceneSingleton>
 {
-    [SerializeField]
-    SceneSingleton sceneSingleton;
 
-    private Observers<SceneSingleton> m_observers = new Observers<SceneSingleton>();
+    private ObserverQueue<SceneSingleton> m_observers = new ObserverQueue<SceneSingleton>();
+    private Subject m_subject = new Subject();
 
-    public Observers<SceneSingleton> Observers { get => m_observers;  set => m_observers = value; }
+    public ObserverQueue<SceneSingleton> Observers { get => m_observers; }
+    public Subject Subject { get => m_subject; }
 
-    public Task NotifyListenerAsync()
+    public Task NotifyObservers()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
-    public Task NotifySubjectsAsync()
+    public Task NotifySubject()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 }

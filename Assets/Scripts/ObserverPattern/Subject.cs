@@ -13,3 +13,18 @@ public class Subject<T>
         MSubject.OnNotifySubject(value, lockingThread);
     }
 }
+
+
+public class Subject
+{
+    private ISubjectAsync MSubject { get; set; }
+    public void SetSubject(ISubjectAsync subject)
+    {
+        MSubject = subject;
+    }
+
+    public void NotifySubject(SemaphoreSlim lockingThread = null)
+    {
+        MSubject.OnNotifySubject(lockingThread);
+    }
+}

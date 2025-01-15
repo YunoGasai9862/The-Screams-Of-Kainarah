@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class EnemyObserverPattern : MonoBehaviour, IObserverV2<Collider2D>
+public class EnemyObserverPattern : MonoBehaviour, IExtendedObserver<Collider2D, bool, string>
 {
     private enum enemyAttack
     {
@@ -61,9 +61,9 @@ public class EnemyObserverPattern : MonoBehaviour, IObserverV2<Collider2D>
         await Task.Delay(1000);
         _gameObjectCreator.DestroyGameObject(0f);
     }
-    public void OnNotify<Z, Y>(Collider2D Data, Z value1, Y value2)
+    public void OnNotify(Collider2D Data, string value1, bool value2)
     {
-        if(enemyActionDictionary.TryGetValue(Data.tag, out var func))  //put it in the func
+        if (enemyActionDictionary.TryGetValue(Data.tag, out var func))  //put it in the func
         {
             func.Invoke(value1, value2);//similar to doing it separately
         }
@@ -107,6 +107,4 @@ public class EnemyObserverPattern : MonoBehaviour, IObserverV2<Collider2D>
             }
         }
     }
-
-
 }

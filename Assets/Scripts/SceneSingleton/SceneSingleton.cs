@@ -1,9 +1,10 @@
 using EnemyHittable;
 using PlayerHittableItemsNS;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class SceneSingleton : MonoBehaviour
+public class SceneSingleton : MonoBehaviour, ISubjectAsync
 {
     [Header("Scriptable Objects")]
     [SerializeField] private DialoguesAndOptions dialogueAndOptions;
@@ -17,6 +18,9 @@ public class SceneSingleton : MonoBehaviour
     [SerializeField] private DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
     [SerializeField] private EntityPoolManagerEvent entityPoolManagerEvent;
     [SerializeField] private SceneSingletonActiveEvent sceneSingletonActiveEvent;
+
+    [Header("Delegators")]
+    [SerializeField] private SceneSingletonDelegator sceneSingletonDelegator;
 
     public static DialoguesAndOptions DialogueAndOptions => _instance.dialogueAndOptions;
     public static PlayerHittableItemsScriptableObject PlayerHittableItems => _instance.playerHittableItemsScriptableObject;
@@ -40,6 +44,11 @@ public class SceneSingleton : MonoBehaviour
     private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; }//fill only once
     public static bool IsDialogueTakingPlace { get; set; }
     public static EntityPoolManager EntityPoolManager { get; set; }
+
+    private void OnEnable()
+    {
+        sceneSingletonDelegator.Subject.SetSubject(this);
+    }
 
     private void Awake()
     {
@@ -67,6 +76,7 @@ public class SceneSingleton : MonoBehaviour
         //scene singleton related invocations
         sceneSingletonActiveEvent.Invoke();
     }
+
     public static SpawnPlayer PlayerSpawn()
     {
         return _getSpawnPlayerScript;
@@ -122,5 +132,10 @@ public class SceneSingleton : MonoBehaviour
     private void EntityPoolManagerEvent(EntityPoolManager entityPoolManager)
     {
         EntityPoolManager = entityPoolManager;
+    }
+
+    public Task OnNotifySubject(params object[] optional)
+    {
+        throw new System.NotImplementedException();
     }
 }
