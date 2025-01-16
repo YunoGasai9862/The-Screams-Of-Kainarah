@@ -1,6 +1,7 @@
 using System.Threading;
+using System.Threading.Tasks;
 
-public class Subject<T>
+public class SubjectAsync<T>
 {
     private ISubjectAsync<T> MSubject {  get; set; }   
     public void SetSubject(ISubjectAsync<T> subject)
@@ -8,14 +9,14 @@ public class Subject<T>
         MSubject = subject; 
     }
 
-    public void NotifySubject(T value, SemaphoreSlim lockingThread = null)
+    public async Task NotifySubject(T value, SemaphoreSlim lockingThread = null)
     {
-        MSubject.OnNotifySubject(value, lockingThread);
+       await MSubject.OnNotifySubject(value, lockingThread);
     }
 }
 
 
-public class Subject
+public class SubjectAsync
 {
     private ISubjectAsync MSubject { get; set; }
     public void SetSubject(ISubjectAsync subject)
@@ -23,8 +24,8 @@ public class Subject
         MSubject = subject;
     }
 
-    public void NotifySubject(SemaphoreSlim lockingThread = null)
+    public async Task NotifySubject(SemaphoreSlim lockingThread = null)
     {
-        MSubject.OnNotifySubject(lockingThread);
+        await MSubject.OnNotifySubject(lockingThread);
     }
 }

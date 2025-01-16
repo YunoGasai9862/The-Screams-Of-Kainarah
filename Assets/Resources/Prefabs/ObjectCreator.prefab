@@ -51,3 +51,6 @@ MonoBehaviour:
   enemyHittableObject: {fileID: 11400000, guid: 717a65d109ef0bf4fbb68f126e57dccd, type: 2}
   eventStringMapperScriptableObject: {fileID: 11400000, guid: 899a6aea60b3d104eabcaddbafb365d9, type: 2}
   dialogueTakingPlaceEvent: {fileID: 0}
+  entityPoolManagerEvent: {fileID: 0}
+  sceneSingletonActiveEvent: {fileID: 0}
+  sceneSingletonDelegator: {fileID: 0}

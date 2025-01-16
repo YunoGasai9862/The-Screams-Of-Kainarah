@@ -1,20 +1,16 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Threading;
 
-public class EntityPoolManager: MonoBehaviour, IEntityPoolManager
+public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, IObserverAsync<SceneSingleton>
 {
     [SerializeField]
     EntityPoolManagerEvent entityPoolManagerEvent;
     [SerializeField]
-    SceneSingletonActiveEvent sceneSingletonActiveEvent;
+    SceneSingletonDelegator sceneSingletonDelegator;
 
     private Dictionary<string, EntityPool> entityPoolDict = new Dictionary<string, EntityPool>();
-
-    private void OnEnable()
-    {
-        sceneSingletonActiveEvent.AddListener(SceneSingletonActiveEventListener);
-    }
 
     public Task Pool(EntityPool entityPool)
     {
@@ -76,8 +72,13 @@ public class EntityPoolManager: MonoBehaviour, IEntityPoolManager
         return tcs.Task;
     }
 
-    private void SceneSingletonActiveEventListener()
+    private async Task InvokeEntityPoolManagerEvent()
     {
-        entityPoolManagerEvent.Invoke(this);
+       await entityPoolManagerEvent.Invoke(this);
+    }
+
+    public async Task OnNotify(SceneSingleton Data, CancellationToken _token)
+    {
+        await InvokeEntityPoolManagerEvent();
     }
 }

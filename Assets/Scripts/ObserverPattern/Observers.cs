@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 public class ObserverQueue<T>
 {
@@ -7,7 +8,7 @@ public class ObserverQueue<T>
 
     public Queue<IObserver<T>> ObserverEntities { set => m_observers = value; get => m_observers; }
 
-    public void EnqueueSubject(IObserver<T> observer)
+    public void EnqueueObserver(IObserver<T> observer)
     {
         m_observers.Enqueue(observer);
     }

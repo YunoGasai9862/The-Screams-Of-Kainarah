@@ -10,17 +10,15 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate, IObser
     GameObject gameLoad;
 
     [SerializeField]
-    ExecutePreloadingEvent executePreloadingEvent;
+    SceneSingletonDelegator sceneSingletonDelegator;
 
     [SerializeField]
-    SceneSingletonActiveEvent sceneSingletonActiveEvent;
+    ExecutePreloadingEvent executePreloadingEvent;
 
     public InvokeMethod InvokeCustomMethod { get ; set ; }
 
-    private async void Start()
+    private void Start()
     {
-        await sceneSingletonActiveEvent.AddListener(Run);
-
         InvokeCustomMethod += InvokePreloading;
     }
 
@@ -47,15 +45,16 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate, IObser
 
         return null;
     }
-    private async void Run()
+
+    private async Task Run()
     {
         gameLoad = await InstantiateAndPoolGameLoad(gameLoad, SceneSingleton.EntityPoolManager);
 
         await HelperFunctions.SetAsParent(gameLoad, gameObject);
     }
 
-    public Task OnNotify(SceneSingleton Data, CancellationToken _token)
+    public async Task OnNotify(SceneSingleton Data, CancellationToken _token)
     {
-        throw new NotImplementedException();
+        await Run();
     }
 }

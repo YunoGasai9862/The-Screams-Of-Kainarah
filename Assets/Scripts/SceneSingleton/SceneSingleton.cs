@@ -17,7 +17,6 @@ public class SceneSingleton : MonoBehaviour, ISubjectAsync
     [Header("Events")]
     [SerializeField] private DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
     [SerializeField] private EntityPoolManagerEvent entityPoolManagerEvent;
-    [SerializeField] private SceneSingletonActiveEvent sceneSingletonActiveEvent;
 
     [Header("Delegators")]
     [SerializeField] private SceneSingletonDelegator sceneSingletonDelegator;
@@ -73,8 +72,6 @@ public class SceneSingleton : MonoBehaviour, ISubjectAsync
         dialogueTakingPlaceEvent.AddListener(DialougeTakingPlace);
         entityPoolManagerEvent.AddListener(EntityPoolManagerEvent);
 
-        //scene singleton related invocations
-        sceneSingletonActiveEvent.Invoke();
     }
 
     public static SpawnPlayer PlayerSpawn()
