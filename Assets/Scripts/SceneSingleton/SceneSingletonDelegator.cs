@@ -14,12 +14,14 @@ public class SceneSingletonDelegator : MonoBehaviour, IDelegatorAsync<SceneSingl
     private CancellationToken CancellationToken { get; set; }
     private CancellationTokenSource CancellationTokenSource { get; set; }
 
-    private SubjectAsync m_subject = new SubjectAsync();
-    public SubjectAsync Subject { get => m_subject; }
+    private SubjectAsync<IObserverAsync<SceneSingleton>> m_subject = new SubjectAsync<IObserverAsync<SceneSingleton>>();
+    public SubjectAsync<IObserverAsync<SceneSingleton>> Subject { get => m_subject; }
 
     private void Start()
     {
-        //initialize tokens!
+        CancellationTokenSource = new CancellationTokenSource();
+
+        CancellationToken = CancellationTokenSource.Token;  
     }
 
     public async Task NotifyObserver(IObserverAsync<SceneSingleton> observer, SceneSingleton value)
@@ -27,13 +29,8 @@ public class SceneSingletonDelegator : MonoBehaviour, IDelegatorAsync<SceneSingl
         await observer.OnNotify(value, CancellationToken);
     }
 
-    public async Task NotifySubject()
+    public async Task NotifySubject(IObserverAsync<SceneSingleton> observer)
     {
-        await Subject.NotifySubject();
-    }
-
-    public Task NotifySubject(IObserverAsync<SceneSingleton> observer)
-    {
-        throw new NotImplementedException();
+        await Subject.NotifySubject(observer);
     }
 }

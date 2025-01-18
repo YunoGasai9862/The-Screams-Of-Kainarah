@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class SceneSingleton : MonoBehaviour, ISubjectAsync
+public class SceneSingleton : MonoBehaviour, ISubjectAsync<IObserverAsync<SceneSingleton>>
 {
     [Header("Scriptable Objects")]
     [SerializeField] private DialoguesAndOptions dialogueAndOptions;
@@ -131,8 +131,8 @@ public class SceneSingleton : MonoBehaviour, ISubjectAsync
         EntityPoolManager = entityPoolManager;
     }
 
-    public Task OnNotifySubject(params object[] optional)
+    public async Task OnNotifySubject(IObserverAsync<SceneSingleton> data, params object[] optional)
     {
-        throw new System.NotImplementedException();
+       await sceneSingletonDelegator.NotifyObserver(data, this);
     }
 }

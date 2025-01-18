@@ -79,6 +79,11 @@ public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, IObserverAsyn
 
     public async Task OnNotify(SceneSingleton Data, CancellationToken _token)
     {
+        if (_token.IsCancellationRequested)
+        {
+            return;
+        }
+
         await InvokeEntityPoolManagerEvent();
     }
 }
