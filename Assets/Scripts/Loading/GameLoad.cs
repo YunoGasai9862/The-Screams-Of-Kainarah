@@ -9,25 +9,6 @@ using System.Threading;
 
 public class GameLoad : MonoBehaviour, IGameLoad
 {
-    private GameLoadManager GameLoadManagerReference { get; set; }
-
-    private async void Start()
-    {
-        GameLoadManagerReference = gameObject.GetComponentInParent<GameLoadManager>();
-
-        await InvokeGameLoadManagerMethod();
-    }
-
-    private Task InvokeGameLoadManagerMethod()
-    {
-
-        Debug.Log("Here!!");
-
-        GameLoadManagerReference.InvokeCustomMethod();
-
-        return Task.CompletedTask;
-    }
-
     public async Task<UnityEngine.Object> PreloadAsset<T, Z>(Z label, Asset assetType) where T : UnityEngine.Object
     {
         AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(label);

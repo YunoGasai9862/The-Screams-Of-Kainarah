@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using static IDelegate;
 using System.Threading;
 
-public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate, IObserverAsync<SceneSingleton>
+public class GameLoadManager: MonoBehaviour, IGameLoadManager, IObserverAsync<SceneSingleton>
 {
     [SerializeField]
     GameObject gameLoad;
@@ -15,16 +15,14 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate, IObser
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
 
-    public InvokeMethod InvokeCustomMethod { get ; set ; }
-
-    private void Start()
+    private async void Start()
     {
-        InvokeCustomMethod += InvokePreloading;
+       await sceneSingletonDelegator.NotifySubject(this);
     }
 
-    private void InvokePreloading()
+    private async Task InvokePreloading()
     {
-        executePreloadingEvent.Invoke();
+        await executePreloadingEvent.Invoke();
     }
 
     public async Task<GameObject> InstantiateAndPoolGameLoad(GameObject gameLoad, EntityPoolManager entityPoolManager)
@@ -46,15 +44,24 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IDelegate, IObser
         return null;
     }
 
-    private async Task Run()
+    private async Task Run(SceneSingleton sceneSingleton)
     {
-        gameLoad = await InstantiateAndPoolGameLoad(gameLoad, SceneSingleton.EntityPoolManager);
+        Debug.Log(sceneSingleton.EntityPoolManager);
+
+        gameLoad = await InstantiateAndPoolGameLoad(gameLoad, sceneSingleton.EntityPoolManager);
 
         await HelperFunctions.SetAsParent(gameLoad, gameObject);
     }
 
-    public async Task OnNotify(SceneSingleton Data, CancellationToken _token)
+    public async Task OnNotify(SceneSingleton data, CancellationToken _token)
     {
-        await Run();
+        if (_token.IsCancellationRequested)
+        {
+            return;
+        }
+
+        await Run(data);
+
+        await InvokePreloading();
     }
 }

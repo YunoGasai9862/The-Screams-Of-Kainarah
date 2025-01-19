@@ -1,18 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction
+public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction, IObserverAsync<SceneSingleton>
 {
+
+    [SerializeField]
+    SceneSingletonDelegator sceneSingletonDelegator;
+
     private GameLoad PooledGameLoad { get; set; }
     private EntityPool EntityPool { get; set; }
     private EntityPoolManager EntityPoolManagerReference { get; set; }
 
+
     private async void Awake()
     {
-        await InitializePoolObjects();
+        await sceneSingletonDelegator.NotifySubject(this);
     }
 
     public Task ExecuteAction<TAction>(Action<TAction> action, TAction value)
@@ -39,9 +45,9 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
         return await PooledGameLoad.PreloadAssets<Z>(label, asset);
     }
 
-    private async Task InitializePoolObjects()
+    private async Task InitializePoolObjects(SceneSingleton sceneSingleton)
     {
-        EntityPoolManagerReference = SceneSingleton.EntityPoolManager;
+        EntityPoolManagerReference = sceneSingleton.EntityPoolManager;
 
         EntityPool = await EntityPoolManagerReference.GetPooledEntity(Constants.GAME_PRELOAD);
 
@@ -51,5 +57,15 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
         }
 
         PooledGameLoad = ((GameObject)EntityPool.Entity).GetComponent<GameLoad>();
+    }
+
+    public async Task OnNotify(SceneSingleton data, CancellationToken token)
+    {
+        if (token.IsCancellationRequested)
+        {
+            return;
+        }
+
+        await InitializePoolObjects(data);
     }
 }

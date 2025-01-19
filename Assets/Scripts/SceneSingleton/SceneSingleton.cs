@@ -42,7 +42,7 @@ public class SceneSingleton : MonoBehaviour, ISubjectAsync<IObserverAsync<SceneS
     private static SceneSingleton _instance;
     private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; }//fill only once
     public static bool IsDialogueTakingPlace { get; set; }
-    public static EntityPoolManager EntityPoolManager { get; set; }
+    public EntityPoolManager EntityPoolManager { get; set; }
 
     private void OnEnable()
     {

@@ -3,11 +3,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
 [Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "Audio")]
-public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate
+public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate, IObserverAsync<SceneSingleton>
 {
     private string PersistencePath { get; set; }
 
@@ -93,9 +94,19 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
         DialoguesAndOptions = (DialoguesAndOptions) (dialogues.Entity);
     }
 
-    public Task<EntityPoolManager> GetEntityManager()
+    public Task<EntityPoolManager> GetEntityManager(SceneSingleton sceneSingleton)
     {
-        return Task.FromResult(SceneSingleton.EntityPoolManager);
+        return Task.FromResult(sceneSingleton.EntityPoolManager);
+    }
+
+    public async Task OnNotify(SceneSingleton data, CancellationToken token)
+    {
+        if (token.IsCancellationRequested)
+        {
+            return;
+        }
+
+
     }
 }
 
