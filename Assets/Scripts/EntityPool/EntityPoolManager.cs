@@ -74,6 +74,8 @@ public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, IObserverAsyn
 
     private async Task InvokeEntityPoolManagerEvent()
     {
+       Debug.Log("Here");
+
        await entityPoolManagerEvent.Invoke(this);
     }
 

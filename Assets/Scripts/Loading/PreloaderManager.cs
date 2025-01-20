@@ -4,6 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Threading;
+using System.Collections;
 
 public class PreloaderManager : MonoBehaviour, IObserverAsync<SceneSingleton>
 {
@@ -22,6 +23,7 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<SceneSingleton>
     private List<UnityEngine.Object> PreloadedEntities {get; set;}
 
     private Preloader PreloaderInstance { get; set; }
+    private SceneSingleton SceneSingletonInstance { get; set; }
 
     private async void Start()
     {
@@ -36,7 +38,7 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<SceneSingleton>
         await executePreloadingEvent.AddListener(ExecutePreloading);
     }
 
-    private async Task PreloadAssets(Preloader preloader)
+    private async Task PreloadAssets(Preloader preloader, SceneSingleton sceneSingleton)
     {
         try
         {
@@ -54,7 +56,7 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<SceneSingleton>
                 dynamic preloadedAsset = await PreloadOnAssetType(attribute, preloader);
                 Debug.Log($"Preloaded Asset {preloadedAsset}");
 
-               // PreloadedEntities.Add(await AddToPool(preloadedAsset));
+                PreloadedEntities.Add(await AddToPool(preloadedAsset, sceneSingleton));
             }
         }catch (Exception ex)
         {
@@ -102,10 +104,9 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<SceneSingleton>
     }
     private async void ExecutePreloading()
     {
-        
-        //create a coroutine that pause the execution until On Notify is completed for this script!!
+        StartCoroutine(Helper.WaitUntilVariableIsNonNull<SceneSingleton>(SceneSingletonInstance));
 
-        await PreloadAssets(PreloaderInstance);
+        await PreloadAssets(PreloaderInstance, SceneSingletonInstance);
 
         await preloadedEntitiesEvent.Invoke(PreloadedEntities);
     }
@@ -124,6 +125,10 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<SceneSingleton>
             return;
         }
 
-        //create a coroutine that doesn't 
+        SceneSingletonInstance = data;
+
+        await Task.CompletedTask;
     }
+
+
 }

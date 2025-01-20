@@ -16,7 +16,6 @@ public class SceneSingleton : MonoBehaviour, ISubjectAsync<IObserverAsync<SceneS
 
     [Header("Events")]
     [SerializeField] private DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
-    [SerializeField] private EntityPoolManagerEvent entityPoolManagerEvent;
 
     [Header("Delegators")]
     [SerializeField] private SceneSingletonDelegator sceneSingletonDelegator;
@@ -42,8 +41,6 @@ public class SceneSingleton : MonoBehaviour, ISubjectAsync<IObserverAsync<SceneS
     private static SceneSingleton _instance;
     private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; }//fill only once
     public static bool IsDialogueTakingPlace { get; set; }
-    public EntityPoolManager EntityPoolManager { get; set; }
-
     private void OnEnable()
     {
         sceneSingletonDelegator.Subject.SetSubject(this);
@@ -70,8 +67,6 @@ public class SceneSingleton : MonoBehaviour, ISubjectAsync<IObserverAsync<SceneS
 
         //events
         dialogueTakingPlaceEvent.AddListener(DialougeTakingPlace);
-        entityPoolManagerEvent.AddListener(EntityPoolManagerEvent);
-
     }
 
     public static SpawnPlayer PlayerSpawn()
@@ -124,11 +119,6 @@ public class SceneSingleton : MonoBehaviour, ISubjectAsync<IObserverAsync<SceneS
     private void DialougeTakingPlace(bool isTakingPlace)
     {
         IsDialogueTakingPlace = isTakingPlace;
-    }
-
-    private void EntityPoolManagerEvent(EntityPoolManager entityPoolManager)
-    {
-        EntityPoolManager = entityPoolManager;
     }
 
     public async Task OnNotifySubject(IObserverAsync<SceneSingleton> data, params object[] optional)

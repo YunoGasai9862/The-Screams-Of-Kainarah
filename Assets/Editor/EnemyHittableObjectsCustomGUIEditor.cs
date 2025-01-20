@@ -22,20 +22,8 @@ public class EnemyHittableManagerCustomUIEditor : Editor
         }
 
         for (int i = 0; i < enemyHittableObject.elements.Length; i++)
-        {
-
-            SerializedProperty eachElement = serializedObject.FindProperty("elements").GetArrayElementAtIndex(i); //at each index
-
-            SerializedProperty isInstantiable = eachElement.FindPropertyRelative("IsinstantiableObject");
-
-            SerializedProperty instantiateAfterAttack = eachElement.FindPropertyRelative("instantiateAfterAttack");
-
-            SerializedProperty objectTag = eachElement.FindPropertyRelative("ObjectTag");
-
-
-            EditorGUI.BeginChangeCheck(); //keeps track of changes
-
-            EditorGUILayout.PropertyField(isInstantiable);
+            protected
+                        EditorGUILayout.PropertyField(isInstantiable);
 
             if (isInstantiable.boolValue) //if True/exists
             {

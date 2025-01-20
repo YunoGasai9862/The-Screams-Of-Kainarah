@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "Audio")]
-public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate, IObserverAsync<SceneSingleton>
+public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate, IObserverAsync<EntityPoolManager>
 {
     private string PersistencePath { get; set; }
 
     private bool AudioGenerated { get; set; } = false;
 
-    private EntityPoolManager EntityPoolManager { get; set; }
-
     private DialoguesAndOptions DialoguesAndOptions { get; set; }
+
+    private EntityPoolManager EntityPoolManager { get; set; }
     
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
     
@@ -24,6 +24,8 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
+    [SerializeField]
+    EntityPoolManagerDelegator entityPoolManagerDelegator;
 
     private void Awake()
     {
@@ -33,6 +35,8 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     }
     private async void Start()
     {
+
+        await entityPoolManagerDelegator.NotifySubject(this);
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UIIActiveNotifier
         await audioGeneratedEvent.AddListener(AudioGeneratedListener);
     }
@@ -87,26 +91,23 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
     public async void GetDialoguesAndOptions()
     {
-        EntityPoolManager = await GetEntityManager();
+        StartCoroutine(Helper.WaitUntilVariableIsNonNull<EntityPoolManager>(EntityPoolManager));
 
         EntityPool dialogues = await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
 
         DialoguesAndOptions = (DialoguesAndOptions) (dialogues.Entity);
     }
 
-    public Task<EntityPoolManager> GetEntityManager(SceneSingleton sceneSingleton)
-    {
-        return Task.FromResult(sceneSingleton.EntityPoolManager);
-    }
-
-    public async Task OnNotify(SceneSingleton data, CancellationToken token)
+    public async Task OnNotify(EntityPoolManager data, CancellationToken token)
     {
         if (token.IsCancellationRequested)
         {
             return;
         }
 
+        EntityPoolManager = data;
 
+        await Task.CompletedTask;
     }
 }
 

@@ -60,6 +60,8 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IObserverAsync<Sc
             return;
         }
 
+        Debug.Log(data);
+
         await Run(data);
 
         await InvokePreloading();
