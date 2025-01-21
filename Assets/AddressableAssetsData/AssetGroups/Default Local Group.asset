@@ -52,11 +52,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - CheckPoints
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: befef71b16325d7489f61b81a77a9f65
-    m_Address: Prefabs/Mediator
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dcfb91314fa429145a308d707bf9d85d
     m_Address: Assets/Resources_moved/Prefabs/AudioPreload.prefab
     m_ReadOnly: 0

@@ -3,14 +3,17 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Threading;
 
-public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, IObserverAsync<SceneSingleton>
+public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, ISubjectAsync<IObserverAsync<EntityPoolManager>>
 {
     [SerializeField]
-    EntityPoolManagerEvent entityPoolManagerEvent;
-    [SerializeField]
-    SceneSingletonDelegator sceneSingletonDelegator;
+    EntityPoolManagerDelegator entityPoolManagerDelegator;
 
     private Dictionary<string, EntityPool> entityPoolDict = new Dictionary<string, EntityPool>();
+
+    private void Start()
+    {
+        entityPoolManagerDelegator.Subject.SetSubject(this);
+    }
 
     public Task Pool(EntityPool entityPool)
     {
@@ -72,20 +75,8 @@ public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, IObserverAsyn
         return tcs.Task;
     }
 
-    private async Task InvokeEntityPoolManagerEvent()
+    public async Task OnNotifySubject(IObserverAsync<EntityPoolManager> data, params object[] optional)
     {
-       Debug.Log("Here");
-
-       await entityPoolManagerEvent.Invoke(this);
-    }
-
-    public async Task OnNotify(SceneSingleton Data, CancellationToken _token)
-    {
-        if (_token.IsCancellationRequested)
-        {
-            return;
-        }
-
-        await InvokeEntityPoolManagerEvent();
+        await entityPoolManagerDelegator.NotifyObserver(data, this);
     }
 }

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Collections;
 
-public class PreloaderManager : MonoBehaviour, IObserverAsync<SceneSingleton>
+public class PreloaderManager : MonoBehaviour, IObserverAsync<EntityPoolManager>
 {
     [SerializeField]
     Preloader preloader;
@@ -18,16 +18,16 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<SceneSingleton>
     PreloadedEntitiesEvent preloadedEntitiesEvent;
 
     [SerializeField]
-    SceneSingletonDelegator sceneSingletonDelegator;
+    EntityPoolManagerDelegator entityPoolManagerDelegator;
 
     private List<UnityEngine.Object> PreloadedEntities {get; set;}
 
     private Preloader PreloaderInstance { get; set; }
-    private SceneSingleton SceneSingletonInstance { get; set; }
+    private EntityPoolManager EntityPoolManager { get; set; }
 
     private async void Start()
     {
-        await sceneSingletonDelegator.NotifySubject(this);
+        await entityPoolManagerDelegator.NotifySubject(this);
 
         PreloadedEntities = new List<UnityEngine.Object>();
 
@@ -38,7 +38,7 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<SceneSingleton>
         await executePreloadingEvent.AddListener(ExecutePreloading);
     }
 
-    private async Task PreloadAssets(Preloader preloader, SceneSingleton sceneSingleton)
+    private async Task PreloadAssets(Preloader preloader, EntityPoolManager entityPoolManager)
     {
         try
         {
@@ -56,7 +56,7 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<SceneSingleton>
                 dynamic preloadedAsset = await PreloadOnAssetType(attribute, preloader);
                 Debug.Log($"Preloaded Asset {preloadedAsset}");
 
-                PreloadedEntities.Add(await AddToPool(preloadedAsset, sceneSingleton));
+                PreloadedEntities.Add(await AddToPool(preloadedAsset, entityPoolManager));
             }
         }catch (Exception ex)
         {
@@ -65,18 +65,18 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<SceneSingleton>
 
     }
 
-    private async Task<UnityEngine.Object> AddToPool(dynamic entity, SceneSingleton sceneSingleton)
+    private async Task<UnityEngine.Object> AddToPool(dynamic entity, EntityPoolManager entityPoolManager)
     {
         if (entity is GameObject)
         {
            GameObject goEntity = (GameObject)entity;
-           await sceneSingleton.EntityPoolManager.Pool(await EntityPool.From(goEntity.name, goEntity.tag, goEntity.gameObject));
+           await entityPoolManager.Pool(await EntityPool.From(goEntity.name, goEntity.tag, goEntity.gameObject));
            return goEntity;
 
         }else if (entity is ScriptableObject)
         {
             ScriptableObject soEntity = (ScriptableObject)entity;
-            await sceneSingleton.EntityPoolManager.Pool(await EntityPool.From(soEntity.name, soEntity.name, soEntity));
+            await entityPoolManager.Pool(await EntityPool.From(soEntity.name, soEntity.name, soEntity));
             return soEntity;
         }
 
@@ -104,9 +104,9 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<SceneSingleton>
     }
     private async void ExecutePreloading()
     {
-        StartCoroutine(Helper.WaitUntilVariableIsNonNull<SceneSingleton>(SceneSingletonInstance));
+        StartCoroutine(Helper.WaitUntilVariableIsNonNull<EntityPoolManager>(EntityPoolManager));
 
-        await PreloadAssets(PreloaderInstance, SceneSingletonInstance);
+        await PreloadAssets(PreloaderInstance, EntityPoolManager);
 
         await preloadedEntitiesEvent.Invoke(PreloadedEntities);
     }
@@ -118,17 +118,15 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<SceneSingleton>
         return Task.FromResult(preloaderInstance.GetComponent<Preloader>());
     }
 
-    public async Task OnNotify(SceneSingleton data, CancellationToken token)
+    public async Task OnNotify(EntityPoolManager data, CancellationToken token)
     {
         if (token.IsCancellationRequested)
         {
             return;
         }
 
-        SceneSingletonInstance = data;
+        EntityPoolManager = data;
 
         await Task.CompletedTask;
     }
-
-
 }

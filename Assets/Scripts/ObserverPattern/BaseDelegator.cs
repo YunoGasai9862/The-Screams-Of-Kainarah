@@ -10,15 +10,19 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegatorAsync<T>
     protected CancellationToken CancellationToken { get; set; }
     protected CancellationTokenSource CancellationTokenSource { get; set; }
 
-    public abstract SubjectAsync<IObserverAsync<T>> Subject { get; }
+    public SubjectAsync<IObserverAsync<T>> Subject { get; set; }
 
-    public async Task NotifyObserver(IObserverAsync<T> observer, T value)
+    public virtual async Task NotifyObserver(IObserverAsync<T> observer, T value)
     {
+        Debug.Log($"Here in Notify Observer! {observer} {value}");
+
         await observer.OnNotify(value, CancellationToken);
     }
 
-    public async Task NotifySubject(IObserverAsync<T> observer)
+    public virtual async Task NotifySubject(IObserverAsync<T> observer)
     {
+        Debug.Log($"Notifying Subject: {Subject} from observer {observer} Main Subject {Subject.GetSubject()}");
+
         await Subject.NotifySubject(observer);
     }
 }

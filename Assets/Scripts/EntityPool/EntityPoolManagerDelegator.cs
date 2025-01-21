@@ -7,14 +7,22 @@ using UnityEngine;
 
 public class EntityPoolManagerDelegator : BaseDelegator<EntityPoolManager>  
 {
-
-    private SubjectAsync<IObserverAsync<EntityPoolManager>> m_subject = new SubjectAsync<IObserverAsync<EntityPoolManager>>();
-    public override SubjectAsync<IObserverAsync<EntityPoolManager>> Subject { get => m_subject; }
-
-    private void Start()
+    private void OnEnable()
     {
+        Subject = new SubjectAsync<IObserverAsync<EntityPoolManager>>();
+
         CancellationTokenSource = new CancellationTokenSource();
 
         CancellationToken = CancellationTokenSource.Token;
     }
+
+    public override async Task NotifySubject(IObserverAsync<EntityPoolManager> observer)
+    {
+        StartCoroutine(Helper.WaitUntilVariableIsNonNull(Subject.GetSubject()));
+
+        Debug.Log($"Final Subject: {Subject.GetSubject()}");
+
+        await base.NotifySubject(observer);
+    }
+
 }

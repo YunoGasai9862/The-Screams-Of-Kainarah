@@ -4,20 +4,20 @@ using System.Threading.Tasks;
 using static IDelegate;
 using System.Threading;
 
-public class GameLoadManager: MonoBehaviour, IGameLoadManager, IObserverAsync<SceneSingleton>
+public class GameLoadManager: MonoBehaviour, IGameLoadManager, IObserverAsync<EntityPoolManager>
 {
     [SerializeField]
     GameObject gameLoad;
 
     [SerializeField]
-    SceneSingletonDelegator sceneSingletonDelegator;
+    EntityPoolManagerDelegator entityPoolManagerDelegator;
 
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
 
     private async void Start()
     {
-       await sceneSingletonDelegator.NotifySubject(this);
+       await entityPoolManagerDelegator.NotifySubject(this);
     }
 
     private async Task InvokePreloading()
@@ -44,23 +44,19 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IObserverAsync<Sc
         return null;
     }
 
-    private async Task Run(SceneSingleton sceneSingleton)
+    private async Task Run(EntityPoolManager entityPoolManager)
     {
-        Debug.Log(sceneSingleton.EntityPoolManager);
-
-        gameLoad = await InstantiateAndPoolGameLoad(gameLoad, sceneSingleton.EntityPoolManager);
+        gameLoad = await InstantiateAndPoolGameLoad(gameLoad, entityPoolManager);
 
         await HelperFunctions.SetAsParent(gameLoad, gameObject);
     }
 
-    public async Task OnNotify(SceneSingleton data, CancellationToken _token)
+    public async Task OnNotify(EntityPoolManager data, CancellationToken _token)
     {
         if (_token.IsCancellationRequested)
         {
             return;
         }
-
-        Debug.Log(data);
 
         await Run(data);
 

@@ -7,14 +7,12 @@ using UnityEngine;
 
 public class SceneSingletonDelegator : BaseDelegator<SceneSingleton>
 {
-
-    private SubjectAsync<IObserverAsync<SceneSingleton>> m_subject = new SubjectAsync<IObserverAsync<SceneSingleton>>();
-    public override SubjectAsync<IObserverAsync<SceneSingleton>> Subject { get => m_subject; }
-
-    private void Start()
+    private void OnEnable()
     {
+        Subject = new SubjectAsync<IObserverAsync<SceneSingleton>>();
+
         CancellationTokenSource = new CancellationTokenSource();
 
-        CancellationToken = CancellationTokenSource.Token;  
+        CancellationToken = CancellationTokenSource.Token;
     }
 }

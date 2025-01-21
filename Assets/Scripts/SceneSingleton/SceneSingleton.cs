@@ -41,10 +41,6 @@ public class SceneSingleton : MonoBehaviour, ISubjectAsync<IObserverAsync<SceneS
     private static SceneSingleton _instance;
     private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; }//fill only once
     public static bool IsDialogueTakingPlace { get; set; }
-    private void OnEnable()
-    {
-        sceneSingletonDelegator.Subject.SetSubject(this);
-    }
 
     private void Awake()
     {
@@ -67,6 +63,10 @@ public class SceneSingleton : MonoBehaviour, ISubjectAsync<IObserverAsync<SceneS
 
         //events
         dialogueTakingPlaceEvent.AddListener(DialougeTakingPlace);
+
+        //delegators
+        sceneSingletonDelegator.Subject.SetSubject(this);
+
     }
 
     public static SpawnPlayer PlayerSpawn()
