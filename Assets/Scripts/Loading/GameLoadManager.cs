@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using static IDelegate;
 using System.Threading;
 
-public class GameLoadManager: MonoBehaviour, IGameLoadManager, IObserverAsync<EntityPoolManager>
+public class GameLoadManager: MonoBehaviour, IGameLoadManager, IObserver<EntityPoolManager>
 {
     [SerializeField]
     GameObject gameLoad;
@@ -15,9 +15,9 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IObserverAsync<En
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
 
-    private async void Start()
+    private void Start()
     {
-       await entityPoolManagerDelegator.NotifySubject(this);
+       StartCoroutine(entityPoolManagerDelegator.NotifySubject(this));
     }
 
     private async Task InvokePreloading()
@@ -51,15 +51,10 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IObserverAsync<En
         await HelperFunctions.SetAsParent(gameLoad, gameObject);
     }
 
-    public async Task OnNotify(EntityPoolManager data, CancellationToken _token)
+    public async void OnNotify(EntityPoolManager data, params object[] optional)
     {
-        if (_token.IsCancellationRequested)
-        {
-            return;
-        }
+       await Run(data);
 
-        await Run(data);
-
-        await InvokePreloading();
+       await InvokePreloading();
     }
 }

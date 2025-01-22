@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "Audio")]
-public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate, IObserverAsync<EntityPoolManager>
+public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate, IObserver<EntityPoolManager>
 {
     private string PersistencePath { get; set; }
 
@@ -36,7 +36,7 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     private async void Start()
     {
 
-        await entityPoolManagerDelegator.NotifySubject(this);
+        StartCoroutine(entityPoolManagerDelegator.NotifySubject(this));
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UIIActiveNotifier
         await audioGeneratedEvent.AddListener(AudioGeneratedListener);
     }
@@ -98,16 +98,9 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
         DialoguesAndOptions = (DialoguesAndOptions) (dialogues.Entity);
     }
 
-    public async Task OnNotify(EntityPoolManager data, CancellationToken token)
+    public void OnNotify(EntityPoolManager data, params object[] optional)
     {
-        if (token.IsCancellationRequested)
-        {
-            return;
-        }
-
         EntityPoolManager = data;
-
-        await Task.CompletedTask;
     }
 }
 

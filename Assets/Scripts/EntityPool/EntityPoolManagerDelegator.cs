@@ -9,20 +9,6 @@ public class EntityPoolManagerDelegator : BaseDelegator<EntityPoolManager>
 {
     private void OnEnable()
     {
-        Subject = new SubjectAsync<IObserverAsync<EntityPoolManager>>();
-
-        CancellationTokenSource = new CancellationTokenSource();
-
-        CancellationToken = CancellationTokenSource.Token;
+        Subject = new Subject<IObserver<EntityPoolManager>>();
     }
-
-    public override async Task NotifySubject(IObserverAsync<EntityPoolManager> observer)
-    {
-        StartCoroutine(Helper.WaitUntilVariableIsNonNull(Subject.GetSubject()));
-
-        Debug.Log($"Final Subject: {Subject.GetSubject()}");
-
-        await base.NotifySubject(observer);
-    }
-
 }

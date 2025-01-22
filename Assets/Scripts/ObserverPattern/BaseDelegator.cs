@@ -5,24 +5,25 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public abstract class BaseDelegator<T> : MonoBehaviour, IDelegatorAsync<T>
+public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 {
-    protected CancellationToken CancellationToken { get; set; }
-    protected CancellationTokenSource CancellationTokenSource { get; set; }
+    public Subject<IObserver<T>> Subject { get; set; }
 
-    public SubjectAsync<IObserverAsync<T>> Subject { get; set; }
-
-    public virtual async Task NotifyObserver(IObserverAsync<T> observer, T value)
+    public IEnumerator NotifyObserver(IObserver<T> observer, T value)
     {
-        Debug.Log($"Here in Notify Observer! {observer} {value}");
+        observer.OnNotify(value);
 
-        await observer.OnNotify(value, CancellationToken);
+        yield return null;
     }
 
-    public virtual async Task NotifySubject(IObserverAsync<T> observer)
+    public IEnumerator NotifySubject(IObserver<T> observer)
     {
         Debug.Log($"Notifying Subject: {Subject} from observer {observer} Main Subject {Subject.GetSubject()}");
 
-        await Subject.NotifySubject(observer);
+        StartCoroutine(Helper.WaitUntilVariableIsNonNull(Subject.GetSubject()));
+
+        Subject.NotifySubject(observer);
+
+        yield return null;
     }
 }

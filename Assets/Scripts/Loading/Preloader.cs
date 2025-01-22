@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction, IObserverAsync<EntityPoolManager>
+public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction, IObserver<EntityPoolManager>
 {
 
     [SerializeField]
@@ -14,9 +15,9 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     private GameLoad PooledGameLoad { get; set; }
     private EntityPool EntityPool { get; set; }
 
-    private async void Awake()
+    private void Awake()
     {
-        await entityPoolManagerDelegator.NotifySubject(this);
+        StartCoroutine(entityPoolManagerDelegator.NotifySubject(this));
     }
 
     public Task ExecuteAction<TAction>(Action<TAction> action, TAction value)
@@ -26,7 +27,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
         return Task.CompletedTask;
     }
 
-    public Task ExecuteGenericAction(Action action)
+    public Task ExecuteGenericAction(System.Action action)
     {
         action.Invoke();
 
@@ -55,13 +56,8 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
         PooledGameLoad = ((GameObject)EntityPool.Entity).GetComponent<GameLoad>();
     }
 
-    public async Task OnNotify(EntityPoolManager data, CancellationToken token)
+    public async void OnNotify(EntityPoolManager data, params object[] optional)
     {
-        if (token.IsCancellationRequested)
-        {
-            return;
-        }
-
         await InitializePoolObjects(data);
     }
 }

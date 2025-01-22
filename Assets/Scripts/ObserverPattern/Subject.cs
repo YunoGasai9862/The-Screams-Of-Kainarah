@@ -32,6 +32,34 @@ public class SubjectAsync<T>
     }
 }
 
+/// <summary>
+/// Represents a subject for synchronous observer pattern
+/// <typeparam name="T">The type T here is the observer's interface type that the subject notifies</typeparam>
+/// </summary>
+public class Subject<T>
+{
+    private ISubject<T> MSubject { get; set; }
+
+    public void SetSubject(ISubject<T> subject)
+    {
+        Debug.Log($"Subject received : {subject}");
+
+        MSubject = subject;
+    }
+
+    public ISubject<T> GetSubject()
+    {
+        return MSubject;
+    }
+
+    public void NotifySubject(T value, SemaphoreSlim lockingThread = null)
+    {
+        Debug.Log($"Here inside Subject Notify {value} {lockingThread} {MSubject}");
+
+        MSubject.OnNotifySubject(value, lockingThread);
+    }
+}
+
 
 public class SubjectAsync
 {

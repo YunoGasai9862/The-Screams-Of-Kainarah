@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Collections;
 
-public class PreloaderManager : MonoBehaviour, IObserverAsync<EntityPoolManager>
+public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
 {
     [SerializeField]
     Preloader preloader;
@@ -27,7 +27,7 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<EntityPoolManager>
 
     private async void Start()
     {
-        await entityPoolManagerDelegator.NotifySubject(this);
+        StartCoroutine(entityPoolManagerDelegator.NotifySubject(this));
 
         PreloadedEntities = new List<UnityEngine.Object>();
 
@@ -102,13 +102,20 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<EntityPoolManager>
 
         return new UnityEngine.Object();
     }
-    private async void ExecutePreloading()
+    private void ExecutePreloading()
     {
-        StartCoroutine(Helper.WaitUntilVariableIsNonNull<EntityPoolManager>(EntityPoolManager));
+        StartCoroutine(ExecutePreloadAssets());
+    }
 
-        await PreloadAssets(PreloaderInstance, EntityPoolManager);
+    private IEnumerator ExecutePreloadAssets()
+    {
+        yield return StartCoroutine(Helper.WaitUntilVariableIsNonNull<EntityPoolManager>(EntityPoolManager));
 
-        await preloadedEntitiesEvent.Invoke(PreloadedEntities);
+        Debug.Log($"Logic Resumed: {EntityPoolManager}");
+
+        _ = PreloadAssets(PreloaderInstance, EntityPoolManager);
+
+        preloadedEntitiesEvent.Invoke(PreloadedEntities);
     }
 
     private Task<Preloader> InstantiatePreloader(Preloader preloader)
@@ -118,15 +125,8 @@ public class PreloaderManager : MonoBehaviour, IObserverAsync<EntityPoolManager>
         return Task.FromResult(preloaderInstance.GetComponent<Preloader>());
     }
 
-    public async Task OnNotify(EntityPoolManager data, CancellationToken token)
+    public void OnNotify(EntityPoolManager data, params object[] optional)
     {
-        if (token.IsCancellationRequested)
-        {
-            return;
-        }
-
         EntityPoolManager = data;
-
-        await Task.CompletedTask;
     }
 }

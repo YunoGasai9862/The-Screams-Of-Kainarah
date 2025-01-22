@@ -1,7 +1,8 @@
 
+
 public interface IObserver<T>
 {
-    public abstract void OnNotify(T Data, params object[] optional);
+    public abstract void OnNotify(T data, params object[] optional);
 
 }
 public interface IExtendedObserver<T, Y, Z>

@@ -9,10 +9,6 @@ public class SceneSingletonDelegator : BaseDelegator<SceneSingleton>
 {
     private void OnEnable()
     {
-        Subject = new SubjectAsync<IObserverAsync<SceneSingleton>>();
-
-        CancellationTokenSource = new CancellationTokenSource();
-
-        CancellationToken = CancellationTokenSource.Token;
+        Subject = new Subject<IObserver<SceneSingleton>>();
     }
 }

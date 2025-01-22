@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Threading;
 
-public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, ISubjectAsync<IObserverAsync<EntityPoolManager>>
+public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, ISubject<IObserver<EntityPoolManager>>
 {
     [SerializeField]
     EntityPoolManagerDelegator entityPoolManagerDelegator;
@@ -75,8 +75,8 @@ public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, ISubjectAsync
         return tcs.Task;
     }
 
-    public async Task OnNotifySubject(IObserverAsync<EntityPoolManager> data, params object[] optional)
+    public void OnNotifySubject(IObserver<EntityPoolManager> data, params object[] optional)
     {
-        await entityPoolManagerDelegator.NotifyObserver(data, this);
+        entityPoolManagerDelegator.NotifyObserver(data, this);
     }
 }

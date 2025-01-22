@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class SceneSingleton : MonoBehaviour, ISubjectAsync<IObserverAsync<SceneSingleton>>
+public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
 {
     [Header("Scriptable Objects")]
     [SerializeField] private DialoguesAndOptions dialogueAndOptions;
@@ -121,8 +121,8 @@ public class SceneSingleton : MonoBehaviour, ISubjectAsync<IObserverAsync<SceneS
         IsDialogueTakingPlace = isTakingPlace;
     }
 
-    public async Task OnNotifySubject(IObserverAsync<SceneSingleton> data, params object[] optional)
+    public void OnNotifySubject(IObserver<SceneSingleton> data, params object[] optional)
     {
-       await sceneSingletonDelegator.NotifyObserver(data, this);
+        sceneSingletonDelegator.NotifyObserver(data, this);
     }
 }
