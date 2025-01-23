@@ -11,7 +11,6 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
 
     [SerializeField]
     EntityPoolManagerDelegator entityPoolManagerDelegator;
-
     private GameLoad PooledGameLoad { get; set; }
     private EntityPool EntityPool { get; set; }
 
@@ -44,9 +43,9 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
         return await PooledGameLoad.PreloadAssets<Z>(label, asset);
     }
 
-    private async Task InitializePoolObjects(EntityPoolManager entityPoolManager)
+    private Task InitializePoolObjects(EntityPoolManager entityPoolManager)
     {
-        EntityPool = await entityPoolManager.GetPooledEntity(Constants.GAME_PRELOAD);
+        EntityPool = entityPoolManager.GetPooledEntity(Constants.GAME_PRELOAD);
 
         if (((GameObject)(EntityPool.Entity)).GetComponent<GameLoad>() == null)
         {
@@ -54,10 +53,14 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
         }
 
         PooledGameLoad = ((GameObject)EntityPool.Entity).GetComponent<GameLoad>();
+
+        return Task.CompletedTask;
     }
 
     public async void OnNotify(EntityPoolManager data, params object[] optional)
     {
+        Debug.Log("Inside On Notify for Preloader");
+
         await InitializePoolObjects(data);
     }
 }

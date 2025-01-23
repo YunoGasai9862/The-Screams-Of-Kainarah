@@ -31,7 +31,7 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IObserver<EntityP
         {
             GameObject gameLoadObject = Instantiate(gameLoad);
 
-            await entityPoolManager.Pool(await EntityPool.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject));
+            entityPoolManager.Pool(await EntityPool.From(gameLoadObject.name, gameLoadObject.tag, gameLoadObject));
 
             return gameLoadObject;
 

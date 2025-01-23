@@ -89,13 +89,18 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
         StartCoroutine(PreloadAudio(dialogueAndOptions));
     }
 
-    public async void GetDialoguesAndOptions()
+    public void GetDialoguesAndOptions()
     {
-        StartCoroutine(Helper.WaitUntilVariableIsNonNull<EntityPoolManager>(EntityPoolManager));
+        StartCoroutine(FetchDialoguesAndOptions());
+    }
 
-        EntityPool dialogues = await EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
+    private IEnumerator FetchDialoguesAndOptions()
+    {
+        yield return new WaitUntil(() => EntityPoolManager != null);
 
-        DialoguesAndOptions = (DialoguesAndOptions) (dialogues.Entity);
+        EntityPool dialogues = EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
+
+        DialoguesAndOptions = (DialoguesAndOptions)(dialogues.Entity);
     }
 
     public void OnNotify(EntityPoolManager data, params object[] optional)

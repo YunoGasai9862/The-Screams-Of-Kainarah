@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 public interface IEntityPoolManager
 {
-    public Task Pool(EntityPool entityPool);
-    public Task UnPool(string tag);
-    public Task<EntityPool> GetPooledEntity(string tag);
-    public Task Activate(string tag);
-    public Task Deactivate(string tag);
+    public void Pool(EntityPool entityPool);
+    public void UnPool(string tag);
+    public EntityPool GetPooledEntity(string tag);
+    public void Activate(string tag);
+    public void Deactivate(string tag);
 }

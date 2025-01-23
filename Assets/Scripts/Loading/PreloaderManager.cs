@@ -70,13 +70,13 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
         if (entity is GameObject)
         {
            GameObject goEntity = (GameObject)entity;
-           await entityPoolManager.Pool(await EntityPool.From(goEntity.name, goEntity.tag, goEntity.gameObject));
+           entityPoolManager.Pool(await EntityPool.From(goEntity.name, goEntity.tag, goEntity.gameObject));
            return goEntity;
 
         }else if (entity is ScriptableObject)
         {
             ScriptableObject soEntity = (ScriptableObject)entity;
-            await entityPoolManager.Pool(await EntityPool.From(soEntity.name, soEntity.name, soEntity));
+            entityPoolManager.Pool(await EntityPool.From(soEntity.name, soEntity.name, soEntity));
             return soEntity;
         }
 
@@ -109,7 +109,7 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
 
     private IEnumerator ExecutePreloadAssets()
     {
-        yield return StartCoroutine(Helper.WaitUntilVariableIsNonNull<EntityPoolManager>(EntityPoolManager));
+        yield return new WaitUntil(() => EntityPoolManager != null);
 
         Debug.Log($"Logic Resumed: {EntityPoolManager}");
 

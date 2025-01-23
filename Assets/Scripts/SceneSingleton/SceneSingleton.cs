@@ -123,6 +123,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
 
     public void OnNotifySubject(IObserver<SceneSingleton> data, params object[] optional)
     {
-        sceneSingletonDelegator.NotifyObserver(data, this);
+       StartCoroutine(sceneSingletonDelegator.NotifyObserver(data, this));
     }
 }

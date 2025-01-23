@@ -18,9 +18,9 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
     public IEnumerator NotifySubject(IObserver<T> observer)
     {
-        Debug.Log($"Notifying Subject: {Subject} from observer {observer} Main Subject {Subject.GetSubject()}");
+        yield return new WaitUntil(() => Subject.GetSubject() != null);
 
-        StartCoroutine(Helper.WaitUntilVariableIsNonNull(Subject.GetSubject()));
+        Debug.Log($"Notifying Subject: {Subject} from observer {observer} Main Subject {Subject.GetSubject()}");
 
         Subject.NotifySubject(observer);
 
