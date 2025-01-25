@@ -9,7 +9,7 @@ using System.Collections;
 public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
 {
     [SerializeField]
-    Preloader preloader;
+    GameObject preloader;
 
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
@@ -18,7 +18,7 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
     PreloadedEntitiesEvent preloadedEntitiesEvent;
 
     [SerializeField]
-    EntityPoolManagerDelegator entityPoolManagerDelegator;
+    public EntityPoolManagerDelegator entityPoolManagerDelegator;
 
     private List<UnityEngine.Object> PreloadedEntities {get; set;}
 
@@ -118,9 +118,9 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
         preloadedEntitiesEvent.Invoke(PreloadedEntities);
     }
 
-    private Task<Preloader> InstantiatePreloader(Preloader preloader)
+    private Task<Preloader> InstantiatePreloader(GameObject preloader)
     {
-        GameObject preloaderInstance = Instantiate(preloader.gameObject);
+        GameObject preloaderInstance = Instantiate(preloader);
 
         return Task.FromResult(preloaderInstance.GetComponent<Preloader>());
     }

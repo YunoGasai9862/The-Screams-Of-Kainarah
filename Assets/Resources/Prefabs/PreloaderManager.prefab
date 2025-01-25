@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16009595bc0e9554da60565946ddd00f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preloader: {fileID: 4044415038464856714, guid: 73d21ff0e657b6d468da55e9905ac64c, type: 3}
-  entityPoolManagerEvent: {fileID: 0}
-  executePreloadingEvent: {fileID: 0}
-  preloadedEntitiesEvent: {fileID: 0}
+  preloader: {fileID: 8377574916852525441, guid: 73d21ff0e657b6d468da55e9905ac64c, type: 3}
+  executePreloadingEvent: {fileID: 3697975506600083185, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  preloadedEntitiesEvent: {fileID: 5122167041935025614, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  entityPoolManagerDelegator: {fileID: 6266329437134348001, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}

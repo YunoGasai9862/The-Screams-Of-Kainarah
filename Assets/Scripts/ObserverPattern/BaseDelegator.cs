@@ -1,8 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
@@ -18,9 +14,11 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
     public IEnumerator NotifySubject(IObserver<T> observer)
     {
+        Debug.Log($"Before Notifying Subject: {Subject} from observer {observer} Main Subject {Subject.GetSubject()}");
+
         yield return new WaitUntil(() => Subject.GetSubject() != null);
 
-        Debug.Log($"Notifying Subject: {Subject} from observer {observer} Main Subject {Subject.GetSubject()}");
+        Debug.Log($"After Notifying Subject: {Subject} from observer {observer} Main Subject {Subject.GetSubject()}");
 
         Subject.NotifySubject(observer);
 

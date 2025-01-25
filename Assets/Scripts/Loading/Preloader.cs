@@ -1,25 +1,27 @@
-using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction, IObserver<EntityPoolManager>
 {
-
-    [SerializeField]
-    EntityPoolManagerDelegator entityPoolManagerDelegator;
+    //use same instance!
+    private EntityPoolManagerDelegator m_entityPoolManagerDelegator;
     private GameLoad PooledGameLoad { get; set; }
     private EntityPool EntityPool { get; set; }
 
-    private void Awake()
+    private void Start()
     {
-        StartCoroutine(entityPoolManagerDelegator.NotifySubject(this));
+        m_entityPoolManagerDelegator = GetComponentInParent<PreloaderManager>().entityPoolManagerDelegator;
+
+        //resolve this issue, its happening with AudioPreload as well! - it's instead pointing to stale reference/old reference, hence its always null!
+        Debug.Log(m_entityPoolManagerDelegator);
+        Debug.Log(m_entityPoolManagerDelegator.Subject);
+        Debug.Log(m_entityPoolManagerDelegator.Subject.GetSubject());
+
+        StartCoroutine(m_entityPoolManagerDelegator.NotifySubject(this));
     }
 
-    public Task ExecuteAction<TAction>(Action<TAction> action, TAction value)
+    public Task ExecuteAction<TAction>(System.Action<TAction> action, TAction value)
     {
         action.Invoke(value);
 
@@ -49,7 +51,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
 
         if (((GameObject)(EntityPool.Entity)).GetComponent<GameLoad>() == null)
         {
-            throw new ApplicationException("Game Load Not Found!");
+            throw new System.ApplicationException("Game Load Not Found!");
         }
 
         PooledGameLoad = ((GameObject)EntityPool.Entity).GetComponent<GameLoad>();
@@ -61,6 +63,6 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     {
         Debug.Log("Inside On Notify for Preloader");
 
-        await InitializePoolObjects(data);
+        await InitializePoolObjects(data); ;
     }
 }
