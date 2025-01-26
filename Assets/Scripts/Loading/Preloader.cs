@@ -1,22 +1,17 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using static ExceptionList;
 
 public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAction, IObserver<EntityPoolManager>
 {
-    //use same instance!
     private EntityPoolManagerDelegator m_entityPoolManagerDelegator;
     private GameLoad PooledGameLoad { get; set; }
     private EntityPool EntityPool { get; set; }
 
     private void Start()
     {
-        m_entityPoolManagerDelegator = GetComponentInParent<PreloaderManager>().entityPoolManagerDelegator;
-
-        //resolve this issue, its happening with AudioPreload as well! - it's instead pointing to stale reference/old reference, hence its always null!
-        Debug.Log(m_entityPoolManagerDelegator);
-        Debug.Log(m_entityPoolManagerDelegator.Subject);
-        Debug.Log(m_entityPoolManagerDelegator.Subject.GetSubject());
+        m_entityPoolManagerDelegator = Helper.GetEntityPoolManagerDelegator();
 
         StartCoroutine(m_entityPoolManagerDelegator.NotifySubject(this));
     }

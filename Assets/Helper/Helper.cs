@@ -2,8 +2,9 @@ using NUnit.Framework;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
+using static ExceptionList;
 
-public class Helper
+public class Helper: MonoBehaviour
 {
     public static Task<string[]> SplitStringOnSeparator(string text, string separator)
     {
@@ -22,5 +23,17 @@ public class Helper
         Debug.Log($"Waiting for the variable to become non null : {variable}");
 
         yield return new WaitUntil(() => variable != null);
+    }
+
+    public static EntityPoolManagerDelegator GetEntityPoolManagerDelegator()
+    {
+        EntityPoolManagerDelegator delegator = FindFirstObjectByType<EntityPoolManagerDelegator>();
+
+        if (delegator == null)
+        {
+            throw new DelegatorNotFoundException("Entity Pool Manager Delegator Not Found in the Scene");
+        }
+
+        return delegator;
     }
 }

@@ -17,15 +17,16 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     private DialoguesAndOptions DialoguesAndOptions { get; set; }
 
     private EntityPoolManager EntityPoolManager { get; set; }
-    
+
+    private EntityPoolManagerDelegator m_entityPoolManagerDelegator;
+
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
     
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
-    [SerializeField]
-    EntityPoolManagerDelegator entityPoolManagerDelegator;
+   
 
     private void Awake()
     {
@@ -35,8 +36,9 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     }
     private async void Start()
     {
+        m_entityPoolManagerDelegator = Helper.GetEntityPoolManagerDelegator();
 
-        StartCoroutine(entityPoolManagerDelegator.NotifySubject(this));
+        StartCoroutine(m_entityPoolManagerDelegator.NotifySubject(this));
         //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UIIActiveNotifier
         await audioGeneratedEvent.AddListener(AudioGeneratedListener);
     }
