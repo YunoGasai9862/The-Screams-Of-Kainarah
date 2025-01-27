@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Reflection;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Threading;
 using System.Collections;
 
 public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
@@ -20,7 +19,7 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
     [SerializeField]
     public EntityPoolManagerDelegator entityPoolManagerDelegator;
 
-    private List<UnityEngine.Object> PreloadedEntities {get; set;}
+    private List<UnityEngine.Object> PreloadedEntities { get; set; } = new List<UnityEngine.Object>();
 
     private Preloader PreloaderInstance { get; set; }
     private EntityPoolManager EntityPoolManager { get; set; }
@@ -29,8 +28,6 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
     {
         StartCoroutine(entityPoolManagerDelegator.NotifySubject(this));
 
-        PreloadedEntities = new List<UnityEngine.Object>();
-
         PreloaderInstance = await InstantiatePreloader(preloader);
 
         await HelperFunctions.SetAsParent(PreloaderInstance.gameObject, gameObject);
@@ -38,8 +35,10 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
         await executePreloadingEvent.AddListener(ExecutePreloading);
     }
 
-    private async Task PreloadAssets(Preloader preloader, EntityPoolManager entityPoolManager)
+    private async Task<List<UnityEngine.Object>> PreloadAssets(Preloader preloader, EntityPoolManager entityPoolManager)
     {
+        List<UnityEngine.Object> preloadedEntities = new List<UnityEngine.Object>();
+
         try
         {
             Type[] types = Assembly.GetExecutingAssembly().GetTypes();
@@ -54,15 +53,15 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
                 }
 
                 dynamic preloadedAsset = await PreloadOnAssetType(attribute, preloader);
-                Debug.Log($"Preloaded Asset {preloadedAsset}");
 
-                PreloadedEntities.Add(await AddToPool(preloadedAsset, entityPoolManager));
+                preloadedEntities.Add(await AddToPool(preloadedAsset, entityPoolManager));
             }
         }catch (Exception ex)
         {
             Debug.Log(ex.ToString());   
         }
 
+        return preloadedEntities;
     }
 
     private async Task<UnityEngine.Object> AddToPool(dynamic entity, EntityPoolManager entityPoolManager)
@@ -107,13 +106,27 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
         StartCoroutine(ExecutePreloadAssets());
     }
 
+    private async void SetPreloadedEntities(Preloader preloader, EntityPoolManager entityPoolManager)
+    {
+        PreloadedEntities.AddRange(await PreloadAssets(preloader, entityPoolManager));
+
+        //here its not zero, could be context/async issue!
+    }
+
     private IEnumerator ExecutePreloadAssets()
     {
         yield return new WaitUntil(() => EntityPoolManager != null);
 
-        Debug.Log($"Logic Resumed: {EntityPoolManager}");
+        SetPreloadedEntities(PreloaderInstance, EntityPoolManager);
 
-        _ = PreloadAssets(PreloaderInstance, EntityPoolManager);
+        //see why it becomes zero here!
+
+        Debug.Log($"Length: {PreloadedEntities.Count}");
+
+        foreach (var entity in PreloadedEntities)
+        {
+            Debug.Log(entity);
+        }
 
         preloadedEntitiesEvent.Invoke(PreloadedEntities);
     }

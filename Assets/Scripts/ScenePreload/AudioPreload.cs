@@ -39,7 +39,7 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
         m_entityPoolManagerDelegator = Helper.GetEntityPoolManagerDelegator();
 
         StartCoroutine(m_entityPoolManagerDelegator.NotifySubject(this));
-        //Do this during preloadign screen - another class for that already (GameLoad.cs) with loading UIIActiveNotifier
+
         await audioGeneratedEvent.AddListener(AudioGeneratedListener);
     }
 
@@ -98,11 +98,15 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
     private IEnumerator FetchDialoguesAndOptions()
     {
+        Debug.Log(DialoguesAndOptions);
+
         yield return new WaitUntil(() => EntityPoolManager != null);
 
         EntityPool dialogues = EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
 
         DialoguesAndOptions = (DialoguesAndOptions)(dialogues.Entity);
+
+        Debug.Log(DialoguesAndOptions);
     }
 
     public void OnNotify(EntityPoolManager data, params object[] optional)

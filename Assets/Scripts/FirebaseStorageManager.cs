@@ -47,8 +47,6 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage
     public void InitializeFirebaseStorage()
     {
         FirebaseStorage = FirebaseStorage.DefaultInstance;
-
-        Debug.Log(FirebaseStorage);
     }
 
     public void SetFirebaseStorageLocation(string url)

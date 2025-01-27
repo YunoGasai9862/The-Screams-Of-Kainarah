@@ -14,8 +14,6 @@ public class SubjectAsync<T>
     
     public void SetSubject(ISubjectAsync<T> subject)
     {
-        Debug.Log($"Subject received : {subject}");
-
         MSubject = subject; 
     }
 
@@ -26,8 +24,6 @@ public class SubjectAsync<T>
 
     public async Task NotifySubject(T value, SemaphoreSlim lockingThread = null)
     {
-       Debug.Log($"Here inside Subject Notify {value} {lockingThread} {MSubject}");
-
        await MSubject.OnNotifySubject(value, lockingThread);
     }
 }
@@ -42,8 +38,6 @@ public class Subject<T>
 
     public void SetSubject(ISubject<T> subject)
     {
-        Debug.Log($"Subject received : {subject}");
-
         MSubject = subject;
     }
 
@@ -54,8 +48,6 @@ public class Subject<T>
 
     public void NotifySubject(T value, SemaphoreSlim lockingThread = null)
     {
-        Debug.Log($"Here inside Subject Notify {value} {lockingThread} {MSubject}");
-
         MSubject.OnNotifySubject(value, lockingThread);
     }
 }

@@ -20,8 +20,6 @@ public class Helper: MonoBehaviour
 
     public static IEnumerator WaitUntilVariableIsNonNull<T>(T variable)
     {
-        Debug.Log($"Waiting for the variable to become non null : {variable}");
-
         yield return new WaitUntil(() => variable != null);
     }
 

@@ -56,8 +56,6 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
 
     public async void OnNotify(EntityPoolManager data, params object[] optional)
     {
-        Debug.Log("Inside On Notify for Preloader");
-
         await InitializePoolObjects(data); ;
     }
 }
