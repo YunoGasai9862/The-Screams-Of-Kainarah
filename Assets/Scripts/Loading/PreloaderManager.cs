@@ -106,29 +106,18 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
         StartCoroutine(ExecutePreloadAssets());
     }
 
-    private async void SetPreloadedEntities(Preloader preloader, EntityPoolManager entityPoolManager)
+    private async void SetPreloadedEntitiesAndInvokePreloadedEntitiesEvent(Preloader preloader, EntityPoolManager entityPoolManager)
     {
         PreloadedEntities.AddRange(await PreloadAssets(preloader, entityPoolManager));
 
-        //here its not zero, could be context/async issue!
+        await preloadedEntitiesEvent.Invoke(PreloadedEntities);
     }
 
     private IEnumerator ExecutePreloadAssets()
     {
         yield return new WaitUntil(() => EntityPoolManager != null);
 
-        SetPreloadedEntities(PreloaderInstance, EntityPoolManager);
-
-        //see why it becomes zero here!
-
-        Debug.Log($"Length: {PreloadedEntities.Count}");
-
-        foreach (var entity in PreloadedEntities)
-        {
-            Debug.Log(entity);
-        }
-
-        preloadedEntitiesEvent.Invoke(PreloadedEntities);
+        SetPreloadedEntitiesAndInvokePreloadedEntitiesEvent(PreloaderInstance, EntityPoolManager);
     }
 
     private Task<Preloader> InstantiatePreloader(GameObject preloader)
