@@ -159,6 +159,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     
     public async void ProcessAndSaveAINotes(AWSPollyAudioPacket awsPollyAudioPacket)
     {
+        Debug.Log("Here Inside Process and Save AI Notes!");
+
         SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, awsPollyAudioPacket.DialogueText, Engine.Neural, awsPollyAudioPacket.AudioVoiceId, OutputFormat.Mp3).ConfigureAwait(false);
 
         await SaveAudio(SynthesizeSpeechResponse, awsPollyAudioPacket.AudioPath).ConfigureAwait(false);

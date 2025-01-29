@@ -8,4 +8,10 @@ public class AWSPollyAudioPacket
     public string AudioName { get; set; }
     public string DialogueText { get; set; }
     public VoiceId AudioVoiceId { get; set; }
+
+    public override string ToString()
+    {
+        return $"AudioPath: {AudioPath}, AudioName: {AudioName}, DialogueText: {DialogueText}, VoiceId: {AudioVoiceId}";
+    }
+
 }

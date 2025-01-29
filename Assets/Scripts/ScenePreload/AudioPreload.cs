@@ -32,7 +32,7 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     {
         PersistencePath = Application.persistentDataPath;
 
-        InvokeCustomMethod += GetDialoguesAndOptions;
+        InvokeCustomMethod += Preload;
     }
     private async void Start()
     {
@@ -55,11 +55,15 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
             {
                 string audioName = $"{dialogues.EntityName}-{dialogues.VoiceID}-{i}";
 
+                Debug.Log($"{audioName}");
+
                 awsPollyDialogueTriggerEvent.Invoke(new AWSPollyAudioPacket { AudioPath = $"{PersistencePath}\\{audioName}", AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence });
 
                 yield return new WaitUntil(() => AudioGenerated == true);
 
                 dialogues.TextAudioPath[i].AudioPath = $"{PersistencePath}\\{audioName}";
+
+                Debug.Log(dialogues.TextAudioPath[i].AudioPath);
 
                 AudioGenerated = false;
             }
@@ -86,27 +90,20 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
         AudioGenerated = audioGenerated;
     }
 
-    public void Preload(DialoguesAndOptions dialogueAndOptions)
+    public void Preload()
     {
-        StartCoroutine(PreloadAudio(dialogueAndOptions));
+        StartCoroutine(FetchDialoguesAndOptionsAndPreloadAudio());
     }
 
-    public void GetDialoguesAndOptions()
+    private IEnumerator FetchDialoguesAndOptionsAndPreloadAudio()
     {
-        StartCoroutine(FetchDialoguesAndOptions());
-    }
-
-    private IEnumerator FetchDialoguesAndOptions()
-    {
-        Debug.Log(DialoguesAndOptions);
-
         yield return new WaitUntil(() => EntityPoolManager != null);
 
         EntityPool dialogues = EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
 
         DialoguesAndOptions = (DialoguesAndOptions)(dialogues.Entity);
 
-        Debug.Log(DialoguesAndOptions);
+        StartCoroutine(PreloadAudio(DialoguesAndOptions));
     }
 
     public void OnNotify(EntityPoolManager data, params object[] optional)

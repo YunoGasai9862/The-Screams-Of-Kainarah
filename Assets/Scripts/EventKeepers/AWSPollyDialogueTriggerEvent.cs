@@ -1,6 +1,7 @@
 using Amazon.Polly;
 using System.Threading.Tasks;
 using UnityEngine.Events;
+using UnityEngine;
 
 public class AWSPollyDialogueTriggerEvent : UnityEventWTAsync<AWSPollyAudioPacket>
 {
@@ -19,6 +20,8 @@ public class AWSPollyDialogueTriggerEvent : UnityEventWTAsync<AWSPollyAudioPacke
 
     public override Task Invoke(AWSPollyAudioPacket awsPollyAudioPacket )
     {
+        Debug.Log(awsPollyAudioPacket.ToString());
+
         m_amazonPollyDialogueTriggerEvent.Invoke(awsPollyAudioPacket);
 
         return Task.CompletedTask;
