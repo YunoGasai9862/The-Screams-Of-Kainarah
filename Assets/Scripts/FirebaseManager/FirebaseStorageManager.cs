@@ -3,8 +3,11 @@ using Firebase.Storage;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
-public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage
+public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<IObserver<FirebaseStorageManager>>
 {
+
+    [SerializeField]
+    public FirebaseStorageManagerDelegator firebaseStorageManagerDelegator;
 
     FirebaseStorage FirebaseStorage { get; set; }
     StorageReference MediaStorageReference { get; set; }
@@ -110,5 +113,10 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage
         }
 
         return await mediaRelayerTCS.Task;
+    }
+
+    void ISubject<IObserver<FirebaseStorageManager>>.OnNotifySubject(IObserver<FirebaseStorageManager> data, params object[] optional)
+    {
+        firebaseStorageManagerDelegator.NotifyObserver(data, this);
     }
 }

@@ -10,7 +10,7 @@ using System.IO;
 using System.Threading;
 using System.Collections;
 
-public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
+public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseStorageManager>
 {
     private const int AWS_ACCESS_KEY_INDEX = 0;
 
@@ -37,12 +37,12 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     private int VOICE_GENERATION_DELAY { get; set; } = 500;
 
     private SemaphoreSlim AWSSemaphore { get; set; } = new SemaphoreSlim(1);
+
+    private FirebaseStorageManager FirebaseStorageManagerInstance { get; set; }
     
 
     [SerializeField]
     AudioSource AudioSource;
-    [SerializeField]
-    FirebaseStorageManager FirebaseStorageManager;
     [SerializeField]
     string FirebaseStorageURL;
     [SerializeField]
@@ -53,6 +53,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     MainThreadDispatcherEvent mainThreadDispatcherEvent;
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
+    [SerializeField]
+    FirebaseStorageManagerDelegator firebaseStorageManagerDelegator;
 
     private void Awake()
     {
@@ -66,6 +68,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
     {
         await m_AWSPollyDialogueTriggerEvent.AddListener(ProcessAndSaveAINotes);
 
+        // not on start - move to on notify!
         await SetupFirebaseStorageForAWSPrivateKeys();
         
         await SetCredentials();
@@ -76,9 +79,9 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
 
     public async Task SetupFirebaseStorageForAWSPrivateKeys()
     {
-        FirebaseStorageManager.SetFirebaseStorageLocation(FirebaseStorageURL);
+        FirebaseStorageManagerInstance.SetFirebaseStorageLocation(FirebaseStorageURL);
 
-        TextAsset keys = await FirebaseStorageManager.DownloadMedia<TextAsset>(FileType.TEXT, AWSKeysfileNameOnFireBase);
+        TextAsset keys = await FirebaseStorageManagerInstance.DownloadMedia<TextAsset>(FileType.TEXT, AWSKeysfileNameOnFireBase);
 
         string[] splitKeys = await Helper.SplitStringOnSeparator(keys.text, "|");
 
@@ -197,4 +200,10 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly
         return Task.CompletedTask;
     }
 
+    public void OnNotify(FirebaseStorageManager data, params object[] optional)
+    {
+        FirebaseStorageManagerInstance = data;
+
+        //do anything else
+    }
 }

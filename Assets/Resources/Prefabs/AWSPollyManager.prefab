@@ -46,12 +46,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AudioSource: {fileID: 1139145978471175010}
-  FirebaseStorageManager: {fileID: 0}
+  FirebaseStorageManager: {fileID: 4439531976047964966, guid: 728effec4261f464ea8854da68ab00d9, type: 3}
   FirebaseStorageURL: gs://the-screams-of-kainarah.appspot.com
   AWSKeysfileNameOnFireBase: AWSKeys.txt
-  m_AWSPollyDialogueTriggerEvent: {fileID: 0}
-  mainThreadDispatcherEvent: {fileID: 0}
-  audioGeneratedEvent: {fileID: 0}
+  m_AWSPollyDialogueTriggerEvent: {fileID: 4626976237779173983, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  mainThreadDispatcherEvent: {fileID: 8614451184351985118, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  audioGeneratedEvent: {fileID: 8677537925411909685, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
 --- !u!82 &1139145978471175010
 AudioSource:
   m_ObjectHideFlags: 0
