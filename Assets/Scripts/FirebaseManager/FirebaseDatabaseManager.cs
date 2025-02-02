@@ -9,16 +9,7 @@ public class FirebaseDatabaseManager : MonoBehaviour, IFirebaseDatabase
 {
     //use this later if ever required to use Firebase Database for inventory/user logins (quickly prototyping it for now)
     private DatabaseReference FirebaseDatabaseReference { get; set; }
-    private void Start()
-    {
 
-        //test to check
-        //Player player = new Player("Muhammad Bilal", "TES");
-       // UsersNode node = new UsersNode();
-       // await Create(player, node);
-    }
-
-    //okay this is working, good!!
     public async Task CreateEntity(IEntity entity, INode firebaseNode)
     {
         //to generate unique UID - use SystemInfo.deviceUniqueIdentifier

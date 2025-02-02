@@ -20,6 +20,8 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<
 
     private void Start()
     {
+        firebaseStorageManagerDelegator.Subject.SetSubject(this);
+
         InitializeFirebaseStorage();
 
         UnityWebRequestMultimediaManager = new UnityWebRequestMultimediaManager();
@@ -117,6 +119,8 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<
 
     void ISubject<IObserver<FirebaseStorageManager>>.OnNotifySubject(IObserver<FirebaseStorageManager> data, params object[] optional)
     {
-        firebaseStorageManagerDelegator.NotifyObserver(data, this);
+        Debug.Log($"Inside Firebase Storage Manager");
+
+        StartCoroutine(firebaseStorageManagerDelegator.NotifyObserver(data, this));
     }
 }

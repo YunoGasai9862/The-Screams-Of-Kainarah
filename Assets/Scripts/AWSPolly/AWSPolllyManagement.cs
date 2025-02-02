@@ -6,19 +6,13 @@ using System.Threading.Tasks;
 using Amazon;
 using Amazon.Polly.Model;
 using System;
-using System.IO;
 using System.Threading;
-using System.Collections;
 
 public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseStorageManager>
 {
     private const int AWS_ACCESS_KEY_INDEX = 0;
 
     private const int SECRET_AWS_ASCCESS_KEY_INDEX = 1;
-
-    private string AWS_ACCESS_KEY { get; set; }
-
-    private string SECRET_AWS_ASCCESS_KEY { get; set; }
 
     private BasicAWSCredentials Credentials { get; set; }
 
@@ -39,6 +33,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     private SemaphoreSlim AWSSemaphore { get; set; } = new SemaphoreSlim(1);
 
     private FirebaseStorageManager FirebaseStorageManagerInstance { get; set; }
+
+    private AWSAccessResource AWSAccessResource { get; set; }
     
 
     [SerializeField]
@@ -68,16 +64,10 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     {
         await m_AWSPollyDialogueTriggerEvent.AddListener(ProcessAndSaveAINotes);
 
-        // not on start - move to on notify!
-        await SetupFirebaseStorageForAWSPrivateKeys();
-        
-        await SetCredentials();
-
-        AmazonPollyClient = await EstablishConnection(Credentials, RegionEndpoint.EUCentral1);
-
+        StartCoroutine(firebaseStorageManagerDelegator.NotifySubject(this));
     }
 
-    public async Task SetupFirebaseStorageForAWSPrivateKeys()
+    public async Task<AWSAccessResource> RetrieveAWSKeys()
     {
         FirebaseStorageManagerInstance.SetFirebaseStorageLocation(FirebaseStorageURL);
 
@@ -85,10 +75,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
         string[] splitKeys = await Helper.SplitStringOnSeparator(keys.text, "|");
 
-        AWS_ACCESS_KEY = splitKeys[AWS_ACCESS_KEY_INDEX];
-
-        SECRET_AWS_ASCCESS_KEY = splitKeys[SECRET_AWS_ASCCESS_KEY_INDEX];
-
+        return new AWSAccessResource(splitKeys[AWS_ACCESS_KEY_INDEX], splitKeys[SECRET_AWS_ASCCESS_KEY_INDEX]);
     }
 
     public Task<AmazonPollyClient> EstablishConnection(BasicAWSCredentials credentials, RegionEndpoint endpoint)
@@ -106,12 +93,9 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         }
     }
 
-    public Task SetCredentials()
+    public Task<BasicAWSCredentials> SetBasicAWSCredentials(AWSAccessResource awsAccessResource)
     {
-        //use DB to fetch it
-        Credentials = new BasicAWSCredentials(AWS_ACCESS_KEY, SECRET_AWS_ASCCESS_KEY); //access and secret key to be fetched from firebase
-
-        return Task.CompletedTask;
+        return Task.FromResult(new BasicAWSCredentials(awsAccessResource.AccessKey, awsAccessResource.SecretAccessKey)); 
     }
 
     public async Task<SynthesizeSpeechResponse> AWSSynthesizeSpeechCommunicator(AmazonPollyClient client, string text, Engine engine, VoiceId voiceId, OutputFormat outputFormat)
@@ -200,10 +184,14 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         return Task.CompletedTask;
     }
 
-    public void OnNotify(FirebaseStorageManager data, params object[] optional)
+    public async void OnNotify(FirebaseStorageManager data, params object[] optional)
     {
         FirebaseStorageManagerInstance = data;
 
-        //do anything else
+        AWSAccessResource = await RetrieveAWSKeys();
+
+        Credentials = await SetBasicAWSCredentials(AWSAccessResource);
+
+        AmazonPollyClient = await EstablishConnection(Credentials, RegionEndpoint.EUCentral1);
     }
 }
