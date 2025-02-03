@@ -119,8 +119,6 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<
 
     void ISubject<IObserver<FirebaseStorageManager>>.OnNotifySubject(IObserver<FirebaseStorageManager> data, params object[] optional)
     {
-        Debug.Log($"Inside Firebase Storage Manager");
-
         StartCoroutine(firebaseStorageManagerDelegator.NotifyObserver(data, this));
     }
 }
