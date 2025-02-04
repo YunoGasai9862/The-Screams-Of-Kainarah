@@ -8,7 +8,7 @@ using Amazon.Polly.Model;
 using System;
 using System.Threading;
 
-public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseStorageManager>
+public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseStorageManager>, IObserver<IAWSPolly>
 {
     private const int AWS_ACCESS_KEY_INDEX = 0;
 
@@ -51,20 +51,21 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     AudioGeneratedEvent audioGeneratedEvent;
     [SerializeField]
     FirebaseStorageManagerDelegator firebaseStorageManagerDelegator;
+    [SerializeField]
+    AWSPollyManagementDelegator awsPollyManagementDelegator;
 
     private void Awake()
     {
-        
         CancellationTokenSource = new CancellationTokenSource();
 
         CancellationToken = CancellationTokenSource.Token;
     }
 
-    private async void Start()
+    private void Start()
     {
-        await m_AWSPollyDialogueTriggerEvent.AddListener(ProcessAndSaveAINotes);
-
         StartCoroutine(firebaseStorageManagerDelegator.NotifySubject(this));
+
+        StartCoroutine(awsPollyManagementDelegator.NotifySubject(this));
     }
 
     public async Task<AWSAccessResource> RetrieveAWSKeys()
@@ -144,7 +145,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         return await client.SynthesizeSpeechAsync(request).ConfigureAwait(false);
     }
     
-    public async void ProcessAndSaveAINotes(AWSPollyAudioPacket awsPollyAudioPacket)
+    public async Task GenerateAudio(AWSPollyAudioPacket awsPollyAudioPacket)
     {
         Debug.Log("Here Inside Process and Save AI Notes!");
 
@@ -193,5 +194,10 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         Credentials = await SetBasicAWSCredentials(AWSAccessResource);
 
         AmazonPollyClient = await EstablishConnection(Credentials, RegionEndpoint.EUCentral1);
+    }
+
+    public void OnNotify(IAWSPolly data, params object[] optional)
+    {
+        StartCoroutine(awsPollyManagementDelegator.NotifyObserver(this, data));
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "Audio")]
-public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate, IObserver<EntityPoolManager>, IObserver<AWSPolllyManagement>
+public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate, IObserver<EntityPoolManager>, IObserver<IAWSPolly>
 {
     private string PersistencePath { get; set; }
 
@@ -111,9 +111,8 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
         EntityPoolManager = data;
     }
 
-    public void OnNotify(AWSPolllyManagement data, params object[] optional)
+    public void OnNotify(IAWSPolly data, params object[] optional)
     {
-        //try this new approach then
         throw new NotImplementedException();
     }
 }
