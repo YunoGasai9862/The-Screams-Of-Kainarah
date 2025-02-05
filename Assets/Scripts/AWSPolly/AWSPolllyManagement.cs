@@ -8,7 +8,7 @@ using Amazon.Polly.Model;
 using System;
 using System.Threading;
 
-public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseStorageManager>, IObserver<IAWSPolly>
+public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseStorageManager>, ISubject<IObserver<IAWSPolly>>
 {
     private const int AWS_ACCESS_KEY_INDEX = 0;
 
@@ -65,7 +65,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     {
         StartCoroutine(firebaseStorageManagerDelegator.NotifySubject(this));
 
-        StartCoroutine(awsPollyManagementDelegator.NotifySubject(this));
+        awsPollyManagementDelegator.Subject.SetSubject(this);
     }
 
     public async Task<AWSAccessResource> RetrieveAWSKeys()
@@ -196,8 +196,9 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         AmazonPollyClient = await EstablishConnection(Credentials, RegionEndpoint.EUCentral1);
     }
 
-    public void OnNotify(IAWSPolly data, params object[] optional)
+
+    public void OnNotifySubject(IObserver<IAWSPolly> data, params object[] optional)
     {
-        StartCoroutine(awsPollyManagementDelegator.NotifyObserver(this, data));
+        StartCoroutine(awsPollyManagementDelegator.NotifyObserver(data, this));
     }
 }

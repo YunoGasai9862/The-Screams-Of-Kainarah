@@ -34,4 +34,16 @@ public class Helper: MonoBehaviour
 
         return delegator;
     }
+
+    public static AWSPollyManagementDelegator GetAWSPollyManagementDelegator()
+    {
+        AWSPollyManagementDelegator delegator = FindFirstObjectByType<AWSPollyManagementDelegator>();
+
+        if (delegator == null)
+        {
+            throw new DelegatorNotFoundException("AWSPollyManager Delegator Not Found in the Scene");
+        }
+
+        return delegator;
+    }
 }

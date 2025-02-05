@@ -18,10 +18,14 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
     private EntityPoolManager EntityPoolManager { get; set; }
 
+    public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
+
+    public IAWSPolly AWSPollyManager { get; set; }
+
     private EntityPoolManagerDelegator m_entityPoolManagerDelegator;
 
-    public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
-    
+    private AWSPollyManagementDelegator m_awsPollyManagementDelegator;
+
     [SerializeField]
     AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
     [SerializeField]
@@ -38,7 +42,11 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     {
         m_entityPoolManagerDelegator = Helper.GetEntityPoolManagerDelegator();
 
+        m_awsPollyManagementDelegator = Helper.GetAWSPollyManagementDelegator();
+
         StartCoroutine(m_entityPoolManagerDelegator.NotifySubject(this));
+
+        StartCoroutine(m_awsPollyManagementDelegator.NotifySubject(this));
 
         await audioGeneratedEvent.AddListener(AudioGeneratedListener);
     }
@@ -113,7 +121,7 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
     public void OnNotify(IAWSPolly data, params object[] optional)
     {
-        throw new NotImplementedException();
+        AWSPollyManager = data;
     }
 }
 
