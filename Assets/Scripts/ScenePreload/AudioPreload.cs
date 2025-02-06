@@ -27,8 +27,6 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     private AWSPollyManagementDelegator m_awsPollyManagementDelegator;
 
     [SerializeField]
-    AWSPollyDialogueTriggerEvent awsPollyDialogueTriggerEvent;
-    [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
    
 
@@ -65,7 +63,7 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
                 Debug.Log($"{audioName}");
 
-                awsPollyDialogueTriggerEvent.Invoke(new AWSPollyAudioPacket { AudioPath = $"{PersistencePath}\\{audioName}", AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence });
+                AWSPollyManager.GenerateAudio(new AWSPollyAudioPacket { AudioPath = $"{PersistencePath}\\{audioName}", AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence });
 
                 yield return new WaitUntil(() => AudioGenerated == true);
 
@@ -105,7 +103,7 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
     private IEnumerator FetchDialoguesAndOptionsAndPreloadAudio()
     {
-        yield return new WaitUntil(() => EntityPoolManager != null);
+        yield return new WaitUntil(() => EntityPoolManager != null && AWSPollyManager != null);
 
         EntityPool dialogues = EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
 

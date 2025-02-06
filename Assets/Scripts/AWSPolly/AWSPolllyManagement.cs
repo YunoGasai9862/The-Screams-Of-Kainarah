@@ -65,6 +65,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     {
         StartCoroutine(firebaseStorageManagerDelegator.NotifySubject(this));
 
+        Debug.Log(awsPollyManagementDelegator);
+
         awsPollyManagementDelegator.Subject.SetSubject(this);
     }
 
