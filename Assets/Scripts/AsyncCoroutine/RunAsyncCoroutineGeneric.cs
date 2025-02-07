@@ -23,7 +23,6 @@ public abstract class RunAsyncCoroutineGeneric<T> : MonoBehaviour //attach it to
 
     }
 
-    public virtual void AttachToGameObject() { }
     public async Task traverseAsyncOperations()
     {
         if (asyncEnumeratorCollection.Count > 0) //makes sure other Async fucntions keep running if there are any

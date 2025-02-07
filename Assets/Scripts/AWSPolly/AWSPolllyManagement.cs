@@ -44,8 +44,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     [SerializeField]
     string AWSKeysfileNameOnFireBase;
     [SerializeField]
-    AWSPollyDialogueTriggerEvent m_AWSPollyDialogueTriggerEvent;
-    [SerializeField]
     MainThreadDispatcherEvent mainThreadDispatcherEvent;
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
@@ -65,8 +63,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     {
         StartCoroutine(firebaseStorageManagerDelegator.NotifySubject(this));
 
-        Debug.Log(awsPollyManagementDelegator);
-
         awsPollyManagementDelegator.Subject.SetSubject(this);
     }
 
@@ -85,7 +81,10 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     {
         try
         {
+            Debug.Log($"Credentials: {credentials.ToString()}");
             AmazonPollyClient client = new AmazonPollyClient(credentials, endpoint);
+
+            Debug.Log($"Client: {client}");
 
             return Task.FromResult(client);
 
@@ -144,19 +143,22 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
     public async Task<SynthesizeSpeechResponse> PrepareSynthesizeSpeechResponsePacket(AmazonPollyClient client, SynthesizeSpeechRequest request)
     {
+        Debug.Log(client);
         return await client.SynthesizeSpeechAsync(request).ConfigureAwait(false);
     }
     
     public async Task GenerateAudio(AWSPollyAudioPacket awsPollyAudioPacket)
     {
-        Debug.Log("Here Inside Process and Save AI Notes!");
+
+       //yield return new WaitUntil(() => AmazonPollyClient! = null);
 
         SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, awsPollyAudioPacket.DialogueText, Engine.Neural, awsPollyAudioPacket.AudioVoiceId, OutputFormat.Mp3).ConfigureAwait(false);
+
+        Debug.Log(SynthesizeSpeechResponse);
 
         await SaveAudio(SynthesizeSpeechResponse, awsPollyAudioPacket.AudioPath).ConfigureAwait(false);
 
         await audioGeneratedEvent.Invoke(true);
-
     }
 
     //update this method too - invoke to send in audio Path as well

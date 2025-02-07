@@ -27,9 +27,6 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>
     private void Awake()
     {
         m_light = GetComponent<Light2D>();
-
-        if (!RunAsyncCoroutineWaitForSeconds.GetIsAttached)  //if its false
-            RunAsyncCoroutineWaitForSeconds.AttachToGameObject(); //make sure this happens first
     }
     private void OnEnable()
     {
