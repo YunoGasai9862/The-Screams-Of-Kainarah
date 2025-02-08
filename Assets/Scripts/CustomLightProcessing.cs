@@ -1,9 +1,10 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>
+public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>, IObserver<AsyncCoroutine>
 {
     private Light2D m_light;
 
