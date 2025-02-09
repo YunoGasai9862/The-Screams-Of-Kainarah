@@ -81,7 +81,7 @@ public class CameraShake : MonoBehaviour
             {
                 isShaking = true;
 
-                RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(shakeCamera(_mainCamera, .03f), _token);
+                //RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(shakeCamera(_mainCamera, .03f), _token);
 
                 break;
             }

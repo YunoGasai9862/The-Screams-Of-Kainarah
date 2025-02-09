@@ -3,7 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>
+[Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "AsyncCoroutine")]
+public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, ISubject<IObserver<AsyncCoroutine>>
 {
     public async Task ExecuteAsyncCoroutine(IAsyncEnumerator<WaitForSeconds> asyncCoroutine)
     {
@@ -14,4 +15,8 @@ public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>
 
     }
 
+    public void OnNotifySubject(IObserver<AsyncCoroutine> data, params object[] optional)
+    {
+        throw new System.NotImplementedException();
+    }
 }

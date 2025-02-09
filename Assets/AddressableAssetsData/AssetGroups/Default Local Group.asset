@@ -36,6 +36,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b98fff53e8c1a447b69e7c347f7ef0e
+    m_Address: Prefabs/RunAsyncCoroutine
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AsyncCoroutine
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5d279bb17986aab498190ab6f4f2ab56
     m_Address: EnemyAnimationScriptableObjectEntity
     m_ReadOnly: 0

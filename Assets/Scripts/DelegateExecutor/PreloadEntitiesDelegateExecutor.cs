@@ -37,12 +37,12 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
     {
         foreach (GameObject preloadEntity in preloadedEntities)
         {
-            IDelegate delegateObject = preloadEntity.gameObject.GetComponent<IDelegate>();
+            IDelegate delegateObject;
 
-            Debug.Log($"Found Delegate: {delegateObject} InvokeCustomMethod {delegateObject.InvokeCustomMethod}");
-
-            await ExecuteDelegateMethod(delegateObject);
-    
+            if (preloadEntity.gameObject.TryGetComponent(out delegateObject))
+            {
+                await ExecuteDelegateMethod(delegateObject);
+            }
         }
     }
 

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>, IObserver<AsyncCoroutine>
+public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>
 {
     private Light2D m_light;
 
@@ -55,7 +55,7 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
             {
                 m_Semaphore = new SemaphoreSlim(0);
 
-                RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, Data.InnerRadiusMin, Data.InnerRadiusMax, Data.OuterRadiusMin, Data.OuterRadiusMax), _cancellationToken); //Async runner
+                //RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, Data.InnerRadiusMin, Data.InnerRadiusMax, Data.OuterRadiusMin, Data.OuterRadiusMax), _cancellationToken); //Async runner
 
                 await m_Semaphore.WaitAsync();
 
