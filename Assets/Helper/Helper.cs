@@ -23,25 +23,13 @@ public class Helper: MonoBehaviour
         yield return new WaitUntil(() => variable != null);
     }
 
-    public static EntityPoolManagerDelegator GetEntityPoolManagerDelegator()
+    public static T GetDelegator<T>() where T: UnityEngine.Object
     {
-        EntityPoolManagerDelegator delegator = FindFirstObjectByType<EntityPoolManagerDelegator>();
+        T delegator = (T)(Object) FindFirstObjectByType<T>();
 
         if (delegator == null)
         {
-            throw new DelegatorNotFoundException("Entity Pool Manager Delegator Not Found in the Scene");
-        }
-
-        return delegator;
-    }
-
-    public static AWSPollyManagementDelegator GetAWSPollyManagementDelegator()
-    {
-        AWSPollyManagementDelegator delegator = FindFirstObjectByType<AWSPollyManagementDelegator>();
-
-        if (delegator == null)
-        {
-            throw new DelegatorNotFoundException("AWSPollyManager Delegator Not Found in the Scene");
+            throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
         }
 
         return delegator;

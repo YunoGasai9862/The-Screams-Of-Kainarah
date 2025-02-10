@@ -4,9 +4,10 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>
+public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>, IObserver<AsyncCoroutine>
 {
     private Light2D m_light;
+    private AsyncCoroutine AsyncCoroutine { get; set; }
 
     [Header("Light Intensity Swing Values")]
     [SerializeField]
@@ -74,4 +75,8 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>
 
     }
 
+    public void OnNotify(AsyncCoroutine data, params object[] optional)
+    {
+        AsyncCoroutine = data;
+    }
 }

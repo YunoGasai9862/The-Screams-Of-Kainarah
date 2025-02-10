@@ -11,7 +11,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
 
     private void Start()
     {
-        m_entityPoolManagerDelegator = Helper.GetEntityPoolManagerDelegator();
+        m_entityPoolManagerDelegator = Helper.GetDelegator<EntityPoolManagerDelegator>();
 
         StartCoroutine(m_entityPoolManagerDelegator.NotifySubject(this));
     }

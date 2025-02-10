@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class CameraShake : MonoBehaviour
+public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>
 {
     [Header("Target Camera")]
     [SerializeField] Camera _mainCamera;
@@ -90,4 +90,8 @@ public class CameraShake : MonoBehaviour
 
     }
 
+    public void OnNotify(AsyncCoroutine data, params object[] optional)
+    {
+        throw new NotImplementedException();
+    }
 }
