@@ -56,7 +56,7 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
             {
                 m_Semaphore = new SemaphoreSlim(0);
 
-                //RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, Data.InnerRadiusMin, Data.InnerRadiusMax, Data.OuterRadiusMin, Data.OuterRadiusMax), _cancellationToken); //Async runner
+                await AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, Data.InnerRadiusMin, Data.InnerRadiusMax, Data.OuterRadiusMin, Data.OuterRadiusMax)); //Async runner
 
                 await m_Semaphore.WaitAsync();
 

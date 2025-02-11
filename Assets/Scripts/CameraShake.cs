@@ -29,6 +29,8 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>
 
     public bool isShaking { get => _shaking; set => _shaking = value; }
 
+    private AsyncCoroutine AsyncCoroutine { get; set; }
+
     private void Start()
     {
         _cancellationTokenSource= new CancellationTokenSource();
@@ -73,7 +75,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>
 
     }
 
-    private void currentTargetAnimationShake(List<string> _animationNames)
+    private async void currentTargetAnimationShake(List<string> _animationNames)
     {
         foreach(string _animationName in _animationNames)
         {
@@ -81,7 +83,8 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>
             {
                 isShaking = true;
 
-                //RunAsyncCoroutineWaitForSeconds.RunTheAsyncCoroutine(shakeCamera(_mainCamera, .03f), _token);
+                //test this tomorrow
+                await AsyncCoroutine.ExecuteAsyncCoroutine(shakeCamera(_mainCamera, .03f));
 
                 break;
             }
@@ -89,9 +92,8 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>
         }
 
     }
-
     public void OnNotify(AsyncCoroutine data, params object[] optional)
     {
-        throw new NotImplementedException();
+        AsyncCoroutine = data;
     }
 }
