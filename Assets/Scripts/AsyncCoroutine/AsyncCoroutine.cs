@@ -16,6 +16,8 @@ public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IS
     {
         while (await asyncCoroutine.MoveNextAsync())
         {
+            Debug.Log("Executing Async");
+
             await Task.Yield();
         }
     }
