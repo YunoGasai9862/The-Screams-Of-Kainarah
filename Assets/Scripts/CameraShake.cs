@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,9 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>
     [Header("Target Body Animation Names For Camera Shake")]
     [SerializeField] List<string> animationNames;
 
+    [Header("Async Coroutine Delegator")]
+    [SerializeField] AsyncCoroutineDelegator asyncCoroutineDelegator;
+
     private Vector3 _cameraOldPosition;
     private CancellationToken _token;
     private CancellationTokenSource _cancellationTokenSource;
@@ -35,17 +39,20 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>
     {
         _cancellationTokenSource= new CancellationTokenSource();
         _token = _cancellationTokenSource.Token;
+        StartCoroutine(asyncCoroutineDelegator.NotifySubject(this));
     }
     void Update()
     {  
+        //please improve that ewwwwww
         if(_targetBody == null)
         {
             _targetBody = GameObject.FindWithTag(targetBodyTag);
             _animator = _targetBody.GetComponent<Animator>();
         }
         else
-            currentTargetAnimationShake(animationNames);
-
+        {
+            StartCoroutine(ExecuteShakeAnimation(animationNames));
+        }
     }
 
     private async IAsyncEnumerator<WaitForSeconds> shakeCamera(Camera _mainCamera, float timeForCameraShake) //do it tomorrow
@@ -75,23 +82,25 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>
 
     }
 
-    private async void currentTargetAnimationShake(List<string> _animationNames)
+
+    private IEnumerator ExecuteShakeAnimation(List<string> animationNames)
     {
-        foreach(string _animationName in _animationNames)
+        yield return new WaitUntil(() => AsyncCoroutine != null);
+
+        foreach (string animationName in animationNames)
         {
-           if(_animator.GetCurrentAnimatorStateInfo(0).IsName(_animationName) && !isShaking)
+            if (_animator.GetCurrentAnimatorStateInfo(0).IsName(animationName) && !isShaking)
             {
                 isShaking = true;
 
                 //test this tomorrow
-                await AsyncCoroutine.ExecuteAsyncCoroutine(shakeCamera(_mainCamera, .03f));
+                AsyncCoroutine.ExecuteAsyncCoroutine(shakeCamera(_mainCamera, .03f));
 
                 break;
             }
-
         }
-
     }
+
     public void OnNotify(AsyncCoroutine data, params object[] optional)
     {
         AsyncCoroutine = data;

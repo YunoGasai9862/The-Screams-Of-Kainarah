@@ -102,6 +102,7 @@ MonoBehaviour:
   customLightPreprocessingImplementation: {fileID: 0}
   anySubjectThatIsNotifyingTheLight: 1
   _subject: {fileID: 0}
+  asyncCoroutineDelegator: {fileID: 0}
 --- !u!1 &7066635810158497453
 GameObject:
   m_ObjectHideFlags: 0
