@@ -63,32 +63,28 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
     {
         yield return new WaitUntil(() => AsyncCoroutine != null);
 
-        Debug.Log("here Inside Light~");
+        Debug.Log(lightEntity);
 
-        if (lightEntity == null || cancellationToken.IsCancellationRequested)
+        if (lightEntity != null)
         {
-            yield return null;
-        }
+            if (lightEntity.LightName == transform.parent.name && lightEntity.UseCustomTinkering)
+            {
+                m_Semaphore = new SemaphoreSlim(0);
 
-        if (lightEntity.LightName == transform.parent.name && lightEntity.UseCustomTinkering)
-        {
-            m_Semaphore = new SemaphoreSlim(0);
+                AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, lightEntity.InnerRadiusMin, lightEntity.InnerRadiusMax, lightEntity.OuterRadiusMin, lightEntity.OuterRadiusMax)); //Async runner
 
-            AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, lightEntity.InnerRadiusMin, lightEntity.InnerRadiusMax, lightEntity.OuterRadiusMin, lightEntity.OuterRadiusMax)); //Async runner
+                m_Semaphore.WaitAsync();
+            }
 
-            m_Semaphore.WaitAsync();
-        }
-
-        if (lightEntity.LightName == transform.parent.name && !lightEntity.UseCustomTinkering)
-        {
-            StopAllCoroutines(); //the fix!
+            if (lightEntity.LightName == transform.parent.name && !lightEntity.UseCustomTinkering)
+            {
+                StopAllCoroutines(); //the fix!
+            }
         }
     }
 
     public void OnNotify(AsyncCoroutine data, params object[] optional)
     {
         AsyncCoroutine = data;
-
-        Debug.Log(AsyncCoroutine);
     }
 }

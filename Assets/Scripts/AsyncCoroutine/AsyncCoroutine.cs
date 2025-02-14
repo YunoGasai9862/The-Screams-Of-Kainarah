@@ -10,14 +10,14 @@ public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IS
     private void Start()
     {
         m_asyncCoroutineDelegator = Helper.GetDelegator<AsyncCoroutineDelegator>();
+
+        m_asyncCoroutineDelegator.Subject.SetSubject(this);
     }
 
     public async Task ExecuteAsyncCoroutine(IAsyncEnumerator<WaitForSeconds> asyncCoroutine)
     {
         while (await asyncCoroutine.MoveNextAsync())
         {
-            Debug.Log("Executing Async");
-
             await Task.Yield();
         }
     }

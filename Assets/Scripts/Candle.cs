@@ -39,6 +39,12 @@ public class LightEntity
         OuterRadiusMax = LightEntityConstants.MAX_OUTER_RADIUS;
         LightIntensity = LightEntityConstants.DEFAULT_LIGHT_INTENSITY;
     }
+
+    public override string ToString()
+    {
+        return $"LightName: {LightName}, UseCustomTinkering: {UseCustomTinkering}, InnerRMin: {InnerRadiusMin}, InnerRMax: {InnerRadiusMax}, OuterRMin: {OuterRadiusMin}, OuterRMax:" +
+            $"{OuterRadiusMax}, LightIntensity: {LightIntensity}";
+    }
 }
 public static class LightEntityConstants
 {
