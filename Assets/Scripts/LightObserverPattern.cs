@@ -21,6 +21,7 @@ public class LightObserverPattern : MonoBehaviour
     {
         foreach (IObserverAsync<LightEntity> subject in subjectsToBeadded)
         {
+            Debug.Log("Notifying for flicker!");
             await subject.OnNotify(lightProperties, _cancellationToken);
 
             if (semaphore != null)

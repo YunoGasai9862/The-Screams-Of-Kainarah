@@ -63,8 +63,6 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
     {
         yield return new WaitUntil(() => AsyncCoroutine != null);
 
-        Debug.Log(lightEntity);
-
         if (lightEntity != null)
         {
             if (lightEntity.LightName == transform.parent.name && lightEntity.UseCustomTinkering)

@@ -10,68 +10,69 @@ public class LightPoolObject : LightObserverPattern
     [Header("Insert Player Tag")]
     [SerializeField] string PlayerTag;
 
-    public static Dictionary<GameObject, LightEntity> allCandlesInTheScene = new();
-    public static List<GameObject> _allCandleObjects;
+    public static Dictionary<GameObject, LightEntity> lightEntitiesDict = new Dictionary<GameObject, LightEntity>();
+    public static List<GameObject> candleObjects;
     private bool calculatingDistance = false;
-    private float _screenWidth;
+    private float m_screenWidth;
     private CancellationTokenSource tokenSource;
-    private GameObject _player;
+    private GameObject m_player;
 
     private void Awake()
     {
-        _allCandleObjects = GameObject.FindGameObjectsWithTag("candle").ToList();
+        candleObjects = GameObject.FindGameObjectsWithTag("candle").ToList();
 
-        allCandlesInTheScene = fillupDictionaryWithCandleObjects(_allCandleObjects);
+        lightEntitiesDict = FillUpLightEntities(candleObjects);
 
-        _screenWidth = HelperFunctions.CalculateScreenWidth(Camera.main);
+        m_screenWidth = HelperFunctions.CalculateScreenWidth(Camera.main);
 
         tokenSource = new();
 
     }
     private void Start()
     {
-        _player = GameObject.FindWithTag(PlayerTag);
+        //use observer pattern maybe
+        m_player = GameObject.FindWithTag(PlayerTag);
     }
     private async void Update()
     {
         if (!calculatingDistance)
         {
-            await PlayersDistanceFromCandles(allCandlesInTheScene, _screenWidth, tokenSource.Token);
+            await PlayersDistanceFromCandles(lightEntitiesDict, m_player, m_screenWidth, tokenSource.Token);
         }
 
     }
 
-    private Dictionary<GameObject, LightEntity> fillupDictionaryWithCandleObjects(List<GameObject> array)
+    private Dictionary<GameObject, LightEntity> FillUpLightEntities(List<GameObject> candleObjects)
     {
-        Dictionary<GameObject, LightEntity> _candleObjects = new();
-        foreach (GameObject value in array)
+        Dictionary<GameObject, LightEntity> candles = new Dictionary<GameObject, LightEntity>();
+
+        foreach (GameObject candle in candleObjects)
         {
-            LightEntity _temp = new(); //this fixed the issue!!!
-            _temp.LightName = value.name;
-            _temp.UseCustomTinkering = false;
-            _candleObjects[value] = _temp;
+            candles[candle] = new LightEntity()
+            {
+                LightName = candle.name,
+                UseCustomTinkering = false
+            };
         }
 
-        return _candleObjects;
+        return candles;
     }
 
-    private async Task PlayersDistanceFromCandles(Dictionary<GameObject, LightEntity> dict, float acceptedDistance, CancellationToken token)
+    private async Task PlayersDistanceFromCandles(Dictionary<GameObject, LightEntity> lightEntities, GameObject player, float acceptedDistance, CancellationToken token)
     {
         calculatingDistance = true;
-        foreach (GameObject value in dict.Keys) //allows modifying the copy of the keys, etc in the dictionary
-        {
-            LightEntity _candle = new();
-            _candle.LightName = dict[value].LightName;
-            _candle.UseCustomTinkering = false;
 
-            if (Vector2.Distance(_player.transform.position, value.transform.position) < acceptedDistance)
+        foreach (GameObject lightEntity in lightEntities.Keys)
+        {
+            if (Vector2.Distance(player.transform.position, lightEntity.transform.position) < acceptedDistance)
             {
-                _candle.UseCustomTinkering = true;
+                lightEntities[lightEntity].UseCustomTinkering = true;
             }
 
             try
             {
-                await NotifyAllLightObserversAsync(_candle, token);
+                //now revise this logic - and see how to make it less flicker - or only send a new notification for flicker once the user distance has passed away, dont do the same thing again and again!!
+                await NotifyAllLightObserversAsync(lightEntities[lightEntity], token);
 
             }
             catch (OperationCanceledException) //works (making use of Exceptions)
@@ -84,10 +85,15 @@ public class LightPoolObject : LightObserverPattern
         calculatingDistance = false;
 
     }
+
+    private async Task CalculatesPlayerDistanceFromLightSource()
+    {
+
+    }
+
     private void OnDisable()
     {
         tokenSource.Cancel();
-
     }
 
 }
