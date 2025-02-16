@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,29 +7,26 @@ using UnityEngine.Rendering.Universal;
 
 public class LightFlicker : MonoBehaviour, ILightPreprocess
 {
-    public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(Light2D light, float minIntensity, float maxIntensity, SemaphoreSlim couroutineBlocker, float minInnnerRadius, float maxInnerRadius, float minOuterRadius, float maxOuterRadius)
+    public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(Light2D light, float minIntensity, float maxIntensity, SemaphoreSlim couroutineBlocker, float minInnnerRadius, float maxInnerRadius, float minOuterRadius, float maxOuterRadius, float delayBetweenExecution)
     {
-        float _lightFlickerValue = await GenerateLightIntensityAsync(minIntensity, maxIntensity);
-        float _lightInnerRadius = await GenerateLightRadia(minInnnerRadius, maxInnerRadius);
-        float _lightOuterRadius = await GenerateLightRadia(minOuterRadius, maxOuterRadius);
-        light.intensity = _lightFlickerValue;
-        light.pointLightInnerRadius = _lightInnerRadius;
-        light.pointLightOuterRadius = _lightOuterRadius;
-        await Task.Delay(System.TimeSpan.FromSeconds(.2f));
-        couroutineBlocker.Release();
-        yield return new WaitForSeconds(.2f);
+        while (true)
+        {
+            light.intensity = await GenerateLightRadia(minOuterRadius, maxOuterRadius);
+            light.pointLightInnerRadius = await GenerateLightRadia(minInnnerRadius, maxInnerRadius);
+            light.pointLightOuterRadius = await GenerateLightIntensityAsync(minIntensity, maxIntensity);
+            //couroutineBlocker.Release();
+            await Task.Delay(TimeSpan.FromSeconds(delayBetweenExecution));
+
+            yield return null;
+        }
     }
 
     public Task<float> GenerateLightIntensityAsync(float minIntensity, float maxIntensity)
     {
-        float intensity = Random.Range(minIntensity, maxIntensity);
-        //add checks as well
-        return Task.FromResult(intensity);
+        return Task.FromResult(UnityEngine.Random.Range(minIntensity, maxIntensity));
     }
     public Task<float> GenerateLightRadia(float minRadia, float maxRadia)
     {
-        float radius = Random.Range(minRadia, maxRadia);
-        return Task.FromResult(radius);
-
+        return Task.FromResult(UnityEngine.Random.Range(minRadia, maxRadia));
     }
 }

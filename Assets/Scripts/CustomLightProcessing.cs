@@ -29,6 +29,7 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
 
     private SemaphoreSlim m_Semaphore;
 
+    private bool m_IsDisposed = true;
     private void Awake()
     {
         m_light = GetComponent<Light2D>();
@@ -56,7 +57,12 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
     public virtual async Task OnNotify(LightEntity Data, CancellationToken _cancellationToken)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
-        StartCoroutine(ExecuteLightningLogic(Data, _cancellationToken));
+        if (m_IsDisposed)
+        {
+            StartCoroutine(ExecuteLightningLogic(Data, _cancellationToken));
+
+            m_IsDisposed = false;
+        }
     }
 
     private IEnumerator ExecuteLightningLogic(LightEntity lightEntity, CancellationToken cancellationToken)
@@ -69,7 +75,9 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
             {
                 m_Semaphore = new SemaphoreSlim(0);
 
-                AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, lightEntity.InnerRadiusMin, lightEntity.InnerRadiusMax, lightEntity.OuterRadiusMin, lightEntity.OuterRadiusMax)); //Async runner
+                Debug.Log("Hol1");
+
+                AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, lightEntity.InnerRadiusMin, lightEntity.InnerRadiusMax, lightEntity.OuterRadiusMin, lightEntity.OuterRadiusMax, 2f)); //Async runner
 
                 m_Semaphore.WaitAsync();
             }

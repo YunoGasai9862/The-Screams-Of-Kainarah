@@ -18,7 +18,7 @@ public class MoonShimmer : MonoBehaviour, ILightPreprocess
         celestialBodyEvent.GetInstance().Invoke(_moonLightData);
     }
 
-    public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(Light2D light, float minIntensity, float maxIntensity, SemaphoreSlim couroutineBlocker, float minInnnerRadius, float maxInnerRadius, float minOuterRadius, float maxOuterRadius)
+    public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(Light2D light, float minIntensity, float maxIntensity, SemaphoreSlim couroutineBlocker, float minInnnerRadius, float maxInnerRadius, float minOuterRadius, float maxOuterRadius, float delayBetweenExecution)
     {
         ActivateContinuousShimmer(light, Time.time, minIntensity, maxIntensity, minOuterRadius, maxOuterRadius, minInnnerRadius, maxInnerRadius);
         await Task.Delay(TimeSpan.FromMilliseconds(0));
