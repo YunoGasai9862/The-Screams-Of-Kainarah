@@ -9,16 +9,15 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess
 {
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(Light2D light, float minIntensity, float maxIntensity, SemaphoreSlim couroutineBlocker, float minInnnerRadius, float maxInnerRadius, float minOuterRadius, float maxOuterRadius, float delayBetweenExecution)
     {
-        while (true)
-        {
-            light.intensity = await GenerateLightRadia(minOuterRadius, maxOuterRadius);
-            light.pointLightInnerRadius = await GenerateLightRadia(minInnnerRadius, maxInnerRadius);
-            light.pointLightOuterRadius = await GenerateLightIntensityAsync(minIntensity, maxIntensity);
-            //couroutineBlocker.Release();
-            await Task.Delay(TimeSpan.FromSeconds(delayBetweenExecution));
+        light.intensity = await GenerateLightRadia(minOuterRadius, maxOuterRadius);
+        light.pointLightInnerRadius = await GenerateLightRadia(minInnnerRadius, maxInnerRadius);
+        light.pointLightOuterRadius = await GenerateLightIntensityAsync(minIntensity, maxIntensity);
 
-            yield return null;
-        }
+        couroutineBlocker.Release();
+
+        await Task.Delay(TimeSpan.FromSeconds(delayBetweenExecution));
+
+        yield return null;
     }
 
     public Task<float> GenerateLightIntensityAsync(float minIntensity, float maxIntensity)

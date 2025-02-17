@@ -27,9 +27,8 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
     [Header("Async Coroutine Delegator Reference")]
     public AsyncCoroutineDelegator asyncCoroutineDelegator;
 
-    private SemaphoreSlim m_Semaphore;
+    private SemaphoreSlim m_Semaphore = new SemaphoreSlim(1, 1);
 
-    private bool m_IsDisposed = true;
     private void Awake()
     {
         m_light = GetComponent<Light2D>();
@@ -57,12 +56,7 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
     public virtual async Task OnNotify(LightEntity Data, CancellationToken _cancellationToken)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
-        if (m_IsDisposed)
-        {
-            StartCoroutine(ExecuteLightningLogic(Data, _cancellationToken));
-
-            m_IsDisposed = false;
-        }
+         StartCoroutine(ExecuteLightningLogic(Data, _cancellationToken));
     }
 
     private IEnumerator ExecuteLightningLogic(LightEntity lightEntity, CancellationToken cancellationToken)
@@ -73,11 +67,11 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
         {
             if (lightEntity.LightName == transform.parent.name && lightEntity.UseCustomTinkering)
             {
-                m_Semaphore = new SemaphoreSlim(0);
+                yield return new WaitUntil(() => m_Semaphore.CurrentCount != 0);
 
-                Debug.Log("Hol1");
+                Debug.Log(m_Semaphore.CurrentCount);
 
-                AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, lightEntity.InnerRadiusMin, lightEntity.InnerRadiusMax, lightEntity.OuterRadiusMin, lightEntity.OuterRadiusMax, 2f)); //Async runner
+                AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, lightEntity.InnerRadiusMin, lightEntity.InnerRadiusMax, lightEntity.OuterRadiusMin, lightEntity.OuterRadiusMax, 5f)); //Async runner
 
                 m_Semaphore.WaitAsync();
             }

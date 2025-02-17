@@ -38,7 +38,6 @@ public class LightPoolObject : LightObserverPattern
         if (!calculatingDistance)
         {
             await PlayersDistanceFromCandles(lightEntitiesDict, m_player, m_screenWidth, tokenSource.Token);
-            calculatingDistance = true; //remove this later
         }
 
     }
@@ -72,7 +71,6 @@ public class LightPoolObject : LightObserverPattern
 
             try
             {
-                Debug.Log("Here!!");
                 //now revise this logic - and see how to make it less flicker - or only send a new notification for flicker once the user distance has passed away, dont do the same thing again and again!!
                 await NotifyAllLightObserversAsync(lightEntities[lightEntity], token);
 
