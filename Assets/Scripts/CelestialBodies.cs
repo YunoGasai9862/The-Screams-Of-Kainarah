@@ -4,9 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class CelestialBodies : LightObserverPattern
+public class CelestialBodies : LightObserverPattern, IObserverAsync<LightEntity>
 {
-    [SerializeField] CelestialBodyEvent celestialBodyEvent;
     [SerializeField]
     public float minOuterRadius, maxOuterRadius, minInnerRadius, maxInnerRadius;
 
@@ -20,8 +19,6 @@ public class CelestialBodies : LightObserverPattern
         m_cancellationTokenSource = new CancellationTokenSource();
         _semaphoreSlim = new SemaphoreSlim(1); //i already have one semaphoreSlim with 0 in another script, hence initializing it with 1
         m_cancellationToken = m_cancellationTokenSource.Token;
-
-        celestialBodyEvent.AddListener(AddLightProperties);
     }
 
 
@@ -38,6 +35,8 @@ public class CelestialBodies : LightObserverPattern
 
             try
             {
+                Debug.Log($"Moon Light: {MoonLight.ToString()}");
+
                 await NotifyAllLightObserversAsync(entity, cancellationToken);
             }
             catch (OperationCanceledException) //catches the exception, and gracefully exits
@@ -58,5 +57,10 @@ public class CelestialBodies : LightObserverPattern
     private void AddLightProperties(LightEntity lightEntity)
     {
         MoonLight = new LightEntity(lightEntity.LightName, lightEntity.UseCustomTinkering, minInnerRadius, maxInnerRadius, minOuterRadius, maxOuterRadius);
+    }
+
+    public Task OnNotify(LightEntity data, CancellationToken token)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -5,17 +5,13 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class MoonShimmer : MonoBehaviour, ILightPreprocess
+public class MoonShimmer : MonoBehaviour, ILightPreprocess, ISubject<LightEntity>
 {
-    [SerializeField] CelestialBodyEvent celestialBodyEvent;
-
     private LightEntity _moonLightData = new LightEntity();
     private void Awake()
     {
         _moonLightData.LightName = transform.parent.name;
         _moonLightData.UseCustomTinkering = true;
-
-        celestialBodyEvent.GetInstance().Invoke(_moonLightData);
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(Light2D light, float minIntensity, float maxIntensity, SemaphoreSlim couroutineBlocker, float minInnnerRadius, float maxInnerRadius, float minOuterRadius, float maxOuterRadius, float delayBetweenExecution)
@@ -32,5 +28,10 @@ public class MoonShimmer : MonoBehaviour, ILightPreprocess
         light.intensity = Mathf.PingPong(time, maxIntensity) + (minIntensity);
         light.pointLightOuterRadius = Mathf.PingPong(time * 2, maxOuterRadius) + minOuterRadius;
         light.pointLightInnerRadius = Mathf.PingPong(time * 2, maxInnerRadius) + minInnerRadius;
+    }
+
+    public void OnNotifySubject(LightEntity data, params object[] optional)
+    {
+        throw new NotImplementedException();
     }
 }
