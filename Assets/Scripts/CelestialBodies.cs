@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class CelestialBodies : LightObserverPattern, IObserver<LightEntity>
+public class CelestialBodies : MonoBehaviour, IObserver<LightEntity>
 {
     [SerializeField]
     public float minOuterRadius, maxOuterRadius, minInnerRadius, maxInnerRadius;
@@ -20,6 +20,7 @@ public class CelestialBodies : LightObserverPattern, IObserver<LightEntity>
     private void Awake()
     {
         _semaphoreSlim = new SemaphoreSlim(semaPhoreSlimCount); //i already have one semaphoreSlim with 0 in another script, hence initializing it with 1
+
         StartCoroutine(lightEntityDelegator.NotifySubject(this));
     }
 

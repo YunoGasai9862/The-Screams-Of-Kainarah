@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class LightPoolObject : LightObserverPattern
+public class LightPoolObject : MonoBehaviour, IObserver<>
 {
     [Header("Insert Player Tag")]
     [SerializeField] string PlayerTag;

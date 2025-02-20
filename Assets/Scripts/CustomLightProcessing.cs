@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>, IObserver<AsyncCoroutine>
+public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>, IObserver<AsyncCoroutine>, IObserver<LightPoolObject>
 {
     private Light2D m_light;
     private AsyncCoroutine AsyncCoroutine { get; set; }
@@ -39,22 +39,7 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
         StartCoroutine(asyncCoroutineDelegator.NotifySubject(this));
     }
 
-    private void OnEnable()
-    {
-        if (anySubjectThatIsNotifyingTheLight)
-            _subject.AddObserver(this);
-    }
-
-    private void OnDisable()
-    {
-        if (anySubjectThatIsNotifyingTheLight)
-            _subject.RemoveObserver(this);
-    }
-
-
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public virtual async Task OnNotify(LightEntity Data, CancellationToken _cancellationToken)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
          StartCoroutine(ExecuteLightningLogic(Data, _cancellationToken));
     }
@@ -86,5 +71,11 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
     public void OnNotify(AsyncCoroutine data, params object[] optional)
     {
         AsyncCoroutine = data;
+    }
+
+    public void OnNotify(LightPoolObject data, params object[] optional)
+    {
+        //use this now!
+        throw new NotImplementedException();
     }
 }
