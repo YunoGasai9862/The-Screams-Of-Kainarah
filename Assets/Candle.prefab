@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7066635809902662665}
   - component: {fileID: 7066635809902662662}
-  - component: {fileID: 7066635809902662664}
+  - component: {fileID: 3671859661064289848}
+  - component: {fileID: 7710262911875819729}
   m_Layer: 0
   m_Name: CandleLightFlickering
   m_TagString: Untagged
@@ -71,7 +72,7 @@ MonoBehaviour:
   m_LocalBounds:
     m_Center: {x: 0, y: -0.00000011920929, z: 0}
     m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
-  m_PointLightInnerAngle: 287.0994
+  m_PointLightInnerAngle: 287.09943
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
   m_PointLightOuterRadius: 4.6
@@ -85,7 +86,7 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
---- !u!114 &7066635809902662664
+--- !u!114 &3671859661064289848
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -97,11 +98,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeb9441562add3b4580ea9c0c79ce35e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxIntensity: 1
-  minIntensity: 0.7
+  maxIntensity: 0
+  minIntensity: 0
   customLightPreprocessingImplementation: {fileID: 0}
-  anySubjectThatIsNotifyingTheLight: 1
-  _subject: {fileID: 0}
+  anySubjectThatIsNotifyingTheLight: 0
+  asyncCoroutineDelegator: {fileID: 0}
+--- !u!114 &7710262911875819729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7066635809902662663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb9441562add3b4580ea9c0c79ce35e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxIntensity: 0
+  minIntensity: 0
+  customLightPreprocessingImplementation: {fileID: 0}
+  anySubjectThatIsNotifyingTheLight: 0
   asyncCoroutineDelegator: {fileID: 0}
 --- !u!1 &7066635810158497453
 GameObject:

@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>, IObserver<AsyncCoroutine>, IObserver<LightPoolObject>
+public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<LightEntity>
 {
     private Light2D m_light;
     private AsyncCoroutine AsyncCoroutine { get; set; }
+
+    private CancellationTokenSource CancellationTokenSource { get; set; }
+    private CancellationToken CancellationToken { get; set; }
 
     [Header("Light Intensity Swing Values")]
     [SerializeField]
@@ -22,7 +25,7 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
     [Header("Add the Subject which willl be responsible for notifying")]
     public bool anySubjectThatIsNotifyingTheLight;
     [HideInInspector]
-    public LightObserverPattern _subject;
+    //public LightObserverPattern _subject;
 
     [Header("Async Coroutine Delegator Reference")]
     public AsyncCoroutineDelegator asyncCoroutineDelegator;
@@ -32,16 +35,13 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
     private void Awake()
     {
         m_light = GetComponent<Light2D>();
+        CancellationTokenSource = new CancellationTokenSource();
+        CancellationToken = CancellationTokenSource.Token;
     }
 
     private void Start()
     {
         StartCoroutine(asyncCoroutineDelegator.NotifySubject(this));
-    }
-
-    public virtual async Task OnNotify(LightEntity Data, CancellationToken _cancellationToken)
-    {
-         StartCoroutine(ExecuteLightningLogic(Data, _cancellationToken));
     }
 
     private IEnumerator ExecuteLightningLogic(LightEntity lightEntity, CancellationToken cancellationToken)
@@ -73,9 +73,8 @@ public class CustomLightProcessing : MonoBehaviour, IObserverAsync<LightEntity>,
         AsyncCoroutine = data;
     }
 
-    public void OnNotify(LightPoolObject data, params object[] optional)
+    public void OnNotify(LightEntity data, params object[] optional)
     {
-        //use this now!
-        throw new NotImplementedException();
+        StartCoroutine(ExecuteLightningLogic(data, CancellationToken));
     }
 }

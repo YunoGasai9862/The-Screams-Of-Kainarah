@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class LightPoolObject : MonoBehaviour, IObserver<>
+public class LightPoolObject : MonoBehaviour, ISubject<IObserver<LightEntity>>
 {
     [Header("Insert Player Tag")]
     [SerializeField] string PlayerTag;
@@ -72,7 +72,7 @@ public class LightPoolObject : MonoBehaviour, IObserver<>
             try
             {
                 //now revise this logic - and see how to make it less flicker - or only send a new notification for flicker once the user distance has passed away, dont do the same thing again and again!!
-                await NotifyAllLightObserversAsync(lightEntities[lightEntity], token);
+               //await NotifyAllLightObserversAsync(lightEntities[lightEntity], token);
 
             }
             catch (OperationCanceledException) //works (making use of Exceptions)
@@ -96,4 +96,9 @@ public class LightPoolObject : MonoBehaviour, IObserver<>
         tokenSource.Cancel();
     }
 
+    public void OnNotifySubject(IObserver<LightEntity> data, params object[] optional)
+    {
+       //find a solution to also tag
+       //extract from optional now!
+    }
 }

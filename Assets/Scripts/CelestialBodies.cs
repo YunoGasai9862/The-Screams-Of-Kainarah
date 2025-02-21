@@ -33,7 +33,7 @@ public class CelestialBodies : MonoBehaviour, IObserver<LightEntity>
             //update this somehow to run in a loop
             Debug.Log($"Moon Light: {MoonLight.ToString()}");
 
-            await NotifyAllLightObserversAsync(entity, cancellationToken);
+            //await NotifyAllLightObserversAsync(entity, cancellationToken);
         }
         catch (OperationCanceledException) //catches the exception, and gracefully exits
         {
