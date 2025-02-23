@@ -10,19 +10,12 @@ public class LightPoolObject : MonoBehaviour, ISubject<IObserver<LightEntity>>
     [Header("Insert Player Tag")]
     [SerializeField] string PlayerTag;
 
-    public static Dictionary<GameObject, LightEntity> lightEntitiesDict = new Dictionary<GameObject, LightEntity>();
-    public static List<GameObject> candleObjects;
-    private bool calculatingDistance = false;
     private float m_screenWidth;
     private CancellationTokenSource tokenSource;
     private GameObject m_player;
 
     private void Awake()
     {
-        candleObjects = GameObject.FindGameObjectsWithTag("candle").ToList();
-
-        lightEntitiesDict = FillUpLightEntities(candleObjects);
-
         m_screenWidth = HelperFunctions.CalculateScreenWidth(Camera.main);
 
         tokenSource = new();
@@ -35,11 +28,10 @@ public class LightPoolObject : MonoBehaviour, ISubject<IObserver<LightEntity>>
     }
     private async void Update()
     {
-        if (!calculatingDistance)
-        {
-            await PlayersDistanceFromCandles(lightEntitiesDict, m_player, m_screenWidth, tokenSource.Token);
-        }
-
+        //if (!calculatingDistance)
+        //{
+        //    await PlayersDistanceFromCandles(lightEntitiesDict, m_player, m_screenWidth, tokenSource.Token);
+        //}
     }
 
     private Dictionary<GameObject, LightEntity> FillUpLightEntities(List<GameObject> candleObjects)
@@ -58,47 +50,46 @@ public class LightPoolObject : MonoBehaviour, ISubject<IObserver<LightEntity>>
         return candles;
     }
 
-    private async Task PlayersDistanceFromCandles(Dictionary<GameObject, LightEntity> lightEntities, GameObject player, float acceptedDistance, CancellationToken token)
+    private async Task PrepareDataAndPingCustomLightProcessing(IObserver<LightEntity> data, NotificationContext notificationContext, GameObject player, float acceptedDistance, CancellationToken token)
     {
-        calculatingDistance = true;
-
-        foreach (GameObject lightEntity in lightEntities.Keys)
+        LightEntity lightEntity = new LightEntity()
         {
-            if (Vector2.Distance(player.transform.position, lightEntity.transform.position) < acceptedDistance)
-            {
-                lightEntities[lightEntity].UseCustomTinkering = true;
-            }
+            LightName = notificationContext.GameObjectName,
 
-            try
-            {
-                //now revise this logic - and see how to make it less flicker - or only send a new notification for flicker once the user distance has passed away, dont do the same thing again and again!!
-               //await NotifyAllLightObserversAsync(lightEntities[lightEntity], token);
+            UseCustomTinkering = false
+        };
 
-            }
-            catch (OperationCanceledException) //works (making use of Exceptions)
+        if (Vector2.Distance(player.transform.position, notificationContext.GameObject.transform.position) < acceptedDistance)
+        {
+            lightEntity.UseCustomTinkering = true;
+        }
+
+        try
+        {
+            //now revise this logic - and see how to make it less flicker - or only send a new notification for flicker once the user distance has passed away, dont do the same thing again and again!!
+
+            
+            //please use a delegator here, and not OnNotify!!!
+            data.OnNotify(lightEntity, new NotificationContext()
             {
-                calculatingDistance = false;
-                return;
-            }
+                GameObjectName = this.gameObject.name,
+                GameObjectTag = this.gameObject.tag
+            });
 
         }
-        calculatingDistance = false;
-
+        catch (OperationCanceledException)
+        {
+            return;
+        }
     }
 
-    private async Task CalculatesPlayerDistanceFromLightSource()
+    public async void OnNotifySubject(IObserver<LightEntity> data, NotificationContext notificationContext, params object[] optional)
     {
-
+        await PrepareDataAndPingCustomLightProcessing(data, notificationContext, m_player, m_screenWidth, tokenSource.Token);
     }
 
     private void OnDisable()
     {
         tokenSource.Cancel();
-    }
-
-    public void OnNotifySubject(IObserver<LightEntity> data, params object[] optional)
-    {
-       //find a solution to also tag
-       //extract from optional now!
     }
 }

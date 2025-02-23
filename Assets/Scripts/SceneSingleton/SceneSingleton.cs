@@ -121,8 +121,8 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
         IsDialogueTakingPlace = isTakingPlace;
     }
 
-    public void OnNotifySubject(IObserver<SceneSingleton> data, params object[] optional)
+    public void OnNotifySubject(IObserver<SceneSingleton> data, NotificationContext notificationContext, params object[] optional)
     {
-       StartCoroutine(sceneSingletonDelegator.NotifyObserver(data, this));
+        StartCoroutine(sceneSingletonDelegator.NotifyObserver(data, this));
     }
 }

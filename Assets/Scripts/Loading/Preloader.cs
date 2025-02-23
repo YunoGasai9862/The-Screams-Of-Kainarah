@@ -54,7 +54,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
         return Task.CompletedTask;
     }
 
-    public async void OnNotify(EntityPoolManager data, params object[] optional)
+    public async void OnNotify(EntityPoolManager data, NotificationContext notificationContext, params object[] optional)
     {
         await InitializePoolObjects(data); ;
     }

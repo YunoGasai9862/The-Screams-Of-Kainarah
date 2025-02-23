@@ -84,15 +84,14 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
         }
 
     }
-    public void OnNotify(Checkpoint Data, params object[] optional)
+
+    public async void OnNotify(Checkpoint data, NotificationContext notificationContext, params object[] optional)
     {
-        if (CheckpointDict.TryGetValue(Data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task> value))
+        if (CheckpointDict.TryGetValue(data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task> value))
         {
-            value.Invoke(Data, SceneSingleton.CheckPoints); //invokes that particular function to reset checkpoints 
-            //call the checkpoint => Save Game method
-            _ = GameStateManager.instance.SaveCheckPoint(saveFileName);
+            await value.Invoke(data, SceneSingleton.CheckPoints); //invokes that particular function to reset checkpoints 
+
+            await GameStateManager.instance.SaveCheckPoint(saveFileName);
         }
     }
-
-
 }

@@ -51,10 +51,10 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IObserver<EntityP
         await HelperFunctions.SetAsParent(gameLoad, gameObject);
     }
 
-    public async void OnNotify(EntityPoolManager data, params object[] optional)
+    public async void OnNotify(EntityPoolManager data, NotificationContext notificationContext, params object[] optional)
     {
-       await Run(data);
+        await Run(data);
 
-       await InvokePreloading();
+        await InvokePreloading();
     }
 }

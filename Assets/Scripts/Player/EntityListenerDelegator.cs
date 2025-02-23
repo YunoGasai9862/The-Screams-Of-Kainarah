@@ -7,9 +7,9 @@ using UnityEngine;
 
 public class EntityListenerDelegator : MonoBehaviour 
 {
-    public async Task<bool> ListenerDelegator<T>(ObserverList<T> subjectsToNofity, T dataType, SemaphoreSlim lockingThread=null)
+    public async Task<bool> ListenerDelegator<T>(ObserverList<T> subjectsToNofity, T dataType, NotificationContext notificationContext = null, SemaphoreSlim lockingThread=null)
     {
-        subjectsToNofity.NotifyObservers(dataType, lockingThread);
+        subjectsToNofity.NotifyObservers(dataType, notificationContext, lockingThread);
 
         return await Task.FromResult(true);
     }

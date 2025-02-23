@@ -112,12 +112,12 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
         StartCoroutine(PreloadAudio(DialoguesAndOptions));
     }
 
-    public void OnNotify(EntityPoolManager data, params object[] optional)
+    public void OnNotify(EntityPoolManager data, NotificationContext notificationContext, params object[] optional)
     {
         EntityPoolManager = data;
     }
 
-    public void OnNotify(IAWSPolly data, params object[] optional)
+    public void OnNotify(IAWSPolly data, NotificationContext notificationContext, params object[] optional)
     {
         AWSPollyManager = data;
     }

@@ -68,12 +68,12 @@ public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, I
         }
     }
 
-    public void OnNotify(AsyncCoroutine data, params object[] optional)
+    public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, params object[] optional)
     {
         AsyncCoroutine = data;
     }
 
-    public void OnNotify(LightEntity data, params object[] optional)
+    public void OnNotify(LightEntity data, NotificationContext notificationContext, params object[] optional)
     {
         StartCoroutine(ExecuteLightningLogic(data, CancellationToken));
     }

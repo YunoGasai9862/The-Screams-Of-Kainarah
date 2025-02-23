@@ -24,12 +24,11 @@ public class DialogueResetActionListener : MonoBehaviour, IObserver<DialoguesAnd
         return Task.CompletedTask;
     }
 
-    public async void OnNotify(DialoguesAndOptions Data, params object[] optional)
+    public async void OnNotify(DialoguesAndOptions data, NotificationContext notificationContext, params object[] optional)
     {
-        if (Data != null)
+        if (data != null)
         {
-            await ResetDialogueSystem(Data);    
+            await ResetDialogueSystem(data);
         }
     }
-
 }

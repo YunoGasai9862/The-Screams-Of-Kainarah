@@ -22,7 +22,7 @@ public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IS
         }
     }
 
-    public void OnNotifySubject(IObserver<AsyncCoroutine> data, params object[] optional)
+    public void OnNotifySubject(IObserver<AsyncCoroutine> data, NotificationContext notificationContext, params object[] optional)
     {
         StartCoroutine(m_asyncCoroutineDelegator.NotifyObserver(data, this));
     }

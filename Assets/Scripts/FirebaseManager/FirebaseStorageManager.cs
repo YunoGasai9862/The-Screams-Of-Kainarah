@@ -117,7 +117,7 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<
         return await mediaRelayerTCS.Task;
     }
 
-    void ISubject<IObserver<FirebaseStorageManager>>.OnNotifySubject(IObserver<FirebaseStorageManager> data, params object[] optional)
+    public void OnNotifySubject(IObserver<FirebaseStorageManager> data, NotificationContext notificationContext, params object[] optional)
     {
         StartCoroutine(firebaseStorageManagerDelegator.NotifyObserver(data, this));
     }

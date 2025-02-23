@@ -46,7 +46,7 @@ public class CelestialBodies : MonoBehaviour, IObserver<LightEntity>
         
     }
 
-    public async void OnNotify(LightEntity data, params object[] optional)
+    public async void OnNotify(LightEntity data, NotificationContext notificationContext, params object[] optional)
     {
         MoonLight = new LightEntity(data.LightName, data.UseCustomTinkering, minInnerRadius, maxInnerRadius, minOuterRadius, maxOuterRadius);
 

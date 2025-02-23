@@ -24,10 +24,12 @@ public class EntitiesToResetActionListener : MonoBehaviour, IObserver<EntitiesTo
         return Task.CompletedTask;
     }
 
-    public async void OnNotify(EntitiesToReset Data, params object[] optional)
-    {
-        if (Data != null)
-          await ResetAttributes(Data);
-    }
 
+    public async void OnNotify(EntitiesToReset data, NotificationContext notificationContext, params object[] optional)
+    {
+        if (data != null)
+        {
+            await ResetAttributes(data);
+        }
+    }
 }

@@ -7,7 +7,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
     public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext = null, params object[] optional)
     {
-        observer.OnNotify(value);
+        observer.OnNotify(value, notificationContext);
 
         yield return null;
     }
@@ -16,7 +16,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
     {
         yield return new WaitUntil(() => Subject.GetSubject() != null);
 
-        Subject.NotifySubject(observer);
+        Subject.NotifySubject(observer, notificationContext);
 
         yield return null;
     }

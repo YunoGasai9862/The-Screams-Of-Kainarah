@@ -89,7 +89,8 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
         }
 
     }
-    public void OnNotify(bool Data, params object[] optional)
+
+    public void OnNotify(bool data, NotificationContext notificationContext, params object[] optional)
     {
         shouldPlayPickUpAudio = true;
     }

@@ -6,7 +6,7 @@ public interface ISubjectAsync<T>
 
 public interface ISubject<T>
 {
-    public void OnNotifySubject(T data, params object[] optional);
+    public void OnNotifySubject(T data, NotificationContext notificationContext, params object[] optional);
 }
 
 public interface ISubjectAsync

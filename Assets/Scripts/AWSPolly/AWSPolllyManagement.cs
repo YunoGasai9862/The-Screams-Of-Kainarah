@@ -189,7 +189,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         return Task.CompletedTask;
     }
 
-    public async void OnNotify(FirebaseStorageManager data, params object[] optional)
+    public async void OnNotify(FirebaseStorageManager data, NotificationContext notificationContext, params object[] optional)
     {
         FirebaseStorageManagerInstance = data;
 
@@ -200,8 +200,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         AmazonPollyClient = await EstablishConnection(Credentials, RegionEndpoint.EUCentral1);
     }
 
-
-    public void OnNotifySubject(IObserver<IAWSPolly> data, params object[] optional)
+    public void OnNotifySubject(IObserver<IAWSPolly> data, NotificationContext notificationContext, params object[] optional)
     {
         StartCoroutine(awsPollyManagementDelegator.NotifyObserver(data, this));
     }

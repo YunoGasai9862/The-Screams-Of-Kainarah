@@ -127,7 +127,7 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
         return Task.FromResult(preloaderInstance.GetComponent<Preloader>());
     }
 
-    public void OnNotify(EntityPoolManager data, params object[] optional)
+    public void OnNotify(EntityPoolManager data, NotificationContext notificationContext, params object[] optional)
     {
         EntityPoolManager = data;
     }

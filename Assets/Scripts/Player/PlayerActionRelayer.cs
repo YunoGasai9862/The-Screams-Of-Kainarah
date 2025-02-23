@@ -83,7 +83,7 @@ public class PlayerActionRelayer : AbstractEntity
 
             if (!_cancellationTokenSource.IsCancellationRequested)
             {
-                await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, GetCheckPointSemaphore);
+                await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, lockingThread : GetCheckPointSemaphore);
 
             }
         }

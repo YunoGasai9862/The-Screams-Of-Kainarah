@@ -52,11 +52,6 @@ public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, ISubject<IObs
         }
     }
 
-    public void OnNotifySubject(IObserver<EntityPoolManager> data, params object[] optional)
-    {
-       StartCoroutine(entityPoolManagerDelegator.NotifyObserver(data, this));
-    }
-
     public EntityPool GetPooledEntity(string tag)
     {
 
@@ -66,5 +61,10 @@ public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, ISubject<IObs
         }
 
         return null;
+    }
+
+    public void OnNotifySubject(IObserver<EntityPoolManager> data, NotificationContext notificationContext, params object[] optional)
+    {
+        StartCoroutine(entityPoolManagerDelegator.NotifyObserver(data, this));
     }
 }

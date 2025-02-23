@@ -43,7 +43,7 @@ public class MoonShimmer : MonoBehaviour, ILightPreprocess, ISubject<IObserver<L
         });
     }
 
-    public void OnNotifySubject(IObserver<LightEntity> data, params object[] optional)
+    public void OnNotifySubject(IObserver<LightEntity> data, NotificationContext notificationContext, params object[] optional)
     {
         StartCoroutine(lightEntityDelegator.NotifyObserver(data, MoonLightData));
     }
