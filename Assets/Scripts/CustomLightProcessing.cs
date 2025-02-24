@@ -30,6 +30,9 @@ public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, I
     [Header("Async Coroutine Delegator Reference")]
     public AsyncCoroutineDelegator asyncCoroutineDelegator;
 
+    [Header("LightProcessor Coroutine Delegator Reference")]
+    public LightProcessorDelegator lightProcessorDelegator;
+
     private SemaphoreSlim m_Semaphore = new SemaphoreSlim(1, 1);
 
     private void Awake()
@@ -42,6 +45,7 @@ public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, I
     private void Start()
     {
         StartCoroutine(asyncCoroutineDelegator.NotifySubject(this));
+        StartCoroutine(lightProcessorDelegator.NotifySubject(this));
     }
 
     private IEnumerator ExecuteLightningLogic(LightEntity lightEntity, CancellationToken cancellationToken)
@@ -56,6 +60,7 @@ public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, I
 
                 Debug.Log(m_Semaphore.CurrentCount);
 
+                //npw test this tomorrow!!
                 AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.LightCustomPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, lightEntity.InnerRadiusMin, lightEntity.InnerRadiusMax, lightEntity.OuterRadiusMin, lightEntity.OuterRadiusMax, 5f)); //Async runner
 
                 m_Semaphore.WaitAsync();

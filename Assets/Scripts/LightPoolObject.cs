@@ -10,6 +10,10 @@ public class LightPoolObject : MonoBehaviour, ISubject<IObserver<LightEntity>>
     [Header("Insert Player Tag")]
     [SerializeField] string PlayerTag;
 
+    [Header("Insert LightProcessor Delegator")]
+    [SerializeField] LightProcessorDelegator lightProcessorDelegator;
+
+
     private float m_screenWidth;
     private CancellationTokenSource tokenSource;
     private GameObject m_player;
@@ -25,6 +29,8 @@ public class LightPoolObject : MonoBehaviour, ISubject<IObserver<LightEntity>>
     {
         //use observer pattern maybe
         m_player = GameObject.FindWithTag(PlayerTag);
+
+        lightProcessorDelegator.Subject.SetSubject(this);
     }
     private async void Update()
     {
@@ -50,7 +56,7 @@ public class LightPoolObject : MonoBehaviour, ISubject<IObserver<LightEntity>>
         return candles;
     }
 
-    private async Task PrepareDataAndPingCustomLightProcessing(IObserver<LightEntity> data, NotificationContext notificationContext, GameObject player, float acceptedDistance, CancellationToken token)
+    private Task PrepareDataAndPingCustomLightProcessing(IObserver<LightEntity> data, NotificationContext notificationContext, GameObject player, float acceptedDistance, CancellationToken token)
     {
         LightEntity lightEntity = new LightEntity()
         {
@@ -66,21 +72,20 @@ public class LightPoolObject : MonoBehaviour, ISubject<IObserver<LightEntity>>
 
         try
         {
-            //now revise this logic - and see how to make it less flicker - or only send a new notification for flicker once the user distance has passed away, dont do the same thing again and again!!
-
-            
-            //please use a delegator here, and not OnNotify!!!
-            data.OnNotify(lightEntity, new NotificationContext()
+            StartCoroutine(lightProcessorDelegator.NotifyObserver(data, lightEntity, new NotificationContext()
             {
                 GameObjectName = this.gameObject.name,
                 GameObjectTag = this.gameObject.tag
-            });
+            }));
 
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException ex)
         {
-            return;
+            Debug.LogError($"Message: {ex.Message}");
+            return Task.FromResult(false);
         }
+
+        return Task.FromResult(true);
     }
 
     public async void OnNotifySubject(IObserver<LightEntity> data, NotificationContext notificationContext, params object[] optional)
