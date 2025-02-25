@@ -24,13 +24,13 @@ public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, I
 
     [Header("Add the Subject which willl be responsible for notifying")]
     public bool anySubjectThatIsNotifyingTheLight;
-    [HideInInspector]
-    //public LightObserverPattern _subject;
 
     [Header("Async Coroutine Delegator Reference")]
+    [SerializeField]
     public AsyncCoroutineDelegator asyncCoroutineDelegator;
 
     [Header("LightProcessor Coroutine Delegator Reference")]
+    [SerializeField]
     public LightProcessorDelegator lightProcessorDelegator;
 
     private SemaphoreSlim m_Semaphore = new SemaphoreSlim(1, 1);
@@ -45,7 +45,12 @@ public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, I
     private void Start()
     {
         StartCoroutine(asyncCoroutineDelegator.NotifySubject(this));
-        StartCoroutine(lightProcessorDelegator.NotifySubject(this));
+        StartCoroutine(lightProcessorDelegator.NotifySubject(this, new NotificationContext()
+        {
+            GameObject = this.gameObject,
+            GameObjectName = this.gameObject.name,
+            GameObjectTag = this.gameObject.tag,
+        }));
     }
 
     private IEnumerator ExecuteLightningLogic(LightEntity lightEntity, CancellationToken cancellationToken)

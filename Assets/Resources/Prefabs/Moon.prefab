@@ -104,6 +104,7 @@ MonoBehaviour:
   customLightPreprocessingImplementation: {fileID: 1526845105241640475}
   anySubjectThatIsNotifyingTheLight: 1
   asyncCoroutineDelegator: {fileID: 0}
+  lightProcessorDelegator: {fileID: 0}
 --- !u!114 &1526845105241640475
 MonoBehaviour:
   m_ObjectHideFlags: 0
