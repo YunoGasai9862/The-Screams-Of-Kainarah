@@ -1,3 +1,4 @@
+using UnityEngine;
 public class LightEntityDelegator: BaseDelegator<LightEntity>
 {
     private void OnEnable()

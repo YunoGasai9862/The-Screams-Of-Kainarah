@@ -22,6 +22,7 @@ public class CelestialBodies : MonoBehaviour, IObserver<LightEntity>
         _semaphoreSlim = new SemaphoreSlim(semaPhoreSlimCount); //i already have one semaphoreSlim with 0 in another script, hence initializing it with 1
 
         StartCoroutine(lightEntityDelegator.NotifySubject(this));
+
     }
 
     private async Task CelestialBodyLightEffects(LightEntity entity, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim)
@@ -48,6 +49,8 @@ public class CelestialBodies : MonoBehaviour, IObserver<LightEntity>
 
     public async void OnNotify(LightEntity data, NotificationContext notificationContext, params object[] optional)
     {
+        Debug.Log("Here!");
+
         MoonLight = new LightEntity(data.LightName, data.UseCustomTinkering, minInnerRadius, maxInnerRadius, minOuterRadius, maxOuterRadius);
 
         CancellationTokenSource source = new CancellationTokenSource();

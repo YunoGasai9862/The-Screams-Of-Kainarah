@@ -22,9 +22,6 @@ public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, I
     [SerializeField]
     public LightPreProcessWrapper customLightPreprocessingImplementation;
 
-    [Header("Add the Subject which willl be responsible for notifying")]
-    public bool anySubjectThatIsNotifyingTheLight;
-
     [Header("Async Coroutine Delegator Reference")]
     [SerializeField]
     public AsyncCoroutineDelegator asyncCoroutineDelegator;

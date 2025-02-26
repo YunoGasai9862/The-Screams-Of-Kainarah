@@ -14,10 +14,15 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
     public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext = null, params object[] optional)
     {
-        yield return new WaitUntil(() => Subject.GetSubject() != null);
+        yield return new WaitUntil(() => !IsSubjectNull(Subject));
 
         Subject.NotifySubject(observer, notificationContext);
 
         yield return null;
+    }
+
+    private bool IsSubjectNull(Subject<IObserver<T>> subject)
+    {
+        return Subject == null || Subject.GetSubject() == null;
     }
 }
