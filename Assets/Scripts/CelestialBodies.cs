@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class CelestialBodies : MonoBehaviour, IObserver<LightEntity>
+public class CelestialBodies : MonoBehaviour, IObserver<AsyncCoroutine>
 {
     [SerializeField]
     public float minOuterRadius, maxOuterRadius, minInnerRadius, maxInnerRadius;
@@ -13,16 +13,22 @@ public class CelestialBodies : MonoBehaviour, IObserver<LightEntity>
     public int semaPhoreSlimCount;
 
     [SerializeField]
-    public LightEntityDelegator lightEntityDelegator;
+    public LightPreProcessWrapper lightPreProcessWrapper;
+
+    [SerializeField]
+    public AsyncCoroutineDelegator AsyncCoroutineDelegator;
+
     public LightEntity MoonLight { get; set; }
     private SemaphoreSlim _semaphoreSlim;
+
+
+    private AsyncCoroutine AsyncCoroutineInstance { get; set; }
 
     private void Awake()
     {
         _semaphoreSlim = new SemaphoreSlim(semaPhoreSlimCount); //i already have one semaphoreSlim with 0 in another script, hence initializing it with 1
 
-        StartCoroutine(lightEntityDelegator.NotifySubject(this));
-
+        StartCoroutine(AsyncCoroutineDelegator.NotifySubject(this));
     }
 
     private async Task CelestialBodyLightEffects(LightEntity entity, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim)
@@ -34,7 +40,8 @@ public class CelestialBodies : MonoBehaviour, IObserver<LightEntity>
             //update this somehow to run in a loop
             Debug.Log($"Moon Light: {MoonLight.ToString()}");
 
-            //await NotifyAllLightObserversAsync(entity, cancellationToken);
+            //do it this way!!
+            AsyncCoroutineInstance.ExecuteAsyncCoroutine(lightPreProcessWrapper.LightCustomPreprocess().GenerateCustomLighting());
         }
         catch (OperationCanceledException) //catches the exception, and gracefully exits
         {
@@ -46,11 +53,18 @@ public class CelestialBodies : MonoBehaviour, IObserver<LightEntity>
         }
         
     }
+    private Task<LightEntity> SetMoonLightData()
+    {
+        return Task.FromResult(new LightEntity()
+        {
+            LightName = transform.parent.name,
+            UseCustomTinkering = true
+        });
+    }
 
+    //please remove this and update it!!!
     public async void OnNotify(LightEntity data, NotificationContext notificationContext, params object[] optional)
     {
-        Debug.Log("Here!");
-
         MoonLight = new LightEntity(data.LightName, data.UseCustomTinkering, minInnerRadius, maxInnerRadius, minOuterRadius, maxOuterRadius);
 
         CancellationTokenSource source = new CancellationTokenSource();
@@ -58,5 +72,10 @@ public class CelestialBodies : MonoBehaviour, IObserver<LightEntity>
         CancellationToken token = source.Token;
 
         await CelestialBodyLightEffects(MoonLight, token, _semaphoreSlim);
+    }
+
+    public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, params object[] optional)
+    {
+        AsyncCoroutineInstance = data;
     }
 }
