@@ -1,18 +1,21 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 [Serializable]
 public class LightPreProcessWrapper : MonoBehaviour
 {
     [SerializeField]
-    public MonoBehaviour LightPreprocess; //Monobehavior can be of any type/script (generic)
+    public MonoBehaviour LightPreprocess;
 
-    //when this property is accessed, it returns/converts it to the appropriate type
-    public ILightPreprocess LightCustomPreprocess()
+    public ILightPreprocess CastToILightPreprocess()
     {
-        ILightPreprocess LightCustomPreprocess = LightPreprocess as ILightPreprocess;
-        //do some checks here
-        return LightCustomPreprocess;
+        return LightPreprocess.GetType() == typeof(ILightPreprocess) ? LightPreprocess as ILightPreprocess : throw new ApplicationException("Processor should implement ILightProcess"); 
+    }
+
+    public Light2D GetLight2D()
+    {
+        return LightPreprocess.GetComponent<Light2D>() ?? throw new ApplicationException("Light 2D doesn't exist!");
     }
 }

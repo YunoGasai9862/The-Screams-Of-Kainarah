@@ -18,20 +18,27 @@ public class CelestialBodies : MonoBehaviour, IObserver<AsyncCoroutine>
     [SerializeField]
     public AsyncCoroutineDelegator AsyncCoroutineDelegator;
 
-    public LightEntity MoonLight { get; set; }
-    private SemaphoreSlim _semaphoreSlim;
+    private LightEntity MoonLight { get; set; }
 
+    private SemaphoreSlim SemaphoreSlim { get; set; }
 
-    private AsyncCoroutine AsyncCoroutineInstance { get; set; }
+    private CancellationTokenSource CancellationTokenSource { get; set; }
+    private CancellationToken CancellationToken { get; set; }
 
-    private void Awake()
+    private async void Awake()
     {
-        _semaphoreSlim = new SemaphoreSlim(semaPhoreSlimCount); //i already have one semaphoreSlim with 0 in another script, hence initializing it with 1
+        SemaphoreSlim = new SemaphoreSlim(semaPhoreSlimCount);
+
+        MoonLight = await SetMoonLightData();
+
+        CancellationTokenSource = new CancellationTokenSource();    
+
+        CancellationToken = CancellationTokenSource.Token;
 
         StartCoroutine(AsyncCoroutineDelegator.NotifySubject(this));
     }
 
-    private async Task CelestialBodyLightEffects(LightEntity entity, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim)
+    private async Task CelestialBodyLightEffects(AsyncCoroutine asyncCoroutine, LightEntity entity, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim)
     {
         await semaphoreSlim.WaitAsync(); //waits for the thread to become available
 
@@ -41,7 +48,7 @@ public class CelestialBodies : MonoBehaviour, IObserver<AsyncCoroutine>
             Debug.Log($"Moon Light: {MoonLight.ToString()}");
 
             //do it this way!!
-            AsyncCoroutineInstance.ExecuteAsyncCoroutine(lightPreProcessWrapper.LightCustomPreprocess().GenerateCustomLighting());
+            //asyncCoroutine.ExecuteAsyncCoroutine(lightPreProcessWrapper.LightCustomPreprocess().GenerateCustomLighting());
         }
         catch (OperationCanceledException) //catches the exception, and gracefully exits
         {
@@ -62,20 +69,8 @@ public class CelestialBodies : MonoBehaviour, IObserver<AsyncCoroutine>
         });
     }
 
-    //please remove this and update it!!!
-    public async void OnNotify(LightEntity data, NotificationContext notificationContext, params object[] optional)
+    public async void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, params object[] optional)
     {
-        MoonLight = new LightEntity(data.LightName, data.UseCustomTinkering, minInnerRadius, maxInnerRadius, minOuterRadius, maxOuterRadius);
-
-        CancellationTokenSource source = new CancellationTokenSource();
-
-        CancellationToken token = source.Token;
-
-        await CelestialBodyLightEffects(MoonLight, token, _semaphoreSlim);
-    }
-
-    public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, params object[] optional)
-    {
-        AsyncCoroutineInstance = data;
+        await CelestialBodyLightEffects(data, MoonLight, CancellationToken, SemaphoreSlim);
     }
 }

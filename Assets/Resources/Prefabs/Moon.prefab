@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5073767169765330523}
   - component: {fileID: 6864766611724058526}
-  - component: {fileID: 3892833020860078988}
   - component: {fileID: 1526845105241640475}
   - component: {fileID: 5127844461900350612}
   m_Layer: 0
@@ -87,23 +86,6 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
---- !u!114 &3892833020860078988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2419437519602141298}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aeb9441562add3b4580ea9c0c79ce35e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxIntensity: 2.5
-  minIntensity: 1
-  customLightPreprocessingImplementation: {fileID: 1526845105241640475}
-  asyncCoroutineDelegator: {fileID: 0}
-  lightProcessorDelegator: {fileID: 0}
 --- !u!114 &1526845105241640475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,7 +111,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 710e5743279ef4642b92b22a2ce6c028, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightEntityDelegator: {fileID: 0}
 --- !u!1 &4890085813464346052
 GameObject:
   m_ObjectHideFlags: 0
