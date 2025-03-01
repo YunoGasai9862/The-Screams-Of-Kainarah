@@ -18,10 +18,6 @@ public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, I
     public float maxIntensity;
     public float minIntensity;
 
-    [Header("Add CustomLightProcessing Implementation")]
-    [SerializeField]
-    public LightPreProcessWrapper customLightPreprocessingImplementation;
-
     [Header("Async Coroutine Delegator Reference")]
     [SerializeField]
     public AsyncCoroutineDelegator asyncCoroutineDelegator;
@@ -34,6 +30,8 @@ public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, I
 
     private void Awake()
     {
+        //please put this on one object, and let other lights use that!!
+        //pass the light source as well!!
         m_light = GetComponent<Light2D>();
         CancellationTokenSource = new CancellationTokenSource();
         CancellationToken = CancellationTokenSource.Token;
@@ -63,7 +61,7 @@ public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, I
                 Debug.Log(m_Semaphore.CurrentCount);
 
                 //npw test this tomorrow!!
-                AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.CastToILightPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, lightEntity.InnerRadiusMin, lightEntity.InnerRadiusMax, lightEntity.OuterRadiusMin, lightEntity.OuterRadiusMax, 5f)); //Async runner
+                //AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.CastToILightPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, lightEntity.InnerRadiusMin, lightEntity.InnerRadiusMax, lightEntity.OuterRadiusMin, lightEntity.OuterRadiusMax, 5f)); //Async runner
 
                 m_Semaphore.WaitAsync();
             }

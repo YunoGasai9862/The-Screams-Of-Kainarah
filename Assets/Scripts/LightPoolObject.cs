@@ -40,22 +40,6 @@ public class LightPoolObject : MonoBehaviour, ISubject<IObserver<LightEntity>>
         //}
     }
 
-    private Dictionary<GameObject, LightEntity> FillUpLightEntities(List<GameObject> candleObjects)
-    {
-        Dictionary<GameObject, LightEntity> candles = new Dictionary<GameObject, LightEntity>();
-
-        foreach (GameObject candle in candleObjects)
-        {
-            candles[candle] = new LightEntity()
-            {
-                LightName = candle.name,
-                UseCustomTinkering = false
-            };
-        }
-
-        return candles;
-    }
-
     private Task PrepareDataAndPingCustomLightProcessing(IObserver<LightEntity> data, NotificationContext notificationContext, GameObject player, float acceptedDistance, CancellationToken token)
     {
         LightEntity lightEntity = new LightEntity()
