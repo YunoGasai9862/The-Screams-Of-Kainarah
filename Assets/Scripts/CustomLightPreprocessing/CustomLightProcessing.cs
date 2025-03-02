@@ -1,13 +1,10 @@
-using System;
 using System.Collections;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<LightEntity>
+public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, IObserver<AsyncCoroutine>, IObserver<LightEntity>
 {
-    private Light2D m_light;
     private AsyncCoroutine AsyncCoroutine { get; set; }
 
     private CancellationTokenSource CancellationTokenSource { get; set; }
@@ -32,7 +29,6 @@ public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, I
     {
         //please put this on one object, and let other lights use that!!
         //pass the light source as well!!
-        m_light = GetComponent<Light2D>();
         CancellationTokenSource = new CancellationTokenSource();
         CancellationToken = CancellationTokenSource.Token;
     }
@@ -48,28 +44,21 @@ public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, I
         }));
     }
 
-    private IEnumerator ExecuteLightningLogic(LightEntity lightEntity, CancellationToken cancellationToken)
+    private IEnumerator ExecuteLightningLogic(Light2D lightSource, ILightPreprocess customLightPreprocessingImplementation, LightEntity lightEntity, CancellationToken cancellationToken)
     {
         yield return new WaitUntil(() => AsyncCoroutine != null);
 
+        //pulse etc should not be the responsiblity of Execute method - but should be checked within customlightning method 
         if (lightEntity != null)
         {
-            if (lightEntity.LightName == transform.parent.name && lightEntity.UseCustomTinkering)
-            {
-                yield return new WaitUntil(() => m_Semaphore.CurrentCount != 0);
+            yield return new WaitUntil(() => m_Semaphore.CurrentCount != 0);
 
-                Debug.Log(m_Semaphore.CurrentCount);
+            Debug.Log(m_Semaphore.CurrentCount);
 
-                //npw test this tomorrow!!
-                //AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.CastToILightPreprocess().GenerateCustomLighting(m_light, minIntensity, maxIntensity, m_Semaphore, lightEntity.InnerRadiusMin, lightEntity.InnerRadiusMax, lightEntity.OuterRadiusMin, lightEntity.OuterRadiusMax, 5f)); //Async runner
+            //npw test this tomorrow!!
+            AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.GenerateCustomLighting(lightSource, minIntensity, maxIntensity, m_Semaphore, lightEntity.InnerRadiusMin, lightEntity.InnerRadiusMax, lightEntity.OuterRadiusMin, lightEntity.OuterRadiusMax, 5f)); //Async runner
 
-                m_Semaphore.WaitAsync();
-            }
-
-            if (lightEntity.LightName == transform.parent.name && !lightEntity.UseCustomTinkering)
-            {
-                StopAllCoroutines(); //the fix!
-            }
+            m_Semaphore.WaitAsync();
         }
     }
 
@@ -80,6 +69,6 @@ public class CustomLightProcessing : MonoBehaviour, IObserver<AsyncCoroutine>, I
 
     public void OnNotify(LightEntity data, NotificationContext notificationContext, params object[] optional)
     {
-        StartCoroutine(ExecuteLightningLogic(data, CancellationToken));
+        //StartCoroutine(ExecuteLightningLogic(data, CancellationToken));
     }
 }

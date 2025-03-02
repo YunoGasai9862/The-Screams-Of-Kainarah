@@ -99,7 +99,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxIntensity: 0
   minIntensity: 0
-  customLightPreprocessingImplementation: {fileID: 0}
   asyncCoroutineDelegator: {fileID: 0}
   lightProcessorDelegator: {fileID: 0}
 --- !u!1 &7066635810158497453

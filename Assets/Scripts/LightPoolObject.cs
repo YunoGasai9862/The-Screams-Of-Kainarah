@@ -46,12 +46,12 @@ public class LightPoolObject : MonoBehaviour, ISubject<IObserver<LightEntity>>
         {
             LightName = notificationContext.GameObjectName,
 
-            UseCustomTinkering = false
+            ShouldLightPulse = false
         };
 
         if (Vector2.Distance(player.transform.position, notificationContext.GameObject.transform.position) < acceptedDistance)
         {
-            lightEntity.UseCustomTinkering = true;
+            lightEntity.ShouldLightPulse = true;
         }
 
         try
