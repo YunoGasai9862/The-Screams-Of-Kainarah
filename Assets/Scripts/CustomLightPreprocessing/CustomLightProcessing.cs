@@ -44,7 +44,7 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
         }));
     }
 
-    private IEnumerator ExecuteLightningLogic(Light2D lightSource, ILightPreprocess customLightPreprocessingImplementation, LightEntity lightEntity, CancellationToken cancellationToken)
+    public  IEnumerator ExecuteLightningLogic(Light2D lightSource, ILightPreprocess customLightPreprocessingImplementation, LightEntity lightEntity, CancellationToken cancellationToken)
     {
         yield return new WaitUntil(() => AsyncCoroutine != null);
 
@@ -56,7 +56,7 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
             Debug.Log(m_Semaphore.CurrentCount);
 
             //npw test this tomorrow!!
-            AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.GenerateCustomLighting(lightSource, minIntensity, maxIntensity, m_Semaphore, lightEntity.InnerRadiusMin, lightEntity.InnerRadiusMax, lightEntity.OuterRadiusMin, lightEntity.OuterRadiusMax, 5f)); //Async runner
+            AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.GenerateCustomLighting(lightSource,lightEntity, m_Semaphore, 5f)); //Async runner
 
             m_Semaphore.WaitAsync();
         }

@@ -7,11 +7,12 @@ using UnityEngine.Rendering.Universal;
 
 public class LightFlicker : MonoBehaviour, ILightPreprocess
 {
-    public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(Light2D light, float minIntensity, float maxIntensity, SemaphoreSlim couroutineBlocker, float minInnnerRadius, float maxInnerRadius, float minOuterRadius, float maxOuterRadius, float delayBetweenExecution)
+
+    public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(Light2D light, LightEntity lightData, SemaphoreSlim couroutineBlocker, float delayBetweenExecution = 0)
     {
-        light.intensity = await GenerateLightRadia(minOuterRadius, maxOuterRadius);
-        light.pointLightInnerRadius = await GenerateLightRadia(minInnnerRadius, maxInnerRadius);
-        light.pointLightOuterRadius = await GenerateLightIntensityAsync(minIntensity, maxIntensity);
+        light.intensity = await GenerateLightRadia(lightData.OuterRadiusMin, lightData.OuterRadiusMax);
+        light.pointLightInnerRadius = await GenerateLightRadia(lightData.InnerRadiusMin, lightData.InnerRadiusMax);
+        light.pointLightOuterRadius = await GenerateLightIntensityAsync(lightData.MinLightIntensity, lightData.MaxLightIntensity);
 
         couroutineBlocker.Release();
 
