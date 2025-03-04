@@ -32,27 +32,20 @@ public class LightPoolObject : MonoBehaviour, ISubject<IObserver<LightEntity>>
 
         lightProcessorDelegator.Subject.SetSubject(this);
     }
-    private async void Update()
+
+    private Task PingCustomLightning(IObserver<LightEntity> data, NotificationContext notificationContext, GameObject player, float acceptedDistance, CancellationToken token)
     {
-        //if (!calculatingDistance)
+        //LightEntity lightEntity = new LightEntity()
         //{
-        //    await PlayersDistanceFromCandles(lightEntitiesDict, m_player, m_screenWidth, tokenSource.Token);
+        //    LightName = notificationContext.GameObjectName,
+
+        //    ShouldLightPulse = false
+        //};
+
+        //if (Vector2.Distance(player.transform.position, notificationContext.GameObject.transform.position) < acceptedDistance)
+        //{
+        //    lightEntity.ShouldLightPulse = true;
         //}
-    }
-
-    private Task PrepareDataAndPingCustomLightProcessing(IObserver<LightEntity> data, NotificationContext notificationContext, GameObject player, float acceptedDistance, CancellationToken token)
-    {
-        LightEntity lightEntity = new LightEntity()
-        {
-            LightName = notificationContext.GameObjectName,
-
-            ShouldLightPulse = false
-        };
-
-        if (Vector2.Distance(player.transform.position, notificationContext.GameObject.transform.position) < acceptedDistance)
-        {
-            lightEntity.ShouldLightPulse = true;
-        }
 
         try
         {
@@ -74,7 +67,7 @@ public class LightPoolObject : MonoBehaviour, ISubject<IObserver<LightEntity>>
 
     public async void OnNotifySubject(IObserver<LightEntity> data, NotificationContext notificationContext, params object[] optional)
     {
-        await PrepareDataAndPingCustomLightProcessing(data, notificationContext, m_player, m_screenWidth, tokenSource.Token);
+        await PingCustomLightning(data, notificationContext, m_player, m_screenWidth, tokenSource.Token);
     }
 
     private void OnDisable()

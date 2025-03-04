@@ -44,7 +44,7 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
         }));
     }
 
-    public  IEnumerator ExecuteLightningLogic(Light2D lightSource, ILightPreprocess customLightPreprocessingImplementation, LightEntity lightEntity, CancellationToken cancellationToken)
+    public  IEnumerator ExecuteLightningLogic(Light2D lightSource, ILightPreprocess customLightPreprocessingImplementation, LightPackage lightEntity, CancellationToken cancellationToken)
     {
         yield return new WaitUntil(() => AsyncCoroutine != null);
 

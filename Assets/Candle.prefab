@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7066635809902662665}
   - component: {fileID: 7066635809902662662}
-  - component: {fileID: 3671859661064289848}
   m_Layer: 0
   m_Name: CandleLightFlickering
   m_TagString: Untagged
@@ -85,22 +84,6 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
---- !u!114 &3671859661064289848
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7066635809902662663}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aeb9441562add3b4580ea9c0c79ce35e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxIntensity: 0
-  minIntensity: 0
-  asyncCoroutineDelegator: {fileID: 0}
-  lightProcessorDelegator: {fileID: 0}
 --- !u!1 &7066635810158497453
 GameObject:
   m_ObjectHideFlags: 0

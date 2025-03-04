@@ -1,9 +1,7 @@
-public class LightEntity
+public class LightProperties
 {
     public string LightName { get; set; }
     public bool ShouldLightPulse { get; set; }
-
-    //light properties
     public float InnerRadiusMin { get; set; }
     public float InnerRadiusMax { get; set; }
     public float OuterRadiusMin { get; set; }
@@ -12,12 +10,12 @@ public class LightEntity
     public float MinLightIntensity { get; set; }
 
 
-    public LightEntity()
+    public LightProperties()
     {
 
     }
 
-    public LightEntity(string lightName, bool shouldLightPulse, float innerRadiusMin, float innerRadiusMax, float outerRadiusMin, float outerRadiusMax, float maxlightIntensity, float minLightIntensity)
+    public LightProperties(string lightName, bool shouldLightPulse, float innerRadiusMin, float innerRadiusMax, float outerRadiusMin, float outerRadiusMax, float maxlightIntensity, float minLightIntensity)
     {
         LightName = lightName;
         ShouldLightPulse = shouldLightPulse;
