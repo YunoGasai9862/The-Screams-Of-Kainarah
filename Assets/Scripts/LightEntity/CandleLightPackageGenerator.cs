@@ -1,1 +1,6 @@
-public class CandleLightPackageGenerator:
+using UnityEngine;
+
+public class CandleLightPackageGenerator: MonoBehaviour
+{
+
+}

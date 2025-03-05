@@ -3,7 +3,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, IObserver<AsyncCoroutine>, IObserver<LightEntity>
+public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, IObserver<AsyncCoroutine>, ISubject<IObserver<LightPackage>>
 {
     private AsyncCoroutine AsyncCoroutine { get; set; }
 
@@ -19,9 +19,9 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
     [SerializeField]
     public AsyncCoroutineDelegator asyncCoroutineDelegator;
 
-    [Header("LightProcessor Coroutine Delegator Reference")]
+    [Header("LightPackage Coroutine Delegator Reference")]
     [SerializeField]
-    public LightProcessorDelegator lightProcessorDelegator;
+    public LightPackageDelegator lightPackageDelegator;
 
     private SemaphoreSlim m_Semaphore = new SemaphoreSlim(1, 1);
 
@@ -36,27 +36,23 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
     private void Start()
     {
         StartCoroutine(asyncCoroutineDelegator.NotifySubject(this));
-        StartCoroutine(lightProcessorDelegator.NotifySubject(this, new NotificationContext()
-        {
-            GameObject = this.gameObject,
-            GameObjectName = this.gameObject.name,
-            GameObjectTag = this.gameObject.tag,
-        }));
+
+        lightPackageDelegator.Subject.SetSubject(this);
     }
 
-    public  IEnumerator ExecuteLightningLogic(Light2D lightSource, ILightPreprocess customLightPreprocessingImplementation, LightPackage lightEntity, CancellationToken cancellationToken)
+    public  IEnumerator ExecuteLightningLogic(LightPackage lightPackage, ILightPreprocess customLightPreprocessingImplementation, CancellationToken cancellationToken)
     {
         yield return new WaitUntil(() => AsyncCoroutine != null);
 
         //pulse etc should not be the responsiblity of Execute method - but should be checked within customlightning method 
-        if (lightEntity != null)
+        if (lightPackage != null)
         {
             yield return new WaitUntil(() => m_Semaphore.CurrentCount != 0);
 
             Debug.Log(m_Semaphore.CurrentCount);
 
             //npw test this tomorrow!!
-            AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.GenerateCustomLighting(lightSource,lightEntity, m_Semaphore, 5f)); //Async runner
+            AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.GenerateCustomLighting(lightPackage, m_Semaphore, 5f)); //Async runner
 
             m_Semaphore.WaitAsync();
         }
@@ -67,7 +63,7 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
         AsyncCoroutine = data;
     }
 
-    public void OnNotify(LightEntity data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, params object[] optional)
     {
         //StartCoroutine(ExecuteLightningLogic(data, CancellationToken));
     }
