@@ -14,9 +14,9 @@ public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess
         light.pointLightInnerRadius = Mathf.PingPong(time * 2, maxInnerRadius) + minInnerRadius;
     }
 
-    public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(Light2D light, LightEntity lightData, SemaphoreSlim couroutineBlocker, float delayBetweenExecution = 0)
+    public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, SemaphoreSlim couroutineBlocker, float delayBetweenExecution = 0)
     {
-        ActivateContinuousShimmer(light, Time.time, lightData.MinLightIntensity, lightData.MaxLightIntensity, lightData.OuterRadiusMin, lightData.OuterRadiusMax, lightData.InnerRadiusMin, lightData.InnerRadiusMax);
+        ActivateContinuousShimmer(lightPackage.LightSource, Time.time, lightPackage.LightProperties.MinLightIntensity, lightPackage.LightProperties.MaxLightIntensity, lightPackage.LightProperties.OuterRadiusMin, lightPackage.LightProperties.OuterRadiusMax, lightPackage.LightProperties.InnerRadiusMin, lightPackage.LightProperties.InnerRadiusMax);
         await Task.Delay(TimeSpan.FromMilliseconds(0));
 
         //release it here
