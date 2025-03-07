@@ -26,3 +26,29 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
         return Subject == null || Subject.GetSubject() == null;
     }
 }
+
+public abstract class BaseDelegator<T, Z> : MonoBehaviour, IDelegator<T, Z>
+{
+    public Subject<IObserver<T, Z>> Subject { get; set; }
+
+    public IEnumerator NotifyObserver(IObserver<T, Z> observer, Z value, NotificationContext notificationContext = null, params object[] optional)
+    {
+        observer.OnNotify(value, notificationContext);
+
+        yield return null;
+    }
+
+    public IEnumerator NotifySubject(IObserver<T, Z> observer, NotificationContext notificationContext = null, params object[] optional)
+    {
+        yield return new WaitUntil(() => !IsSubjectNull(Subject));
+
+        Subject.NotifySubject(observer, notificationContext);
+
+        yield return null;
+    }
+
+    private bool IsSubjectNull(Subject<IObserver<T, Z>> subject)
+    {
+        return Subject == null || Subject.GetSubject() == null;
+    }
+}

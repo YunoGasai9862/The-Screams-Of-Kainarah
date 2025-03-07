@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
-public class LightFlicker : MonoBehaviour, ILightPreprocess
+public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<LightFlicker, ILightPreprocess>>
 {
+    [SerializeField]
+    LightFlickerPreprocessDelegator lightFlickerPreprocessorDelegator;
+    private void Start()
+    {
+        lightFlickerPreprocessorDelegator.Subject.SetSubject(this);
+    }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, SemaphoreSlim couroutineBlocker, float delayBetweenExecution = 0)
     {
@@ -28,5 +33,10 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess
     public Task<float> GenerateLightRadia(float minRadia, float maxRadia)
     {
         return Task.FromResult(UnityEngine.Random.Range(minRadia, maxRadia));
+    }
+
+    public void OnNotifySubject(IObserver<LightFlicker, ILightPreprocess> data, NotificationContext notificationContext, params object[] optional)
+    {
+        StartCoroutine(lightFlickerPreprocessorDelegator.NotifyObserver(data, this));
     }
 }
