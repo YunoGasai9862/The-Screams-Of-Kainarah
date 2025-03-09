@@ -6,6 +6,8 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<Lig
     LightPackageDelegator lightPackageDelegator;
     LightFlickerPreprocessDelegator lightFlickerPreprocessDelegator;
 
+    private ILightPreprocess lightFlickerPreprocess;
+
     private void Start()
     {
         StartCoroutine(lightFlickerPreprocessDelegator.NotifySubject(this));
@@ -18,6 +20,6 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<Lig
 
     void IObserver<LightFlicker, ILightPreprocess>.OnNotify(ILightPreprocess data, NotificationContext context, params object[] optional)
     {
-        throw new System.NotImplementedException();
+        lightFlickerPreprocess = data;
     }
 }

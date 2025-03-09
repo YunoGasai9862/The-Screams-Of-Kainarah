@@ -66,6 +66,6 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
     public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, params object[] optional)
     {
         //fix this
-       // StartCoroutine(ExecuteLightningLogic(data,  CancellationToken));
+       //StartCoroutine(ExecuteLightningLogic(data,  CancellationToken));
     }
 }
