@@ -54,45 +54,6 @@ public class Subject<T>
     }
 }
 
-public class Subjects<T>
-{
-    private Dictionary<string, ISubject<T>> SubjectsDict { get; set; } = new Dictionary<string, ISubject<T>>();
-
-    public Task SetSubject(string key, ISubject<T> subject)
-    {
-        SubjectsDict.Add(key, subject);
-
-        return Task.CompletedTask;
-    }
-
-    public Task<ISubject<T>> GetSubject(string key)
-    {
-        if (SubjectsDict.TryGetValue(key, out ISubject<T> subject))
-        {
-            return Task.FromResult(subject);
-        }
-
-        return null;
-    }
-
-    public void NotifySubjects(T value, NotificationContext notificationContext, SemaphoreSlim lockingThread = null)
-    {
-        foreach(ISubject<T> subject in SubjectsDict.Values)
-        {
-            subject.OnNotifySubject(value, notificationContext, lockingThread);
-        }
-    }
-
-    public void NotifySubject(string key, T value, NotificationContext notificationContext, SemaphoreSlim lockingThread = null)
-    {
-        if (SubjectsDict.TryGetValue(key, out ISubject<T> subject))
-        {
-            subject.OnNotifySubject(value, notificationContext, lockingThread);
-        }
-    }
-}
-
-
 
 public class SubjectAsync
 {
