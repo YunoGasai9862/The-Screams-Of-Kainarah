@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using static ExceptionList;
@@ -54,7 +55,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
         return Task.CompletedTask;
     }
 
-    public async void OnNotify(EntityPoolManager data, NotificationContext notificationContext, params object[] optional)
+    public async void OnNotify(EntityPoolManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         await InitializePoolObjects(data); ;
     }

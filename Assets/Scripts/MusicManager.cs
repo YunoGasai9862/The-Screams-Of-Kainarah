@@ -1,3 +1,4 @@
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -90,7 +91,7 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
 
     }
 
-    public void OnNotify(bool data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotify(bool data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         shouldPlayPickUpAudio = true;
     }

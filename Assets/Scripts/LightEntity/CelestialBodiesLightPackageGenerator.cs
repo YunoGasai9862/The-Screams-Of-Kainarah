@@ -1,3 +1,4 @@
+using System.Threading;
 using UnityEngine;
 
 public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<LightPackage>, IObserver<LightFlicker, ILightPreprocess>
@@ -8,18 +9,22 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<Lig
 
     private ILightPreprocess lightFlickerPreprocess;
 
-    private void Start()
-    {
-        StartCoroutine(lightFlickerPreprocessDelegator.NotifySubject(this));
-    }
+    private string LightFlickerUniqueKey { get; set; }
 
-    public void OnNotify(LightPackage data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotify(LightPackage data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         throw new System.NotImplementedException();
     }
 
-    void IObserver<LightFlicker, ILightPreprocess>.OnNotify(ILightPreprocess data, NotificationContext context, params object[] optional)
+    public void OnNotify(ILightPreprocess data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         lightFlickerPreprocess = data;
+    }
+
+    public void OnKeyNotify(string key, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        LightFlickerUniqueKey = key;
+
+        StartCoroutine(lightFlickerPreprocessDelegator.NotifySubject(LightFlickerUniqueKey , this));
     }
 }

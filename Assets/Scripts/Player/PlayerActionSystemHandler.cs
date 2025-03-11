@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -73,7 +74,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
         return _gameObject;
     }
 
-    public void OnNotify(Collider2D data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotify(Collider2D data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         if (_playerActionHandlerDic.TryGetValue(data.tag, out var invokeFunc)) //simplified
         {

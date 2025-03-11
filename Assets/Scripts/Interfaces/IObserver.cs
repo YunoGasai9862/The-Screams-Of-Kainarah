@@ -1,8 +1,10 @@
 
 
+using System.Threading;
+
 public interface IObserver<T>
 {
-    public abstract void OnNotify(T data, NotificationContext notificationContext, params object[] optional);
+    public abstract void OnNotify(T data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional);
 
 }
 public interface IExtendedObserver<T, Y, Z>
@@ -19,5 +21,11 @@ public interface IExtendedObserver<T, Y, Z>
 /// </summary>
 public interface IObserver<T, Z> 
 {
-    public abstract void OnNotify(Z data, NotificationContext context, params object[] optional);
+    public abstract void OnNotify(Z data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional);
+
+    /// <summary>
+    /// Gets called when a subject broadcasts its unique key.
+    /// </summary>
+    /// <param name="key">The key associated with a subject</param>
+    public abstract void OnKeyNotify(string key, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional);
 }

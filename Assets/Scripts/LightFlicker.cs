@@ -10,7 +10,8 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
     LightFlickerPreprocessDelegator lightFlickerPreprocessorDelegator;
     private void Start()
     {
-        lightFlickerPreprocessorDelegator.Subject.SetSubject(this);
+        //fix this bilal
+        lightFlickerPreprocessorDelegator.SubjectsDict.Add("", this);
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, SemaphoreSlim couroutineBlocker, float delayBetweenExecution = 0)

@@ -1,4 +1,5 @@
 
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using static DialoguesAndOptions;
@@ -25,7 +26,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
         PlayerObserverListenerHelper.DialogueSystem.RemoveOberver(this); 
     }
 
-    public async void OnNotify(DialogueSystem data, NotificationContext notificationContext, params object[] optional)
+    public async void OnNotify(DialogueSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         if (data.DialogueOptions.ShouldTriggerDialogue)
         {

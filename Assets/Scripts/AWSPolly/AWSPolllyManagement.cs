@@ -189,7 +189,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         return Task.CompletedTask;
     }
 
-    public async void OnNotify(FirebaseStorageManager data, NotificationContext notificationContext, params object[] optional)
+    public async void OnNotify(FirebaseStorageManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         FirebaseStorageManagerInstance = data;
 
@@ -204,4 +204,5 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     {
         StartCoroutine(awsPollyManagementDelegator.NotifyObserver(data, this));
     }
+
 }

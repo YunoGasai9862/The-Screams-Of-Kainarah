@@ -1,3 +1,4 @@
+using System.Threading;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage
         return null;
     }
 
-    public void OnNotify(LightPackage data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotify(LightPackage data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         throw new System.NotImplementedException();
     }

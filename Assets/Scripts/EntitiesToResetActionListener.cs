@@ -25,7 +25,7 @@ public class EntitiesToResetActionListener : MonoBehaviour, IObserver<EntitiesTo
     }
 
 
-    public async void OnNotify(EntitiesToReset data, NotificationContext notificationContext, params object[] optional)
+    public async void OnNotify(EntitiesToReset data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         if (data != null)
         {

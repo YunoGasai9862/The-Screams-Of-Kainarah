@@ -4,6 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Threading;
 
 public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
 {
@@ -127,7 +128,7 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
         return Task.FromResult(preloaderInstance.GetComponent<Preloader>());
     }
 
-    public void OnNotify(EntityPoolManager data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotify(EntityPoolManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         EntityPoolManager = data;
     }

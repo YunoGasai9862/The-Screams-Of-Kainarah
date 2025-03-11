@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using static DialoguesAndOptions;
@@ -24,7 +25,7 @@ public class DialogueResetActionListener : MonoBehaviour, IObserver<DialoguesAnd
         return Task.CompletedTask;
     }
 
-    public async void OnNotify(DialoguesAndOptions data, NotificationContext notificationContext, params object[] optional)
+    public async void OnNotify(DialoguesAndOptions data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         if (data != null)
         {

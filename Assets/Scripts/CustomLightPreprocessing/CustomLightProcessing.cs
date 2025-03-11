@@ -58,12 +58,12 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
         }
     }
 
-    public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         AsyncCoroutine = data;
     }
 
-    public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext,  params object[] optional)
     {
         //fix this
        //StartCoroutine(ExecuteLightningLogic(data,  CancellationToken));
