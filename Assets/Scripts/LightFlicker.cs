@@ -6,12 +6,19 @@ using UnityEngine;
 
 public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<LightFlicker, ILightPreprocess>>
 {
+    private const string LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER = "light-flicker";
+
     [SerializeField]
     LightFlickerPreprocessDelegator lightFlickerPreprocessorDelegator;
     private void Start()
     {
-        //fix this bilal
-        lightFlickerPreprocessorDelegator.SubjectsDict.Add("", this);
+        //create new entry
+        lightFlickerPreprocessorDelegator.SubjectsDict.Add(LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER, new Subject<IObserver<LightFlicker, ILightPreprocess>>());
+        //set subject
+        lightFlickerPreprocessorDelegator.SubjectsDict[LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER].SetSubject(this);
+        //notify the observer with the key
+        //maybe just broadcast it to all observers so far - add that mechanism in the child class maybe?
+        StartCoroutine(lightFlickerPreprocessorDelegator.NotifyObserver(null, LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER));
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, SemaphoreSlim couroutineBlocker, float delayBetweenExecution = 0)

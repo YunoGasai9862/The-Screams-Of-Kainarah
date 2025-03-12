@@ -52,7 +52,15 @@ public class Subject<T>
     {
         MSubject.OnNotifySubject(value, notificationContext, lockingThread, optional);
     }
+
+    public void NotifySubjectForActivation(NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional)
+    {
+        //take a look at this later
+        //fix this tomorrow
+        //MSubject.NotifySubjectForActivation(notificationContext, lockingThread, optional);
+    }
 }
+
 
 
 public class SubjectAsync

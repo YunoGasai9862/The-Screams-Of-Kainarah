@@ -12,4 +12,5 @@ public interface IDelegator<T, Z>
     public IEnumerator NotifySubject(string key, IObserver<T, Z> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional);
     public IEnumerator NotifySubjects(IObserver<T, Z> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional);
     public IEnumerator NotifyObserver(IObserver<T, Z> observer, string key, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional);
+    public IEnumerator NotifyWhenActive(NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional);
 }

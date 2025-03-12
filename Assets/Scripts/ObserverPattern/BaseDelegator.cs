@@ -67,6 +67,7 @@ public abstract class BaseDelegator<T, Z> : MonoBehaviour, IDelegator<T, Z>
 
     public IEnumerator NotifyObserver(IObserver<T, Z> observer, string key, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
+        //use reflection or other way to broad cast key!
         observer.OnKeyNotify(key, notificationContext, semaphoreSlim, optional);
 
         yield return null;
@@ -77,5 +78,16 @@ public abstract class BaseDelegator<T, Z> : MonoBehaviour, IDelegator<T, Z>
         return subject == null || subject.GetSubject() == null;
     }
 
+    public IEnumerator NotifyWhenActive(NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    {
+        //observer pings that im alive, please broadcast the key
+        foreach (Subject<IObserver<T, Z>> subject in SubjectsDict.Values)
+        {
+            yield return new WaitUntil(() => !IsSubjectNull(subject));
 
+            //subject.NotifySubject(observer, notificationContext);
+        }
+
+        yield return null;
+    }
 }
