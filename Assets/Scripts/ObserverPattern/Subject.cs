@@ -53,14 +53,37 @@ public class Subject<T>
         MSubject.OnNotifySubject(value, notificationContext, lockingThread, optional);
     }
 
-    public void NotifySubjectForActivation(NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional)
-    {
-        //take a look at this later
-        //fix this tomorrow
-        //MSubject.NotifySubjectForActivation(notificationContext, lockingThread, optional);
-    }
 }
 
+
+/// <summary>
+/// Represents a subject for synchronous observer pattern with activation notification from observer
+/// <typeparam name="T">The type T here is the observer's interface type that the subject notifies</typeparam>
+/// </summary>
+public class SubjectNotifier<T>
+{
+    private ISubjectNotifier<T> Subject { get; set; }
+
+    public void SetSubject(ISubjectNotifier<T> subject)
+    {
+        Subject = subject;
+    }
+
+    public ISubjectNotifier<T> GetSubject()
+    {
+        return Subject;
+    }
+
+    public void NotifySubject(T value, NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional)
+    {
+        Subject.OnNotifySubject(value, notificationContext, lockingThread, optional);
+    }
+
+    public void NotifySubjectForActivation(NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional)
+    {
+        Subject.NotifySubjectForActivation(notificationContext, lockingThread, optional);
+    }
+}
 
 
 public class SubjectAsync
