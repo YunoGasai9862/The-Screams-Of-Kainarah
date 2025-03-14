@@ -33,7 +33,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
 public abstract class BaseDelegator<T, Z> : MonoBehaviour, IDelegator<T, Z>
 {
-    public Dictionary<string, Subject<IObserver<T, Z>>> SubjectsDict { get; set; }
+    public Dictionary<string, SubjectNotifier<IObserver<T, Z>>> SubjectsDict { get; set; }
 
     public IEnumerator NotifyObserver(IObserver<T, Z> observer, Z value, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
@@ -44,7 +44,7 @@ public abstract class BaseDelegator<T, Z> : MonoBehaviour, IDelegator<T, Z>
 
     public IEnumerator NotifySubject(string key, IObserver<T, Z> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null,params object[] optional)
     {
-        Subject<IObserver<T,Z>> subject = SubjectsDict[key];
+        SubjectNotifier<IObserver<T,Z>> subject = SubjectsDict[key];
 
         yield return new WaitUntil(() => !IsSubjectNull(subject));
 
@@ -55,7 +55,7 @@ public abstract class BaseDelegator<T, Z> : MonoBehaviour, IDelegator<T, Z>
 
     public IEnumerator NotifySubjects(IObserver<T, Z> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        foreach(Subject<IObserver<T,Z>> subject in SubjectsDict.Values)
+        foreach(SubjectNotifier<IObserver<T,Z>> subject in SubjectsDict.Values)
         {
             yield return new WaitUntil(() => !IsSubjectNull(subject));
 
@@ -73,7 +73,7 @@ public abstract class BaseDelegator<T, Z> : MonoBehaviour, IDelegator<T, Z>
         yield return null;
     }
 
-    private bool IsSubjectNull(Subject<IObserver<T, Z>> subject)
+    private bool IsSubjectNull(SubjectNotifier<IObserver<T, Z>> subject)
     {
         return subject == null || subject.GetSubject() == null;
     }
@@ -81,11 +81,11 @@ public abstract class BaseDelegator<T, Z> : MonoBehaviour, IDelegator<T, Z>
     public IEnumerator NotifyWhenActive(NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         //observer pings that im alive, please broadcast the key
-        foreach (Subject<IObserver<T, Z>> subject in SubjectsDict.Values)
+        foreach (SubjectNotifier<IObserver<T, Z>> subject in SubjectsDict.Values)
         {
             yield return new WaitUntil(() => !IsSubjectNull(subject));
 
-            //subject.NotifySubject(observer, notificationContext);
+            subject.NotifySubjectForActivation(notificationContext);
         }
 
         yield return null;

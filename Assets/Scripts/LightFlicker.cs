@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<LightFlicker, ILightPreprocess>>
+public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubjectNotifier<IObserver<LightFlicker, ILightPreprocess>>
 {
     private const string LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER = "light-flicker";
 
@@ -13,7 +13,7 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
     private void Start()
     {
         //create new entry
-        lightFlickerPreprocessorDelegator.SubjectsDict.Add(LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER, new Subject<IObserver<LightFlicker, ILightPreprocess>>());
+        lightFlickerPreprocessorDelegator.SubjectsDict.Add(LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER, new SubjectNotifier<IObserver<LightFlicker, ILightPreprocess>>());
         //set subject
         lightFlickerPreprocessorDelegator.SubjectsDict[LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER].SetSubject(this);
         //notify the observer with the key
@@ -46,5 +46,11 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
     public void OnNotifySubject(IObserver<LightFlicker, ILightPreprocess> data, NotificationContext notificationContext, params object[] optional)
     {
         StartCoroutine(lightFlickerPreprocessorDelegator.NotifyObserver(data, this));
+    }
+
+    public void NotifySubjectForActivation(NotificationContext notificationContext, params object[] optional)
+    {
+        //yayay
+        throw new NotImplementedException();
     }
 }

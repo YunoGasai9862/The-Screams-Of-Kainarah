@@ -4,6 +4,6 @@ public class LightFlickerPreprocessDelegator: BaseDelegator<LightFlicker, ILight
 {
     private void OnEnable()
     {
-        SubjectsDict = new Dictionary<string, Subject<IObserver<LightFlicker, ILightPreprocess>>>();
+        SubjectsDict = new Dictionary<string, SubjectNotifier<IObserver<LightFlicker, ILightPreprocess>>>();
     }
 }
