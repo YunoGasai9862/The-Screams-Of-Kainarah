@@ -31,7 +31,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
     }
 }
 
-public abstract class BaseDelegator<T, Z> : MonoBehaviour, IDelegator<T, Z>
+public abstract class BaseDelegator<T, Z> : IDelegator<T, Z>
 {
     public Dictionary<string, SubjectNotifier<IObserver<T, Z>>> SubjectsDict { get; set; }
 
@@ -67,7 +67,6 @@ public abstract class BaseDelegator<T, Z> : MonoBehaviour, IDelegator<T, Z>
 
     public IEnumerator NotifyObserver(IObserver<T, Z> observer, string key, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        //use reflection or other way to broad cast key!
         observer.OnKeyNotify(key, notificationContext, semaphoreSlim, optional);
 
         yield return null;
@@ -78,14 +77,13 @@ public abstract class BaseDelegator<T, Z> : MonoBehaviour, IDelegator<T, Z>
         return subject == null || subject.GetSubject() == null;
     }
 
-    public IEnumerator NotifyWhenActive(NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifyWhenActive(IObserver<T, Z> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        //observer pings that im alive, please broadcast the key
         foreach (SubjectNotifier<IObserver<T, Z>> subject in SubjectsDict.Values)
         {
             yield return new WaitUntil(() => !IsSubjectNull(subject));
 
-            subject.NotifySubjectForActivation(notificationContext);
+            subject.NotifySubjectOfActivation(observer, notificationContext);
         }
 
         yield return null;

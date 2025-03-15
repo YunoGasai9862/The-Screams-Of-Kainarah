@@ -4,21 +4,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubjectNotifier<IObserver<LightFlicker, ILightPreprocess>>
+public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<LightFlicker, ILightPreprocess>>, ISubjectActivationNotifier<IObserver<LightFlicker, ILightPreprocess>>
 {
     private const string LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER = "light-flicker";
 
     [SerializeField]
-    LightFlickerPreprocessDelegator lightFlickerPreprocessorDelegator;
+    LightPreprocessDelegator<LightFlicker> lightPreprocessDelegator;
     private void Start()
     {
         //create new entry
-        lightFlickerPreprocessorDelegator.SubjectsDict.Add(LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER, new SubjectNotifier<IObserver<LightFlicker, ILightPreprocess>>());
+        lightPreprocessDelegator.SubjectsDict.Add(LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER, new SubjectNotifier<IObserver<LightFlicker, ILightPreprocess>>());
         //set subject
-        lightFlickerPreprocessorDelegator.SubjectsDict[LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER].SetSubject(this);
-        //notify the observer with the key
-        //maybe just broadcast it to all observers so far - add that mechanism in the child class maybe?
-        StartCoroutine(lightFlickerPreprocessorDelegator.NotifyObserver(null, LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER));
+        lightPreprocessDelegator.SubjectsDict[LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER].SetSubject(this);
+
+        //also set the subject for broadcast
+        lightPreprocessDelegator.SubjectsDict[LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER].SetSubjectActivationNotifier(this);
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, SemaphoreSlim couroutineBlocker, float delayBetweenExecution = 0)
@@ -45,12 +45,11 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubjectNotifier<IO
 
     public void OnNotifySubject(IObserver<LightFlicker, ILightPreprocess> data, NotificationContext notificationContext, params object[] optional)
     {
-        StartCoroutine(lightFlickerPreprocessorDelegator.NotifyObserver(data, this));
+        StartCoroutine(lightPreprocessDelegator.NotifyObserver(data, this));
     }
 
-    public void NotifySubjectForActivation(NotificationContext notificationContext, params object[] optional)
+    public void NotifySubjectOfActivation(IObserver<LightFlicker, ILightPreprocess> data, NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional)
     {
-        //yayay
-        throw new NotImplementedException();
+        StartCoroutine(lightPreprocessDelegator.NotifyObserver(data, LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER, notificationContext, lockingThread, optional));
     }
 }

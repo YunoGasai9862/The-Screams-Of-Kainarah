@@ -36,21 +36,21 @@ public class SubjectAsync<T>
 /// </summary>
 public class Subject<T>
 {
-    private ISubject<T> MSubject { get; set; }
+    private ISubject<T> ISubject { get; set; }
 
     public void SetSubject(ISubject<T> subject)
     {
-        MSubject = subject;
+        ISubject = subject;
     }
 
     public ISubject<T> GetSubject()
     {
-        return MSubject;
+        return ISubject;
     }
 
     public void NotifySubject(T value, NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional)
     {
-        MSubject.OnNotifySubject(value, notificationContext, lockingThread, optional);
+        ISubject.OnNotifySubject(value, notificationContext, lockingThread, optional);
     }
 
 }
@@ -60,28 +60,22 @@ public class Subject<T>
 /// Represents a subject for synchronous observer pattern with activation notification from observer
 /// <typeparam name="T">The type T here is the observer's interface type that the subject notifies</typeparam>
 /// </summary>
-public class SubjectNotifier<T>
+public class SubjectNotifier<T>: Subject<T>, ISubjectActivationNotifier<T>
 {
-    private ISubjectNotifier<T> Subject { get; set; }
+    private ISubjectActivationNotifier<T> NotifierSubject { get; set; }
 
-    public void SetSubject(ISubjectNotifier<T> subject)
+    public void SetSubjectActivationNotifier(ISubjectActivationNotifier<T> subject)
     {
-        Subject = subject;
+        NotifierSubject = subject;
     }
 
-    public ISubjectNotifier<T> GetSubject()
+    public ISubjectActivationNotifier<T> GetSubjectActivationNotifier()
     {
-        return Subject;
+        return NotifierSubject;
     }
-
-    public void NotifySubject(T value, NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional)
+    public void NotifySubjectOfActivation(T value, NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional)
     {
-        Subject.OnNotifySubject(value, notificationContext, lockingThread, optional);
-    }
-
-    public void NotifySubjectForActivation(NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional)
-    {
-        Subject.NotifySubjectForActivation(notificationContext, lockingThread, optional);
+        NotifierSubject.NotifySubjectOfActivation(value, notificationContext, lockingThread, optional);
     }
 }
 

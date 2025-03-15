@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 public interface ISubjectAsync<T>
 {
@@ -10,11 +11,9 @@ public interface ISubject<T>
 }
 
 //use this now for the extra ones
-public interface ISubjectNotifier<T>
+public interface ISubjectActivationNotifier<T>
 {
-    public void OnNotifySubject(T data, NotificationContext notificationContext, params object[] optional);
-
-    public void NotifySubjectForActivation(NotificationContext notificationContext, params object[] optional);
+    public void NotifySubjectOfActivation(T data, NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional);
 }
 
 public interface ISubjectAsync
