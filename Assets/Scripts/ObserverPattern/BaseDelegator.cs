@@ -31,7 +31,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
     }
 }
 
-public abstract class BaseDelegator<T, Z> : IDelegator<T, Z>
+public abstract class BaseDelegator<T, Z> : IDelegator<T, Z> where T: MonoBehaviour
 {
     public Dictionary<string, SubjectNotifier<IObserver<T, Z>>> SubjectsDict { get; set; }
 

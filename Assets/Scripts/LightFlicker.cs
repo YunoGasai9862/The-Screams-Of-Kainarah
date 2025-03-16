@@ -8,7 +8,6 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
 {
     private const string LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER = "light-flicker";
 
-    [SerializeField]
     LightPreprocessDelegator<LightFlicker> lightPreprocessDelegator;
     private void Start()
     {

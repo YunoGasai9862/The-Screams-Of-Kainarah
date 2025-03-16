@@ -11,6 +11,10 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<Lig
 
     private string LightFlickerUniqueKey { get; set; }
 
+    private void Start()
+    {
+    }
+
     public void OnNotify(LightPackage data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         throw new System.NotImplementedException();
