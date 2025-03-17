@@ -3,10 +3,9 @@ using UnityEngine;
 
 public class LightPreprocessDelegatorManager : MonoBehaviour
 {
-    private void Start()
+    public LightPreprocessDelegator<MonoBehaviour> LightPreprocessDelegator { get; private set; }
+    private void Awake()
     {
-        //just cast explicitly and store :))
-        LightPreprocessDelegator<MonoBehaviour> lightPreprocessDelegator = new LightPreprocessDelegator<MonoBehaviour>();
+        LightPreprocessDelegator = new LightPreprocessDelegator<MonoBehaviour>();
     }
-   
 }

@@ -5,7 +5,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<Lig
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
-    LightPreprocessDelegator<LightFlicker> lightPreprocessDelegator;
+    LightPreprocessDelegatorManager lightPreprocessDelegatorManager;
 
     private ILightPreprocess lightFlickerPreprocess;
 
@@ -29,6 +29,8 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<Lig
     {
         LightFlickerUniqueKey = key;
 
-        StartCoroutine(lightPreprocessDelegator.NotifySubject(LightFlickerUniqueKey , this));
+        //CelestialBodiesLightPackageGenerator can be casted to Monobehavior since it inherits from it
+        //just be aware that the observer gets it properly
+        StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifySubject(LightFlickerUniqueKey , (IObserver<MonoBehaviour, ILightPreprocess>)this));
     }
 }
