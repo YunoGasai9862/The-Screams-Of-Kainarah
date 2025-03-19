@@ -16,9 +16,11 @@ public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<
     {
         lightPreprocessDelegatorManager.LightPreprocessDelegator.SubjectsDict.Add(CELESTIAL_BODY_LIGHTNING_SUBJECT_UNIQUE_IDENTIFIER, new SubjectNotifier<IObserver<MonoBehaviour, ILightPreprocess>>() { });
 
-        lightPreprocessDelegatorManager.LightPreprocessDelegator.SubjectsDict[CELESTIAL_BODY_LIGHTNING_SUBJECT_UNIQUE_IDENTIFIER].SetSubject((ISubject<IObserver<MonoBehaviour, ILightPreprocess>>)this);
+        lightPreprocessDelegatorManager.LightPreprocessDelegator.SubjectsDict[CELESTIAL_BODY_LIGHTNING_SUBJECT_UNIQUE_IDENTIFIER].SetSubject(this);
 
-        lightPreprocessDelegatorManager.LightPreprocessDelegator.SubjectsDict[CELESTIAL_BODY_LIGHTNING_SUBJECT_UNIQUE_IDENTIFIER].SetSubjectActivationNotifier((ISubjectActivationNotifier<IObserver<MonoBehaviour, ILightPreprocess>>)this);
+        ///yay now we dont need to cast even though monobehavior is expected, we are passing celestial body lightning.
+        //this is beacuse of 'in' contravariance
+        lightPreprocessDelegatorManager.LightPreprocessDelegator.SubjectsDict[CELESTIAL_BODY_LIGHTNING_SUBJECT_UNIQUE_IDENTIFIER].SetSubjectActivationNotifier(this);
 
     }
 
