@@ -31,7 +31,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
     }
 }
 
-public abstract class BaseDelegator<T, Z> : IDelegator<T, Z> where T: MonoBehaviour
+public abstract class BaseDelegator<T, Z> : IDelegator<T, Z>
 {
     public Dictionary<string, SubjectNotifier<IObserver<T, Z>>> SubjectsDict { get; set; }
 
@@ -79,6 +79,7 @@ public abstract class BaseDelegator<T, Z> : IDelegator<T, Z> where T: MonoBehavi
 
     public IEnumerator NotifyWhenActive(IObserver<T, Z> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
+        Debug.Log($"Here!! {observer}");
         foreach (SubjectNotifier<IObserver<T, Z>> subject in SubjectsDict.Values)
         {
             yield return new WaitUntil(() => !IsSubjectNull(subject));

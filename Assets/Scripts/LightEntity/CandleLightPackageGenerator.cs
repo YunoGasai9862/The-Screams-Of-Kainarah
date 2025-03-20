@@ -1,11 +1,11 @@
 using System.Threading;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage>, IObserver<LightFlicker, ILightPreprocess>
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
+    [SerializeField]
     LightPreprocessDelegatorManager lightPreprocessDelegatorManager;
 
 
