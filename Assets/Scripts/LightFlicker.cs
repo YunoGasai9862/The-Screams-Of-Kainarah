@@ -15,10 +15,10 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
         //create new entry
         lightPreprocessDelegatorManager.LightPreprocessDelegator.SubjectsDict.Add(LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER, new SubjectNotifier<IObserver<MonoBehaviour, ILightPreprocess>>());
         //set subject
-        lightPreprocessDelegatorManager.LightPreprocessDelegator.SubjectsDict[LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER].SetSubject((ISubject<IObserver<MonoBehaviour, ILightPreprocess>>)this);
+        lightPreprocessDelegatorManager.LightPreprocessDelegator.SubjectsDict[LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER].SetSubject(this);
 
         //also set the subject for broadcast
-        lightPreprocessDelegatorManager.LightPreprocessDelegator.SubjectsDict[LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER].SetSubjectActivationNotifier((ISubjectActivationNotifier<IObserver<MonoBehaviour, ILightPreprocess>>)this);
+        lightPreprocessDelegatorManager.LightPreprocessDelegator.SubjectsDict[LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER].SetSubjectActivationNotifier(this);
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, SemaphoreSlim couroutineBlocker, float delayBetweenExecution = 0)

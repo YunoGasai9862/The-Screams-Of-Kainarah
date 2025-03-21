@@ -1,7 +1,7 @@
 using System.Threading;
 using UnityEngine;
 
-public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage>, IObserver<LightFlicker, ILightPreprocess>
+public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage>, IObserver<MonoBehaviour, ILightPreprocess>
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
@@ -15,7 +15,8 @@ public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage
 
     private void Start()
     {
-        StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifyWhenActive((IObserver<MonoBehaviour, ILightPreprocess>)this, new NotificationContext()
+        //introduce a 3rd type now bilal for casting!!
+        StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifyWhenActive(this, new NotificationContext()
         {
             GameObject = gameObject,
             GameObjectName = gameObject.name,
@@ -47,6 +48,6 @@ public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage
     {
         LightFlickerUniqueKey = key;
 
-        StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifySubject(LightFlickerUniqueKey, (IObserver<MonoBehaviour, ILightPreprocess>)this));
+        StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifySubject(LightFlickerUniqueKey, this));
     }
 }

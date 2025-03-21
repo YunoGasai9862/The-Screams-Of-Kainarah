@@ -1,7 +1,7 @@
 using System.Threading;
 using UnityEngine;
 
-public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<LightPackage>, IObserver<CelestialBodyLightning, ILightPreprocess>
+public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<MonoBehaviour, ILightPreprocess>, IObserver<LightPackage>
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
@@ -13,7 +13,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<Lig
 
     private void Start()
     {
-        StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifyWhenActive((IObserver<MonoBehaviour, ILightPreprocess>) this, new NotificationContext()
+        StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifyWhenActive(this, new NotificationContext()
         {
             GameObject = gameObject,
             GameObjectName = gameObject.name,
@@ -26,17 +26,17 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<Lig
         throw new System.NotImplementedException();
     }
 
-    public void OnNotify(ILightPreprocess data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        celestialBodyLightningPreprocess = data;
-    }
-
     public void OnKeyNotify(string key, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         CelestialBodyLightningUniqueKey = key;
 
         //CelestialBodiesLightPackageGenerator can be casted to Monobehavior since it inherits from it
         //just be aware that the observer gets it properly
-        StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifySubject(CelestialBodyLightningUniqueKey, (IObserver<MonoBehaviour, ILightPreprocess>)this));
+        StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifySubject(CelestialBodyLightningUniqueKey, this));
+    }
+
+    public void OnNotify(ILightPreprocess data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        celestialBodyLightningPreprocess = data;
     }
 }
