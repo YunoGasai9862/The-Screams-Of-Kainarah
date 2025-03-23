@@ -31,6 +31,8 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
     }
 }
 
+//TODO - Get Class Type from observer and then use reflection to grab annotation and ping that subject only!!!
+
 public abstract class BaseDelegator<T, Z> : IDelegator<T, Z>
 {
     public Dictionary<string, SubjectNotifier<IObserver<T, Z>>> SubjectsDict { get; set; }
@@ -80,6 +82,7 @@ public abstract class BaseDelegator<T, Z> : IDelegator<T, Z>
     public IEnumerator NotifyWhenActive(IObserver<T,Z> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         Debug.Log($"Here!! {observer}");
+
         foreach (SubjectNotifier<IObserver<T, Z>> subject in SubjectsDict.Values)
         {
             yield return new WaitUntil(() => !IsSubjectNull(subject));

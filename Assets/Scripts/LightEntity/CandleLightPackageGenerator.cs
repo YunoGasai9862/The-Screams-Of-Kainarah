@@ -1,6 +1,8 @@
 using System.Threading;
 using UnityEngine;
 
+[Subject(typeof(LightFlicker))]
+
 public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage>, IObserver<MonoBehaviour, ILightPreprocess>
 {
     [SerializeField]
@@ -50,4 +52,5 @@ public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage
 
         StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifySubject(LightFlickerUniqueKey, this));
     }
+
 }
