@@ -20,9 +20,9 @@ public interface IExtendedObserver<T, Y, Z>
 /// <typeparam name="T">The type of Implementation for the subject/typeparam>
 /// <typeparam name="Z">The data we want from the subject</typeparam>
 /// </summary>
-public interface IObserver<in T, in Z> 
+public interface IObserverEnhanced<in T> 
 {
-    public abstract void OnNotify(Z data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional);
+    public abstract void OnNotify(T data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional);
 
     /// <summary>
     /// Gets called when a subject broadcasts its unique key.

@@ -3,12 +3,12 @@ using UnityEngine;
 
 [Subject(typeof(LightFlicker))]
 
-public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage>, IObserver<MonoBehaviour, ILightPreprocess>
+public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage>, IObserverEnhanced<ILightPreprocess>
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
     [SerializeField]
-    LightPreprocessDelegatorManager lightPreprocessDelegatorManager;
+    LightPreprocessDelegator lightPreprocessDelegator;
 
 
     private ILightPreprocess lightFlickerPreprocess;
@@ -18,9 +18,9 @@ public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage
     private void Start()
     {
         //introduce a 3rd type now bilal for casting!!
-        StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifyWhenActive(this, new NotificationContext()
+        StartCoroutine(lightPreprocessDelegator.NotifyWhenActive(this, new NotificationContext()
         {
-            GameObject = gameObject,
+            GameObject = this.gameObject,
             GameObjectName = gameObject.name,
             GameObjectTag = gameObject.tag,
         }));
@@ -50,7 +50,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage
     {
         LightFlickerUniqueKey = key;
 
-        StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifySubject(LightFlickerUniqueKey, this));
+        StartCoroutine(lightPreprocessDelegator.NotifySubject(LightFlickerUniqueKey, this));
     }
 
 }

@@ -3,11 +3,11 @@ using System.Threading;
 using UnityEngine;
 
 [Subject(typeof(CelestialBodyLightning))]
-public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<MonoBehaviour, ILightPreprocess>, IObserver<LightPackage>
+public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserverEnhanced<ILightPreprocess>, IObserver<LightPackage>
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
-    LightPreprocessDelegatorManager lightPreprocessDelegatorManager;
+    LightPreprocessDelegator lightPreprocessDelegator;
 
     private ILightPreprocess celestialBodyLightningPreprocess;
 
@@ -15,7 +15,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<Mon
 
     private void Start()
     {
-        StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifyWhenActive(this, new NotificationContext()
+        StartCoroutine(lightPreprocessDelegator.NotifyWhenActive(this, new NotificationContext()
         {
             GameObject = gameObject,
             GameObjectName = gameObject.name,
@@ -34,7 +34,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<Mon
 
         //CelestialBodiesLightPackageGenerator can be casted to Monobehavior since it inherits from it
         //just be aware that the observer gets it properly
-        StartCoroutine(lightPreprocessDelegatorManager.LightPreprocessDelegator.NotifySubject(CelestialBodyLightningUniqueKey, this));
+        StartCoroutine(lightPreprocessDelegator.NotifySubject(CelestialBodyLightningUniqueKey, this));
     }
 
     public void OnNotify(ILightPreprocess data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
