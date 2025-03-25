@@ -1,5 +1,5 @@
-using NUnit.Framework;
 using System.Collections;
+using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 using static ExceptionList;
@@ -33,5 +33,15 @@ public class Helper: MonoBehaviour
         }
 
         return delegator;
+    }
+
+    public static GameObject[] GetGameObjectsWithCustomAttribute<T>() where T: System.Attribute
+    {
+        System.Type[] types = Assembly.GetExecutingAssembly().GetTypes();
+        foreach(System.Type type in types)
+        {
+            T customAttribute = type.GetCustomAttribute<T>();
+        }
+        return null;
     }
 }
