@@ -35,7 +35,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 //new approach use reflection to generate one time dictionary since observers can have a single subject etc
 //store in a class instead or an array to have a list of subjects instead
 
-public abstract class BaseDelegatorEnhanced<T> : IDelegatorEnhanced<T>
+public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegatorEnhanced<T>
 {
     public Dictionary<string, SubjectNotifier<IObserverEnhanced<T>>> SubjectsDict { get; set; }
 

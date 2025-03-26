@@ -3,8 +3,16 @@ using UnityEngine;
 
 public class LightPreprocessDelegator: BaseDelegatorEnhanced<ILightPreprocess>
 {
-    public LightPreprocessDelegator()
+    //ensure this is in the base class + you fill this in the base class
+    //then update the logic (already using reflection)
+    private List<SubjectAttribute> observersWithSubjectAttributes = new List<SubjectAttribute>(); 
+    private void OnEnable()
     {
         SubjectsDict = new Dictionary<string, SubjectNotifier<IObserverEnhanced<ILightPreprocess>>>();
+
+    }
+    private async void Start()
+    {
+        observersWithSubjectAttributes = await Helper.GetGameObjectsWithCustomAttribute<SubjectAttribute>();
     }
 }

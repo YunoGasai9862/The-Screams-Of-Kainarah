@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -35,13 +36,24 @@ public class Helper: MonoBehaviour
         return delegator;
     }
 
-    public static GameObject[] GetGameObjectsWithCustomAttribute<T>() where T: System.Attribute
+    public static async Task<List<T>> GetGameObjectsWithCustomAttribute<T>() where T: System.Attribute
     {
+        List<T> objectsWithCustomAttributes = new List<T>();
+
         System.Type[] types = Assembly.GetExecutingAssembly().GetTypes();
+
         foreach(System.Type type in types)
         {
             T customAttribute = type.GetCustomAttribute<T>();
+
+            if (customAttribute == null)
+            {
+                continue;
+            }
+
+            objectsWithCustomAttributes.Add(customAttribute);
         }
-        return null;
+
+        return objectsWithCustomAttributes;
     }
 }
