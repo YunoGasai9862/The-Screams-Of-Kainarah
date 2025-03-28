@@ -1,7 +1,7 @@
 using System.Threading;
 using UnityEngine;
 
-[Subject(typeof(LightFlicker))]
+[ObserverSystem(SubjectType = typeof(LightFlicker), ObserverType = typeof(CandleLightPackageGenerator))]
 
 public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage>, IObserverEnhanced<ILightPreprocess>
 {

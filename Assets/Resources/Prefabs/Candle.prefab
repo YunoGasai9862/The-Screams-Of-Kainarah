@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightPackageDelegator: {fileID: 4666629529156060462, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
+  lightPreprocessDelegator: {fileID: 0}
 --- !u!1 &7066635810158497453
 GameObject:
   m_ObjectHideFlags: 0

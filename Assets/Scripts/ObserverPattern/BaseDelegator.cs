@@ -39,6 +39,8 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegatorEnhanc
 {
     public Dictionary<string, SubjectNotifier<IObserverEnhanced<T>>> SubjectsDict { get; set; }
 
+    public List<ObserverSystemAttribute> ObserverSystem {  get; set; }
+
     public IEnumerator NotifyObserver(IObserverEnhanced<T> observer, T value, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         observer.OnNotify(value, notificationContext, semaphoreSlim, optional);

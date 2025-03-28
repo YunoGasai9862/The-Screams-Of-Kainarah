@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59ebe1445e7b55a44a1715f94287c679, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightPreprocessDelegatorManager: {fileID: 0}
+  lightPreprocessDelegator: {fileID: 0}
 --- !u!114 &8850285968484193328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,3 +58,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0ec5bf7225f87d4fa6f29b28b420403, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lightPreprocessDelegator: {fileID: 0}
