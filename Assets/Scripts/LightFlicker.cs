@@ -4,21 +4,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserverEnhanced<ILightPreprocess>>, ISubjectActivationNotifier<IObserverEnhanced<ILightPreprocess>>
+public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<ILightPreprocess>>
 {
-    private const string LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER = "light-flicker";
-
     [SerializeField]
     LightPreprocessDelegator lightPreprocessDelegator;
     private void Start()
     {
-        //create new entry
-        lightPreprocessDelegator.SubjectsDict.Add(LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER, new SubjectNotifier<IObserverEnhanced<ILightPreprocess>>());
-        //set subject
-        lightPreprocessDelegator.SubjectsDict[LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER].SetSubject(this);
+        lightPreprocessDelegator.SubjectsDict.Add(gameObject.name, new Subject<IObserver<ILightPreprocess>>());
 
-        //also set the subject for broadcast
-        lightPreprocessDelegator.SubjectsDict[LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER].SetSubjectActivationNotifier(this);
+        lightPreprocessDelegator.SubjectsDict[gameObject.name].SetSubject(this);
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, SemaphoreSlim couroutineBlocker, float delayBetweenExecution = 0)
@@ -43,12 +37,7 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserverE
         return Task.FromResult(UnityEngine.Random.Range(minRadia, maxRadia));
     }
 
-    public void NotifySubjectOfActivation(IObserverEnhanced<ILightPreprocess> data, NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional)
-    {
-        StartCoroutine(lightPreprocessDelegator.NotifyObserver(data, LIGHT_FLICKER_SUBJECT_UNIQUE_IDENTIFIER, notificationContext, lockingThread, optional));
-    }
-
-    public void OnNotifySubject(IObserverEnhanced<ILightPreprocess> data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotifySubject(IObserver<ILightPreprocess> data, NotificationContext notificationContext, params object[] optional)
     {
         StartCoroutine(lightPreprocessDelegator.NotifyObserver(data, this));
     }

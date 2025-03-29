@@ -56,30 +56,6 @@ public class Subject<T>
 }
 
 
-/// <summary>
-/// Represents a subject for synchronous observer pattern with activation notification from observer
-/// <typeparam name="T">The type T here is the observer's interface type that the subject notifies</typeparam>
-/// </summary>
-public class SubjectNotifier<T>: Subject<T>, ISubjectActivationNotifier<T>
-{
-    private ISubjectActivationNotifier<T> NotifierSubject { get; set; }
-
-    public void SetSubjectActivationNotifier(ISubjectActivationNotifier<T> subject)
-    {
-        NotifierSubject = subject;
-    }
-
-    public ISubjectActivationNotifier<T> GetSubjectActivationNotifier()
-    {
-        return NotifierSubject;
-    }
-    public void NotifySubjectOfActivation(T value, NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional)
-    {
-        NotifierSubject.NotifySubjectOfActivation(value, notificationContext, lockingThread, optional);
-    }
-}
-
-
 public class SubjectAsync
 {
     private ISubjectAsync MSubject { get; set; }

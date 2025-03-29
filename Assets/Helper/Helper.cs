@@ -1,5 +1,8 @@
+using Amazon.Runtime.Internal.Transform;
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -55,5 +58,24 @@ public class Helper: MonoBehaviour
         }
 
         return objectsWithCustomAttributes;
+    }
+
+    public static Task<Dictionary<string, List<ObserverSystemAttribute>>> GenerateObserverSystemDict(List<ObserverSystemAttribute> observerSystemAttributes)
+    {
+        Dictionary<string, List<ObserverSystemAttribute>> observerSystemAttributesDict = new Dictionary<string, List<ObserverSystemAttribute>>();
+
+        foreach (ObserverSystemAttribute attribute in observerSystemAttributes)
+        {
+            if (observerSystemAttributesDict.ContainsKey(attribute.ObserverType.ToString()))
+            {
+                observerSystemAttributesDict[attribute.ObserverType.ToString()].Append(attribute);
+
+            } else
+            {
+                observerSystemAttributesDict.Add(attribute.ObserverType.ToString(), new List<ObserverSystemAttribute>() { attribute });
+            }
+        }
+
+        return Task.FromResult(observerSystemAttributesDict);
     }
 }

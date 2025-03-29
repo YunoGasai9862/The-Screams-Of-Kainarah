@@ -13,12 +13,6 @@ public interface ISubject<in T>
     public void OnNotifySubject(T data, NotificationContext notificationContext, params object[] optional);
 }
 
-//use this now for the extra ones
-public interface ISubjectActivationNotifier<in T>
-{
-    public void NotifySubjectOfActivation(T data, NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional);
-}
-
 public interface ISubjectAsync
 {
     public Task OnNotifySubject(params object[] optional);

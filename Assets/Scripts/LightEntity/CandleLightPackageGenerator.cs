@@ -3,7 +3,7 @@ using UnityEngine;
 
 [ObserverSystem(SubjectType = typeof(LightFlicker), ObserverType = typeof(CandleLightPackageGenerator))]
 
-public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage>, IObserverEnhanced<ILightPreprocess>
+public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage>, IObserver<ILightPreprocess>
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
@@ -17,10 +17,8 @@ public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage
 
     private void Start()
     {
-        //introduce a 3rd type now bilal for casting!!
         StartCoroutine(lightPreprocessDelegator.NotifyWhenActive(this, new NotificationContext()
         {
-            GameObject = this.gameObject,
             GameObjectName = gameObject.name,
             GameObjectTag = gameObject.tag,
         }));
@@ -44,13 +42,6 @@ public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage
     public void OnNotify(ILightPreprocess data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         lightFlickerPreprocess = data;
-    }
-
-    public void OnKeyNotify(string key, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        LightFlickerUniqueKey = key;
-
-        StartCoroutine(lightPreprocessDelegator.NotifySubject(LightFlickerUniqueKey, this));
     }
 
 }

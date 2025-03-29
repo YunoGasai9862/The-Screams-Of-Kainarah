@@ -31,37 +31,34 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
     }
 }
 
-//TODO - Get Class Type from observer and then use reflection to grab annotation and ping that subject only!!!
-//new approach use reflection to generate one time dictionary since observers can have a single subject etc
-//store in a class instead or an array to have a list of subjects instead
 
-public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegatorEnhanced<T>
+public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 {
-    public Dictionary<string, SubjectNotifier<IObserverEnhanced<T>>> SubjectsDict { get; set; }
+    public Dictionary<string, Subject<IObserver<T>>> SubjectsDict { get; set; }
+    public Dictionary<string, List<ObserverSystemAttribute>> ObserverSubjectDict { get; set; }
 
-    public List<ObserverSystemAttribute> ObserverSystem {  get; set; }
-
-    public IEnumerator NotifyObserver(IObserverEnhanced<T> observer, T value, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         observer.OnNotify(value, notificationContext, semaphoreSlim, optional);
 
         yield return null;
     }
 
-    public IEnumerator NotifySubject(string key, IObserverEnhanced<T> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null,params object[] optional)
+    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null,params object[] optional)
     {
-        SubjectNotifier<IObserverEnhanced<T>> subject = SubjectsDict[key];
+        //do it in other way
+        //Subject<IObserver<T>> subject = SubjectsDict[key];
 
-        yield return new WaitUntil(() => !IsSubjectNull(subject));
+        //yield return new WaitUntil(() => !IsSubjectNull(subject));
 
-        subject.NotifySubject(observer, notificationContext);
+        //subject.NotifySubject(observer, notificationContext);
 
         yield return null;
     }
 
-    public IEnumerator NotifySubjects(IObserverEnhanced<T> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifySubjects(IObserver<T> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        foreach(SubjectNotifier<IObserverEnhanced<T>> subject in SubjectsDict.Values)
+        foreach(Subject<IObserver<T>> subject in SubjectsDict.Values)
         {
             yield return new WaitUntil(() => !IsSubjectNull(subject));
 
@@ -71,27 +68,20 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegatorEnhanc
         yield return null;
     }
 
-    public IEnumerator NotifyObserver(IObserverEnhanced<T> observer, string key, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
-    {
-        observer.OnKeyNotify(key, notificationContext, semaphoreSlim, optional);
-
-        yield return null;
-    }
-
-    private bool IsSubjectNull(SubjectNotifier<IObserverEnhanced<T>> subject)
+    private bool IsSubjectNull(Subject<IObserver<T>> subject)
     {
         return subject == null || subject.GetSubject() == null;
     }
 
-    public IEnumerator NotifyWhenActive(IObserverEnhanced<T> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifyWhenActive(IObserver<T> observer, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        Debug.Log($"Here!! {observer}");
+        Debug.Log($"Here!! {notificationContext.ToString()}");
 
-        foreach (SubjectNotifier<IObserverEnhanced<T>> subject in SubjectsDict.Values)
+        foreach (Subject<IObserver<T>> subject in SubjectsDict.Values)
         {
             yield return new WaitUntil(() => !IsSubjectNull(subject));
 
-            subject.NotifySubjectOfActivation(observer, notificationContext);
+            //subject.NotifySubjectOfActivation(observer, notificationContext);
         }
 
         yield return null;

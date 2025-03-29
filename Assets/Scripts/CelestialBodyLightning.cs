@@ -5,23 +5,16 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<IObserverEnhanced<ILightPreprocess>>, ISubjectActivationNotifier<IObserverEnhanced<ILightPreprocess>>
+public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<IObserver<ILightPreprocess>>
 {
-    private const string CELESTIAL_BODY_LIGHTNING_SUBJECT_UNIQUE_IDENTIFIER = "celestial-body-lightning";
-
     [SerializeField]
     LightPreprocessDelegator lightPreprocessDelegator;
 
     private void Start()
     {
-        lightPreprocessDelegator.SubjectsDict.Add(CELESTIAL_BODY_LIGHTNING_SUBJECT_UNIQUE_IDENTIFIER, new SubjectNotifier<IObserverEnhanced<ILightPreprocess>>() { });
+        lightPreprocessDelegator.SubjectsDict.Add(gameObject.name, new Subject<IObserver<ILightPreprocess>>() { });
 
-        lightPreprocessDelegator.SubjectsDict[CELESTIAL_BODY_LIGHTNING_SUBJECT_UNIQUE_IDENTIFIER].SetSubject(this);
-
-        ///yay now we dont need to cast even though monobehavior is expected, we are passing celestial body lightning.
-        //this is beacuse of 'in' contravariance
-        lightPreprocessDelegator.SubjectsDict[CELESTIAL_BODY_LIGHTNING_SUBJECT_UNIQUE_IDENTIFIER].SetSubjectActivationNotifier(this);
-
+        lightPreprocessDelegator.SubjectsDict[gameObject.name].SetSubject(this);
     }
 
     public void ActivateContinuousShimmer(Light2D light, float time, float minIntensity, float maxIntensity, float minOuterRadius, float maxOuterRadius, float minInnerRadius, float maxInnerRadius)
@@ -41,12 +34,7 @@ public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<
         yield return new WaitForSeconds(0);
     }
 
-    public void NotifySubjectOfActivation(IObserverEnhanced<ILightPreprocess> data, NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional)
-    {
-        StartCoroutine(lightPreprocessDelegator.NotifyObserver(data, CELESTIAL_BODY_LIGHTNING_SUBJECT_UNIQUE_IDENTIFIER, notificationContext, lockingThread, optional));
-    }
-
-    public void OnNotifySubject(IObserverEnhanced<ILightPreprocess> data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotifySubject(IObserver<ILightPreprocess> data, NotificationContext notificationContext, params object[] optional)
     {
         StartCoroutine(lightPreprocessDelegator.NotifyObserver(data, this, notificationContext));
     }
