@@ -10,9 +10,9 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
     LightPreprocessDelegator lightPreprocessDelegator;
     private void Start()
     {
-        lightPreprocessDelegator.SubjectsDict.Add(gameObject.name, new Subject<IObserver<ILightPreprocess>>());
+        lightPreprocessDelegator.SubjectsDict.Add(gameObject.tag, new Subject<IObserver<ILightPreprocess>>());
 
-        lightPreprocessDelegator.SubjectsDict[gameObject.name].SetSubject(this);
+        lightPreprocessDelegator.SubjectsDict[gameObject.tag].SetSubject(this);
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, SemaphoreSlim couroutineBlocker, float delayBetweenExecution = 0)
@@ -39,6 +39,6 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
 
     public void OnNotifySubject(IObserver<ILightPreprocess> data, NotificationContext notificationContext, params object[] optional)
     {
-        StartCoroutine(lightPreprocessDelegator.NotifyObserver(data, this));
+        StartCoroutine(lightPreprocessDelegator.NotifyObserver(data, this, notificationContext));
     }
 }

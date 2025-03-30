@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class NotificationContext
 {
-    public string GameObjectName { get; set; }
-    public string GameObjectTag { get; set; }
+    public string ObserverName { get; set; }
+    public string ObserverTag { get; set; }
+    public string SubjectType { get; set; }
 
     public override string ToString()
     {
-        return $"GameObjectName: {GameObjectName} Tag: {GameObjectTag}";
+        return $"ObserverName: {ObserverName} ObserverTag: {ObserverTag} SubjectType: {SubjectType}";
     }
 }

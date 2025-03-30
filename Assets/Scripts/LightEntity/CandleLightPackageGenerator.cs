@@ -17,10 +17,14 @@ public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage
 
     private void Start()
     {
-        StartCoroutine(lightPreprocessDelegator.NotifyWhenActive(this, new NotificationContext()
+        //specifically for light flicker - this way we can use this same method multiple times :)
+        //works well with observerSystem attribute
+        //might remove/omit the first type of base delegator
+        StartCoroutine(lightPreprocessDelegator.NotifySubject(this, new NotificationContext()
         {
-            GameObjectName = gameObject.name,
-            GameObjectTag = gameObject.tag,
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(LightFlicker).ToString()
         }));
     }
 

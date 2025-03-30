@@ -13,10 +13,11 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
     private void Start()
     {
-        StartCoroutine(lightPreprocessDelegator.NotifyWhenActive(this, new NotificationContext()
+        StartCoroutine(lightPreprocessDelegator.NotifySubject(this, new NotificationContext()
         {
-            GameObjectName = gameObject.name,
-            GameObjectTag = gameObject.tag,    
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(CelestialBodyLightning).ToString()
         }));
     }
 

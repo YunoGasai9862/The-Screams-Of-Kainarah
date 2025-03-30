@@ -37,29 +37,26 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
     public Dictionary<string, Subject<IObserver<T>>> SubjectsDict { get; set; }
     public Dictionary<string, List<ObserverSystemAttribute>> ObserverSubjectDict { get; set; }
 
-    public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         observer.OnNotify(value, notificationContext, semaphoreSlim, optional);
 
         yield return null;
     }
 
-    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null,params object[] optional)
+    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim = null,params object[] optional)
     {
-        //do it in other way
-        //Subject<IObserver<T>> subject = SubjectsDict[key];
-
-        //yield return new WaitUntil(() => !IsSubjectNull(subject));
-
-        //subject.NotifySubject(observer, notificationContext);
-
-        yield return null;
-    }
-
-    public IEnumerator NotifySubjects(IObserver<T> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
-    {
-        foreach(Subject<IObserver<T>> subject in SubjectsDict.Values)
+        if (ObserverSubjectDict.TryGetValue(observer.GetType().ToString(), out List<ObserverSystemAttribute> attributes))
         {
+            if (notificationContext.SubjectType == null)
+            {
+                throw new ApplicationException($"Subject type is null - please add it in the notification context object!");
+            }
+
+            ObserverSystemAttribute targetObserverSystemAttribute = GetTargetObserverSystemAttribute(notificationContext.SubjectType, attributes);
+
+            Subject<IObserver<T>> subject = SubjectsDict[targetObserverSystemAttribute.SubjectType.ToString()];
+
             yield return new WaitUntil(() => !IsSubjectNull(subject));
 
             subject.NotifySubject(observer, notificationContext);
@@ -73,17 +70,16 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         return subject == null || subject.GetSubject() == null;
     }
 
-    public IEnumerator NotifyWhenActive(IObserver<T> observer, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    private ObserverSystemAttribute GetTargetObserverSystemAttribute(string subjectType, List<ObserverSystemAttribute> attributes)
     {
-        Debug.Log($"Here!! {notificationContext.ToString()}");
-
-        foreach (Subject<IObserver<T>> subject in SubjectsDict.Values)
+        foreach(ObserverSystemAttribute attribute in attributes)
         {
-            yield return new WaitUntil(() => !IsSubjectNull(subject));
-
-            //subject.NotifySubjectOfActivation(observer, notificationContext);
+            if (string.CompareOrdinal(subjectType, attribute.SubjectType.ToString()) == 0)
+            {
+                return attribute;
+            }
         }
 
-        yield return null;
+        return null;
     }
-}
+ }

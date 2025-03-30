@@ -45,6 +45,8 @@ TagManager:
   - GamePreload
   - AudioPreload
   - NotificationManager
+  - LightFlicker
+  - CelestialBodyLightning
   layers:
   - Default
   - TransparentFX
