@@ -78,4 +78,14 @@ public class Helper: MonoBehaviour
 
         return Task.FromResult(observerSystemAttributesDict);
     }
+
+    public static bool IsSubjectNull<T>(Subject<IObserver<T>> subject)
+    {
+        return subject == null || subject.GetSubject() == null;
+    }
+
+    public static int GetSecondsFromMilliSeconds(int milliSeconds)
+    {
+        return milliSeconds / 1000;
+    }
 }
