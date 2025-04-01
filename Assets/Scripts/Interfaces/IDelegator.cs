@@ -3,6 +3,6 @@ using System.Threading;
 public interface IDelegator<T>
 {
     public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim = null, params object[] optional);
-    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 60, params object[] optional);
+    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional);
 
 }

@@ -9,5 +9,4 @@ public class LightPreprocessDelegator: BaseDelegatorEnhanced<ILightPreprocess>
 
         ObserverSubjectDict = await Helper.GenerateObserverSystemDict(await Helper.GetGameObjectsWithCustomAttribute<ObserverSystemAttribute>());
     }
-
 }

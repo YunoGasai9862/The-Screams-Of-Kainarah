@@ -3,7 +3,8 @@ using System.Threading;
 using UnityEngine;
 
 [ObserverSystem(SubjectType = typeof(CelestialBodyLightning), ObserverType = typeof(CelestialBodiesLightPackageGenerator))]
-public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILightPreprocess>, IObserver<LightPackage>
+[ObserverSystem(SubjectType = typeof(CelestialBodiesLightPackageGenerator), ObserverType = typeof(CustomLightProcessing))]
+public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILightPreprocess>, ISubject<IObserver<LightPackage>>
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
@@ -13,6 +14,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
     private void Start()
     {
+
         StartCoroutine(lightPreprocessDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
@@ -21,13 +23,13 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         }));
     }
 
-    public void OnNotify(LightPackage data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public void OnNotify(ILightPreprocess data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         celestialBodyLightningPreprocess = data;
+    }
+
+    public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, params object[] optional)
+    {
+        throw new NotImplementedException();
     }
 }

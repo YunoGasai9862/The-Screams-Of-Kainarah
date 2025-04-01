@@ -3,7 +3,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, IObserver<AsyncCoroutine>, ISubject<IObserver<LightPackage>>
+public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, IObserver<AsyncCoroutine>, IObserver<LightPackage>
 {
     private AsyncCoroutine AsyncCoroutine { get; set; }
 
@@ -36,11 +36,9 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
     private void Start()
     {
         StartCoroutine(asyncCoroutineDelegator.NotifySubject(this));
-
-        lightPackageDelegator.Subject.SetSubject(this);
     }
 
-    public  IEnumerator ExecuteLightningLogic(LightPackage lightPackage, ILightPreprocess customLightPreprocessingImplementation, CancellationToken cancellationToken)
+    public IEnumerator ExecuteLightningLogic(LightPackage lightPackage, CancellationToken cancellationToken)
     {
         yield return new WaitUntil(() => AsyncCoroutine != null);
 
@@ -52,7 +50,7 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
             Debug.Log(m_Semaphore.CurrentCount);
 
             //npw test this tomorrow!!
-            AsyncCoroutine.ExecuteAsyncCoroutine(customLightPreprocessingImplementation.GenerateCustomLighting(lightPackage, m_Semaphore, 5f)); //Async runner
+            AsyncCoroutine.ExecuteAsyncCoroutine(lightPackage.LightPreprocess.GenerateCustomLighting(lightPackage, m_Semaphore, 5f)); //Async runner
 
             m_Semaphore.WaitAsync();
         }
@@ -63,9 +61,8 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
         AsyncCoroutine = data;
     }
 
-    public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext,  params object[] optional)
+    public void OnNotify(LightPackage data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        //fix this
-       //StartCoroutine(ExecuteLightningLogic(data,  CancellationToken));
+        StartCoroutine(ExecuteLightningLogic(data, CancellationToken)); 
     }
 }

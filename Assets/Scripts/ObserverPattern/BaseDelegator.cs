@@ -4,6 +4,8 @@ using System.Threading;
 using UnityEngine;
 using System;
 
+//deprecate this soon!
+
 public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 {
     public Subject<IObserver<T>> Subject { get; set; }
@@ -15,7 +17,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
         yield return null;
     }
 
-    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
     {
         yield return new WaitUntil(() => !Helper.IsSubjectNull(Subject));
 
@@ -38,7 +40,7 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         yield return null;
     }
 
-    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
     {
         if (maxRetries == 0)
         {
@@ -54,28 +56,18 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
             ObserverSystemAttribute targetObserverSystemAttribute = GetTargetObserverSystemAttribute(notificationContext.SubjectType, attributes);
 
-            Subject<IObserver<T>> subject = null;
+            if (SubjectsDict.TryGetValue(targetObserverSystemAttribute.SubjectType.ToString(), out Subject<IObserver<T>> subject))
+            {
+                yield return new WaitUntil(() => !Helper.IsSubjectNull(subject));
 
-            try
-            {
-                subject = SubjectsDict[targetObserverSystemAttribute.SubjectType.ToString()];
+                subject.NotifySubject(observer, notificationContext);
             }
-            catch (KeyNotFoundException ex)
+            else
             {
-                Debug.Log($"Subject: {targetObserverSystemAttribute.SubjectType.ToString()} - is not yet registered, retrying again. MaxRetries left: {maxRetries} {SubjectsDict.Count}");
-            }
-            finally
-            {
-                //use this logic to set a flag (tomorrow) to block this thread and not another
-                //this sleeps on another thread
-                StartCoroutine(WaitForSeconds(Helper.GetSecondsFromMilliSeconds(sleepTimeInMilliSeconds)));
+                yield return new WaitForSeconds(Helper.GetSecondsFromMilliSeconds(sleepTimeInMilliSeconds));
 
                 StartCoroutine(NotifySubject(observer, notificationContext, semaphoreSlim, maxRetries -= 1, sleepTimeInMilliSeconds, optional));
             }
-
-            yield return new WaitUntil(() => !Helper.IsSubjectNull(subject));
-
-            subject.NotifySubject(observer, notificationContext);
         }
 
         yield return null;
@@ -94,8 +86,4 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         return null;
     }
     
-    private IEnumerator WaitForSeconds(int seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-    }
  }
