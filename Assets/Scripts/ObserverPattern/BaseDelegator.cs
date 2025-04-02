@@ -30,7 +30,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
 public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 {
-    public Dictionary<string, Subject<IObserver<T>>> SubjectsDict { get; set; }
+    protected Dictionary<string, Subject<IObserver<T>>> SubjectsDict { get; set; }
     public Dictionary<string, List<ObserverSystemAttribute>> ObserverSubjectDict { get; set; }
 
     public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim = null, params object[] optional)
@@ -46,6 +46,12 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         {
             throw new ApplicationException($"No such subject type exists! - Please Register first {SubjectsDict.Count}");
         }
+
+        Debug.Log($"Null, lets wait {ObserverSubjectDict}");
+
+        yield return new WaitUntil(() => !Helper.IsObjectNull(ObserverSubjectDict));
+
+        Debug.Log($"Non Null! {ObserverSubjectDict.Count}");
 
         if (ObserverSubjectDict.TryGetValue(observer.GetType().ToString(), out List<ObserverSystemAttribute> attributes))
         {
@@ -71,6 +77,18 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         }
 
         yield return null;
+    }
+
+    private void AddToSubjectsDict(string key, Subject<IObserver<T>> value)
+    {
+        if (SubjectsDict.ContainsKey(key))
+        {
+            Debug.Log($"Key already exists ${key}. Won't persist again!");
+
+            return;
+        }
+
+        SubjectsDict.Add(key, value);
     }
 
     private ObserverSystemAttribute GetTargetObserverSystemAttribute(string subjectType, List<ObserverSystemAttribute> attributes)

@@ -21,6 +21,12 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
             ObserverTag = gameObject.tag,
             SubjectType = typeof(CelestialBodyLightning).ToString()
         }));
+
+        //subject for custom lightning
+        Debug.Log(gameObject);
+        lightPackageDelegator.SubjectsDict.Add(gameObject.tag, new Subject<IObserver<LightPackage>>());
+
+        lightPackageDelegator.SubjectsDict[gameObject.tag].SetSubject(this);
     }
 
     public void OnNotify(ILightPreprocess data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)

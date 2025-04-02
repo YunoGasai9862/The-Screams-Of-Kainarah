@@ -1,8 +1,16 @@
+using System.Collections.Generic;
 using UnityEngine;
-public class LightPackageDelegator: BaseDelegator<LightPackage>
+public class LightPackageDelegator: BaseDelegatorEnhanced<LightPackage>
 {
-    private void OnEnable()
+    private async void OnEnable()
     {
-        Subject = new Subject<IObserver<LightPackage>>();
+        SubjectsDict = new Dictionary<string, Subject<IObserver<LightPackage>>>();
+
+        ObserverSubjectDict = await Helper.GenerateObserverSystemDict(await Helper.GetGameObjectsWithCustomAttribute<ObserverSystemAttribute>());
+
+        foreach(var key in ObserverSubjectDict.Keys)
+        {
+            Debug.Log(key);
+        }
     }
 }

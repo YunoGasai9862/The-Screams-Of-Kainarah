@@ -2,8 +2,8 @@ using System.Threading;
 using UnityEngine;
 
 [ObserverSystem(SubjectType = typeof(LightFlicker), ObserverType = typeof(CandleLightPackageGenerator))]
-
-public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage>, IObserver<ILightPreprocess>
+[ObserverSystem(SubjectType = typeof(CandleLightPackageGenerator), ObserverType = typeof(CustomLightProcessing))]
+public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<LightPackage>>, IObserver<ILightPreprocess>
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
@@ -23,6 +23,13 @@ public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage
             ObserverTag = gameObject.tag,
             SubjectType = typeof(LightFlicker).ToString()
         }));
+
+        //subject for custom lightning
+        Debug.Log(gameObject);
+        //if the same object is registered/added already, no need to add again
+        lightPackageDelegator.SubjectsDict.Add(gameObject.tag, new Subject<IObserver<LightPackage>>());
+
+        lightPackageDelegator.SubjectsDict[gameObject.tag].SetSubject(this);
     }
 
     private bool CalculateDistance()
@@ -35,14 +42,13 @@ public class CandleLightPackageGenerator : MonoBehaviour, IObserver<LightPackage
         return null;
     }
 
-    public void OnNotify(LightPackage data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public void OnNotify(ILightPreprocess data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         lightFlickerPreprocess = data;
     }
 
+    public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, params object[] optional)
+    {
+        throw new System.NotImplementedException();
+    }
 }

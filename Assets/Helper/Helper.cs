@@ -84,6 +84,11 @@ public class Helper: MonoBehaviour
         return subject == null || subject.GetSubject() == null;
     }
 
+    public static bool IsObjectNull(System.Object obj)
+    {
+        return obj == null;
+    }
+
     public static int GetSecondsFromMilliSeconds(int milliSeconds)
     {
         return milliSeconds / 1000;

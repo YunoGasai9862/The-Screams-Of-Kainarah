@@ -47,6 +47,8 @@ TagManager:
   - NotificationManager
   - LightFlicker
   - CelestialBodyLightning
+  - CandleLightGenerator
+  - CelestialBodyGenerator
   layers:
   - Default
   - TransparentFX
