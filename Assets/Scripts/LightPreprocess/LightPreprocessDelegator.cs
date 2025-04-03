@@ -7,7 +7,7 @@ public class LightPreprocessDelegator: BaseDelegatorEnhanced<ILightPreprocess>
     {
         SubjectsDict = new Dictionary<string, Subject<IObserver<ILightPreprocess>>>();
 
-        ObserverSubjectDict = await Helper.GenerateObserverSystemDict(await Helper.GetGameObjectsWithCustomAttribute<ObserverSystemAttribute>());
+        ObserverSubjectDict = await Helper.GenerateObserverSystemDict(await Helper.GetGameObjectsWithCustomAttributes<ObserverSystemAttribute>());
 
         Debug.Log($"Finally Non Null {ObserverSubjectDict}");
     }

@@ -24,12 +24,9 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
             SubjectType = typeof(LightFlicker).ToString()
         }));
 
-        //subject for custom lightning
-        Debug.Log(gameObject);
-        //if the same object is registered/added already, no need to add again
-        lightPackageDelegator.SubjectsDict.Add(gameObject.tag, new Subject<IObserver<LightPackage>>());
+        lightPackageDelegator.AddToSubjectsDict(gameObject.tag, new Subject<IObserver<LightPackage>>() { });
 
-        lightPackageDelegator.SubjectsDict[gameObject.tag].SetSubject(this);
+        lightPackageDelegator.GetSubject(gameObject.tag).SetSubject(this);
     }
 
     private bool CalculateDistance()

@@ -6,11 +6,6 @@ public class LightPackageDelegator: BaseDelegatorEnhanced<LightPackage>
     {
         SubjectsDict = new Dictionary<string, Subject<IObserver<LightPackage>>>();
 
-        ObserverSubjectDict = await Helper.GenerateObserverSystemDict(await Helper.GetGameObjectsWithCustomAttribute<ObserverSystemAttribute>());
-
-        foreach(var key in ObserverSubjectDict.Keys)
-        {
-            Debug.Log(key);
-        }
+        ObserverSubjectDict = await Helper.GenerateObserverSystemDict(await Helper.GetGameObjectsWithCustomAttributes<ObserverSystemAttribute>());
     }
 }

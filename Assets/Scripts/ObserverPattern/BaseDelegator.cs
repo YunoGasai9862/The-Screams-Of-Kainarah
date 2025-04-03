@@ -31,7 +31,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 {
     protected Dictionary<string, Subject<IObserver<T>>> SubjectsDict { get; set; }
-    public Dictionary<string, List<ObserverSystemAttribute>> ObserverSubjectDict { get; set; }
+    protected Dictionary<string, List<ObserverSystemAttribute>> ObserverSubjectDict { get; set; }
 
     public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
@@ -47,11 +47,7 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
             throw new ApplicationException($"No such subject type exists! - Please Register first {SubjectsDict.Count}");
         }
 
-        Debug.Log($"Null, lets wait {ObserverSubjectDict}");
-
         yield return new WaitUntil(() => !Helper.IsObjectNull(ObserverSubjectDict));
-
-        Debug.Log($"Non Null! {ObserverSubjectDict.Count}");
 
         if (ObserverSubjectDict.TryGetValue(observer.GetType().ToString(), out List<ObserverSystemAttribute> attributes))
         {
@@ -59,6 +55,7 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
             {
                 throw new ApplicationException($"Subject type is null - please add it in the notification context object!");
             }
+
 
             ObserverSystemAttribute targetObserverSystemAttribute = GetTargetObserverSystemAttribute(notificationContext.SubjectType, attributes);
 
@@ -79,11 +76,11 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         yield return null;
     }
 
-    private void AddToSubjectsDict(string key, Subject<IObserver<T>> value)
+    public void AddToSubjectsDict(string key, Subject<IObserver<T>> value)
     {
         if (SubjectsDict.ContainsKey(key))
         {
-            Debug.Log($"Key already exists ${key}. Won't persist again!");
+            Debug.Log($"Key already exists {key}. Won't persist again!");
 
             return;
         }
@@ -91,7 +88,22 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         SubjectsDict.Add(key, value);
     }
 
-    private ObserverSystemAttribute GetTargetObserverSystemAttribute(string subjectType, List<ObserverSystemAttribute> attributes)
+    public Dictionary<string, Subject<IObserver<T>>> GetSubjectsDict()
+    {
+        return SubjectsDict;
+    }
+
+    public Subject<IObserver<T>> GetSubject(string key)
+    {
+        if (SubjectsDict.TryGetValue(key, out Subject<IObserver<T>> subject))
+        {
+            return subject;
+        }
+
+        return null;
+    }
+
+    protected ObserverSystemAttribute GetTargetObserverSystemAttribute(string subjectType, List<ObserverSystemAttribute> attributes)
     {
         foreach(ObserverSystemAttribute attribute in attributes)
         {

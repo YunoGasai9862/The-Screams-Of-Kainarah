@@ -1,5 +1,3 @@
-using Amazon.Runtime.Internal.Transform;
-using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +37,7 @@ public class Helper: MonoBehaviour
         return delegator;
     }
 
-    public static async Task<List<T>> GetGameObjectsWithCustomAttribute<T>() where T: System.Attribute
+    public static async Task<List<T>> GetGameObjectsWithCustomAttributes<T>() where T: System.Attribute
     {
         List<T> objectsWithCustomAttributes = new List<T>();
 
@@ -47,14 +45,14 @@ public class Helper: MonoBehaviour
 
         foreach(System.Type type in types)
         {
-            T customAttribute = type.GetCustomAttribute<T>();
+            List<T> customAttributes = type.GetCustomAttributes<T>().ToList();
 
-            if (customAttribute == null)
+            if (customAttributes.Count == 0)
             {
                 continue;
             }
 
-            objectsWithCustomAttributes.Add(customAttribute);
+            objectsWithCustomAttributes.AddRange(customAttributes);
         }
 
         return objectsWithCustomAttributes;
