@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
+[ObserverSystem(SubjectType = typeof(CelestialBodyLightning), ObserverType = typeof(CelestialBodiesLightPackageGenerator))]
+
 public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<IObserver<ILightPreprocess>>
 {
     [SerializeField]
@@ -36,6 +38,8 @@ public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<
 
     public void OnNotifySubject(IObserver<ILightPreprocess> data, NotificationContext notificationContext, params object[] optional)
     {
+        Debug.Log("Here!");
+
         StartCoroutine(lightPreprocessDelegator.NotifyObserver(data, this, notificationContext));
     }
 }

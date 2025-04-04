@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ public class Helper: MonoBehaviour
 
     public static T GetDelegator<T>() where T: UnityEngine.Object
     {
-        T delegator = (T)(Object) FindFirstObjectByType<T>();
+        T delegator = (T)(UnityEngine.Object) FindFirstObjectByType<T>();
 
         if (delegator == null)
         {
@@ -90,5 +91,15 @@ public class Helper: MonoBehaviour
     public static int GetSecondsFromMilliSeconds(int milliSeconds)
     {
         return milliSeconds / 1000;
+    }
+
+    public static NotificationContext BuildNotificationContext(string name, string tag, Type subjectType)
+    {
+        return new NotificationContext()
+        {
+            ObserverName = name,
+            ObserverTag = tag,
+            SubjectType = subjectType.ToString()
+        };
     }
 }

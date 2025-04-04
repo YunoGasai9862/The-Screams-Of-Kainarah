@@ -56,7 +56,6 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
                 throw new ApplicationException($"Subject type is null - please add it in the notification context object!");
             }
 
-
             ObserverSystemAttribute targetObserverSystemAttribute = GetTargetObserverSystemAttribute(notificationContext.SubjectType, attributes);
 
             if (SubjectsDict.TryGetValue(targetObserverSystemAttribute.SubjectType.ToString(), out Subject<IObserver<T>> subject))

@@ -10,11 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5073767169765330523}
   - component: {fileID: 6864766611724058526}
-  - component: {fileID: 1526845105241640475}
-  - component: {fileID: 5127844461900350612}
+  - component: {fileID: 5830894255189469710}
   m_Layer: 0
   m_Name: MoonLight
-  m_TagString: Untagged
+  m_TagString: CelestialBodyGenerator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -86,7 +85,7 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
---- !u!114 &1526845105241640475
+--- !u!114 &5830894255189469710
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,22 +94,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2419437519602141298}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4196e67cd4d896438e1c7b086e653c8, type: 3}
+  m_Script: {fileID: 11500000, guid: c57e1f390660bf04e9396fd3d294d5ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LightPreprocess: {fileID: 5127844461900350612}
---- !u!114 &5127844461900350612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2419437519602141298}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 710e5743279ef4642b92b22a2ce6c028, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  lightPackageDelegator: {fileID: 0}
 --- !u!1 &4890085813464346052
 GameObject:
   m_ObjectHideFlags: 0

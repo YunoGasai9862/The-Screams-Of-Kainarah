@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
+[ObserverSystem(SubjectType = typeof(CandleLightPackageGenerator), ObserverType = typeof(CustomLightProcessing))]
+[ObserverSystem(SubjectType = typeof(CelestialBodiesLightPackageGenerator), ObserverType = typeof(CustomLightProcessing))]
 public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, IObserver<AsyncCoroutine>, IObserver<LightPackage>
 {
     private AsyncCoroutine AsyncCoroutine { get; set; }
@@ -36,6 +37,10 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
     private void Start()
     {
         StartCoroutine(asyncCoroutineDelegator.NotifySubject(this));
+
+        //notify them both :) - this way we keep the subjects asundered from each other. ALso gives us control when and which subject to ping <3 
+        StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CandleLightPackageGenerator))));
+        StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CelestialBodiesLightPackageGenerator))));
     }
 
     public IEnumerator ExecuteLightningLogic(LightPackage lightPackage, CancellationToken cancellationToken)
