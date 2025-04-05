@@ -65,11 +65,13 @@ public class Helper: MonoBehaviour
 
         foreach (ObserverSystemAttribute attribute in observerSystemAttributes)
         {
-            if (observerSystemAttributesDict.ContainsKey(attribute.ObserverType.ToString()))
-            {
-                observerSystemAttributesDict[attribute.ObserverType.ToString()].Append(attribute);
 
-            } else
+            if (observerSystemAttributesDict.ContainsKey(attribute.ObserverType.ToString()))
+            { 
+                observerSystemAttributesDict[attribute.ObserverType.ToString()].Add(attribute);
+
+            }
+            else
             {
                 observerSystemAttributesDict.Add(attribute.ObserverType.ToString(), new List<ObserverSystemAttribute>() { attribute });
             }

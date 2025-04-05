@@ -8,6 +8,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
+    [SerializeField]
     LightPreprocessDelegator lightPreprocessDelegator;
 
     private ILightPreprocess celestialBodyLightningPreprocess;
@@ -37,6 +38,6 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
     public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, params object[] optional)
     {
-        throw new NotImplementedException();
+        Debug.Log("From Custom Lightning");
     }
 }

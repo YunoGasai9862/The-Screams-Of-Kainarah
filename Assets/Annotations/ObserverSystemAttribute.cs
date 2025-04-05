@@ -11,4 +11,9 @@ public sealed class ObserverSystemAttribute: Attribute
     {
 
     }
+
+    public override string ToString()
+    {
+        return $"Subject Type: {SubjectType}, ObserverType: {ObserverType}"; 
+    }
 }

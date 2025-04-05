@@ -44,7 +44,7 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
     {
         if (maxRetries == 0)
         {
-            throw new ApplicationException($"No such subject type exists! - Please Register first {SubjectsDict.Count}");
+            throw new ApplicationException($"No such subject type exists! - Please Register first {notificationContext.SubjectType}");
         }
 
         yield return new WaitUntil(() => !Helper.IsObjectNull(ObserverSubjectDict));
