@@ -1,16 +1,23 @@
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-public class LightPackageDelegator: BaseDelegatorEnhanced<LightPackage>, IObserver<DelegatorManager>
+public class LightPackageDelegator: BaseDelegatorEnhanced<LightPackage>, IObserver<ObserverSystemAttributeHelper>
 {
+    [SerializeField]
+    public ObserverSystemAttributeDelegator observerSystemAttributeDelegator;
+
     private async void OnEnable()
     {
         SubjectsDict = new Dictionary<string, Subject<IObserver<LightPackage>>>();
-
-        //ObserverSubjectDict = ;
     }
-    public void OnNotify(DelegatorManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
+
+    private void Start()
     {
-        throw new System.NotImplementedException();
+        StartCoroutine(observerSystemAttributeDelegator.NotifySubject(this));
+    }
+
+    public void OnNotify(ObserverSystemAttributeHelper data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        ObserverSubjectDict = data.GetObserverSubjectDict();
     }
 }

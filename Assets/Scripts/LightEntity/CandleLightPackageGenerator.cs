@@ -28,7 +28,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
         lightPackageDelegator.GetSubject(gameObject.tag).SetSubject(this);
 
-        Debug.Log("Candle light registered!");
+        Debug.Log($"Setting Subject for LightPackageDelegator (CandleLight) {lightPackageDelegator.GetSubject(gameObject.tag)}");
     }
 
     private bool CalculateDistance()

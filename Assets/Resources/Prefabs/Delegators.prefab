@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1567188839433974394}
   - component: {fileID: 4666629529156060462}
   - component: {fileID: 312849135349787238}
-  - component: {fileID: 6566268457192188094}
+  - component: {fileID: 3714787005425193638}
   m_Layer: 0
   m_Name: Delegators
   m_TagString: Untagged
@@ -111,6 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 715bd7f1b88d28a408cec7b7272e5eea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  observerSystemAttributeDelegator: {fileID: 3714787005425193638}
 --- !u!114 &312849135349787238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,7 +124,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a4c01bde85c72e42a587244df112d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6566268457192188094
+  observerSystemAttributeDelegator: {fileID: 3714787005425193638}
+--- !u!114 &3714787005425193638
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -132,6 +134,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 3341719311373910614}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9cc96399bc09fd40b6746fbbdfee1fb, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f3c8e510dc28ac4eb2feeedff2ee9fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

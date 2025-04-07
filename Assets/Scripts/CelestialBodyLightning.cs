@@ -38,8 +38,6 @@ public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<
 
     public void OnNotifySubject(IObserver<ILightPreprocess> data, NotificationContext notificationContext, params object[] optional)
     {
-        Debug.Log("Here!");
-
         StartCoroutine(lightPreprocessDelegator.NotifyObserver(data, this, notificationContext));
     }
 }

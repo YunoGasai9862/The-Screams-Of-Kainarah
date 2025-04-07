@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightPackageDelegator: {fileID: 0}
+  lightPreprocessDelegator: {fileID: 0}
 --- !u!1 &4890085813464346052
 GameObject:
   m_ObjectHideFlags: 0

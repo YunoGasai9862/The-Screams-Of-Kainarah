@@ -2,17 +2,23 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class LightPreprocessDelegator: BaseDelegatorEnhanced<ILightPreprocess>, IObserver<DelegatorManager>
+public class LightPreprocessDelegator: BaseDelegatorEnhanced<ILightPreprocess>, IObserver<ObserverSystemAttributeHelper>
 {
-    private async void OnEnable()
+    [SerializeField]
+    public ObserverSystemAttributeDelegator observerSystemAttributeDelegator;
+
+    private void OnEnable()
     {
         SubjectsDict = new Dictionary<string, Subject<IObserver<ILightPreprocess>>>();
-
-        //ObserverSubjectDict = await Helper.GenerateObserverSystemDict(await Helper.GetGameObjectsWithCustomAttributes<ObserverSystemAttribute>());
     }
 
-    public void OnNotify(DelegatorManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
+    private void Start()
     {
-        throw new System.NotImplementedException();
+        StartCoroutine(observerSystemAttributeDelegator.NotifySubject(this));
+    }
+
+    public void OnNotify(ObserverSystemAttributeHelper data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        ObserverSubjectDict = data.GetObserverSubjectDict();
     }
 }
