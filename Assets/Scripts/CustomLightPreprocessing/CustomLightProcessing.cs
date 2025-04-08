@@ -39,8 +39,8 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
         StartCoroutine(asyncCoroutineDelegator.NotifySubject(this));
 
         //notify them both :) - this way we keep the subjects asundered from each other. ALso gives us control when and which subject to ping <3 
-        StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CandleLightPackageGenerator))));
-        StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CelestialBodiesLightPackageGenerator))));
+        StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CandleLightPackageGenerator).ToString())));
+        StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CelestialBodiesLightPackageGenerator).ToString())));
     }
 
     public IEnumerator ExecuteLightningLogic(LightPackage lightPackage, CancellationToken cancellationToken)

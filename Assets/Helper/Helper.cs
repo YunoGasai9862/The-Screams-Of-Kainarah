@@ -95,13 +95,13 @@ public class Helper: MonoBehaviour
         return milliSeconds / 1000;
     }
 
-    public static NotificationContext BuildNotificationContext(string name, string tag, Type subjectType)
+    public static NotificationContext BuildNotificationContext(string name, string tag, string subjectType)
     {
         return new NotificationContext()
         {
             ObserverName = name,
             ObserverTag = tag,
-            SubjectType = subjectType.ToString()
+            SubjectType = subjectType
         };
     }
 }

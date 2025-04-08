@@ -27,8 +27,6 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         lightPackageDelegator.AddToSubjectsDict(gameObject.tag, new Subject<IObserver<LightPackage>>() { });
 
         lightPackageDelegator.GetSubject(gameObject.tag).SetSubject(this);
-
-        Debug.Log($"Setting Subject for LightPackageDelegator (CandleLight) {lightPackageDelegator.GetSubject(gameObject.tag)}");
     }
 
     private bool CalculateDistance()
@@ -48,6 +46,5 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
     public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, params object[] optional)
     {
-        Debug.Log("From Custom Lightning");
     }
 }

@@ -56,15 +56,10 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
                 throw new ApplicationException($"Subject type is null - please add it in the notification context object!");
             }
 
-            Debug.Log($"Observer here: {observer}");
-
             ObserverSystemAttribute targetObserverSystemAttribute = GetTargetObserverSystemAttribute(notificationContext.SubjectType, attributes);
 
-            //found the issue, there's a mismatch in SubjectType.ToString() compared to the tags we are setting in the classes! Fix this
             if (SubjectsDict.TryGetValue(targetObserverSystemAttribute.SubjectType.ToString(), out Subject<IObserver<T>> subject))
             {
-                Debug.Log($"Inside for this: {targetObserverSystemAttribute}");
-
                 yield return new WaitUntil(() => !Helper.IsSubjectNull(subject));
 
                 subject.NotifySubject(observer, notificationContext);
@@ -111,12 +106,8 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
     {
         foreach(ObserverSystemAttribute attribute in attributes)
         {
-            Debug.Log($"attribute: {attribute} - trying to find {subjectType}");
-
             if (string.CompareOrdinal(subjectType, attribute.SubjectType.ToString()) == 0)
             {
-                Debug.Log($"Found it: {attribute.SubjectType.ToString()} - trying to find {subjectType}");
-
                 return attribute;
             }
         }
