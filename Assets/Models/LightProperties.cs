@@ -32,4 +32,19 @@ public class LightProperties
         return $"LightName: {LightName}, ShouldLightPulse: {ShouldLightPulse}, InnerRMin: {InnerRadiusMin}, InnerRMax: {InnerRadiusMax}, OuterRMin: {OuterRadiusMin}, OuterRMax:" +
             $"{OuterRadiusMax}, MinLightIntensity: {MinLightIntensity} MaxLightIntensity: {MaxLightIntensity}";
     }
+
+    public static LightProperties FromDefault(string lightName, bool shouldLightPulse)
+    {
+        return new LightProperties
+        {
+            LightName = lightName,
+            ShouldLightPulse = shouldLightPulse,
+            InnerRadiusMin = 3.0f,
+            InnerRadiusMax = 5.0f,
+            OuterRadiusMin = 3.0f,
+            OuterRadiusMax = 5.0f,
+            MaxLightIntensity = 2.0f,
+            MinLightIntensity = 1.0f
+        };
+    }
 }

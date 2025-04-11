@@ -7,6 +7,7 @@ using UnityEngine.Rendering.Universal;
 
 [ObserverSystem(SubjectType = typeof(LightFlicker), ObserverType = typeof(CandleLightPackageGenerator))]
 [ObserverSystem(SubjectType = typeof(CandleLightPackageGenerator), ObserverType = typeof(CustomLightProcessing))]
+[ObserverSystem(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(CandleLightPackageGenerator))]
 public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<LightPackage>>, IObserver<ILightPreprocess>
 {
     [SerializeField]
@@ -16,10 +17,6 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
 
     private ILightPreprocess LightPreprocess { get; set; }
-
-    private string LightFlickerUniqueKey { get; set; }
-
-    private bool CustomPreprocessingScriptIsAlive { get; set;}
 
     private Light2D LightSource { get; set; }
 
@@ -42,7 +39,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     }
 
     //start calculating distance recursively - however with the aid of the player
-    private IEnumerator CalculateDistance(LightPackage lightPackage)
+    private IEnumerator CalculateDistanceFromPlayer(LightPackage lightPackage)
     {
         yield return null;
     }
@@ -53,7 +50,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         {
             LightPreprocess = LightPreprocess,
             LightSource = LightSource,
-            LightProperties = new LightProperties() // fill this out
+            LightProperties = LightProperties.FromDefault(gameObject.name, true)
         };
     }
 
@@ -61,10 +58,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     {
         yield return new WaitUntil(() => lightPreprocessDelegator != null);
 
-        //first prepare the initial light data
-        LightPackage lightPackage = PrepareLightPackage();
-
-        //then start the coroutine for Calculating Distance - this will be linked with Player's data
+        StartCoroutine(CalculateDistanceFromPlayer(PrepareLightPackage()));
     }
 
     public void OnNotify(ILightPreprocess data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
