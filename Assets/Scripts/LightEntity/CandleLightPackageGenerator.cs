@@ -8,12 +8,14 @@ using UnityEngine.Rendering.Universal;
 [ObserverSystem(SubjectType = typeof(LightFlicker), ObserverType = typeof(CandleLightPackageGenerator))]
 [ObserverSystem(SubjectType = typeof(CandleLightPackageGenerator), ObserverType = typeof(CustomLightProcessing))]
 [ObserverSystem(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(CandleLightPackageGenerator))]
-public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<LightPackage>>, IObserver<ILightPreprocess>
+public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<LightPackage>>, IObserver<ILightPreprocess>, IObserver<Transform>
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
     [SerializeField]
     LightPreprocessDelegator lightPreprocessDelegator;
+    [SerializeField]
+    PlayerAttributesDelegator playerAttributesDelegator;
 
 
     private ILightPreprocess LightPreprocess { get; set; }
@@ -26,6 +28,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
         ValidateLightSourcePresence(LightSource);
 
+        //notify light Preprocess
         StartCoroutine(lightPreprocessDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
@@ -33,6 +36,15 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
             SubjectType = typeof(LightFlicker).ToString()
         }));
 
+        //notify the player
+        StartCoroutine(playerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+         }));
+
+        //act as a subject for lightpackage!
         lightPackageDelegator.AddToSubjectsDict(gameObject.tag, new Subject<IObserver<LightPackage>>() { });
 
         lightPackageDelegator.GetSubject(gameObject.tag).SetSubject(this);
@@ -77,5 +89,11 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         {
             throw new ApplicationException("LightSource is not Present!");
         }
+    }
+
+    public void OnNotify(Transform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        //now you have player's data, calculate the distance!
+        Debug.Log($"Player's Transform: {data}");
     }
 }
