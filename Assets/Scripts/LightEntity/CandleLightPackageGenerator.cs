@@ -22,6 +22,10 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
     private Light2D LightSource { get; set; }
 
+    private Transform PlayersTransform { get; set; }
+
+    private const float MIN_DISTANCE = 5.0f;
+
     private void Start()
     {
         LightSource = GetComponent<Light2D>();
@@ -45,15 +49,23 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
          }));
 
         //act as a subject for lightpackage!
-        lightPackageDelegator.AddToSubjectsDict(gameObject.tag, new Subject<IObserver<LightPackage>>() { });
+        lightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), new Subject<IObserver<LightPackage>>() { });
 
-        lightPackageDelegator.GetSubject(gameObject.tag).SetSubject(this);
+        lightPackageDelegator.GetSubject(typeof(CandleLightPackageGenerator).ToString()).SetSubject(this);
     }
 
     //start calculating distance recursively - however with the aid of the player
-    private IEnumerator CalculateDistanceFromPlayer(LightPackage lightPackage)
+    private IEnumerator CalculateDistanceFromPlayer(LightPackage lightPackage, Transform playersTransform)
     {
-        yield return null;
+        while(true) //please have some sort of delay + termination condition. This usually hapepns in on update (for every frame)
+        {
+            if (Vector2.Distance(playersTransform.transform.position, gameObject.transform.position) < MIN_DISTANCE)
+            {
+
+            }
+
+            yield return null;
+        }
     }
 
     private LightPackage PrepareLightPackage()
@@ -70,7 +82,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     {
         yield return new WaitUntil(() => lightPreprocessDelegator != null);
 
-        StartCoroutine(CalculateDistanceFromPlayer(PrepareLightPackage()));
+        StartCoroutine(CalculateDistanceFromPlayer(PrepareLightPackage(), PlayersTransform));
     }
 
     public void OnNotify(ILightPreprocess data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
@@ -93,7 +105,6 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
     public void OnNotify(Transform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        //now you have player's data, calculate the distance!
-        Debug.Log($"Player's Transform: {data}");
+        PlayersTransform = data;
     }
 }

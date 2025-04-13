@@ -14,9 +14,9 @@ public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<
 
     private void Start()
     {
-        lightPreprocessDelegator.AddToSubjectsDict(gameObject.tag, new Subject<IObserver<ILightPreprocess>>());
+        lightPreprocessDelegator.AddToSubjectsDict(typeof(CelestialBodyLightning).ToString(), new Subject<IObserver<ILightPreprocess>>());
 
-        lightPreprocessDelegator.GetSubject(gameObject.tag).SetSubject(this);
+        lightPreprocessDelegator.GetSubject(typeof(CelestialBodyLightning).ToString()).SetSubject(this);
     }
 
     public void ActivateContinuousShimmer(Light2D light, float time, float minIntensity, float maxIntensity, float minOuterRadius, float maxOuterRadius, float minInnerRadius, float maxInnerRadius)
