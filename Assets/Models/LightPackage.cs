@@ -7,4 +7,9 @@ public class LightPackage
     public LightProperties LightProperties { get; set; }
 
     public ILightPreprocess LightPreprocess { get; set; }
+
+    public override string ToString()
+    {
+        return $"LightProperties: {LightProperties.ToString()}, LightSource: {LightSource}, ILightPreprocess: {LightPreprocess}";
+    }
 }

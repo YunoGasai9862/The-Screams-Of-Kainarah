@@ -28,8 +28,6 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
 
     private void Awake()
     {
-        //please put this on one object, and let other lights use that!!
-        //pass the light source as well!!
         CancellationTokenSource = new CancellationTokenSource();
         CancellationToken = CancellationTokenSource.Token;
     }
@@ -38,7 +36,6 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
     {
         StartCoroutine(asyncCoroutineDelegator.NotifySubject(this));
 
-        //notify them both :) - this way we keep the subjects asundered from each other. ALso gives us control when and which subject to ping <3 
         StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CandleLightPackageGenerator).ToString())));
         StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CelestialBodiesLightPackageGenerator).ToString())));
     }
@@ -47,12 +44,11 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
     {
         yield return new WaitUntil(() => AsyncCoroutine != null);
 
-        //pulse etc should not be the responsiblity of Execute method - but should be checked within customlightning method 
         if (lightPackage != null)
         {
-            yield return new WaitUntil(() => m_Semaphore.CurrentCount != 0);
+            Debug.Log($"Inside {m_Semaphore.CurrentCount}");
 
-            Debug.Log(m_Semaphore.CurrentCount);
+            yield return new WaitUntil(() => m_Semaphore.CurrentCount != 0);
 
             //npw test this tomorrow!!
             AsyncCoroutine.ExecuteAsyncCoroutine(lightPackage.LightPreprocess.GenerateCustomLighting(lightPackage, m_Semaphore, 5f)); //Async runner

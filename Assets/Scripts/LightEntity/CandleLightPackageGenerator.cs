@@ -55,16 +55,19 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     }
 
     //start calculating distance recursively - however with the aid of the player
-    private IEnumerator CalculateDistanceFromPlayer(LightPackage lightPackage, Transform playersTransform)
+    private IEnumerator CalculateDistanceFromPlayer(LightPackage lightPackage, IObserver<LightPackage> observer, Transform playersTransform, float delayPerExecutionInSeconds = 1f)
     {
         while(true) //please have some sort of delay + termination condition. This usually hapepns in on update (for every frame)
         {
-            if (Vector2.Distance(playersTransform.transform.position, gameObject.transform.position) < MIN_DISTANCE)
+            lightPackage.LightProperties.ShouldLightPulse = Vector2.Distance(playersTransform.transform.position, gameObject.transform.position) < MIN_DISTANCE ? true : false;
+
+            StartCoroutine(lightPackageDelegator.NotifyObserver(observer, lightPackage, new NotificationContext()
             {
+                SubjectType = typeof(CandleLightPackageGenerator).ToString(),
+            }));
 
-            }
-
-            yield return null;
+            //unscaled yield (realTime) - waitForSeconds is scaled (RealTime wont stop if we set time.timeScale = 0)
+            yield return new WaitForSeconds(delayPerExecutionInSeconds);
         }
     }
 
@@ -78,11 +81,11 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         };
     }
 
-    private IEnumerator PrepareDataForCustomLightningGeneration()
+    private IEnumerator PrepareDataForCustomLightningGeneration(IObserver<LightPackage> observer)
     {
         yield return new WaitUntil(() => lightPreprocessDelegator != null);
 
-        StartCoroutine(CalculateDistanceFromPlayer(PrepareLightPackage(), PlayersTransform));
+        StartCoroutine(CalculateDistanceFromPlayer(PrepareLightPackage(), observer, PlayersTransform));
     }
 
     public void OnNotify(ILightPreprocess data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
@@ -92,7 +95,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
     public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, params object[] optional)
     {
-        StartCoroutine(PrepareDataForCustomLightningGeneration());
+        StartCoroutine(PrepareDataForCustomLightningGeneration(data));
     }
 
     private void ValidateLightSourcePresence(Light2D light2D)
