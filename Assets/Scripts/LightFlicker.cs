@@ -19,13 +19,17 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, SemaphoreSlim couroutineBlocker, float delayBetweenExecution = 0)
     {
-        Debug.Log("Im Here - CustomLightning!");
+        Debug.Log($"Before! {couroutineBlocker.CurrentCount}");
 
         lightPackage.LightSource.intensity = await GenerateLightRadia(lightPackage.LightProperties.OuterRadiusMin, lightPackage.LightProperties.OuterRadiusMax);
         lightPackage.LightSource.pointLightInnerRadius = await GenerateLightRadia(lightPackage.LightProperties.InnerRadiusMin, lightPackage.LightProperties.InnerRadiusMax);
         lightPackage.LightSource.pointLightOuterRadius = await GenerateLightIntensityAsync(lightPackage.LightProperties.MinLightIntensity, lightPackage.LightProperties.MaxLightIntensity);
 
+        Debug.Log(lightPackage.ToString());
+
         couroutineBlocker.Release();
+
+        Debug.Log($"After! {couroutineBlocker.CurrentCount}");
 
         await Task.Delay(TimeSpan.FromSeconds(delayBetweenExecution));
 
@@ -38,7 +42,10 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
     }
     public Task<float> GenerateLightRadia(float minRadia, float maxRadia)
     {
-        return Task.FromResult(UnityEngine.Random.Range(minRadia, maxRadia));
+        Debug.Log($"Min: {minRadia} Max: {maxRadia}");
+        float randomValue = UnityEngine.Random.Range(minRadia, maxRadia);
+        Debug.Log($"Value: {randomValue}");
+        return Task.FromResult(randomValue);
     }
 
     public void OnNotifySubject(IObserver<ILightPreprocess> data, NotificationContext notificationContext, params object[] optional)

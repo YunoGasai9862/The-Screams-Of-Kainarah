@@ -8,9 +8,6 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
 {
     private AsyncCoroutine AsyncCoroutine { get; set; }
 
-    private CancellationTokenSource CancellationTokenSource { get; set; }
-    private CancellationToken CancellationToken { get; set; }
-
     [Header("Light Intensity Swing Values")]
     [SerializeField]
     public float maxIntensity;
@@ -24,14 +21,6 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
     [SerializeField]
     public LightPackageDelegator lightPackageDelegator;
 
-    private SemaphoreSlim m_Semaphore = new SemaphoreSlim(1, 1);
-
-    private void Awake()
-    {
-        CancellationTokenSource = new CancellationTokenSource();
-        CancellationToken = CancellationTokenSource.Token;
-    }
-
     private void Start()
     {
         StartCoroutine(asyncCoroutineDelegator.NotifySubject(this));
@@ -40,21 +29,22 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
         StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CelestialBodiesLightPackageGenerator).ToString())));
     }
 
-    public IEnumerator ExecuteLightningLogic(LightPackage lightPackage, CancellationToken cancellationToken)
+    public IEnumerator ExecuteLightningLogic(LightPackage lightPackage, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken)
     {
         yield return new WaitUntil(() => AsyncCoroutine != null);
 
         if (lightPackage != null)
         {
-            Debug.Log($"Inside {m_Semaphore.CurrentCount}");
-
-            yield return new WaitUntil(() => m_Semaphore.CurrentCount != 0);
+            //yield return new WaitUntil(() => m_Semaphore.CurrentCount != 0);
 
             //npw test this tomorrow!!
-            AsyncCoroutine.ExecuteAsyncCoroutine(lightPackage.LightPreprocess.GenerateCustomLighting(lightPackage, m_Semaphore, 5f)); //Async runner
+            AsyncCoroutine.ExecuteAsyncCoroutine(lightPackage.LightPreprocess.GenerateCustomLighting(lightPackage, semaphoreSlim, 5f)); //Async runner
 
-            m_Semaphore.WaitAsync();
+            //please use this in the package class itself
+            //m_Semaphore.WaitAsync();
         }
+
+        Debug.Log("Finish bye!");
     }
 
     public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
@@ -62,8 +52,9 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
         AsyncCoroutine = data;
     }
 
+    //please add another parameter cancellation token!
     public void OnNotify(LightPackage data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(ExecuteLightningLogic(data, CancellationToken)); 
+        StartCoroutine(ExecuteLightningLogic(data, data.LightSemaphore, data.CancellationToken)); 
     }
 }

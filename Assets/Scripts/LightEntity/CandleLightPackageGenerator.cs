@@ -24,13 +24,23 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
     private Transform PlayersTransform { get; set; }
 
+    private SemaphoreSlim SemaphoreSlim { get; set; }
+
+    private CancellationToken CancellationToken { get; set; }
+
+    private CancellationTokenSource CancellationTokenSource { get; set; }
+
     private const float MIN_DISTANCE = 5.0f;
 
-    private void Start()
+    private async void Start()
     {
         LightSource = GetComponent<Light2D>();
 
         ValidateLightSourcePresence(LightSource);
+
+        SemaphoreSlim = new SemaphoreSlim(1, 1);
+
+        await SetupCancellationTokens();
 
         //notify light Preprocess
         StartCoroutine(lightPreprocessDelegator.NotifySubject(this, new NotificationContext()
@@ -77,7 +87,9 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         {
             LightPreprocess = LightPreprocess,
             LightSource = LightSource,
-            LightProperties = LightProperties.FromDefault(gameObject.name, true)
+            LightProperties = LightProperties.FromDefault(gameObject.name, true),
+            LightSemaphore = SemaphoreSlim,
+            CancellationToken = CancellationToken,  
         };
     }
 
@@ -109,5 +121,12 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     public void OnNotify(Transform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         PlayersTransform = data;
+    }
+
+    private async Task SetupCancellationTokens()
+    {
+        CancellationTokenSource = new CancellationTokenSource();
+
+        CancellationToken = CancellationTokenSource.Token;
     }
 }

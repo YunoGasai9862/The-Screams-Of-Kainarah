@@ -1,3 +1,4 @@
+using System.Threading;
 using UnityEngine.Rendering.Universal;
 
 public class LightPackage
@@ -7,6 +8,10 @@ public class LightPackage
     public LightProperties LightProperties { get; set; }
 
     public ILightPreprocess LightPreprocess { get; set; }
+
+    public SemaphoreSlim LightSemaphore { get; set; }
+
+    public CancellationToken CancellationToken { get; set; }
 
     public override string ToString()
     {
