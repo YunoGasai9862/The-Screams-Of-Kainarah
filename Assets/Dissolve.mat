@@ -55,7 +55,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Fade: 0
-    - _FadeIn: 1.0485772
+    - _FadeIn: 1.0904005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Scale: 60

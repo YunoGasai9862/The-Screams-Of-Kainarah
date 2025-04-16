@@ -15,6 +15,6 @@ public class LightPackage
 
     public override string ToString()
     {
-        return $"LightProperties: {LightProperties.ToString()}, LightSource: {LightSource}, ILightPreprocess: {LightPreprocess}";
+        return $"LightProperties: {LightProperties}, LightSource: {LightSource}, ILightPreprocess: {LightPreprocess}";
     }
 }

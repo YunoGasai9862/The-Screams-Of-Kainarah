@@ -69,6 +69,8 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     {
         while(true) //please have some sort of delay + termination condition. This usually hapepns in on update (for every frame)
         {
+            lightPackage.LightSemaphore.WaitAsync(); //take the semaphore
+
             lightPackage.LightProperties.ShouldLightPulse = Vector2.Distance(playersTransform.transform.position, gameObject.transform.position) < MIN_DISTANCE ? true : false;
 
             StartCoroutine(lightPackageDelegator.NotifyObserver(observer, lightPackage, new NotificationContext()

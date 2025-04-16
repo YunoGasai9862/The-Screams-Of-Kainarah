@@ -35,16 +35,8 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
 
         if (lightPackage != null)
         {
-            //yield return new WaitUntil(() => m_Semaphore.CurrentCount != 0);
-
-            //npw test this tomorrow!!
             AsyncCoroutine.ExecuteAsyncCoroutine(lightPackage.LightPreprocess.GenerateCustomLighting(lightPackage, semaphoreSlim, 5f)); //Async runner
-
-            //please use this in the package class itself
-            //m_Semaphore.WaitAsync();
         }
-
-        Debug.Log("Finish bye!");
     }
 
     public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)

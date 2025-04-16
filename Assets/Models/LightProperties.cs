@@ -39,12 +39,12 @@ public class LightProperties
         {
             LightName = lightName,
             ShouldLightPulse = shouldLightPulse,
-            InnerRadiusMin = 3.0f,
-            InnerRadiusMax = 5.0f,
+            InnerRadiusMin = 1.0f,
+            InnerRadiusMax = 2.0f,
             OuterRadiusMin = 3.0f,
             OuterRadiusMax = 5.0f,
-            MaxLightIntensity = 2.0f,
-            MinLightIntensity = 1.0f
+            MaxLightIntensity = 0.5f,
+            MinLightIntensity = 0.1f
         };
     }
 }
