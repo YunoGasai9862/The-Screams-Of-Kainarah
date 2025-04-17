@@ -23,9 +23,8 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
         lightPackage.LightSource.pointLightInnerRadius = await GenerateLightRadia(lightPackage.LightProperties.InnerRadiusMin, lightPackage.LightProperties.InnerRadiusMax);
         lightPackage.LightSource.pointLightOuterRadius = await GenerateLightRadia(lightPackage.LightProperties.OuterRadiusMin, lightPackage.LightProperties.OuterRadiusMax);
 
+        //release it because we are done with the the flickering process - the semaphore is from the package generator class
         couroutineBlocker.Release();
-
-        Debug.Log(lightPackage.ToString());
 
         yield return null;
     }

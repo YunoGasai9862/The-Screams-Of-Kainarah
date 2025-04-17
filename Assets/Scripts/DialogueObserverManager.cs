@@ -26,7 +26,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
         PlayerObserverListenerHelper.DialogueSystem.RemoveOberver(this); 
     }
 
-    public async void OnNotify(DialogueSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public async void OnNotify(DialogueSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         if (data.DialogueOptions.ShouldTriggerDialogue)
         {

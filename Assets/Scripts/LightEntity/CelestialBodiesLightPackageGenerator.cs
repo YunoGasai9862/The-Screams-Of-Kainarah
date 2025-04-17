@@ -29,12 +29,12 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         lightPackageDelegator.GetSubject(typeof(CelestialBodiesLightPackageGenerator).ToString()).SetSubject(this);
     }
 
-    public void OnNotify(ILightPreprocess data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        celestialBodyLightningPreprocess = data;
-    }
-
     public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, params object[] optional)
     {
+    }
+
+    public void OnNotify(ILightPreprocess data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        celestialBodyLightningPreprocess = data;
     }
 }

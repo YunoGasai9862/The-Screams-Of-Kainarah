@@ -5,7 +5,7 @@ using System.Threading;
 
 public interface IObserver<in T>
 {
-    public abstract void OnNotify(T data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional);
+    public abstract void OnNotify(T data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional);
 
 }
 public interface IExtendedObserver<T, Y, Z>

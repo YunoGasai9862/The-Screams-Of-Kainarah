@@ -16,7 +16,7 @@ public class LightPackageDelegator: BaseDelegatorEnhanced<LightPackage>, IObserv
         StartCoroutine(observerSystemAttributeDelegator.NotifySubject(this));
     }
 
-    public void OnNotify(ObserverSystemAttributeHelper data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotify(ObserverSystemAttributeHelper data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         ObserverSubjectDict = data.GetObserverSubjectDict();
     }

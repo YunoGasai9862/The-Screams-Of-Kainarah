@@ -101,7 +101,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>
         }
     }
 
-    public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         AsyncCoroutine = data;
     }

@@ -102,11 +102,6 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         StartCoroutine(CalculateDistanceFromPlayer(PrepareLightPackage(), observer, PlayersTransform));
     }
 
-    public void OnNotify(ILightPreprocess data, NotificationContext context, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        LightPreprocess = data;
-    }
-
     public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, params object[] optional)
     {
         StartCoroutine(PrepareDataForCustomLightningGeneration(data));
@@ -120,15 +115,20 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         }
     }
 
-    public void OnNotify(Transform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        PlayersTransform = data;
-    }
-
     private async Task SetupCancellationTokens()
     {
         CancellationTokenSource = new CancellationTokenSource();
 
         CancellationToken = CancellationTokenSource.Token;
+    }
+
+    public void OnNotify(ILightPreprocess data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        LightPreprocess = data;
+    }
+
+    public void OnNotify(Transform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        PlayersTransform = data;
     }
 }

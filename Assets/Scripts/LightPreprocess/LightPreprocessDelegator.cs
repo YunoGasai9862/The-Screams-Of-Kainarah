@@ -17,7 +17,7 @@ public class LightPreprocessDelegator: BaseDelegatorEnhanced<ILightPreprocess>, 
         StartCoroutine(observerSystemAttributeDelegator.NotifySubject(this));
     }
 
-    public void OnNotify(ObserverSystemAttributeHelper data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotify(ObserverSystemAttributeHelper data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         ObserverSubjectDict = data.GetObserverSubjectDict();
     }

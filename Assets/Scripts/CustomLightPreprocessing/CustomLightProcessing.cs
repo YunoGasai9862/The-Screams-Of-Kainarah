@@ -39,14 +39,13 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
         }
     }
 
-    public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         AsyncCoroutine = data;
     }
 
-    //please add another parameter cancellation token!
-    public void OnNotify(LightPackage data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotify(LightPackage data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        StartCoroutine(ExecuteLightningLogic(data, data.LightSemaphore, data.CancellationToken)); 
+        StartCoroutine(ExecuteLightningLogic(data, data.LightSemaphore, data.CancellationToken));
     }
 }

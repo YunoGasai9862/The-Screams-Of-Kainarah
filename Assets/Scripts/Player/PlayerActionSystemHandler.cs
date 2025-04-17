@@ -74,7 +74,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
         return _gameObject;
     }
 
-    public void OnNotify(Collider2D data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotify(Collider2D data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         if (_playerActionHandlerDic.TryGetValue(data.tag, out var invokeFunc)) //simplified
         {
