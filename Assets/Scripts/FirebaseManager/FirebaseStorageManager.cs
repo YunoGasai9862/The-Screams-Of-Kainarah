@@ -1,6 +1,7 @@
 using Firebase.Extensions;
 using Firebase.Storage;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<IObserver<FirebaseStorageManager>>
@@ -117,8 +118,8 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<
         return await mediaRelayerTCS.Task;
     }
 
-    public void OnNotifySubject(IObserver<FirebaseStorageManager> data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotifySubject(IObserver<FirebaseStorageManager> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(firebaseStorageManagerDelegator.NotifyObserver(data, this));
+        StartCoroutine(firebaseStorageManagerDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
     }
 }

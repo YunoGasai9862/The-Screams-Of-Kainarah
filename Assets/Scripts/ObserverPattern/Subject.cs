@@ -48,9 +48,9 @@ public class Subject<T>
         return ISubject;
     }
 
-    public void NotifySubject(T value, NotificationContext notificationContext, SemaphoreSlim lockingThread = null, params object[] optional)
+    public void NotifySubject(T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim lockingThread = null, params object[] optional)
     {
-        ISubject.OnNotifySubject(value, notificationContext, lockingThread, optional);
+        ISubject.OnNotifySubject(value, notificationContext, cancellationToken, lockingThread, optional);
     }
 
 }

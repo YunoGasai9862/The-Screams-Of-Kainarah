@@ -42,9 +42,9 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
         m_awsPollyManagementDelegator = Helper.GetDelegator<AWSPollyManagementDelegator>();
 
-        StartCoroutine(m_entityPoolManagerDelegator.NotifySubject(this));
+        StartCoroutine(m_entityPoolManagerDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EntityPoolManager).ToString()), CancellationToken.None));
 
-        StartCoroutine(m_awsPollyManagementDelegator.NotifySubject(this));
+        StartCoroutine(m_awsPollyManagementDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(IAWSPolly).ToString()), CancellationToken.None));
 
         await audioGeneratedEvent.AddListener(AudioGeneratedListener);
     }

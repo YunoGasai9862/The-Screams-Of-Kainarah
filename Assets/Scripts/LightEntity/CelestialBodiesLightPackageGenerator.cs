@@ -21,7 +21,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(CelestialBodyLightning).ToString()
-        }));
+        }, CancellationToken.None));
 
         //subject for custom lightning
         lightPackageDelegator.AddToSubjectsDict(typeof(CelestialBodiesLightPackageGenerator).ToString(), new Subject<IObserver<LightPackage>>());
@@ -29,7 +29,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         lightPackageDelegator.GetSubject(typeof(CelestialBodiesLightPackageGenerator).ToString()).SetSubject(this);
     }
 
-    public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
     }
 

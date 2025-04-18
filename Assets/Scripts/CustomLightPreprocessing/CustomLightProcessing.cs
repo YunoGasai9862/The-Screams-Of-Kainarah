@@ -23,10 +23,10 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
 
     private void Start()
     {
-        StartCoroutine(asyncCoroutineDelegator.NotifySubject(this));
+        StartCoroutine(asyncCoroutineDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutine).ToString()), CancellationToken.None));
 
-        StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CandleLightPackageGenerator).ToString())));
-        StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CelestialBodiesLightPackageGenerator).ToString())));
+        StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CandleLightPackageGenerator).ToString()), CancellationToken.None));
+        StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CelestialBodiesLightPackageGenerator).ToString()), CancellationToken.None));
     }
 
     public IEnumerator ExecuteLightningLogic(LightPackage lightPackage, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken)

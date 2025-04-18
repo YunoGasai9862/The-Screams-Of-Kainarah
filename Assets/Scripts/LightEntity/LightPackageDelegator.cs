@@ -13,7 +13,7 @@ public class LightPackageDelegator: BaseDelegatorEnhanced<LightPackage>, IObserv
 
     private void Start()
     {
-        StartCoroutine(observerSystemAttributeDelegator.NotifySubject(this));
+        StartCoroutine(observerSystemAttributeDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(ObserverSystemAttributeHelper).ToString()), CancellationToken.None));
     }
 
     public void OnNotify(ObserverSystemAttributeHelper data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

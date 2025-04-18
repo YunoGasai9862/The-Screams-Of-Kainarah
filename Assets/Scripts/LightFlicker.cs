@@ -38,8 +38,9 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
         return Task.FromResult(UnityEngine.Random.Range(minRadia, maxRadia));
     }
 
-    public void OnNotifySubject(IObserver<ILightPreprocess> data, NotificationContext notificationContext, params object[] optional)
+
+    public void OnNotifySubject(IObserver<ILightPreprocess> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(lightPreprocessDelegator.NotifyObserver(data, this, notificationContext));
+        StartCoroutine(lightPreprocessDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
     }
 }

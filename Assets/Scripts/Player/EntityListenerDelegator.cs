@@ -9,7 +9,7 @@ public class EntityListenerDelegator : MonoBehaviour
 {
     public async Task<bool> ListenerDelegator<T>(ObserverList<T> subjectsToNofity, T dataType, NotificationContext notificationContext = null, SemaphoreSlim lockingThread=null)
     {
-        subjectsToNofity.NotifyObservers(dataType, notificationContext, lockingThread);
+        subjectsToNofity.NotifyObservers(dataType, CancellationToken.None, notificationContext, lockingThread);
 
         return await Task.FromResult(true);
     }

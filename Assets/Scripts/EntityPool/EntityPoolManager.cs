@@ -63,8 +63,8 @@ public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, ISubject<IObs
         return null;
     }
 
-    public void OnNotifySubject(IObserver<EntityPoolManager> data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotifySubject(IObserver<EntityPoolManager> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(entityPoolManagerDelegator.NotifyObserver(data, this));
+        StartCoroutine(entityPoolManagerDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
     }
 }

@@ -13,7 +13,7 @@ public class PlayerAttributesDelegator : BaseDelegatorEnhanced<Transform>, IObse
 
     private void Start()
     {
-        StartCoroutine(observerSystemAttributeDelegator.NotifySubject(this));
+        StartCoroutine(observerSystemAttributeDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(ObserverSystemAttribute).ToString()), CancellationToken.None));
     }
 
     public void OnNotify(ObserverSystemAttributeHelper data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

@@ -17,7 +17,6 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     [SerializeField]
     PlayerAttributesDelegator playerAttributesDelegator;
 
-
     private ILightPreprocess LightPreprocess { get; set; }
 
     private Light2D LightSource { get; set; }
@@ -48,7 +47,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(LightFlicker).ToString()
-        }));
+        }, CancellationToken.None));
 
         //notify the player
         StartCoroutine(playerAttributesDelegator.NotifySubject(this, new NotificationContext()
@@ -56,7 +55,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
-         }));
+         }, CancellationToken.None));
 
         //act as a subject for lightpackage!
         lightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), new Subject<IObserver<LightPackage>>() { });
@@ -69,6 +68,9 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     {
         while(true) //please have some sort of delay + termination condition. This usually hapepns in on update (for every frame)
         {
+            //seems like candle 2 is not flickering - fix thsi!!
+            Debug.Log(transform.parent.gameObject.name);
+
             lightPackage.LightSemaphore.WaitAsync(); //take the semaphore
 
             lightPackage.LightProperties.ShouldLightPulse = Vector2.Distance(playersTransform.transform.position, gameObject.transform.position) < MIN_DISTANCE ? true : false;
@@ -76,7 +78,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
             StartCoroutine(lightPackageDelegator.NotifyObserver(observer, lightPackage, new NotificationContext()
             {
                 SubjectType = typeof(CandleLightPackageGenerator).ToString(),
-            }));
+            }, lightPackage.CancellationToken));
 
             //unscaled yield (realTime) - waitForSeconds is scaled (RealTime wont stop if we set time.timeScale = 0)
             yield return new WaitForSeconds(delayPerExecutionInSeconds);
@@ -102,7 +104,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         StartCoroutine(CalculateDistanceFromPlayer(PrepareLightPackage(), observer, PlayersTransform));
     }
 
-    public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         StartCoroutine(PrepareDataForCustomLightningGeneration(data));
     }
@@ -131,4 +133,5 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     {
         PlayersTransform = data;
     }
+
 }

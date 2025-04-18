@@ -61,7 +61,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
     private void Start()
     {
-        StartCoroutine(firebaseStorageManagerDelegator.NotifySubject(this));
+        StartCoroutine(firebaseStorageManagerDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(FirebaseStorageManager).ToString()), CancellationToken.None));
 
         awsPollyManagementDelegator.Subject.SetSubject(this);
     }
@@ -189,9 +189,9 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         return Task.CompletedTask;
     }
 
-    public void OnNotifySubject(IObserver<IAWSPolly> data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotifySubject(IObserver<IAWSPolly> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(awsPollyManagementDelegator.NotifyObserver(data, this));
+        StartCoroutine(awsPollyManagementDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
     }
 
     public async void OnNotify(FirebaseStorageManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

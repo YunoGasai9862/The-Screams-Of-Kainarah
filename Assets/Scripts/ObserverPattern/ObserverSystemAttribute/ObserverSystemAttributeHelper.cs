@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class ObserverSystemAttributeHelper : MonoBehaviour, ISubject<IObserver<ObserverSystemAttributeHelper>>
@@ -18,13 +19,13 @@ public class ObserverSystemAttributeHelper : MonoBehaviour, ISubject<IObserver<O
         observerSystemAttributeDelegator.Subject.SetSubject(this);
     }
 
-    public void OnNotifySubject(IObserver<ObserverSystemAttributeHelper> data, NotificationContext notificationContext, params object[] optional)
-    {
-        StartCoroutine(observerSystemAttributeDelegator.NotifyObserver(data, this));
-    }
-
     public Dictionary<string, List<ObserverSystemAttribute>> GetObserverSubjectDict()
     {
         return ObserverSubjectDict;
+    }
+
+    public void OnNotifySubject(IObserver<ObserverSystemAttributeHelper> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        StartCoroutine(observerSystemAttributeDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
     }
 }

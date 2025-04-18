@@ -27,7 +27,7 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
 
     private async void Start()
     {
-        StartCoroutine(entityPoolManagerDelegator.NotifySubject(this));
+        StartCoroutine(entityPoolManagerDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EntityPoolManager).ToString()), CancellationToken.None));
 
         PreloaderInstance = await InstantiatePreloader(preloader);
 

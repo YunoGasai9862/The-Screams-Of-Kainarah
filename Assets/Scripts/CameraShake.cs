@@ -39,7 +39,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>
     {
         _cancellationTokenSource= new CancellationTokenSource();
         _token = _cancellationTokenSource.Token;
-        StartCoroutine(asyncCoroutineDelegator.NotifySubject(this));
+        StartCoroutine(asyncCoroutineDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutine).ToString()), CancellationToken.None));
     }
     void Update()
     {  

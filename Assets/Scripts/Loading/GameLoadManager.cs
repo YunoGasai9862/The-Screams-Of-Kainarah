@@ -15,9 +15,10 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IObserver<EntityP
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
 
+
     private void Start()
     {
-       StartCoroutine(entityPoolManagerDelegator.NotifySubject(this));
+       StartCoroutine(entityPoolManagerDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EntityPoolManager).ToString()), CancellationToken.None));
     }
 
     private async Task InvokePreloading()

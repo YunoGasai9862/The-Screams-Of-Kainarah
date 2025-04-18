@@ -14,7 +14,7 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
     {
         m_entityPoolManagerDelegator = Helper.GetDelegator<EntityPoolManagerDelegator>();
 
-        StartCoroutine(m_entityPoolManagerDelegator.NotifySubject(this));
+        StartCoroutine(m_entityPoolManagerDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EntityPoolManager).ToString()), CancellationToken.None));
     }
 
     public Task ExecuteAction<TAction>(System.Action<TAction> action, TAction value)

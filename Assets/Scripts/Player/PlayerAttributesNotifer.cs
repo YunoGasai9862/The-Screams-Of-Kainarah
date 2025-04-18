@@ -1,3 +1,4 @@
+using System.Threading;
 using UnityEngine;
 
 [ObserverSystem(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(CandleLightPackageGenerator))]
@@ -21,8 +22,8 @@ public class PlayerAttributesNotifier: MonoBehaviour, ISubject<IObserver<Transfo
         PlayerAttributesDelegator.GetSubject(typeof(PlayerAttributesNotifier).ToString()).SetSubject(this);
     }
 
-    public void OnNotifySubject(IObserver<Transform> data, NotificationContext notificationContext, params object[] optional)
+    public void OnNotifySubject(IObserver<Transform> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(PlayerAttributesDelegator.NotifyObserver(data, PlayerTransform, notificationContext));
+        StartCoroutine(PlayerAttributesDelegator.NotifyObserver(data, PlayerTransform, notificationContext, cancellationToken, semaphoreSlim));
     }
 }

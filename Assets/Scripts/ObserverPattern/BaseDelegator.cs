@@ -10,18 +10,18 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 {
     public Subject<IObserver<T>> Subject { get; set; }
 
-    public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        observer.OnNotify(value, notificationContext, semaphoreSlim, optional);
+        observer.OnNotify(value, notificationContext, semaphoreSlim, cancellationToken, optional);
 
         yield return null;
     }
 
-    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext = null, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
+    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
     {
         yield return new WaitUntil(() => !Helper.IsSubjectNull(Subject));
 
-        Subject.NotifySubject(observer, notificationContext, semaphoreSlim, optional);
+        Subject.NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, optional);
 
         yield return null;
     }
@@ -33,14 +33,14 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
     protected Dictionary<string, Subject<IObserver<T>>> SubjectsDict { get; set; }
     protected Dictionary<string, List<ObserverSystemAttribute>> ObserverSubjectDict { get; set; }
 
-    public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        observer.OnNotify(value, notificationContext, semaphoreSlim, optional);
+        observer.OnNotify(value, notificationContext, semaphoreSlim, cancellationToken, optional);
 
         yield return null;
     }
 
-    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
+    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
     {
         if (maxRetries == 0)
         {
@@ -62,13 +62,13 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
             {
                 yield return new WaitUntil(() => !Helper.IsSubjectNull(subject));
 
-                subject.NotifySubject(observer, notificationContext);
+                subject.NotifySubject(observer, notificationContext, cancellationToken);
             }
             else
             {
                 yield return new WaitForSeconds(Helper.GetSecondsFromMilliSeconds(sleepTimeInMilliSeconds));
 
-                StartCoroutine(NotifySubject(observer, notificationContext, semaphoreSlim, maxRetries -= 1, sleepTimeInMilliSeconds, optional));
+                StartCoroutine(NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, maxRetries -= 1, sleepTimeInMilliSeconds, optional));
             }
         }
 
