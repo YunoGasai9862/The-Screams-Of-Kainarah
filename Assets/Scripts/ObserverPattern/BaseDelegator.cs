@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using System;
+using Amazon.Runtime.Internal.Transform;
 
 //deprecate this soon!
 
@@ -30,7 +31,8 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
 public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 {
-    protected Dictionary<string, Subject<IObserver<T>>> SubjectsDict { get; set; }
+    //support for multiple subjects per script/subject type (same script can be attached to multiple game objects)
+    protected Dictionary<string, Dictionary<string, Subject<IObserver<T>>>> SubjectsDict { get; set; }
     protected Dictionary<string, List<ObserverSystemAttribute>> ObserverSubjectDict { get; set; }
 
     public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
@@ -58,7 +60,7 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
             ObserverSystemAttribute targetObserverSystemAttribute = GetTargetObserverSystemAttribute(notificationContext.SubjectType, attributes);
 
-            if (SubjectsDict.TryGetValue(targetObserverSystemAttribute.SubjectType.ToString(), out Subject<IObserver<T>> subject))
+            if (SubjectsDict.TryGetValue(targetObserverSystemAttribute.SubjectType.ToString(), out Dictionary<string, Subject<IObserver<T>>> subject))
             {
                 yield return new WaitUntil(() => !Helper.IsSubjectNull(subject));
 
@@ -75,26 +77,41 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         yield return null;
     }
 
-    public void AddToSubjectsDict(string key, Subject<IObserver<T>> value)
+    public void AddToSubjectsDict(string mainSubjectIdentificationKey, string gameObjectInstanceIdentificationKeyForTheSubject, Subject<IObserver<T>> subject)
     {
-        if (SubjectsDict.ContainsKey(key))
+        if (SubjectsDict.ContainsKey(mainSubjectIdentificationKey))
         {
-            Debug.Log($"Key already exists {key}. Won't persist again!");
+            Debug.Log($"Key already exists {mainSubjectIdentificationKey}. Won't persist it again!");
+
+            if (SubjectsDict[mainSubjectIdentificationKey].ContainsKey(gameObjectInstanceIdentificationKeyForTheSubject))
+            {
+                Debug.Log($"Game Object Identifier already exists {gameObjectInstanceIdentificationKeyForTheSubject} for the subject, won't persist it again!");
+
+                return;
+
+            }else
+            {
+                SubjectsDict[mainSubjectIdentificationKey].Add(gameObjectInstanceIdentificationKeyForTheSubject, subject);
+            }
 
             return;
         }
 
-        SubjectsDict.Add(key, value);
+        SubjectsDict.Add(mainSubjectIdentificationKey, new Dictionary<string, Subject<IObserver<T>>> {
+
+            {gameObjectInstanceIdentificationKeyForTheSubject, subject }
+        
+        });
     }
 
-    public Dictionary<string, Subject<IObserver<T>>> GetSubjectsDict()
+    public Dictionary<string, Dictionary<string, Subject<IObserver<T>>>> GetSubjectsDict()
     {
         return SubjectsDict;
     }
 
-    public Subject<IObserver<T>> GetSubject(string key)
+    public Dictionary<string, Subject<IObserver<T>>> GetSubjectDictionary(string key)
     {
-        if (SubjectsDict.TryGetValue(key, out Subject<IObserver<T>> subject))
+        if (SubjectsDict.TryGetValue(key, out Dictionary<string, Subject<IObserver<T>>> subject))
         {
             return subject;
         }

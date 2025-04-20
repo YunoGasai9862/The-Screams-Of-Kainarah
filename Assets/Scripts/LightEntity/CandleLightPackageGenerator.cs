@@ -41,7 +41,6 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
         await SetupCancellationTokens();
 
-        //notify light Preprocess
         StartCoroutine(lightPreprocessDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
@@ -49,7 +48,6 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
             SubjectType = typeof(LightFlicker).ToString()
         }, CancellationToken.None));
 
-        //notify the player
         StartCoroutine(playerAttributesDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
@@ -57,10 +55,11 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
          }, CancellationToken.None));
 
-        //act as a subject for lightpackage!
         lightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), new Subject<IObserver<LightPackage>>() { });
 
         lightPackageDelegator.GetSubject(typeof(CandleLightPackageGenerator).ToString()).SetSubject(this);
+
+        Debug.Log($"Turns out im overriding it: {transform.parent.gameObject.name}");
     }
 
     //start calculating distance recursively - however with the aid of the player
@@ -69,7 +68,6 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         while(true) //please have some sort of delay + termination condition. This usually hapepns in on update (for every frame)
         {
             //seems like candle 2 is not flickering - fix thsi!!
-            Debug.Log(transform.parent.gameObject.name);
 
             lightPackage.LightSemaphore.WaitAsync(); //take the semaphore
 

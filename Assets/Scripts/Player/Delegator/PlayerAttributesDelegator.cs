@@ -8,7 +8,7 @@ public class PlayerAttributesDelegator : BaseDelegatorEnhanced<Transform>, IObse
     ObserverSystemAttributeDelegator observerSystemAttributeDelegator;
     private void OnEnable()
     {
-        SubjectsDict = new Dictionary<string, Subject<IObserver<Transform>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<Transform>>>>();
     }
 
     private void Start()
