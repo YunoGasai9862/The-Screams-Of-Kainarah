@@ -8,7 +8,9 @@ public class LightPackageDelegator: BaseDelegatorEnhanced<LightPackage>, IObserv
 
     private async void OnEnable()
     {
-        SubjectsDict = new Dictionary<string, Subject<IObserver<LightPackage>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<LightPackage>>>>();
+
+        Debug.Log("Initializing!");
     }
 
     private void Start()

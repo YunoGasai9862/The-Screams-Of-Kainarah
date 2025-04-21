@@ -60,11 +60,18 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
             ObserverSystemAttribute targetObserverSystemAttribute = GetTargetObserverSystemAttribute(notificationContext.SubjectType, attributes);
 
-            if (SubjectsDict.TryGetValue(targetObserverSystemAttribute.SubjectType.ToString(), out Dictionary<string, Subject<IObserver<T>>> subject))
+            if (SubjectsDict.TryGetValue(targetObserverSystemAttribute.SubjectType.ToString(), out Dictionary<string, Subject<IObserver<T>>> subjects))
             {
-                yield return new WaitUntil(() => !Helper.IsSubjectNull(subject));
+                //usually we want to notify all of the instances because the point of having a dictionary is to store multiple game objects utilizing the same script
+                //and not cherry pick just one subject - otherwise it defeats the purpose of having a dictionary stored against the script type
 
-                subject.NotifySubject(observer, notificationContext, cancellationToken);
+                foreach(Subject<IObserver<T>> subject in subjects.Values)
+                {
+                    yield return new WaitUntil(() => !Helper.IsSubjectNull(subject));
+
+                    subject.NotifySubject(observer, notificationContext, cancellationToken);
+                }
+
             }
             else
             {
@@ -79,6 +86,10 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
     public void AddToSubjectsDict(string mainSubjectIdentificationKey, string gameObjectInstanceIdentificationKeyForTheSubject, Subject<IObserver<T>> subject)
     {
+        Debug.Log($"Dict: {SubjectsDict}");
+
+        //maybe check if the dic is not null!
+
         if (SubjectsDict.ContainsKey(mainSubjectIdentificationKey))
         {
             Debug.Log($"Key already exists {mainSubjectIdentificationKey}. Won't persist it again!");
@@ -104,12 +115,12 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         });
     }
 
-    public Dictionary<string, Dictionary<string, Subject<IObserver<T>>>> GetSubjectsDict()
+    public Dictionary<string, Dictionary<string, Subject<IObserver<T>>>> GetMainSubjectsDictionary()
     {
         return SubjectsDict;
     }
 
-    public Dictionary<string, Subject<IObserver<T>>> GetSubjectDictionary(string key)
+    public Dictionary<string, Subject<IObserver<T>>> GetSubsetSubjectsDictionary(string key)
     {
         if (SubjectsDict.TryGetValue(key, out Dictionary<string, Subject<IObserver<T>>> subject))
         {

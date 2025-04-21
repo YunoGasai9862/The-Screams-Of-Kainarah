@@ -17,9 +17,9 @@ public class PlayerAttributesNotifier: MonoBehaviour, ISubject<IObserver<Transfo
 
     private void Start()
     {
-        PlayerAttributesDelegator.AddToSubjectsDict(typeof(PlayerAttributesNotifier).ToString(), new Subject<IObserver<Transform>>());
+        PlayerAttributesDelegator.AddToSubjectsDict(typeof(PlayerAttributesNotifier).ToString(), gameObject.name, new Subject<IObserver<Transform>>());
 
-        PlayerAttributesDelegator.GetSubject(typeof(PlayerAttributesNotifier).ToString()).SetSubject(this);
+        PlayerAttributesDelegator.GetSubsetSubjectsDictionary(typeof(PlayerAttributesNotifier).ToString())[gameObject.name].SetSubject(this);
     }
 
     public void OnNotifySubject(IObserver<Transform> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)

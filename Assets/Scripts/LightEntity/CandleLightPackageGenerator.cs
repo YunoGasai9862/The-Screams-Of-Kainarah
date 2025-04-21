@@ -55,9 +55,9 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
          }, CancellationToken.None));
 
-        lightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), new Subject<IObserver<LightPackage>>() { });
+        lightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), transform.parent.gameObject.name, new Subject<IObserver<LightPackage>>() { });
 
-        lightPackageDelegator.GetSubject(typeof(CandleLightPackageGenerator).ToString()).SetSubject(this);
+        lightPackageDelegator.GetSubsetSubjectsDictionary(typeof(CandleLightPackageGenerator).ToString())[transform.parent.gameObject.name].SetSubject(this);
 
         Debug.Log($"Turns out im overriding it: {transform.parent.gameObject.name}");
     }
