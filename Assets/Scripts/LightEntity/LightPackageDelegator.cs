@@ -6,11 +6,9 @@ public class LightPackageDelegator: BaseDelegatorEnhanced<LightPackage>, IObserv
     [SerializeField]
     public ObserverSystemAttributeDelegator observerSystemAttributeDelegator;
 
-    private async void OnEnable()
+    private void OnEnable()
     {
         SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<LightPackage>>>>();
-
-        Debug.Log("Initializing!");
     }
 
     private void Start()

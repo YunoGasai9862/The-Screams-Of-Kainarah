@@ -3,5 +3,5 @@ using System.Threading;
 using UnityEngine;
 public interface ILightPreprocess
 {
-    public abstract IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, SemaphoreSlim couroutineBlocker, float delayBetweenExecution = 0);
+    public abstract IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0);
 }

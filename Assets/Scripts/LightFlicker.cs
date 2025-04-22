@@ -17,14 +17,14 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
         lightPreprocessDelegator.GetSubsetSubjectsDictionary(typeof(LightFlicker).ToString())[gameObject.name].SetSubject(this);
     }
 
-    public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, SemaphoreSlim couroutineBlocker, float delayBetweenExecution = 0)
+    public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0)
     {
         lightPackage.LightSource.intensity = await GenerateLightIntensityAsync(lightPackage.LightProperties.MinLightIntensity, lightPackage.LightProperties.MaxLightIntensity);
         lightPackage.LightSource.pointLightInnerRadius = await GenerateLightRadia(lightPackage.LightProperties.InnerRadiusMin, lightPackage.LightProperties.InnerRadiusMax);
         lightPackage.LightSource.pointLightOuterRadius = await GenerateLightRadia(lightPackage.LightProperties.OuterRadiusMin, lightPackage.LightProperties.OuterRadiusMax);
 
         //release it because we are done with the the flickering process - the semaphore is from the package generator class
-        couroutineBlocker.Release();
+        lightPackage.LightSemaphore.Release();
 
         yield return null;
     }

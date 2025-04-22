@@ -5,8 +5,6 @@ using UnityEngine;
 using System;
 using Amazon.Runtime.Internal.Transform;
 
-//deprecate this soon!
-
 public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 {
     public Subject<IObserver<T>> Subject { get; set; }
@@ -86,10 +84,6 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
     public void AddToSubjectsDict(string mainSubjectIdentificationKey, string gameObjectInstanceIdentificationKeyForTheSubject, Subject<IObserver<T>> subject)
     {
-        Debug.Log($"Dict: {SubjectsDict}");
-
-        //maybe check if the dic is not null!
-
         if (SubjectsDict.ContainsKey(mainSubjectIdentificationKey))
         {
             Debug.Log($"Key already exists {mainSubjectIdentificationKey}. Won't persist it again!");

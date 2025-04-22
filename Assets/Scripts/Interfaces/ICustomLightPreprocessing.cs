@@ -4,5 +4,5 @@ using UnityEngine.Rendering.Universal;
 
 public interface ICustomLightPreprocessing
 {
-    public IEnumerator ExecuteLightningLogic(LightPackage lightSource, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken);
+    public IEnumerator ExecuteLightningLogic(LightPackage lightSource);
 }

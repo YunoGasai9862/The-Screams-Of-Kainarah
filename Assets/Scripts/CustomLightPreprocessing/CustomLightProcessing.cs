@@ -29,13 +29,13 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
         StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CelestialBodiesLightPackageGenerator).ToString()), CancellationToken.None));
     }
 
-    public IEnumerator ExecuteLightningLogic(LightPackage lightPackage, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken)
+    public IEnumerator ExecuteLightningLogic(LightPackage lightPackage)
     {
         yield return new WaitUntil(() => AsyncCoroutine != null);
 
-        if (lightPackage != null)
+        if (lightPackage != null && !lightPackage.CancellationToken.IsCancellationRequested)
         {
-            AsyncCoroutine.ExecuteAsyncCoroutine(lightPackage.LightPreprocess.GenerateCustomLighting(lightPackage, semaphoreSlim, 5f)); //Async runner
+            AsyncCoroutine.ExecuteAsyncCoroutine(lightPackage.LightPreprocess.GenerateCustomLighting(lightPackage)); //Async runner
         }
     }
 
@@ -46,6 +46,6 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
 
     public void OnNotify(LightPackage data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        StartCoroutine(ExecuteLightningLogic(data, data.LightSemaphore, data.CancellationToken));
+        StartCoroutine(ExecuteLightningLogic(data));
     }
 }

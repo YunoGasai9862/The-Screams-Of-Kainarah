@@ -58,18 +58,14 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         lightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), transform.parent.gameObject.name, new Subject<IObserver<LightPackage>>() { });
 
         lightPackageDelegator.GetSubsetSubjectsDictionary(typeof(CandleLightPackageGenerator).ToString())[transform.parent.gameObject.name].SetSubject(this);
-
-        Debug.Log($"Turns out im overriding it: {transform.parent.gameObject.name}");
     }
 
-    //start calculating distance recursively - however with the aid of the player
+    //check if you can configure this via observer or something (the delay per execution)
     private IEnumerator CalculateDistanceFromPlayer(LightPackage lightPackage, IObserver<LightPackage> observer, Transform playersTransform, float delayPerExecutionInSeconds = 1f)
     {
-        while(true) //please have some sort of delay + termination condition. This usually hapepns in on update (for every frame)
+        while(true) 
         {
-            //seems like candle 2 is not flickering - fix thsi!!
-
-            lightPackage.LightSemaphore.WaitAsync(); //take the semaphore
+            lightPackage.LightSemaphore.WaitAsync(); //take the semaphore (will be released by the custom lightning class)
 
             lightPackage.LightProperties.ShouldLightPulse = Vector2.Distance(playersTransform.transform.position, gameObject.transform.position) < MIN_DISTANCE ? true : false;
 
@@ -79,7 +75,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
             }, lightPackage.CancellationToken));
 
             //unscaled yield (realTime) - waitForSeconds is scaled (RealTime wont stop if we set time.timeScale = 0)
-            yield return new WaitForSeconds(delayPerExecutionInSeconds);
+            yield return new WaitForSeconds(delayPerExecutionInSeconds/2);
         }
     }
 
