@@ -1,10 +1,11 @@
 using System;
+using System.Collections;
 using System.Threading;
 using UnityEngine;
 
 [ObserverSystem(SubjectType = typeof(CelestialBodyLightning), ObserverType = typeof(CelestialBodiesLightPackageGenerator))]
 [ObserverSystem(SubjectType = typeof(CelestialBodiesLightPackageGenerator), ObserverType = typeof(CustomLightProcessing))]
-public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILightPreprocess>, ISubject<IObserver<LightPackage>>
+public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILightPreprocess>, ISubject<IObserver<LightPackage>>, ILightPackageGenerator
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
@@ -31,10 +32,16 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
     public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
+
     }
 
     public void OnNotify(ILightPreprocess data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         celestialBodyLightningPreprocess = data;
+    }
+
+    public IEnumerator PingCustomLightning(LightPackage lightPackage, IObserver<LightPackage> observer, float delayPerExecutionInSeconds = 1)
+    {
+        throw new NotImplementedException();
     }
 }

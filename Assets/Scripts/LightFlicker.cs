@@ -19,11 +19,13 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0)
     {
-        lightPackage.LightSource.intensity = await GenerateLightIntensityAsync(lightPackage.LightProperties.MinLightIntensity, lightPackage.LightProperties.MaxLightIntensity);
-        lightPackage.LightSource.pointLightInnerRadius = await GenerateLightRadia(lightPackage.LightProperties.InnerRadiusMin, lightPackage.LightProperties.InnerRadiusMax);
-        lightPackage.LightSource.pointLightOuterRadius = await GenerateLightRadia(lightPackage.LightProperties.OuterRadiusMin, lightPackage.LightProperties.OuterRadiusMax);
+        lightPackage.LightSource.intensity = lightPackage.LightProperties.ShouldLightPulse ?
+            await GenerateLightIntensityAsync(lightPackage.LightProperties.MinLightIntensity, lightPackage.LightProperties.MaxLightIntensity) : lightPackage.LightSource.intensity;
+        lightPackage.LightSource.pointLightInnerRadius = lightPackage.LightProperties.ShouldLightPulse?
+            await GenerateLightRadia(lightPackage.LightProperties.InnerRadiusMin, lightPackage.LightProperties.InnerRadiusMax) : lightPackage.LightSource.pointLightInnerRadius;
+        lightPackage.LightSource.pointLightOuterRadius = lightPackage.LightProperties.ShouldLightPulse ?
+            await GenerateLightRadia(lightPackage.LightProperties.OuterRadiusMin, lightPackage.LightProperties.OuterRadiusMax) : lightPackage.LightSource.pointLightOuterRadius;
 
-        //release it because we are done with the the flickering process - the semaphore is from the package generator class
         lightPackage.LightSemaphore.Release();
 
         yield return null;

@@ -8,7 +8,7 @@ using UnityEngine.Rendering.Universal;
 [ObserverSystem(SubjectType = typeof(LightFlicker), ObserverType = typeof(CandleLightPackageGenerator))]
 [ObserverSystem(SubjectType = typeof(CandleLightPackageGenerator), ObserverType = typeof(CustomLightProcessing))]
 [ObserverSystem(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(CandleLightPackageGenerator))]
-public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<LightPackage>>, IObserver<ILightPreprocess>, IObserver<Transform>
+public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<LightPackage>>, IObserver<ILightPreprocess>, IObserver<Transform>, ILightPackageGenerator
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
@@ -16,6 +16,8 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     LightPreprocessDelegator lightPreprocessDelegator;
     [SerializeField]
     PlayerAttributesDelegator playerAttributesDelegator;
+    [SerializeField]
+    float minDistanceFromPlayerForLightFlicker;
 
     private ILightPreprocess LightPreprocess { get; set; }
 
@@ -28,8 +30,6 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     private CancellationToken CancellationToken { get; set; }
 
     private CancellationTokenSource CancellationTokenSource { get; set; }
-
-    private const float MIN_DISTANCE = 5.0f;
 
     private async void Start()
     {
@@ -60,14 +60,14 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         lightPackageDelegator.GetSubsetSubjectsDictionary(typeof(CandleLightPackageGenerator).ToString())[transform.parent.gameObject.name].SetSubject(this);
     }
 
-    //check if you can configure this via observer or something (the delay per execution)
-    private IEnumerator CalculateDistanceFromPlayer(LightPackage lightPackage, IObserver<LightPackage> observer, Transform playersTransform, float delayPerExecutionInSeconds = 1f)
+    public IEnumerator PingCustomLightning(LightPackage lightPackage, IObserver<LightPackage> observer, float delayPerExecutionInSeconds = 1)
     {
-        while(true) 
+        while (true) 
         {
             lightPackage.LightSemaphore.WaitAsync(); //take the semaphore (will be released by the custom lightning class)
 
-            lightPackage.LightProperties.ShouldLightPulse = Vector2.Distance(playersTransform.transform.position, gameObject.transform.position) < MIN_DISTANCE ? true : false;
+
+            lightPackage.LightProperties.ShouldLightPulse = Vector2.Distance(PlayersTransform.transform.position, gameObject.transform.position) < minDistanceFromPlayerForLightFlicker ? true : false;
 
             StartCoroutine(lightPackageDelegator.NotifyObserver(observer, lightPackage, new NotificationContext()
             {
@@ -95,7 +95,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     {
         yield return new WaitUntil(() => lightPreprocessDelegator != null);
 
-        StartCoroutine(CalculateDistanceFromPlayer(PrepareLightPackage(), observer, PlayersTransform));
+        StartCoroutine(PingCustomLightning(PrepareLightPackage(), observer));
     }
 
     public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
@@ -127,5 +127,4 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     {
         PlayersTransform = data;
     }
-
 }
