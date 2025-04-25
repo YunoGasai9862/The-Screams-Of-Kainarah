@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 [ObserverSystem(SubjectType = typeof(CelestialBodyLightning), ObserverType = typeof(CelestialBodiesLightPackageGenerator))]
 [ObserverSystem(SubjectType = typeof(CelestialBodiesLightPackageGenerator), ObserverType = typeof(CustomLightProcessing))]
@@ -12,10 +14,25 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
     [SerializeField]
     LightPreprocessDelegator lightPreprocessDelegator;
 
-    private ILightPreprocess celestialBodyLightningPreprocess;
+    private ILightPreprocess CelestialLightningLightPreprocess { get; set; }
 
-    private void Start()
+    private Light2D LightSource { get; set; }
+
+    private SemaphoreSlim SemaphoreSlim { get; set; }
+
+    private CancellationToken CancellationToken { get; set; }
+
+    private CancellationTokenSource CancellationTokenSource { get; set; }
+
+    private async void Start()
     {
+        LightSource = GetComponent<Light2D>();
+
+        Helper.ValidateLightSourcePresence(LightSource);
+
+        SemaphoreSlim = new SemaphoreSlim(1, 1);
+
+        await SetupCancellationTokens();
 
         StartCoroutine(lightPreprocessDelegator.NotifySubject(this, new NotificationContext()
         {
@@ -30,18 +47,57 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         lightPackageDelegator.GetSubsetSubjectsDictionary(typeof(CelestialBodiesLightPackageGenerator).ToString())[gameObject.name].SetSubject(this);
     }
 
-    public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
 
+    private LightPackage PrepareLightPackage()
+    {
+        return new LightPackage() //adjust the properties
+        {
+            LightPreprocess = CelestialLightningLightPreprocess,
+            LightSource = LightSource,
+            LightProperties = LightProperties.FromDefault(gameObject.name, false),
+            LightSemaphore = SemaphoreSlim,
+            CancellationToken = CancellationToken,
+        };
+    }
+
+    private IEnumerator PrepareDataForCustomLightningGeneration(IObserver<LightPackage> observer)
+    {
+        yield return new WaitUntil(() => lightPackageDelegator != null);
+
+        StartCoroutine(PingCustomLightning(PrepareLightPackage(), observer));
+    }
+
+
+    public async void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        StartCoroutine(PrepareDataForCustomLightningGeneration(data));
+    }
+
+    private async Task SetupCancellationTokens()
+    {
+        CancellationTokenSource = new CancellationTokenSource();
+
+        CancellationToken = CancellationTokenSource.Token;
     }
 
     public void OnNotify(ILightPreprocess data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        celestialBodyLightningPreprocess = data;
+        CelestialLightningLightPreprocess = data;
     }
 
     public IEnumerator PingCustomLightning(LightPackage lightPackage, IObserver<LightPackage> observer, float delayPerExecutionInSeconds = 1)
     {
-        throw new NotImplementedException();
+        while(true)  //check if we need to start a continuous execution in the custom light preprocessing script, or here :)
+        {
+            lightPackage.LightSemaphore.WaitAsync();
+
+            StartCoroutine(lightPackageDelegator.NotifyObserver(observer, lightPackage, new NotificationContext()
+            {
+                SubjectType = typeof(CelestialBodiesLightPackageGenerator).ToString()
+            }, lightPackage.CancellationToken, lightPackage.LightSemaphore));
+
+
+            yield return new WaitForSeconds(delayPerExecutionInSeconds);
+        }
     }
 }

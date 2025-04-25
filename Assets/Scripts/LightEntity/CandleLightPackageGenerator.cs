@@ -35,7 +35,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     {
         LightSource = GetComponent<Light2D>();
 
-        ValidateLightSourcePresence(LightSource);
+        Helper.ValidateLightSourcePresence(LightSource);
 
         SemaphoreSlim = new SemaphoreSlim(1, 1);
 
@@ -101,14 +101,6 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         StartCoroutine(PrepareDataForCustomLightningGeneration(data));
-    }
-
-    private void ValidateLightSourcePresence(Light2D light2D)
-    {
-        if (light2D == null)
-        {
-            throw new ApplicationException("LightSource is not Present!");
-        }
     }
 
     private async Task SetupCancellationTokens()
