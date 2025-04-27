@@ -17,7 +17,11 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     [SerializeField]
     PlayerAttributesDelegator playerAttributesDelegator;
     [SerializeField]
+    LightProperties lightProperties;
+    [SerializeField]
     float minDistanceFromPlayerForLightFlicker;
+    [SerializeField]
+    float delayBetweenExecution;
 
     private ILightPreprocess LightPreprocess { get; set; }
 
@@ -85,7 +89,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         {
             LightPreprocess = LightPreprocess,
             LightSource = LightSource,
-            LightProperties = LightProperties.FromDefault(gameObject.name, true),
+            LightProperties = lightProperties,
             LightSemaphore = SemaphoreSlim,
             CancellationToken = CancellationToken,  
         };
@@ -95,7 +99,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     {
         yield return new WaitUntil(() => lightPreprocessDelegator != null);
 
-        StartCoroutine(PingCustomLightning(PrepareLightPackage(), observer));
+        StartCoroutine(PingCustomLightning(PrepareLightPackage(), observer, delayBetweenExecution));
     }
 
     public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)

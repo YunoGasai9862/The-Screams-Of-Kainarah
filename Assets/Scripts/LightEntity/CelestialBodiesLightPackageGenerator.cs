@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +12,10 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
     LightPackageDelegator lightPackageDelegator;
     [SerializeField]
     LightPreprocessDelegator lightPreprocessDelegator;
+    [SerializeField]
+    LightProperties lightProperties;
+    [SerializeField]
+    float delayBetweenExecution;
 
     private ILightPreprocess CelestialLightningLightPreprocess { get; set; }
 
@@ -50,11 +53,11 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
     private LightPackage PrepareLightPackage()
     {
-        return new LightPackage() //adjust the properties
+        return new LightPackage()
         {
             LightPreprocess = CelestialLightningLightPreprocess,
             LightSource = LightSource,
-            LightProperties = LightProperties.FromDefault(gameObject.name, false),
+            LightProperties = lightProperties,
             LightSemaphore = SemaphoreSlim,
             CancellationToken = CancellationToken,
         };
@@ -64,7 +67,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
     {
         yield return new WaitUntil(() => lightPackageDelegator != null);
 
-        StartCoroutine(PingCustomLightning(PrepareLightPackage(), observer));
+        StartCoroutine(PingCustomLightning(PrepareLightPackage(), observer, delayBetweenExecution));
     }
 
 
@@ -87,7 +90,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
     public IEnumerator PingCustomLightning(LightPackage lightPackage, IObserver<LightPackage> observer, float delayPerExecutionInSeconds = 1)
     {
-        while(true)  //check if we need to start a continuous execution in the custom light preprocessing script, or here :)
+        while(true)
         {
             lightPackage.LightSemaphore.WaitAsync();
 

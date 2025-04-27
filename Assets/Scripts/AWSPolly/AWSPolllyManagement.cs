@@ -143,6 +143,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
     public async Task<SynthesizeSpeechResponse> PrepareSynthesizeSpeechResponsePacket(AmazonPollyClient client, SynthesizeSpeechRequest request)
     {
+        //now go back to this again!!
         Debug.Log(client);
         return await client.SynthesizeSpeechAsync(request).ConfigureAwait(false);
     }

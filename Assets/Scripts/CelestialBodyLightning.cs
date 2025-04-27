@@ -19,7 +19,6 @@ public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0)
     {
-        //revisit pingPong logic
         lightPackage.LightSource.intensity = Mathf.PingPong(Time.time, lightPackage.LightProperties.MaxLightIntensity) + (lightPackage.LightProperties.MinLightIntensity);
         lightPackage.LightSource.pointLightOuterRadius = Mathf.PingPong(Time.time, lightPackage.LightProperties.OuterRadiusMax) + lightPackage.LightProperties.OuterRadiusMin;
         lightPackage.LightSource.pointLightInnerRadius = Mathf.PingPong(Time.time, lightPackage.LightProperties.InnerRadiusMax) + lightPackage.LightProperties.InnerRadiusMin;

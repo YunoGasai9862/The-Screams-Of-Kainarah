@@ -1,14 +1,35 @@
+
+using System;
+using UnityEngine;
+
+[Serializable]
 public class LightProperties
 {
-    public string LightName { get; set; }
-    public bool ShouldLightPulse { get; set; }
-    public float InnerRadiusMin { get; set; }
-    public float InnerRadiusMax { get; set; }
-    public float OuterRadiusMin { get; set; }
-    public float OuterRadiusMax { get; set; }
-    public float MaxLightIntensity { get; set; }
-    public float MinLightIntensity { get; set; }
+    [SerializeField]
+    private string m_LightName;
+    [SerializeField]
+    private bool m_ShouldLightPulse;
+    [SerializeField]
+    private float m_InnerRadiusMin;
+    [SerializeField]
+    private float m_InnerRadiusMax;
+    [SerializeField]
+    private float m_OuterRadiusMin;
+    [SerializeField]
+    private float m_OuterRadiusMax;
+    [SerializeField]
+    private float m_MaxLightIntensity;
+    [SerializeField]
+    private float m_MinLightIntensity;
 
+    public string LightName { get => m_LightName; set => m_LightName = value; }
+    public bool ShouldLightPulse { get => m_ShouldLightPulse; set => m_ShouldLightPulse = value; }
+    public float InnerRadiusMin { get => m_InnerRadiusMin; set => m_InnerRadiusMin = value; }
+    public float InnerRadiusMax { get => m_InnerRadiusMax; set => m_InnerRadiusMax = value; }
+    public float OuterRadiusMin { get => m_OuterRadiusMin; set => m_OuterRadiusMin = value; }
+    public float OuterRadiusMax { get => m_OuterRadiusMax; set => m_OuterRadiusMax = value; }
+    public float MaxLightIntensity { get => m_MaxLightIntensity; set => m_MaxLightIntensity = value; }
+    public float MinLightIntensity { get => m_MinLightIntensity; set => m_MinLightIntensity = value; }
 
     public LightProperties()
     {
@@ -31,20 +52,5 @@ public class LightProperties
     {
         return $"LightName: {LightName}, ShouldLightPulse: {ShouldLightPulse}, InnerRMin: {InnerRadiusMin}, InnerRMax: {InnerRadiusMax}, OuterRMin: {OuterRadiusMin}, OuterRMax:" +
             $"{OuterRadiusMax}, MinLightIntensity: {MinLightIntensity} MaxLightIntensity: {MaxLightIntensity}";
-    }
-
-    public static LightProperties FromDefault(string lightName, bool shouldLightPulse)
-    {
-        return new LightProperties
-        {
-            LightName = lightName,
-            ShouldLightPulse = shouldLightPulse,
-            InnerRadiusMin = 1.3f,
-            InnerRadiusMax = 1.5f,
-            OuterRadiusMin = 4.3f,
-            OuterRadiusMax = 4.5f,
-            MaxLightIntensity = 0.5f,
-            MinLightIntensity = 0.4f
-        };
     }
 }
