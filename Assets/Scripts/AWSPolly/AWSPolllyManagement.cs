@@ -8,7 +8,9 @@ using Amazon.Polly.Model;
 using System;
 using System.Threading;
 
-public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseStorageManager>, ISubject<IObserver<IAWSPolly>>
+[ObserverSystem(SubjectType = typeof(AsyncCoroutine), ObserverType = typeof(AWSPolllyManagement))]
+[ObserverSystem(SubjectType = typeof(IObserver<IAWSPolly>), ObserverType = typeof(FirebaseStorageManager))]
+public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseStorageManager>, IObserver<AsyncCoroutine>, ISubject<IObserver<IAWSPolly>>
 {
     private const int AWS_ACCESS_KEY_INDEX = 0;
 
@@ -65,6 +67,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
         awsPollyManagementDelegator.Subject.SetSubject(this);
     }
+
 
     public async Task<AWSAccessResource> RetrieveAWSKeys()
     {
@@ -151,7 +154,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     public async Task GenerateAudio(AWSPollyAudioPacket awsPollyAudioPacket)
     {
 
-       //yield return new WaitUntil(() => AmazonPollyClient! = null);
+        //yield return new WaitUntil(() => AmazonPollyClient! = null);
 
         SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, awsPollyAudioPacket.DialogueText, Engine.Neural, awsPollyAudioPacket.AudioVoiceId, OutputFormat.Mp3).ConfigureAwait(false);
 
@@ -204,5 +207,10 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         Credentials = await SetBasicAWSCredentials(AWSAccessResource);
 
         AmazonPollyClient = await EstablishConnection(Credentials, RegionEndpoint.EUCentral1);
+    }
+
+    public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new NotImplementedException();
     }
 }

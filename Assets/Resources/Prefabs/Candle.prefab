@@ -120,6 +120,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 7066635810158497455}
     m_Modifications:
     - target: {fileID: 6599592031258059675, guid: 93e0022474ee5f84498d81509e77c938, type: 3}
+      propertyPath: delayBetweenExecution
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6599592031258059675, guid: 93e0022474ee5f84498d81509e77c938, type: 3}
       propertyPath: lightPackageDelegator
       value: 
       objectReference: {fileID: 0}
@@ -165,7 +169,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6599592031258059675, guid: 93e0022474ee5f84498d81509e77c938, type: 3}
       propertyPath: minDistanceFromPlayerForLightFlicker
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8731061444950682244, guid: 93e0022474ee5f84498d81509e77c938, type: 3}
       propertyPath: m_Name
