@@ -7,6 +7,7 @@ using Amazon;
 using Amazon.Polly.Model;
 using System;
 using System.Threading;
+using System.Collections.Generic;
 
 [ObserverSystem(SubjectType = typeof(AsyncCoroutine), ObserverType = typeof(AWSPolllyManagement))]
 [ObserverSystem(SubjectType = typeof(IObserver<IAWSPolly>), ObserverType = typeof(FirebaseStorageManager))]
@@ -19,8 +20,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     private BasicAWSCredentials Credentials { get; set; }
 
     private AmazonPollyClient AmazonPollyClient { get; set; }
-
-    private SynthesizeSpeechResponse SynthesizeSpeechResponse { get; set; }
 
     private CancellationTokenSource CancellationTokenSource { get; set; }
 
@@ -37,6 +36,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     private FirebaseStorageManager FirebaseStorageManagerInstance { get; set; }
 
     private AWSAccessResource AWSAccessResource { get; set; }
+
+    private AsyncCoroutine AsyncCoroutine { get; set; }
     
 
     [SerializeField]
@@ -53,6 +54,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     FirebaseStorageManagerDelegator firebaseStorageManagerDelegator;
     [SerializeField]
     AWSPollyManagementDelegator awsPollyManagementDelegator;
+    [SerializeField]
+    AsyncCoroutineDelegator asyncCoroutineDelegator;
 
     private void Awake()
     {
@@ -63,7 +66,9 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
     private void Start()
     {
-        StartCoroutine(firebaseStorageManagerDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(FirebaseStorageManager).ToString()), CancellationToken.None));
+        StartCoroutine(firebaseStorageManagerDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(FirebaseStorageManager).ToString()), CancellationToken));
+
+        StartCoroutine(asyncCoroutineDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutineDelegator).ToString()), CancellationToken));
 
         awsPollyManagementDelegator.Subject.SetSubject(this);
     }
@@ -151,18 +156,26 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         return await client.SynthesizeSpeechAsync(request).ConfigureAwait(false);
     }
     
-    public async Task GenerateAudio(AWSPollyAudioPacket awsPollyAudioPacket)
+    public async IAsyncEnumerator<WaitUntil> GenerateAudioAsync(AmazonPollyClient amazonPollyClient, AWSPollyAudioPacket awsPollyAudioPacket)
     {
+        yield return new WaitUntil(() => (amazonPollyClient != null));
 
-        //yield return new WaitUntil(() => AmazonPollyClient! = null);
+        SynthesizeSpeechResponse synthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, awsPollyAudioPacket.DialogueText, Engine.Neural, awsPollyAudioPacket.AudioVoiceId, OutputFormat.Mp3).ConfigureAwait(false);
 
-        SynthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, awsPollyAudioPacket.DialogueText, Engine.Neural, awsPollyAudioPacket.AudioVoiceId, OutputFormat.Mp3).ConfigureAwait(false);
+        Debug.Log(synthesizeSpeechResponse);
 
-        Debug.Log(SynthesizeSpeechResponse);
-
-        await SaveAudio(SynthesizeSpeechResponse, awsPollyAudioPacket.AudioPath).ConfigureAwait(false);
+        await SaveAudio(synthesizeSpeechResponse, awsPollyAudioPacket.AudioPath).ConfigureAwait(false);
 
         await audioGeneratedEvent.Invoke(true);
+    }
+
+    public IEnumerator<WaitUntil> GenerateAudio(AWSPollyAudioPacket awsPollyAudioPacket)
+    {
+        yield return new WaitUntil(() => AsyncCoroutine != null);
+
+        //this is my choice, so no need to add in the interface
+        AsyncCoroutine.ExecuteAsyncCoroutine(GenerateAudioAsync(AmazonPollyClient, awsPollyAudioPacket));
+
     }
 
     //update this method too - invoke to send in audio Path as well
@@ -211,6 +224,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
     public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new NotImplementedException();
+        AsyncCoroutine = data;
     }
 }

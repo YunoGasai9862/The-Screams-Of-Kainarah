@@ -63,7 +63,7 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
                 Debug.Log($"{audioName}");
 
-                AWSPollyManager.GenerateAudio(new AWSPollyAudioPacket { AudioPath = $"{PersistencePath}\\{audioName}", AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence });
+                StartCoroutine(AWSPollyManager.GenerateAudio(new AWSPollyAudioPacket { AudioPath = $"{PersistencePath}\\{audioName}", AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence }));
 
                 yield return new WaitUntil(() => AudioGenerated == true);
 
