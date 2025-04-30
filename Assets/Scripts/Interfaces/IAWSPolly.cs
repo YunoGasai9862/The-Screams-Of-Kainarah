@@ -12,5 +12,5 @@ public interface IAWSPolly
     abstract Task<BasicAWSCredentials> SetBasicAWSCredentials(AWSAccessResource awsAccessResource);
     abstract Task<AmazonPollyClient> EstablishConnection(BasicAWSCredentials credentials, RegionEndpoint region);
     abstract Task<SynthesizeSpeechResponse> AWSSynthesizeSpeechCommunicator(AmazonPollyClient client, string text, Engine engine, VoiceId voiceId, OutputFormat outputFormat);
-    abstract IEnumerator<WaitUntil> GenerateAudio(AWSPollyAudioPacket awsPollyAudioPacket);
+    abstract Task GenerateAudio(AWSPollyAudioPacket awsPollyAudioPacket);
 }

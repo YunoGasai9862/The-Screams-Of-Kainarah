@@ -22,13 +22,14 @@ public class Dialogues
 
     public void ParseVoiceId()
     {
-        if (Enum.TryParse(typeof(VoiceId), Voice, out object finalVoiceId))
+        try
         {
-            VoiceID = (VoiceId)finalVoiceId;
-        }
-        else
+            VoiceID = new VoiceId(Voice.ToString());
+
+        }catch(Exception ex)
         {
-            Debug.Log($"Failed Parsing: - defaulting to Emma");
+            Debug.Log($"Failed Parsing {ex.Message}: - defaulting to Emma");
+
             VoiceID = VoiceId.Emma;
         }
     }

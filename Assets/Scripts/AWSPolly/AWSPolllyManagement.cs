@@ -89,10 +89,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     {
         try
         {
-            Debug.Log($"Credentials: {credentials.ToString()}");
             AmazonPollyClient client = new AmazonPollyClient(credentials, endpoint);
-
-            Debug.Log($"Client: {client}");
 
             return Task.FromResult(client);
 
@@ -151,31 +148,34 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
     public async Task<SynthesizeSpeechResponse> PrepareSynthesizeSpeechResponsePacket(AmazonPollyClient client, SynthesizeSpeechRequest request)
     {
-        //now go back to this again!!
-        Debug.Log(client);
         return await client.SynthesizeSpeechAsync(request).ConfigureAwait(false);
     }
     
     public async IAsyncEnumerator<WaitUntil> GenerateAudioAsync(AmazonPollyClient amazonPollyClient, AWSPollyAudioPacket awsPollyAudioPacket)
     {
-        yield return new WaitUntil(() => (amazonPollyClient != null));
+        Debug.Log(awsPollyAudioPacket.AudioVoiceId);
 
         SynthesizeSpeechResponse synthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, awsPollyAudioPacket.DialogueText, Engine.Neural, awsPollyAudioPacket.AudioVoiceId, OutputFormat.Mp3).ConfigureAwait(false);
-
-        Debug.Log(synthesizeSpeechResponse);
 
         await SaveAudio(synthesizeSpeechResponse, awsPollyAudioPacket.AudioPath).ConfigureAwait(false);
 
         await audioGeneratedEvent.Invoke(true);
+
+        //Wait Until won't work for async coroutines - that's for standard coroutines in unity
+        yield return null;
     }
 
-    public IEnumerator<WaitUntil> GenerateAudio(AWSPollyAudioPacket awsPollyAudioPacket)
+    public IEnumerator<WaitUntil> OffloadExecutionToAsyncRunner(AWSPollyAudioPacket awsPollyAudioPacket)
     {
-        yield return new WaitUntil(() => AsyncCoroutine != null);
+        yield return new WaitUntil(() => !Helper.IsObjectNull(AsyncCoroutine) && !Helper.IsObjectNull(AmazonPollyClient));
 
-        //this is my choice, so no need to add in the interface
         AsyncCoroutine.ExecuteAsyncCoroutine(GenerateAudioAsync(AmazonPollyClient, awsPollyAudioPacket));
 
+    }
+
+    public async Task GenerateAudio(AWSPollyAudioPacket aWSPollyAudioPacket)
+    {
+        StartCoroutine(OffloadExecutionToAsyncRunner(aWSPollyAudioPacket));
     }
 
     //update this method too - invoke to send in audio Path as well
@@ -201,6 +201,8 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
     private Task SaveAudio(SynthesizeSpeechResponse response, string fullPath)
     {
+        Debug.Log(response);
+        Debug.Log(fullPath);
         FileUtils.WriteToFile(response.AudioStream, fullPath);
 
         return Task.CompletedTask;
@@ -226,4 +228,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     {
         AsyncCoroutine = data;
     }
+
+    
 }

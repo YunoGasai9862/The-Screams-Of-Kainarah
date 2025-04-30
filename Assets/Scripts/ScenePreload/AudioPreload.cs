@@ -59,11 +59,11 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
         {
             for (int i = 0; i < dialogues.TextAudioPath.Length; i++)
             {
+                dialogues.ParseVoiceId();
+                
                 string audioName = $"{dialogues.EntityName}-{dialogues.VoiceID}-{i}";
 
-                Debug.Log($"{audioName}");
-
-                StartCoroutine(AWSPollyManager.GenerateAudio(new AWSPollyAudioPacket { AudioPath = $"{PersistencePath}\\{audioName}", AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence }));
+                AWSPollyManager.GenerateAudio(new AWSPollyAudioPacket { AudioPath = $"{PersistencePath}\\{audioName}", AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence });
 
                 yield return new WaitUntil(() => AudioGenerated == true);
 
