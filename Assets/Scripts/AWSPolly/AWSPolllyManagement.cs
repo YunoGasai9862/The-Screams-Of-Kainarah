@@ -124,6 +124,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         catch (Exception ex)
         {
             Debug.Log($"Exception: {ex.Message}");
+
             throw;
         }
         finally
@@ -153,9 +154,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     
     public async IAsyncEnumerator<WaitUntil> GenerateAudioAsync(AmazonPollyClient amazonPollyClient, AWSPollyAudioPacket awsPollyAudioPacket)
     {
-        Debug.Log(awsPollyAudioPacket.AudioVoiceId);
-
-        SynthesizeSpeechResponse synthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, awsPollyAudioPacket.DialogueText, Engine.Neural, awsPollyAudioPacket.AudioVoiceId, OutputFormat.Mp3).ConfigureAwait(false);
+        SynthesizeSpeechResponse synthesizeSpeechResponse = await AWSSynthesizeSpeechCommunicator(AmazonPollyClient, awsPollyAudioPacket.DialogueText, Engine.Standard, awsPollyAudioPacket.AudioVoiceId, awsPollyAudioPacket.OutputFormat).ConfigureAwait(false);
 
         await SaveAudio(synthesizeSpeechResponse, awsPollyAudioPacket.AudioPath).ConfigureAwait(false);
 
@@ -194,15 +193,13 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
     private async void PlayAudio(AWSPollyAudioPacket awsPollyAudioPacket)
     {
-        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(awsPollyAudioPacket.AudioPath, awsPollyAudioPacket.AudioName, AudioType.MPEG);
+        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(awsPollyAudioPacket.AudioPath, awsPollyAudioPacket.AudioName, UnityEngine.AudioType.MPEG);
 
         AudioSource.Play();
     }
 
     private Task SaveAudio(SynthesizeSpeechResponse response, string fullPath)
     {
-        Debug.Log(response);
-        Debug.Log(fullPath);
         FileUtils.WriteToFile(response.AudioStream, fullPath);
 
         return Task.CompletedTask;

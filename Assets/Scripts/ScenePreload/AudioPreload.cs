@@ -1,4 +1,5 @@
 
+using Amazon.Polly;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -58,12 +59,10 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
         foreach (Dialogues dialogues in extractedTextAudioPaths.Result)
         {
             for (int i = 0; i < dialogues.TextAudioPath.Length; i++)
-            {
-                dialogues.ParseVoiceId();
-                
+            {                
                 string audioName = $"{dialogues.EntityName}-{dialogues.VoiceID}-{i}";
 
-                AWSPollyManager.GenerateAudio(new AWSPollyAudioPacket { AudioPath = $"{PersistencePath}\\{audioName}", AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence });
+                AWSPollyManager.GenerateAudio(new AWSPollyAudioPacket { AudioPath = $"{PersistencePath}\\{audioName}.{OutputFormat.FindValue(OutputFormat.Mp3)}", AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence, OutputFormat = OutputFormat.Mp3});
 
                 yield return new WaitUntil(() => AudioGenerated == true);
 

@@ -1,0 +1,19 @@
+public enum AudioType
+{
+    mp3,
+    mp4,
+    wav,
+    aiff,
+    aif,
+    pcm,
+    flac,
+    alac,
+    m4a,
+    wv,
+    aac,
+    ogg,
+    wma,
+    opus,
+    ra,
+    rm
+}
