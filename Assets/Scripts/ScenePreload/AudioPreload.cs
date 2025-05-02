@@ -27,8 +27,7 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
     private AWSPollyManagementDelegator m_awsPollyManagementDelegator;
 
-    [SerializeField]
-    AudioGeneratedEvent audioGeneratedEvent;
+    private AudioGeneratedEvent m_audioGeneratedEvent;
    
 
     private void Awake()
@@ -43,11 +42,13 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
         m_awsPollyManagementDelegator = Helper.GetDelegator<AWSPollyManagementDelegator>();
 
+        m_audioGeneratedEvent = Helper.GetCustomEvent<AudioGeneratedEvent>();
+
+        await m_audioGeneratedEvent.AddListener(AudioGeneratedListener);
+
         StartCoroutine(m_entityPoolManagerDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EntityPoolManager).ToString()), CancellationToken.None));
 
         StartCoroutine(m_awsPollyManagementDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(IAWSPolly).ToString()), CancellationToken.None));
-
-        await audioGeneratedEvent.AddListener(AudioGeneratedListener);
     }
 
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
@@ -58,13 +59,19 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
         foreach (Dialogues dialogues in extractedTextAudioPaths.Result)
         {
+            Debug.Log("Interating dialogues");
+
             for (int i = 0; i < dialogues.TextAudioPath.Length; i++)
             {                
                 string audioName = $"{dialogues.EntityName}-{dialogues.VoiceID}-{i}";
 
+                Debug.Log($"AudioName: {audioName}");
+
                 AWSPollyManager.GenerateAudio(new AWSPollyAudioPacket { AudioPath = $"{PersistencePath}\\{audioName}.{OutputFormat.FindValue(OutputFormat.Mp3)}", AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence, OutputFormat = OutputFormat.Mp3});
 
                 yield return new WaitUntil(() => AudioGenerated == true);
+
+                Debug.Log($"Finally unstuck");
 
                 dialogues.TextAudioPath[i].AudioPath = $"{PersistencePath}\\{audioName}";
 
@@ -92,6 +99,8 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
     private void AudioGeneratedListener(bool audioGenerated)
     {
+        Debug.Log($"Audio Generated: {audioGenerated}");
+
         AudioGenerated = audioGenerated;
     }
 

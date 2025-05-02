@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Rendering.Universal;
 using static ExceptionList;
 
@@ -37,6 +38,18 @@ public class Helper: MonoBehaviour
         }
 
         return delegator;
+    }
+
+    public static T GetCustomEvent<T>() where T : UnityEngine.Object
+    {
+        T customEvent = (T)(UnityEngine.Object)FindFirstObjectByType<T>();
+
+        if (customEvent == null)
+        {
+            throw new CustomEventNotFoundException($" {typeof(T).Name} Not Found in the Scene");
+        }
+
+        return customEvent;
     }
 
     public static async Task<List<T>> GetGameObjectsWithCustomAttributes<T>() where T: System.Attribute
