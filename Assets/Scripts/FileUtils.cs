@@ -1,20 +1,29 @@
+using System;
 using System.IO;
+using UnityEngine;
 
 public class FileUtils : IFileUtils
 {
     public void WriteToFile(Stream stream, string fullPath, int bufferSize = 8 * 1024)
     {
-        using (FileStream fileStream = new FileStream(fullPath, FileMode.Create))
+        try
         {
-            byte[] buffer = new byte[bufferSize];
-
-            int bytesRead;
-
-            while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+            using (FileStream fileStream = new FileStream(fullPath, FileMode.Create))
             {
-                fileStream.Write(buffer, 0, bytesRead);
+                byte[] buffer = new byte[bufferSize];
+
+                int bytesRead;
+
+                while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    fileStream.Write(buffer, 0, bytesRead);
+                }
             }
+        }catch (Exception ex)
+        {
+            Debug.Log($"Exception Occured: {ex.Message}");
         }
+       
     }
     public void RemoveFile(string fullPath)
     {

@@ -27,8 +27,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
     private FileUtils FileUtils { get; set; } = new FileUtils();
 
-    private UnityWebRequestMultimediaManager UnityWebRequestMultimediaManager { get; set; } = new UnityWebRequestMultimediaManager();
-
     private int VOICE_GENERATION_DELAY { get; set; } = 500;
 
     private SemaphoreSlim AWSSemaphore { get; set; } = new SemaphoreSlim(1);
@@ -41,13 +39,9 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     
 
     [SerializeField]
-    AudioSource AudioSource;
-    [SerializeField]
     string FirebaseStorageURL;
     [SerializeField]
     string AWSKeysfileNameOnFireBase;
-    [SerializeField]
-    MainThreadDispatcherEvent mainThreadDispatcherEvent;
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
     [SerializeField]
@@ -175,27 +169,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     public async Task GenerateAudio(AWSPollyAudioPacket aWSPollyAudioPacket)
     {
         StartCoroutine(OffloadExecutionToAsyncRunner(aWSPollyAudioPacket));
-    }
-
-    //update this method too - invoke to send in audio Path as well
-    public async Task InvokeAIVoice(AWSPollyAudioPacket awsPollyAudioPacket) 
-    {
-        CustomActions customActions = new CustomActions
-        {
-            Action = action => PlayAudio((AWSPollyAudioPacket)action),
-            Parameter = awsPollyAudioPacket
-
-        };
-
-        await mainThreadDispatcherEvent.Invoke(customActions);
-    }
-
-
-    private async void PlayAudio(AWSPollyAudioPacket awsPollyAudioPacket)
-    {
-        AudioSource.clip = await UnityWebRequestMultimediaManager.GetAudio(awsPollyAudioPacket.AudioPath, awsPollyAudioPacket.AudioName, UnityEngine.AudioType.MPEG);
-
-        AudioSource.Play();
     }
 
     private Task SaveAudio(SynthesizeSpeechResponse response, string fullPath)

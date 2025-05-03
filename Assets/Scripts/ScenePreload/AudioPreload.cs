@@ -59,19 +59,13 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
         foreach (Dialogues dialogues in extractedTextAudioPaths.Result)
         {
-            Debug.Log("Interating dialogues");
-
             for (int i = 0; i < dialogues.TextAudioPath.Length; i++)
             {                
                 string audioName = $"{dialogues.EntityName}-{dialogues.VoiceID}-{i}";
 
-                Debug.Log($"AudioName: {audioName}");
-
                 AWSPollyManager.GenerateAudio(new AWSPollyAudioPacket { AudioPath = $"{PersistencePath}\\{audioName}.{OutputFormat.FindValue(OutputFormat.Mp3)}", AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence, OutputFormat = OutputFormat.Mp3});
 
                 yield return new WaitUntil(() => AudioGenerated == true);
-
-                Debug.Log($"Finally unstuck");
 
                 dialogues.TextAudioPath[i].AudioPath = $"{PersistencePath}\\{audioName}";
 
@@ -99,8 +93,6 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
     private void AudioGeneratedListener(bool audioGenerated)
     {
-        Debug.Log($"Audio Generated: {audioGenerated}");
-
         AudioGenerated = audioGenerated;
     }
 

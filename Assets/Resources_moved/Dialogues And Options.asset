@@ -12,14 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd4694ff2528c7148a33c797f5d416b6, type: 3}
   m_Name: Dialogues And Options
   m_EditorClassIdentifier: 
-  notifyEntityListenerEvent: {fileID: 6444422951397592158, guid: befef71b16325d7489f61b81a77a9f65, type: 3}
   exchange:
   - _dialogues:
     - _entityName: Elaila
       _voice: Carmen
       _textAudioPath:
       - _sentence: Hey, how are you!
-        audioPath: 
+        audioPath: C:/Users/Yennefer/AppData/LocalLow/B Games/The Screams of Kainarah\Elaila-Carmen-0
     _dialogueOptions:
       _dialogueConcluded: 0
       _multipleDialogues: 0
@@ -28,11 +27,11 @@ MonoBehaviour:
       _entity: {fileID: 2370432743021307287, guid: 314d8d53d6c0c4b4dae663477b80e0eb, type: 3}
       _entityTag: TriggerPoint1
   - _dialogues:
-    - _entityName: 'Rakash:'
-      _voice: Zayd
+    - _entityName: Rakash
+      _voice: Enrique
       _textAudioPath:
-      - _sentence: 
-        audioPath: 
+      - _sentence: Why are you here!!
+        audioPath: C:/Users/Yennefer/AppData/LocalLow/B Games/The Screams of Kainarah\Rakash-Enrique-0
     _dialogueOptions:
       _dialogueConcluded: 0
       _multipleDialogues: 0
@@ -41,12 +40,16 @@ MonoBehaviour:
       _entity: {fileID: 7097680049040053745, guid: 1e02eab08acea324d847a7ca16c098a2, type: 3}
       _entityTag: Boss
   - _dialogues:
-    - _entityName: 'Alisha:'
+    - _entityName: Alisha
       _voice: Emma
-      _textAudioPath: []
+      _textAudioPath:
+      - _sentence: Help!!!
+        audioPath: 
     - _entityName: Wizard
       _voice: Justin
-      _textAudioPath: []
+      _textAudioPath:
+      - _sentence: Hohohoho!!
+        audioPath: 
     _dialogueOptions:
       _dialogueConcluded: 0
       _multipleDialogues: 1
