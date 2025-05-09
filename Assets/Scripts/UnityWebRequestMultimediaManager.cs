@@ -13,7 +13,6 @@ public class UnityWebRequestMultimediaManager : IUnityWebRequestMultimedia
             {
                 UnityWebRequestAsyncOperation webRequestAsyncOperation = uwr.SendWebRequest();
 
-                //await until the file is yield
                 while (!webRequestAsyncOperation.isDone)
                 {
                     await Task.Yield();
@@ -37,8 +36,6 @@ public class UnityWebRequestMultimediaManager : IUnityWebRequestMultimedia
 
     public async Task<TextAsset> GetTextAssetFile(string remoteURL)
     {
-        //use it for accessing from firebase storage 
-
         try
         {
             using (UnityWebRequest uwr = UnityWebRequest.Get(remoteURL))

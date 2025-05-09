@@ -26,6 +26,7 @@ public class DialogueTriggerManager : MonoBehaviour
             if (dialogueSystem.Dialogues.Count == DialogueCounter)
             {
                 Debug.Log("Concluded");
+
                 dialogueSystem.DialogueOptions.DialogueConcluded = true;
 
                 DialogueCounter = 0;
@@ -58,6 +59,7 @@ public class DialogueTriggerManager : MonoBehaviour
         if(SceneSingleton.IsDialogueTakingPlace == false && dialogueSystem.DialogueOptions.DialogueConcluded == false)
         {
             Debug.Log("INSIDE");
+
             Coroutine triggerDialogueCoroutine = StartCoroutine(TriggerDialogue(dialogueSystem));
         }
     }
