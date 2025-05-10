@@ -63,13 +63,13 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
             {                
                 string audioName = $"{dialogues.EntityName}-{dialogues.VoiceID}-{i}";
 
-                AWSPollyManager.GenerateAudio(new AWSPollyAudioPacket { AudioPath = $"{PersistencePath}\\{audioName}.{OutputFormat.FindValue(OutputFormat.Mp3)}", AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence, OutputFormat = OutputFormat.Mp3});
+                string audioPath = $"{PersistencePath}\\{audioName}.{OutputFormat.FindValue(OutputFormat.Mp3)}";
+
+                AWSPollyManager.GenerateAudio(new AWSPollyAudioPacket { AudioPath = audioPath, AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence, OutputFormat = OutputFormat.Mp3});
 
                 yield return new WaitUntil(() => AudioGenerated == true);
 
-                dialogues.TextAudioPath[i].AudioPath = $"{PersistencePath}\\{audioName}";
-
-                Debug.Log(dialogues.TextAudioPath[i].AudioPath);
+                dialogues.TextAudioPath[i].AudioPath = $"{PersistencePath}\\{audioName}.{OutputFormat.FindValue(OutputFormat.Mp3)}";
 
                 AudioGenerated = false;
             }

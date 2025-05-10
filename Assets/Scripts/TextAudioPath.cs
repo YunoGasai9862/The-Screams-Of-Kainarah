@@ -10,7 +10,6 @@ public class TextAudioPath
     private string _sentence;
 
     [SerializeField]
-    [TextArea(3, 10)]
     private string _audioName;
 
     [ReadOnly]

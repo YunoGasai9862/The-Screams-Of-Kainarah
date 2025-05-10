@@ -5,7 +5,7 @@ using UnityEngine;
 public class DialogueTriggerManager : MonoBehaviour
 {
     private int DialogueCounter { get; set; } = 0;
-    private SemaphoreSlim SemaphoreSlim { get; set;} =  new SemaphoreSlim(1);     // use this for dialogue, to make it not run fast/use ASYNC for each sentence
+    private SemaphoreSlim SemaphoreSlim { get; set;} =  new SemaphoreSlim(1);
 
     [SerializeField]
     public DialogueTriggerEvent dialogueTriggerEvent;
@@ -22,32 +22,24 @@ public class DialogueTriggerManager : MonoBehaviour
 
         foreach (Dialogues dialogue in dialogueSystem.Dialogues)
         {
-        
+            SceneSingleton.GetDialogueManager().PrepareDialoguesQueue(dialogue);
+
+            SemaphoreSlim.Wait();
+
+            StartCoroutine(SceneSingleton.GetDialogueManager().StartDialogue(SemaphoreSlim));
+
+            DialogueCounter++;
+
+            yield return new WaitUntil(() => SemaphoreSlim.CurrentCount > 0);
+
             if (dialogueSystem.Dialogues.Count == DialogueCounter)
             {
-                Debug.Log("Concluded");
-
                 dialogueSystem.DialogueOptions.DialogueConcluded = true;
 
                 DialogueCounter = 0;
 
                 yield return null;
             }
-            else
-            {
-                SceneSingleton.GetDialogueManager().PrepareDialoguesQueue(dialogue);
-
-                SemaphoreSlim.WaitAsync();
-
-                StartCoroutine(SceneSingleton.GetDialogueManager().StartDialogue(SemaphoreSlim));
-
-                DialogueCounter++;
-
-                Debug.Log(DialogueCounter);
-            }
-            
-
-            yield return new WaitUntil(() => SemaphoreSlim.CurrentCount > 0);
         }
 
         dialogueTakingPlaceEvent.Invoke(false);
@@ -56,10 +48,8 @@ public class DialogueTriggerManager : MonoBehaviour
 
     public void TriggerCoroutine(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        if(SceneSingleton.IsDialogueTakingPlace == false && dialogueSystem.DialogueOptions.DialogueConcluded == false)
+        if(!SceneSingleton.IsDialogueTakingPlace && !dialogueSystem.DialogueOptions.DialogueConcluded)
         {
-            Debug.Log("INSIDE");
-
             Coroutine triggerDialogueCoroutine = StartCoroutine(TriggerDialogue(dialogueSystem));
         }
     }
