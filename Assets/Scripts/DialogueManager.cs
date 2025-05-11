@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -42,6 +43,11 @@ public class DialogueManager : MonoBehaviour
 
         foreach (TextAudioPath textAudioPath in dialogue.TextAudioPath)
         {
+            if  (textAudioPath.AudioPath == null || textAudioPath.AudioPath.Length == 0)
+            {
+                throw new ApplicationException($"AudioPath cannot be null!");
+            }
+
             m_storylineSentences.Enqueue(textAudioPath);
         }
     }

@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Rendering.Universal;
 using static ExceptionList;
 
@@ -92,6 +92,16 @@ public class Helper: MonoBehaviour
         }
 
         return Task.FromResult(observerSystemAttributesDict);
+    }
+
+    public static bool DoesFileExist(string path)
+    {
+        if (path == null)
+        {
+            throw new ApplicationException("File path is missing!");
+        }
+
+        return new FileInfo(path).Exists;
     }
 
     public static bool IsSubjectNull<T>(Subject<IObserver<T>> subject)

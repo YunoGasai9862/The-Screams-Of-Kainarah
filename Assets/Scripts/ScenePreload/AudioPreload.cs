@@ -65,6 +65,12 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
                 string audioPath = $"{PersistencePath}\\{audioName}.{OutputFormat.FindValue(OutputFormat.Mp3)}";
 
+                if (Helper.DoesFileExist(audioPath))
+                {
+                    //audio already exists - so does the AudioPath - just skip the iteration
+                    continue;
+                }
+
                 AWSPollyManager.GenerateAudio(new AWSPollyAudioPacket { AudioPath = audioPath, AudioName = audioName, AudioVoiceId = dialogues.VoiceID, DialogueText = dialogues.TextAudioPath[i].Sentence, OutputFormat = OutputFormat.Mp3});
 
                 yield return new WaitUntil(() => AudioGenerated == true);
