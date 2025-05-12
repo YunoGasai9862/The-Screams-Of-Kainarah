@@ -46,16 +46,13 @@ public class PlayerAnimationMethods : MonoBehaviour
     {
         if (VectorChecker(keystroke) && !PlayerVariables.Instance.IS_JUMPING)
         {
-            AnimationStateKeeper.CurrentPlayerState = (int)AnimationStateKeeper.StateKeeper.RUNNING;
-            SetMovementStates(true, false);
-            PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
+            UpdateMovementState(AnimationStateKeeper.StateKeeper.RUNNING, true, false);
+
         }
 
         if (!VectorChecker(keystroke) && !PlayerVariables.Instance.IS_JUMPING)
         {
-            AnimationStateKeeper.CurrentPlayerState = (int)AnimationStateKeeper.StateKeeper.IDLE;
-            SetMovementStates(false, true);
-            PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
+            UpdateMovementState(AnimationStateKeeper.StateKeeper.IDLE, false, true);
         }
 
     }
@@ -64,6 +61,13 @@ public class PlayerAnimationMethods : MonoBehaviour
     {
         PlayerVariables.Instance.runVariableEvent.Invoke(isRunning);
         PlayerVariables.Instance.walkVariableEvent.Invoke(isWalking);
+    }
+
+    public void UpdateMovementState(AnimationStateKeeper.StateKeeper state, bool isRunning, bool isWalking)
+    {
+        AnimationStateKeeper.CurrentPlayerState = (int)state;
+        SetMovementStates(isRunning, isWalking);
+        PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
     }
 
     public void JumpingFallingAnimationHandler(bool keystroke)

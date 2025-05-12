@@ -79,6 +79,8 @@ public class PlayerActions : MonoBehaviour
 
     private void Update()
     {
+        //please also make sure that we dont have it in single
+        //plus utilize coroutine for better performance maybe
         if (!SceneSingleton.IsDialogueTakingPlace)
         {
             //movement
@@ -105,6 +107,9 @@ public class PlayerActions : MonoBehaviour
                 _slideCommand.Execute();
             else
                 _slideCommand.Cancel();
+        }else
+        {
+            _animationHandler.UpdateMovementState(PlayerAnimationHandler.AnimationStateKeeper.StateKeeper.IDLE, false, true);
         }
 
     }
