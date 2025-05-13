@@ -15,9 +15,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
     [SerializeField] private EnemyHittableObjects enemyHittableObject;
     [SerializeField] private EventStringMapper eventStringMapperScriptableObject;
 
-    [Header("Events")]
-    [SerializeField] private DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
-
     [Header("Delegators")]
     [SerializeField] private SceneSingletonDelegator sceneSingletonDelegator;
 
@@ -41,7 +38,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
 
     private static SceneSingleton _instance;
     private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; }//fill only once
-    public static bool IsDialogueTakingPlace { get; set; }
 
     private void Awake()
     {
@@ -61,9 +57,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
         _checkpointColliderListener = FindFirstObjectByType<CheckpointColliderListener>();
         _dialogueManager = FindFirstObjectByType<DialogueManager>();
         _gameStateHandlerObjects= new List<IGameStateHandler>();
-
-        //events
-        dialogueTakingPlaceEvent.AddListener(DialougeTakingPlace);
 
         //delegators
         sceneSingletonDelegator.Subject.SetSubject(this);
@@ -116,10 +109,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
     public static CheckpointColliderListener GetCheckPointColliderActionListenerObject()
     {
         return _checkpointColliderListener;
-    }
-    private void DialougeTakingPlace(bool isTakingPlace)
-    {
-        IsDialogueTakingPlace = isTakingPlace;
     }
 
     public void OnNotifySubject(IObserver<SceneSingleton> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)

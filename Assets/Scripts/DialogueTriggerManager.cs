@@ -5,11 +5,13 @@ using UnityEngine;
 public class DialogueTriggerManager : MonoBehaviour
 {
     private int DialogueCounter { get; set; } = 0;
+    private GameState GameState { get; set; }
     private SemaphoreSlim SemaphoreSlim { get; set;} =  new SemaphoreSlim(1);
 
     [SerializeField]
     public DialogueTriggerEvent dialogueTriggerEvent;
-    public DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
+    [SerializeField]
+    public GameStateEvent gameStateEvent;
 
     private void Start()
     {
@@ -18,7 +20,7 @@ public class DialogueTriggerManager : MonoBehaviour
 
     private IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        dialogueTakingPlaceEvent.Invoke(true);
+        SetGameStateAndBroadcast(GameState.DIALOGUE_TAKING_PLACE);
 
         foreach (Dialogues dialogue in dialogueSystem.Dialogues)
         {
@@ -42,15 +44,22 @@ public class DialogueTriggerManager : MonoBehaviour
             }
         }
 
-        dialogueTakingPlaceEvent.Invoke(false);
+        SetGameStateAndBroadcast(GameState.DIALOGUE_TAKING_PLACE);
 
     }
 
     public void TriggerCoroutine(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        if(!SceneSingleton.IsDialogueTakingPlace && !dialogueSystem.DialogueOptions.DialogueConcluded)
+        if(GameState != GameState.DIALOGUE_TAKING_PLACE && !dialogueSystem.DialogueOptions.DialogueConcluded)
         {
             Coroutine triggerDialogueCoroutine = StartCoroutine(TriggerDialogue(dialogueSystem));
         }
+    }
+
+    private void SetGameStateAndBroadcast(GameState value)
+    {
+        GameState = value;
+
+        gameStateEvent.Invoke(value);
     }
 }
