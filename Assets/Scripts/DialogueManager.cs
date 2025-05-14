@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-public class DialogueManager : MonoBehaviour
+
+[GameState(typeof(DialogueManager))]
+public class DialogueManager : MonoBehaviour, IGameStateListener
 {
 
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
@@ -24,7 +26,6 @@ public class DialogueManager : MonoBehaviour
 
     [SerializeField]
     public NextDialogueTriggerEvent nextDialogueTriggerEvent;
-    public DialogueTakingPlaceEvent dialogueTakingPlaceEvent;
     public AudioTriggerEvent audioTriggerEvent;
 
     void Start()
@@ -32,7 +33,6 @@ public class DialogueManager : MonoBehaviour
         m_storylineSentences = new Queue<TextAudioPath>();
 
         nextDialogueTriggerEvent.AddListener(ShouldProceedToNextDialogue);
-        dialogueTakingPlaceEvent.AddListener(EndDialogue);
     }
 
     public async void PrepareDialoguesQueue(Dialogues dialogue)
@@ -90,18 +90,16 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    private void EndDialogue(bool dialogueTakingPlace)
-    {
-        myanimator.SetBool(DIALOGUE_ANIMATION_NAME, dialogueTakingPlace);
-    }
-
     private void ShouldProceedToNextDialogue(bool value)
     {
         NextDialogue = value;
     }
 
-    private Task triggerAudio(Dialogues dialogues)
+    public Task Ping(GameState gameState)
     {
-        return Task.CompletedTask;
+        //ill need to add this here because it was before in EndDialogue
+        //myanimator.SetBool(DIALOGUE_ANIMATION_NAME, dialogueTakingPlace);
+
+        throw new NotImplementedException();
     }
 }

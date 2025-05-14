@@ -1,13 +1,18 @@
+using System.Threading.Tasks;
 using UnityEngine;
-public class MonsterMovement : StateMachineBehaviour
+
+[GameState(typeof(MonsterMovement))]
+public class MonsterMovement : StateMachineBehaviour, IGameStateListener
 {
     private const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
+
+    private bool IsDialogueTakingPlace { get; set; }
     //OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
-        if (!SceneSingleton.IsDialogueTakingPlace)
+        if (IsDialogueTakingPlace)
         {
             if (MonsterFollow.Player != null && HelperFunctions.CheckDistance(animator, 15f, 3f, MonsterFollow.Player))
             {
@@ -24,6 +29,12 @@ public class MonsterMovement : StateMachineBehaviour
 
         }
 
+    }
+
+    public Task Ping(GameState gameState)
+    {
+        //IsDialogueTakingPlace
+        throw new System.NotImplementedException();
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

@@ -1,19 +1,13 @@
+using System.Threading.Tasks;
 using UnityEngine;
-public class MonsterFollow : StateMachineBehaviour
+
+[GameState(typeof(MonsterFollow))]
+public class MonsterFollow : StateMachineBehaviour, IGameStateListener
 {
     public static GameObject Player;
 
     public const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
-
-    private DialogueTakingPlaceEvent m_dialogueTakingPlaceEvent;
     private bool DialogueTakingPlace { get; set; }
-
-    public void OnEnable()
-    {
-        m_dialogueTakingPlaceEvent = Helper.GetCustomEvent<DialogueTakingPlaceEvent>();
-
-        m_dialogueTakingPlaceEvent.AddListener(DialogueTakingPlaceListener);
-    }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -42,6 +36,11 @@ public class MonsterFollow : StateMachineBehaviour
     private void DialogueTakingPlaceListener(bool isTakingPlace)
     {
         DialogueTakingPlace = isTakingPlace;
+    }
+
+    public Task Ping(GameState gameState)
+    {
+        throw new System.NotImplementedException();
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
