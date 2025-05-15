@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
-public class PlayerActions : MonoBehaviour
+
+[GameState(typeof(PlayerActions))]
+public class PlayerActions : MonoBehaviour, IGameStateListener
 {
     private PlayerInput _playerInput;
     private Rocky2DActions _rocky2DActions;
@@ -20,6 +23,7 @@ public class PlayerActions : MonoBehaviour
     private IReceiver<bool> _throwingProjectileReceiver;
     private Command<bool> _throwingProjectileCommand;
     private PlayerActionsModel _playerActionsModel;
+    private GameState CurrentGameState { get; set; }
 
     [SerializeField] float _characterSpeed = 10f;
 
@@ -79,9 +83,9 @@ public class PlayerActions : MonoBehaviour
 
     private void Update()
     {
-        //please also make sure that we dont have it in single
-        //plus utilize coroutine for better performance maybe
-        if (!SceneSingleton.IsDialogueTakingPlace)
+        //make it better - but still this is an improvement, enhancement from singleton
+        //more modular
+        if (!CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
             //movement
             _keystrokeTrack = PlayerMovement();
@@ -236,6 +240,13 @@ public class PlayerActions : MonoBehaviour
         {
             transform.localScale = new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
         }
+    }
+
+    public Task Ping(GameState gameState)
+    {
+        CurrentGameState = gameState;
+
+        return Task.CompletedTask;
     }
 
     #endregion

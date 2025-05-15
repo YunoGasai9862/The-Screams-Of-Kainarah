@@ -1,9 +1,13 @@
+using System.Threading.Tasks;
 using UnityEngine;
-public class OpenWares : MonoBehaviour
+[GameState(typeof(OpenWares))]
+public class OpenWares : MonoBehaviour, IGameStateListener
 {
     [SerializeField] GameObject MagicCircle;
     [SerializeField] GameObject WaresPanel;
     [SerializeField] DialogueConcludedEvent dialogeConcludedEvent;
+
+    private GameState CurrentGameState { get; set; }
 
     public static bool Buying = false;
     // Update is called once per frame
@@ -17,11 +21,18 @@ public class OpenWares : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        if (SceneSingleton.IsDialogueTakingPlace && !SceneSingleton.GetInventoryManager().IsPouchOpen)
+        if (CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE) && !SceneSingleton.GetInventoryManager().IsPouchOpen)
         {
             WaresPanel.SetActive(true);
             Buying = true;
         }
 
+    }
+
+    public Task Ping(GameState gameState)
+    {
+        CurrentGameState = gameState;
+
+        return Task.CompletedTask;
     }
 }

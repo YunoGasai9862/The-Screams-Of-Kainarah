@@ -5,7 +5,9 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
-public class AttackingController : MonoBehaviour, IReceiver<bool>
+
+[GameState(typeof(AttackingController))]
+public class AttackingController : MonoBehaviour, IReceiver<bool>, IGameStateListener
 {
     private const float TIME_DIFFERENCE_MAX = 1.5f;
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
@@ -15,6 +17,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     private MovementHelperClass _movementHelper;
     private bool _isPlayerEligibleForStartingAttack = false;
     private float timeDifferencebetweenStates;
+
+    private GameState CurrentGameState { get; set; }
 
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
@@ -173,12 +177,11 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     }
     public bool CanPlayerAttack()
     {
-        bool isDialogueOpen = SceneSingleton.IsDialogueTakingPlace;
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
         bool isBuying = OpenWares.Buying;
         bool isInventoryOpen = SceneSingleton.GetInventoryManager().IsPouchOpen;
 
-        return !isDialogueOpen && !isBuying && !isInventoryOpen && !isJumping;
+        return !CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE) && !isBuying && !isInventoryOpen && !isJumping;
     }
 
     #region AnimationEventOnTheAnimationItself
@@ -245,5 +248,12 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>
     public void PowerUpFillMode(bool filledUp)
     {
         PowerUpBarFilled = filledUp;
+    }
+
+    public Task Ping(GameState gameState)
+    {
+        CurrentGameState = gameState;
+
+        return Task.CompletedTask;
     }
 }

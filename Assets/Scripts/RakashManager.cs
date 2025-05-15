@@ -3,7 +3,8 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using static SceneData;
-public class RakashManager : AbstractEntity
+[GameState(typeof(RakashManager))]
+public class RakashManager : AbstractEntity, IGameStateListener
 {
     private GameObject _player;
     private Animator _anim;
@@ -15,6 +16,7 @@ public class RakashManager : AbstractEntity
 
     private IReceiver<bool> m_rakashAttackControllerReceiver;
     private Command<bool> m_rakashAttackControllerCommand;
+    private GameState CurrentGameState { get; set; }
 
     [SerializeField] GameObject bossDead;
     [SerializeField] string[] attackingAnimationNames;
@@ -50,7 +52,7 @@ public class RakashManager : AbstractEntity
     {
         CheckRotation();
 
-        if (SceneSingleton.IsDialogueTakingPlace)
+        if (CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
             _anim.SetBool("walk", false);
         }
@@ -148,5 +150,12 @@ public class RakashManager : AbstractEntity
     {
         ObjectData bossData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation);
         data.AddToObjectsToPersist(bossData);
+    }
+
+    public Task Ping(GameState gameState)
+    {
+        CurrentGameState = gameState;
+
+        return Task.CompletedTask;
     }
 }
