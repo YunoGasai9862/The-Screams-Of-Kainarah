@@ -8,8 +8,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[GameState(typeof(DialogueManager))]
-public class DialogueManager : MonoBehaviour, IGameStateListener
+[ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(DialogueManager))]
+public class DialogueManager : MonoBehaviour, IGameStateListener, IObserver<GameState>
 {
 
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
@@ -100,6 +100,11 @@ public class DialogueManager : MonoBehaviour, IGameStateListener
         //ill need to add this here because it was before in EndDialogue
         //myanimator.SetBool(DIALOGUE_ANIMATION_NAME, dialogueTakingPlace);
 
+        throw new NotImplementedException();
+    }
+
+    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
         throw new NotImplementedException();
     }
 }

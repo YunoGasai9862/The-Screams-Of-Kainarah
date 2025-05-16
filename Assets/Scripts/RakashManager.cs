@@ -1,10 +1,11 @@
 using NUnit.Framework;
 using System.Collections;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using static SceneData;
-[GameState(typeof(RakashManager))]
-public class RakashManager : AbstractEntity, IGameStateListener
+[ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(RakashManager))]
+public class RakashManager : AbstractEntity, IGameStateListener, IObserver<GameState>
 {
     private GameObject _player;
     private Animator _anim;
@@ -157,5 +158,10 @@ public class RakashManager : AbstractEntity, IGameStateListener
         CurrentGameState = gameState;
 
         return Task.CompletedTask;
+    }
+
+    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new System.NotImplementedException();
     }
 }

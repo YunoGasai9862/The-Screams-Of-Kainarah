@@ -1,7 +1,8 @@
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-[GameState(typeof(OpenWares))]
-public class OpenWares : MonoBehaviour, IGameStateListener
+[ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(OpenWares))]
+public class OpenWares : MonoBehaviour, IGameStateListener, IObserver<GameState>
 {
     [SerializeField] GameObject MagicCircle;
     [SerializeField] GameObject WaresPanel;
@@ -34,5 +35,10 @@ public class OpenWares : MonoBehaviour, IGameStateListener
         CurrentGameState = gameState;
 
         return Task.CompletedTask;
+    }
+
+    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new System.NotImplementedException();
     }
 }

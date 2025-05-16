@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[GameState(typeof(PlayerActions))]
-public class PlayerActions : MonoBehaviour, IGameStateListener
+[ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(PlayerActions))]
+public class PlayerActions : MonoBehaviour, IGameStateListener, IObserver<GameState>
 {
     private PlayerInput _playerInput;
     private Rocky2DActions _rocky2DActions;
@@ -247,6 +248,11 @@ public class PlayerActions : MonoBehaviour, IGameStateListener
         CurrentGameState = gameState;
 
         return Task.CompletedTask;
+    }
+
+    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new NotImplementedException();
     }
 
     #endregion

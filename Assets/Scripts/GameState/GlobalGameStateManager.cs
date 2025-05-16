@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 //make sure this gets live beforehand - perhaps add it in the preloading scheme
-public class GlobalGameState: MonoBehaviour
+//no need to specify observer as there can be many
+[ObserverSystem(SubjectType = typeof(GlobalGameState))]
+public class GlobalGameState: BaseDelegatorEnhanced<GlobalGameState>
 {
-    private List<GameStateAttribute> ObjectsWithGameStateAttribute { get; set; } = new List<GameStateAttribute>();
-
     private List<IGameStateListener> GameStateListeners { get; set; } = new List<IGameStateListener> { };
 
     [SerializeField]
@@ -15,9 +15,7 @@ public class GlobalGameState: MonoBehaviour
 
     private async void OnEnable()
     {
-        ObjectsWithGameStateAttribute = await Helper.GetGameObjectsWithCustomAttributes<GameStateAttribute>();
 
-        GameStateListeners = await ExtractGameStateListenersFromGameStateAttribute(ObjectsWithGameStateAttribute);
     }
 
     private void Start()
@@ -27,19 +25,6 @@ public class GlobalGameState: MonoBehaviour
 
     public void PingGameStateListeners(GameState gameState)
     {
+
     }
-
-    private Task<List<IGameStateListener>> ExtractGameStateListenersFromGameStateAttribute(List<GameStateAttribute> objectsWithGameStateAttribute)
-    {
-        List<IGameStateListener> gameStateListeners = new List<IGameStateListener>();
-
-        foreach(GameStateAttribute gameStateAttribute in objectsWithGameStateAttribute)
-        {
-            //use find by type first, retrieve the object and find the implementation for the interface
-            //thats the cleanest and best approach
-        }
-
-        return Task.FromResult(gameStateListeners);
-    }
-
 }

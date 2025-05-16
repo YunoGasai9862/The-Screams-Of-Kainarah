@@ -1,8 +1,9 @@
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[GameState(typeof(MonsterFollow))]
-public class MonsterFollow : StateMachineBehaviour, IGameStateListener
+[ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(MonsterFollow))]
+public class MonsterFollow : StateMachineBehaviour, IGameStateListener, IObserver<GameState>
 {
     public static GameObject Player;
 
@@ -39,6 +40,11 @@ public class MonsterFollow : StateMachineBehaviour, IGameStateListener
     }
 
     public Task Ping(GameState gameState)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         throw new System.NotImplementedException();
     }

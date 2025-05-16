@@ -1,12 +1,19 @@
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[GameState(typeof(MonsterMovement))]
-public class MonsterMovement : StateMachineBehaviour, IGameStateListener
+[ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(MonsterMovement))]
+public class MonsterMovement : StateMachineBehaviour, IGameStateListener, IObserver<GameState>
 {
     private const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
 
     private bool IsDialogueTakingPlace { get; set; }
+
+    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new System.NotImplementedException();
+    }
+
     //OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
