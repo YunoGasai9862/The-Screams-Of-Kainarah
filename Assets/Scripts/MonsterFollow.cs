@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(MonsterFollow))]
-public class MonsterFollow : StateMachineBehaviour, IGameStateListener, IObserver<GameState>
+public class MonsterFollow : StateMachineBehaviour, IObserver<GameState>
 {
     public static GameObject Player;
 
@@ -39,26 +39,8 @@ public class MonsterFollow : StateMachineBehaviour, IGameStateListener, IObserve
         DialogueTakingPlace = isTakingPlace;
     }
 
-    public Task Ping(GameState gameState)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         throw new System.NotImplementedException();
     }
-
-    // OnStateMove is called right after Animator.OnAnimatorMove()
-    //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    // Implement code that processes and affects root motion
-    //}
-
-    // OnStateIK is called right after Animator.OnAnimatorIK()
-    //override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    // Implement code that sets up animation IK (inverse kinematics)
-    //}
-
 }

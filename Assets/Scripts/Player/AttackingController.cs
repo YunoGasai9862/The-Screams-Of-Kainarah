@@ -3,12 +3,10 @@ using NUnit.Framework.Internal;
 using PlayerAnimationHandler;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(AttackingController))]
-public class AttackingController : MonoBehaviour, IReceiver<bool>, IGameStateListener, IObserver<GameState>
+public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<GameState>
 {
     private const float TIME_DIFFERENCE_MAX = 1.5f;
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
@@ -251,16 +249,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IGameStateLis
         PowerUpBarFilled = filledUp;
     }
 
-    //will remove this entirely!
-    public Task Ping(GameState gameState)
-    {
-        CurrentGameState = gameState;
-
-        return Task.CompletedTask;
-    }
-
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new NotImplementedException();
+        CurrentGameState = data;
     }
 }

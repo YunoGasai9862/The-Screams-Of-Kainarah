@@ -3,16 +3,13 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(MonsterMovement))]
-public class MonsterMovement : StateMachineBehaviour, IGameStateListener, IObserver<GameState>
+public class MonsterMovement : StateMachineBehaviour, IObserver<GameState>
 {
     private const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
 
     private bool IsDialogueTakingPlace { get; set; }
 
-    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        throw new System.NotImplementedException();
-    }
+
 
     //OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -38,9 +35,8 @@ public class MonsterMovement : StateMachineBehaviour, IGameStateListener, IObser
 
     }
 
-    public Task Ping(GameState gameState)
+    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        //IsDialogueTakingPlace
         throw new System.NotImplementedException();
     }
 

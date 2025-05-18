@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using static SceneData;
 [ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(RakashManager))]
-public class RakashManager : AbstractEntity, IGameStateListener, IObserver<GameState>
+public class RakashManager : AbstractEntity, IObserver<GameState>
 {
     private GameObject _player;
     private Animator _anim;
@@ -153,15 +153,8 @@ public class RakashManager : AbstractEntity, IGameStateListener, IObserver<GameS
         data.AddToObjectsToPersist(bossData);
     }
 
-    public Task Ping(GameState gameState)
-    {
-        CurrentGameState = gameState;
-
-        return Task.CompletedTask;
-    }
-
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new System.NotImplementedException();
+        CurrentGameState = data;
     }
 }

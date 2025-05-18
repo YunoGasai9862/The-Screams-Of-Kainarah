@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(PlayerActions))]
-public class PlayerActions : MonoBehaviour, IGameStateListener, IObserver<GameState>
+public class PlayerActions : MonoBehaviour, IObserver<GameState>
 {
     private PlayerInput _playerInput;
     private Rocky2DActions _rocky2DActions;
@@ -243,16 +243,9 @@ public class PlayerActions : MonoBehaviour, IGameStateListener, IObserver<GameSt
         }
     }
 
-    public Task Ping(GameState gameState)
-    {
-        CurrentGameState = gameState;
-
-        return Task.CompletedTask;
-    }
-
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new NotImplementedException();
+        CurrentGameState = data;
     }
 
     #endregion

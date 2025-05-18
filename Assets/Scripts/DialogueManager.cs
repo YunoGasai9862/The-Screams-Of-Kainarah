@@ -9,8 +9,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(DialogueManager))]
-public class DialogueManager : MonoBehaviour, IGameStateListener, IObserver<GameState>
-{
+public class DialogueManager : MonoBehaviour, IObserver<GameState> { 
+
 
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
     private const float ANIMATION_DELAY = 0.05f;
@@ -95,16 +95,10 @@ public class DialogueManager : MonoBehaviour, IGameStateListener, IObserver<Game
         NextDialogue = value;
     }
 
-    public Task Ping(GameState gameState)
+    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         //ill need to add this here because it was before in EndDialogue
         //myanimator.SetBool(DIALOGUE_ANIMATION_NAME, dialogueTakingPlace);
-
-        throw new NotImplementedException();
-    }
-
-    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
         throw new NotImplementedException();
     }
 }

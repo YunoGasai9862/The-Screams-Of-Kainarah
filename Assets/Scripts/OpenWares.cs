@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 [ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(OpenWares))]
-public class OpenWares : MonoBehaviour, IGameStateListener, IObserver<GameState>
+public class OpenWares : MonoBehaviour, IObserver<GameState>
 {
     [SerializeField] GameObject MagicCircle;
     [SerializeField] GameObject WaresPanel;
@@ -15,7 +15,7 @@ public class OpenWares : MonoBehaviour, IGameStateListener, IObserver<GameState>
     void Update()
     {
         //update this logic later - maybe use an event to notify the subscribed objects that the dialogue has concluded - entities to object mapping
-       // if (Conversations.MultipleDialogues[checkingDialogue.wizardPlayerConvo].dialogueConcluded)
+        if (Conversations.MultipleDialogues[checkingDialogue.wizardPlayerConvo].dialogueConcluded)
         {
             MagicCircle.SetActive(true);
         }
@@ -30,15 +30,8 @@ public class OpenWares : MonoBehaviour, IGameStateListener, IObserver<GameState>
 
     }
 
-    public Task Ping(GameState gameState)
-    {
-        CurrentGameState = gameState;
-
-        return Task.CompletedTask;
-    }
-
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new System.NotImplementedException();
+        CurrentGameState = data;
     }
 }
