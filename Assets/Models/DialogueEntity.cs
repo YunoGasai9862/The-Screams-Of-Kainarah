@@ -1,9 +1,6 @@
-
-using System;
 using UnityEngine;
 
-[Serializable]
-public class DialogueTriggeringEntity
+public class DialogueEntity
 {
     [SerializeField]
     private GameObject _entity;

@@ -22,7 +22,6 @@ public class DialoguesAndOptions: ScriptableObject
         public List<Dialogues> Dialogues { get => _dialogues; }
         public DialogueOptions DialogueOptions { get => _dialogueOptions;  }
         public DialogueTriggeringEntity DialogueTriggeringEntity { get => _dialogueTriggeringEntity; }
-
         public List<DialogueSubscriberEntity> DialogueSubscriberEntities {  get => _dialogueSubscriberEntities; }
     }
 

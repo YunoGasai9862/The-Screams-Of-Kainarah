@@ -6,8 +6,6 @@ public class OpenWares : MonoBehaviour, IObserver<GameState>
 {
     [SerializeField] GameObject MagicCircle;
     [SerializeField] GameObject WaresPanel;
-    [SerializeField] DialogueConcludedEvent dialogeConcludedEvent;
-
     private GameState CurrentGameState { get; set; }
 
     public static bool Buying = false;
@@ -15,7 +13,7 @@ public class OpenWares : MonoBehaviour, IObserver<GameState>
     void Update()
     {
         //update this logic later - maybe use an event to notify the subscribed objects that the dialogue has concluded - entities to object mapping
-        if (Conversations.MultipleDialogues[checkingDialogue.wizardPlayerConvo].dialogueConcluded)
+        //if (Conversations.MultipleDialogues[checkingDialogue.wizardPlayerConvo].dialogueConcluded)
         {
             MagicCircle.SetActive(true);
         }
