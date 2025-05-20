@@ -9,6 +9,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd4694ff2528c7148a33c797f5d416b6, type: 3}
+  m_Script: {fileID: 11500000, guid: 38643df8f55d7e14795a68504ddda7f3, type: 3}
   m_Name: Dialogues And Options
   m_EditorClassIdentifier: 
+  exchange:
+  - _dialogues:
+    - _entityName: 
+      _voice: 
+      _textAudioPath:
+      - _sentence: 
+        _audioName: 
+        audioPath: 
+      - _sentence: 
+        _audioName: 
+        audioPath: 
+      _dialogueSubscriberEntities:
+      - _entity: {fileID: 0}
+        _entityTag: 
+      - _entity: {fileID: 0}
+        _entityTag: 
+    _dialogueOptions:
+      _dialogueConcluded: 0
+      _multipleDialogues: 0
+      _shouldTriggerDialogue: 0
+    _dialogueTriggeringEntity:
+      _entity: {fileID: 0}
+      _entityTag: 

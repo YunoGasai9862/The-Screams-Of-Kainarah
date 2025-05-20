@@ -16,13 +16,10 @@ public class DialoguesAndOptions: ScriptableObject
         private DialogueOptions _dialogueOptions;
         [SerializeField]
         private DialogueTriggeringEntity _dialogueTriggeringEntity;
-        [SerializeField]
-        private List<DialogueSubscriberEntity> _dialogueSubscriberEntities;
 
         public List<Dialogues> Dialogues { get => _dialogues; }
         public DialogueOptions DialogueOptions { get => _dialogueOptions;  }
         public DialogueTriggeringEntity DialogueTriggeringEntity { get => _dialogueTriggeringEntity; }
-        public List<DialogueSubscriberEntity> DialogueSubscriberEntities {  get => _dialogueSubscriberEntities; }
     }
 
     public List<DialogueSystem> exchange;

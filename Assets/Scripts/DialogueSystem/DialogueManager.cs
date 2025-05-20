@@ -41,6 +41,8 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState> {
 
         myname.text = dialogue.EntityName;
 
+        dialogue.DialogueSubscriberEntities
+
         foreach (TextAudioPath textAudioPath in dialogue.TextAudioPath)
         {
             if  (textAudioPath.AudioPath == null || textAudioPath.AudioPath.Length == 0)

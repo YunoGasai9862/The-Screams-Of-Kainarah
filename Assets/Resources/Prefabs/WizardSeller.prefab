@@ -202,7 +202,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MagicCircle: {fileID: 8087741408374119182}
   WaresPanel: {fileID: 0}
-  dialogeConcludedEvent: {fileID: 0}
 --- !u!114 &2162997534625558080
 MonoBehaviour:
   m_ObjectHideFlags: 0
