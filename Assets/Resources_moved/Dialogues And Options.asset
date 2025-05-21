@@ -16,16 +16,8 @@ MonoBehaviour:
   - _dialogues:
     - _entityName: 
       _voice: 
-      _textAudioPath:
-      - _sentence: 
-        _audioName: 
-        audioPath: 
-      - _sentence: 
-        _audioName: 
-        audioPath: 
+      _textAudioPath: []
       _dialogueSubscriberEntities:
-      - _entity: {fileID: 0}
-        _entityTag: 
       - _entity: {fileID: 0}
         _entityTag: 
     _dialogueOptions:

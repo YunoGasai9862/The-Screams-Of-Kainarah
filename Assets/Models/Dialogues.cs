@@ -1,7 +1,5 @@
 using Amazon.Polly;
-using NUnit.Framework;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,8 +20,23 @@ public class Dialogues
     public TextAudioPath[] TextAudioPath { get => _textAudioPath; set => _textAudioPath = value; }
     public string Voice { get => _voice; }
 
-    //need to do something better here so it doesn't get called again and again - check length maybe
-    public List<INotify> DialogueSubscriberEntities { get => DialogueSubscriberEntities; set => GetEntitiesToBeNotified(); }
+    public List<INotify> DialogueSubscriberEntities
+    {
+        get 
+        {
+            if (DialogueSubscriberEntities.Count == 0)
+            {
+                DialogueSubscriberEntities = PrefillINotifyForDialogueSubscriberEntities();
+            }
+
+            return DialogueSubscriberEntities;
+        }
+
+        set
+        {
+            DialogueSubscriberEntities = value;
+        }
+    }
 
     public VoiceId VoiceID { get => ParseVoiceId();}
 
@@ -41,18 +54,20 @@ public class Dialogues
         return VoiceId.Emma;
     }
 
-    public List<INotify> GetEntitiesToBeNotified()
+    public List<INotify> PrefillINotifyForDialogueSubscriberEntities()
     {
-        if (DialogueSubscriberEntities.Count > 0)
-        {
-            return DialogueSubscriberEntities;
-        }
-
         List<INotify> entities = new List<INotify>();
 
         foreach(DialogueSubscriberEntity subscriberEntity in _dialogueSubscriberEntities)
         {
-            //find the component and assign
+           INotify notify = subscriberEntity.Entity.GetComponent<INotify>();
+
+           if (notify == null)
+            {
+                continue;
+            }
+
+            entities.Add(notify);
         }
 
         return entities;

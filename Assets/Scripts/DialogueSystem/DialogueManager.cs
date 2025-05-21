@@ -15,7 +15,7 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState> {
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
     private const float ANIMATION_DELAY = 0.05f;
 
-    private Queue<TextAudioPath> m_storylineSentences;
+    private DialogueBubble m_dialogueBubble;
 
 
     public TextMeshProUGUI myname;
@@ -41,7 +41,7 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState> {
 
         myname.text = dialogue.EntityName;
 
-        dialogue.DialogueSubscriberEntities
+        dialogue.
 
         foreach (TextAudioPath textAudioPath in dialogue.TextAudioPath)
         {
