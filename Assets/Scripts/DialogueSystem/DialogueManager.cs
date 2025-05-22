@@ -1,9 +1,7 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,14 +13,12 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState> {
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
     private const float ANIMATION_DELAY = 0.05f;
 
-    private DialogueBubble m_dialogueBubble;
-
-
     public TextMeshProUGUI myname;
     public Text maindialogue;
     public Animator myanimator;
 
     private bool NextDialogue { get; set; } = false;
+    private DialoguePiece DialoguePiece { get; set; } = new DialoguePiece();
 
     [SerializeField]
     public NextDialogueTriggerEvent nextDialogueTriggerEvent;
@@ -30,20 +26,16 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState> {
 
     void Start()
     {
-        m_storylineSentences = new Queue<TextAudioPath>();
-
         nextDialogueTriggerEvent.AddListener(ShouldProceedToNextDialogue);
     }
 
-    public async void PrepareDialoguesQueue(Dialogues dialogue)
+    public async void PrepareDialoguesQueue(DialogueSetup dialogue)
     {
-        m_storylineSentences.Clear();  //clears the previous dialogues, if there are any
+        DialoguePiece.Dialogue.Clear();  //clears the previous dialogues, if there are any
 
         myname.text = dialogue.EntityName;
 
-        dialogue.
-
-        foreach (TextAudioPath textAudioPath in dialogue.TextAudioPath)
+        foreach (Dialogue dialogue in dialogue.TextAudioPath)
         {
             if  (textAudioPath.AudioPath == null || textAudioPath.AudioPath.Length == 0)
             {

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 [Serializable]
-public class DialogueOptions
+public class DialogueSettings
 {
     [SerializeField]
     private bool _dialogueConcluded;

@@ -53,13 +53,13 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
     {
-        Task<List<Dialogues>> extractedTextAudioPaths = ExtractTextAudioPaths(dialogueAndOptions);
+        Task<List<DialogueSetup>> extractedTextAudioPaths = ExtractTextAudioPaths(dialogueAndOptions);
 
         yield return new WaitUntil(() => extractedTextAudioPaths.IsCompleted);
 
-        foreach (Dialogues dialogues in extractedTextAudioPaths.Result)
+        foreach (DialogueSetup dialogues in extractedTextAudioPaths.Result)
         {
-            for (int i = 0; i < dialogues.TextAudioPath.Length; i++)
+            for (int i = 0; i < dialogues.Dialogues.Length; i++)
             {                
                 string audioName = $"{dialogues.EntityName}-{dialogues.VoiceID}-{i}";
 
@@ -83,14 +83,14 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     }
 
 
-    private Task<List<Dialogues>> ExtractTextAudioPaths(DialoguesAndOptions dialoguesAndOptions)
+    private Task<List<DialogueSetup>> ExtractTextAudioPaths(DialoguesAndOptions dialoguesAndOptions)
     {
-        List<TextAudioPath> textAudioPath = new List<TextAudioPath>();
-        TaskCompletionSource<List<Dialogues>> tcs = new TaskCompletionSource<List<Dialogues>>();   
+        List<AudioInfo> textAudioPath = new List<AudioInfo>();
+        TaskCompletionSource<List<DialogueSetup>> tcs = new TaskCompletionSource<List<DialogueSetup>>();   
         Task.Run(() =>
         {
             tcs.SetResult(dialoguesAndOptions.exchange.
-               SelectMany(dialogues => dialogues.Dialogues).ToList());
+               SelectMany(dialogues => dialogues.DialogueSetup).ToList());
 
         });
 

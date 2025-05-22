@@ -5,19 +5,19 @@ using UnityEngine;
 
 
 [Serializable]
-public class Dialogues
+public class DialogueSetup
 {
     [SerializeField]
     private string _entityName;
     [SerializeField]
     private string _voice;
     [SerializeField]
-    private TextAudioPath[] _textAudioPath;
+    private Dialogue[] _dialogues;
     [SerializeField]
     private List<DialogueSubscriberEntity> _dialogueSubscriberEntities;
 
     public string EntityName { get => _entityName; }
-    public TextAudioPath[] TextAudioPath { get => _textAudioPath; set => _textAudioPath = value; }
+    public Dialogue[] Dialogues { get => _dialogues; set => _dialogues = value; }
     public string Voice { get => _voice; }
 
     public List<INotify> DialogueSubscriberEntities

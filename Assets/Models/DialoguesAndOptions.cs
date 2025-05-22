@@ -11,14 +11,14 @@ public class DialoguesAndOptions: ScriptableObject
     public class DialogueSystem
     {
         [SerializeField]
-        private List<Dialogues> _dialogues;
+        private List<DialogueSetup> _dialogueSetup;
         [SerializeField]
-        private DialogueOptions _dialogueOptions;
+        private DialogueSettings _dialogueSettings;
         [SerializeField]
         private DialogueTriggeringEntity _dialogueTriggeringEntity;
 
-        public List<Dialogues> Dialogues { get => _dialogues; }
-        public DialogueOptions DialogueOptions { get => _dialogueOptions;  }
+        public List<DialogueSetup> DialogueSetup { get => _dialogueSetup; }
+        public DialogueSettings DialogueSettings { get => _dialogueSettings;  }
         public DialogueTriggeringEntity DialogueTriggeringEntity { get => _dialogueTriggeringEntity; }
     }
 

@@ -22,7 +22,7 @@ public class DialogueTriggerManager : MonoBehaviour
     {
         SetGameStateAndBroadcast(GameState.DIALOGUE_TAKING_PLACE);
 
-        foreach (Dialogues dialogue in dialogueSystem.Dialogues)
+        foreach (DialogueSetup dialogue in dialogueSystem.DialogueSetup)
         {
             SceneSingleton.GetDialogueManager().PrepareDialoguesQueue(dialogue);
 
@@ -34,9 +34,9 @@ public class DialogueTriggerManager : MonoBehaviour
 
             yield return new WaitUntil(() => SemaphoreSlim.CurrentCount > 0);
 
-            if (dialogueSystem.Dialogues.Count == DialogueCounter)
+            if (dialogueSystem.DialogueSetup.Count == DialogueCounter)
             {
-                dialogueSystem.DialogueOptions.DialogueConcluded = true;
+                dialogueSystem.DialogueSettings.DialogueConcluded = true;
 
                 DialogueCounter = 0;
 

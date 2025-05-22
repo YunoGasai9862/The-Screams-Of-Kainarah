@@ -1,13 +1,9 @@
-
 using System;
 using UnityEngine;
 
 [Serializable]
-public class TextAudioPath
+public class AudioInfo
 {
-    [SerializeField]
-    [TextArea(3, 10)]
-    private string _sentence;
 
     [SerializeField]
     private string _audioName;
@@ -15,7 +11,6 @@ public class TextAudioPath
     [ReadOnly]
     public string audioPath;
 
-    public string Sentence { get => _sentence; }
     public string AudioName { get => _audioName; }
     public string AudioPath { get => audioPath; set => audioPath = value; }
 }
