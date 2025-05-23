@@ -50,7 +50,7 @@ public class DialogueTriggerManager : MonoBehaviour
 
     public void TriggerCoroutine(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        if(GameState != GameState.DIALOGUE_TAKING_PLACE && !dialogueSystem.DialogueOptions.DialogueConcluded)
+        if(GameState != GameState.DIALOGUE_TAKING_PLACE && !dialogueSystem.DialogueSettings.DialogueConcluded)
         {
             Coroutine triggerDialogueCoroutine = StartCoroutine(TriggerDialogue(dialogueSystem));
         }

@@ -13,14 +13,20 @@ MonoBehaviour:
   m_Name: Dialogues And Options
   m_EditorClassIdentifier: 
   exchange:
-  - _dialogues:
+  - _dialogueSetup:
     - _entityName: 
       _voice: 
-      _textAudioPath: []
-      _dialogueSubscriberEntities:
-      - _entity: {fileID: 0}
-        _entityTag: 
-    _dialogueOptions:
+      _dialogues:
+      - _sentence: 
+        _audioInfo:
+          _audioName: 
+          audioPath: 
+      - _sentence: 
+        _audioInfo:
+          _audioName: 
+          audioPath: 
+      _dialogueSubscriberEntities: []
+    _dialogueSettings:
       _dialogueConcluded: 0
       _multipleDialogues: 0
       _shouldTriggerDialogue: 0

@@ -28,7 +28,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
 
     public async void OnNotify(DialogueSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        if (data.DialogueOptions.ShouldTriggerDialogue)
+        if (data.DialogueSettings.ShouldTriggerDialogue)
         {
             await TriggerDialogue(data);
         }

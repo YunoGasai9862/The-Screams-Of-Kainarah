@@ -3,6 +3,6 @@ using System.Collections.Generic;
 
 public class DialoguePiece
 {
-    public Queue<Dialogue> Dialogue { get; set; } = new Queue<Dialogue>();
-    public List<DialogueSubscriberEntity> Subscribers { get; set; } = new List<DialogueSubscriberEntity>();
+    public Queue<Dialogue> DialogueQueue { get; set; } = new Queue<Dialogue>();
+    public List<INotify> DialogueListeners { get; set; } = new List<INotify>();
 }

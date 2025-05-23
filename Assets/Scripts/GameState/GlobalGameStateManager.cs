@@ -29,7 +29,6 @@ public class GlobalGameState: MonoBehaviour, ISubject<IObserver<GameState>>
     {
         foreach(IObserver<GameState> listener in GameStateListeners)
         {
-            //we ping all the observers
             globalGameStateDelegator.NotifyObserver(listener, gameState, new NotificationContext()
             {
                 SubjectType = typeof(GlobalGameState).ToString()
@@ -40,7 +39,6 @@ public class GlobalGameState: MonoBehaviour, ISubject<IObserver<GameState>>
 
     public void OnNotifySubject(IObserver<GameState> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        //add the observer :)
         GameStateListeners.Add(data);
     }
 }

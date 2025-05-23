@@ -1,6 +1,8 @@
 
+using NUnit.Framework;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using TMPro;
 using UnityEngine;
@@ -29,20 +31,20 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState> {
         nextDialogueTriggerEvent.AddListener(ShouldProceedToNextDialogue);
     }
 
-    public async void PrepareDialoguesQueue(DialogueSetup dialogue)
+    public async void PrepareDialoguesQueue(DialogueSetup dialogueSetup)
     {
-        DialoguePiece.Dialogue.Clear();  //clears the previous dialogues, if there are any
+        DialoguePiece.DialogueQueue.Clear();  //clears the previous dialogues, if there are any
 
-        myname.text = dialogue.EntityName;
+        myname.text = dialogueSetup.EntityName;
 
-        foreach (Dialogue dialogue in dialogue.TextAudioPath)
+        foreach (Dialogue dialogue in dialogueSetup.Dialogues)
         {
-            if  (textAudioPath.AudioPath == null || textAudioPath.AudioPath.Length == 0)
+            if  (dialogue.AudioInfo.AudioPath == null || dialogue.AudioInfo.AudioPath.Length == 0)
             {
                 throw new ApplicationException($"AudioPath cannot be null!");
             }
 
-            m_storylineSentences.Enqueue(textAudioPath);
+            DialoguePiece.DialogueQueue.Enqueue(dialogue);
         }
     }
 
@@ -60,9 +62,11 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState> {
 
     public IEnumerator StartDialogue(SemaphoreSlim dialogueSemaphore)
     {
-        if (m_storylineSentences.Count == 0) 
+        if (DialoguePiece.DialogueQueue.Count == 0) 
         {
             dialogueSemaphore.Release();
+
+            PingListeners(DialoguePiece.DialogueListeners);
 
             yield return null;
         }
@@ -70,11 +74,11 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState> {
         {
             NextDialogue = false;
 
-            TextAudioPath dialogue = m_storylineSentences.Dequeue();
+            Dialogue dialogue = DialoguePiece.DialogueQueue.Dequeue();
 
             Coroutine animateLetter = StartCoroutine(AnimateLetters(dialogue.Sentence, ANIMATION_DELAY));
 
-            audioTriggerEvent.Invoke(new AudioPackage() { AudioName = dialogue.AudioName, AudioPath = dialogue.audioPath, AudioType = UnityEngine.AudioType.MPEG });
+            audioTriggerEvent.Invoke(new AudioPackage() { AudioName = dialogue.AudioInfo.AudioName, AudioPath = dialogue.AudioInfo.audioPath, AudioType = UnityEngine.AudioType.MPEG });
 
             yield return new WaitUntil(() => NextDialogue == true);
 
@@ -87,6 +91,11 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState> {
     private void ShouldProceedToNextDialogue(bool value)
     {
         NextDialogue = value;
+    }
+
+    private void PingListeners(List<INotify> dialogueListeners)
+    {
+
     }
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

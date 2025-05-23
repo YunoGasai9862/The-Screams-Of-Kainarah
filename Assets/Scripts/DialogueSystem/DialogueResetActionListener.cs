@@ -19,7 +19,7 @@ public class DialogueResetActionListener : MonoBehaviour, IObserver<DialoguesAnd
     {
         foreach(DialogueSystem dialogueSystem in Data.exchange)
         {
-            dialogueSystem.DialogueOptions.DialogueConcluded = false;
+            dialogueSystem.DialogueSettings.DialogueConcluded = false;
         }
 
         return Task.CompletedTask;

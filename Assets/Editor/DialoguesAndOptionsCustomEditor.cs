@@ -31,14 +31,14 @@ public class DialoguesAndOptionsCustomEditor : Editor
 
             SerializedProperty dialogueTriggeringEntity = element.FindPropertyRelative("_dialogueTriggeringEntity");
 
-            SerializedProperty dialogues = element.FindPropertyRelative("_dialogues");     
+            SerializedProperty dialogueSetup = element.FindPropertyRelative("_dialogueSetup");     
 
-            SerializedProperty dialogueOptions = element.FindPropertyRelative("_dialogueOptions");
+            SerializedProperty dialogueSettings = element.FindPropertyRelative("_dialogueSettings");
 
-            SerializedProperty multiDialoguesBool = dialogueOptions.FindPropertyRelative("_multipleDialogues");
+            SerializedProperty multiDialoguesBool = dialogueSettings.FindPropertyRelative("_multipleDialogues");
 
 
-            if(dialogues.arraySize > SINGLE_DIALOGUE_MAX_ARRAY_LENGTH)
+            if (dialogueSetup.arraySize > SINGLE_DIALOGUE_MAX_ARRAY_LENGTH)
             {
                 multiDialoguesBool.boolValue = true;
             }
@@ -49,9 +49,9 @@ public class DialoguesAndOptionsCustomEditor : Editor
 
             EditorGUILayout.PropertyField(dialogueTriggeringEntity);
 
-            EditorGUILayout.PropertyField(dialogueOptions);
+            EditorGUILayout.PropertyField(dialogueSettings);
 
-            EditorGUILayout.PropertyField(dialogues);
+            EditorGUILayout.PropertyField(dialogueSetup);
 
             GUILayout.Space(30);
 
