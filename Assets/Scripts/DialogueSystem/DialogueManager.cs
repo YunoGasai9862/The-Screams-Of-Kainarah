@@ -66,7 +66,7 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState> {
         {
             dialogueSemaphore.Release();
 
-            PingListeners(DialoguePiece.DialogueListeners);
+            PingListeners(DialoguePiece.DialogueListeners, true);
 
             yield return null;
         }
@@ -93,9 +93,12 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState> {
         NextDialogue = value;
     }
 
-    private void PingListeners(List<INotify> dialogueListeners)
+    private void PingListeners(List<INotify<bool>> dialogueListeners, bool dialogueConcluded)
     {
-
+        foreach(INotify<bool> listener in dialogueListeners)
+        {
+            listener.Notify(dialogueConcluded);
+        }
     }
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

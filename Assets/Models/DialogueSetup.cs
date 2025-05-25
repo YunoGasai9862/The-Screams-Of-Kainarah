@@ -20,7 +20,7 @@ public class DialogueSetup
     public Dialogue[] Dialogues { get => _dialogues; set => _dialogues = value; }
     public string Voice { get => _voice; }
 
-    public List<INotify> DialogueSubscriberEntities
+    public List<INotify<bool>> DialogueSubscriberEntities
     {
         get 
         {
@@ -54,13 +54,13 @@ public class DialogueSetup
         return VoiceId.Emma;
     }
 
-    public List<INotify> PrefillINotifyForDialogueSubscriberEntities()
+    public List<INotify<bool>> PrefillINotifyForDialogueSubscriberEntities()
     {
-        List<INotify> entities = new List<INotify>();
+        List<INotify<bool>> entities = new List<INotify<bool>>();
 
         foreach(DialogueSubscriberEntity subscriberEntity in _dialogueSubscriberEntities)
         {
-           INotify notify = subscriberEntity.Entity.GetComponent<INotify>();
+           INotify<bool> notify = subscriberEntity.Entity.GetComponent<INotify<bool>>();
 
            if (notify == null)
             {

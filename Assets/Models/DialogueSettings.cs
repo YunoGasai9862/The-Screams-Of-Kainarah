@@ -3,9 +3,11 @@ using UnityEngine;
 [Serializable]
 public class DialogueSettings
 {
+    [ReadOnly]
     [SerializeField]
     private bool _dialogueConcluded;
     [SerializeField]
+    [ReadOnly]
     private bool _multipleDialogues;
     [SerializeField]
     private bool _shouldTriggerDialogue;

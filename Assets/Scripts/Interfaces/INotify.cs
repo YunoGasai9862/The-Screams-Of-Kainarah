@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-public interface INotify
+public interface INotify<T>
 {
-    public Task Notify();
+    public Task Notify(T value);
 }

@@ -14,22 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   exchange:
   - _dialogueSetup:
-    - _entityName: 
-      _voice: 
+    - _entityName: Kainera
+      _voice: Camila
       _dialogues:
-      - _sentence: 
+      - _sentence: Hello, is anyone out there?????
         _audioInfo:
           _audioName: 
           audioPath: 
-      - _sentence: 
-        _audioInfo:
-          _audioName: 
-          audioPath: 
-      _dialogueSubscriberEntities: []
+      _dialogueSubscriberEntities:
+      - _entity: {fileID: 2162997534625558111, guid: ced37d8fda09e2e4393f3ca890a8df38, type: 3}
+        _entityTag: Vendor
     _dialogueSettings:
       _dialogueConcluded: 0
       _multipleDialogues: 0
-      _shouldTriggerDialogue: 0
+      _shouldTriggerDialogue: 1
     _dialogueTriggeringEntity:
-      _entity: {fileID: 0}
-      _entityTag: 
+      _entity: {fileID: 2370432743021307287, guid: 314d8d53d6c0c4b4dae663477b80e0eb, type: 3}
+      _entityTag: TriggerPoint1
