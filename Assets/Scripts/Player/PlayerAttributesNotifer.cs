@@ -1,7 +1,6 @@
 using System.Threading;
 using UnityEngine;
 
-[ObserverSystem(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(CandleLightPackageGenerator))]
 public class PlayerAttributesNotifier: MonoBehaviour, ISubject<IObserver<Transform>>
 {
     private Transform PlayerTransform { get; set; }

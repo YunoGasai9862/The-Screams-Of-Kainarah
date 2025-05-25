@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-[ObserverSystem(SubjectType = typeof(CelestialBodyLightning), ObserverType = typeof(CelestialBodiesLightPackageGenerator))]
-
 public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<IObserver<ILightPreprocess>>
 {
     [SerializeField]

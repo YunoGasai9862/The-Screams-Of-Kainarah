@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-[ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(OpenWares))]
 public class OpenWares : MonoBehaviour, IObserver<GameState>, INotify<bool>
 {
     [SerializeField] GameObject MagicCircle;

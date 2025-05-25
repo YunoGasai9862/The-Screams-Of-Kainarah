@@ -2,8 +2,6 @@ using System.Collections;
 using System.Threading;
 using UnityEngine;
 
-[ObserverSystem(SubjectType = typeof(CandleLightPackageGenerator), ObserverType = typeof(CustomLightProcessing))]
-[ObserverSystem(SubjectType = typeof(CelestialBodiesLightPackageGenerator), ObserverType = typeof(CustomLightProcessing))]
 public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, IObserver<AsyncCoroutine>, IObserver<LightPackage>
 {
     private AsyncCoroutine AsyncCoroutine { get; set; }

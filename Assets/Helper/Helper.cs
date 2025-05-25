@@ -73,27 +73,6 @@ public class Helper: MonoBehaviour
         return objectsWithCustomAttributes;
     }
 
-    public static Task<Dictionary<string, List<ObserverSystemAttribute>>> GenerateObserverSystemDict(List<ObserverSystemAttribute> observerSystemAttributes)
-    {
-        Dictionary<string, List<ObserverSystemAttribute>> observerSystemAttributesDict = new Dictionary<string, List<ObserverSystemAttribute>>();
-
-        foreach (ObserverSystemAttribute attribute in observerSystemAttributes)
-        {
-
-            if (observerSystemAttributesDict.ContainsKey(attribute.ObserverType.ToString()))
-            { 
-                observerSystemAttributesDict[attribute.ObserverType.ToString()].Add(attribute);
-
-            }
-            else
-            {
-                observerSystemAttributesDict.Add(attribute.ObserverType.ToString(), new List<ObserverSystemAttribute>() { attribute });
-            }
-        }
-
-        return Task.FromResult(observerSystemAttributesDict);
-    }
-
     public static bool DoesFileExist(string path)
     {
         if (path == null)

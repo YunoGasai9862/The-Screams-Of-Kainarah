@@ -2,7 +2,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(MonsterFollow))]
 public class MonsterFollow : StateMachineBehaviour, IObserver<GameState>
 {
     public static GameObject Player;

@@ -8,7 +8,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(DialogueManager))]
 public class DialogueManager : MonoBehaviour, IObserver<GameState> { 
 
 

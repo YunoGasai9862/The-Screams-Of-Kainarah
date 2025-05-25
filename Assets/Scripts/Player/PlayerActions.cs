@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(PlayerActions))]
 public class PlayerActions : MonoBehaviour, IObserver<GameState>
 {
     private PlayerInput _playerInput;

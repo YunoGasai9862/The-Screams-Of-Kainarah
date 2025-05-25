@@ -9,8 +9,6 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 
-[ObserverSystem(SubjectType = typeof(AsyncCoroutine), ObserverType = typeof(AWSPolllyManagement))]
-[ObserverSystem(SubjectType = typeof(IObserver<IAWSPolly>), ObserverType = typeof(FirebaseStorageManager))]
 public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseStorageManager>, IObserver<AsyncCoroutine>, ISubject<IObserver<IAWSPolly>>
 {
     private const int AWS_ACCESS_KEY_INDEX = 0;

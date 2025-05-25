@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using static SceneData;
-[ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(RakashManager))]
 public class RakashManager : AbstractEntity, IObserver<GameState>
 {
     private GameObject _player;

@@ -2,10 +2,6 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-//make sure this gets live beforehand - perhaps add it in the preloading scheme
-//no need to specify observer as there can be many
-//TODO since observer type is required, see if you can use something generic
-[ObserverSystem(SubjectType = typeof(GlobalGameState))]
 public class GlobalGameState: MonoBehaviour, ISubject<IObserver<GameState>>
 {
     private List<IObserver<GameState>> GameStateListeners { get; set; } = new List<IObserver<GameState>> { };

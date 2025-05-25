@@ -2,7 +2,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(MonsterMovement))]
 public class MonsterMovement : StateMachineBehaviour, IObserver<GameState>
 {
     private const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;

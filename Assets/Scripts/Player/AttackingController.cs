@@ -4,8 +4,6 @@ using PlayerAnimationHandler;
 using System;
 using System.Threading;
 using UnityEngine;
-
-[ObserverSystem(SubjectType = typeof(GlobalGameState), ObserverType = typeof(AttackingController))]
 public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<GameState>
 {
     private const float TIME_DIFFERENCE_MAX = 1.5f;
