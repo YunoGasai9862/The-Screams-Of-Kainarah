@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -62,7 +63,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
     private IEnumerator PrepareDataForCustomLightningGeneration(IObserver<LightPackage> observer)
     {
-        yield return new WaitUntil(() => lightPackageDelegator != null);
+        yield return new WaitUntil(() => IsReadyToCustomLightningEntity());
 
         StartCoroutine(PingCustomLightning(PrepareLightPackage(), observer, delayBetweenExecution));
     }
@@ -99,5 +100,14 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
             yield return new WaitForSeconds(delayPerExecutionInSeconds);
         }
+    }
+
+    private bool IsReadyToCustomLightningEntity()
+    {
+        return !Helper.AreObjectsNull(new List<UnityEngine.Object>
+        {
+            lightPreprocessDelegator
+        })
+            && CelestialLightningLightPreprocess != null;
     }
 }

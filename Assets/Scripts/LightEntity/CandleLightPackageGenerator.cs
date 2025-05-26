@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -66,7 +67,6 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         {
             lightPackage.LightSemaphore.WaitAsync(); //take the semaphore (will be released by the custom lightning class)
 
-
             lightPackage.LightProperties.ShouldLightPulse = Vector2.Distance(PlayersTransform.transform.position, gameObject.transform.position) < minDistanceFromPlayerForLightFlicker ? true : false;
 
             StartCoroutine(lightPackageDelegator.NotifyObserver(observer, lightPackage, new NotificationContext()
@@ -93,7 +93,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
     private IEnumerator PrepareDataForCustomLightningGeneration(IObserver<LightPackage> observer)
     {
-        yield return new WaitUntil(() => lightPreprocessDelegator != null);
+        yield return new WaitUntil(() => IsReadyToCustomLightningEntity());
 
         StartCoroutine(PingCustomLightning(PrepareLightPackage(), observer, delayBetweenExecution));
     }
@@ -118,5 +118,14 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     public void OnNotify(Transform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayersTransform = data;
+    }
+
+    private bool IsReadyToCustomLightningEntity()
+    {
+        return !Helper.AreObjectsNull(new List<UnityEngine.Object>
+        {
+            lightPreprocessDelegator, PlayersTransform
+        })
+            && LightPreprocess != null;
     }
 }

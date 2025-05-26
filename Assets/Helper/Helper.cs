@@ -93,6 +93,19 @@ public class Helper: MonoBehaviour
         return obj == null;
     }
 
+    public static bool AreObjectsNull(List<UnityEngine.Object> objects)
+    {
+        foreach (UnityEngine.Object obj in objects)
+        {
+            if (IsObjectNull(obj))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static int GetSecondsFromMilliSeconds(int milliSeconds)
     {
         return milliSeconds / 1000;
