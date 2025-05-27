@@ -15,7 +15,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     private bool _isPlayerEligibleForStartingAttack = false;
     private float timeDifferencebetweenStates;
 
-    private GameState CurrentGameState { get; set; }
+    private GameState CurrentGameState { get; set; } = GameState.FREE_MOVEMENT;
 
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
@@ -27,6 +27,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     [SerializeField] string jumpAttackStateName;
     [SerializeField] string booksAttackStateName;
     [SerializeField] PowerUpBarFillEvent powerUpBarFillEvent;
+    [SerializeField] GlobalGameStateDelegator gameStateDelegator;
 
     private MouseClickEvent _onMouseClickEvent = new MouseClickEvent();
 
@@ -55,6 +56,13 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
 
     private void Start()
     {
+        StartCoroutine(gameStateDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(GlobalGameStateManager).ToString()
+        }, CancellationToken.None));
+
         //event subscription
         _onMouseClickEvent.AddListener(SetMouseClickBeginEndTime);
         _playerBoostAttackEvent.AddListener(SetAttackBoostMode);
@@ -249,6 +257,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
+        Debug.Log($"Attack State Updated: {data}");
+
         CurrentGameState = data;
     }
 }

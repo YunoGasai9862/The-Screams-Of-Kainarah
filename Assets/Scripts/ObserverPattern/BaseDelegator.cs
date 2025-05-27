@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using System;
-using Amazon.Runtime.Internal.Transform;
 
 public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 {
@@ -29,7 +28,6 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
 public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 {
-    //support for multiple subjects per script/subject type (same script can be attached to multiple game objects)
     protected Dictionary<string, Dictionary<string, Subject<IObserver<T>>>> SubjectsDict { get; set; }
 
     public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
@@ -55,8 +53,6 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         {
             foreach(Subject<IObserver<T>> subject in subjects.Values)
             {
-                Debug.Log($"Notifying: {subject} - from {observer}");
-
                 yield return new WaitUntil(() => !Helper.IsSubjectNull(subject));
 
                 subject.NotifySubject(observer, notificationContext, cancellationToken);

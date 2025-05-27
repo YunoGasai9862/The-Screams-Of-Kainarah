@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -23,9 +20,12 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
     private IReceiver<bool> _throwingProjectileReceiver;
     private Command<bool> _throwingProjectileCommand;
     private PlayerActionsModel _playerActionsModel;
-    private GameState CurrentGameState { get; set; }
+    private GameState CurrentGameState { get; set; } = GameState.FREE_MOVEMENT;
 
     [SerializeField] float _characterSpeed = 10f;
+
+    [SerializeField]
+    GlobalGameStateDelegator gameStateDelegator;
 
     public LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
     public SlidingController SlidingController { get => GetComponent<SlidingController>(); }
@@ -72,6 +72,13 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
 
     private void Start()
     {
+        StartCoroutine(gameStateDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(GlobalGameStateManager).ToString()
+        }, CancellationToken.None));
+
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
         _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
         _rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
@@ -85,36 +92,37 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
     {
         //make it better - but still this is an improvement, enhancement from singleton
         //more modular
-        if (!CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
-        {
-            //movement
-            _keystrokeTrack = PlayerMovement();
 
-            //Flipping
-            if (KeystrokeMagnitudeChecker(_keystrokeTrack))
-            {
-                if (!PlayerVariables.Instance.IS_GRABBING)
-                    FlipCharacter(_keystrokeTrack);
-            }
-
-            //jumping
-            _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
-
-            //ledge grab
-            if (PlayerVariables.Instance.IS_GRABBING) //tackles the ledgeGrab
-            {
-                LedgeGrabController.PerformLedgeGrab();
-            }
-
-            //sliding
-            if (_playerActionsModel.GetSlidePressed && !PlayerVariables.Instance.slideVariableEvent.PlayerFinishedSliding)
-                _slideCommand.Execute();
-            else
-                _slideCommand.Cancel();
-        }else
+        if (CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE)) 
         {
             _animationHandler.UpdateMovementState(PlayerAnimationHandler.AnimationStateKeeper.StateKeeper.IDLE, false, true);
+            return;
         }
+
+        //movement
+        _keystrokeTrack = PlayerMovement();
+
+        //Flipping
+        if (KeystrokeMagnitudeChecker(_keystrokeTrack))
+        {
+            if (!PlayerVariables.Instance.IS_GRABBING)
+                FlipCharacter(_keystrokeTrack);
+        }
+
+        //jumping
+        _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
+
+        //ledge grab
+        if (PlayerVariables.Instance.IS_GRABBING) //tackles the ledgeGrab
+        {
+            LedgeGrabController.PerformLedgeGrab();
+        }
+
+        //sliding
+        if (_playerActionsModel.GetSlidePressed && !PlayerVariables.Instance.slideVariableEvent.PlayerFinishedSliding)
+            _slideCommand.Execute();
+        else
+            _slideCommand.Cancel();
 
     }
 
@@ -244,6 +252,8 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
+        Debug.Log($"State Updated: {data}");
+
         CurrentGameState = data;
     }
 

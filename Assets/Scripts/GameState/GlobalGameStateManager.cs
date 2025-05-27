@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class GlobalGameState: MonoBehaviour, ISubject<IObserver<GameState>>
+public class GlobalGameStateManager: MonoBehaviour, ISubject<IObserver<GameState>>
 {
     private List<IObserver<GameState>> GameStateListeners { get; set; } = new List<IObserver<GameState>> { };
 
@@ -12,30 +13,44 @@ public class GlobalGameState: MonoBehaviour, ISubject<IObserver<GameState>>
     [SerializeField]
     public GlobalGameStateDelegator globalGameStateDelegator;
 
+    private GameState GlobalGameState { get; set; } = GameState.FREE_MOVEMENT;
+
 
     private void Start()
     {
         gameStateEvent.AddListener(PingGameStateListeners);
 
-        globalGameStateDelegator.AddToSubjectsDict(typeof(GlobalGameState).ToString(), gameObject.name, new Subject<IObserver<GameState>>());
+        globalGameStateDelegator.AddToSubjectsDict(typeof(GlobalGameStateManager).ToString(), gameObject.name, new Subject<IObserver<GameState>>());
 
-        globalGameStateDelegator.GetSubsetSubjectsDictionary(typeof(GlobalGameState).ToString())[gameObject.name].SetSubject(this);
+        globalGameStateDelegator.GetSubsetSubjectsDictionary(typeof(GlobalGameStateManager).ToString())[gameObject.name].SetSubject(this);
     }
 
-    public void PingGameStateListeners(GameState gameState)
+    public async void PingGameStateListeners(GameState gameState)
     {
-        foreach(IObserver<GameState> listener in GameStateListeners)
-        {
-            globalGameStateDelegator.NotifyObserver(listener, gameState, new NotificationContext()
-            {
-                SubjectType = typeof(GlobalGameState).ToString()
+        GlobalGameState = gameState;
 
-            }, CancellationToken.None);
+        foreach (IObserver<GameState> listener in GameStateListeners)
+        {
+            await NotifyObserver(listener, gameState, CancellationToken.None);
         }
     }
 
-    public void OnNotifySubject(IObserver<GameState> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public async void OnNotifySubject(IObserver<GameState> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         GameStateListeners.Add(data);
+
+        //send the current global game state to the user
+        await NotifyObserver(data, GlobalGameState, cancellationToken);
+    }
+
+    private Task NotifyObserver(IObserver<GameState> observer, GameState gameState, CancellationToken cancellationToken)
+    {
+        StartCoroutine(globalGameStateDelegator.NotifyObserver(observer, gameState, new NotificationContext()
+        {
+            SubjectType = typeof(GlobalGameStateManager).ToString()
+
+        }, cancellationToken));
+
+        return Task.CompletedTask;
     }
 }
