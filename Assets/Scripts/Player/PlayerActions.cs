@@ -20,12 +20,10 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
     private IReceiver<bool> _throwingProjectileReceiver;
     private Command<bool> _throwingProjectileCommand;
     private PlayerActionsModel _playerActionsModel;
-    private GameState CurrentGameState { get; set; } = GameState.FREE_MOVEMENT;
+    private GlobalGameStateDelegator _globalGameStateDelegator;
+    private GameState CurrentGameState { get; set; }
 
     [SerializeField] float _characterSpeed = 10f;
-
-    [SerializeField]
-    GlobalGameStateDelegator gameStateDelegator;
 
     public LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
     public SlidingController SlidingController { get => GetComponent<SlidingController>(); }
@@ -55,6 +53,8 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
         _rb = GetComponent<Rigidbody2D>();
         _playerActionsModel.OriginalSpeed = _characterSpeed;
 
+        _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
         _rocky2DActions.PlayerMovement.Jump.started += BeginJumpAction; //i can add the same function
         _rocky2DActions.PlayerMovement.Jump.canceled += EndJumpAction;
         _rocky2DActions.PlayerMovement.Slide.started += BeginSlideAction;
@@ -72,7 +72,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
 
     private void Start()
     {
-        StartCoroutine(gameStateDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(_globalGameStateDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
@@ -93,6 +93,8 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
         //make it better - but still this is an improvement, enhancement from singleton
         //more modular
 
+        //think of making it more better
+        //make it entirely event based
         if (CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE)) 
         {
             _animationHandler.UpdateMovementState(PlayerAnimationHandler.AnimationStateKeeper.StateKeeper.IDLE, false, true);
@@ -252,8 +254,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log($"State Updated: {data}");
-
         CurrentGameState = data;
     }
 

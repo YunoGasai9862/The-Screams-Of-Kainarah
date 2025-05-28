@@ -14,8 +14,9 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     private MovementHelperClass _movementHelper;
     private bool _isPlayerEligibleForStartingAttack = false;
     private float timeDifferencebetweenStates;
+    private GlobalGameStateDelegator _globalGameStateDelegator;
 
-    private GameState CurrentGameState { get; set; } = GameState.FREE_MOVEMENT;
+    private GameState CurrentGameState { get; set; }
 
     [SerializeField] LayerMask Ground;
     [SerializeField] LayerMask ledge;
@@ -27,7 +28,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     [SerializeField] string jumpAttackStateName;
     [SerializeField] string booksAttackStateName;
     [SerializeField] PowerUpBarFillEvent powerUpBarFillEvent;
-    [SerializeField] GlobalGameStateDelegator gameStateDelegator;
 
     private MouseClickEvent _onMouseClickEvent = new MouseClickEvent();
 
@@ -45,6 +45,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     {
         _anim = GetComponent<Animator>();
 
+        _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
         PlayerAttackStateMachine = new PlayerAttackStateMachine(_anim);
 
         col = GetComponent<CapsuleCollider2D>();
@@ -56,7 +58,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
 
     private void Start()
     {
-        StartCoroutine(gameStateDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(_globalGameStateDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
@@ -257,8 +259,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log($"Attack State Updated: {data}");
-
         CurrentGameState = data;
     }
 }

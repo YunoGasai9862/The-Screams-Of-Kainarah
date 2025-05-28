@@ -6,8 +6,15 @@ public class MonsterMovement : StateMachineBehaviour, IObserver<GameState>
 {
     private const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
 
-    private bool IsDialogueTakingPlace { get; set; }
+    private GameState GameState { get; set; }
 
+
+    private GlobalGameStateDelegator GameStateDelegator { get; set; }
+
+    private void Awake()
+    {
+        GameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+    }
 
 
     //OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -15,7 +22,7 @@ public class MonsterMovement : StateMachineBehaviour, IObserver<GameState>
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
-        if (IsDialogueTakingPlace)
+        if (!GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
             if (MonsterFollow.Player != null && HelperFunctions.CheckDistance(animator, 15f, 3f, MonsterFollow.Player))
             {
@@ -36,7 +43,7 @@ public class MonsterMovement : StateMachineBehaviour, IObserver<GameState>
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new System.NotImplementedException();
+        GameState = data;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

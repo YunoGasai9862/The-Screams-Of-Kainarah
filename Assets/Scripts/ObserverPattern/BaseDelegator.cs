@@ -96,11 +96,6 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         });
     }
 
-    public Dictionary<string, Dictionary<string, Subject<IObserver<T>>>> GetMainSubjectsDictionary()
-    {
-        return SubjectsDict;
-    }
-
     public Dictionary<string, Subject<IObserver<T>>> GetSubsetSubjectsDictionary(string key)
     {
         if (SubjectsDict.TryGetValue(key, out Dictionary<string, Subject<IObserver<T>>> subject))

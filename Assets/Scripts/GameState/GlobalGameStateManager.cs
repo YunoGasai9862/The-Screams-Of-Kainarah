@@ -39,7 +39,6 @@ public class GlobalGameStateManager: MonoBehaviour, ISubject<IObserver<GameState
     {
         GameStateListeners.Add(data);
 
-        //send the current global game state to the user
         await NotifyObserver(data, GlobalGameState, cancellationToken);
     }
 
