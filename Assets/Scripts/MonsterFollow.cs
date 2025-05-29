@@ -10,12 +10,19 @@ public class MonsterFollow : StateMachineBehaviour, IObserver<GameState>
 
     private GameState GameState { get; set; }
 
-    //find a way to run these
     private GlobalGameStateDelegator GameStateDelegator { get; set; }
 
     private void Awake()
     {
         GameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
+        GameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        {
+            ObserverName = this.name,
+            ObserverTag = this.name,
+            SubjectType = typeof(GameStateManager).ToString()
+
+        }, CancellationToken.None);
     }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -27,6 +34,7 @@ public class MonsterFollow : StateMachineBehaviour, IObserver<GameState>
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        //improve later
         if (!GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
             if (Player != null && HelperFunctions.CheckDistance(animator, 15f, 3f, Player))
@@ -44,6 +52,7 @@ public class MonsterFollow : StateMachineBehaviour, IObserver<GameState>
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
+        Debug.Log("State Machine data MonsterFollow : )");
         GameState = data;
     }
 }

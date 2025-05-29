@@ -49,6 +49,8 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
             throw new ApplicationException($"Subject type is null - please add it in the notification context object!");
         }
 
+        yield return new WaitUntil(() => !Helper.IsObjectNull(SubjectsDict));
+
         if (SubjectsDict.TryGetValue(notificationContext.SubjectType, out Dictionary<string, Subject<IObserver<T>>> subjects))
         {
             foreach(Subject<IObserver<T>> subject in subjects.Values)

@@ -96,6 +96,8 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState> {
     {
         foreach(INotify<bool> listener in dialogueListeners)
         {
+            Debug.Log("Here in Ping Listeners!");
+
             listener.Notify(dialogueConcluded);
         }
     }

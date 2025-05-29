@@ -14,6 +14,14 @@ public class MonsterMovement : StateMachineBehaviour, IObserver<GameState>
     private void Awake()
     {
         GameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
+        GameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        {
+            ObserverName = this.name,
+            ObserverTag = this.name,
+            SubjectType = typeof(GameStateManager).ToString()
+
+        }, CancellationToken.None);
     }
 
 
