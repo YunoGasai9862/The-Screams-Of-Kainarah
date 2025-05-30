@@ -2,7 +2,7 @@ using System.Collections;
 using System.Threading;
 using UnityEngine;
 
-public class DialogueTriggerManager : MonoBehaviour
+public class DialogueTriggerManager : MonoBehaviour, IObserver<GameState>
 {
     private int DialogueCounter { get; set; } = 0;
     private GameState GameState { get; set; }
@@ -12,15 +12,25 @@ public class DialogueTriggerManager : MonoBehaviour
     public DialogueTriggerEvent dialogueTriggerEvent;
     [SerializeField]
     public GameStateEvent gameStateEvent;
+    [SerializeField]
+    GlobalGameStateDelegator globalGameStateDelegator;
 
     private void Start()
     {
         dialogueTriggerEvent.AddListener(TriggerCoroutine);
+
+        globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        {
+            ObserverName = this.name,
+            ObserverTag = this.name,
+            SubjectType = typeof(GlobalGameStateManager).ToString()
+
+        }, CancellationToken.None);
     }
 
     private IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        SetGameStateAndBroadcast(GameState.DIALOGUE_TAKING_PLACE);
+        BroadCastGameState(GameState.DIALOGUE_TAKING_PLACE);
 
         foreach (DialogueSetup dialogue in dialogueSystem.DialogueSetup)
         {
@@ -44,22 +54,25 @@ public class DialogueTriggerManager : MonoBehaviour
             }
         }
 
-        SetGameStateAndBroadcast(GameState.DIALOGUE_TAKING_PLACE);
-
     }
 
     public void TriggerCoroutine(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
+        Debug.Log("here!");
+
         if(GameState != GameState.DIALOGUE_TAKING_PLACE && !dialogueSystem.DialogueSettings.DialogueConcluded)
         {
             Coroutine triggerDialogueCoroutine = StartCoroutine(TriggerDialogue(dialogueSystem));
         }
     }
 
-    private void SetGameStateAndBroadcast(GameState value)
+    private void BroadCastGameState(GameState value)
     {
-        GameState = value;
-
         gameStateEvent.Invoke(value);
+    }
+
+    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        GameState = data;
     }
 }

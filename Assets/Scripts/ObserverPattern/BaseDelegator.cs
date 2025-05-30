@@ -37,6 +37,7 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         yield return null;
     }
 
+    //later convert it to for-loop based retry method
     public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
     {
         if (maxRetries == 0)

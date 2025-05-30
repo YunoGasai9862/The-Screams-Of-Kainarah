@@ -9,7 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3411736711016420480}
-  - component: {fileID: 3411736711016420481}
+  - component: {fileID: 9184528147505518850}
+  - component: {fileID: 3562592736067886651}
+  - component: {fileID: 850402733923161580}
   m_Layer: 0
   m_Name: DialogueManager
   m_TagString: DialogueManager
@@ -32,7 +34,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3411736711016420481
+--- !u!114 &9184528147505518850
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,12 +43,40 @@ MonoBehaviour:
   m_GameObject: {fileID: 3411736711016420483}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d692e11ba6abdf409ce541da679e69d, type: 3}
+  m_Script: {fileID: 11500000, guid: c8efb056396af0e4c80d3b92b783effb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   myname: {fileID: 0}
   maindialogue: {fileID: 0}
   myanimator: {fileID: 0}
   nextDialogueTriggerEvent: {fileID: 0}
-  dialogueTakingPlaceEvent: {fileID: 0}
   audioTriggerEvent: {fileID: 0}
+  globalGameStateDelegator: {fileID: 0}
+--- !u!114 &3562592736067886651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3411736711016420483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b62bbe21ed7c7f4cafa63aefc00bddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DialoguesAndOptions: {fileID: 11400000, guid: 399be5f2e16fa6147acdfdb4b6cf785b, type: 2}
+  dialogueTriggerEvent: {fileID: 7796256848706690135, guid: dbdc1cbe1bf814148afa12f2338e0aa3, type: 3}
+--- !u!114 &850402733923161580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3411736711016420483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 990640486c2936040b93e31689f03a34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueTriggerEvent: {fileID: 7796256848706690135, guid: dbdc1cbe1bf814148afa12f2338e0aa3, type: 3}
+  gameStateEvent: {fileID: 1507967191107950637, guid: dbdc1cbe1bf814148afa12f2338e0aa3, type: 3}

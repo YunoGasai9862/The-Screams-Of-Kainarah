@@ -20,7 +20,7 @@ public class MonsterFollow : StateMachineBehaviour, IObserver<GameState>
         {
             ObserverName = this.name,
             ObserverTag = this.name,
-            SubjectType = typeof(GameStateManager).ToString()
+            SubjectType = typeof(GlobalGameStateManager).ToString()
 
         }, CancellationToken.None);
     }

@@ -19,7 +19,7 @@ public class MonsterMovement : StateMachineBehaviour, IObserver<GameState>
         {
             ObserverName = this.name,
             ObserverTag = this.name,
-            SubjectType = typeof(GameStateManager).ToString()
+            SubjectType = typeof(GlobalGameStateManager).ToString()
 
         }, CancellationToken.None);
     }

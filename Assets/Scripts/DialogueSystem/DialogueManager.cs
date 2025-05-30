@@ -8,9 +8,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DialogueManager : MonoBehaviour, IObserver<GameState> { 
-
-
+public class DialogueManager : MonoBehaviour, IObserver<GameState>
+{ 
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
     private const float ANIMATION_DELAY = 0.05f;
 
@@ -24,10 +23,20 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState> {
     [SerializeField]
     public NextDialogueTriggerEvent nextDialogueTriggerEvent;
     public AudioTriggerEvent audioTriggerEvent;
+    [SerializeField]
+    GlobalGameStateDelegator globalGameStateDelegator;
 
     void Start()
     {
         nextDialogueTriggerEvent.AddListener(ShouldProceedToNextDialogue);
+
+        globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        {
+            ObserverName = this.name,
+            ObserverTag = this.name,
+            SubjectType = typeof(GlobalGameStateManager).ToString()
+
+        }, CancellationToken.None);
     }
 
     public async void PrepareDialoguesQueue(DialogueSetup dialogueSetup)
