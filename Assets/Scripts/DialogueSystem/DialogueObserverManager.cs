@@ -12,11 +12,6 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
     [Header("Triggering Event")]
     [SerializeField] DialogueTriggerEvent dialogueTriggerEvent;
 
-    private void Awake()
-    {
-        Debug.Log("Here! Awake!");
-    }
-
     private async Task TriggerDialogue(DialogueSystem dialogueSystem)
     {
         await dialogueTriggerEvent.Invoke(dialogueSystem);
@@ -33,8 +28,8 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
 
     public async void OnNotify(DialogueSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log(data);
-
+        //make this the observer instead for the dialogue taking place
+        //FIX THIS
         if (data.DialogueSettings.ShouldTriggerDialogue)
         {
             await TriggerDialogue(data);

@@ -50,29 +50,34 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GameState>
 
                 DialogueCounter = 0;
 
+                BroadCastGameState(GameState.FREE_MOVEMENT);
+
                 yield return null;
             }
         }
-
     }
 
     public void TriggerCoroutine(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        Debug.Log("here!");
-
-        if(GameState != GameState.DIALOGUE_TAKING_PLACE && !dialogueSystem.DialogueSettings.DialogueConcluded)
+        if (GameState == GameState.DIALOGUE_TAKING_PLACE || dialogueSystem.DialogueSettings.DialogueConcluded)
         {
-            Coroutine triggerDialogueCoroutine = StartCoroutine(TriggerDialogue(dialogueSystem));
+            return;
         }
+
+        //FIX THIS 
+        GameState = GameState.DIALOGUE_TAKING_PLACE;
+
+        Coroutine triggerDialogueCoroutine = StartCoroutine(TriggerDialogue(dialogueSystem));
     }
 
-    private void BroadCastGameState(GameState value)
+    private async void BroadCastGameState(GameState value)
     {
-        gameStateEvent.Invoke(value);
+        await gameStateEvent.Invoke(value);
     }
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
+        Debug.Log($"Data: {data}");
         GameState = data;
     }
 }

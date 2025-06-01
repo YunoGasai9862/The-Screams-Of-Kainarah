@@ -19,7 +19,7 @@ MonoBehaviour:
       _dialogues:
       - _sentence: Hello, is anyone out there?????
         _audioInfo:
-          _audioName: 
+          _audioName: Kainera
           audioPath: 
       _dialogueSubscriberEntities:
       - _entity: {fileID: 2162997534625558111, guid: ced37d8fda09e2e4393f3ca890a8df38, type: 3}

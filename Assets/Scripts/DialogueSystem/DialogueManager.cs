@@ -1,5 +1,4 @@
 
-using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,16 +12,19 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState>
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
     private const float ANIMATION_DELAY = 0.05f;
 
-    public TextMeshProUGUI myname;
-    public Text maindialogue;
-    public Animator myanimator;
-
     private bool NextDialogue { get; set; } = false;
     private DialoguePiece DialoguePiece { get; set; } = new DialoguePiece();
 
     [SerializeField]
-    public NextDialogueTriggerEvent nextDialogueTriggerEvent;
-    public AudioTriggerEvent audioTriggerEvent;
+    TextMeshProUGUI interlocutorTextArea;
+    [SerializeField]
+    Text dialogueTextArea;
+    [SerializeField]
+    Animator dialogueTextAreaAnimation;
+    [SerializeField]
+    NextDialogueTriggerEvent nextDialogueTriggerEvent;
+    [SerializeField]
+    AudioTriggerEvent audioTriggerEvent;
     [SerializeField]
     GlobalGameStateDelegator globalGameStateDelegator;
 
@@ -43,7 +45,7 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState>
     {
         DialoguePiece.DialogueQueue.Clear();  //clears the previous dialogues, if there are any
 
-        myname.text = dialogueSetup.EntityName;
+        interlocutorTextArea.text = dialogueSetup.EntityName;
 
         foreach (Dialogue dialogue in dialogueSetup.Dialogues)
         {
@@ -58,18 +60,20 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState>
 
     private IEnumerator AnimateLetters(string sentence, float animationDelay)
     {
-        maindialogue.text = string.Empty;
+        dialogueTextArea.text = string.Empty;
 
         for (int i = 0; i < sentence.Length; i++)
         {
             yield return new WaitForSeconds(animationDelay);
 
-            maindialogue.text += sentence[i];
+            dialogueTextArea.text += sentence[i];
         }
     }
 
     public IEnumerator StartDialogue(SemaphoreSlim dialogueSemaphore)
     {
+        dialogueTextAreaAnimation.SetBool(DIALOGUE_ANIMATION_NAME, true);
+
         if (DialoguePiece.DialogueQueue.Count == 0) 
         {
             dialogueSemaphore.Release();
@@ -98,6 +102,8 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState>
 
     private void ShouldProceedToNextDialogue(bool value)
     {
+        Debug.Log($"ShouldProceedToNextDialogue {value}");
+
         NextDialogue = value;
     }
 
@@ -113,8 +119,10 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState>
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        //ill need to add this here because it was before in EndDialogue
-        //myanimator.SetBool(DIALOGUE_ANIMATION_NAME, dialogueTakingPlace);
-        throw new NotImplementedException();
+        Debug.Log($"OnNotifyForDialogueManager {data}");
+
+        //FIX THIS
+
+        dialogueTextAreaAnimation.SetBool(DIALOGUE_ANIMATION_NAME, data.Equals(GameState.DIALOGUE_TAKING_PLACE) ? true: false);
     }
 }

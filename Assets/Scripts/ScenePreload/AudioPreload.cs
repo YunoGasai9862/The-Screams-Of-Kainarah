@@ -65,9 +65,10 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
                 string audioPath = $"{PersistencePath}\\{audioName}.{OutputFormat.FindValue(OutputFormat.Mp3)}";
 
+                dialogues.Dialogues[i].AudioInfo.AudioPath = audioPath;
+
                 if (Helper.DoesFileExist(audioPath))
                 {
-                    //audio already exists - so does the AudioPath - just skip the iteration
                     continue;
                 }
 
@@ -75,7 +76,6 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
                 yield return new WaitUntil(() => AudioGenerated == true);
 
-                dialogues.Dialogues[i].AudioInfo.AudioPath = $"{PersistencePath}\\{audioName}.{OutputFormat.FindValue(OutputFormat.Mp3)}";
 
                 AudioGenerated = false;
             }
