@@ -19,25 +19,6 @@ public class DialogueSetup
     public string EntityName { get => _entityName; }
     public Dialogue[] Dialogues { get => _dialogues; set => _dialogues = value; }
     public string Voice { get => _voice; }
-
-    public List<INotify<bool>> DialogueSubscriberEntities
-    {
-        get 
-        {
-            if (DialogueSubscriberEntities.Count == 0)
-            {
-                DialogueSubscriberEntities = PrefillINotifyForDialogueSubscriberEntities();
-            }
-
-            return DialogueSubscriberEntities;
-        }
-
-        set
-        {
-            DialogueSubscriberEntities = value;
-        }
-    }
-
     public VoiceId VoiceID { get => ParseVoiceId();}
 
     public VoiceId ParseVoiceId()
@@ -58,11 +39,11 @@ public class DialogueSetup
     {
         List<INotify<bool>> entities = new List<INotify<bool>>();
 
-        foreach(DialogueSubscriberEntity subscriberEntity in _dialogueSubscriberEntities)
+        foreach (DialogueSubscriberEntity subscriberEntity in _dialogueSubscriberEntities)
         {
-           INotify<bool> notify = subscriberEntity.Entity.GetComponent<INotify<bool>>();
+            INotify<bool> notify = subscriberEntity.Entity.GetComponent<INotify<bool>>();
 
-           if (notify == null)
+            if (notify == null)
             {
                 continue;
             }

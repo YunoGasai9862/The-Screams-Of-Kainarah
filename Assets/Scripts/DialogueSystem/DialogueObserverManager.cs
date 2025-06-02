@@ -4,13 +4,18 @@ using System.Threading.Tasks;
 using UnityEngine;
 using static DialoguesAndOptions;
 
-public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
+public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>, IObserver<GameState>
 {
     [Header("Dialogues And Options")]
     [SerializeField] DialoguesAndOptions DialoguesAndOptions;
 
     [Header("Triggering Event")]
     [SerializeField] DialogueTriggerEvent dialogueTriggerEvent;
+
+    [Header("Triggering Event")]
+    [SerializeField] GlobalGameStateDelegator globalGameStateDelegator;
+
+    private GameState GameState { get; set; }
 
     private async Task TriggerDialogue(DialogueSystem dialogueSystem)
     {
@@ -26,13 +31,31 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>
         PlayerObserverListenerHelper.DialogueSystem.RemoveOberver(this); 
     }
 
+    private void Start()
+    {
+        globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        {
+            ObserverName = this.name,
+            ObserverTag = this.name,
+            SubjectType = typeof(GlobalGameStateManager).ToString()
+
+        }, CancellationToken.None);
+    }
+
     public async void OnNotify(DialogueSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        //make this the observer instead for the dialogue taking place
-        //FIX THIS
-        if (data.DialogueSettings.ShouldTriggerDialogue)
+        Debug.Log(GameState);
+
+        if (data.DialogueSettings.ShouldTriggerDialogue && !GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
             await TriggerDialogue(data);
         }
+    }
+
+    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        Debug.Log($"Initial: {data}");
+
+        GameState = data;
     }
 }

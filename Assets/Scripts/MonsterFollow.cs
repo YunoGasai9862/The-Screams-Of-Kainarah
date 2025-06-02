@@ -52,7 +52,6 @@ public class MonsterFollow : StateMachineBehaviour, IObserver<GameState>
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log("State Machine data MonsterFollow : )");
         GameState = data;
     }
 }

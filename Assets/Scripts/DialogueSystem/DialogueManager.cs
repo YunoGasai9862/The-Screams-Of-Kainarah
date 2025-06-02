@@ -7,7 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DialogueManager : MonoBehaviour, IObserver<GameState>
+public class DialogueManager : MonoBehaviour
 { 
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
     private const float ANIMATION_DELAY = 0.05f;
@@ -25,20 +25,10 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState>
     NextDialogueTriggerEvent nextDialogueTriggerEvent;
     [SerializeField]
     AudioTriggerEvent audioTriggerEvent;
-    [SerializeField]
-    GlobalGameStateDelegator globalGameStateDelegator;
 
     void Start()
     {
         nextDialogueTriggerEvent.AddListener(ShouldProceedToNextDialogue);
-
-        globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
-        {
-            ObserverName = this.name,
-            ObserverTag = this.name,
-            SubjectType = typeof(GlobalGameStateManager).ToString()
-
-        }, CancellationToken.None);
     }
 
     public async void PrepareDialoguesQueue(DialogueSetup dialogueSetup)
@@ -46,6 +36,8 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState>
         DialoguePiece.DialogueQueue.Clear();  //clears the previous dialogues, if there are any
 
         interlocutorTextArea.text = dialogueSetup.EntityName;
+
+        DialoguePiece.DialogueListeners = dialogueSetup.PrefillINotifyForDialogueSubscriberEntities();
 
         foreach (Dialogue dialogue in dialogueSetup.Dialogues)
         {
@@ -78,6 +70,8 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState>
         {
             dialogueSemaphore.Release();
 
+            dialogueTextAreaAnimation.SetBool(DIALOGUE_ANIMATION_NAME, false);
+
             PingListeners(DialoguePiece.DialogueListeners, true);
 
             yield return null;
@@ -102,27 +96,18 @@ public class DialogueManager : MonoBehaviour, IObserver<GameState>
 
     private void ShouldProceedToNextDialogue(bool value)
     {
-        Debug.Log($"ShouldProceedToNextDialogue {value}");
-
         NextDialogue = value;
     }
 
     private void PingListeners(List<INotify<bool>> dialogueListeners, bool dialogueConcluded)
     {
+        Debug.Log(dialogueListeners.Count);
+
         foreach(INotify<bool> listener in dialogueListeners)
         {
             Debug.Log("Here in Ping Listeners!");
 
             listener.Notify(dialogueConcluded);
         }
-    }
-
-    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        Debug.Log($"OnNotifyForDialogueManager {data}");
-
-        //FIX THIS
-
-        dialogueTextAreaAnimation.SetBool(DIALOGUE_ANIMATION_NAME, data.Equals(GameState.DIALOGUE_TAKING_PLACE) ? true: false);
     }
 }

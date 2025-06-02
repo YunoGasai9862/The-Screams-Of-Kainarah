@@ -30,7 +30,7 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GameState>
 
     private IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        BroadCastGameState(GameState.DIALOGUE_TAKING_PLACE);
+        BroadcastGameState(GameState.DIALOGUE_TAKING_PLACE);
 
         foreach (DialogueSetup dialogue in dialogueSystem.DialogueSetup)
         {
@@ -50,7 +50,9 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GameState>
 
                 DialogueCounter = 0;
 
-                BroadCastGameState(GameState.FREE_MOVEMENT);
+                GameState = GameState.FREE_MOVEMENT;
+
+                BroadcastGameState(GameState.FREE_MOVEMENT);
 
                 yield return null;
             }
@@ -64,20 +66,18 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GameState>
             return;
         }
 
-        //FIX THIS 
-        GameState = GameState.DIALOGUE_TAKING_PLACE;
-
         Coroutine triggerDialogueCoroutine = StartCoroutine(TriggerDialogue(dialogueSystem));
     }
 
-    private async void BroadCastGameState(GameState value)
+    private async void BroadcastGameState(GameState value)
     {
+        GameState = value;
+
         await gameStateEvent.Invoke(value);
     }
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log($"Data: {data}");
         GameState = data;
     }
 }
