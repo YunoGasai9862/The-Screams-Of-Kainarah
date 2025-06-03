@@ -5,12 +5,8 @@ public class OpenWares : MonoBehaviour, IObserver<GameState>, INotify<bool>
 {
     [SerializeField] GameObject MagicCircle;
     [SerializeField] GameObject WaresPanel;
+    [SerializeField] GameStateEvent gameStateEvent;
     private GameState CurrentGameState { get; set; }
-
-    //fix this too - why static!
-    //use event driven approach
-    public static bool Buying = false;
-    // Update is called once per frame
 
     private void OnMouseDown()
     {
@@ -18,9 +14,8 @@ public class OpenWares : MonoBehaviour, IObserver<GameState>, INotify<bool>
         {
             WaresPanel.SetActive(true);
 
-            Buying = true;
+            gameStateEvent.Invoke(GameState.SHOPPING);
         }
-
     }
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
@@ -30,8 +25,6 @@ public class OpenWares : MonoBehaviour, IObserver<GameState>, INotify<bool>
 
     public Task Notify(bool value)
     {
-        Debug.Log("Here!");
-
         if (value)
         {
             MagicCircle.SetActive(true);

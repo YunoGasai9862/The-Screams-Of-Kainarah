@@ -185,10 +185,10 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     public bool CanPlayerAttack()
     {
         bool isJumping = PlayerVariables.Instance.IS_JUMPING;
-        bool isBuying = OpenWares.Buying;
         bool isInventoryOpen = SceneSingleton.GetInventoryManager().IsPouchOpen;
 
-        return !CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE) && !isBuying && !isInventoryOpen && !isJumping;
+        return !CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE) &&
+               !CurrentGameState.Equals(GameState.SHOPPING) && !isInventoryOpen && !isJumping;
     }
 
     #region AnimationEventOnTheAnimationItself

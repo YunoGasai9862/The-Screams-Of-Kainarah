@@ -1,7 +1,8 @@
 using System.Collections;
+using System.Threading;
 using UnityEngine;
 
-public class PullUpPanel : MonoBehaviour
+public class PullUpPanel : MonoBehaviour, IObserver<bool>
 {
     private Animator _anim;
     private bool _closePanel = false;
@@ -28,5 +29,10 @@ public class PullUpPanel : MonoBehaviour
         _closePanel = false;
         _anim.SetBool("SufficientFunds", true);
         TriggerHandler.Failure = true;
+    }
+
+    public void OnNotify(bool data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new System.NotImplementedException();
     }
 }

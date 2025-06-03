@@ -1,46 +1,56 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IObserver<GameState>, ISubject<IObserver<bool>>
 {
     private const string DIAMOND_TAG = "Crystal";
     private GameObject m_insideObject;
-    [SerializeField] TMPro.TextMeshProUGUI Funds;
-    private AudioSource transact;
+    private AudioSource m_transact;
+    private bool m_failure = true;
+    private GameState CurrentGameState { get; set; }
 
-    public static bool Failure=true;
+    [SerializeField]
+    TMPro.TextMeshProUGUI funds;
+    [SerializeField] 
+    GlobalGameStateDelegator globalGameStateDelegator;
+
     private void Start()
     {
-        Funds = GameObject.FindGameObjectWithTag("DText").GetComponent<TMPro.TextMeshProUGUI>();
+        funds = GameObject.FindGameObjectWithTag("DText").GetComponent<TMPro.TextMeshProUGUI>();
+
+        globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        {
+            ObserverName = this.name,
+            ObserverTag = this.name,
+            SubjectType = typeof(GlobalGameStateManager).ToString()
+
+        }, CancellationToken.None);
     }
 
     private void Update()
     {
-        if(transact== null && OpenWares.Buying)
+        if(m_transact == null && CurrentGameState.Equals(GameState.SHOPPING))
         {
-            transact = GameObject.FindWithTag("Transact").GetComponent<AudioSource>();
+            m_transact = GameObject.FindWithTag("Transact").GetComponent<AudioSource>();
         }
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (OpenWares.Buying)
+        if (CurrentGameState.Equals(GameState.SHOPPING))
         {
             m_insideObject = eventData.pointerClick.transform.gameObject;
             if (m_insideObject.transform.childCount > 0)
             {
-                if (CheckIfFundsExists(Funds))
+                if (CheckIfFundsExists(funds))
                 {
                     m_insideObject = m_insideObject.transform.GetChild(0).gameObject;
                     InventoryManagementSystem.Instance.AddInvoke(m_insideObject.GetComponent<SpriteRenderer>().sprite, m_insideObject.tag); //the rest of the process is automated in that function
-                    transact.Play();
-                    DecreaseFunds(ref Funds);
+                    m_transact.Play();
+                    DecreaseFunds(ref funds);
                 } 
             }
-
         }
     }
 
@@ -52,23 +62,19 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnPointerExit(PointerEventData eventData)
     {
         gameObject.GetComponent<Animator>().SetTrigger("isNotHighlight");
-
     }
 
     public bool CheckIfFundsExists(TMPro.TextMeshProUGUI _text)
     {
-       
-            int funds = Int32.Parse(_text.text);
-            if (funds == 0)
-            {
+        int funds = Int32.Parse(_text.text);
 
-                 Failure = false;
-                 return false;
-            }
-
+        if (funds == 0)
+        {
+            m_failure = false;
+            return false;
+        }
 
         return true;
-
     }
     public void DecreaseFunds(ref TMPro.TextMeshProUGUI diamondText)
     {
@@ -81,5 +87,15 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
          string funds = await InventoryManagementSystem.Instance.GetItemTagFromInventoryToDecreaseFunds(DIAMOND_TAG);  
          InventoryManagementSystem.Instance.RemoveInvoke(funds);
+    }
+
+    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        CurrentGameState = data;
+    }
+
+    public void OnNotifySubject(IObserver<bool> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        throw new NotImplementedException();
     }
 }

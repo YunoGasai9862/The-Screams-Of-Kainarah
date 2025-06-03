@@ -101,12 +101,8 @@ public class DialogueManager : MonoBehaviour
 
     private void PingListeners(List<INotify<bool>> dialogueListeners, bool dialogueConcluded)
     {
-        Debug.Log(dialogueListeners.Count);
-
         foreach(INotify<bool> listener in dialogueListeners)
         {
-            Debug.Log("Here in Ping Listeners!");
-
             listener.Notify(dialogueConcluded);
         }
     }

@@ -44,8 +44,6 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
 
     public async void OnNotify(DialogueSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log(GameState);
-
         if (data.DialogueSettings.ShouldTriggerDialogue && !GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
             await TriggerDialogue(data);
@@ -54,8 +52,6 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log($"Initial: {data}");
-
         GameState = data;
     }
 }
