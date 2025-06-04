@@ -9,9 +9,10 @@ public class ButtonScript : MonoBehaviour
     {
         panelHandler = new PanelHandler(ref Panel);
     }
+    //TODO delegate it back
     public void ClosePanel()
     {
-        OpenWares.Buying = false;
+        //OpenWares.Buying = false;
         panelHandler.ClosePanel();
     }
 

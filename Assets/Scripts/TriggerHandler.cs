@@ -8,13 +8,15 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private const string DIAMOND_TAG = "Crystal";
     private GameObject m_insideObject;
     private AudioSource m_transact;
-    private bool m_failure = true;
+    private bool m_isSufficientFunds;
     private GameState CurrentGameState { get; set; }
 
     [SerializeField]
     TMPro.TextMeshProUGUI funds;
     [SerializeField] 
     GlobalGameStateDelegator globalGameStateDelegator;
+    [SerializeField]
+    GenericFlagDelegator genericFlagDelegator;
 
     private void Start()
     {
@@ -27,6 +29,11 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             SubjectType = typeof(GlobalGameStateManager).ToString()
 
         }, CancellationToken.None);
+
+        genericFlagDelegator.AddToSubjectsDict(typeof(TriggerHandler).ToString(), gameObject.name, new Subject<IObserver<bool>>());
+
+        genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name].SetSubject(this);
+
     }
 
     private void Update()
@@ -41,9 +48,12 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         if (CurrentGameState.Equals(GameState.SHOPPING))
         {
             m_insideObject = eventData.pointerClick.transform.gameObject;
+
             if (m_insideObject.transform.childCount > 0)
             {
-                if (CheckIfFundsExists(funds))
+                m_isSufficientFunds = CheckIfFundsExists(funds);
+
+                if (m_isSufficientFunds)
                 {
                     m_insideObject = m_insideObject.transform.GetChild(0).gameObject;
                     InventoryManagementSystem.Instance.AddInvoke(m_insideObject.GetComponent<SpriteRenderer>().sprite, m_insideObject.tag); //the rest of the process is automated in that function
@@ -64,13 +74,12 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         gameObject.GetComponent<Animator>().SetTrigger("isNotHighlight");
     }
 
-    public bool CheckIfFundsExists(TMPro.TextMeshProUGUI _text)
+    public bool CheckIfFundsExists(TMPro.TextMeshProUGUI fundsText)
     {
-        int funds = Int32.Parse(_text.text);
+        int funds = Int32.Parse(fundsText.text);
 
         if (funds == 0)
         {
-            m_failure = false;
             return false;
         }
 

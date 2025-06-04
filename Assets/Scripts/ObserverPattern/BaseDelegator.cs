@@ -30,15 +30,19 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 {
     protected Dictionary<string, Dictionary<string, Subject<IObserver<T>>>> SubjectsDict { get; set; }
 
-    public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    protected Dictionary<string, Dictionary<string, IObserver<T>>> SubjectObserverDict { get; set; }
+
+    public IEnumerator NotifyObserver(string unqiueObserverIdentifier, T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
+        //improve this! no need to pass the observer for the subject
+        //use their tag/name
         observer.OnNotify(value, notificationContext, semaphoreSlim, cancellationToken, optional);
 
         yield return null;
     }
 
     //later convert it to for-loop based retry method
-    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
+    public IEnumerator NotifySubject(string unqiueObserverIdentifier, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
     {
         if (maxRetries == 0)
         {

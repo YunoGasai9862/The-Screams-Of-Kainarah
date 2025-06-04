@@ -4,35 +4,39 @@ using UnityEngine;
 
 public class PullUpPanel : MonoBehaviour, IObserver<bool>
 {
-    private Animator _anim;
-    private bool _closePanel = false;
+    private const string SUFFICIENT_FUNDS_ANIMATION_CONDITION = "SufficientFunds";
+
+    private const float WAITING_TIME = 1.0f;
+
+    private Animator m_anim;
+
+    [SerializeField]
+    private GenericFlagDelegator genericFlagDelegator;
 
     void Start()
     {
-        _anim = GetComponent<Animator>();
+        m_anim = GetComponent<Animator>();
+
+        StartCoroutine(genericFlagDelegator.NotifySubject(this, new NotificationContext() {
+            ObserverName = this.name,
+            ObserverTag = this.name,
+            SubjectType = typeof(TriggerHandler).ToString()
+
+        }, CancellationToken.None));
     }
 
-    // Update is called once per frame
-    void Update()
+    //test this though
+    IEnumerator RunAnimation(bool data, float waitingTime)
     {
-        if (!TriggerHandler.Failure && !_closePanel)
-        {
-            _anim.SetBool("SufficientFunds", false);
-            _closePanel = true;
-            StartCoroutine(Reset());
-        }
-    }
+        m_anim.SetBool(SUFFICIENT_FUNDS_ANIMATION_CONDITION, data);
 
-    IEnumerator Reset()
-    {
-        yield return new WaitForSeconds(1f);
-        _closePanel = false;
-        _anim.SetBool("SufficientFunds", true);
-        TriggerHandler.Failure = true;
+        yield return new WaitForSeconds(waitingTime);
+
+        m_anim.SetBool(SUFFICIENT_FUNDS_ANIMATION_CONDITION, !data);
     }
 
     public void OnNotify(bool data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new System.NotImplementedException();
+        StartCoroutine(RunAnimation(data, WAITING_TIME));
     }
 }

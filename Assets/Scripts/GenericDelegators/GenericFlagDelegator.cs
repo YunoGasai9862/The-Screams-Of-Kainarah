@@ -1,0 +1,12 @@
+
+using System.Collections.Generic;
+using System.Threading;
+using UnityEngine;
+
+public class GenericFlagDelegator : BaseDelegatorEnhanced<bool>
+{
+    private void Awake()
+    {
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<bool>>>>();
+    }
+}
