@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -105,6 +106,18 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnNotifySubject(IObserver<bool> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        throw new NotImplementedException();
+        genericFlagDelegator.AddToSubjectObserversDict(gameObject.name, genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name],
+           data);
+    }
+
+    public void PingListeners(bool sufficientFunds)
+    {
+        foreach(Association<bool> association in genericFlagDelegator.GetSubjectAssociations(gameObject.name))
+        {
+            genericFlagDelegator.NotifyObserver(association.Observer, sufficientFunds, new NotificationContext()
+            {
+                SubjectType = typeof(TriggerHandler).ToString()
+            }, CancellationToken.None);
+        }
     }
 }

@@ -30,19 +30,17 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 {
     protected Dictionary<string, Dictionary<string, Subject<IObserver<T>>>> SubjectsDict { get; set; }
 
-    protected Dictionary<string, Dictionary<string, IObserver<T>>> SubjectObserverDict { get; set; }
+    protected Dictionary<string, List<Association<T>>> SubjectObserversDict { get; set; }
 
-    public IEnumerator NotifyObserver(string unqiueObserverIdentifier, T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        //improve this! no need to pass the observer for the subject
-        //use their tag/name
         observer.OnNotify(value, notificationContext, semaphoreSlim, cancellationToken, optional);
 
         yield return null;
     }
 
     //later convert it to for-loop based retry method
-    public IEnumerator NotifySubject(string unqiueObserverIdentifier, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
+    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
     {
         if (maxRetries == 0)
         {
@@ -58,11 +56,11 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
         if (SubjectsDict.TryGetValue(notificationContext.SubjectType, out Dictionary<string, Subject<IObserver<T>>> subjects))
         {
-            foreach(Subject<IObserver<T>> subject in subjects.Values)
+            foreach(KeyValuePair<string, Subject<IObserver<T>>> keyValuePair in subjects)
             {
-                yield return new WaitUntil(() => !Helper.IsSubjectNull(subject));
+                yield return new WaitUntil(() => !Helper.IsSubjectNull(keyValuePair.Value));
 
-                subject.NotifySubject(observer, notificationContext, cancellationToken);
+                keyValuePair.Value.NotifySubject(observer, notificationContext, cancellationToken);
             }
         }
         else
@@ -101,6 +99,29 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
             {gameObjectInstanceIdentificationKeyForTheSubject, subject }
         
         });
+    }
+
+    public void AddToSubjectObserversDict(string uniqueSubjectkey, Subject<IObserver<T>> subject, IObserver<T> observer)
+    {
+        if (SubjectObserversDict.ContainsKey(uniqueSubjectkey))
+        {
+            SubjectObserversDict[uniqueSubjectkey].Add(new Association<T>() { Observer = observer, Subject = subject });
+
+            return;
+        }
+
+        SubjectObserversDict.Add(uniqueSubjectkey, new List<Association<T>>()
+        { new Association <T>() { Observer = observer, Subject = subject } });
+    }
+
+    public Dictionary<string, List<Association<T>>> GetSubjectObserversDict()
+    {
+        return SubjectObserversDict;
+    }
+
+    public List<Association<T>> GetSubjectAssociations(string subjectUniqueKey)
+    {
+        return SubjectObserversDict[subjectUniqueKey];
     }
 
     public Dictionary<string, Subject<IObserver<T>>> GetSubsetSubjectsDictionary(string key)
