@@ -7,23 +7,31 @@ using UnityEngine.EventSystems;
 public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IObserver<GameState>, ISubject<IObserver<bool>>
 {
     private const string DIAMOND_TAG = "Crystal";
+
+    private const string FUNDS_TEXT_TAG = "DText";
+
     private GameObject m_insideObject;
+
     private AudioSource m_transact;
+
     private bool m_isSufficientFunds;
     private GameState CurrentGameState { get; set; }
 
-    [SerializeField]
-    TMPro.TextMeshProUGUI funds;
-    [SerializeField] 
-    GlobalGameStateDelegator globalGameStateDelegator;
-    [SerializeField]
-    GenericFlagDelegator genericFlagDelegator;
+    private TMPro.TextMeshProUGUI m_funds;
+
+    private GlobalGameStateDelegator m_globalGameStateDelegator;
+
+    private GenericFlagDelegator m_genericFlagDelegator;
 
     private void Start()
     {
-        funds = GameObject.FindGameObjectWithTag("DText").GetComponent<TMPro.TextMeshProUGUI>();
+        m_funds = GameObject.FindGameObjectWithTag(FUNDS_TEXT_TAG).GetComponent<TMPro.TextMeshProUGUI>();
 
-        globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        m_genericFlagDelegator = Helper.GetDelegator<GenericFlagDelegator>();
+
+        m_globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
+        m_globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = this.name,
             ObserverTag = this.name,
@@ -31,9 +39,9 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
         }, CancellationToken.None);
 
-        genericFlagDelegator.AddToSubjectsDict(typeof(TriggerHandler).ToString(), gameObject.name, new Subject<IObserver<bool>>());
+        m_genericFlagDelegator.AddToSubjectsDict(typeof(TriggerHandler).ToString(), gameObject.name, new Subject<IObserver<bool>>());
 
-        genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name].SetSubject(this);
+        m_genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name].SetSubject(this);
 
     }
 
@@ -52,14 +60,21 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
             if (m_insideObject.transform.childCount > 0)
             {
-                m_isSufficientFunds = CheckIfFundsExists(funds);
+                m_isSufficientFunds = CheckIfFundsExists(m_funds);
+
+                Debug.Log(m_isSufficientFunds);
+
+                PingListeners(m_isSufficientFunds);
 
                 if (m_isSufficientFunds)
                 {
                     m_insideObject = m_insideObject.transform.GetChild(0).gameObject;
+
                     InventoryManagementSystem.Instance.AddInvoke(m_insideObject.GetComponent<SpriteRenderer>().sprite, m_insideObject.tag); //the rest of the process is automated in that function
+
                     m_transact.Play();
-                    DecreaseFunds(ref funds);
+
+                    DecreaseFunds(ref m_funds);
                 } 
             }
         }
@@ -89,13 +104,16 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void DecreaseFunds(ref TMPro.TextMeshProUGUI diamondText)
     {
         IncreaseCrystal.DiamondCount--;
+
         diamondText.text = IncreaseCrystal.DiamondCount.ToString("0");
+
         DecreaseDiamondsFromInventory();
     }
 
     public async void DecreaseDiamondsFromInventory()
     {
-         string funds = await InventoryManagementSystem.Instance.GetItemTagFromInventoryToDecreaseFunds(DIAMOND_TAG);  
+         string funds = await InventoryManagementSystem.Instance.GetItemTagFromInventoryToDecreaseFunds(DIAMOND_TAG);
+        
          InventoryManagementSystem.Instance.RemoveInvoke(funds);
     }
 
@@ -106,18 +124,19 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnNotifySubject(IObserver<bool> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        genericFlagDelegator.AddToSubjectObserversDict(gameObject.name, genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name],
+        m_genericFlagDelegator.AddToSubjectObserversDict(gameObject.name, m_genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name],
            data);
     }
 
     public void PingListeners(bool sufficientFunds)
     {
-        foreach(Association<bool> association in genericFlagDelegator.GetSubjectAssociations(gameObject.name))
+        foreach(Association<bool> association in m_genericFlagDelegator.GetSubjectAssociations(gameObject.name))
         {
-            genericFlagDelegator.NotifyObserver(association.Observer, sufficientFunds, new NotificationContext()
+            StartCoroutine(m_genericFlagDelegator.NotifyObserver(association.Observer, sufficientFunds, new NotificationContext()
             {
                 SubjectType = typeof(TriggerHandler).ToString()
-            }, CancellationToken.None);
+
+            }, CancellationToken.None));
         }
     }
 }

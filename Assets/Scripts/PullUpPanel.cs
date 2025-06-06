@@ -25,7 +25,6 @@ public class PullUpPanel : MonoBehaviour, IObserver<bool>
         }, CancellationToken.None));
     }
 
-    //test this though
     IEnumerator RunAnimation(bool data, float waitingTime)
     {
         m_anim.SetBool(SUFFICIENT_FUNDS_ANIMATION_CONDITION, data);
@@ -37,6 +36,11 @@ public class PullUpPanel : MonoBehaviour, IObserver<bool>
 
     public void OnNotify(bool data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
+        if (data)
+        {
+            return;
+        }
+
         StartCoroutine(RunAnimation(data, WAITING_TIME));
     }
 }

@@ -21,6 +21,11 @@ public class OpenWares : MonoBehaviour, IObserver<GameState>, INotify<bool>
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState = data;
+
+        if (CurrentGameState.Equals(GameState.FREE_MOVEMENT))
+        {
+            WaresPanel.SetActive(false);
+        }
     }
 
     public Task Notify(bool value)
