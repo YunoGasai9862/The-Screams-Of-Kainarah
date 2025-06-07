@@ -255,7 +255,9 @@ public class PlayerActionRelayer : AbstractEntity
     public override void GameStateHandler(SceneData data)
     {
         AbstractEntity entity = GetComponent<AbstractEntity>();
+
         ObjectData playerData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation, entity);
+
         data.AddToObjectsToPersist(playerData);
     }
 }

@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<LightPackage>>, IObserver<ILightPreprocess>, IObserver<Transform>, ILightPackageGenerator
+public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<LightPackage>>, IObserver<ILightPreprocess>, IObserver<Player>, ILightPackageGenerator
 {
     [SerializeField]
     LightPackageDelegator lightPackageDelegator;
@@ -24,7 +24,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
     private Light2D LightSource { get; set; }
 
-    private Transform PlayersTransform { get; set; }
+    private Player Player { get; set; }
 
     private SemaphoreSlim SemaphoreSlim { get; set; }
 
@@ -67,7 +67,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         {
             lightPackage.LightSemaphore.WaitAsync(); //take the semaphore (will be released by the custom lightning class)
 
-            lightPackage.LightProperties.ShouldLightPulse = Vector2.Distance(PlayersTransform.transform.position, gameObject.transform.position) < minDistanceFromPlayerForLightFlicker ? true : false;
+            lightPackage.LightProperties.ShouldLightPulse = Vector2.Distance(Player.Transform.position, gameObject.transform.position) < minDistanceFromPlayerForLightFlicker ? true : false;
 
             StartCoroutine(lightPackageDelegator.NotifyObserver(observer, lightPackage, new NotificationContext()
             {
@@ -115,16 +115,16 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
         LightPreprocess = data;
     }
 
-    public void OnNotify(Transform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        PlayersTransform = data;
+        Player = data;
     }
 
     private bool IsReadyToCustomLightningEntity()
     {
         return !Helper.AreObjectsNull(new List<UnityEngine.Object>
         {
-            lightPreprocessDelegator, PlayersTransform
+            lightPreprocessDelegator, Player.Transform
         })
             && LightPreprocess != null;
     }

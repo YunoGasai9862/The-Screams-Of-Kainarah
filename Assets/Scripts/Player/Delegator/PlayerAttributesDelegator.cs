@@ -1,12 +1,9 @@
 using System.Collections.Generic;
-using System.Threading;
-using UnityEngine;
 
-public class PlayerAttributesDelegator : BaseDelegatorEnhanced<Transform>
+public class PlayerAttributesDelegator : BaseDelegatorEnhanced<Player>
 {
-
     private void OnEnable()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<Transform>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<Player>>>>();
     }
 }

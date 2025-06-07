@@ -3,14 +3,16 @@ using UnityEngine;
 using Newtonsoft.Json;
 
 [Serializable]
-public class Player : IEntity
+public class KainarahUser : IEntity
 {
-   public Player(string username, string password)
+   public KainarahUser(string username, string password)
     {
         Username = username;
+
         Password = password;
 
         var value = JsonConvert.SerializeObject(this);
+
         Debug.Log(value);
     }
 

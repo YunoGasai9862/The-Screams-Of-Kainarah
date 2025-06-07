@@ -1,12 +1,10 @@
-using NUnit.Framework;
 using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using static SceneData;
-public class RakashManager : AbstractEntity, IObserver<GameState>
+public class RakashManager : AbstractEntity, IObserver<GameState>, IObserver<Player>
 {
-    private GameObject _player;
     private Animator _anim;
     private float _timeoverBody = 0f;
     private BoxCollider2D _bC2;
@@ -20,9 +18,12 @@ public class RakashManager : AbstractEntity, IObserver<GameState>
 
     [SerializeField] GameObject bossDead;
     [SerializeField] string[] attackingAnimationNames;
+    [SerializeField] GlobalGameStateDelegator gameStateDelegator;
+    [SerializeField] PlayerAttributesDelegator playerAttributesDelegator;
     public override string EntityName { get => m_Name; set => m_Name = value; }
     public override float Health { get => m_health; set => m_health = value; }
     public override float MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
+    private Player Player { get; set; }
 
     public EntityDistanceFromPlayer distanceFromPlayerEvent = new EntityDistanceFromPlayer();
 
@@ -34,7 +35,14 @@ public class RakashManager : AbstractEntity, IObserver<GameState>
 
     void Start()
     {
-        _player = GameObject.FindWithTag("Player");
+        StartCoroutine(gameStateDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = name,
+            ObserverTag = tag,
+            SubjectType = typeof(GlobalGameStateManager).ToString()
+
+        }, CancellationToken.None));
+
         m_rakashMovementControllerReceiver = GetComponent<RakashControllerMovement>();
         m_rakashMovementControllerCommand = new Command<bool>(m_rakashMovementControllerReceiver);
 
@@ -80,11 +88,12 @@ public class RakashManager : AbstractEntity, IObserver<GameState>
     {
         if (await IsNotOneOfTheAttackingAnimations(attackingAnimationNames, _anim))
         {
-            if (transform.position.x > _player.transform.position.x)
+            if (transform.position.x > Player.Transform.position.x)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 0);
             }
-            if (transform.position.x < _player.transform.position.x)
+
+            if (transform.position.x < Player.Transform.position.x)
             {
                 transform.rotation = Quaternion.Euler(0, 180, 0);
             }
@@ -155,5 +164,10 @@ public class RakashManager : AbstractEntity, IObserver<GameState>
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState = data;
+    }
+
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        Player = data;
     }
 }

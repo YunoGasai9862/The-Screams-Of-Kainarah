@@ -1,28 +1,31 @@
 using System.Threading;
 using UnityEngine;
 
-public class PlayerAttributesNotifier: MonoBehaviour, ISubject<IObserver<Transform>>
+public class PlayerAttributesNotifier: MonoBehaviour, ISubject<IObserver<Player>>
 {
-    private Transform PlayerTransform { get; set; }
+    private Player Player { get; set; }
 
     private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
     private void OnEnable()
     {
-        PlayerTransform = GetComponent<Transform>();
+        Player = new Player() { 
+
+            Transform = GetComponent<Transform>()
+        };  
 
         PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
     }
 
     private void Start()
     {
-        PlayerAttributesDelegator.AddToSubjectsDict(typeof(PlayerAttributesNotifier).ToString(), gameObject.name, new Subject<IObserver<Transform>>());
+        PlayerAttributesDelegator.AddToSubjectsDict(typeof(PlayerAttributesNotifier).ToString(), gameObject.name, new Subject<IObserver<Player>>());
 
         PlayerAttributesDelegator.GetSubsetSubjectsDictionary(typeof(PlayerAttributesNotifier).ToString())[gameObject.name].SetSubject(this);
     }
 
-    public void OnNotifySubject(IObserver<Transform> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<Player> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(PlayerAttributesDelegator.NotifyObserver(data, PlayerTransform, notificationContext, cancellationToken, semaphoreSlim));
+        StartCoroutine(PlayerAttributesDelegator.NotifyObserver(data, Player, notificationContext, cancellationToken, semaphoreSlim));
     }
 }
