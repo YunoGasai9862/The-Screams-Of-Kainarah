@@ -124,8 +124,9 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     {
         return !Helper.AreObjectsNull(new List<UnityEngine.Object>
         {
-            lightPreprocessDelegator, Player.Transform
+            lightPreprocessDelegator
         })
-            && LightPreprocess != null;
+            && LightPreprocess != null
+            && Player != null;
     }
 }

@@ -52,20 +52,27 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rakash
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 759482105451199465, guid: 332b21a684312b34798ace98affe4eed, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7041806645088666966, guid: 332b21a684312b34798ace98affe4eed, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3522582750214370129}
+      addedObject: {fileID: 8538034242288240091}
+    - targetCorrespondingSourceObject: {fileID: 7041806645088666966, guid: 332b21a684312b34798ace98affe4eed, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4056168021376640104}
+    - targetCorrespondingSourceObject: {fileID: 7041806645088666966, guid: 332b21a684312b34798ace98affe4eed, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3463737734450952282}
   m_SourcePrefab: {fileID: 100100000, guid: 332b21a684312b34798ace98affe4eed, type: 3}
 --- !u!1 &7097680049040053745 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7041806645088666966, guid: 332b21a684312b34798ace98affe4eed, type: 3}
   m_PrefabInstance: {fileID: 232361664586322087}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3522582750214370129
+--- !u!114 &8538034242288240091
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -74,6 +81,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 7097680049040053745}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56bbfc4f22962744482df3d18d06b347, type: 3}
+  m_Script: {fileID: 11500000, guid: 0f036b2af200ded44a244023941a0a43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4056168021376640104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7097680049040053745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3372e1b333666324fba011dc5725db85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3463737734450952282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7097680049040053745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbe6891819e230b47b1ecbfd32ee5d7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bossDead: {fileID: 0}
+  attackingAnimationNames: []
+  gameStateDelegator: {fileID: 0}
+  playerAttributesDelegator: {fileID: 0}

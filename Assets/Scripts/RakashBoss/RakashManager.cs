@@ -43,6 +43,14 @@ public class RakashManager : AbstractEntity, IObserver<GameState>, IObserver<Pla
 
         }, CancellationToken.None));
 
+        StartCoroutine(playerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = name,
+            ObserverTag = tag,
+            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+
+        }, CancellationToken.None));
+
         m_rakashMovementControllerReceiver = GetComponent<RakashControllerMovement>();
         m_rakashMovementControllerCommand = new Command<bool>(m_rakashMovementControllerReceiver);
 
@@ -58,6 +66,11 @@ public class RakashManager : AbstractEntity, IObserver<GameState>, IObserver<Pla
     // Update is called once per frame
     void Update()
     {
+        if (Player == null)
+        {
+            return;
+        }
+
         CheckRotation();
 
         if (CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
@@ -158,6 +171,7 @@ public class RakashManager : AbstractEntity, IObserver<GameState>, IObserver<Pla
     public override void GameStateHandler(SceneData data)
     {
         ObjectData bossData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation);
+
         data.AddToObjectsToPersist(bossData);
     }
 

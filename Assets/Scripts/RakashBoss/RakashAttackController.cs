@@ -14,6 +14,6 @@ public class RakashAttackController : MonoBehaviour, IReceiver<bool>
 
     public bool PerformAction(bool value = false)
     {
-        return true;
+        HelperFunctions.DelayAttack(animator, TIME_SPAN_BETWEEN_EACH_ATTACK, "attack");
     }
 }

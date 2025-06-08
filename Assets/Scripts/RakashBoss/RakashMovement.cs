@@ -2,24 +2,37 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class MonsterMovement : StateMachineBehaviour, IObserver<GameState>
+public class RakashMovement : StateMachineBehaviour, IObserver<GameState>, IObserver<Player>
 {
     private const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
 
     private GameState GameState { get; set; }
 
+    private Player Player { get; set; }
 
     private GlobalGameStateDelegator GameStateDelegator { get; set; }
+
+    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
     private void Awake()
     {
         GameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
+        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
 
         GameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = this.name,
             ObserverTag = this.name,
             SubjectType = typeof(GlobalGameStateManager).ToString()
+
+        }, CancellationToken.None);
+
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        {
+            ObserverName = this.name,
+            ObserverTag = this.name,
+            SubjectType = typeof(PlayerAttributesNotifier).ToString()
 
         }, CancellationToken.None);
     }
@@ -32,16 +45,18 @@ public class MonsterMovement : StateMachineBehaviour, IObserver<GameState>
 
         if (!GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
-            if (MonsterFollow.Player != null && HelperFunctions.CheckDistance(animator, 15f, 3f, MonsterFollow.Player))
+            if (Player != null && HelperFunctions.CheckDistance(animator, 15f, 3f, Player.Transform))
             {
-                Vector3 newPos = MonsterFollow.Player.transform.position;
-                newPos.y = MonsterFollow.Player.transform.position.y - 1.5f;
+                Vector3 newPos = Player.Transform.position;
+
+                newPos.y = Player.Transform.position.y - 1.5f;
 
                 animator.transform.position = Vector3.MoveTowards(animator.transform.position, newPos, 4f * Time.deltaTime);
             }
             else
             {
                 animator.SetBool("walk", false);
+
                 HelperFunctions.DelayAttack(animator, TIME_SPAN_BETWEEN_EACH_ATTACK, "attack");
             }
 
@@ -52,6 +67,11 @@ public class MonsterMovement : StateMachineBehaviour, IObserver<GameState>
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         GameState = data;
+    }
+
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        Player = data;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

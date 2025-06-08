@@ -14,6 +14,6 @@ public class RakashControllerMovement : MonoBehaviour, IReceiver<bool>
 
     public bool PerformAction(bool value = false)
     {
-        return true;
+        animator.SetBool("walk", true);
     }
 }
