@@ -1,19 +1,20 @@
 using System.Collections;
 using UnityEngine;
 
-public class RakashControllerMovement : MonoBehaviour, IReceiver<bool>
+public class RakashControllerMovement : MonoBehaviour, IReceiver<RakashAnimationPackage>
 {
     private void Start()
     {
         
     }
-    public bool CancelAction()
+
+    public RakashAnimationPackage PerformAction(RakashAnimationPackage value = null)
     {
-        return true;
+        throw new System.NotImplementedException();
     }
 
-    public bool PerformAction(bool value = false)
+    RakashAnimationPackage IReceiver<RakashAnimationPackage>.CancelAction()
     {
-        animator.SetBool("walk", true);
+        throw new System.NotImplementedException();
     }
 }

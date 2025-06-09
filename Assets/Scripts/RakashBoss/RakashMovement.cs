@@ -6,6 +6,10 @@ public class RakashMovement : StateMachineBehaviour, IObserver<GameState>, IObse
 {
     private const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
 
+    private const float MAX_DISTANCE_BETWEEN_PLAYER = 15f;
+
+    private const float MIN_DISTANCE_BETWEEN_PLAYER = 3f;
+
     private GameState GameState { get; set; }
 
     private Player Player { get; set; }
@@ -43,25 +47,25 @@ public class RakashMovement : StateMachineBehaviour, IObserver<GameState>, IObse
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
-        if (!GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
+        if (GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
-            if (Player != null && HelperFunctions.CheckDistance(animator, 15f, 3f, Player.Transform))
-            {
-                Vector3 newPos = Player.Transform.position;
-
-                newPos.y = Player.Transform.position.y - 1.5f;
-
-                animator.transform.position = Vector3.MoveTowards(animator.transform.position, newPos, 4f * Time.deltaTime);
-            }
-            else
-            {
-                animator.SetBool("walk", false);
-
-                HelperFunctions.DelayAttack(animator, TIME_SPAN_BETWEEN_EACH_ATTACK, "attack");
-            }
-
+            return;
         }
 
+        if (Player != null && HelperFunctions.CheckDistance(animator.transform, Player.Transform, MAX_DISTANCE_BETWEEN_PLAYER, MIN_DISTANCE_BETWEEN_PLAYER))
+        {
+            Vector3 newPos = Player.Transform.position;
+
+            newPos.y = Player.Transform.position.y - 1.5f;
+
+            animator.transform.position = Vector3.MoveTowards(animator.transform.position, newPos, 4f * Time.deltaTime);
+        }
+        else
+        {
+            animator.SetBool("walk", false);
+
+            HelperFunctions.DelayAttack(animator, TIME_SPAN_BETWEEN_EACH_ATTACK, "attack");
+        }
     }
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

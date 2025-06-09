@@ -1,6 +1,7 @@
 public enum RakashAnimation
 {
-    WALK,
-    RUN,
-    ATTACK
+    START_WALK,
+    STOP_WALK,
+    START_ATTACK,
+    STOP_ATTACK
 }

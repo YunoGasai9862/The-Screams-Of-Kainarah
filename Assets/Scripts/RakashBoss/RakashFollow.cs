@@ -6,6 +6,10 @@ public class RakashFollow : StateMachineBehaviour, IObserver<GameState>, IObserv
 {
     public const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
 
+    private const float MAX_DISTANCE_BETWEEN_PLAYER = 15f;
+
+    private const float MIN_DISTANCE_BETWEEN_PLAYER = 3f;
+
     private GameState GameState { get; set; }
 
     private Player Player { get; set; }
@@ -13,6 +17,14 @@ public class RakashFollow : StateMachineBehaviour, IObserver<GameState>, IObserv
     private GlobalGameStateDelegator GameStateDelegator { get; set; }
 
     private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+
+    private RakashControllerMovement RakashControllerMovement { get; set; }
+
+    private RakashAttackController RakashAttackController { get; set; }
+
+    private Command<RakashAnimationPackage> RakashMovementCommandController { get; set; }
+
+    private Command<RakashAnimationPackage> RakashAttackCommandController { get; set; }
 
     private void Awake()
     {
@@ -40,25 +52,37 @@ public class RakashFollow : StateMachineBehaviour, IObserver<GameState>, IObserv
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (RakashControllerMovement == null)
+        {
+            RakashControllerMovement = animator.GetComponent<RakashControllerMovement>();
 
+            RakashMovementCommandController = new Command<RakashAnimationPackage>(RakashControllerMovement);
+        }
+
+        if (RakashAttackController == null)
+        {
+            RakashAttackController = animator.GetComponent<RakashAttackController>();
+
+            RakashAttackCommandController = new Command<RakashAnimationPackage>(RakashAttackController);
+        }
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //improve later
-        if (!GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
+        if (GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
-            if (Player != null && HelperFunctions.CheckDistance(animator, 15f, 3f, Player.Transform))
-            {
-                animator.SetBool("walk", true);
-            }
+            return;
+        }
 
-            if (Vector3.Distance(Player.Transform.position, animator.transform.position) <= 3)
-            {
-                HelperFunctions.DelayAttack(animator, TIME_SPAN_BETWEEN_EACH_ATTACK, "attack");
-            }
+        if (Player != null && HelperFunctions.CheckDistance(animator.transform, Player.Transform, MAX_DISTANCE_BETWEEN_PLAYER, MIN_DISTANCE_BETWEEN_PLAYER))
+        {
+            animator.SetBool("walk", true);
+        }
 
+        if (Vector3.Distance(Player.Transform.position, animator.transform.position) <= MIN_DISTANCE_BETWEEN_PLAYER)
+        {
+            HelperFunctions.DelayAttack(animator, TIME_SPAN_BETWEEN_EACH_ATTACK, "attack");
         }
     }
 

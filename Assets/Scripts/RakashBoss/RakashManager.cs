@@ -51,13 +51,6 @@ public class RakashManager : AbstractEntity, IObserver<GameState>, IObserver<Pla
 
         }, CancellationToken.None));
 
-        m_rakashMovementControllerReceiver = GetComponent<RakashControllerMovement>();
-        m_rakashMovementControllerCommand = new Command<bool>(m_rakashMovementControllerReceiver);
-
-        m_rakashAttackControllerReceiver = GetComponent<RakashAttackController>();
-        m_rakashAttackControllerCommand = new Command<bool>(m_rakashAttackControllerReceiver);
-
-
         _anim = GetComponent<Animator>();
         _bC2 = GetComponent<BoxCollider2D>();
         SceneSingleton.InsertIntoGameStateHandlerList(this);

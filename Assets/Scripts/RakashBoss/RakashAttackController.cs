@@ -1,19 +1,19 @@
 using System.Collections;
 using UnityEngine;
 
-public class RakashAttackController : MonoBehaviour, IReceiver<bool>
+public class RakashAttackController : MonoBehaviour, IReceiver<RakashAnimationPackage>
 {
     private void Start()
     {
 
     }
-    public bool CancelAction()
+    public RakashAnimationPackage CancelAction()
     {
-        return true;
+        throw new System.NotImplementedException();
     }
 
-    public bool PerformAction(bool value = false)
+    public RakashAnimationPackage PerformAction(RakashAnimationPackage value = null)
     {
-        HelperFunctions.DelayAttack(animator, TIME_SPAN_BETWEEN_EACH_ATTACK, "attack");
+        throw new System.NotImplementedException();
     }
 }

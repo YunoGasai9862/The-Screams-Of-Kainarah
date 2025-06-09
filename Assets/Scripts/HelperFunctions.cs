@@ -37,9 +37,9 @@ public static class HelperFunctions
         return flipped;
     }
 
-    public static bool CheckDistance(Animator animator, float distanceLessThan, float distanceGreaterThan, Transform playerTransform)
+    public static bool CheckDistance(Transform firstEntityTransform, Transform secondEntityTransform, float distanceLessThan, float distanceGreaterThan)
     {
-        return Vector3.Distance(playerTransform.position, animator.transform.position) <= distanceLessThan && Vector3.Distance(playerTransform.position, animator.transform.position) >= distanceGreaterThan;
+        return Vector3.Distance(secondEntityTransform.position, firstEntityTransform.position) <= distanceLessThan && Vector3.Distance(secondEntityTransform.position, firstEntityTransform.position) >= distanceGreaterThan;
     }
 
     public static void DelayAttack(Animator animator, float timeSpanBetweenEachAttack, string triggerName)
