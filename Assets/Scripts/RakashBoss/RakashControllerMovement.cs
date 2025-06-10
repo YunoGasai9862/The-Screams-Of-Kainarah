@@ -1,20 +1,21 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
-public class RakashControllerMovement : MonoBehaviour, IReceiver<RakashAnimationPackage>
+public class RakashControllerMovement : MonoBehaviour, IReceiver<RakashAnimationPackage, ActionExecuted>
 {
     private void Start()
     {
         
     }
 
-    public RakashAnimationPackage PerformAction(RakashAnimationPackage value = null)
+    ActionExecuted IReceiver<RakashAnimationPackage, ActionExecuted>.PerformAction(RakashAnimationPackage value)
     {
-        throw new System.NotImplementedException();
+        return new ActionExecuted { };
     }
 
-    RakashAnimationPackage IReceiver<RakashAnimationPackage>.CancelAction()
+    public ActionExecuted CancelAction()
     {
-        throw new System.NotImplementedException();
+        return new ActionExecuted { };
     }
 }
