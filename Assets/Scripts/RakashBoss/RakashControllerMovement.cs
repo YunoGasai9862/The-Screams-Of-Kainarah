@@ -2,14 +2,14 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class RakashControllerMovement : MonoBehaviour, IReceiver<RakashAnimationPackage, ActionExecuted>
+public class RakashControllerMovement : MonoBehaviour, IReceiver<MovementAnimationPackage, ActionExecuted>
 {
     private void Start()
     {
         
     }
 
-    ActionExecuted IReceiver<RakashAnimationPackage, ActionExecuted>.PerformAction(RakashAnimationPackage value)
+    ActionExecuted IReceiver<MovementAnimationPackage, ActionExecuted>.PerformAction(MovementAnimationPackage value)
     {
         return new ActionExecuted { };
     }

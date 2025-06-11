@@ -27,9 +27,9 @@ public class RakashMovement : RakashBaseStateMachine
         }
         else
         {
-            animator.SetBool("walk", false);
+            RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.STOP_ATTACK, Animator = animator });
 
-            HelperFunctions.DelayAttack(animator, TIME_SPAN_BETWEEN_EACH_ATTACK, "attack");
+            RakashAttackCommandController.Execute(new AttackAnimationPackage() { Animation = Animation.START_ATTACK, Animator = animator, AttackDelay = TIME_SPAN_BETWEEN_EACH_ATTACK });
         }
     }
 }

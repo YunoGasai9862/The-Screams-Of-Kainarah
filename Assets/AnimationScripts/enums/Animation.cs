@@ -1,4 +1,4 @@
-public enum RakashAnimation
+public enum Animation
 {
     START_WALK,
 

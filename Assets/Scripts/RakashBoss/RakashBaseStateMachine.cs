@@ -15,9 +15,9 @@ public abstract class RakashBaseStateMachine : StateMachineBehaviour, IObserver<
 
     protected RakashAttackController RakashAttackController { get; set; }
 
-    protected Command<RakashAnimationPackage, ActionExecuted> RakashMovementCommandController { get; set; }
+    protected Command<MovementAnimationPackage, ActionExecuted> RakashMovementCommandController { get; set; }
 
-    protected Command<RakashAnimationPackage, ActionExecuted> RakashAttackCommandController { get; set; }
+    protected Command<AttackAnimationPackage, ActionExecuted> RakashAttackCommandController { get; set; }
 
     private void Awake()
     {
@@ -49,14 +49,14 @@ public abstract class RakashBaseStateMachine : StateMachineBehaviour, IObserver<
         {
             RakashControllerMovement = animator.GetComponent<RakashControllerMovement>();
 
-            RakashMovementCommandController = new Command<RakashAnimationPackage, ActionExecuted>(RakashControllerMovement);
+            RakashMovementCommandController = new Command<MovementAnimationPackage, ActionExecuted>(RakashControllerMovement);
         }
 
         if (RakashAttackController == null)
         {
             RakashAttackController = animator.GetComponent<RakashAttackController>();
 
-            RakashAttackCommandController = new Command<RakashAnimationPackage, ActionExecuted>(RakashAttackController);
+            RakashAttackCommandController = new Command<AttackAnimationPackage, ActionExecuted>(RakashAttackController);
         }
     }
 

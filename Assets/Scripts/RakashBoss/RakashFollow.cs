@@ -19,14 +19,12 @@ public class RakashFollow : RakashBaseStateMachine
 
         if (Player != null && HelperFunctions.CheckDistance(animator.transform, Player.Transform, MAX_DISTANCE_BETWEEN_PLAYER, MIN_DISTANCE_BETWEEN_PLAYER))
         {
-            RakashMovementCommandController.Execute(new RakashAnimationPackage() { RakashAnimation = RakashAnimation.START_WALK, RakashAnimator = animator });
+            RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.START_WALK, Animator = animator });
         }
 
         if (Vector3.Distance(Player.Transform.position, animator.transform.position) <= MIN_DISTANCE_BETWEEN_PLAYER)
         {
-            RakashAttackCommandController.Execute(new RakashAnimationPackage() { RakashAnimation = RakashAnimation.START_ATTACK, RakashAnimator = animator });
-
-            HelperFunctions.DelayAttack(animator, TIME_SPAN_BETWEEN_EACH_ATTACK, "attack");
+            RakashAttackCommandController.Execute(new AttackAnimationPackage() { Animation = Animation.START_ATTACK, Animator = animator , AttackDelay = TIME_SPAN_BETWEEN_EACH_ATTACK });
         }
     }
 }
