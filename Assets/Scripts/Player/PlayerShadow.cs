@@ -44,7 +44,7 @@ public class PlayerShadow : MonoBehaviour
     {
         Vector2 result = new(0, 0);
 
-        result = HelperFunctions.FlipTheObjectToFaceParent(ref spriteRenderer, parentPos, position, offsetx);
+        result = Helper.FlipTheObjectToFaceParent(ref spriteRenderer, parentPos, position, offsetx);
 
         await Task.Delay(delyForShadowInMiliseconds, _token); //why making it zero fix the issue of getting the null exception (debug tomorrow)
 

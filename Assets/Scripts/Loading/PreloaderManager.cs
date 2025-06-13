@@ -31,7 +31,7 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
 
         PreloaderInstance = await InstantiatePreloader(preloader);
 
-        await HelperFunctions.SetAsParent(PreloaderInstance.gameObject, gameObject);
+        await Helper.SetAsParent(PreloaderInstance.gameObject, gameObject);
 
         await executePreloadingEvent.AddListener(ExecutePreloading);
     }

@@ -15,7 +15,7 @@ public abstract class RakashBaseStateMachine : StateMachineBehaviour, IObserver<
 
     protected RakashAttackController RakashAttackController { get; set; }
 
-    protected Command<MovementAnimationPackage, ActionExecuted> RakashMovementCommandController { get; set; }
+    protected Command<MovementAnimationPackage, Vector3> RakashMovementCommandController { get; set; }
 
     protected Command<AttackAnimationPackage, ActionExecuted> RakashAttackCommandController { get; set; }
 
@@ -49,7 +49,7 @@ public abstract class RakashBaseStateMachine : StateMachineBehaviour, IObserver<
         {
             RakashControllerMovement = animator.GetComponent<RakashControllerMovement>();
 
-            RakashMovementCommandController = new Command<MovementAnimationPackage, ActionExecuted>(RakashControllerMovement);
+            RakashMovementCommandController = new Command<MovementAnimationPackage, Vector3>(RakashControllerMovement);
         }
 
         if (RakashAttackController == null)

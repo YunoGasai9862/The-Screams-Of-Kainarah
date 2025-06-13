@@ -17,19 +17,15 @@ public class RakashStateMachine : RakashBaseStateMachine
             return;
         }
 
-        if (Player != null && HelperFunctions.CheckDistance(animator.transform, Player.Transform, MAX_DISTANCE_BETWEEN_PLAYER, MIN_DISTANCE_BETWEEN_PLAYER))
+        if (Player != null && Helper.CheckDistance(animator.transform, Player.Transform, MAX_DISTANCE_BETWEEN_PLAYER, MIN_DISTANCE_BETWEEN_PLAYER))
         {
-            RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.START_WALK, Animator = animator, TargetTransform = Player.Transform });
-        }
-        else
-        {
-            RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.STOP_ATTACK, Animator = animator, TargetTransform = Player.Transform });
-
-            RakashAttackCommandController.Execute(new AttackAnimationPackage() { Animation = Animation.START_ATTACK, Animator = animator, AttackDelay = TIME_SPAN_BETWEEN_EACH_ATTACK });
+           animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.START_WALK, Animator = animator, TargetTransform = Player.Transform });
         }
 
         if (Vector3.Distance(Player.Transform.position, animator.transform.position) <= MIN_DISTANCE_BETWEEN_PLAYER)
         {
+            animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.STOP_WALK, Animator = animator });
+
             RakashAttackCommandController.Execute(new AttackAnimationPackage() { Animation = Animation.START_ATTACK, Animator = animator , AttackDelay = TIME_SPAN_BETWEEN_EACH_ATTACK });
         }
     }

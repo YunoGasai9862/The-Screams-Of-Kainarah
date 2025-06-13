@@ -6,14 +6,26 @@ public class AnimationUtility
 {
     public void ExecuteAnimation(Animation animation, Animator animator)
     {
+        string description = ResolveAnimationName(animation);
+
+        Debug.Log($"Name Found: {description}");
+
         switch (animation)
         {
             case Animation.START_WALK:
-                animator.SetBool("walk", true);
+
+                animator.SetBool(description, true);
                 break;
 
             case Animation.STOP_WALK:
-                animator.SetBool("walk", false);
+                animator.SetBool(description, false);
+                break;
+
+            case Animation.START_ATTACK:
+                animator.SetTrigger(description);
+                break;
+
+            case Animation.STOP_ATTACK:
                 break;
 
             default:

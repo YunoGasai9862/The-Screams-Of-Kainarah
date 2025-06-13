@@ -49,7 +49,7 @@ public class GameLoadManager: MonoBehaviour, IGameLoadManager, IObserver<EntityP
     {
         gameLoad = await InstantiateAndPoolGameLoad(gameLoad, entityPoolManager);
 
-        await HelperFunctions.SetAsParent(gameLoad, gameObject);
+        await Helper.SetAsParent(gameLoad, gameObject);
     }
 
 
