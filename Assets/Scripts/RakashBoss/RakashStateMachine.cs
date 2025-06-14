@@ -14,6 +14,8 @@ public class RakashStateMachine : RakashBaseStateMachine
     {
         if (GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
+            animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.STOP_WALK, Animator = animator });
+
             return;
         }
 

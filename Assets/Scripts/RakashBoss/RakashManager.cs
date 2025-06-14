@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using static SceneData;
-public class RakashManager : AbstractEntity, IObserver<GameState>, IObserver<Player>
+public class RakashManager : AbstractEntity, IObserver<GameState>, IObserver<Player>, IGameStateHandler
 {
     private Animator _anim;
     private float _timeoverBody = 0f;
@@ -53,6 +53,7 @@ public class RakashManager : AbstractEntity, IObserver<GameState>, IObserver<Pla
 
         _anim = GetComponent<Animator>();
         _bC2 = GetComponent<BoxCollider2D>();
+
         SceneSingleton.InsertIntoGameStateHandlerList(this);
     }
 
@@ -66,10 +67,6 @@ public class RakashManager : AbstractEntity, IObserver<GameState>, IObserver<Pla
 
         CheckRotation();
 
-        if (CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
-        {
-            _anim.SetBool("walk", false);
-        }
         if (_onTopBossBool)
         {
             _timeoverBody += Time.deltaTime;
@@ -109,6 +106,7 @@ public class RakashManager : AbstractEntity, IObserver<GameState>, IObserver<Pla
     private Task<bool> IsNotOneOfTheAttackingAnimations(string[] animationNames, Animator anim)
     {
         bool result = true;
+
         foreach (string animationName in animationNames)
         {
             result = result && !anim.GetCurrentAnimatorStateInfo(0).IsName(animationName);

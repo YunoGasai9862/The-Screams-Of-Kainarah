@@ -37,7 +37,8 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
     private static DialogueManager _dialogueManager { get; set; }
 
     private static SceneSingleton _instance;
-    private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; }//fill only once
+
+    private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; } = new List<IGameStateHandler>();
 
     private void Awake()
     {
@@ -56,7 +57,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
         _getSpawnPlayerScript = FindFirstObjectByType<SpawnPlayer>();
         _checkpointColliderListener = FindFirstObjectByType<CheckpointColliderListener>();
         _dialogueManager = FindFirstObjectByType<DialogueManager>();
-        _gameStateHandlerObjects= new List<IGameStateHandler>();
 
         //delegators
         sceneSingletonDelegator.Subject.SetSubject(this);

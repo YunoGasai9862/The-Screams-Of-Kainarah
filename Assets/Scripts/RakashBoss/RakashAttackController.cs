@@ -4,6 +4,8 @@ using UnityEngine;
 public class RakashAttackController : MonoBehaviour, IReceiver<AttackAnimationPackage, ActionExecuted>
 {
     private AnimationUtility AnimationUtility { get; set; }
+
+    private RakashAttacks CurrentAttackingState { get; set; }
     private void Start()
     {
         AnimationUtility = new AnimationUtility();  
@@ -25,8 +27,13 @@ public class RakashAttackController : MonoBehaviour, IReceiver<AttackAnimationPa
 
     private IEnumerator Attack(AttackAnimationPackage value)
     {
+        //test this and block if its already attacking
+        CurrentAttackingState = RakashAttacks.ATTACK;
+
         yield return new WaitForSeconds(value.AttackDelay);
 
         AnimationUtility.ExecuteAnimation(value.Animation, value.Animator);
+
+        CurrentAttackingState = RakashAttacks.NOT_ATTACKING;
     }
 }
