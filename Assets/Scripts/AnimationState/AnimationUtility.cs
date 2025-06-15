@@ -33,9 +33,8 @@ public class AnimationUtility
         }
     }
 
-    private string ResolveAnimationName(Animation animation)
+    public string ResolveAnimationName<T>(T animation)
     {
-        //gets the actual fieldInfo for that particular Enum value 
         FieldInfo fieldValue = animation.GetType().GetField(animation.ToString());
 
         DescriptionAttribute attribute = fieldValue.GetCustomAttribute<DescriptionAttribute>();

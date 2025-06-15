@@ -14,21 +14,24 @@ public class RakashStateMachine : RakashBaseStateMachine
     {
         if (GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
-            animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.STOP_WALK, Animator = animator });
+            animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.STOP_WALK, AnimatorStateInfo = stateInfo, Animator = animator });
 
             return;
         }
 
+        Debug.Log(animator.GetCurrentAnimatorStateInfo(0).IsName("attack"));
+
         if (Player != null && Helper.CheckDistance(animator.transform, Player.Transform, MAX_DISTANCE_BETWEEN_PLAYER, MIN_DISTANCE_BETWEEN_PLAYER))
         {
-           animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.START_WALK, Animator = animator, TargetTransform = Player.Transform });
+           animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.START_WALK, Animator = animator,
+               AnimatorStateInfo = stateInfo, TargetTransform = Player.Transform });
         }
 
         if (Vector3.Distance(Player.Transform.position, animator.transform.position) <= MIN_DISTANCE_BETWEEN_PLAYER)
         {
-            animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.STOP_WALK, Animator = animator });
+            animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.STOP_WALK, AnimatorStateInfo = stateInfo, Animator = animator });
 
-            RakashAttackCommandController.Execute(new AttackAnimationPackage() { Animation = Animation.START_ATTACK, Animator = animator , AttackDelay = TIME_SPAN_BETWEEN_EACH_ATTACK });
+            RakashAttackCommandController.Execute(new AttackAnimationPackage() { Animation = Animation.START_ATTACK, AnimatorStateInfo = stateInfo, Animator = animator, AttackDelay = TIME_SPAN_BETWEEN_EACH_ATTACK });
         }
     }
 }

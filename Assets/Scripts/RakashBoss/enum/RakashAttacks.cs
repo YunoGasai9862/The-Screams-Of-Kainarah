@@ -8,6 +8,6 @@ public enum RakashAttacks
     [Description("attack")]
     ATTACK,
 
-    [Description("attack02")]
+    [Description("attack_02")]
     ATTACK_02
 }

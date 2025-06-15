@@ -1,7 +1,7 @@
 using System.Threading;
 using UnityEngine;
 
-public abstract class RakashBaseStateMachine : StateMachineBehaviour, IObserver<GameState>, IObserver<Player>
+public class RakashBaseStateMachine : MonoBehaviour, IObserver<GameState>, IObserver<Player>
 {
     protected GameState GameState { get; set; }
 
