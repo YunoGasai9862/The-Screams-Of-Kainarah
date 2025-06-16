@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-public enum RakashAttacks
+public enum RakashAttack
 {
     [Description("not_attacking")]
     NOT_ATTACKING,

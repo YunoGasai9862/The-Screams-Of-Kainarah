@@ -65,8 +65,7 @@ public class RakashManager : AbstractEntity, IObserver<GameState>, IObserver<Pla
             return;
         }
 
-        CheckRotation();
-
+        //move this logic somewhere else too!!
         if (_onTopBossBool)
         {
             _timeoverBody += Time.deltaTime;
@@ -77,7 +76,6 @@ public class RakashManager : AbstractEntity, IObserver<GameState>, IObserver<Pla
             _bC2.enabled = false;
             _onTopBossBool = false;
             StartCoroutine(TimeElapse());
-
         }
     }
 
@@ -86,32 +84,6 @@ public class RakashManager : AbstractEntity, IObserver<GameState>, IObserver<Pla
         yield return new WaitForSeconds(.5f);
         _bC2.enabled = true;
         _timeoverBody = 0f;
-    }
-    public async void CheckRotation()
-    {
-        if (await IsNotOneOfTheAttackingAnimations(attackingAnimationNames, _anim))
-        {
-            if (transform.position.x > Player.Transform.position.x)
-            {
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-
-            if (transform.position.x < Player.Transform.position.x)
-            {
-                transform.rotation = Quaternion.Euler(0, 180, 0);
-            }
-        }
-    }
-
-    private Task<bool> IsNotOneOfTheAttackingAnimations(string[] animationNames, Animator anim)
-    {
-        bool result = true;
-
-        foreach (string animationName in animationNames)
-        {
-            result = result && !anim.GetCurrentAnimatorStateInfo(0).IsName(animationName);
-        }
-        return Task.FromResult(result);
     }
 
     private async void OnTriggerEnter2D(Collider2D collision)

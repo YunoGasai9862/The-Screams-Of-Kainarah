@@ -1,41 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class RakashAttackController : MonoBehaviour, IReceiver<AttackAnimationPackage, ActionExecuted>
+public class RakashAttackController : MonoBehaviour, IReceiver<AttackAnimationPackage, Task<ActionExecuted>>
 {
     private AnimationUtility AnimationUtility { get; set; }
 
-    private List<RakashAttacks> BlockingAttacks { get; set; }
+    private List<RakashAttack> BlockingAttacks { get; set; }
 
     private void Start()
     {
         AnimationUtility = new AnimationUtility();
 
-        BlockingAttacks = new List<RakashAttacks>()
+        BlockingAttacks = new List<RakashAttack>()
         {
-           RakashAttacks.ATTACK,
+           RakashAttack.ATTACK,
 
-           RakashAttacks.ATTACK_02
+           RakashAttack.ATTACK_02
         };
-    }
-
-    ActionExecuted IReceiver<AttackAnimationPackage, ActionExecuted>.PerformAction(AttackAnimationPackage value)
-    {
-        
-        if (IsAnimationStateInfoFromRaskashAttacks(BlockingAttacks, value.AnimatorStateInfo))
-        {
-            return new ActionExecuted();
-        }
-
-        StartCoroutine(Attack(value));
-
-        return new ActionExecuted();
-    }
-
-    ActionExecuted IReceiver<AttackAnimationPackage, ActionExecuted>.CancelAction()
-    {
-        return new ActionExecuted { };
     }
 
     private IEnumerator Attack(AttackAnimationPackage value)
@@ -45,11 +28,11 @@ public class RakashAttackController : MonoBehaviour, IReceiver<AttackAnimationPa
         AnimationUtility.ExecuteAnimation(value.Animation, value.Animator);
     }
 
-    private bool IsAnimationStateInfoFromRaskashAttacks(List<RakashAttacks> rakashAttacks, AnimatorStateInfo info)
+    private async Task<bool> IsAnimationStateInfoFromRaskashAttacks(List<RakashAttack> rakashAttacks, AnimatorStateInfo info)
     {
-        foreach(RakashAttacks attack in rakashAttacks)
+        foreach(RakashAttack attack in rakashAttacks)
         {
-            if (info.IsTag(AnimationUtility.ResolveAnimationName(attack)))
+            if (info.IsTag(await AnimationUtility.ResolveAnimationName(attack)))
             {
                 Debug.Log("YESS");
 
@@ -58,5 +41,22 @@ public class RakashAttackController : MonoBehaviour, IReceiver<AttackAnimationPa
         }
 
         return false;
+    }
+
+    async Task<ActionExecuted> IReceiver<AttackAnimationPackage, Task<ActionExecuted>>.PerformAction(AttackAnimationPackage value)
+    {
+        if (await IsAnimationStateInfoFromRaskashAttacks(BlockingAttacks, value.AnimatorStateInfo))
+        {
+            return new ActionExecuted();
+        }
+
+        StartCoroutine(Attack(value));
+
+        return new ActionExecuted();
+    }
+
+    async Task<ActionExecuted> IReceiver<AttackAnimationPackage, Task<ActionExecuted>>.CancelAction()
+    {
+        return await Task.FromResult(new ActionExecuted { });
     }
 }

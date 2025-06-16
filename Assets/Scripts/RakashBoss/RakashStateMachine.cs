@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RakashStateMachine : RakashBaseStateMachine
+public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver<Player>
 {
     public const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
 
@@ -10,7 +10,69 @@ public class RakashStateMachine : RakashBaseStateMachine
 
     private const float MIN_DISTANCE_BETWEEN_PLAYER = 3f;
 
-    protected override void CustomOnStateUpdateLogic(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected GameState GameState { get; set; }
+
+    protected Player Player { get; set; }
+
+    protected GlobalGameStateDelegator GameStateDelegator { get; set; }
+
+    protected PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+
+    protected RakashControllerMovement RakashControllerMovement { get; set; }
+
+    protected RakashAttackController RakashAttackController { get; set; }
+
+    protected Command<MovementAnimationPackage, Vector3> RakashMovementCommandController { get; set; }
+
+    protected Command<AttackAnimationPackage, Task<ActionExecuted>> RakashAttackCommandController { get; set; }
+
+    private Animator Animator { get; set; }
+
+    private void Awake()
+    {
+        GameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
+        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
+
+        Animator= GetComponent<Animator>();
+
+        GameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        {
+            ObserverName = this.name,
+            ObserverTag = this.name,
+            SubjectType = typeof(GlobalGameStateManager).ToString()
+
+        }, CancellationToken.None);
+
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        {
+            ObserverName = this.name,
+            ObserverTag = this.name,
+            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+
+        }, CancellationToken.None);
+
+        RakashControllerMovement = Animator.GetComponent<RakashControllerMovement>();
+
+        RakashMovementCommandController = new Command<MovementAnimationPackage, Vector3>(RakashControllerMovement);
+ 
+        RakashAttackController = Animator.GetComponent<RakashAttackController>();
+
+        RakashAttackCommandController = new Command<AttackAnimationPackage, Task<ActionExecuted>>(RakashAttackController);
+        
+    }
+
+    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        GameState = data;
+    }
+
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        Player = data;
+    }
+
+    protected void CustomOnStateUpdateLogic(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
@@ -23,8 +85,13 @@ public class RakashStateMachine : RakashBaseStateMachine
 
         if (Player != null && Helper.CheckDistance(animator.transform, Player.Transform, MAX_DISTANCE_BETWEEN_PLAYER, MIN_DISTANCE_BETWEEN_PLAYER))
         {
-           animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.START_WALK, Animator = animator,
-               AnimatorStateInfo = stateInfo, TargetTransform = Player.Transform });
+            animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage()
+            {
+                Animation = Animation.START_WALK,
+                Animator = animator,
+                AnimatorStateInfo = stateInfo,
+                TargetTransform = Player.Transform
+            });
         }
 
         if (Vector3.Distance(Player.Transform.position, animator.transform.position) <= MIN_DISTANCE_BETWEEN_PLAYER)
