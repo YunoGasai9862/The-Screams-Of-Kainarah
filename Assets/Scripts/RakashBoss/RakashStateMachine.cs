@@ -22,7 +22,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
 
     protected RakashAttackController RakashAttackController { get; set; }
 
-    protected Command<MovementAnimationPackage, Vector3> RakashMovementCommandController { get; set; }
+    protected Command<MovementAnimationPackage, Task<ActionExecuted>> RakashMovementCommandController { get; set; }
 
     protected Command<AttackAnimationPackage, Task<ActionExecuted>> RakashAttackCommandController { get; set; }
 
@@ -54,7 +54,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
 
         RakashControllerMovement = Animator.GetComponent<RakashControllerMovement>();
 
-        RakashMovementCommandController = new Command<MovementAnimationPackage, Vector3>(RakashControllerMovement);
+        RakashMovementCommandController = new Command<MovementAnimationPackage, Task<ActionExecuted>>(RakashControllerMovement);
  
         RakashAttackController = Animator.GetComponent<RakashAttackController>();
 
@@ -76,7 +76,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
     {
         if (GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
-            animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.STOP_WALK, AnimatorStateInfo = stateInfo, Animator = animator });
+            RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.STOP_WALK, AnimatorStateInfo = stateInfo, Animator = animator });
 
             return;
         }
@@ -85,20 +85,45 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
 
         if (Player != null && Helper.CheckDistance(animator.transform, Player.Transform, MAX_DISTANCE_BETWEEN_PLAYER, MIN_DISTANCE_BETWEEN_PLAYER))
         {
-            animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage()
+             RakashMovementCommandController.Execute(new MovementAnimationPackage()
             {
                 Animation = Animation.START_WALK,
                 Animator = animator,
                 AnimatorStateInfo = stateInfo,
+                MainEntityTransform = transform,
                 TargetTransform = Player.Transform
             });
         }
 
         if (Vector3.Distance(Player.Transform.position, animator.transform.position) <= MIN_DISTANCE_BETWEEN_PLAYER)
         {
-            animator.transform.position = RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.STOP_WALK, AnimatorStateInfo = stateInfo, Animator = animator });
+            RakashMovementCommandController.Execute(new MovementAnimationPackage()
+            {
+                Animation = Animation.STOP_ATTACK,
+                Animator = animator,
+                AnimatorStateInfo = stateInfo,
+                MainEntityTransform = transform,
+                TargetTransform = Player.Transform
+            });
 
             RakashAttackCommandController.Execute(new AttackAnimationPackage() { Animation = Animation.START_ATTACK, AnimatorStateInfo = stateInfo, Animator = animator, AttackDelay = TIME_SPAN_BETWEEN_EACH_ATTACK });
+        }
+    }
+
+    private async void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (await EnemyHittableManager.IsEntityAnAttackObject(collision, SceneSingleton.EnemyHittableObjects))
+        {
+            _anim.SetTrigger("damage");
+            Health -= 10;
+        }
+
+        if (Health == 0)
+        {
+            Vector2 pos = transform.position;
+            pos.y = transform.position.y + .5f;
+            var deadBody = await HandleBossDefeatScenario(pos, bossDead, gameObject);
+            await DestroyMultipleGameObjects(new[] { deadBody, gameObject }, 1f);
         }
     }
 }

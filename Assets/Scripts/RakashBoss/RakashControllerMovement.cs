@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class RakashControllerMovement : MonoBehaviour, IReceiver<MovementAnimationPackage, Vector3>
+public class RakashControllerMovement : MonoBehaviour, IReceiver<MovementAnimationPackage, Task<ActionExecuted>>
 {
     private const float OVER_GROUND = 1.5f;
 
@@ -22,26 +23,27 @@ public class RakashControllerMovement : MonoBehaviour, IReceiver<MovementAnimati
         };
     }
 
-    //FIX THIS - since this is on the same controller, we dont need to return anything i guess
-    Vector3 IReceiver<MovementAnimationPackage, Vector3>.PerformAction(MovementAnimationPackage value)
+    Task<ActionExecuted> IReceiver<MovementAnimationPackage, Task<ActionExecuted>>.PerformAction(MovementAnimationPackage value)
     {
         AnimationUtility.ExecuteAnimation(value.Animation, value.Animator);
 
         if (value.TargetTransform == null)
         {
-            return value.Animator.transform.position;
+            return Task.FromResult(new ActionExecuted());
         }
 
-       return Vector3.MoveTowards(value.Animator.transform.position, 
+        value.MainEntityTransform.position = Vector3.MoveTowards(value.MainEntityTransform.position, 
                new Vector3(value.TargetTransform.position.x, 
                value.TargetTransform.position.y - OVER_GROUND, 
                value.TargetTransform.position.z), SPEED * Time.deltaTime);
 
+        return Task.FromResult(new ActionExecuted());
+
     }
 
-    public Vector3 CancelAction()
+    public Task<ActionExecuted> CancelAction()
     {
-        return new Vector3 { };
+        return Task.FromResult(new ActionExecuted { });
     }
 
     public async void Rotate(List<RakashMovement> movementAnimations, Transform playerTransform, AnimatorStateInfo animatorStateInfo)

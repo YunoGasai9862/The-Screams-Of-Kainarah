@@ -28,7 +28,7 @@ public class RakashAttackController : MonoBehaviour, IReceiver<AttackAnimationPa
         AnimationUtility.ExecuteAnimation(value.Animation, value.Animator);
     }
 
-    private async Task<bool> IsAnimationStateInfoFromRaskashAttacks(List<RakashAttack> rakashAttacks, AnimatorStateInfo info)
+    private async Task<bool> IsAnAttack(List<RakashAttack> rakashAttacks, AnimatorStateInfo info)
     {
         foreach(RakashAttack attack in rakashAttacks)
         {
@@ -45,7 +45,7 @@ public class RakashAttackController : MonoBehaviour, IReceiver<AttackAnimationPa
 
     async Task<ActionExecuted> IReceiver<AttackAnimationPackage, Task<ActionExecuted>>.PerformAction(AttackAnimationPackage value)
     {
-        if (await IsAnimationStateInfoFromRaskashAttacks(BlockingAttacks, value.AnimatorStateInfo))
+        if (await IsAnAttack(BlockingAttacks, value.AnimatorStateInfo))
         {
             return new ActionExecuted();
         }
