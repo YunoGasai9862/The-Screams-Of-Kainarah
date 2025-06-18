@@ -12,7 +12,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
     [SerializeField] private PlayerHittableItemsScriptableObject playerHittableItemsScriptableObject;
     [SerializeField] private EntitiesToReset entitiesToResetScriptableObject;
     [SerializeField] private CheckPoints checkpointsScriptableObject;
-    [SerializeField] private EnemyHittableObjects enemyHittableObject;
     [SerializeField] private EventStringMapper eventStringMapperScriptableObject;
 
     [Header("Delegators")]
@@ -22,7 +21,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
     public static PlayerHittableItemsScriptableObject PlayerHittableItems => _instance.playerHittableItemsScriptableObject;
     public static EntitiesToReset EntitiesToReset => _instance.entitiesToResetScriptableObject;
     public static CheckPoints CheckPoints => _instance.checkpointsScriptableObject;
-    public static EnemyHittableObjects EnemyHittableObjects => _instance.enemyHittableObject;
     public static EventStringMapper EventStringMapper => _instance.eventStringMapperScriptableObject;
 
     private static InventoryManager _inventoryManager { get; set; }

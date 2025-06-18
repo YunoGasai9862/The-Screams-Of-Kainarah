@@ -1,8 +1,9 @@
+using EnemyHittable;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver<Player>
+public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver<Player>, IObserver<EnemyHittableManager>
 {
     public const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
 
@@ -10,23 +11,34 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
 
     private const float MIN_DISTANCE_BETWEEN_PLAYER = 3f;
 
-    protected GameState GameState { get; set; }
+    private GameState GameState { get; set; }
 
-    protected Player Player { get; set; }
+    private Player Player { get; set; }
 
-    protected GlobalGameStateDelegator GameStateDelegator { get; set; }
+    private GlobalGameStateDelegator GameStateDelegator { get; set; }
 
-    protected PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
-    protected RakashControllerMovement RakashControllerMovement { get; set; }
+    private RakashControllerMovement RakashControllerMovement { get; set; }
 
-    protected RakashAttackController RakashAttackController { get; set; }
+    private RakashAttackController RakashAttackController { get; set; }
 
-    protected Command<MovementAnimationPackage, Task<ActionExecuted>> RakashMovementCommandController { get; set; }
+    private RakashDefeatController RakashDefeatController { get; set; }
 
-    protected Command<AttackAnimationPackage, Task<ActionExecuted>> RakashAttackCommandController { get; set; }
+    private EnemyHittableManager EnemyHittableManager { get; set; }
+
+    private Command<MovementAnimationPackage, Task<ActionExecuted>> RakashMovementCommandController { get; set; }
+
+    private Command<AttackAnimationPackage, Task<ActionExecuted>> RakashAttackCommandController { get; set; }
+
+    private Command<AttackAnimationPackage, Task<ActionExecuted>> RakashDefeatCommandController { get; set; }
 
     private Animator Animator { get; set; }
+
+    [SerializeField]
+    EnemyHittableObjects enemyHittableObjects;
+    [SerializeField]
+    EnemyHittableManagerDelegator enemyHittableManagerDelegator;
 
     private void Awake()
     {
@@ -52,14 +64,29 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
 
         }, CancellationToken.None);
 
-        RakashControllerMovement = Animator.GetComponent<RakashControllerMovement>();
+        RakashControllerMovement = GetComponent<RakashControllerMovement>();
 
         RakashMovementCommandController = new Command<MovementAnimationPackage, Task<ActionExecuted>>(RakashControllerMovement);
  
-        RakashAttackController = Animator.GetComponent<RakashAttackController>();
+        RakashAttackController = GetComponent<RakashAttackController>();
 
         RakashAttackCommandController = new Command<AttackAnimationPackage, Task<ActionExecuted>>(RakashAttackController);
         
+        RakashDefeatController = GetComponent<RakashDefeatController>();
+
+        RakashDefeatCommandController = new Command<AttackAnimationPackage, Task<ActionExecuted>>(RakashDefeatController);
+        
+    }
+
+    private void Start()
+    {
+        StartCoroutine(enemyHittableManagerDelegator.NotifySubject(this, new NotificationContext()
+        {
+            SubjectType = typeof(EnemyHittableManager).ToString(),
+            ObserverName = name,
+            ObserverTag = tag
+
+        }, CancellationToken.None));
     }
 
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
@@ -70,6 +97,10 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
     public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
+    }
+    public void OnNotify(EnemyHittableManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        EnemyHittableManager = data;
     }
 
     protected void CustomOnStateUpdateLogic(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -112,7 +143,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
 
     private async void OnTriggerEnter2D(Collider2D collision)
     {
-        if (await EnemyHittableManager.IsEntityAnAttackObject(collision, SceneSingleton.EnemyHittableObjects))
+        if (await EnemyHittableManager.IsEntityAnAttackObject(collision, enemyHittableObjects))
         {
             _anim.SetTrigger("damage");
             Health -= 10;
@@ -126,4 +157,5 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
             await DestroyMultipleGameObjects(new[] { deadBody, gameObject }, 1f);
         }
     }
+
 }
