@@ -145,6 +145,8 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
     {
         if (await EnemyHittableManager.IsEntityAnAttackObject(collision, enemyHittableObjects))
         {
+            RakashDefeatCommandController.Execute()
+
             _anim.SetTrigger("damage");
             Health -= 10;
         }

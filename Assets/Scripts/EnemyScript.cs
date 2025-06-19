@@ -5,7 +5,7 @@ using UnityEngine;
 using EnemyHittable;
 using static SceneSingleton;
 using static SceneData;
-public class EnemyScript : AbstractEntity
+public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
 {
     private const int RAYSARRAYSIZE= 2;
     private const int HITINDEX = 0;
@@ -29,11 +29,14 @@ public class EnemyScript : AbstractEntity
     [Header("Enter Attack Anim Param name")]
     [SerializeField] string animationAttackParam;
     [SerializeField] string[] extraAnimations;
+    [SerializeField]
+    EnemyHittableManagerDelegator enemyHittableManagerDelegator;
 
     public override string EntityName { get => m_Name; set => m_Name = value; }
     public override float Health { get => m_health; set => m_health = value; }
     public override float MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
 
+    private EnemyHittableManager EnemyHittableManager { get; set; }
 
     private void Awake()
     {
@@ -50,7 +53,15 @@ public class EnemyScript : AbstractEntity
     {
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
-         //InsertIntoGameStateHandlerList(this);
+        //InsertIntoGameStateHandlerList(this);
+
+        StartCoroutine(enemyHittableManagerDelegator.NotifySubject(this, new NotificationContext()
+        {
+            SubjectType = typeof(EnemyHittableManager).ToString(),
+            ObserverName = name,
+            ObserverTag = tag
+
+        }, CancellationToken.None));
     }
 
     async void Update()
@@ -135,6 +146,12 @@ public class EnemyScript : AbstractEntity
     public override void GameStateHandler(SceneData data)
     {
         ObjectData enemyData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation);
+
         data.AddToObjectsToPersist(enemyData);
+    }
+
+    public void OnNotify(EnemyHittableManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new System.NotImplementedException();
     }
 }
