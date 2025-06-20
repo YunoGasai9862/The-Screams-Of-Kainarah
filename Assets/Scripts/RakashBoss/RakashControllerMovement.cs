@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RakashControllerMovement : MonoBehaviour, IReceiver<MovementAnimationPackage, Task<ActionExecuted>>
+public class RakashControllerMovement : MonoBehaviour, IReceiver<MovementActionDelegatePackage, Task<ActionExecuted>>
 {
     private const float OVER_GROUND = 1.5f;
 
@@ -23,8 +23,9 @@ public class RakashControllerMovement : MonoBehaviour, IReceiver<MovementAnimati
         };
     }
 
-    Task<ActionExecuted> IReceiver<MovementAnimationPackage, Task<ActionExecuted>>.PerformAction(MovementAnimationPackage value)
+    Task<ActionExecuted> IReceiver<MovementActionDelegatePackage, Task<ActionExecuted>>.PerformAction(MovementActionDelegatePackage value)
     {
+
         AnimationUtility.ExecuteAnimation(value.Animation, value.Animator);
 
         if (value.TargetTransform == null)

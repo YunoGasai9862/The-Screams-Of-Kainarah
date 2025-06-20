@@ -21,17 +21,13 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
 
     private RakashControllerMovement RakashControllerMovement { get; set; }
 
-    private RakashAttackController RakashAttackController { get; set; }
-
-    private RakashDefeatController RakashDefeatController { get; set; }
+    private RakashBattleController RakashBattleController { get; set; }
 
     private EnemyHittableManager EnemyHittableManager { get; set; }
 
-    private Command<MovementAnimationPackage, Task<ActionExecuted>> RakashMovementCommandController { get; set; }
+    private Command<MovementActionDelegatePackage, Task<ActionExecuted>> RakashMovementCommandController { get; set; }
 
-    private Command<AttackAnimationPackage, Task<ActionExecuted>> RakashAttackCommandController { get; set; }
-
-    private Command<AttackAnimationPackage, Task<ActionExecuted>> RakashDefeatCommandController { get; set; }
+    private Command<BattleActionDelegatePackage, Task<ActionExecuted>> RakashBattleCommandController { get; set; }
 
     private Animator Animator { get; set; }
 
@@ -66,16 +62,11 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
 
         RakashControllerMovement = GetComponent<RakashControllerMovement>();
 
-        RakashMovementCommandController = new Command<MovementAnimationPackage, Task<ActionExecuted>>(RakashControllerMovement);
- 
-        RakashAttackController = GetComponent<RakashAttackController>();
+        RakashMovementCommandController = new Command<MovementActionDelegatePackage, Task<ActionExecuted>>(RakashControllerMovement);
 
-        RakashAttackCommandController = new Command<AttackAnimationPackage, Task<ActionExecuted>>(RakashAttackController);
-        
-        RakashDefeatController = GetComponent<RakashDefeatController>();
+        RakashBattleController = GetComponent<RakashBattleController>();
 
-        RakashDefeatCommandController = new Command<AttackAnimationPackage, Task<ActionExecuted>>(RakashDefeatController);
-        
+        RakashBattleCommandController = new Command<BattleActionDelegatePackage, Task<ActionExecuted>>(RakashBattleController);    
     }
 
     private void Start()
@@ -107,7 +98,11 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
     {
         if (GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
-            RakashMovementCommandController.Execute(new MovementAnimationPackage() { Animation = Animation.STOP_WALK, AnimatorStateInfo = stateInfo, Animator = animator });
+            RakashMovementCommandController.Execute(new MovementActionDelegatePackage()
+            {
+                MovementAnimationPackage =
+                new MovementAnimationPackage { Animation = Animation.STOP_WALK, AnimatorStateInfo = stateInfo, Animator = animator }
+            });
 
             return;
         }
@@ -116,28 +111,45 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
 
         if (Player != null && Helper.CheckDistance(animator.transform, Player.Transform, MAX_DISTANCE_BETWEEN_PLAYER, MIN_DISTANCE_BETWEEN_PLAYER))
         {
-             RakashMovementCommandController.Execute(new MovementAnimationPackage()
+
+            RakashMovementCommandController.Execute(new MovementActionDelegatePackage
             {
-                Animation = Animation.START_WALK,
-                Animator = animator,
-                AnimatorStateInfo = stateInfo,
-                MainEntityTransform = transform,
-                TargetTransform = Player.Transform
+                MovementAnimationPackage = new MovementAnimationPackage()
+                {
+                    Animation = Animation.START_WALK,
+                    Animator = animator,
+                    AnimatorStateInfo = stateInfo,
+                    MainEntityTransform = transform,
+                    TargetTransform = Player.Transform
+
+                }
             });
         }
 
         if (Vector3.Distance(Player.Transform.position, animator.transform.position) <= MIN_DISTANCE_BETWEEN_PLAYER)
         {
-            RakashMovementCommandController.Execute(new MovementAnimationPackage()
+            RakashMovementCommandController.Execute(new MovementActionDelegatePackage
             {
-                Animation = Animation.STOP_ATTACK,
-                Animator = animator,
-                AnimatorStateInfo = stateInfo,
-                MainEntityTransform = transform,
-                TargetTransform = Player.Transform
+                MovementAnimationPackage = new MovementAnimationPackage()
+                {
+                    Animation = Animation.STOP_ATTACK,
+                    Animator = animator,
+                    AnimatorStateInfo = stateInfo,
+                    MainEntityTransform = transform,
+                    TargetTransform = Player.Transform
+                }
             });
 
-            RakashAttackCommandController.Execute(new AttackAnimationPackage() { Animation = Animation.START_ATTACK, AnimatorStateInfo = stateInfo, Animator = animator, AttackDelay = TIME_SPAN_BETWEEN_EACH_ATTACK });
+            RakashBattleCommandController.Execute(new BattleActionDelegatePackage
+            {
+                AttackAnimationPackage = new AttackAnimationPackage()
+                {
+                    Animation = Animation.START_ATTACK,
+                    AnimatorStateInfo = stateInfo,
+                    Animator = animator,
+                    AttackDelay = TIME_SPAN_BETWEEN_EACH_ATTACK
+                }
+            });
         }
     }
 
@@ -145,7 +157,15 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
     {
         if (await EnemyHittableManager.IsEntityAnAttackObject(collision, enemyHittableObjects))
         {
-            RakashDefeatCommandController.Execute()
+            await RakashBattleCommandController.Execute(new BattleActionDelegatePackage
+            {
+                AttackAnimationPackage = new AttackAnimationPackage()
+                {
+                    Animation = Animation.STOP_ATTACK
+                },
+
+                AttackActionDelegate = BattleActionDelegate.TAKE_HIT
+            });
 
             _anim.SetTrigger("damage");
             Health -= 10;

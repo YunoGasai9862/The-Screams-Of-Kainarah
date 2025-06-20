@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RakashAttackController : MonoBehaviour, IReceiver<AttackAnimationPackage, Task<ActionExecuted>>
+public class RakashBattleController : MonoBehaviour, IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>
 {
     private AnimationUtility AnimationUtility { get; set; }
 
@@ -43,7 +43,7 @@ public class RakashAttackController : MonoBehaviour, IReceiver<AttackAnimationPa
         return false;
     }
 
-    async Task<ActionExecuted> IReceiver<AttackAnimationPackage, Task<ActionExecuted>>.PerformAction(AttackAnimationPackage value)
+    async Task<ActionExecuted> IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>.PerformAction(BattleActionDelegatePackage value)
     {
         if (await IsAnAttack(BlockingAttacks, value.AnimatorStateInfo))
         {
@@ -55,8 +55,37 @@ public class RakashAttackController : MonoBehaviour, IReceiver<AttackAnimationPa
         return new ActionExecuted();
     }
 
-    async Task<ActionExecuted> IReceiver<AttackAnimationPackage, Task<ActionExecuted>>.CancelAction()
+    async Task<ActionExecuted> IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>.CancelAction()
     {
         return await Task.FromResult(new ActionExecuted { });
     }
+
+    private Task DelegateAction(BattleActionDelegate battleActionDelegate)
+    {
+        switch (battleActionDelegate)
+        {
+            case BattleActionDelegate.ATTACK:
+                break;
+
+            case BattleActionDelegate.TAKE_HIT:
+                break;
+
+            case BattleActionDelegate.DESTROY_ON_DEFEAT:
+                break;
+
+            case BattleActionDelegate.ENTITY_DEFEATED:
+                break;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task AttactAction() { return Task.CompletedTask; }
+
+    private Task TakeHitAction() { return Task.CompletedTask; }
+
+    private Task DestroyOnDefeatAction() { return Task.CompletedTask; }
+
+    private Task EntityDefeatedAction() { return Task.CompletedTask; }
+
 }
