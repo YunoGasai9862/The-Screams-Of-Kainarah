@@ -26,17 +26,17 @@ public class RakashControllerMovement : MonoBehaviour, IReceiver<MovementActionD
     Task<ActionExecuted> IReceiver<MovementActionDelegatePackage, Task<ActionExecuted>>.PerformAction(MovementActionDelegatePackage value)
     {
 
-        AnimationUtility.ExecuteAnimation(value.Animation, value.Animator);
+        AnimationUtility.ExecuteAnimation(value.MovementAnimationPackage.Animation, value.MovementAnimationPackage.Animator);
 
-        if (value.TargetTransform == null)
+        if (value.MovementAnimationPackage.TargetTransform == null)
         {
             return Task.FromResult(new ActionExecuted());
         }
 
-        value.MainEntityTransform.position = Vector3.MoveTowards(value.MainEntityTransform.position, 
-               new Vector3(value.TargetTransform.position.x, 
-               value.TargetTransform.position.y - OVER_GROUND, 
-               value.TargetTransform.position.z), SPEED * Time.deltaTime);
+        value.MovementAnimationPackage.MainEntityTransform.position = Vector3.MoveTowards(value.MovementAnimationPackage.MainEntityTransform.position, 
+               new Vector3(value.MovementAnimationPackage.TargetTransform.position.x, 
+               value.MovementAnimationPackage.TargetTransform.position.y - OVER_GROUND, 
+               value.MovementAnimationPackage.TargetTransform.position.z), SPEED * Time.deltaTime);
 
         return Task.FromResult(new ActionExecuted());
 

@@ -107,8 +107,6 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
             return;
         }
 
-        Debug.Log(animator.GetCurrentAnimatorStateInfo(0).IsName("attack"));
-
         if (Player != null && Helper.CheckDistance(animator.transform, Player.Transform, MAX_DISTANCE_BETWEEN_PLAYER, MIN_DISTANCE_BETWEEN_PLAYER))
         {
 
@@ -170,6 +168,8 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
             _anim.SetTrigger("damage");
             Health -= 10;
         }
+
+
 
         if (Health == 0)
         {

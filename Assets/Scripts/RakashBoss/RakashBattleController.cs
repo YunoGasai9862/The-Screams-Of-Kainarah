@@ -45,12 +45,12 @@ public class RakashBattleController : MonoBehaviour, IReceiver<BattleActionDeleg
 
     async Task<ActionExecuted> IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>.PerformAction(BattleActionDelegatePackage value)
     {
-        if (await IsAnAttack(BlockingAttacks, value.AnimatorStateInfo))
+        if (await IsAnAttack(BlockingAttacks, value.AttackAnimationPackage.AnimatorStateInfo))
         {
             return new ActionExecuted();
         }
 
-        StartCoroutine(Attack(value));
+        StartCoroutine(Attack(value.AttackAnimationPackage));
 
         return new ActionExecuted();
     }
@@ -87,5 +87,4 @@ public class RakashBattleController : MonoBehaviour, IReceiver<BattleActionDeleg
     private Task DestroyOnDefeatAction() { return Task.CompletedTask; }
 
     private Task EntityDefeatedAction() { return Task.CompletedTask; }
-
 }

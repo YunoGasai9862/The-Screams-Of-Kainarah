@@ -144,7 +144,6 @@ public class Helper: MonoBehaviour
         }
 
     }
-
     public static Vector2 FlipTheObjectToFaceParent(ref SpriteRenderer spriteRenderer, Vector2 parentPos, Vector2 position, float offsetX)
     {
         Vector2 flipped = Vector2.zero;
@@ -176,5 +175,18 @@ public class Helper: MonoBehaviour
         child.transform.parent = parent.transform;
 
         return Task.CompletedTask;
+    }
+    public static Task DestroyMultipleGameObjects(GameObject[] gameObjects, float destroyInSeconds)
+    {
+        foreach (var gameObject in gameObjects)
+        {
+            Destroy(gameObject, destroyInSeconds);
+        }
+        return Task.CompletedTask;
+    }
+
+    public static Task<GameObject> InstantiatePrefabAt(Vector3 position, GameObject prefab)
+    {
+        return Task.FromResult(Instantiate(prefab, position, Quaternion.identity));
     }
 }
