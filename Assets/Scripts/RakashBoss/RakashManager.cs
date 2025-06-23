@@ -1,5 +1,6 @@
+using System.Threading;
 using static SceneData;
-public class RakashManager : AbstractEntity, IGameStateHandler
+public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserver<Health>>
 {
     public override Health Health {
 
@@ -34,5 +35,10 @@ public class RakashManager : AbstractEntity, IGameStateHandler
         ObjectData bossData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation);
 
         data.AddToObjectsToPersist(bossData);
+    }
+
+    public void OnNotifySubject(IObserver<Health> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        throw new System.NotImplementedException();
     }
 }

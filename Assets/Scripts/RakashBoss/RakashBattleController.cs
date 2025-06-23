@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RakashBattleController : MonoBehaviour, IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>
+public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>
 {
     private AnimationUtility AnimationUtility { get; set; }
 
@@ -87,4 +88,9 @@ public class RakashBattleController : MonoBehaviour, IReceiver<BattleActionDeleg
     private Task DestroyOnDefeatAction() { return Task.CompletedTask; }
 
     private Task EntityDefeatedAction() { return Task.CompletedTask; }
+
+    public void OnNotify(Health data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new System.NotImplementedException();
+    }
 }
