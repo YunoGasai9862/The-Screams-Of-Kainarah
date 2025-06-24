@@ -28,6 +28,9 @@ public class AnimationUtility
             case Animation.STOP_ATTACK:
                 break;
 
+            case Animation.TAKE_HIT:
+                break;
+
             default:
                 break;
         }

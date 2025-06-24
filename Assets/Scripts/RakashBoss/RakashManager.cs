@@ -1,7 +1,14 @@
+using System;
 using System.Threading;
+using UnityEngine;
 using static SceneData;
 public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserver<Health>>
 {
+    [SerializeField]
+    HealthDelegator healthDelegator;
+    [SerializeField]
+    HealthEvent healthEvent;
+
     public override Health Health {
 
         get {
@@ -18,27 +25,37 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserv
 
             return Health;
         
-        }; 
+        } 
         
         set => Health = value;
     }
 
-    //push health via OBSERVER pattern, then via a custom event update it in the manager class
-
     void Start()
     {
+        healthDelegator.AddToSubjectsDict(typeof(RakashManager).ToString(), name, new Subject<IObserver<Health>>());
+
+        healthDelegator.GetSubsetSubjectsDictionary(typeof(RakashManager).ToString())[name].SetSubject(this);
+
+        healthEvent.AddListener(UpdateHealth);
+
         SceneSingleton.InsertIntoGameStateHandlerList(this);
     }
 
     public override void GameStateHandler(SceneData data)
     {
-        ObjectData bossData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation);
-
-        data.AddToObjectsToPersist(bossData);
+        data.AddToObjectsToPersist(new ObjectData(transform.tag, transform.name, transform.position, transform.rotation));
     }
 
     public void OnNotifySubject(IObserver<Health> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        throw new System.NotImplementedException();
+        StartCoroutine(healthDelegator.NotifyObserver(data, Health, new NotificationContext()
+        {
+            SubjectType = typeof(RakashManager).ToString()  
+        }, CancellationToken.None));
+    }
+
+    private void UpdateHealth(float newHealth)
+    {
+        Health.CurrentHealth = newHealth;
     }
 }

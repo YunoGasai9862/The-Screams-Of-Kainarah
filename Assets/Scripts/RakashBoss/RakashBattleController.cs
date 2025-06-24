@@ -6,9 +6,16 @@ using UnityEngine;
 
 public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>
 {
+    [SerializeField]
+    HealthDelegator healthDelegator;
+    [SerializeField]
+    HealthEvent healthEvent;
+
     private AnimationUtility AnimationUtility { get; set; }
 
     private List<RakashAttack> BlockingAttacks { get; set; }
+
+    private Health RakashHealth { get; set; }
 
     private void Start()
     {
@@ -20,6 +27,14 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
 
            RakashAttack.ATTACK_02
         };
+
+        StartCoroutine(healthDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = name,
+            ObserverTag = tag,
+            SubjectType = typeof(RakashManager).ToString()
+
+        }, CancellationToken.None));
     }
 
     private IEnumerator Attack(AttackAnimationPackage value)
@@ -61,12 +76,12 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
         return await Task.FromResult(new ActionExecuted { });
     }
 
-    private Task DelegateAction(BattleActionDelegate battleActionDelegate)
+    private async Task<ActionExecuted> DelegateAction(BattleActionDelegatePackage battleActionDelegatePackage)
     {
-        switch (battleActionDelegate)
+        switch (battleActionDelegatePackage.AttackActionDelegate)
         {
             case BattleActionDelegate.ATTACK:
-                break;
+                return await AttactAction(battleActionDelegatePackage.AttackAnimationPackage);
 
             case BattleActionDelegate.TAKE_HIT:
                 break;
@@ -78,12 +93,27 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
                 break;
         }
 
-        return Task.CompletedTask;
+        return new ActionExecuted { };
     }
 
-    private Task AttactAction() { return Task.CompletedTask; }
+    private async Task<ActionExecuted> AttactAction(AttackAnimationPackage attackAnimationPackage)
+    {
+        if (await IsAnAttack(BlockingAttacks, attackAnimationPackage.AnimatorStateInfo))
+        {
+            return new ActionExecuted();
+        }
 
-    private Task TakeHitAction() { return Task.CompletedTask; }
+        StartCoroutine(Attack(attackAnimationPackage));
+
+        return new ActionExecuted();
+    }
+
+    private Task<ActionExecuted> TakeHitAction(AttackAnimationPackage attackAnimationPackage)
+    { 
+        AnimationUtility.ExecuteAnimation(attackAnimationPackage.Animation)
+
+        return Task.CompletedTask;
+    }
 
     private Task DestroyOnDefeatAction() { return Task.CompletedTask; }
 
@@ -91,6 +121,6 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
 
     public void OnNotify(Health data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new System.NotImplementedException();
+        RakashHealth = data;
     }
 }

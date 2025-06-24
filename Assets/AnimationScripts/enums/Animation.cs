@@ -12,5 +12,8 @@ public enum Animation
     START_ATTACK,
 
     [Description("attack")]
-    STOP_ATTACK
+    STOP_ATTACK,
+
+    [Description("take_hit")]
+    TAKE_HIT
 }
