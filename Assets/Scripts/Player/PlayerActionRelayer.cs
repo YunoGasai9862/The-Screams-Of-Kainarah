@@ -8,7 +8,7 @@ using static CheckPoints;
 using static SceneData;
 using static DialoguesAndOptions;
 using PlayerHittableItemsNS;
-public class PlayerActionRelayer : AbstractEntity
+public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>
 {
     private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
 
@@ -28,9 +28,6 @@ public class PlayerActionRelayer : AbstractEntity
     private SemaphoreSlim _semaphoreSlimForCheckpoint;
     private CancellationTokenSource _cancellationTokenSource;
     private CancellationToken _cancellationToken;
-    public override string EntityName { get => m_Name; set => m_Name = value; }
-    public override float Health { get => m_health; set => m_health = value; }
-    public override float MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
 
     public SemaphoreSlim GetCheckPointSemaphore { get => _semaphoreSlimForCheckpoint; set => _semaphoreSlimForCheckpoint = value; }
     public SemaphoreSlim GetSemaphore { get => _semaphoreSlim; set => _semaphoreSlim = value; }
@@ -259,6 +256,11 @@ public class PlayerActionRelayer : AbstractEntity
         ObjectData playerData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation, entity);
 
         data.AddToObjectsToPersist(playerData);
+    }
+
+    public void OnNotify(Health data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new NotImplementedException();
     }
 }
 

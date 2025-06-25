@@ -108,11 +108,11 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
         return new ActionExecuted();
     }
 
-    private Task<ActionExecuted> TakeHitAction(AttackAnimationPackage attackAnimationPackage)
-    { 
-        AnimationUtility.ExecuteAnimation(attackAnimationPackage.Animation)
+    private async Task<ActionExecuted> TakeHitAction(AttackAnimationPackage attackAnimationPackage)
+    {
+        await AnimationUtility.ExecuteAnimations(attackAnimationPackage.Animations, attackAnimationPackage.Animator);
 
-        return Task.CompletedTask;
+        return new ActionExecuted();
     }
 
     private Task DestroyOnDefeatAction() { return Task.CompletedTask; }

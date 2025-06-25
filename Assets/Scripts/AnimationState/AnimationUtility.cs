@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -5,7 +6,15 @@ using UnityEngine;
 
 public class AnimationUtility
 {
-    public async void ExecuteAnimation(Animation animation, Animator animator)
+    public async Task ExecuteAnimations(List<Animation> animations, Animator animator)
+    {
+        foreach (Animation animation in animations)
+        {
+            await ExecuteAnimation(animation, animator);
+        }
+    }
+
+    public async Task ExecuteAnimation(Animation animation, Animator animator)
     {
         string description = await ResolveAnimationName(animation);
 

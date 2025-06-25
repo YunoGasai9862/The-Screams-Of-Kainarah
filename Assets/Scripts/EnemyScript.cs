@@ -32,6 +32,8 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
     [SerializeField]
     EnemyHittableManagerDelegator enemyHittableManagerDelegator;
 
+    public Health Health { get; set; }
+
     public override string EntityName { get => m_Name; set => m_Name = value; }
     public override float Health { get => m_health; set => m_health = value; }
     public override float MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
@@ -44,7 +46,10 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
         contactFilter2D.SetLayerMask(Player);
         EntityName = gameObject.name;
         MaxHealth = maxHealth;
-        Health = maxHealth;
+        Health = new Health()
+        {
+            CurrentHealth = Cu
+        }; maxHealth;
         wayPointsMovementScript = gameObject.GetComponent<WayPointsMovement>();
    
     }
