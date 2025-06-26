@@ -1,4 +1,4 @@
-public class PlayerVariables
+public class Health
 {
     public string EntityName { set; get; }
     public float CurrentHealth { set; get; }

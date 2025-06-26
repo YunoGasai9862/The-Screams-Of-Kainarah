@@ -8,7 +8,7 @@ using static CheckPoints;
 using static SceneData;
 using static DialoguesAndOptions;
 using PlayerHittableItemsNS;
-public class PlayerActionRelayer : MonoBehaviour, IObserver<PlayerVariables>, IGameStateHandler
+public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IGameStateHandler
 {
     private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
 
@@ -19,7 +19,6 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<PlayerVariables>, IG
     [SerializeField] float playerHealth;
     [SerializeField] MainThreadDispatcherEvent mainThreadDispatcherEvent;
     [SerializeField] HealthDelegator healthDelegator;
-
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
@@ -263,6 +262,11 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<PlayerVariables>, IG
     }
 
     public void OnNotify(PlayerVariables data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnNotify(Health data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         throw new NotImplementedException();
     }

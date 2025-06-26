@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerVariables : MonoBehaviour, ISubject<IObserver<PlayerVariables>>
+public class PlayerVariables : MonoBehaviour, ISubject<IObserver<Health>>
 {
     private static PlayerVariables instance;
 
@@ -103,7 +103,7 @@ public class PlayerVariables : MonoBehaviour, ISubject<IObserver<PlayerVariables
         return transform.localScale.x < 0 ? Task.FromResult(-1) : Task.FromResult(1);
     }
 
-    public void OnNotifySubject(IObserver<PlayerVariables> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<Health> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         throw new System.NotImplementedException();
     }
