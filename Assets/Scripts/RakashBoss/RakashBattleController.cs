@@ -41,7 +41,7 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
     {
         yield return new WaitForSeconds(value.AttackDelay);
 
-        AnimationUtility.ExecuteAnimation(value.Animation, value.Animator);
+        AnimationUtility.ExecuteAnimations(value.Animations, value.Animator);
     }
 
     private async Task<bool> IsAnAttack(List<RakashAttack> rakashAttacks, AnimatorStateInfo info)
@@ -84,7 +84,7 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
                 return await AttactAction(battleActionDelegatePackage.AttackAnimationPackage);
 
             case BattleActionDelegate.TAKE_HIT:
-                break;
+                return await TakeHitAction(battleActionDelegatePackage.AttackAnimationPackage);
 
             case BattleActionDelegate.DESTROY_ON_DEFEAT:
                 break;
@@ -111,6 +111,19 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
     private async Task<ActionExecuted> TakeHitAction(AttackAnimationPackage attackAnimationPackage)
     {
         await AnimationUtility.ExecuteAnimations(attackAnimationPackage.Animations, attackAnimationPackage.Animator);
+
+        RakashHealth.CurrentHealth -= attackAnimationPackage.AttackPoints;
+
+        await healthEvent.Invoke(RakashHealth.CurrentHealth);
+
+        //put this somewhere appropriate
+        if (Health == 0)
+        {
+            Vector2 pos = transform.position;
+            pos.y = transform.position.y + .5f;
+            var deadBody = await HandleBossDefeatScenario(pos, bossDead, gameObject);
+            await DestroyMultipleGameObjects(new[] { deadBody, gameObject }, 1f);
+        }
 
         return new ActionExecuted();
     }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -32,26 +31,32 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
     [SerializeField]
     EnemyHittableManagerDelegator enemyHittableManagerDelegator;
 
-    public Health Health { get; set; }
+    public override Health Health {
 
-    public override string EntityName { get => m_Name; set => m_Name = value; }
-    public override float Health { get => m_health; set => m_health = value; }
-    public override float MaxHealth { get => m_maxHealth; set => m_maxHealth = value; }
+        get { 
+
+            if (Health == null)
+            {
+                Health = new Health()
+                {
+                    CurrentHealth = maxHealth,
+                    MaxHealth = maxHealth,
+                    EntityName = name
+                };
+            }
+
+            return Health;
+        }
+
+        set => Health = value;
+    }
 
     private EnemyHittableManager EnemyHittableManager { get; set; }
-
     private void Awake()
     {
         rayReleased = new RaycastHit2D[RAYSARRAYSIZE];
         contactFilter2D.SetLayerMask(Player);
-        EntityName = gameObject.name;
-        MaxHealth = maxHealth;
-        Health = new Health()
-        {
-            CurrentHealth = Cu
-        }; maxHealth;
         wayPointsMovementScript = gameObject.GetComponent<WayPointsMovement>();
-   
     }
 
     void Start()
@@ -92,7 +97,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
 
         }
 
-        if (isEnemyHealthZero(Health))
+        if (isEnemyHealthZero(Health.CurrentHealth))
         {
             if (!cancellationToken.IsCancellationRequested)
                 Destroy(gameObject);
@@ -125,7 +130,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
     {
         if (gameObject != null && await EnemyHittableManager.IsEntityAnAttackObject(collision, _enemyHittableObjects))
         {
-            Health -= HITPOINTS;
+            Health.CurrentHealth -= HITPOINTS;
             _ = await GetEnemyOberverListenerObject().EnemyActionDelegator(collision, gameObject, animationHitParam, true);
 
         }

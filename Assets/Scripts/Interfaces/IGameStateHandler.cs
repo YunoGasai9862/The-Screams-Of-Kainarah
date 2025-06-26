@@ -1,5 +1,5 @@
 
 public interface IGameStateHandler
 {
-    void GameStateHandler(SceneData data);
+     abstract void GameStateHandler(SceneData data);
 }

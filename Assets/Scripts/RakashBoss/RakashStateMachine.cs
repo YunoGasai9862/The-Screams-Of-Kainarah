@@ -101,7 +101,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
             RakashMovementCommandController.Execute(new MovementActionDelegatePackage()
             {
                 MovementAnimationPackage =
-                new MovementAnimationPackage { Animation = Animation.STOP_WALK, AnimatorStateInfo = stateInfo, Animator = animator }
+                new MovementAnimationPackage { Animations = new System.Collections.Generic.List<Animation>() { Animation.STOP_WALK }, AnimatorStateInfo = stateInfo, Animator = animator }
             });
 
             return;
@@ -114,7 +114,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
             {
                 MovementAnimationPackage = new MovementAnimationPackage()
                 {
-                    Animation = Animation.START_WALK,
+                    Animations = new System.Collections.Generic.List<Animation>() { Animation.START_WALK },
                     Animator = animator,
                     AnimatorStateInfo = stateInfo,
                     MainEntityTransform = transform,
@@ -130,7 +130,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
             {
                 MovementAnimationPackage = new MovementAnimationPackage()
                 {
-                    Animation = Animation.STOP_ATTACK,
+                    Animations = new System.Collections.Generic.List<Animation>() { Animation.STOP_ATTACK },
                     Animator = animator,
                     AnimatorStateInfo = stateInfo,
                     MainEntityTransform = transform,
@@ -142,7 +142,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
             {
                 AttackAnimationPackage = new AttackAnimationPackage()
                 {
-                    Animation = Animation.START_ATTACK,
+                    Animations = new System.Collections.Generic.List<Animation>() { Animation.START_ATTACK },
                     AnimatorStateInfo = stateInfo,
                     Animator = animator,
                     AttackDelay = TIME_SPAN_BETWEEN_EACH_ATTACK
@@ -159,25 +159,11 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
             {
                 AttackAnimationPackage = new AttackAnimationPackage()
                 {
-                    Animation = Animation.STOP_ATTACK
+                    Animations = new System.Collections.Generic.List<Animation>() { Animation.STOP_ATTACK, Animation.TAKE_HIT }
                 },
 
                 AttackActionDelegate = BattleActionDelegate.TAKE_HIT
             });
-
-            _anim.SetTrigger("damage");
-            Health -= 10;
-        }
-
-
-
-        if (Health == 0)
-        {
-            Vector2 pos = transform.position;
-            pos.y = transform.position.y + .5f;
-            var deadBody = await HandleBossDefeatScenario(pos, bossDead, gameObject);
-            await DestroyMultipleGameObjects(new[] { deadBody, gameObject }, 1f);
         }
     }
-
 }

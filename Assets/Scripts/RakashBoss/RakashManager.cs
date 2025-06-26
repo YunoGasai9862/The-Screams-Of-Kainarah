@@ -2,20 +2,20 @@ using System;
 using System.Threading;
 using UnityEngine;
 using static SceneData;
-public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserver<Health>>
+public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserver<PlayerVariables>>
 {
     [SerializeField]
     HealthDelegator healthDelegator;
     [SerializeField]
     HealthEvent healthEvent;
 
-    public override Health Health {
+    public override PlayerVariables Health {
 
         get {
 
             if (Health == null)
             {
-                Health = new Health()
+                Health = new PlayerVariables()
                 {
                     MaxHealth = 100f,
                     CurrentHealth = 100f,
@@ -32,7 +32,7 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserv
 
     void Start()
     {
-        healthDelegator.AddToSubjectsDict(typeof(RakashManager).ToString(), name, new Subject<IObserver<Health>>());
+        healthDelegator.AddToSubjectsDict(typeof(RakashManager).ToString(), name, new Subject<IObserver<PlayerVariables>>());
 
         healthDelegator.GetSubsetSubjectsDictionary(typeof(RakashManager).ToString())[name].SetSubject(this);
 
@@ -46,7 +46,7 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserv
         data.AddToObjectsToPersist(new ObjectData(transform.tag, transform.name, transform.position, transform.rotation));
     }
 
-    public void OnNotifySubject(IObserver<Health> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<PlayerVariables> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         StartCoroutine(healthDelegator.NotifyObserver(data, Health, new NotificationContext()
         {

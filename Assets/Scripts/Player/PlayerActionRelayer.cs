@@ -8,7 +8,7 @@ using static CheckPoints;
 using static SceneData;
 using static DialoguesAndOptions;
 using PlayerHittableItemsNS;
-public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>
+public class PlayerActionRelayer : MonoBehaviour, IObserver<PlayerVariables>, IGameStateHandler
 {
     private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
 
@@ -17,8 +17,9 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>
     [SerializeField] GameObject TeleportTransition;
     [SerializeField] string[] checkpointTags;
     [SerializeField] float playerHealth;
-    [SerializeField]
-    MainThreadDispatcherEvent mainThreadDispatcherEvent;
+    [SerializeField] MainThreadDispatcherEvent mainThreadDispatcherEvent;
+    [SerializeField] HealthDelegator healthDelegator;
+
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
@@ -45,13 +46,16 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>
             Debug.Log($"Exception: {ex.StackTrace}");
         }
 
+        StartCoroutine(healthDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = name,
+            SubjectType = typeof(HealthManager).ToString()
+
+        }, CancellationToken.None));
+
     }
     private void Awake()
     {
-        MaxHealth = playerHealth;
-
-        Health = MaxHealth;
-
         _semaphoreSlim = new SemaphoreSlim(1); //using at two places
 
         _semaphoreSlimForCheckpoint = new SemaphoreSlim(1);
@@ -249,7 +253,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>
        _cancellationTokenSource.Cancel();
     }
 
-    public override void GameStateHandler(SceneData data)
+    public void GameStateHandler(SceneData data)
     {
         AbstractEntity entity = GetComponent<AbstractEntity>();
 
@@ -258,7 +262,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>
         data.AddToObjectsToPersist(playerData);
     }
 
-    public void OnNotify(Health data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(PlayerVariables data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         throw new NotImplementedException();
     }
