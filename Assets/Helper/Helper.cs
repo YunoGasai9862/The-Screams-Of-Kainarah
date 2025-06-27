@@ -176,7 +176,8 @@ public class Helper: MonoBehaviour
 
         return Task.CompletedTask;
     }
-    public static Task DestroyMultipleGameObjects(GameObject[] gameObjects, float destroyInSeconds)
+
+    public static Task DestroyMultipleGameObjects(List<GameObject> gameObjects, float destroyInSeconds)
     {
         foreach (var gameObject in gameObjects)
         {

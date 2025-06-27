@@ -10,10 +10,17 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
     HealthDelegator healthDelegator;
     [SerializeField]
     HealthEvent healthEvent;
+    [SerializeField]
+    GameObject rakashDeadBodyPrefab;
 
     private AnimationUtility AnimationUtility { get; set; }
 
     private List<RakashAttack> BlockingAttacks { get; set; }
+
+
+    private const float HEALTH_DEPLETED_MARK = 0;
+
+    private const float DESTROY_DELAY = 1.0f;
 
     private Health RakashHealth { get; set; }
 
@@ -112,25 +119,36 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
     {
         await AnimationUtility.ExecuteAnimations(attackAnimationPackage.Animations, attackAnimationPackage.Animator);
 
+        if (RakashHealth.CurrentHealth == HEALTH_DEPLETED_MARK)
+        {
+            ActionExecuted<GameObject> actionExecuted = await EntityDefeatedAction(rakashDeadBodyPrefab);
+
+            await DestroyOnDefeatAction(new List<GameObject>() { actionExecuted.Result, gameObject }, DESTROY_DELAY);
+
+            return new ActionExecuted();
+        }
+
         RakashHealth.CurrentHealth -= attackAnimationPackage.AttackPoints;
 
         await healthEvent.Invoke(RakashHealth.CurrentHealth);
 
-        //put this somewhere appropriate
-        if (Health == 0)
-        {
-            Vector2 pos = transform.position;
-            pos.y = transform.position.y + .5f;
-            var deadBody = await HandleBossDefeatScenario(pos, bossDead, gameObject);
-            await DestroyMultipleGameObjects(new[] { deadBody, gameObject }, 1f);
-        }
-
         return new ActionExecuted();
     }
 
-    private Task DestroyOnDefeatAction() { return Task.CompletedTask; }
+    private Task<ActionExecuted> DestroyOnDefeatAction(List<GameObject> objectsToDestroy, float delay) {
 
-    private Task EntityDefeatedAction() { return Task.CompletedTask; }
+        Helper.DestroyMultipleGameObjects(objectsToDestroy, delay);
+
+        return Task.FromResult(new ActionExecuted()); 
+    }
+
+    private async Task<ActionExecuted<GameObject>> EntityDefeatedAction(GameObject deadBodyPrefab) {
+
+        GameObject instantiatedObject = await Helper.InstantiatePrefabAt(transform.position, deadBodyPrefab);
+
+       return new ActionExecuted<GameObject>(instantiatedObject);
+
+    }
 
     public void OnNotify(Health data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
