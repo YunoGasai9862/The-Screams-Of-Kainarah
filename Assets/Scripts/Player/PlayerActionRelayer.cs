@@ -8,7 +8,7 @@ using static CheckPoints;
 using static SceneData;
 using static DialoguesAndOptions;
 using PlayerHittableItemsNS;
-public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IGameStateHandler
+public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<PlayerSystem>, IGameStateHandler
 {
     private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
 
@@ -32,6 +32,11 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IGameStateH
     public SemaphoreSlim GetCheckPointSemaphore { get => _semaphoreSlimForCheckpoint; set => _semaphoreSlimForCheckpoint = value; }
     public SemaphoreSlim GetSemaphore { get => _semaphoreSlim; set => _semaphoreSlim = value; }
     private DialogueSystem DialogueSystemFetched { get; set; }
+    
+    private PlayerSystem PlayerSystemReference { get; set; }
+
+    private Health PlayerHealth { get; set; }
+
     private bool InSight { get; set; }
 
     private void Start()
@@ -74,7 +79,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IGameStateH
     private async void Update()
     {
         
-        if (await IsPlayerDead(Health) && GetCheckPointSemaphore.CurrentCount!=0)
+        if (await IsPlayerDead(PlayerHealth.CurrentHealth) && GetCheckPointSemaphore.CurrentCount!=0)
         {
             await GetCheckPointSemaphore.WaitAsync();
             anim.SetBool(PlayerAnimationConstants.DEATH, true);
@@ -131,7 +136,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IGameStateH
     {
         if (await CanPlayerBeAttacked(SceneSingleton.PlayerHittableItems, collision.collider))
         {
-            Health -= ENEMYATTACK;
+            PlayerHealth.CurrentHealth -= ENEMYATTACK;
         }
     }
 
@@ -231,7 +236,8 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IGameStateH
         RaycastHit hit; //using 3D raycast because of 3D object, portal
         Vector2 pos = transform.position;
 
-        int sign = await PlayerVariables.Instance.PlayerFlipped(transform);
+        //make it better
+        int sign = await PlayerSystemReference.PlayerFlipped(transform);
 
         pos.x = transform.position.x + sign;
         Physics.Raycast(transform.position, transform.right * sign, out hit, 1f);
@@ -261,14 +267,14 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IGameStateH
         data.AddToObjectsToPersist(playerData);
     }
 
-    public void OnNotify(PlayerVariables data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        throw new NotImplementedException();
-    }
-
     public void OnNotify(Health data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new NotImplementedException();
+        PlayerHealth = data;
+    }
+
+    public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        PlayerSystemReference = data;
     }
 }
 

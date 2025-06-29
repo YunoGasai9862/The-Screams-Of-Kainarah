@@ -9,8 +9,6 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
     [SerializeField]
     HealthDelegator healthDelegator;
     [SerializeField]
-    HealthEvent healthEvent;
-    [SerializeField]
     GameObject rakashDeadBodyPrefab;
 
     private AnimationUtility AnimationUtility { get; set; }
@@ -129,8 +127,6 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
         }
 
         RakashHealth.CurrentHealth -= attackAnimationPackage.AttackPoints;
-
-        await healthEvent.Invoke(RakashHealth.CurrentHealth);
 
         return new ActionExecuted();
     }

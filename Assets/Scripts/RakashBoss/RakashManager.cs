@@ -6,8 +6,6 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserv
 {
     [SerializeField]
     HealthDelegator healthDelegator;
-    [SerializeField]
-    HealthEvent healthEvent;
 
     public override Health Health {
 
@@ -35,8 +33,6 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserv
         healthDelegator.AddToSubjectsDict(typeof(RakashManager).ToString(), name, new Subject<IObserver<Health>>());
 
         healthDelegator.GetSubsetSubjectsDictionary(typeof(RakashManager).ToString())[name].SetSubject(this);
-
-        healthEvent.AddListener(UpdateHealth);
 
         SceneSingleton.InsertIntoGameStateHandlerList(this);
     }

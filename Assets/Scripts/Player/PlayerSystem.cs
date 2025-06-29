@@ -5,25 +5,38 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerVariables : MonoBehaviour, ISubject<IObserver<Health>>
+public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject<IObserver<PlayerSystem>>
 {
-    private static PlayerVariables instance;
+    [SerializeField]
+    HealthDelegator healthDelegator;
+    [SerializeField]
+    PlayerSystemDelegator playerSystemDelegator;
 
-    private bool _isJumping;
-    private bool _isAttacking;
-    private bool _isSliding;
-    private bool _isRunning;
-    private bool _isWalking;
-    private bool _isGrabbing;
-    private bool _isFalling;
-    public bool IS_JUMPING { get => _isJumping;  }
-    public bool IS_ATTACKING { get => _isAttacking;  }
-    public bool IS_SLIDING { get => _isSliding;  }
-    public bool IS_RUNNING { get => _isRunning; }
-    public bool IS_WALKING { get => _isWalking;  }
-    public bool IS_GRABBING { get => _isGrabbing;  }
-    public bool IS_FALLING { get => _isFalling; }
-    public static PlayerVariables Instance { get { return instance; } }
+    public bool IS_JUMPING { get; private set; }
+    public bool IS_ATTACKING { get; private set; }
+    public bool IS_SLIDING { get; private set; }
+    public bool IS_RUNNING { get; private set; }
+    public bool IS_WALKING { get; private set; }
+    public bool IS_GRABBING { get; private set; }
+    public bool IS_FALLING { get; private set; }
+
+    private Health PlayerHealth {
+        get { 
+
+            if (PlayerHealth == null)
+            {
+                PlayerHealth = new Health()
+                {
+                    MaxHealth = 100f,
+                    CurrentHealth = 100f,
+                    EntityName = name
+                };
+
+            }
+
+            return PlayerHealth;
+
+        } set => PlayerHealth = value; }
 
     public PlayerWalkVariableEvent walkVariableEvent = new PlayerWalkVariableEvent();
     public PlayerRunVariableEvent runVariableEvent = new PlayerRunVariableEvent();
@@ -33,11 +46,6 @@ public class PlayerVariables : MonoBehaviour, ISubject<IObserver<Health>>
     public PlayerJumpVariableEvent jumpVariableEvent = new PlayerJumpVariableEvent();
     public PlayerFallVariableEvent fallVariableEvent = new PlayerFallVariableEvent();
 
-    private void Awake()
-    {
-        if (instance == null)
-            instance = this;
-    }
     private void Start()
     {
         walkVariableEvent.AddListener(SetWalkVariableState);
@@ -48,34 +56,40 @@ public class PlayerVariables : MonoBehaviour, ISubject<IObserver<Health>>
         jumpVariableEvent.AddListener(SetJumpVariableState);
         fallVariableEvent.AddListener(SetFallVariableState);
 
+        healthDelegator.AddToSubjectsDict(typeof(PlayerSystem).ToString(), name, new Subject<IObserver<Health>>());
+        healthDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSystem).ToString())[name].SetSubject(this);
+
+        playerSystemDelegator.AddToSubjectsDict(typeof(PlayerSystem).ToString(), name, new Subject<IObserver<PlayerSystem>>());
+        playerSystemDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSystem).ToString())[name].SetSubject(this);
+
     }
     private void SetAttackVariableState(bool variableState)
     {
-        _isAttacking = variableState;
+        IS_ATTACKING = variableState;
     }
     private void SetJumpVariableState(bool variableState)
     {
-        _isJumping = variableState;
+        IS_JUMPING = variableState;
     }
     private void SetSlideVariableState(bool variableState)
     {
-        _isSliding = variableState;
+        IS_SLIDING = variableState;
     }
     private void SetWalkVariableState(bool variableState)
     {
-        _isWalking = variableState;
+        IS_WALKING = variableState;
     }
     private void SetGrabVariableState(bool variableState)
     {
-        _isGrabbing = variableState;
+        IS_GRABBING = variableState;
     }
     private void SetRunVariableState(bool variableState)
     {
-        _isRunning = variableState;
+        IS_RUNNING = variableState;
     }
     private void SetFallVariableState(bool variableState)
     {
-        _isFalling = variableState;
+        IS_FALLING = variableState;
     }
 
     private Task<List<string>> GetPlayerAnimationsList(Animator anim)
@@ -105,6 +119,19 @@ public class PlayerVariables : MonoBehaviour, ISubject<IObserver<Health>>
 
     public void OnNotifySubject(IObserver<Health> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        throw new System.NotImplementedException();
+        StartCoroutine(healthDelegator.NotifyObserver(data, PlayerHealth, new NotificationContext()
+        {
+            SubjectType = typeof(PlayerSystem).ToString()
+
+        }, CancellationToken.None));
+    }
+
+    public void OnNotifySubject(IObserver<PlayerSystem> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        StartCoroutine(playerSystemDelegator.NotifyObserver(data, this, new NotificationContext()
+        {
+            SubjectType = typeof(PlayerSystem).ToString()
+
+        }, CancellationToken.None));
     }
 }

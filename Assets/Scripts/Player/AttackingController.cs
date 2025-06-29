@@ -4,42 +4,58 @@ using PlayerAnimationHandler;
 using System;
 using System.Threading;
 using UnityEngine;
-public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<GameState>
+public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<GameState>, IObserver<PlayerSystem>
 {
     private const float TIME_DIFFERENCE_MAX = 1.5f;
+
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
-
-    private Animator _anim;
-    private Collider2D col;
-    private MovementHelperClass _movementHelper;
-    private bool _isPlayerEligibleForStartingAttack = false;
-    private float timeDifferencebetweenStates;
-    private GlobalGameStateDelegator _globalGameStateDelegator;
-
-    private GameState CurrentGameState { get; set; }
-
-    [SerializeField] LayerMask Ground;
-    [SerializeField] LayerMask ledge;
-    [SerializeField] GameObject IceTrail;
-    [SerializeField] GameObject IceTrail2;
-    [SerializeField] string canAttackStateName;
-    [SerializeField] string attackStateName;
-    [SerializeField] string timeDifferenceStateName;
-    [SerializeField] string jumpAttackStateName;
-    [SerializeField] string booksAttackStateName;
-    [SerializeField] PowerUpBarFillEvent powerUpBarFillEvent;
 
     private MouseClickEvent _onMouseClickEvent = new MouseClickEvent();
 
     private PlayerBoostAttackEvent _playerBoostAttackEvent = new PlayerBoostAttackEvent();
 
-    public int PlayerAttackState { get; set; }
-    public string PlayerAttackStateName { get; set; }
-    public bool LeftMouseButtonPressed { get; set; }
-    public bool BoostKeyPressed { get; set; } 
-    public bool ShouldBoost { get; set; }
-    public bool PowerUpBarFilled { get; set; } = false;
-    public PlayerAttackStateMachine PlayerAttackStateMachine { get; set; }    
+    private Animator _anim;
+
+    private Collider2D col;
+
+    private MovementHelperClass _movementHelper;
+
+    private bool _isPlayerEligibleForStartingAttack = false;
+
+    private float timeDifferencebetweenStates;
+
+    private GlobalGameStateDelegator _globalGameStateDelegator;
+    private GameState CurrentGameState { get; set; }
+    private int PlayerAttackState { get; set; }
+    private string PlayerAttackStateName { get; set; }
+    private bool LeftMouseButtonPressed { get; set; }
+    private bool BoostKeyPressed { get; set; }
+    private bool ShouldBoost { get; set; }
+    private bool PowerUpBarFilled { get; set; } = false;
+    private PlayerAttackStateMachine PlayerAttackStateMachine { get; set; }
+    private PlayerSystem PlayerSystem { get; set; }
+
+    [SerializeField] LayerMask Ground;
+
+    [SerializeField] LayerMask ledge;
+
+    [SerializeField] GameObject IceTrail;
+
+    [SerializeField] GameObject IceTrail2;
+
+    [SerializeField] string canAttackStateName;
+
+    [SerializeField] string attackStateName;
+
+    [SerializeField] string timeDifferenceStateName;
+
+    [SerializeField] string jumpAttackStateName;
+
+    [SerializeField] string booksAttackStateName;
+
+    [SerializeField] PowerUpBarFillEvent powerUpBarFillEvent;
+
+    [SerializeField] PlayerSystemDelegator playerSystemDelegator;
 
     private void Awake()
     {
@@ -65,6 +81,15 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
             SubjectType = typeof(GlobalGameStateManager).ToString()
         }, CancellationToken.None));
 
+
+        StartCoroutine(playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerSystem).ToString()
+        }, CancellationToken.None));
+
+
         //event subscription
         _onMouseClickEvent.AddListener(SetMouseClickBeginEndTime);
         _playerBoostAttackEvent.AddListener(SetAttackBoostMode);
@@ -75,7 +100,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     // Update is called once per frame
     void Update()
     {
-        if (PlayerVariables.Instance.IS_SLIDING || PlayerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
+        if (PlayerSystem.IS_SLIDING || PlayerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
         {
             ResetAttackingState();
         }
@@ -84,7 +109,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     {
         if (CanPlayerAttack()) //ground attack
         {
-            PlayerVariables.Instance.attackVariableEvent.Invoke(true);
+            PlayerSystem.attackVariableEvent.Invoke(true);
             //keeps track of attacking state
             (PlayerAttackState, PlayerAttackStateName, _isPlayerEligibleForStartingAttack) = GetEnumStateAndName<PlayerAttackEnum.PlayerAttackSlash>( PlayerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
 
@@ -103,7 +128,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     }
     private bool CanPlayerAttackWhileJumping()
     {
-        bool isJumping = PlayerVariables.Instance.IS_JUMPING;
+        bool isJumping = PlayerSystem.IS_JUMPING;
         bool isOnTheGround = _movementHelper.OverlapAgainstLayerMaskChecker(ref col, Ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
 
         return isJumping && !isOnTheGround;
@@ -113,9 +138,9 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     {
         _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
-        PlayerVariables.Instance.attackVariableEvent.Invoke(false);
+        PlayerSystem.attackVariableEvent.Invoke(false);
 
-        PlayerAttackStateMachine.SetAttackState(jumpAttackStateName, PlayerVariables.Instance.IS_ATTACKING); //no jump attack
+        PlayerAttackStateMachine.SetAttackState(jumpAttackStateName, PlayerSystem.IS_ATTACKING); //no jump attack
 
     }
     private (int, string, bool) GetEnumStateAndName<T>(int playerAttackState, int initialStateOfTheEnum)
@@ -168,9 +193,9 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     private void ResetAttackingState()
     {
         PlayerAttackState = 0; //resets the attackingstate
-        PlayerVariables.Instance.attackVariableEvent.Invoke(false);
-        PlayerAttackStateMachine.CanAttack(canAttackStateName, PlayerVariables.Instance.IS_ATTACKING);
-        PlayerAttackStateMachine.CanAttack(jumpAttackStateName, PlayerVariables.Instance.IS_ATTACKING);
+        PlayerSystem.attackVariableEvent.Invoke(false);
+        PlayerAttackStateMachine.CanAttack(canAttackStateName, PlayerSystem.IS_ATTACKING);
+        PlayerAttackStateMachine.CanAttack(jumpAttackStateName, PlayerSystem.IS_ATTACKING);
     }
 
     private bool IsEnumValueEqualToLengthOfEnum<T>(string _playerAttackStateName)
@@ -184,7 +209,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     }
     public bool CanPlayerAttack()
     {
-        bool isJumping = PlayerVariables.Instance.IS_JUMPING;
+        bool isJumping = PlayerSystem.IS_JUMPING;
         bool isInventoryOpen = SceneSingleton.GetInventoryManager().IsPouchOpen;
 
         return !CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE) &&
@@ -260,5 +285,10 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState = data;
+    }
+
+    public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        PlayerSystem = data;
     }
 }
