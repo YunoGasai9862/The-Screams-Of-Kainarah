@@ -23,14 +23,14 @@ public class RakashControllerMovement : MonoBehaviour, IReceiver<MovementActionD
         };
     }
 
-    Task<ActionExecuted> IReceiver<MovementActionDelegatePackage, Task<ActionExecuted>>.PerformAction(MovementActionDelegatePackage value)
+    public async Task<ActionExecuted> PerformAction(MovementActionDelegatePackage value)
     {
 
-        AnimationUtility.ExecuteAnimation(value.MovementAnimationPackage.Animation, value.MovementAnimationPackage.Animator);
+        await AnimationUtility.ExecuteAnimations(value.MovementAnimationPackage.Animations, value.MovementAnimationPackage.Animator);
 
         if (value.MovementAnimationPackage.TargetTransform == null)
         {
-            return Task.FromResult(new ActionExecuted());
+            return new ActionExecuted();
         }
 
         value.MovementAnimationPackage.MainEntityTransform.position = Vector3.MoveTowards(value.MovementAnimationPackage.MainEntityTransform.position, 
@@ -38,8 +38,7 @@ public class RakashControllerMovement : MonoBehaviour, IReceiver<MovementActionD
                value.MovementAnimationPackage.TargetTransform.position.y - OVER_GROUND, 
                value.MovementAnimationPackage.TargetTransform.position.z), SPEED * Time.deltaTime);
 
-        return Task.FromResult(new ActionExecuted());
-
+        return new ActionExecuted();
     }
 
     public Task<ActionExecuted> CancelAction()

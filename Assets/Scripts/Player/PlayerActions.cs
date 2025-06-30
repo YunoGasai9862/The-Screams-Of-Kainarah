@@ -2,70 +2,114 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerActions : MonoBehaviour, IObserver<GameState>
+public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<GameState>
 {
-    private PlayerInput _playerInput;
-    private Rocky2DActions _rocky2DActions;
-    private Rigidbody2D _rb;
-    private SpriteRenderer _spriteRenderer;
-    private PlayerAnimationMethods _animationHandler;
-    private Vector2 _keystrokeTrack;
-    private bool _daggerInput = false;
-    private IReceiver<bool> _jumpReceiver;
-    private Command<bool> _jumpCommand;
-    private IReceiverAsync<bool> _slideReceiver;
-    private CommandAsync<bool> _slideCommand;
-    private IReceiver<bool> _attackReceiver;
-    private Command<bool> _attackCommand;
-    private IReceiver<bool> _throwingProjectileReceiver;
-    private Command<bool> _throwingProjectileCommand;
-    private PlayerActionsModel _playerActionsModel;
-    private GlobalGameStateDelegator _globalGameStateDelegator;
-    private GameState CurrentGameState { get; set; }
-
     [SerializeField] float _characterSpeed = 10f;
 
-    public LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
-    public SlidingController SlidingController { get => GetComponent<SlidingController>(); }
-    public JumpingController JumpingController { get => GetComponent<JumpingController>(); }
-    public AttackingController AttackingController { get => GetComponent<AttackingController>(); }
-    public ThrowingProjectileController ThrowingProjectileController { get => GetComponent<ThrowingProjectileController>(); } //implement all the actions together
+    [SerializeField] PlayerSystemDelegator playerSystemDelegator;
+
+    private PlayerInput _playerInput;
+
+    private Rocky2DActions _rocky2DActions;
+
+    private Rigidbody2D _rb;
+
+    private SpriteRenderer _spriteRenderer;
+
+    private PlayerAnimationMethods _animationHandler;
+
+    private Vector2 _keystrokeTrack;
+
+    private bool _daggerInput = false;
+
+    private IReceiver<bool> _jumpReceiver;
+
+    private Command<bool> _jumpCommand;
+
+    private IReceiverAsync<bool> _slideReceiver;
+
+    private CommandAsync<bool> _slideCommand;
+
+    private IReceiver<bool> _attackReceiver;
+
+    private Command<bool> _attackCommand;
+
+    private IReceiver<bool> _throwingProjectileReceiver;
+
+    private Command<bool> _throwingProjectileCommand;
+
+    private PlayerActionsModel _playerActionsModel;
+
+    private GlobalGameStateDelegator _globalGameStateDelegator;
+
+    private GameState CurrentGameState { get; set; }
+
+    private LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
+
+    private SlidingController SlidingController { get => GetComponent<SlidingController>(); }
+
+    private JumpingController JumpingController { get => GetComponent<JumpingController>(); }
+
+    private AttackingController AttackingController { get => GetComponent<AttackingController>(); }
+
+    private ThrowingProjectileController ThrowingProjectileController { get => GetComponent<ThrowingProjectileController>(); } //implement all the actions together
+
+    private PlayerSystem PlayerSystem { get; set; }
 
 
     //Force = -2m * sqrt (g * h)
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
+
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
+
         _spriteRenderer = GetComponent<SpriteRenderer>();
+
         _animationHandler = GetComponent<PlayerAnimationMethods>();
+
         _playerActionsModel = new PlayerActionsModel();
+
         _jumpReceiver = GetComponent<JumpingController>();
+
         _slideReceiver = GetComponent<SlidingController>();
+
         _attackReceiver = GetComponent<AttackingController>();
+
         _throwingProjectileReceiver = GetComponent<ThrowingProjectileController>();
 
         _attackCommand = new Command<bool>(_attackReceiver);
+
         _jumpCommand = new Command<bool>(_jumpReceiver);
+
         _slideCommand = new CommandAsync<bool>(_slideReceiver);
+
         _throwingProjectileCommand = new Command<bool>(_throwingProjectileReceiver);
 
         _rb = GetComponent<Rigidbody2D>();
+
         _playerActionsModel.OriginalSpeed = _characterSpeed;
 
         _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
 
         _rocky2DActions.PlayerMovement.Jump.started += BeginJumpAction; //i can add the same function
+
         _rocky2DActions.PlayerMovement.Jump.canceled += EndJumpAction;
+
         _rocky2DActions.PlayerMovement.Slide.started += BeginSlideAction;
+
         _rocky2DActions.PlayerMovement.Slide.canceled += EndSlideAction;
 
         _rocky2DActions.PlayerAttack.Attack.started += HandlePlayerAttackStart;
+
         _rocky2DActions.PlayerAttack.Attack.canceled += HandlePlayerAttackCancel;
+
         _rocky2DActions.PlayerAttack.ThrowProjectile.started += HandleDaggerInput;
+
         _rocky2DActions.PlayerAttack.ThrowProjectile.canceled += HandleDaggerInput;
 
         _rocky2DActions.PlayerAttack.BoostAttack.started += HandleBoostAttackStart;
+
         _rocky2DActions.PlayerAttack.BoostAttack.canceled += HandleBoostAttackCancel;
 
     }
@@ -79,12 +123,23 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
             SubjectType = typeof(GlobalGameStateManager).ToString()
         }, CancellationToken.None));
 
+        StartCoroutine(playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerSystem).ToString()
+        }, CancellationToken.None));
+
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
+
         _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
+
         _rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
+
         _rocky2DActions.PlayerAttack.BoostAttack.Enable();
 
         JumpingController.onPlayerJumpEvent.AddListener(VelocityYEventHandler);
+
         SlidingController.onSlideEvent.AddListener(CharacterSpeedHandler);
     }
 
@@ -107,7 +162,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
         //Flipping
         if (KeystrokeMagnitudeChecker(_keystrokeTrack))
         {
-            if (!PlayerVariables.Instance.IS_GRABBING)
+            if (!PlayerSystem.IS_GRABBING)
                 FlipCharacter(_keystrokeTrack);
         }
 
@@ -115,13 +170,13 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
         _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
 
         //ledge grab
-        if (PlayerVariables.Instance.IS_GRABBING) //tackles the ledgeGrab
+        if (PlayerSystem.IS_GRABBING) //tackles the ledgeGrab
         {
             LedgeGrabController.PerformLedgeGrab();
         }
 
         //sliding
-        if (_playerActionsModel.GetSlidePressed && !PlayerVariables.Instance.slideVariableEvent.PlayerFinishedSliding)
+        if (_playerActionsModel.GetSlidePressed && !PlayerSystem.slideVariableEvent.PlayerFinishedSliding)
             _slideCommand.Execute();
         else
             _slideCommand.Cancel();
@@ -182,13 +237,13 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
 
     private void BeginSlideAction(InputAction.CallbackContext context)
     {
-        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || PlayerVariables.Instance.IS_ATTACKING == true) ? false : context.ReadValueAsButton();
+        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || PlayerSystem.IS_ATTACKING == true) ? false : context.ReadValueAsButton();
 
-        PlayerVariables.Instance.slideVariableEvent.SetPlayerSlideState(false);
+        PlayerSystem.slideVariableEvent.SetPlayerSlideState(false);
     }
     private void EndSlideAction(InputAction.CallbackContext context)
     {
-        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || PlayerVariables.Instance.IS_ATTACKING == true) ? false : context.ReadValueAsButton();
+        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || PlayerSystem.IS_ATTACKING == true) ? false : context.ReadValueAsButton();
     }
 
     //attacking mechanism centralized
@@ -203,7 +258,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
 
     private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
     {
-        _playerActionsModel.LeftMouseButtonPressed = (PlayerVariables.Instance.IS_SLIDING == true) ? false : context.ReadValueAsButton();
+        _playerActionsModel.LeftMouseButtonPressed = (PlayerSystem.IS_SLIDING == true) ? false : context.ReadValueAsButton();
         _playerActionsModel.TimeForMouseClickEnd = (float)context.time;
 
         AttackingController.InvokeOnMouseClickEvent(_playerActionsModel.TimeForMouseClickStart, _playerActionsModel.TimeForMouseClickEnd);
@@ -214,7 +269,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
 
     private void HandlePlayerAttackStart(InputAction.CallbackContext context)
     {
-        _playerActionsModel.LeftMouseButtonPressed = (PlayerVariables.Instance.IS_SLIDING == true) ? false : context.ReadValueAsButton();
+        _playerActionsModel.LeftMouseButtonPressed = (PlayerSystem.IS_SLIDING == true) ? false : context.ReadValueAsButton();
         _playerActionsModel.TimeForMouseClickStart = (float)context.time;
 
         //send time stamps to the attacking controller
@@ -255,6 +310,11 @@ public class PlayerActions : MonoBehaviour, IObserver<GameState>
     public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState = data;
+    }
+
+    public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        PlayerSystem = data;
     }
 
     #endregion

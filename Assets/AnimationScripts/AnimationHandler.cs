@@ -26,7 +26,12 @@ namespace PlayerAnimationHandler
 
         public AnimationStateMachine(Animator animator)
         {
-            this._animator = animator;
+            if (animator == null)
+            {
+                throw new System.Exception("Animator is null - can't initalize the AnimationStateMachine!");
+            }
+
+            _animator = animator;
         }
         public void AnimationPlayForInt(string constName, int state)
         {

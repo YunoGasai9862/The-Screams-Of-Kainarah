@@ -11,13 +11,18 @@ public class SceneData
     public class ObjectData
     {
         public string tag;
+
         public string name;
+
         public Vector3 position;
+
         public Quaternion rotation;
-        public AbstractEntity entity=null;
+
+        public AbstractEntity entity = null;
+
         public Transform transform;
 
-        public float health;
+        public Health health;
         public ObjectData(string tag, string name,Vector3 pos, Quaternion rot, AbstractEntity entity)
         {
             this.tag = tag;

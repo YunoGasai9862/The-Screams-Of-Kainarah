@@ -1,18 +1,33 @@
 using PlayerAnimationHandler;
+using System.Threading;
 using UnityEngine;
 
-public class PlayerAnimationMethods : MonoBehaviour
+public class PlayerAnimationMethods : MonoBehaviour, IObserver<PlayerSystem>
 {
+    [SerializeField] PlayerSystemDelegator playerSystemDelegator;
+
     private AnimationStateMachine _stateMachine;
+
     private Animator _anim;
+
     private float _maxSlideTime = 0.4f;
+
+    private PlayerSystem PlayerSystem { get; set; }
 
     private void Awake()
     {
-        _anim = GetComponent<Animator>();
+        _stateMachine = new AnimationStateMachine(GetComponent<Animator>());
+    }
 
-        if (_anim != null)
-            _stateMachine = new AnimationStateMachine(_anim); // initializing the object
+    private void Start()
+    {
+        StartCoroutine(playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerSystem).ToString()
+        }, CancellationToken.None));
+
     }
 
     private void Update()
@@ -44,13 +59,13 @@ public class PlayerAnimationMethods : MonoBehaviour
     }
     public void RunningWalkingAnimation(float keystroke)
     {
-        if (VectorChecker(keystroke) && !PlayerVariables.Instance.IS_JUMPING)
+        if (VectorChecker(keystroke) && !PlayerSystem.IS_JUMPING)
         {
             UpdateMovementState(AnimationStateKeeper.StateKeeper.RUNNING, true, false);
 
         }
 
-        if (!VectorChecker(keystroke) && !PlayerVariables.Instance.IS_JUMPING)
+        if (!VectorChecker(keystroke) && !PlayerSystem.IS_JUMPING)
         {
             UpdateMovementState(AnimationStateKeeper.StateKeeper.IDLE, false, true);
         }
@@ -59,8 +74,9 @@ public class PlayerAnimationMethods : MonoBehaviour
 
     private void SetMovementStates(bool isRunning, bool isWalking)
     {
-        PlayerVariables.Instance.runVariableEvent.Invoke(isRunning);
-        PlayerVariables.Instance.walkVariableEvent.Invoke(isWalking);
+        PlayerSystem.runVariableEvent.Invoke(isRunning);
+
+        PlayerSystem.walkVariableEvent.Invoke(isWalking);
     }
 
     public void UpdateMovementState(AnimationStateKeeper.StateKeeper state, bool isRunning, bool isWalking)
@@ -102,5 +118,8 @@ public class PlayerAnimationMethods : MonoBehaviour
         return _anim;
     }
 
-
+    public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        PlayerSystem = data;
+    }
 }

@@ -33,7 +33,8 @@ public class HealthBar : MonoBehaviour
 
     private void TrackHealth(AbstractEntity abstractEntity)
     {
-        slide.value = abstractEntity.Health;
+        slide.value = abstractEntity.Health.CurrentHealth;
+
         Fill.color = gr.Evaluate(slide.value / 100.0f);
     }
 

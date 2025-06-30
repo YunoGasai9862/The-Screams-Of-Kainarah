@@ -1,47 +1,84 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class LedgeGrab : MonoBehaviour, IReceiver<bool>
+public class LedgeGrab : MonoBehaviour, IObserver<PlayerSystem>, IReceiver<bool>
 {
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
+
     private const float MAX_TIME_FOR_LEDGE_GRAB = 1f;
+
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
+
     private const float VELOCITY_ASYNC_DELAY = 0.15f;
 
 
     [SerializeField] LayerMask groundMask;
+
     [SerializeField] LayerMask ledge;
+
     [SerializeField] Vector2 displacements;
+
     [SerializeField] Vector2 ledgeGrabForces;
+
     [SerializeField] LedgeGrabAnimationEvent ledgradeAnimationEvent;
 
+    [SerializeField] PlayerSystemDelegator playerSystemDelegator;
 
     private bool greenBox, redBox;
-    public float redXOffset, redYoffset, redXSize, redYSize, greenXOffset, greenYOffset, greenXsize, greenYSize;
-    private MovementHelperClass _helperFunc;
-    private Rigidbody2D rb;
-    private float startingGrav;
-    private Collider2D col;
-    private Animator anim;
-    private SpriteRenderer sr;
-    private float _timeSpent;
-    private bool _canGrab = false;
-    private Vector2 _groundPosition;
-    public bool CanGrab { get => _canGrab; set => _canGrab = value; }
-    public Vector2 GroundPositionBeforeLedgeGrab { get => _groundPosition; set => _groundPosition = value; }    
 
-    public bool StartCalculatingGrabLedgeDisplacement { get; set; }
+    public float redXOffset, redYoffset, redXSize, redYSize, greenXOffset, greenYOffset, greenXsize, greenYSize;
+
+    private MovementHelperClass _helperFunc;
+
+    private Rigidbody2D rb;
+
+    private float startingGrav;
+
+    private Collider2D col;
+
+    private Animator anim;
+
+    private SpriteRenderer sr;
+
+    private float _timeSpent;
+
+    private bool _canGrab = false;
+
+    private Vector2 _groundPosition;
+
+    private bool CanGrab { get => _canGrab; set => _canGrab = value; }
+
+    private Vector2 GroundPositionBeforeLedgeGrab { get => _groundPosition; set => _groundPosition = value; }
+
+    private bool StartCalculatingGrabLedgeDisplacement { get; set; }
+
+    private PlayerSystem PlayerSystem { get; set; }
+
+
     private void Awake()
     {
         _helperFunc = new MovementHelperClass();
     }
     void Start()
     {
+        StartCoroutine(playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerSystem).ToString()
+        }, CancellationToken.None));
+
+
         rb = GetComponent<Rigidbody2D>();
+
         col = GetComponent<CapsuleCollider2D>();
+
         startingGrav = rb.gravityScale;  //the initially gravity is stored in the array
+
         anim = GetComponent<Animator>();
+
         sr = GetComponent<SpriteRenderer>();
 
         ledgradeAnimationEvent.AddListener(LedgeGrabEventAnimationKeeperListener);
@@ -53,7 +90,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         redBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, redXOffset)), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
 
         if (!_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
-            PlayerVariables.Instance.IS_GRABBING)
+            PlayerSystem.IS_GRABBING)
         {
             _timeSpent += Time.deltaTime;
         }
@@ -62,24 +99,24 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         {
             _timeSpent = 0f;
 
-            PlayerVariables.Instance.fallVariableEvent.Invoke(false);
+            PlayerSystem.fallVariableEvent.Invoke(false);
         }
 
-        if (greenBox && !redBox && !TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB)  && !PlayerVariables.Instance.IS_FALLING)
+        if (greenBox && !redBox && !TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB)  && !PlayerSystem.IS_FALLING)
         {
-            PlayerVariables.Instance.grabVariableEvent.Invoke(true);
+            PlayerSystem.grabVariableEvent.Invoke(true);
 
             col.isTrigger = true;
 
-            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, PlayerVariables.Instance.IS_GRABBING);
+            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, PlayerSystem.IS_GRABBING);
 
         }else
         {
-            PlayerVariables.Instance.grabVariableEvent.Invoke(false);
+            PlayerSystem.grabVariableEvent.Invoke(false);
 
             col.isTrigger = false;
 
-            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, PlayerVariables.Instance.IS_GRABBING); 
+            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, PlayerSystem.IS_GRABBING); 
 
             rb.gravityScale = startingGrav;
         }
@@ -87,7 +124,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
     }
     private async void FixedUpdate()
     {
-        int sign = await PlayerVariables.Instance.PlayerFlipped(transform);
+        int sign = await PlayerSystem.PlayerFlipped(transform);
 
         await GrabLedge(anim, rb);
 
@@ -95,7 +132,7 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         {
             await HandleLedgeGrabCalculations(sign, ledgeGrabForces, new Vector2(0, MAXIMUM_VELOCITY_Y_FORCE));
 
-            PlayerVariables.Instance.fallVariableEvent.Invoke(true);
+            PlayerSystem.fallVariableEvent.Invoke(true);
 
             await SetGravityValue(rb, startingGrav);
 
@@ -159,8 +196,8 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
            && CanGrab)
         {
             await SetGravityValue(rb, 0f);
-            PlayerVariables.Instance.grabVariableEvent.Invoke(false);
-            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, PlayerVariables.Instance.IS_GRABBING);
+            PlayerSystem.grabVariableEvent.Invoke(false);
+            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, PlayerSystem.IS_GRABBING);
         }
     }
 
@@ -179,4 +216,8 @@ public class LedgeGrab : MonoBehaviour, IReceiver<bool>
         return Task.CompletedTask;
     }
 
+    public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        PlayerSystem = data;
+    }
 }

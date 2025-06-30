@@ -1,44 +1,64 @@
 using PlayerAnimationHandler;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class JumpingController : MonoBehaviour, IReceiver<bool>
+public class JumpingController : MonoBehaviour, IReceiver<bool>, IObserver<PlayerSystem>
 {
     private const float FALLING_SPEED = 0.8f;
+
     private const float JUMPING_SPEED = 0.5f;
+
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
+
     private const float MAX_JUMP_TIME = 0.3f;
 
     private Rigidbody2D _rb;
+
     private PlayerAnimationMethods _animationHandler;
+
     private IOverlapChecker _movementHelperClass;
+
     private Collider2D _col;
 
     [SerializeField] LayerMask groundLayer;
+
     [SerializeField] LayerMask ledgeLayer;
+
     [SerializeField] float JumpSpeed;
+
     [SerializeField] float maxJumpHeight;
 
+    [SerializeField] PlayerSystemDelegator playerSystemDelegator;
+
     private float _characterVelocityY;
+
     private bool _isJumpPressed;
+
     private Vector3 _playerInitialPosition;
 
     public PlayerJumpVelocityEvent onPlayerJumpEvent;
+
     public PlayerJumpTimeEvent onPlayerJumpTimeEvent;
+
     public float CharacterVelocityY { get => _characterVelocityY; set => _characterVelocityY = value; }
+
     public Vector3 PlayerInitialPosition { get => _playerInitialPosition; set=> _playerInitialPosition = value; }
+
     public float TimeEclipsed { get; set; }
+
+    private PlayerSystem PlayerSystem { get; set; }
 
     public bool CancelAction()
     {
-        PlayerVariables.Instance.jumpVariableEvent.Invoke(false);
+        PlayerSystem.jumpVariableEvent.Invoke(false);
         return true;
     }
     public bool PerformAction(bool value)
     {
         _isJumpPressed = value;
-        SetPlayerInitialPosition(PlayerVariables.Instance.IS_JUMPING);
+        SetPlayerInitialPosition(PlayerSystem.IS_JUMPING);
         return true;
     }
     private void Awake()
@@ -50,16 +70,26 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     }
     private void Start()
     {
+        StartCoroutine(playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerSystem).ToString()
+        }, CancellationToken.None));
+
         onPlayerJumpEvent = new PlayerJumpVelocityEvent();
+
         onPlayerJumpTimeEvent = new PlayerJumpTimeEvent(MAX_JUMP_TIME);
+
         onPlayerJumpTimeEvent.AddListener(MaxTimePassed);
+
         onPlayerJumpEvent.Invoke(CharacterVelocityY = -10f);
     }
     private async void Update()
     {
         await HandleJumpingMechanism();
 
-        if (PlayerVariables.Instance.IS_JUMPING && !PlayerVariables.Instance.IS_GRABBING)
+        if (PlayerSystem.IS_JUMPING && !PlayerSystem.IS_GRABBING)
         {
             TimeEclipsed += Time.deltaTime;
         }
@@ -91,7 +121,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
         if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed) //on the ground
         {
-            PlayerVariables.Instance.jumpVariableEvent.Invoke(false);
+            PlayerSystem.jumpVariableEvent.Invoke(false);
 
             onPlayerJumpTimeEvent.Fall = false;
 
@@ -105,7 +135,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
     {
         if (await CanPlayerJump()) //jumping
         {
-            PlayerVariables.Instance.jumpVariableEvent.Invoke(true);
+            PlayerSystem.jumpVariableEvent.Invoke(true);
 
             CharacterVelocityY = JumpSpeed * JUMPING_SPEED;
 
@@ -116,7 +146,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
 
     private Task<bool> CanPlayerJump()
     {
-        bool isJumping = PlayerVariables.Instance.IS_JUMPING;
+        bool isJumping = PlayerSystem.IS_JUMPING;
         bool isOnLedgeOrGround = (IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer));
         bool isJumpPressed = _isJumpPressed;
 
@@ -163,4 +193,8 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>
         return rb.linearVelocity.y < 0 ? Task.FromResult(true) : Task.FromResult(false);
     }
 
+    public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        PlayerSystem = data;
+    }
 }

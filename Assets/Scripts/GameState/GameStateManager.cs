@@ -90,7 +90,7 @@ public class GameStateManager : MonoBehaviour, IGameState
             List<SceneData.ObjectData> savedData = wrapper.objectsToSave;
             foreach (var gameObjectData in savedData)
             {
-                await ReAlignTheObjectWithSavedData(gameObjectData);
+                await UpdateSceneData(gameObjectData);
             }
         }
         catch (System.Exception ex)
@@ -103,11 +103,14 @@ public class GameStateManager : MonoBehaviour, IGameState
         }
        
     }
-    private Task ReAlignTheObjectWithSavedData(SceneData.ObjectData gameObjectData)
+    private Task UpdateSceneData(SceneData.ObjectData gameObjectData)
     {
         GameObject gameObject = GameObject.FindWithTag(gameObjectData.tag);
+
         gameObject.transform.position = gameObjectData.position;
+
         gameObject.transform.rotation = gameObjectData.rotation;
+
         if(gameObjectData.entity!=null)
         {
             gameObject.GetComponent<AbstractEntity>().Health = gameObjectData.health;

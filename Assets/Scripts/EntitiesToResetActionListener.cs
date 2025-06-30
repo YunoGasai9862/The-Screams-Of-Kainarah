@@ -20,7 +20,7 @@ public class EntitiesToResetActionListener : MonoBehaviour, IObserver<EntitiesTo
         {
             Debug.Log((entity.entity, entity.absractEntity));
 
-            entity.absractEntity.Health = entity.absractEntity.MaxHealth; //reset health
+            entity.absractEntity.Health.CurrentHealth = entity.absractEntity.Health.MaxHealth; //reset health
         }
         return Task.CompletedTask;
     }

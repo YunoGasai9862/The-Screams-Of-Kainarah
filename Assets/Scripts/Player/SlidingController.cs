@@ -1,27 +1,48 @@
 using CoreCode;
 using PlayerAnimationHandler;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
+public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, IReceiverAsync<bool>
 {
     private const float MAX_ANIMATION_TIME = 0.6f;
+
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
+
     [SerializeField] LayerMask groundLayer;
+
     [SerializeField] float slidingSpeed;
 
+    [SerializeField] PlayerSystemDelegator playerSystemDelegator;
+
     private PlayerAnimationMethods _animationHandler;
+
     private IOverlapChecker _movementHelperClass;
+
     private PlayerAttackStateMachine _playerAttackStateMachine;
+
     private Collider2D _col;
+
     private Animator _anim;
+
     private Rigidbody2D _rb;
 
-    public OnSlidingEvent onSlideEvent=new OnSlidingEvent();
+    private PlayerSystem PlayerSystem { get; set; }
+
+    public OnSlidingEvent onSlideEvent = new OnSlidingEvent();
 
 
     void Start()
     {
+        StartCoroutine(playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerSystem).ToString()
+        }, CancellationToken.None));
+
+
         _animationHandler = GetComponent<PlayerAnimationMethods>();
         _movementHelperClass = new MovementHelperClass();
         _rb = GetComponent<Rigidbody2D>();
@@ -32,7 +53,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
     private Task Slide()
     {
-        if (PlayerVariables.Instance.IS_SLIDING && _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _col, groundLayer, COLLIDER_DISTANCE_FROM_THE_LAYER))
+        if (PlayerSystem.IS_SLIDING && _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _col, groundLayer, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
             onSlideEvent.Invoke(slidingSpeed); //posting for speed
 
@@ -41,9 +62,9 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
 
         if (_animationHandler.ReturnCurrentAnimation() > MAX_ANIMATION_TIME && _animationHandler.IsNameOfTheCurrentAnimation(AnimationConstants.SLIDING))
         {
-            PlayerVariables.Instance.slideVariableEvent.Invoke(false);
+            PlayerSystem.slideVariableEvent.Invoke(false);
 
-            PlayerVariables.Instance.slideVariableEvent.PlayerSlideStateEventInvoke(true);
+            PlayerSystem.slideVariableEvent.PlayerSlideStateEventInvoke(true);
 
             _animationHandler.Sliding(false);
 
@@ -56,7 +77,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
     {
         if (await IsVelocityXGreaterThanZero(_rb) && !_playerAttackStateMachine.IsInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
         {
-            PlayerVariables.Instance.slideVariableEvent.Invoke(true);
+            PlayerSystem.slideVariableEvent.Invoke(true);
 
             await Slide();
         }
@@ -64,7 +85,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
     }
     async Task<bool> IReceiverAsync<bool>.CancelAction()
     {
-        PlayerVariables.Instance.slideVariableEvent.Invoke(false);
+        PlayerSystem.slideVariableEvent.Invoke(false);
 
         return await Task.FromResult(true);
     }
@@ -72,5 +93,10 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>
     private Task<bool> IsVelocityXGreaterThanZero(Rigidbody2D rb)
     {
         return Task.FromResult(Mathf.Abs(rb.linearVelocity.x) > 0);
+    }
+
+    public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        PlayerSystem = data;
     }
 }
