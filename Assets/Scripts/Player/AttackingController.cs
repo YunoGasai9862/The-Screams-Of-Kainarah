@@ -24,7 +24,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
 
     private float timeDifferencebetweenStates;
 
-    private GlobalGameStateDelegator _globalGameStateDelegator;
     private GameState CurrentGameState { get; set; }
     private int PlayerAttackState { get; set; }
     private string PlayerAttackStateName { get; set; }
@@ -34,6 +33,10 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     private bool PowerUpBarFilled { get; set; } = false;
     private PlayerAttackStateMachine PlayerAttackStateMachine { get; set; }
     private PlayerSystem PlayerSystem { get; set; }
+
+    private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
+
+    private GlobalGameStateDelegator GlobalGameStateDelegator { get; set; }
 
     [SerializeField] LayerMask Ground;
 
@@ -55,13 +58,10 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
 
     [SerializeField] PowerUpBarFillEvent powerUpBarFillEvent;
 
-    [SerializeField] PlayerSystemDelegator playerSystemDelegator;
-
     private void Awake()
     {
         _anim = GetComponent<Animator>();
 
-        _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
 
         PlayerAttackStateMachine = new PlayerAttackStateMachine(_anim);
 
@@ -70,11 +70,15 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
         _movementHelper = new MovementHelperClass();
 
         PlayerAttackState = 0;
+
+        GlobalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
+        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
     }
 
     private void Start()
     {
-        StartCoroutine(_globalGameStateDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(GlobalGameStateDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
@@ -82,7 +86,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
         }, CancellationToken.None));
 
 
-        StartCoroutine(playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerSystemDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
@@ -100,6 +104,11 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     // Update is called once per frame
     void Update()
     {
+        if (PlayerSystem == null)
+        {
+            return;
+        }
+
         if (PlayerSystem.IS_SLIDING || PlayerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
         {
             ResetAttackingState();

@@ -18,7 +18,6 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
     [SerializeField] string[] checkpointTags;
     [SerializeField] float playerHealth;
     [SerializeField] MainThreadDispatcherEvent mainThreadDispatcherEvent;
-    [SerializeField] HealthDelegator healthDelegator;
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
@@ -37,6 +36,8 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
 
     private Health PlayerHealth { get; set; }
 
+    private HealthDelegator HealthDelegator { get; set; }
+
     private bool InSight { get; set; }
 
     private void Start()
@@ -49,8 +50,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
         {
             Debug.Log($"Exception: {ex.StackTrace}");
         }
-
-        StartCoroutine(healthDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(HealthDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = name,
             SubjectType = typeof(HealthManager).ToString()
@@ -73,6 +73,8 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
         sr = GetComponent<SpriteRenderer>();
 
         anim = GetComponent<Animator>();
+
+        HealthDelegator = Helper.GetDelegator<HealthDelegator>();
 
     }
 

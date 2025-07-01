@@ -14,7 +14,7 @@ public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, IReceiv
 
     [SerializeField] float slidingSpeed;
 
-    [SerializeField] PlayerSystemDelegator playerSystemDelegator;
+    private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
 
     private PlayerAnimationMethods _animationHandler;
 
@@ -32,10 +32,15 @@ public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, IReceiv
 
     public OnSlidingEvent onSlideEvent = new OnSlidingEvent();
 
+    private void Awake()
+    {
+        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
+    }
+
 
     void Start()
     {
-        StartCoroutine(playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerSystemDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,

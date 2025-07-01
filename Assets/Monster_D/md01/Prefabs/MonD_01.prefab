@@ -15512,7 +15512,6 @@ GameObject:
   - component: {fileID: 1873030402443433276}
   - component: {fileID: 152957601734482752}
   - component: {fileID: 1205183661}
-  - component: {fileID: 759482105451199465}
   - component: {fileID: 6258681085485269489}
   - component: {fileID: 6185902427806737498}
   m_Layer: 0
@@ -15574,22 +15573,6 @@ SortingGroup:
   m_SortingLayer: 0
   m_SortingOrder: 3
   m_SortAtRoot: 0
---- !u!114 &759482105451199465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7041806645088666966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09fc735165b049c48bf82a8a9d48700f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bossDead: {fileID: 7294662482550770413, guid: 8df7eb68a2313664fb8aa8f93f7bf27f, type: 3}
-  attackingAnimationNames:
-  - attack
-  - attack_02
 --- !u!61 &6258681085485269489
 BoxCollider2D:
   m_ObjectHideFlags: 0

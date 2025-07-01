@@ -215,6 +215,7 @@ MonoBehaviour:
   animationHitParam: 
   animationAttackParam: 
   extraAnimations: []
+  enemyHittableManagerDelegator: {fileID: 0}
 --- !u!61 &6972185359054276974
 BoxCollider2D:
   m_ObjectHideFlags: 0

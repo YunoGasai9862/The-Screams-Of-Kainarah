@@ -250,6 +250,7 @@ MonoBehaviour:
   animationHitParam: Hit
   animationAttackParam: EnemyAttack
   extraAnimations: []
+  enemyHittableManagerDelegator: {fileID: 0}
 --- !u!114 &1912497939
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -28,8 +28,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
     [Header("Enter Attack Anim Param name")]
     [SerializeField] string animationAttackParam;
     [SerializeField] string[] extraAnimations;
-    [SerializeField]
-    EnemyHittableManagerDelegator enemyHittableManagerDelegator;
+    [SerializeField] EnemyHittableManagerDelegator enemyHittableManagerDelegator;
 
     public override Health Health {
 
@@ -52,6 +51,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
     }
 
     private EnemyHittableManager EnemyHittableManager { get; set; }
+
     private void Awake()
     {
         rayReleased = new RaycastHit2D[RAYSARRAYSIZE];
@@ -162,6 +162,6 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
 
     public void OnNotify(EnemyHittableManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new System.NotImplementedException();
+        EnemyHittableManager = data;
     }
 }

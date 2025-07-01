@@ -24,7 +24,7 @@ public class LedgeGrab : MonoBehaviour, IObserver<PlayerSystem>, IReceiver<bool>
 
     [SerializeField] LedgeGrabAnimationEvent ledgradeAnimationEvent;
 
-    [SerializeField] PlayerSystemDelegator playerSystemDelegator;
+    private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
 
     private bool greenBox, redBox;
 
@@ -60,10 +60,12 @@ public class LedgeGrab : MonoBehaviour, IObserver<PlayerSystem>, IReceiver<bool>
     private void Awake()
     {
         _helperFunc = new MovementHelperClass();
+
+        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
     }
     void Start()
     {
-        StartCoroutine(playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerSystemDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,

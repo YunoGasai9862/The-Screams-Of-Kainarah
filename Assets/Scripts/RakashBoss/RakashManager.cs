@@ -7,25 +7,16 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserv
     [SerializeField]
     HealthDelegator healthDelegator;
 
-    public override Health Health {
+    public override Health Health { get; set; }
 
-        get {
-
-            if (Health == null)
-            {
-                Health = new Health()
-                {
-                    MaxHealth = 100f,
-                    CurrentHealth = 100f,
-                    EntityName = gameObject.name
-                };
-            }
-
-            return Health;
-        
-        } 
-        
-        set => Health = value;
+    private void Awake()
+    {
+        Health = new Health()
+        {
+            MaxHealth = 100f,
+            CurrentHealth = 100f,
+            EntityName = gameObject.name
+        };
     }
 
     void Start()

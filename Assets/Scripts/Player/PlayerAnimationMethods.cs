@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerAnimationMethods : MonoBehaviour, IObserver<PlayerSystem>
 {
-    [SerializeField] PlayerSystemDelegator playerSystemDelegator;
+    private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
 
     private AnimationStateMachine _stateMachine;
 
@@ -17,11 +17,13 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<PlayerSystem>
     private void Awake()
     {
         _stateMachine = new AnimationStateMachine(GetComponent<Animator>());
+
+        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
     }
 
     private void Start()
     {
-        StartCoroutine(playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerSystemDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
@@ -59,6 +61,11 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<PlayerSystem>
     }
     public void RunningWalkingAnimation(float keystroke)
     {
+        if (PlayerSystem == null)
+        {
+            return;
+        }
+
         if (VectorChecker(keystroke) && !PlayerSystem.IS_JUMPING)
         {
             UpdateMovementState(AnimationStateKeeper.StateKeeper.RUNNING, true, false);

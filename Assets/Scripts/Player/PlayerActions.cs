@@ -6,7 +6,7 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 {
     [SerializeField] float _characterSpeed = 10f;
 
-    [SerializeField] PlayerSystemDelegator playerSystemDelegator;
+    private PlayerSystemDelegator _playerSystemDelegator;
 
     private PlayerInput _playerInput;
 
@@ -92,6 +92,8 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 
         _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
 
+        _playerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();  
+
         _rocky2DActions.PlayerMovement.Jump.started += BeginJumpAction; //i can add the same function
 
         _rocky2DActions.PlayerMovement.Jump.canceled += EndJumpAction;
@@ -123,7 +125,7 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
             SubjectType = typeof(GlobalGameStateManager).ToString()
         }, CancellationToken.None));
 
-        StartCoroutine(playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(_playerSystemDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,

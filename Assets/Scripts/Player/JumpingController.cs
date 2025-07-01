@@ -30,7 +30,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, IObserver<Playe
 
     [SerializeField] float maxJumpHeight;
 
-    [SerializeField] PlayerSystemDelegator playerSystemDelegator;
+    private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
 
     private float _characterVelocityY;
 
@@ -67,10 +67,12 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, IObserver<Playe
         _col = GetComponent<CapsuleCollider2D>();
         _animationHandler = GetComponent<PlayerAnimationMethods>();
         _rb = GetComponent<Rigidbody2D>();
+
+        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
     }
     private void Start()
     {
-        StartCoroutine(playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerSystemDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,

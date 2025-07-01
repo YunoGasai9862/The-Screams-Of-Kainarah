@@ -7,10 +7,9 @@ using UnityEngine;
 
 public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject<IObserver<PlayerSystem>>
 {
-    [SerializeField]
-    HealthDelegator healthDelegator;
-    [SerializeField]
-    PlayerSystemDelegator playerSystemDelegator;
+    private HealthDelegator HealthDelegator { get; set; }
+
+    private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
 
     public bool IS_JUMPING { get; private set; }
     public bool IS_ATTACKING { get; private set; }
@@ -20,23 +19,7 @@ public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject
     public bool IS_GRABBING { get; private set; }
     public bool IS_FALLING { get; private set; }
 
-    private Health PlayerHealth {
-        get { 
-
-            if (PlayerHealth == null)
-            {
-                PlayerHealth = new Health()
-                {
-                    MaxHealth = 100f,
-                    CurrentHealth = 100f,
-                    EntityName = name
-                };
-
-            }
-
-            return PlayerHealth;
-
-        } set => PlayerHealth = value; }
+    private Health PlayerHealth { get; set; }
 
     public PlayerWalkVariableEvent walkVariableEvent = new PlayerWalkVariableEvent();
     public PlayerRunVariableEvent runVariableEvent = new PlayerRunVariableEvent();
@@ -45,6 +28,20 @@ public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject
     public PlayerAttackVariableEvent attackVariableEvent = new PlayerAttackVariableEvent();
     public PlayerJumpVariableEvent jumpVariableEvent = new PlayerJumpVariableEvent();
     public PlayerFallVariableEvent fallVariableEvent = new PlayerFallVariableEvent();
+
+    private void Awake()
+    {
+        PlayerHealth = new Health()
+        {
+            MaxHealth = 100f,
+            CurrentHealth = 100f,
+            EntityName = name
+        };
+
+        HealthDelegator = Helper.GetDelegator<HealthDelegator>();
+
+        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
+    }
 
     private void Start()
     {
@@ -56,11 +53,11 @@ public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject
         jumpVariableEvent.AddListener(SetJumpVariableState);
         fallVariableEvent.AddListener(SetFallVariableState);
 
-        healthDelegator.AddToSubjectsDict(typeof(PlayerSystem).ToString(), name, new Subject<IObserver<Health>>());
-        healthDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSystem).ToString())[name].SetSubject(this);
+        HealthDelegator.AddToSubjectsDict(typeof(PlayerSystem).ToString(), name, new Subject<IObserver<Health>>());
+        HealthDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSystem).ToString())[name].SetSubject(this);
 
-        playerSystemDelegator.AddToSubjectsDict(typeof(PlayerSystem).ToString(), name, new Subject<IObserver<PlayerSystem>>());
-        playerSystemDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSystem).ToString())[name].SetSubject(this);
+        PlayerSystemDelegator.AddToSubjectsDict(typeof(PlayerSystem).ToString(), name, new Subject<IObserver<PlayerSystem>>());
+        PlayerSystemDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSystem).ToString())[name].SetSubject(this);
 
     }
     private void SetAttackVariableState(bool variableState)
@@ -119,7 +116,7 @@ public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject
 
     public void OnNotifySubject(IObserver<Health> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(healthDelegator.NotifyObserver(data, PlayerHealth, new NotificationContext()
+        StartCoroutine(HealthDelegator.NotifyObserver(data, PlayerHealth, new NotificationContext()
         {
             SubjectType = typeof(PlayerSystem).ToString()
 
@@ -128,7 +125,7 @@ public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject
 
     public void OnNotifySubject(IObserver<PlayerSystem> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(playerSystemDelegator.NotifyObserver(data, this, new NotificationContext()
+        StartCoroutine(PlayerSystemDelegator.NotifyObserver(data, this, new NotificationContext()
         {
             SubjectType = typeof(PlayerSystem).ToString()
 

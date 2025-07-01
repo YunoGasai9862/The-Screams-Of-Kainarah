@@ -88,6 +88,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f036b2af200ded44a244023941a0a43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthDelegator: {fileID: 0}
+  rakashDeadBodyPrefab: {fileID: 7294662482550770413, guid: 8df7eb68a2313664fb8aa8f93f7bf27f, type: 3}
 --- !u!114 &4056168021376640104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,9 +114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbe6891819e230b47b1ecbfd32ee5d7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bossDead: {fileID: 0}
-  gameStateDelegator: {fileID: 0}
-  playerAttributesDelegator: {fileID: 0}
+  healthDelegator: {fileID: 0}
 --- !u!70 &4447533663395447603
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
