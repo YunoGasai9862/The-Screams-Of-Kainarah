@@ -89,6 +89,12 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, IObserver<Playe
     }
     private async void Update()
     {
+        if (PlayerSystem == null)
+        {
+            Debug.Log("PlayerSystem is null for [JumpingController -     private async void Update()\r\n] - exiting!");
+            return;
+        }
+
         await HandleJumpingMechanism();
 
         if (PlayerSystem.IS_JUMPING && !PlayerSystem.IS_GRABBING)

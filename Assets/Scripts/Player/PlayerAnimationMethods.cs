@@ -63,6 +63,7 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<PlayerSystem>
     {
         if (PlayerSystem == null)
         {
+            Debug.Log("PlayerSystem is null for [PlayerAnimationMethods - RunningWalkingAnimation] - exiting!");
             return;
         }
 
@@ -81,6 +82,13 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<PlayerSystem>
 
     private void SetMovementStates(bool isRunning, bool isWalking)
     {
+        //make it better, make sure delegators get their data first before any operations get executed
+        if (PlayerSystem == null)
+        {
+            Debug.Log("PlayerSystem is null for [PlayerAnimationMethods - SetMovementStates] - exiting!");
+            return;
+        }
+
         PlayerSystem.runVariableEvent.Invoke(isRunning);
 
         PlayerSystem.walkVariableEvent.Invoke(isWalking);

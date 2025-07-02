@@ -128,6 +128,14 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
 
     private async void OnTriggerEnter2D(Collider2D collision)
     {
+        //another better way to avoid the null checks
+        //make sure delegates are done during the preloading time!!
+        if (EnemyHittableManager == null)
+        {
+            Debug.Log("EnemyHittableManager is null for [EnemyScript - OnTriggerEnter2D] - exiting!");
+            return;
+        }
+
         if (gameObject != null && await EnemyHittableManager.IsEntityAnAttackObject(collision, _enemyHittableObjects))
         {
             Health.CurrentHealth -= HITPOINTS;
@@ -137,6 +145,12 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
     }
     private async void OnTriggerExit2D(Collider2D collision)
     {
+        if (EnemyHittableManager == null)
+        {
+            Debug.Log("EnemyHittableManager is null for [EnemyScript - OnTriggerExit2D] - exiting!");
+            return;
+        }
+
         if (gameObject != null && await EnemyHittableManager.IsEntityAnAttackObject(collision, _enemyHittableObjects))
         {
             _ = await GetEnemyOberverListenerObject().EnemyActionDelegator(collision, gameObject, animationHitParam, false);

@@ -80,7 +80,12 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
 
     private async void Update()
     {
-        
+        if (PlayerHealth == null)
+        {
+            Debug.Log("PlayerHealth is null for [PlayerActionRelayer - Update] - exiting!");
+            return;
+        }
+
         if (await IsPlayerDead(PlayerHealth.CurrentHealth) && GetCheckPointSemaphore.CurrentCount!=0)
         {
             await GetCheckPointSemaphore.WaitAsync();
@@ -98,6 +103,12 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
     }
     private async void FixedUpdate()
     {
+        if (PlayerSystemReference == null)
+        {
+            Debug.Log("PlayerSystemReference is null for [PlayerActionRelayer - FixedUpdate] - exiting!");
+            return;
+        }
+
         if (await IfPortalExists(sr, "Portal"))
         {
             //Instantiate(TeleportTransition, transform.position, Quaternion.identity);

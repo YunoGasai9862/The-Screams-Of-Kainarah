@@ -88,6 +88,12 @@ public class LedgeGrab : MonoBehaviour, IObserver<PlayerSystem>, IReceiver<bool>
     // Update is called once per frame
     async void Update()
     {
+        if (PlayerSystem == null)
+        {
+            Debug.Log("PlayerSystem is null for [LedgeGrab - Update] - exiting!");
+            return;
+        }
+
         greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, greenXOffset)), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
         redBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, redXOffset)), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
 
@@ -126,6 +132,12 @@ public class LedgeGrab : MonoBehaviour, IObserver<PlayerSystem>, IReceiver<bool>
     }
     private async void FixedUpdate()
     {
+        if (PlayerSystem == null)
+        {
+            Debug.Log("PlayerSystem is null for [LedgeGrab - FixedUpdate] - exiting!");
+            return;
+        }
+
         int sign = await PlayerSystem.PlayerFlipped(transform);
 
         await GrabLedge(anim, rb);
