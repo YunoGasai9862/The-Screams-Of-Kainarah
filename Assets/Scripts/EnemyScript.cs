@@ -30,25 +30,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
     [SerializeField] string[] extraAnimations;
     [SerializeField] EnemyHittableManagerDelegator enemyHittableManagerDelegator;
 
-    public override Health Health {
-
-        get { 
-
-            if (Health == null)
-            {
-                Health = new Health()
-                {
-                    CurrentHealth = maxHealth,
-                    MaxHealth = maxHealth,
-                    EntityName = name
-                };
-            }
-
-            return Health;
-        }
-
-        set => Health = value;
-    }
+    public override Health Health { get; set; }
 
     private EnemyHittableManager EnemyHittableManager { get; set; }
 
@@ -61,6 +43,14 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
 
     void Start()
     {
+
+        Health = new Health()
+        {
+            CurrentHealth = maxHealth,
+            MaxHealth = maxHealth,
+            EntityName = name
+        };
+
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
         //InsertIntoGameStateHandlerList(this);
