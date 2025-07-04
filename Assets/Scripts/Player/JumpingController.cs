@@ -91,7 +91,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, IObserver<Playe
     {
         if (PlayerSystem == null)
         {
-            Debug.Log("PlayerSystem is null for [JumpingController -     private async void Update()\r\n] - exiting!");
+            Debug.Log("PlayerSystem is null for [JumpingController - Update] - exiting!");
             return;
         }
 

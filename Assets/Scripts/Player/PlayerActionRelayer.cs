@@ -38,6 +38,8 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
 
     private HealthDelegator HealthDelegator { get; set; }
 
+    private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
+
     private bool InSight { get; set; }
 
     private void Start()
@@ -50,13 +52,23 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
         {
             Debug.Log($"Exception: {ex.StackTrace}");
         }
+
         StartCoroutine(HealthDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = name,
-            SubjectType = typeof(HealthManager).ToString()
+            ObserverTag = tag,
+            SubjectType = typeof(PlayerSystem).ToString()
 
         }, CancellationToken.None));
 
+
+        StartCoroutine(PlayerSystemDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = name,
+            ObserverTag = tag,
+            SubjectType = typeof(PlayerSystem).ToString()
+
+        }, CancellationToken.None));
     }
     private void Awake()
     {
@@ -76,6 +88,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
 
         HealthDelegator = Helper.GetDelegator<HealthDelegator>();
 
+        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
     }
 
     private async void Update()
@@ -157,7 +170,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
     {
         foreach (var item in scriptableObject.colliderItems)
         {
-            if (collider!=null && item.collider.tag == collider.tag && !item.isItBasedOnAnimationName)
+            if (collider!=null && item.collider!= null && item.collider.tag == collider.tag && !item.isItBasedOnAnimationName)
             {
                 return Task.FromResult(true);
             }
