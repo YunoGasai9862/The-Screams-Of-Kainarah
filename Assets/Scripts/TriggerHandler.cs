@@ -21,13 +21,13 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private GlobalGameStateDelegator m_globalGameStateDelegator;
 
-    private GenericFlagDelegator m_genericFlagDelegator;
+    private FlagDelegator m_genericFlagDelegator;
 
     private void Start()
     {
         m_funds = GameObject.FindGameObjectWithTag(FUNDS_TEXT_TAG).GetComponent<TMPro.TextMeshProUGUI>();
 
-        m_genericFlagDelegator = Helper.GetDelegator<GenericFlagDelegator>();
+        m_genericFlagDelegator = Helper.GetDelegator<FlagDelegator>();
 
         m_globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
 
@@ -64,7 +64,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
                 Debug.Log(m_isSufficientFunds);
 
-                PingListeners(m_isSufficientFunds);
+                m_genericFlagDelegator.NotifyObservers(m_isSufficientFunds, gameObject.name, typeof(TriggerHandler), CancellationToken.None);
 
                 if (m_isSufficientFunds)
                 {
@@ -126,17 +126,5 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         m_genericFlagDelegator.AddToSubjectObserversDict(gameObject.name, m_genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name],
            data);
-    }
-
-    public void PingListeners(bool sufficientFunds)
-    {
-        foreach(Association<bool> association in m_genericFlagDelegator.GetSubjectAssociations(gameObject.name))
-        {
-            StartCoroutine(m_genericFlagDelegator.NotifyObserver(association.Observer, sufficientFunds, new NotificationContext()
-            {
-                SubjectType = typeof(TriggerHandler).ToString()
-
-            }, CancellationToken.None));
-        }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class GenericFlagDelegator : BaseDelegatorEnhanced<bool>
+public class FlagDelegator : BaseDelegatorEnhanced<bool>
 {
     private void Awake()
     {

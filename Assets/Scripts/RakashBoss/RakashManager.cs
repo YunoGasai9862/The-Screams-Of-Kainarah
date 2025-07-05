@@ -40,9 +40,4 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserv
             SubjectType = typeof(RakashManager).ToString()  
         }, CancellationToken.None));
     }
-
-    private void UpdateHealth(float newHealth)
-    {
-        Health.CurrentHealth = newHealth;
-    }
 }
