@@ -11,13 +11,13 @@ public class PullUpPanel : MonoBehaviour, IObserver<bool>
     private Animator m_anim;
 
     [SerializeField]
-    private GenericFlagDelegator genericFlagDelegator;
+    private FlagDelegator flagDelegator;
 
     void Start()
     {
         m_anim = GetComponent<Animator>();
 
-        StartCoroutine(genericFlagDelegator.NotifySubject(this, new NotificationContext() {
+        StartCoroutine(flagDelegator.NotifySubject(this, new NotificationContext() {
             ObserverName = this.name,
             ObserverTag = this.name,
             SubjectType = typeof(TriggerHandler).ToString()

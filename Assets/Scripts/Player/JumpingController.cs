@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class JumpingController : MonoBehaviour, IReceiver<bool>, IObserver<PlayerSystem>
+public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObserver<bool>>
 {
     private const float FALLING_SPEED = 0.8f;
 
@@ -22,6 +22,8 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, IObserver<Playe
 
     private Collider2D _col;
 
+    private bool IS_JUMPING { get; set; } = false;
+
     [SerializeField] LayerMask groundLayer;
 
     [SerializeField] LayerMask ledgeLayer;
@@ -29,8 +31,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, IObserver<Playe
     [SerializeField] float JumpSpeed;
 
     [SerializeField] float maxJumpHeight;
-
-    private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
 
     private float _characterVelocityY;
 
@@ -48,17 +48,20 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, IObserver<Playe
 
     public float TimeEclipsed { get; set; }
 
-    private PlayerSystem PlayerSystem { get; set; }
+    private FlagDelegator FlagDelegator { get; set; }
 
     public bool CancelAction()
     {
-        PlayerSystem.jumpVariableEvent.Invoke(false);
+        FlagDelegator.NotifyObservers(false, gameObject.name, typeof(JumpingController), CancellationToken.None);
+
         return true;
     }
     public bool PerformAction(bool value)
     {
         _isJumpPressed = value;
-        SetPlayerInitialPosition(PlayerSystem.IS_JUMPING);
+
+        SetPlayerInitialPosition(IS_JUMPING);
+
         return true;
     }
     private void Awake()
@@ -68,17 +71,10 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, IObserver<Playe
         _animationHandler = GetComponent<PlayerAnimationMethods>();
         _rb = GetComponent<Rigidbody2D>();
 
-        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
+        FlagDelegator = Helper.GetDelegator<FlagDelegator>();
     }
     private void Start()
     {
-        StartCoroutine(PlayerSystemDelegator.NotifySubject(this, new NotificationContext()
-        {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerSystem).ToString()
-        }, CancellationToken.None));
-
         onPlayerJumpEvent = new PlayerJumpVelocityEvent();
 
         onPlayerJumpTimeEvent = new PlayerJumpTimeEvent(MAX_JUMP_TIME);
@@ -86,6 +82,10 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, IObserver<Playe
         onPlayerJumpTimeEvent.AddListener(MaxTimePassed);
 
         onPlayerJumpEvent.Invoke(CharacterVelocityY = -10f);
+
+        FlagDelegator.AddToSubjectsDict(typeof(JumpingController).ToString(), name, new Subject<IObserver<bool>>());
+
+        FlagDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[name].SetSubject(this);
     }
     private async void Update()
     {
@@ -201,8 +201,8 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, IObserver<Playe
         return rb.linearVelocity.y < 0 ? Task.FromResult(true) : Task.FromResult(false);
     }
 
-    public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotifySubject(IObserver<bool> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        PlayerSystem = data;
+        FlagDelegator.AddToSubjectObserversDict(gameObject.name, FlagDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[gameObject.name], observer);
     }
 }

@@ -71,13 +71,9 @@ public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, ISubjec
 
         if (_animationHandler.ReturnCurrentAnimation() > MAX_ANIMATION_TIME && _animationHandler.IsNameOfTheCurrentAnimation(AnimationConstants.SLIDING))
         {
-
-            FlagDelegator.NotifyObservers(false, gameObject.name, typeof(TriggerHandler), CancellationToken.None);
-
             PlayerSystem.slideVariableEvent.PlayerSlideStateEventInvoke(true);
 
             _animationHandler.Sliding(false);
-
         }
 
         return Task.CompletedTask;
@@ -87,7 +83,9 @@ public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, ISubjec
     {
         if (await IsVelocityXGreaterThanZero(_rb) && !_playerAttackStateMachine.IsInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
         {
-            FlagDelegator.NotifyObservers(true, gameObject.name, typeof(TriggerHandler), CancellationToken.None);
+            IS_SLIDING = true;
+
+            FlagDelegator.NotifyObservers(IS_SLIDING, gameObject.name, typeof(TriggerHandler), CancellationToken.None);
 
             await Slide();
         }
@@ -95,7 +93,9 @@ public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, ISubjec
     }
     async Task<bool> IReceiverAsync<bool>.CancelAction()
     {
-        FlagDelegator.NotifyObservers(false, gameObject.name, typeof(TriggerHandler), CancellationToken.None);
+        IS_SLIDING = false;
+
+        FlagDelegator.NotifyObservers(IS_SLIDING, gameObject.name, typeof(TriggerHandler), CancellationToken.None);
 
         return await Task.FromResult(true);
     }

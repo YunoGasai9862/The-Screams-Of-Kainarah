@@ -2,7 +2,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<GameState>
+public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<GameState>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>
 {
     [SerializeField] float _characterSpeed = 10f;
 
@@ -41,6 +41,8 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
     private PlayerActionsModel _playerActionsModel;
 
     private GlobalGameStateDelegator _globalGameStateDelegator;
+
+    private FloatDelegator _floatDelegator;
 
     private GameState CurrentGameState { get; set; }
 
@@ -92,7 +94,9 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 
         _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
 
-        _playerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();  
+        _playerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
+
+        _floatDelegator = Helper.GetDelegator<FloatDelegator>();
 
         _rocky2DActions.PlayerMovement.Jump.started += BeginJumpAction; //i can add the same function
 
@@ -132,6 +136,13 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
             SubjectType = typeof(PlayerSystem).ToString()
         }, CancellationToken.None));
 
+        StartCoroutine(_playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(SlidingController).ToString()
+        }, CancellationToken.None);
+
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
 
         _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
@@ -141,8 +152,6 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
         _rocky2DActions.PlayerAttack.BoostAttack.Enable();
 
         JumpingController.onPlayerJumpEvent.AddListener(VelocityYEventHandler);
-
-        SlidingController.onSlideEvent.AddListener(CharacterSpeedHandler);
     }
 
     private void Update()
@@ -317,6 +326,16 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
     public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerSystem = data;
+    }
+
+    public void OnNotify(CharacterSpeed data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        CharacterSpeedHandler(data.Speed);
+    }
+
+    public void OnNotify(CharacterVelocity data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+
     }
 
     #endregion

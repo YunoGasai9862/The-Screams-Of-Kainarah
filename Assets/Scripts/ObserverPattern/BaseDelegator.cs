@@ -134,9 +134,9 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         return null;
     }
 
-    public void NotifyObservers(T valueToSend, string subjectUniqueKey, Type subjectType, CancellationToken cancellationToken)
+    public void NotifyObservers(T valueToSend, string subjectIdentifyingKey, Type subjectType, CancellationToken cancellationToken)
     {
-        foreach (Association<T> association in GetSubjectAssociations(subjectUniqueKey))
+        foreach (Association<T> association in GetSubjectAssociations(subjectIdentifyingKey))
         {
             StartCoroutine(NotifyObserver(association.Observer, valueToSend, new NotificationContext()
             {
