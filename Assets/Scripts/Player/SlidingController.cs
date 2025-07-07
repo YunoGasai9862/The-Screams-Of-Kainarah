@@ -85,7 +85,7 @@ public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, ISubjec
         {
             IS_SLIDING = true;
 
-            FlagDelegator.NotifyObservers(IS_SLIDING, gameObject.name, typeof(TriggerHandler), CancellationToken.None);
+            FlagDelegator.NotifyObservers(IS_SLIDING, gameObject.name, typeof(SlidingController), CancellationToken.None);
 
             await Slide();
         }
@@ -95,7 +95,7 @@ public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, ISubjec
     {
         IS_SLIDING = false;
 
-        FlagDelegator.NotifyObservers(IS_SLIDING, gameObject.name, typeof(TriggerHandler), CancellationToken.None);
+        FlagDelegator.NotifyObservers(IS_SLIDING, gameObject.name, typeof(SlidingController), CancellationToken.None);
 
         return await Task.FromResult(true);
     }

@@ -44,6 +44,8 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 
     private FloatDelegator _floatDelegator;
 
+    private PlayerVelocityDelegator _playerVelocityDelegator;
+
     private GameState CurrentGameState { get; set; }
 
     private LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
@@ -98,6 +100,8 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 
         _floatDelegator = Helper.GetDelegator<FloatDelegator>();
 
+        _playerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
+
         _rocky2DActions.PlayerMovement.Jump.started += BeginJumpAction; //i can add the same function
 
         _rocky2DActions.PlayerMovement.Jump.canceled += EndJumpAction;
@@ -141,7 +145,14 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(SlidingController).ToString()
-        }, CancellationToken.None);
+        }, CancellationToken.None));
+
+        StartCoroutine(_playerVelocityDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(JumpingController).ToString()
+        }, CancellationToken.None));
 
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
 
@@ -150,8 +161,6 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
         _rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
 
         _rocky2DActions.PlayerAttack.BoostAttack.Enable();
-
-        JumpingController.onPlayerJumpEvent.AddListener(VelocityYEventHandler);
     }
 
     private void Update()
@@ -335,7 +344,7 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 
     public void OnNotify(CharacterVelocity data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-
+        VelocityYEventHandler(data.VelocityY);
     }
 
     #endregion

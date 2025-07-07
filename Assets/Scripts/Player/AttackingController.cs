@@ -62,7 +62,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     {
         _anim = GetComponent<Animator>();
 
-
         PlayerAttackStateMachine = new PlayerAttackStateMachine(_anim);
 
         col = GetComponent<CapsuleCollider2D>();
