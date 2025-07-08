@@ -15,7 +15,6 @@ public class GlobalGameStateManager: MonoBehaviour, ISubject<IObserver<GameState
 
     private GameState GlobalGameState { get; set; } = GameState.FREE_MOVEMENT;
 
-
     private void Start()
     {
         gameStateEvent.AddListener(PingGameStateListeners);
@@ -23,7 +22,6 @@ public class GlobalGameStateManager: MonoBehaviour, ISubject<IObserver<GameState
         globalGameStateDelegator.AddToSubjectsDict(typeof(GlobalGameStateManager).ToString(), gameObject.name, new Subject<IObserver<GameState>>());
 
         globalGameStateDelegator.GetSubsetSubjectsDictionary(typeof(GlobalGameStateManager).ToString())[gameObject.name].SetSubject(this);
-
     }
 
     public async void PingGameStateListeners(GameState gameState)
