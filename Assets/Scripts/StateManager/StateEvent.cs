@@ -1,29 +1,22 @@
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-
-//ADD A BASE EVENT in the parameter so can be used by subclasses :_)))
-public class StateEvent<T> : UnityEventWTAsync<T>
+public abstract class StateEvent<T> : UnityEventWTAsync<SystemState<T>>
 {
-    private UnityEvent<T> m_stateEvent = new UnityEvent<T>();
-    public override Task AddListener(UnityAction<T> action)
+    private UnityEvent<SystemState<T>> m_stateEvent = new UnityEvent<SystemState<T>>();
+    public override Task AddListener(UnityAction<SystemState<T>> action)
     {
         m_stateEvent.AddListener(action);
 
         return Task.CompletedTask;
     }
 
-    public override Task AddListener(UnityAction<T> action)
+    public override UnityEvent<SystemState<T>> GetInstance()
     {
-        throw new System.NotImplementedException();
+        return m_stateEvent;
     }
 
-    public override UnityEvent<PlayerState> GetInstance()
-    {
-        return m_gameStateEvent;
-    }
-
-    public override Task Invoke(T value)
+    public override Task Invoke(SystemState<T> value)
     {
         m_stateEvent.Invoke(value);
 
