@@ -2,10 +2,10 @@ using System.Collections;
 using System.Threading;
 using UnityEngine;
 
-public class DialogueTriggerManager : MonoBehaviour, IObserver<GameState>
+public class DialogueTriggerManager : MonoBehaviour, IObserver<GameStateConsumer>
 {
     private int DialogueCounter { get; set; } = 0;
-    private GameState GameState { get; set; }
+    private GameStateConsumer GameState { get; set; }
     private SemaphoreSlim SemaphoreSlim { get; set;} =  new SemaphoreSlim(1);
 
     [SerializeField]
@@ -30,7 +30,7 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GameState>
 
     private IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        BroadcastGameState(GameState.DIALOGUE_TAKING_PLACE);
+        BroadcastGameState(GameStateConsumer.DIALOGUE_TAKING_PLACE);
 
         foreach (DialogueSetup dialogue in dialogueSystem.DialogueSetup)
         {
@@ -50,9 +50,9 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GameState>
 
                 DialogueCounter = 0;
 
-                GameState = GameState.FREE_MOVEMENT;
+                GameState = GameStateConsumer.FREE_MOVEMENT;
 
-                BroadcastGameState(GameState.FREE_MOVEMENT);
+                BroadcastGameState(GameStateConsumer.FREE_MOVEMENT);
 
                 yield return null;
             }
@@ -61,7 +61,7 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GameState>
 
     public void TriggerCoroutine(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        if (GameState == GameState.DIALOGUE_TAKING_PLACE || dialogueSystem.DialogueSettings.DialogueConcluded)
+        if (GameState == GameStateConsumer.DIALOGUE_TAKING_PLACE || dialogueSystem.DialogueSettings.DialogueConcluded)
         {
             return;
         }
@@ -69,14 +69,14 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GameState>
         Coroutine triggerDialogueCoroutine = StartCoroutine(TriggerDialogue(dialogueSystem));
     }
 
-    private async void BroadcastGameState(GameState value)
+    private async void BroadcastGameState(GameStateConsumer value)
     {
         GameState = value;
 
         await gameStateEvent.Invoke(value);
     }
 
-    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GameStateConsumer data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         GameState = data;
     }

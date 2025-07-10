@@ -4,7 +4,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IObserver<GameState>, ISubject<IObserver<bool>>
+public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IObserver<GameStateConsumer>, ISubject<IObserver<bool>>
 {
     private const string DIAMOND_TAG = "Crystal";
 
@@ -15,7 +15,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private AudioSource m_transact;
 
     private bool m_isSufficientFunds;
-    private GameState CurrentGameState { get; set; }
+    private GameStateConsumer CurrentGameState { get; set; }
 
     private TMPro.TextMeshProUGUI m_funds;
 
@@ -47,14 +47,14 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private void Update()
     {
-        if(m_transact == null && CurrentGameState.Equals(GameState.SHOPPING))
+        if(m_transact == null && CurrentGameState.Equals(GameStateConsumer.SHOPPING))
         {
             m_transact = GameObject.FindWithTag("Transact").GetComponent<AudioSource>();
         }
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (CurrentGameState.Equals(GameState.SHOPPING))
+        if (CurrentGameState.Equals(GameStateConsumer.SHOPPING))
         {
             m_insideObject = eventData.pointerClick.transform.gameObject;
 
@@ -117,7 +117,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
          InventoryManagementSystem.Instance.RemoveInvoke(funds);
     }
 
-    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GameStateConsumer data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState = data;
     }

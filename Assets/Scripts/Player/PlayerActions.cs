@@ -2,7 +2,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<GameState>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>
+public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<GameStateConsumer>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>
 {
     [SerializeField] float _characterSpeed = 10f;
 
@@ -46,7 +46,7 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 
     private PlayerVelocityDelegator _playerVelocityDelegator;
 
-    private GameState CurrentGameState { get; set; }
+    private GameStateConsumer CurrentGameState { get; set; }
 
     private LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
 
@@ -170,7 +170,7 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 
         //think of making it more better
         //make it entirely event based
-        if (CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE)) 
+        if (CurrentGameState.Equals(GameStateConsumer.DIALOGUE_TAKING_PLACE)) 
         {
             _animationHandler.UpdateMovementState(PlayerAnimationHandler.AnimationStateKeeper.StateKeeper.IDLE, false, true);
             return;
@@ -327,7 +327,7 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
         }
     }
 
-    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GameStateConsumer data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState = data;
     }

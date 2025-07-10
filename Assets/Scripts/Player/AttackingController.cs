@@ -4,7 +4,7 @@ using PlayerAnimationHandler;
 using System;
 using System.Threading;
 using UnityEngine;
-public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<GameState>, IObserver<PlayerSystem>
+public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<GameStateConsumer>, IObserver<PlayerSystem>
 {
     private const float TIME_DIFFERENCE_MAX = 1.5f;
 
@@ -24,7 +24,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
 
     private float timeDifferencebetweenStates;
 
-    private GameState CurrentGameState { get; set; }
+    private GameStateConsumer CurrentGameState { get; set; }
     private int PlayerAttackState { get; set; }
     private string PlayerAttackStateName { get; set; }
     private bool LeftMouseButtonPressed { get; set; }
@@ -220,8 +220,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
         bool isJumping = PlayerSystem.IS_JUMPING;
         bool isInventoryOpen = SceneSingleton.GetInventoryManager().IsPouchOpen;
 
-        return !CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE) &&
-               !CurrentGameState.Equals(GameState.SHOPPING) && !isInventoryOpen && !isJumping;
+        return !CurrentGameState.Equals(GameStateConsumer.DIALOGUE_TAKING_PLACE) &&
+               !CurrentGameState.Equals(GameStateConsumer.SHOPPING) && !isInventoryOpen && !isJumping;
     }
 
     #region AnimationEventOnTheAnimationItself
@@ -290,7 +290,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
         PowerUpBarFilled = filledUp;
     }
 
-    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GameStateConsumer data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState = data;
     }

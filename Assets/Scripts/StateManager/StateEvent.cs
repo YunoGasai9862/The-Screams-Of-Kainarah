@@ -1,22 +1,22 @@
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public abstract class StateEvent<T> : UnityEventWTAsync<SystemState<T>>
+public abstract class StateEvent<T> : UnityEventWTAsync<GenericState<T>>
 {
-    private UnityEvent<SystemState<T>> m_stateEvent = new UnityEvent<SystemState<T>>();
-    public override Task AddListener(UnityAction<SystemState<T>> action)
+    private UnityEvent<GenericState<T>> m_stateEvent = new UnityEvent<GenericState<T>>();
+    public override Task AddListener(UnityAction<GenericState<T>> action)
     {
         m_stateEvent.AddListener(action);
 
         return Task.CompletedTask;
     }
 
-    public override UnityEvent<SystemState<T>> GetInstance()
+    public override UnityEvent<GenericState<T>> GetInstance()
     {
         return m_stateEvent;
     }
 
-    public override Task Invoke(SystemState<T> value)
+    public override Task Invoke(GenericState<T> value)
     {
         m_stateEvent.Invoke(value);
 

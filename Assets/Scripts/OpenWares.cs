@@ -1,28 +1,28 @@
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-public class OpenWares : MonoBehaviour, IObserver<GameState>, INotify<bool>
+public class OpenWares : MonoBehaviour, IObserver<GameStateConsumer>, INotify<bool>
 {
     [SerializeField] GameObject MagicCircle;
     [SerializeField] GameObject WaresPanel;
     [SerializeField] GameStateEvent gameStateEvent;
-    private GameState CurrentGameState { get; set; }
+    private GameStateConsumer CurrentGameState { get; set; }
 
     private void OnMouseDown()
     {
-        if (CurrentGameState.Equals(GameState.DIALOGUE_TAKING_PLACE) && !SceneSingleton.GetInventoryManager().IsPouchOpen)
+        if (CurrentGameState.Equals(GameStateConsumer.DIALOGUE_TAKING_PLACE) && !SceneSingleton.GetInventoryManager().IsPouchOpen)
         {
             WaresPanel.SetActive(true);
 
-            gameStateEvent.Invoke(GameState.SHOPPING);
+            gameStateEvent.Invoke(GameStateConsumer.SHOPPING);
         }
     }
 
-    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GameStateConsumer data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState = data;
 
-        if (CurrentGameState.Equals(GameState.FREE_MOVEMENT))
+        if (CurrentGameState.Equals(GameStateConsumer.FREE_MOVEMENT))
         {
             WaresPanel.SetActive(false);
         }

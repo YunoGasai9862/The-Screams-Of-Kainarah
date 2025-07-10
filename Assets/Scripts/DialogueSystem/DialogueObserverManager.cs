@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using static DialoguesAndOptions;
 
-public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>, IObserver<GameState>
+public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>, IObserver<GenericState<GameStateConsumer>>
 {
     [Header("Dialogues And Options")]
     [SerializeField] DialoguesAndOptions DialoguesAndOptions;
@@ -15,7 +15,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
     [Header("Triggering Event")]
     [SerializeField] GlobalGameStateDelegator globalGameStateDelegator;
 
-    private GameState GameState { get; set; }
+    private GenericState<GameStateConsumer> CurrentGameState { get; set; } = new GenericState<GameStateConsumer>();
 
     private async Task TriggerDialogue(DialogueSystem dialogueSystem)
     {
@@ -40,18 +40,19 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
             SubjectType = typeof(GlobalGameStateManager).ToString()
 
         }, CancellationToken.None);
+
     }
 
     public async void OnNotify(DialogueSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        if (data.DialogueSettings.ShouldTriggerDialogue && !GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
+        if (data.DialogueSettings.ShouldTriggerDialogue && !CurrentGameState.State.Equals(GameStateConsumer.DIALOGUE_TAKING_PLACE))
         {
             await TriggerDialogue(data);
         }
     }
 
-    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericState<GameStateConsumer> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        GameState = data;
+        CurrentGameState.State = data.State;
     }
 }

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver<Player>, IObserver<EnemyHittableManager>
+public class RakashStateMachine : MonoBehaviour, IObserver<GameStateConsumer>, IObserver<Player>, IObserver<EnemyHittableManager>
 {
     public const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
 
@@ -11,7 +11,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
 
     private const float MIN_DISTANCE_BETWEEN_PLAYER = 3f;
 
-    private GameState GameState { get; set; }
+    private GameStateConsumer GameState { get; set; }
 
     private Player Player { get; set; }
 
@@ -80,7 +80,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
         }, CancellationToken.None));
     }
 
-    public void OnNotify(GameState data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GameStateConsumer data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         GameState = data;
     }
@@ -96,7 +96,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameState>, IObserver
 
     protected void CustomOnStateUpdateLogic(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (GameState.Equals(GameState.DIALOGUE_TAKING_PLACE))
+        if (GameState.Equals(GameStateConsumer.DIALOGUE_TAKING_PLACE))
         {
             RakashMovementCommandController.Execute(new MovementActionDelegatePackage()
             {

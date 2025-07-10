@@ -16,7 +16,7 @@ public class WaresReturn : MonoBehaviour
 
     public void ClosePanel()
     {
-        gameStateEvent.Invoke(GameState.FREE_MOVEMENT);
+        gameStateEvent.Invoke(GameStateConsumer.FREE_MOVEMENT);
 
         m_panelHandler.ClosePanel();
     }

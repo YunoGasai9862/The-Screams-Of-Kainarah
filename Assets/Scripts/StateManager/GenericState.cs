@@ -1,4 +1,4 @@
-public abstract class SystemState<T>
+public class GenericState<T>
 {
     public T State { get; set; }
 } 
