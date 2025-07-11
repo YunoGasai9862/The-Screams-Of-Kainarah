@@ -1,4 +1,4 @@
-public enum GameStateConsumer
+public enum GameState
 {
     DIALOGUE_TAKING_PLACE,
     SHOPPING,

@@ -4,6 +4,7 @@ using UnityEngine.Events;
 public abstract class StateEvent<T> : UnityEventWTAsync<GenericState<T>>
 {
     private UnityEvent<GenericState<T>> m_stateEvent = new UnityEvent<GenericState<T>>();
+
     public override Task AddListener(UnityAction<GenericState<T>> action)
     {
         m_stateEvent.AddListener(action);

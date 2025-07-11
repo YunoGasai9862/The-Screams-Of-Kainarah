@@ -11,6 +11,7 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
     protected GenericState<T> State { get; set; }
     private void Start()
     {
+
         GetEvent().AddListener(PingStateListeners);
     }
 
@@ -45,7 +46,7 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
 
     protected abstract void AddSubject();
 
-    protected abstract UnityEvent<GenericState<T>> GetEvent();
+    protected abstract UnityEvent<GenericState<T>> GetEvent(); 
 
     protected abstract BaseDelegatorEnhanced<GenericState<T>> GetDelegator();
 }

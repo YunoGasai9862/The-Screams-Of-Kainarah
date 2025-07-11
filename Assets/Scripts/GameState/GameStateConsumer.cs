@@ -6,6 +6,8 @@ public class GameStateConsumer : BaseState<GameState>
 {
     [SerializeField] GlobalGameStateDelegator globalGameStateDelegator;
 
+    [SerializeField] GameStateEvent gameStateEvent;
+
     protected override void AddSubject()
     {
         globalGameStateDelegator.AddToSubjectsDict(typeof(GameStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericState<GameState>>>());
@@ -20,6 +22,6 @@ public class GameStateConsumer : BaseState<GameState>
 
     protected override UnityEvent<GenericState<GameState>> GetEvent()
     {
-        throw new System.NotImplementedException();
+        return gameStateEvent.Event;
     }
 }
