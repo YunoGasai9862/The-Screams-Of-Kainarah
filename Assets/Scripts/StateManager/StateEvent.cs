@@ -1,7 +1,8 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public abstract class StateEvent<T> : UnityEventWTAsync<GenericState<T>>
+public abstract class StateEvent<T> : UnityEventWTAsync<GenericState<T>> where T : Enum
 {
     private UnityEvent<GenericState<T>> m_stateEvent = new UnityEvent<GenericState<T>>();
 

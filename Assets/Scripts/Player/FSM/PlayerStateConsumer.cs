@@ -1,10 +1,7 @@
-using System;
-using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine;
 
-
-//notification should go to the base class i think for sure - otherwise overwrite
-public class GameStateConsumer : BaseState<GameState>
+public class PlayerStateConsumer : BaseState<PlayerState>
 {
     [SerializeField] GlobalGameStateDelegator globalGameStateDelegator;
 

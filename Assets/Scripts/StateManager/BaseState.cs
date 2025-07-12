@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
+using System;
 
-public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericState<T>>>
+public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericState<T>>> where T : Enum
 {
     protected List<IObserver<GenericState<T>>> StateListeners { get; set; } = new List<IObserver<GenericState<T>>> { };
 
@@ -39,6 +40,8 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
 
     public async void OnNotifySubject(IObserver<GenericState<T>> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
+        Debug.Log("Base Class On Notify through child class!");
+
         StateListeners.Add(observer);
 
         await NotifyObserver(observer, State, cancellationToken);

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using static DialoguesAndOptions;
 
-public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>, IObserver<GenericState<GameStateConsumer>>
+public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>, IObserver<GenericState<GameState>>
 {
     [Header("Dialogues And Options")]
     [SerializeField] DialoguesAndOptions DialoguesAndOptions;
@@ -15,7 +15,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
     [Header("Triggering Event")]
     [SerializeField] GlobalGameStateDelegator globalGameStateDelegator;
 
-    private GenericState<GameStateConsumer> CurrentGameState { get; set; } = new GenericState<GameStateConsumer>();
+    private GenericState<GameState> CurrentGameState { get; set; } = new GenericState<GameState>();
 
     private async Task TriggerDialogue(DialogueSystem dialogueSystem)
     {
@@ -37,7 +37,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
         {
             ObserverName = this.name,
             ObserverTag = this.name,
-            SubjectType = typeof(GlobalGameStateManager).ToString()
+            SubjectType = typeof(GameStateConsumer).ToString()
 
         }, CancellationToken.None);
 
@@ -45,13 +45,13 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
 
     public async void OnNotify(DialogueSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        if (data.DialogueSettings.ShouldTriggerDialogue && !CurrentGameState.State.Equals(GameStateConsumer.DIALOGUE_TAKING_PLACE))
+        if (data.DialogueSettings.ShouldTriggerDialogue && !CurrentGameState.State.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
             await TriggerDialogue(data);
         }
     }
 
-    public void OnNotify(GenericState<GameStateConsumer> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericState<GameState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState.State = data.State;
     }

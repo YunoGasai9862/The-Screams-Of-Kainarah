@@ -1,28 +1,31 @@
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-public class OpenWares : MonoBehaviour, IObserver<GameStateConsumer>, INotify<bool>
+using UnityEngineInternal;
+public class OpenWares : MonoBehaviour, IObserver<GenericState<GameState>>, INotify<bool>
 {
     [SerializeField] GameObject MagicCircle;
     [SerializeField] GameObject WaresPanel;
     [SerializeField] GameStateEvent gameStateEvent;
-    private GameStateConsumer CurrentGameState { get; set; }
+    private GenericState<GameState> CurrentGameState { get; set; } = new GenericState<GameState>();
 
     private void OnMouseDown()
     {
-        if (CurrentGameState.Equals(GameStateConsumer.DIALOGUE_TAKING_PLACE) && !SceneSingleton.GetInventoryManager().IsPouchOpen)
+        if (CurrentGameState.State.Equals(GameState.DIALOGUE_TAKING_PLACE) && !SceneSingleton.GetInventoryManager().IsPouchOpen)
         {
             WaresPanel.SetActive(true);
 
-            gameStateEvent.Invoke(GameStateConsumer.SHOPPING);
+            CurrentGameState.State = GameState.SHOPPING;
+
+            gameStateEvent.Invoke(CurrentGameState);
         }
     }
 
-    public void OnNotify(GameStateConsumer data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericState<GameState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState = data;
 
-        if (CurrentGameState.Equals(GameStateConsumer.FREE_MOVEMENT))
+        if (CurrentGameState.Equals(GameState.FREE_MOVEMENT))
         {
             WaresPanel.SetActive(false);
         }

@@ -1,10 +1,8 @@
 using CoreCode;
-using NUnit.Framework.Internal;
-using PlayerAnimationHandler;
 using System;
 using System.Threading;
 using UnityEngine;
-public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<GameStateConsumer>, IObserver<PlayerSystem>
+public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<GenericState<GameState>>, IObserver<GenericState<PlayerState>>
 {
     private const float TIME_DIFFERENCE_MAX = 1.5f;
 
@@ -24,7 +22,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
 
     private float timeDifferencebetweenStates;
 
-    private GameStateConsumer CurrentGameState { get; set; }
+    private GenericState<GameState> CurrentGameState { get; set; } = new GenericState<GameState>();
     private int PlayerAttackState { get; set; }
     private string PlayerAttackStateName { get; set; }
     private bool LeftMouseButtonPressed { get; set; }
@@ -32,9 +30,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
     private bool ShouldBoost { get; set; }
     private bool PowerUpBarFilled { get; set; } = false;
     private PlayerAttackStateMachine PlayerAttackStateMachine { get; set; }
-    private PlayerSystem PlayerSystem { get; set; }
-
-    private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
 
     private GlobalGameStateDelegator GlobalGameStateDelegator { get; set; }
 
@@ -71,8 +66,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
         PlayerAttackState = 0;
 
         GlobalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
-
-        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
     }
 
     private void Start()
@@ -81,7 +74,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
-            SubjectType = typeof(GlobalGameStateManager).ToString()
+            SubjectType = typeof(GameStateConsumer).ToString()
         }, CancellationToken.None));
 
 
@@ -220,8 +213,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
         bool isJumping = PlayerSystem.IS_JUMPING;
         bool isInventoryOpen = SceneSingleton.GetInventoryManager().IsPouchOpen;
 
-        return !CurrentGameState.Equals(GameStateConsumer.DIALOGUE_TAKING_PLACE) &&
-               !CurrentGameState.Equals(GameStateConsumer.SHOPPING) && !isInventoryOpen && !isJumping;
+        return !CurrentGameState.State.Equals(GameState.DIALOGUE_TAKING_PLACE) &&
+               !CurrentGameState.State.Equals(GameState.SHOPPING) && !isInventoryOpen && !isJumping;
     }
 
     #region AnimationEventOnTheAnimationItself
@@ -290,13 +283,13 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gam
         PowerUpBarFilled = filledUp;
     }
 
-    public void OnNotify(GameStateConsumer data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericState<GameState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState = data;
     }
 
-    public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericState<PlayerState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        PlayerSystem = data;
+        throw new NotImplementedException();
     }
 }

@@ -2,10 +2,10 @@ using System.Collections;
 using System.Threading;
 using UnityEngine;
 
-public class DialogueTriggerManager : MonoBehaviour, IObserver<GameStateConsumer>
+public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericState<GameState>>
 {
     private int DialogueCounter { get; set; } = 0;
-    private GameStateConsumer GameState { get; set; }
+    private GenericState<GameState> CurrentGameState { get; set; } = new GenericState<GameState>();
     private SemaphoreSlim SemaphoreSlim { get; set;} =  new SemaphoreSlim(1);
 
     [SerializeField]
@@ -23,14 +23,14 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GameStateConsumer
         {
             ObserverName = this.name,
             ObserverTag = this.name,
-            SubjectType = typeof(GlobalGameStateManager).ToString()
+            SubjectType = typeof(GameStateConsumer).ToString()
 
         }, CancellationToken.None);
     }
 
     private IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        BroadcastGameState(GameStateConsumer.DIALOGUE_TAKING_PLACE);
+        BroadcastGameState(GameState.DIALOGUE_TAKING_PLACE);
 
         foreach (DialogueSetup dialogue in dialogueSystem.DialogueSetup)
         {
@@ -50,9 +50,9 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GameStateConsumer
 
                 DialogueCounter = 0;
 
-                GameState = GameStateConsumer.FREE_MOVEMENT;
+                CurrentGameState.State = GameState.FREE_MOVEMENT;
 
-                BroadcastGameState(GameStateConsumer.FREE_MOVEMENT);
+                BroadcastGameState(GameState.FREE_MOVEMENT);
 
                 yield return null;
             }
@@ -61,7 +61,7 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GameStateConsumer
 
     public void TriggerCoroutine(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        if (GameState == GameStateConsumer.DIALOGUE_TAKING_PLACE || dialogueSystem.DialogueSettings.DialogueConcluded)
+        if (CurrentGameState.State == GameState.DIALOGUE_TAKING_PLACE || dialogueSystem.DialogueSettings.DialogueConcluded)
         {
             return;
         }
@@ -69,15 +69,15 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GameStateConsumer
         Coroutine triggerDialogueCoroutine = StartCoroutine(TriggerDialogue(dialogueSystem));
     }
 
-    private async void BroadcastGameState(GameStateConsumer value)
+    private async void BroadcastGameState(GameState value)
     {
-        GameState = value;
+        CurrentGameState.State = value;
 
-        await gameStateEvent.Invoke(value);
+        await gameStateEvent.Invoke(CurrentGameState);
     }
 
-    public void OnNotify(GameStateConsumer data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericState<GameState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        GameState = data;
+        CurrentGameState = data;
     }
 }
