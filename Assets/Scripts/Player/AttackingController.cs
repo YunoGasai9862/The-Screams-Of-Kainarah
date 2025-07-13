@@ -2,6 +2,8 @@ using CoreCode;
 using System;
 using System.Threading;
 using UnityEngine;
+
+//THE ATTACKIGN CONTROLLER WILL KEEP THE STATE FOR ITSELF BUT WILL FIRE OFF FOR OTHERS!
 public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<GenericState<GameState>>, IObserver<GenericState<PlayerState>>
 {
     private const float TIME_DIFFERENCE_MAX = 1.5f;
@@ -22,6 +24,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
 
     private float timeDifferencebetweenStates;
 
+    private GenericState<PlayerState> CurrentPlayerState { get; set; } = new GenericState<PlayerState>();
+
     private GenericState<GameState> CurrentGameState { get; set; } = new GenericState<GameState>();
     private int PlayerAttackState { get; set; }
     private string PlayerAttackStateName { get; set; }
@@ -33,6 +37,10 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
 
     private GlobalGameStateDelegator GlobalGameStateDelegator { get; set; }
 
+    private PlayerStateDelegator PlayerStateDelegator { get; set; }
+
+    private PlayerStateEvent PlayerStateEvent { get; set; }
+        
     [SerializeField] LayerMask Ground;
 
     [SerializeField] LayerMask ledge;
@@ -66,6 +74,10 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
         PlayerAttackState = 0;
 
         GlobalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
+        PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
+
+        PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
     }
 
     private void Start()
@@ -78,11 +90,11 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
         }, CancellationToken.None));
 
 
-        StartCoroutine(PlayerSystemDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerSystem).ToString()
+            SubjectType = typeof(PlayerStateConsumer).ToString()
         }, CancellationToken.None));
 
 
@@ -96,12 +108,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     // Update is called once per frame
     void Update()
     {
-        if (PlayerSystem == null)
-        {
-            return;
-        }
-
-        if (PlayerSystem.IS_SLIDING || PlayerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
+        if (CurrentPlayerState.State.Equals(PlayerState.IS_SLIDING) || PlayerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
         {
             ResetAttackingState();
         }
@@ -110,7 +117,10 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     {
         if (CanPlayerAttack()) //ground attack
         {
-            PlayerSystem.attackVariableEvent.Invoke(true);
+            CurrentPlayerState.State = PlayerState.IS_ATTACKING;
+
+            PlayerStateEvent.Invoke(CurrentPlayerState);
+
             //keeps track of attacking state
             (PlayerAttackState, PlayerAttackStateName, _isPlayerEligibleForStartingAttack) = GetEnumStateAndName<PlayerAttackEnum.PlayerAttackSlash>( PlayerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
 
@@ -195,8 +205,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     {
         PlayerAttackState = 0; //resets the attackingstate
         PlayerSystem.attackVariableEvent.Invoke(false);
-        PlayerAttackStateMachine.CanAttack(canAttackStateName, PlayerSystem.IS_ATTACKING);
-        PlayerAttackStateMachine.CanAttack(jumpAttackStateName, PlayerSystem.IS_ATTACKING);
+        PlayerAttackStateMachine.CanAttack(canAttackStateName, CurrentPlayerState.State.Equals(PlayerState.IS_ATTACKING));
+        PlayerAttackStateMachine.CanAttack(jumpAttackStateName, CurrentPlayerState.State.Equals(PlayerState.IS_ATTACKING));
     }
 
     private bool IsEnumValueEqualToLengthOfEnum<T>(string _playerAttackStateName)
@@ -210,11 +220,11 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     }
     public bool CanPlayerAttack()
     {
-        bool isJumping = PlayerSystem.IS_JUMPING;
         bool isInventoryOpen = SceneSingleton.GetInventoryManager().IsPouchOpen;
 
         return !CurrentGameState.State.Equals(GameState.DIALOGUE_TAKING_PLACE) &&
-               !CurrentGameState.State.Equals(GameState.SHOPPING) && !isInventoryOpen && !isJumping;
+               !CurrentGameState.State.Equals(GameState.SHOPPING) && !isInventoryOpen &&
+               !CurrentPlayerState.State.Equals(PlayerState.IS_JUMPING);
     }
 
     #region AnimationEventOnTheAnimationItself
@@ -290,6 +300,6 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
 
     public void OnNotify(GenericState<PlayerState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new NotImplementedException();
+        CurrentPlayerState = data;
     }
 }

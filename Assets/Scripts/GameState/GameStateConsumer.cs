@@ -24,6 +24,6 @@ public class GameStateConsumer : BaseState<GameState>
 
     protected override UnityEvent<GenericState<GameState>> GetEvent()
     {
-        return gameStateEvent.Event;
+        return gameStateEvent.GetInstance();
     }
 }

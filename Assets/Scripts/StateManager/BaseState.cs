@@ -12,7 +12,6 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
     protected GenericState<T> State { get; set; }
     private void Start()
     {
-
         GetEvent().AddListener(PingStateListeners);
     }
 

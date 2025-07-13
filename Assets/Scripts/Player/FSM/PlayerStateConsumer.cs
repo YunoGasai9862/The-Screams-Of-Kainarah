@@ -3,24 +3,24 @@ using UnityEngine;
 
 public class PlayerStateConsumer : BaseState<PlayerState>
 {
-    [SerializeField] GlobalGameStateDelegator globalGameStateDelegator;
+    [SerializeField] PlayerStateDelegator playerStateDelegator;
 
-    [SerializeField] GameStateEvent gameStateEvent;
+    [SerializeField] PlayerStateEvent playerStateEvent;
 
     protected override void AddSubject()
     {
-        globalGameStateDelegator.AddToSubjectsDict(typeof(GameStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericState<GameState>>>());
+        playerStateDelegator.AddToSubjectsDict(typeof(PlayerStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericState<PlayerState>>>());
 
-        globalGameStateDelegator.GetSubsetSubjectsDictionary(typeof(GameStateConsumer).ToString())[gameObject.name].SetSubject(this);
+        playerStateDelegator.GetSubsetSubjectsDictionary(typeof(PlayerStateConsumer).ToString())[gameObject.name].SetSubject(this);
     }
 
-    protected override BaseDelegatorEnhanced<GenericState<GameState>> GetDelegator()
+    protected override BaseDelegatorEnhanced<GenericState<PlayerState>> GetDelegator()
     {
-        return globalGameStateDelegator;
+        return playerStateDelegator;
     }
 
-    protected override UnityEvent<GenericState<GameState>> GetEvent()
+    protected override UnityEvent<GenericState<PlayerState>> GetEvent()
     {
-        return gameStateEvent.Event;
+        return playerStateEvent.GetInstance();
     }
 }
