@@ -1,12 +1,15 @@
 using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngineInternal;
 
-public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<GameStateConsumer>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>
+public class PlayerActions : MonoBehaviour, IObserver<GenericState<PlayerState>>, IObserver<GenericState<GameState>>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>
 {
     [SerializeField] float _characterSpeed = 10f;
 
-    private PlayerSystemDelegator _playerSystemDelegator;
+    private PlayerStateDelegator _playerStateDelegator;
+
+    private PlayerStateEvent _playerStateEvent;
 
     private PlayerInput _playerInput;
 
@@ -46,20 +49,15 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 
     private PlayerVelocityDelegator _playerVelocityDelegator;
 
-    private GameStateConsumer CurrentGameState { get; set; }
+    private GenericState<GameState> CurrentGameState { get; set; } = new GenericState<GameState>();
+
+    private GenericState<PlayerState> CurrentPlayerState { get; set; } = new GenericState<PlayerState>();
 
     private LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
-
-    private SlidingController SlidingController { get => GetComponent<SlidingController>(); }
-
-    private JumpingController JumpingController { get => GetComponent<JumpingController>(); }
 
     private AttackingController AttackingController { get => GetComponent<AttackingController>(); }
 
     private ThrowingProjectileController ThrowingProjectileController { get => GetComponent<ThrowingProjectileController>(); } //implement all the actions together
-
-    private PlayerSystem PlayerSystem { get; set; }
-
 
     //Force = -2m * sqrt (g * h)
     private void Awake()
@@ -96,11 +94,13 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 
         _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
 
-        _playerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
+        _playerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
 
         _floatDelegator = Helper.GetDelegator<FloatDelegator>();
 
         _playerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
+
+        _playerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
 
         _rocky2DActions.PlayerMovement.Jump.started += BeginJumpAction; //i can add the same function
 
@@ -130,17 +130,10 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
-            SubjectType = typeof(GlobalGameStateManager).ToString()
+            SubjectType = typeof(GameStateConsumer).ToString()
         }, CancellationToken.None));
 
-        StartCoroutine(_playerSystemDelegator.NotifySubject(this, new NotificationContext()
-        {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerSystem).ToString()
-        }, CancellationToken.None));
-
-        StartCoroutine(_playerSystemDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(_playerVelocityDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
@@ -152,6 +145,13 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(JumpingController).ToString()
+        }, CancellationToken.None));
+
+        StartCoroutine(_playerStateDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerStateConsumer).ToString()
         }, CancellationToken.None));
 
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
@@ -170,7 +170,7 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 
         //think of making it more better
         //make it entirely event based
-        if (CurrentGameState.Equals(GameStateConsumer.DIALOGUE_TAKING_PLACE)) 
+        if (CurrentGameState.State.Equals(GameState.DIALOGUE_TAKING_PLACE)) 
         {
             _animationHandler.UpdateMovementState(PlayerAnimationHandler.AnimationStateKeeper.StateKeeper.IDLE, false, true);
             return;
@@ -182,7 +182,7 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
         //Flipping
         if (KeystrokeMagnitudeChecker(_keystrokeTrack))
         {
-            if (!PlayerSystem.IS_GRABBING)
+            if (!CurrentPlayerState.State.Equals(PlayerState.IS_GRABBING))
                 FlipCharacter(_keystrokeTrack);
         }
 
@@ -190,7 +190,7 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
         _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
 
         //ledge grab
-        if (PlayerSystem.IS_GRABBING) //tackles the ledgeGrab
+        if (CurrentPlayerState.State.Equals(PlayerState.IS_GRABBING)) //tackles the ledgeGrab
         {
             LedgeGrabController.PerformLedgeGrab();
         }
@@ -257,13 +257,16 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 
     private void BeginSlideAction(InputAction.CallbackContext context)
     {
-        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || PlayerSystem.IS_ATTACKING == true) ? false : context.ReadValueAsButton();
+        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.State.Equals(PlayerState.IS_ATTACKING)) ? false : context.ReadValueAsButton();
 
-        PlayerSystem.slideVariableEvent.SetPlayerSlideState(false);
+        //not sliding - see if needs to be in another way later!
+        CurrentPlayerState.State = PlayerState.CURRENT_ACTION_CONCLUDED;
+
+        _playerStateEvent.Invoke(CurrentPlayerState);
     }
     private void EndSlideAction(InputAction.CallbackContext context)
     {
-        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || PlayerSystem.IS_ATTACKING == true) ? false : context.ReadValueAsButton();
+        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.State.Equals(PlayerState.IS_ATTACKING)) ? false : context.ReadValueAsButton();
     }
 
     //attacking mechanism centralized
@@ -278,7 +281,7 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 
     private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
     {
-        _playerActionsModel.LeftMouseButtonPressed = (PlayerSystem.IS_SLIDING == true) ? false : context.ReadValueAsButton();
+        _playerActionsModel.LeftMouseButtonPressed = CurrentPlayerState.State.Equals(PlayerState.IS_SLIDING) ? false : context.ReadValueAsButton();
         _playerActionsModel.TimeForMouseClickEnd = (float)context.time;
 
         AttackingController.InvokeOnMouseClickEvent(_playerActionsModel.TimeForMouseClickStart, _playerActionsModel.TimeForMouseClickEnd);
@@ -289,7 +292,7 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
 
     private void HandlePlayerAttackStart(InputAction.CallbackContext context)
     {
-        _playerActionsModel.LeftMouseButtonPressed = (PlayerSystem.IS_SLIDING == true) ? false : context.ReadValueAsButton();
+        _playerActionsModel.LeftMouseButtonPressed = (CurrentPlayerState.State.Equals(PlayerState.IS_SLIDING)) ? false : context.ReadValueAsButton();
         _playerActionsModel.TimeForMouseClickStart = (float)context.time;
 
         //send time stamps to the attacking controller
@@ -327,16 +330,6 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
         }
     }
 
-    public void OnNotify(GameStateConsumer data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        CurrentGameState = data;
-    }
-
-    public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        PlayerSystem = data;
-    }
-
     public void OnNotify(CharacterSpeed data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CharacterSpeedHandler(data.Speed);
@@ -345,6 +338,16 @@ public class PlayerActions : MonoBehaviour, IObserver<PlayerSystem>, IObserver<G
     public void OnNotify(CharacterVelocity data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         VelocityYEventHandler(data.VelocityY);
+    }
+
+    public void OnNotify(GenericState<PlayerState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        CurrentPlayerState.State = data.State;
+    }
+
+    public void OnNotify(GenericState<GameState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        CurrentGameState.State = data.State;
     }
 
     #endregion

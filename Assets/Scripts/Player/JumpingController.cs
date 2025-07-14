@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObserver<bool>>, ISubject<IObserver<CharacterVelocity>>
+public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericState<PlayerState>>
 {
     [SerializeField] LayerMask groundLayer;
 
@@ -44,9 +44,13 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
 
     public float TimeEclipsed { get; set; }
 
-    private FlagDelegator FlagDelegator { get; set; }
-
     private PlayerVelocityDelegator PlayerVelocityDelegator { get; set; }
+
+    private PlayerStateDelegator PlayerStateDelegator { get; set; }
+
+    private PlayerStateEvent playerStateEvent { get; set; }
+
+    private GenericState<PlayerState> PlayerState { get; set; } = new GenericState<PlayerState> { };
 
     public bool CancelAction()
     {
@@ -210,5 +214,10 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
         PlayerVelocityDelegator.AddToSubjectObserversDict(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[gameObject.name], observer);
 
         StartCoroutine(PlayerVelocityDelegator.NotifyObserver(observer, new CharacterVelocity() { VelocityY = - 10f}, new NotificationContext() { SubjectType = typeof(JumpingController).ToString()}, cancellationToken));
+    }
+
+    public void OnNotify(GenericState<PlayerState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new NotImplementedException();
     }
 }
