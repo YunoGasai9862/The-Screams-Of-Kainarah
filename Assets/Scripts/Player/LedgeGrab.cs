@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class LedgeGrab : MonoBehaviour, IObserver<PlayerSystem>, IReceiver<bool>
+public class LedgeGrab : MonoBehaviour, IObserver<GenericState<PlayerState>>, IReceiver<bool>
 {
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
 
@@ -12,7 +12,6 @@ public class LedgeGrab : MonoBehaviour, IObserver<PlayerSystem>, IReceiver<bool>
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
 
     private const float VELOCITY_ASYNC_DELAY = 0.15f;
-
 
     [SerializeField] LayerMask groundMask;
 
@@ -23,8 +22,6 @@ public class LedgeGrab : MonoBehaviour, IObserver<PlayerSystem>, IReceiver<bool>
     [SerializeField] Vector2 ledgeGrabForces;
 
     [SerializeField] LedgeGrabAnimationEvent ledgradeAnimationEvent;
-
-    private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
 
     private bool greenBox, redBox;
 
@@ -54,22 +51,27 @@ public class LedgeGrab : MonoBehaviour, IObserver<PlayerSystem>, IReceiver<bool>
 
     private bool StartCalculatingGrabLedgeDisplacement { get; set; }
 
-    private PlayerSystem PlayerSystem { get; set; }
+    private GenericState<PlayerState> CurrentPlayerState { get; set; } = new GenericState<PlayerState>();
 
+    private PlayerStateEvent PlayerStateEvent { get; set; }
+
+    private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
     private void Awake()
     {
         _helperFunc = new MovementHelperClass();
 
-        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
+        PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
+
+        PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
     }
     void Start()
     {
-        StartCoroutine(PlayerSystemDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerSystem).ToString()
+            SubjectType = typeof(PlayerStateConsumer).ToString()
         }, CancellationToken.None));
 
 
@@ -88,17 +90,11 @@ public class LedgeGrab : MonoBehaviour, IObserver<PlayerSystem>, IReceiver<bool>
     // Update is called once per frame
     async void Update()
     {
-        if (PlayerSystem == null)
-        {
-            Debug.Log("PlayerSystem is null for [LedgeGrab - Update] - exiting!");
-            return;
-        }
-
         greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, greenXOffset)), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
         redBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, redXOffset)), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
 
         if (!_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
-            PlayerSystem.IS_GRABBING)
+            CurrentPlayerState.State.Equals(PlayerState.IS_GRABBING))
         {
             _timeSpent += Time.deltaTime;
         }
@@ -106,6 +102,8 @@ public class LedgeGrab : MonoBehaviour, IObserver<PlayerSystem>, IReceiver<bool>
         if(_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) || _helperFunc.OverlapAgainstLayerMaskChecker(ref col, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
             _timeSpent = 0f;
+
+
 
             PlayerSystem.fallVariableEvent.Invoke(false);
         }
@@ -230,8 +228,8 @@ public class LedgeGrab : MonoBehaviour, IObserver<PlayerSystem>, IReceiver<bool>
         return Task.CompletedTask;
     }
 
-    public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericState<PlayerState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        PlayerSystem = data;
+        CurrentPlayerState.State = data.State;
     }
 }

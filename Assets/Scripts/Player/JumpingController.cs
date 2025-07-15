@@ -30,8 +30,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
 
     private Collider2D _col;
 
-    private bool IS_JUMPING { get; set; } = false;
-
     private bool _isJumpPressed;
 
     private Vector3 _playerInitialPosition;
@@ -48,13 +46,15 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
 
     private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
-    private PlayerStateEvent playerStateEvent { get; set; }
+    private PlayerStateEvent PlayerStateEvent { get; set; }
 
-    private GenericState<PlayerState> PlayerState { get; set; } = new GenericState<PlayerState> { };
+    private GenericState<PlayerState> CurrentPlayerState { get; set; } = new GenericState<PlayerState> { };
 
     public bool CancelAction()
     {
-        FlagDelegator.NotifyObservers(false, gameObject.name, typeof(JumpingController), CancellationToken.None);
+        CurrentPlayerState.State = PlayerState.CURRENT_ACTION_CONCLUDED;
+
+        PlayerStateEvent.Invoke(CurrentPlayerState);
 
         return true;
     }
@@ -62,7 +62,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
     {
         _isJumpPressed = value;
 
-        SetPlayerInitialPosition(IS_JUMPING);
+        SetPlayerInitialPosition(CurrentPlayerState.State);
 
         return true;
     }
@@ -73,7 +73,9 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
         _animationHandler = GetComponent<PlayerAnimationMethods>();
         _rb = GetComponent<Rigidbody2D>();
 
-        FlagDelegator = Helper.GetDelegator<FlagDelegator>();
+        PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
+
+        PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
 
         PlayerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
     }
@@ -83,9 +85,12 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
 
         onPlayerJumpTimeEvent.AddListener(MaxTimePassed);
 
-        FlagDelegator.AddToSubjectsDict(typeof(JumpingController).ToString(), name, new Subject<IObserver<bool>>());
-
-        FlagDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[name].SetSubject(this);
+        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerStateConsumer).ToString()
+        }, CancellationToken.None));
 
         PlayerVelocityDelegator.AddToSubjectsDict(typeof(JumpingController).ToString(), name, new Subject<IObserver<CharacterVelocity>>());
 
@@ -96,7 +101,8 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
     {
         await HandleJumpingMechanism();
 
-        if (IS_JUMPING && !PlayerSystem.IS_GRABBING)
+        //no grabbing - since all of them are under a single state now
+        if (CurrentPlayerState.State.Equals(PlayerState.IS_JUMPING))
         {
             TimeEclipsed += Time.deltaTime;
         }
@@ -128,9 +134,9 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
 
         if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed) //on the ground
         {
-            IS_JUMPING = false;
+            CurrentPlayerState.State = PlayerState.CURRENT_ACTION_CONCLUDED;
 
-            FlagDelegator.NotifyObservers(IS_JUMPING, gameObject.name, typeof(JumpingController), CancellationToken.None);
+            await PlayerStateEvent.Invoke(CurrentPlayerState);
 
             onPlayerJumpTimeEvent.Fall = false;
 
@@ -144,9 +150,9 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
     {
         if (await CanPlayerJump()) //jumping
         {
-            IS_JUMPING = true;
+            CurrentPlayerState.State = PlayerState.IS_JUMPING;
 
-            FlagDelegator.NotifyObservers(IS_JUMPING, gameObject.name, typeof(JumpingController), CancellationToken.None);
+            await PlayerStateEvent.Invoke(CurrentPlayerState);
 
             CharacterVelocity.VelocityY = JumpSpeed * JUMPING_SPEED;
 
@@ -157,16 +163,15 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
 
     private Task<bool> CanPlayerJump()
     {
-        bool isJumping = IS_JUMPING;
         bool isOnLedgeOrGround = (IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer));
         bool isJumpPressed = _isJumpPressed;
 
-        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(!isJumping, isOnLedgeOrGround, isJumpPressed));
+        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(!CurrentPlayerState.State.Equals(PlayerState.IS_JUMPING), isOnLedgeOrGround, isJumpPressed));
     }
 
-    private Task SetPlayerInitialPosition(bool isJumping)
+    private Task SetPlayerInitialPosition(PlayerState currentPlayerState)
     {
-        if((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !isJumping)
+        if((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !currentPlayerState.Equals(PlayerState.IS_JUMPING))
         {
             PlayerInitialPosition = transform.position;
         }
@@ -204,11 +209,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
         return rb.linearVelocity.y < 0 ? Task.FromResult(true) : Task.FromResult(false);
     }
 
-    public void OnNotifySubject(IObserver<bool> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        FlagDelegator.AddToSubjectObserversDict(gameObject.name, FlagDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[gameObject.name], observer);
-    }
-
     public void OnNotifySubject(IObserver<CharacterVelocity> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         PlayerVelocityDelegator.AddToSubjectObserversDict(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[gameObject.name], observer);
@@ -218,6 +218,6 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
 
     public void OnNotify(GenericState<PlayerState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new NotImplementedException();
+        CurrentPlayerState.State = data.State;
     }
 }

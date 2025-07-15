@@ -2,7 +2,7 @@ using PlayerAnimationHandler;
 using System.Threading;
 using UnityEngine;
 
-public class PlayerAnimationMethods : MonoBehaviour, IObserver<PlayerSystem>
+public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericState<PlayerState>>
 {
     private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
 
@@ -12,22 +12,24 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<PlayerSystem>
 
     private float _maxSlideTime = 0.4f;
 
-    private PlayerSystem PlayerSystem { get; set; }
+    private GenericState<PlayerState> CurrentPlayerState { get; set; } = new GenericState<PlayerState>();
+
+    private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
     private void Awake()
     {
         _stateMachine = new AnimationStateMachine(GetComponent<Animator>());
 
-        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
+        PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
     }
 
     private void Start()
     {
-        StartCoroutine(PlayerSystemDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerSystem).ToString()
+            SubjectType = typeof(PlayerStateConsumer).ToString()
         }, CancellationToken.None));
 
     }
@@ -61,19 +63,13 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<PlayerSystem>
     }
     public void RunningWalkingAnimation(float keystroke)
     {
-        if (PlayerSystem == null)
-        {
-            Debug.Log("PlayerSystem is null for [PlayerAnimationMethods - RunningWalkingAnimation] - exiting!");
-            return;
-        }
-
-        if (VectorChecker(keystroke) && !PlayerSystem.IS_JUMPING)
+        if (VectorChecker(keystroke) && !CurrentPlayerState.State.Equals(PlayerState.IS_JUMPING))
         {
             UpdateMovementState(AnimationStateKeeper.StateKeeper.RUNNING, true, false);
 
         }
 
-        if (!VectorChecker(keystroke) && !PlayerSystem.IS_JUMPING)
+        if (!VectorChecker(keystroke) && !CurrentPlayerState.State.Equals(PlayerState.IS_JUMPING))
         {
             UpdateMovementState(AnimationStateKeeper.StateKeeper.IDLE, false, true);
         }
@@ -82,13 +78,6 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<PlayerSystem>
 
     private void SetMovementStates(bool isRunning, bool isWalking)
     {
-        //make it better, make sure delegators get their data first before any operations get executed
-        if (PlayerSystem == null)
-        {
-            Debug.Log("PlayerSystem is null for [PlayerAnimationMethods - SetMovementStates] - exiting!");
-            return;
-        }
-
         PlayerSystem.runVariableEvent.Invoke(isRunning);
 
         PlayerSystem.walkVariableEvent.Invoke(isWalking);
@@ -133,8 +122,8 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<PlayerSystem>
         return _anim;
     }
 
-    public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericState<PlayerState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        PlayerSystem = data;
+        throw new System.NotImplementedException();
     }
 }
