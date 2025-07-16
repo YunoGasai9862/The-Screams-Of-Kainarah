@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericState<PlayerState>>
 {
-    private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
-
     private AnimationStateMachine _stateMachine;
 
     private Animator _anim;
@@ -16,11 +14,25 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericState<Play
 
     private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
+    private PlayerStateEvent PlayerStateEvent { get; set; }
+
     private void Awake()
     {
         _stateMachine = new AnimationStateMachine(GetComponent<Animator>());
 
         PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
+
+        PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
+
+        if (PlayerStateDelegator == null)
+        {
+            throw new DelegatorNotFoundException("PlayerStateDelegator not found!!");
+        }
+
+        if (PlayerStateEvent == null)
+        {
+            throw new CustomEventNotFoundException("PlayerStateEvent not found!!");
+        }
     }
 
     private void Start()
@@ -74,13 +86,6 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericState<Play
             UpdateMovementState(AnimationStateKeeper.StateKeeper.IDLE, false, true);
         }
 
-    }
-
-    private void SetMovementStates(bool isRunning, bool isWalking)
-    {
-        PlayerSystem.runVariableEvent.Invoke(isRunning);
-
-        PlayerSystem.walkVariableEvent.Invoke(isWalking);
     }
 
     public void UpdateMovementState(AnimationStateKeeper.StateKeeper state, bool isRunning, bool isWalking)

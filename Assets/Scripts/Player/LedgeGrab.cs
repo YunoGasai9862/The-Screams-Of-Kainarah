@@ -64,6 +64,16 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericState<PlayerState>>, IR
         PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
 
         PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
+
+        if (PlayerStateDelegator == null)
+        {
+            throw new DelegatorNotFoundException("PlayerStateDelegator not found!!");
+        }
+
+        if (PlayerStateEvent == null)
+        {
+            throw new CustomEventNotFoundException("PlayerStateEvent not found!!");
+        }
     }
     void Start()
     {
@@ -103,7 +113,9 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericState<PlayerState>>, IR
         {
             _timeSpent = 0f;
 
+            CurrentPlayerState.State =  
 
+            PlayerStateEvent.Invoke()
 
             PlayerSystem.fallVariableEvent.Invoke(false);
         }
