@@ -51,7 +51,7 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericState<PlayerState>>, IR
 
     private bool StartCalculatingGrabLedgeDisplacement { get; set; }
 
-    private GenericState<PlayerState> CurrentPlayerState { get; set; } = new GenericState<PlayerState>();
+    private GenericState<PlayerState<PlayerActionState>> CurrentPlayerActionState { get; set; } = new GenericState<PlayerState<PlayerActionState>>();
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
@@ -104,7 +104,7 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericState<PlayerState>>, IR
         redBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, redXOffset)), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
 
         if (!_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
-            CurrentPlayerState.State.Equals(PlayerState.IS_GRABBING))
+            CurrentPlayerState.State.Equals(PlayerActionState.IS_GRABBING))
         {
             _timeSpent += Time.deltaTime;
         }

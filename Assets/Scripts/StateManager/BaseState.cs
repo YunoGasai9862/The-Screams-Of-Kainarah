@@ -5,28 +5,29 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 
-public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericState<T>>> where T : Enum
+//pass an entire bundle instead of State<T>
+public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<State<T>>>
 {
-    protected List<IObserver<GenericState<T>>> StateListeners { get; set; } = new List<IObserver<GenericState<T>>> { };
+    protected List<IObserver<State<T>>> StateListeners { get; set; } = new List<IObserver<State<T>>> { };
 
-    protected GenericState<T> State { get; set; }
+    protected State<T> State { get; set; }
     private void Start()
     {
         GetEvent().AddListener(PingStateListeners);
     }
 
-    public async void PingStateListeners(GenericState<T> gameState)
+    public async void PingStateListeners(State<T> gameState)
     {
         State = gameState;
 
-        foreach (IObserver<GenericState<T>> listener in StateListeners)
+        foreach (IObserver<State<T>> listener in StateListeners)
         {
             await NotifyObserver(listener, gameState, CancellationToken.None);
         }
     }
 
 
-    private Task NotifyObserver(IObserver<GenericState<T>> observer, GenericState<T> gameState, CancellationToken cancellationToken)
+    private Task NotifyObserver(IObserver<State<T>> observer, State<T> gameState, CancellationToken cancellationToken)
     {
         StartCoroutine(GetDelegator().NotifyObserver(observer, gameState, new NotificationContext()
         {
@@ -37,7 +38,7 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
         return Task.CompletedTask;
     }
 
-    public async void OnNotifySubject(IObserver<GenericState<T>> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public async void OnNotifySubject(IObserver<State<T>> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         Debug.Log("Base Class On Notify through child class!");
 
@@ -48,7 +49,7 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
 
     protected abstract void AddSubject();
 
-    protected abstract UnityEvent<GenericState<T>> GetEvent(); 
+    protected abstract UnityEvent<State<T>> GetEvent(); 
 
-    protected abstract BaseDelegatorEnhanced<GenericState<T>> GetDelegator();
+    protected abstract BaseDelegatorEnhanced<State<T>> GetDelegator();
 }
