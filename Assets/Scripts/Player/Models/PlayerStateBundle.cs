@@ -1,4 +1,4 @@
-public class PlayerStateBundle
+public class PlayerStateBundle : IStateBundle
 {
     public State<PlayerActionState> PlayerActionState { get; set; } = new State<PlayerActionState>();
 

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class LedgeGrab : MonoBehaviour, IObserver<GenericState<PlayerState>>, IReceiver<bool>
+public class LedgeGrab : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IReceiver<bool>
 {
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
 
@@ -51,7 +51,7 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericState<PlayerState>>, IR
 
     private bool StartCalculatingGrabLedgeDisplacement { get; set; }
 
-    private GenericState<PlayerState<PlayerActionState>> CurrentPlayerActionState { get; set; } = new GenericState<PlayerState<PlayerActionState>>();
+    private GenericStateBundle<PlayerStateBundle> PlayerBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
@@ -104,7 +104,7 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericState<PlayerState>>, IR
         redBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, redXOffset)), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
 
         if (!_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
-            CurrentPlayerState.State.Equals(PlayerActionState.IS_GRABBING))
+            PlayerBundle.StateBundle.PlayerMovementState.Equals(PlayerActionState.IS_GRABBING))
         {
             _timeSpent += Time.deltaTime;
         }
@@ -113,11 +113,10 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericState<PlayerState>>, IR
         {
             _timeSpent = 0f;
 
-            CurrentPlayerState.State =  
+            PlayerBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState> { CurrentState = PlayerMovementState.IS_FALLING, IsConcluded = true };
 
-            PlayerStateEvent.Invoke()
+            PlayerStateEvent.Invoke(PlayerBundle);
 
-            PlayerSystem.fallVariableEvent.Invoke(false);
         }
 
         if (greenBox && !redBox && !TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB)  && !PlayerSystem.IS_FALLING)
@@ -240,8 +239,9 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericState<PlayerState>>, IR
         return Task.CompletedTask;
     }
 
-    public void OnNotify(GenericState<PlayerState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentPlayerState.State = data.State;
+
     }
 }
