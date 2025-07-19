@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngineInternal;
 
-public class PlayerActions : MonoBehaviour, IObserver<GenericState<PlayerState>>, IObserver<GenericState<GameState>>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>
+public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>
 {
     [SerializeField] float _characterSpeed = 10f;
 
@@ -49,9 +49,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericState<PlayerState>>
 
     private PlayerVelocityDelegator _playerVelocityDelegator;
 
-    private GenericState<GameState> CurrentGameState { get; set; } = new GenericState<GameState>();
+    private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
 
-    private GenericState<PlayerState> CurrentPlayerState { get; set; } = new GenericState<PlayerState>();
+    private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
     private LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
 
@@ -340,14 +340,14 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericState<PlayerState>>
         VelocityYEventHandler(data.VelocityY);
     }
 
-    public void OnNotify(GenericState<PlayerState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        CurrentPlayerState.State = data.State;
+        CurrentPlayerState.State = data.StateBundle;
     }
 
-    public void OnNotify(GenericState<GameState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        CurrentGameState.State = data.State;
+        CurrentGameState.State = data.StateBundle;
     }
 
     #endregion

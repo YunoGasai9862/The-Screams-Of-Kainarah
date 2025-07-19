@@ -3,8 +3,7 @@ using System;
 using System.Threading;
 using UnityEngine;
 
-//THE ATTACKIGN CONTROLLER WILL KEEP THE STATE FOR ITSELF BUT WILL FIRE OFF FOR OTHERS!
-public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<GenericState<GameState>>, IObserver<GenericState<PlayerState>>
+public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>
 {
     private const float TIME_DIFFERENCE_MAX = 1.5f;
 
@@ -24,9 +23,9 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
 
     private float timeDifferencebetweenStates;
 
-    private GenericState<PlayerState> CurrentPlayerState { get; set; } = new GenericState<PlayerState>();
+    private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
-    private GenericState<GameState> CurrentGameState { get; set; } = new GenericState<GameState>();
+    private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
     private int PlayerAttackState { get; set; }
     private string PlayerAttackStateName { get; set; }
     private bool LeftMouseButtonPressed { get; set; }
@@ -293,12 +292,12 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
         PowerUpBarFilled = filledUp;
     }
 
-    public void OnNotify(GenericState<GameState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState = data;
     }
 
-    public void OnNotify(GenericState<PlayerState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentPlayerState = data;
     }

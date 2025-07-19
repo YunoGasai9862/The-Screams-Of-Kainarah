@@ -2,9 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-
-//notification should go to the base class i think for sure - otherwise overwrite
-public class GameStateConsumer : BaseState<GameState>
+public class GameStateConsumer : BaseState<GameStateBundle>
 {
     [SerializeField] GlobalGameStateDelegator globalGameStateDelegator;
 
@@ -12,17 +10,17 @@ public class GameStateConsumer : BaseState<GameState>
 
     protected override void AddSubject()
     {
-        globalGameStateDelegator.AddToSubjectsDict(typeof(GameStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericState<GameState>>>());
+        globalGameStateDelegator.AddToSubjectsDict(typeof(GameStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GameStateBundle>>());
 
         globalGameStateDelegator.GetSubsetSubjectsDictionary(typeof(GameStateConsumer).ToString())[gameObject.name].SetSubject(this);
     }
 
-    protected override BaseDelegatorEnhanced<GenericState<GameState>> GetDelegator()
+    protected override BaseDelegatorEnhanced<GameStateBundle> GetDelegator()
     {
         return globalGameStateDelegator;
     }
 
-    protected override UnityEvent<GenericState<GameState>> GetEvent()
+    protected override UnityEvent<GameStateBundle> GetEvent()
     {
         return gameStateEvent.GetInstance();
     }

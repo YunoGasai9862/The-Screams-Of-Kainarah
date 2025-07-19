@@ -1,5 +1,5 @@
 using UnityEngine.Events;
 
-public class GameStateEvent : StateEvent<GameState>
+public class GameStateEvent : StateEvent<GameStateBundle>
 {
 }

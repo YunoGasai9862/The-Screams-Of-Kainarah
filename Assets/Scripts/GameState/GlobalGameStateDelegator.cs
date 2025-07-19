@@ -4,14 +4,16 @@ using System.Threading;
 using UnityEngine;
 using UnityEngineInternal;
 
-public class GlobalGameStateDelegator: BaseDelegatorEnhanced<GenericState<GameState>>
+public class GlobalGameStateDelegator: BaseDelegatorEnhanced<GenericStateBundle<GameStateBundle>>
 {
     private void Awake()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<GenericState<GameState>>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<GenericStateBundle<GameStateBundle>>>>>();
     }
 
-    public void NotifySubjectWrapper(IObserver<GenericState<GameState>> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
+    public void NotifySubjectWrapper(IObserver<GenericStateBundle<GameStateBundle>> observer, NotificationContext notificationContext, 
+        CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, 
+        int sleepTimeInMilliSeconds = 1000, params object[] optional)
     {
         StartCoroutine(NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, maxRetries, sleepTimeInMilliSeconds));
     }
