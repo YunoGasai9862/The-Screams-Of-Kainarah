@@ -5,29 +5,28 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 
-//pass an entire bundle instead of State<T> - T here is a bundle
-public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<T>> where T : IStateBundle
+public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericStateBundle<T>>> where T : IStateBundle
 {
-    protected List<IObserver<T>> StateListeners { get; set; } = new List<IObserver<T>> { };
+    protected List<IObserver<GenericStateBundle<T>>> StateListeners { get; set; } = new List<IObserver<GenericStateBundle<T>>> { };
 
-    protected T StateBundle { get; set; }
+    protected GenericStateBundle<T> StateBundle { get; set; }
     private void Start()
     {
         GetEvent().AddListener(PingStateListeners);
     }
 
-    public async void PingStateListeners(T stateBundle)
+    public async void PingStateListeners(GenericStateBundle<T> stateBundle)
     {
         StateBundle = stateBundle;
 
-        foreach (IObserver<T> listener in StateListeners)
+        foreach (IObserver<GenericStateBundle<T>> listener in StateListeners)
         {
             await NotifyObserver(listener, StateBundle, CancellationToken.None);
         }
     }
 
 
-    private Task NotifyObserver(IObserver<T> observer, T stateBundle, CancellationToken cancellationToken)
+    private Task NotifyObserver(IObserver<GenericStateBundle<T>> observer, GenericStateBundle<T> stateBundle, CancellationToken cancellationToken)
     {
         StartCoroutine(GetDelegator().NotifyObserver(observer, stateBundle, new NotificationContext()
         {
@@ -38,7 +37,7 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<T>> where 
         return Task.CompletedTask;
     }
 
-    public async void OnNotifySubject(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public async void OnNotifySubject(IObserver<GenericStateBundle<T>> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         Debug.Log("Base Class On Notify through child class!");
 
@@ -49,7 +48,7 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<T>> where 
 
     protected abstract void AddSubject();
 
-    protected abstract UnityEvent<T> GetEvent(); 
+    protected abstract UnityEvent<GenericStateBundle<T>> GetEvent(); 
 
-    protected abstract BaseDelegatorEnhanced<T> GetDelegator();
+    protected abstract BaseDelegatorEnhanced<GenericStateBundle<T>> GetDelegator();
 }

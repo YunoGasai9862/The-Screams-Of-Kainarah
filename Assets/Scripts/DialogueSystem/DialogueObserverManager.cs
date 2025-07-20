@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using static DialoguesAndOptions;
 
-public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>, IObserver<GenericState<GameState>>
+public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>, IObserver<GenericStateBundle<GameStateBundle>>
 {
     [Header("Dialogues And Options")]
     [SerializeField] DialoguesAndOptions DialoguesAndOptions;
@@ -15,7 +15,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
     [Header("Triggering Event")]
     [SerializeField] GlobalGameStateDelegator globalGameStateDelegator;
 
-    private GenericState<GameState> CurrentGameState { get; set; } = new GenericState<GameState>();
+    private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
 
     private async Task TriggerDialogue(DialogueSystem dialogueSystem)
     {
@@ -45,14 +45,14 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
 
     public async void OnNotify(DialogueSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        if (data.DialogueSettings.ShouldTriggerDialogue && !CurrentGameState.State.Equals(GameState.DIALOGUE_TAKING_PLACE))
+        if (data.DialogueSettings.ShouldTriggerDialogue && !CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
             await TriggerDialogue(data);
         }
     }
 
-    public void OnNotify(GenericState<GameState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        CurrentGameState.State = data.State;
+        CurrentGameState.StateBundle = data.StateBundle;
     }
 }

@@ -2,10 +2,10 @@ using System.Collections;
 using System.Threading;
 using UnityEngine;
 
-public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericState<GameState>>
+public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericStateBundle<GameStateBundle>>
 {
     private int DialogueCounter { get; set; } = 0;
-    private GenericState<GameState> CurrentGameState { get; set; } = new GenericState<GameState>();
+    private GenericStateBundle<GameStateBundle> GameStateBundle { get; set; } = new GenericStateBundle<GameStateBundle>();
     private SemaphoreSlim SemaphoreSlim { get; set;} =  new SemaphoreSlim(1);
 
     [SerializeField]
@@ -50,7 +50,7 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericState<Game
 
                 DialogueCounter = 0;
 
-                CurrentGameState.State = GameState.FREE_MOVEMENT;
+                GameStateBundle.State = GameState.FREE_MOVEMENT;
 
                 BroadcastGameState(GameState.FREE_MOVEMENT);
 
@@ -61,7 +61,7 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericState<Game
 
     public void TriggerCoroutine(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        if (CurrentGameState.State == GameState.DIALOGUE_TAKING_PLACE || dialogueSystem.DialogueSettings.DialogueConcluded)
+        if (GameStateBundle.StateBundle.GameState.CurrentState == GameState.DIALOGUE_TAKING_PLACE || dialogueSystem.DialogueSettings.DialogueConcluded)
         {
             return;
         }
@@ -71,13 +71,13 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericState<Game
 
     private async void BroadcastGameState(GameState value)
     {
-        CurrentGameState.State = value;
+        GameStateBundle.StateBundle.GameState.CurrentState = value;
 
-        await gameStateEvent.Invoke(CurrentGameState);
+        await gameStateEvent.Invoke(GameStateBundle);
     }
 
-    public void OnNotify(GenericState<GameState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        CurrentGameState = data;
+        GameStateBundle = data;
     }
 }

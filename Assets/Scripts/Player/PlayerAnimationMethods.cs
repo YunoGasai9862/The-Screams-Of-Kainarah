@@ -2,7 +2,7 @@ using PlayerAnimationHandler;
 using System.Threading;
 using UnityEngine;
 
-public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericState<PlayerState>>
+public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>
 {
     private AnimationStateMachine _stateMachine;
 
@@ -10,7 +10,7 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericState<Play
 
     private float _maxSlideTime = 0.4f;
 
-    private GenericState<PlayerState> CurrentPlayerState { get; set; } = new GenericState<PlayerState>();
+    private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
     private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
@@ -75,13 +75,13 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericState<Play
     }
     public void RunningWalkingAnimation(float keystroke)
     {
-        if (VectorChecker(keystroke) && !CurrentPlayerState.State.Equals(PlayerState.IS_JUMPING))
+        if (VectorChecker(keystroke) && !PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING))
         {
             UpdateMovementState(AnimationStateKeeper.StateKeeper.RUNNING, true, false);
 
         }
 
-        if (!VectorChecker(keystroke) && !CurrentPlayerState.State.Equals(PlayerState.IS_JUMPING))
+        if (!VectorChecker(keystroke) && !PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING))
         {
             UpdateMovementState(AnimationStateKeeper.StateKeeper.IDLE, false, true);
         }
@@ -127,8 +127,8 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericState<Play
         return _anim;
     }
 
-    public void OnNotify(GenericState<PlayerState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new System.NotImplementedException();
+        PlayerStateBundle.StateBundle = data.StateBundle;
     }
 }

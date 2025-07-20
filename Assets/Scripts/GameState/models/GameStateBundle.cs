@@ -1,4 +1,4 @@
 public class GameStateBundle: IStateBundle
 {
-    public GenericStateBundle<GameState> GameState { get; set; } = new GenericStateBundle<GameState>();
+    public State<GameState> GameState { get; set; } = new State<GameState>();
 }

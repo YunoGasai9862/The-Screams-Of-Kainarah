@@ -1,4 +1,4 @@
-public class PlayerStateEvent: StateEvent<PlayerState>
+public class PlayerStateEvent: StateEvent<PlayerStateBundle>
 {
 
 }

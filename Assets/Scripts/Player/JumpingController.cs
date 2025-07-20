@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericState<PlayerState>>
+public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericStateBundle<PlayerStateBundle>>
 {
     [SerializeField] LayerMask groundLayer;
 
@@ -48,13 +48,13 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
-    private GenericState<PlayerState> CurrentPlayerState { get; set; } = new GenericState<PlayerState> { };
+    private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle> { };
 
     public bool CancelAction()
     {
-        CurrentPlayerState.State = PlayerState.CURRENT_ACTION_CONCLUDED;
+        PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState> { CurrentState = PlayerMovementState.IS_JUMPING, IsConcluded = true };
 
-        PlayerStateEvent.Invoke(CurrentPlayerState);
+        PlayerStateEvent.Invoke(PlayerStateBundle);
 
         return true;
     }
@@ -62,7 +62,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
     {
         _isJumpPressed = value;
 
-        SetPlayerInitialPosition(CurrentPlayerState.State);
+        SetPlayerInitialPosition(PlayerStateBundle.StateBundle.PlayerMovementState);
 
         return true;
     }
@@ -102,7 +102,7 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
         await HandleJumpingMechanism();
 
         //no grabbing - since all of them are under a single state now
-        if (CurrentPlayerState.State.Equals(PlayerState.IS_JUMPING))
+        if (PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING))
         {
             TimeEclipsed += Time.deltaTime;
         }
@@ -134,9 +134,9 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
 
         if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed) //on the ground
         {
-            CurrentPlayerState.State = PlayerState.CURRENT_ACTION_CONCLUDED;
+            PlayerStateBundle.StateBundle.PlayerActionState = new State<PlayerActionState>() { CurrentState = PlayerActionState.IS_GRABBING, IsConcluded = true };
 
-            await PlayerStateEvent.Invoke(CurrentPlayerState);
+            await PlayerStateEvent.Invoke(PlayerStateBundle);
 
             onPlayerJumpTimeEvent.Fall = false;
 
@@ -150,9 +150,9 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
     {
         if (await CanPlayerJump()) //jumping
         {
-            CurrentPlayerState.State = PlayerState.IS_JUMPING;
+            PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_JUMPING, IsConcluded = false };
 
-            await PlayerStateEvent.Invoke(CurrentPlayerState);
+            await PlayerStateEvent.Invoke(PlayerStateBundle);
 
             CharacterVelocity.VelocityY = JumpSpeed * JUMPING_SPEED;
 
@@ -166,12 +166,12 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
         bool isOnLedgeOrGround = (IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer));
         bool isJumpPressed = _isJumpPressed;
 
-        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(!CurrentPlayerState.State.Equals(PlayerState.IS_JUMPING), isOnLedgeOrGround, isJumpPressed));
+        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(!PlayerStateBundle.State.Equals(PlayerMovementState.IS_JUMPING), isOnLedgeOrGround, isJumpPressed));
     }
 
-    private Task SetPlayerInitialPosition(PlayerState currentPlayerState)
+    private Task SetPlayerInitialPosition(State<PlayerMovementState> currentPlayerState)
     {
-        if((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !currentPlayerState.Equals(PlayerState.IS_JUMPING))
+        if((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !currentPlayerState.CurrentState.Equals(PlayerMovementState.IS_JUMPING))
         {
             PlayerInitialPosition = transform.position;
         }
@@ -216,8 +216,8 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
         StartCoroutine(PlayerVelocityDelegator.NotifyObserver(observer, new CharacterVelocity() { VelocityY = - 10f}, new NotificationContext() { SubjectType = typeof(JumpingController).ToString()}, cancellationToken));
     }
 
-    public void OnNotify(GenericState<PlayerState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        CurrentPlayerState.State = data.State;
+        PlayerStateBundle.StateBundle = data.StateBundle;
     }
 }

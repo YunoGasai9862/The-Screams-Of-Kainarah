@@ -10,17 +10,17 @@ public class GameStateConsumer : BaseState<GameStateBundle>
 
     protected override void AddSubject()
     {
-        globalGameStateDelegator.AddToSubjectsDict(typeof(GameStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GameStateBundle>>());
+        globalGameStateDelegator.AddToSubjectsDict(typeof(GameStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericStateBundle<GameStateBundle>>>());
 
         globalGameStateDelegator.GetSubsetSubjectsDictionary(typeof(GameStateConsumer).ToString())[gameObject.name].SetSubject(this);
     }
 
-    protected override BaseDelegatorEnhanced<GameStateBundle> GetDelegator()
+    protected override BaseDelegatorEnhanced<GenericStateBundle<GameStateBundle>> GetDelegator()
     {
         return globalGameStateDelegator;
     }
 
-    protected override UnityEvent<GameStateBundle> GetEvent()
+    protected override UnityEvent<GenericStateBundle<GameStateBundle>> GetEvent()
     {
         return gameStateEvent.GetInstance();
     }
