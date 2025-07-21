@@ -30,7 +30,7 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericStateBundl
 
     private IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
-        BroadcastGameState(GameState.DIALOGUE_TAKING_PLACE);
+        BroadcastGameState(new State<GameState>() { CurrentState = GameState.DIALOGUE_TAKING_PLACE, IsConcluded = false });
 
         foreach (DialogueSetup dialogue in dialogueSystem.DialogueSetup)
         {
@@ -50,9 +50,7 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericStateBundl
 
                 DialogueCounter = 0;
 
-                GameStateBundle.State = GameState.FREE_MOVEMENT;
-
-                BroadcastGameState(GameState.FREE_MOVEMENT);
+                BroadcastGameState(new State<GameState>() { CurrentState = GameState.FREE_MOVEMENT, IsConcluded = false });
 
                 yield return null;
             }
@@ -69,9 +67,9 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericStateBundl
         Coroutine triggerDialogueCoroutine = StartCoroutine(TriggerDialogue(dialogueSystem));
     }
 
-    private async void BroadcastGameState(GameState value)
+    private async void BroadcastGameState(State<GameState> gameState)
     {
-        GameStateBundle.StateBundle.GameState.CurrentState = value;
+        GameStateBundle.StateBundle.GameState = gameState;
 
         await gameStateEvent.Invoke(GameStateBundle);
     }

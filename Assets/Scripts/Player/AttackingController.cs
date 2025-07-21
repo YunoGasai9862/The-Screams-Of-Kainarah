@@ -26,7 +26,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
     private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
-    private int PlayerAttackState { get; set; }
+    private int PlayerAttackStateInt { get; set; }
     private string PlayerAttackStateName { get; set; }
     private bool LeftMouseButtonPressed { get; set; }
     private bool BoostKeyPressed { get; set; }
@@ -70,7 +70,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
 
         _movementHelper = new MovementHelperClass();
 
-        PlayerAttackState = 0;
+        PlayerAttackStateInt = 0;
 
         GlobalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
 
@@ -107,7 +107,8 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     // Update is called once per frame
     void Update()
     {
-        if (CurrentPlayerState.State.Equals(PlayerState.IS_SLIDING) || PlayerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
+        if (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_SLIDING) || 
+            PlayerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
         {
             ResetAttackingState();
         }
@@ -116,12 +117,12 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     {
         if (CanPlayerAttack()) //ground attack
         {
-            CurrentPlayerState.State = PlayerState.IS_ATTACKING;
+            CurrentPlayerState.StateBundle.PlayerAttackState = new State<PlayerAttackState>() { CurrentState = PlayerAttackState.IS_ATTACKING, IsConcluded = false };
 
             PlayerStateEvent.Invoke(CurrentPlayerState);
 
             //keeps track of attacking state
-            (PlayerAttackState, PlayerAttackStateName, _isPlayerEligibleForStartingAttack) = GetEnumStateAndName<PlayerAttackEnum.PlayerAttackSlash>( PlayerAttackState, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
+            (PlayerAttackStateInt, PlayerAttackStateName, _isPlayerEligibleForStartingAttack) = GetEnumStateAndName<PlayerAttackEnum.PlayerAttackSlash>( PlayerAttackStateInt, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
 
             //sets the initial configuration for the attacking system
             PlayerAttackStateMachine.CanAttack(canAttackStateName, LeftMouseButtonPressed);
@@ -138,19 +139,17 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     }
     private bool CanPlayerAttackWhileJumping()
     {
-        bool isJumping = PlayerSystem.IS_JUMPING;
-        bool isOnTheGround = _movementHelper.OverlapAgainstLayerMaskChecker(ref col, Ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
-
-        return isJumping && !isOnTheGround;
+        return (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_JUMPING && CurrentPlayerState.StateBundle.PlayerMovementState.IsConcluded) && 
+            !_movementHelper.OverlapAgainstLayerMaskChecker(ref col, Ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
     }
 
     private void EndPlayerAttack()
     {
         _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
-        PlayerSystem.attackVariableEvent.Invoke(false);
+        CurrentPlayerState.StateBundle.PlayerAttackState = new State<PlayerAttackState>() { CurrentState = PlayerAttackState.IS_ATTACKING, IsConcluded = false };
 
-        PlayerAttackStateMachine.SetAttackState(jumpAttackStateName, PlayerSystem.IS_ATTACKING); //no jump attack
+        PlayerAttackStateMachine.SetAttackState(jumpAttackStateName, (int)CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState); //no jump attack
 
     }
     private (int, string, bool) GetEnumStateAndName<T>(int playerAttackState, int initialStateOfTheEnum)
@@ -181,7 +180,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     {
         if (isPlayerEligibleForStartingAttack) //cast Type <T>
         {
-            PlayerAttackStateMachine.SetAttackState(attackStateName, PlayerAttackState); //toggles state
+            PlayerAttackStateMachine.SetAttackState(attackStateName, PlayerAttackStateInt); //toggles state
 
             timeDifferencebetweenStates = _onMouseClickEvent.TimeDifferenceBetweenPressAndRelease();
 
@@ -202,10 +201,16 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     }
     private void ResetAttackingState()
     {
-        PlayerAttackState = 0; //resets the attackingstate
-        PlayerSystem.attackVariableEvent.Invoke(false);
-        PlayerAttackStateMachine.CanAttack(canAttackStateName, CurrentPlayerState.State.Equals(PlayerState.IS_ATTACKING));
-        PlayerAttackStateMachine.CanAttack(jumpAttackStateName, CurrentPlayerState.State.Equals(PlayerState.IS_ATTACKING));
+        PlayerAttackStateInt = 0; //resets the attackingstate
+
+        CurrentPlayerState.StateBundle.PlayerAttackState = new State<PlayerAttackState>() { CurrentState = PlayerAttackState.IS_ATTACKING, IsConcluded = true };
+
+        PlayerStateEvent.Invoke(CurrentPlayerState);
+
+        //use this now - is concluded to track if the player can resume attacking again :))
+        PlayerAttackStateMachine.CanAttack(canAttackStateName, CurrentPlayerState.StateBundle.PlayerAttackState.IsConcluded);
+
+        PlayerAttackStateMachine.CanAttack(jumpAttackStateName, CurrentPlayerState.StateBundle.PlayerAttackState.IsConcluded);
     }
 
     private bool IsEnumValueEqualToLengthOfEnum<T>(string _playerAttackStateName)
@@ -221,9 +226,9 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     {
         bool isInventoryOpen = SceneSingleton.GetInventoryManager().IsPouchOpen;
 
-        return !CurrentGameState.State.Equals(GameState.DIALOGUE_TAKING_PLACE) &&
-               !CurrentGameState.State.Equals(GameState.SHOPPING) && !isInventoryOpen &&
-               !CurrentPlayerState.State.Equals(PlayerState.IS_JUMPING);
+        return !CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE) &&
+               !CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.SHOPPING) && !isInventoryOpen &&
+               !CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING);
     }
 
     #region AnimationEventOnTheAnimationItself
@@ -278,7 +283,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     public void AlertBoostEventForKeyPressed(bool keyPressed)
     {
         BoostKeyPressed = keyPressed;
-        if (BoostKeyPressed && PowerUpBarFilled && PlayerAttackState >= 0)
+        if (BoostKeyPressed && PowerUpBarFilled && PlayerAttackStateInt >= 0)
         {
             ShouldBoost = true;
         }
