@@ -115,7 +115,7 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericStateBundle<PlayerState
 
             PlayerBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState> { CurrentState = PlayerMovementState.IS_FALLING, IsConcluded = true };
 
-            PlayerStateEvent.Invoke(PlayerBundle);
+            await PlayerStateEvent.Invoke(PlayerBundle);
 
         }
 
@@ -141,12 +141,6 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericStateBundle<PlayerState
     }
     private async void FixedUpdate()
     {
-        if (PlayerSystem == null)
-        {
-            Debug.Log("PlayerSystem is null for [LedgeGrab - FixedUpdate] - exiting!");
-            return;
-        }
-
         int sign = await PlayerSystem.PlayerFlipped(transform);
 
         await GrabLedge(anim, rb);
@@ -155,7 +149,9 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericStateBundle<PlayerState
         {
             await HandleLedgeGrabCalculations(sign, ledgeGrabForces, new Vector2(0, MAXIMUM_VELOCITY_Y_FORCE));
 
-            PlayerSystem.fallVariableEvent.Invoke(true);
+            PlayerBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_FALLING, IsConcluded = false };
+
+            await PlayerStateEvent.Invoke(PlayerBundle);
 
             await SetGravityValue(rb, startingGrav);
 
@@ -219,8 +215,12 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericStateBundle<PlayerState
            && CanGrab)
         {
             await SetGravityValue(rb, 0f);
-            PlayerSystem.grabVariableEvent.Invoke(false);
-            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, PlayerSystem.IS_GRABBING);
+
+            PlayerBundle.StateBundle.PlayerActionState = new State<PlayerActionState>() { CurrentState = PlayerActionState.IS_GRABBING, IsConcluded = true };
+
+            await PlayerStateEvent.Invoke(PlayerBundle);
+
+            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, !PlayerBundle.StateBundle.PlayerActionState.IsConcluded);
         }
     }
 
@@ -241,7 +241,6 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericStateBundle<PlayerState
 
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        CurrentPlayerState.State = data.State;
-
+        PlayerBundle.StateBundle = data.StateBundle;
     }
 }

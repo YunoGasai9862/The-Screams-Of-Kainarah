@@ -48,12 +48,11 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericStateBundl
 
     private void Update()
     {
-        if (_anim != null && _anim.GetCurrentAnimatorStateInfo(0).IsName(AnimationConstants.SLIDING) &&
+        if (_anim != null && _anim.GetCurrentAnimatorStateInfo(0).IsName(PlayerAnimationConstants.SLIDING) &&
             ReturnCurrentAnimation() > _maxSlideTime)
         {
-            PlayAnimation(AnimationConstants.SLIDING, false);  //for fixing the Sliding Issue
+            PlayAnimation(PlayerAnimationConstants.SLIDING, false);  //for fixing the Sliding Issue
         }
-
     }
 
     public bool VectorChecker(float compositionX)
@@ -73,34 +72,31 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericStateBundl
     {
         _stateMachine.AnimationPlayForFloat(name, state);
     }
+
     public void RunningWalkingAnimation(float keystroke)
     {
         if (VectorChecker(keystroke) && !PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING))
         {
-            UpdateMovementState(AnimationStateKeeper.StateKeeper.RUNNING, true, false);
+            PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_RUNNING, IsConcluded = false };
 
+            PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int) PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
         }
 
         if (!VectorChecker(keystroke) && !PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING))
         {
-            UpdateMovementState(AnimationStateKeeper.StateKeeper.IDLE, false, true);
+            PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_WALKING, IsConcluded = false };
+
+            PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
         }
-
-    }
-
-    public void UpdateMovementState(AnimationStateKeeper.StateKeeper state, bool isRunning, bool isWalking)
-    {
-        AnimationStateKeeper.CurrentPlayerState = (int)state;
-        SetMovementStates(isRunning, isWalking);
-        PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
     }
 
     public void JumpingFallingAnimationHandler(bool keystroke)
     {
-        AnimationStateKeeper.CurrentPlayerState = keystroke
-            ? (int)AnimationStateKeeper.StateKeeper.JUMP
-            : (int)AnimationStateKeeper.StateKeeper.FALL;
-        PlayAnimation(AnimationConstants.MOVEMENT, AnimationStateKeeper.CurrentPlayerState);
+        PlayerStateBundle.StateBundle.PlayerMovementState = keystroke ?
+            new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_JUMPING, IsConcluded = false } : 
+            new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_FALLING, IsConcluded = false };
+
+        PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
     }
     public void UpdateJumpTime(string parameterName, float jumpTime)
     {
@@ -109,7 +105,7 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericStateBundl
 
     public void Sliding(bool keystroke)
     {
-        PlayAnimation(AnimationConstants.SLIDING, keystroke);
+        PlayAnimation(PlayerAnimationConstants.SLIDING, keystroke);
     }
 
     public float ReturnCurrentAnimation()

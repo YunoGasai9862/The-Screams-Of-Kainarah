@@ -1,14 +1,14 @@
 public enum PlayerMovementState
 {
-    IS_RUNNING,
+    IS_IDLE = 0,
 
-    IS_WALKING,
+    IS_RUNNING = 1,
 
-    IS_IDLE,
+    IS_JUMPING = 2,
 
-    IS_SLIDING,
+    IS_FALLING = 3,
 
-    IS_FALLING,
+    IS_SLIDING = 4,
 
-    IS_JUMPING,
+    IS_WALKING = 5,
 }
