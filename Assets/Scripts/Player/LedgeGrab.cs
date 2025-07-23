@@ -119,9 +119,11 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericStateBundle<PlayerState
 
         }
 
-        if (greenBox && !redBox && !TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB)  && !PlayerSystem.IS_FALLING)
+        if (greenBox && !redBox && !TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB)  && PlayerBundle.StateBundle.PlayerMovementState.CurrentState != PlayerMovementState.IS_FALLING)
         {
-            PlayerSystem.grabVariableEvent.Invoke(true);
+            PlayerBundle.StateBundle.PlayerActionState = new State<PlayerActionState> { CurrentState = PlayerActionState.IS_GRABBING, IsConcluded = false };
+
+            await PlayerStateEvent.Invoke(PlayerBundle);
 
             col.isTrigger = true;
 
@@ -129,7 +131,9 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericStateBundle<PlayerState
 
         }else
         {
-            PlayerSystem.grabVariableEvent.Invoke(false);
+            PlayerBundle.StateBundle.PlayerActionState = new State<PlayerActionState> { CurrentState = PlayerActionState.IS_GRABBING, IsConcluded = true };
+
+            await PlayerStateEvent.Invoke(PlayerBundle);
 
             col.isTrigger = false;
 

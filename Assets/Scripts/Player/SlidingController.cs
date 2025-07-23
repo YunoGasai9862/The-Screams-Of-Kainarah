@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, ISubject<IObserver<bool>>,  IReceiverAsync<bool>
+public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, ISubject<IObserver<CharacterVelocity>>
 {
     private const float MAX_ANIMATION_TIME = 0.6f;
 
@@ -15,8 +15,11 @@ public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, ISubjec
 
     [SerializeField] float slidingSpeed;
 
-    private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
-    private FlagDelegator FlagDelegator { get; set; }
+    private PlayerVelocityDelegator PlayerVelocityDelegator { get; set; }
+
+    private PlayerStateEvent PlayerStateEvent { get; set; }
+
+    private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
     private PlayerAnimationMethods _animationHandler;
 
@@ -30,27 +33,16 @@ public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, ISubjec
 
     private Rigidbody2D _rb;
 
-    private PlayerSystem PlayerSystem { get; set; }
-
     private bool IS_SLIDING { get; set; } = false;
 
     private void Awake()
     {
-        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
-
-        FlagDelegator = Helper.GetDelegator<FlagDelegator>();
+        PlayerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
     }
     void Start()
     {
-        StartCoroutine(PlayerSystemDelegator.NotifySubject(this, new NotificationContext()
-        {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerSystem).ToString()
-        }, CancellationToken.None));
-
-        FlagDelegator.AddToSubjectsDict(typeof(SlidingController).ToString(), name, new Subject<IObserver<bool>>());
-        FlagDelegator.GetSubsetSubjectsDictionary(typeof(SlidingController).ToString())[name].SetSubject(this);
+        PlayerVelocityDelegator.AddToSubjectsDict(typeof(SlidingController).ToString(), name, new Subject<IObserver<CharacterVelocity>>());
+        PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(SlidingController).ToString())[name].SetSubject(this);
 
         _animationHandler = GetComponent<PlayerAnimationMethods>();
         _movementHelperClass = new MovementHelperClass();
@@ -69,7 +61,7 @@ public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, ISubjec
             _animationHandler.Sliding(true); //set animation
         }
 
-        if (_animationHandler.ReturnCurrentAnimation() > MAX_ANIMATION_TIME && _animationHandler.IsNameOfTheCurrentAnimation(AnimationConstants.SLIDING))
+        if (_animationHandler.ReturnCurrentAnimation() > MAX_ANIMATION_TIME && _animationHandler.IsNameOfTheCurrentAnimation(PlayerAnimationConstants.SLIDING))
         {
             PlayerSystem.slideVariableEvent.PlayerSlideStateEventInvoke(true);
 
@@ -95,7 +87,7 @@ public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, ISubjec
     {
         IS_SLIDING = false;
 
-        FlagDelegator.NotifyObservers(IS_SLIDING, gameObject.name, typeof(SlidingController), CancellationToken.None);
+        PlayerVelocityDelegator.NotifyObservers(IS_SLIDING, gameObject.name, typeof(SlidingController), CancellationToken.None);
 
         return await Task.FromResult(true);
     }
@@ -110,8 +102,8 @@ public class SlidingController : MonoBehaviour, IObserver<PlayerSystem>, ISubjec
         PlayerSystem = data;
     }
 
-    public void OnNotifySubject(IObserver<bool> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<CharacterVelocity> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        FlagDelegator.AddToSubjectObserversDict(gameObject.name, FlagDelegator.GetSubsetSubjectsDictionary(typeof(SlidingController).ToString())[gameObject.name], observer);
+        PlayerVelocityDelegator.AddToSubjectObserversDict(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(SlidingController).ToString())[gameObject.name], observer);
     }
 }
