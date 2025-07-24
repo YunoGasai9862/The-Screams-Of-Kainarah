@@ -170,8 +170,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         //think of making it more better
         //make it entirely event based
-        if (CurrentGameState.State.Equals(GameState.DIALOGUE_TAKING_PLACE)) 
+        if (CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE)) 
         {
+            //we'll need to deal with this differently now - this class should not be making the actual animatioon calls, but delegate it appropriately via controllers!!!
             _animationHandler.UpdateMovementState(PlayerAnimationHandler.AnimationStateKeeper.StateKeeper.IDLE, false, true);
             return;
         }

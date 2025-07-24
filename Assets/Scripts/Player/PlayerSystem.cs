@@ -34,7 +34,6 @@ public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject
 
         PlayerSystemDelegator.AddToSubjectsDict(typeof(PlayerSystem).ToString(), name, new Subject<IObserver<PlayerSystem>>());
         PlayerSystemDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSystem).ToString())[name].SetSubject(this);
-
     }
 
     private Task<List<string>> GetPlayerAnimationsList(Animator anim)
@@ -55,11 +54,6 @@ public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject
         List<string> animationNames = await GetPlayerAnimationsList(anim);
 
         return animationNames.Where(e => e.Equals(search) || e.Contains(search)).FirstOrDefault();
-    }
-
-    public Task<int> PlayerFlipped(Transform transform)
-    {
-        return transform.localScale.x < 0 ? Task.FromResult(-1) : Task.FromResult(1);
     }
 
     public void OnNotifySubject(IObserver<Health> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)

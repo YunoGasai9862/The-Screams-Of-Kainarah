@@ -4,7 +4,7 @@ public class PlayerAnimationConstants
     public static string JUMP { get; } = "Jump";
     public static string RUNNING { get; } = "Running";
     public static string SLIDING { get; } = "Sliding";
-    public static string THROW_DAGGEr { get; } = "ThrowDagger";
+    public static string THROW_DAGGER { get; } = "ThrowDagger";
     public static string LEDGE_GRAB { get; } = "LedgeGrab";
     public static string DEATH { get; } = "Death";
     public static string FALL { get; } = "Fall";

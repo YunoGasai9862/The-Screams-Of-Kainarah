@@ -51,6 +51,11 @@ public class Helper: MonoBehaviour
         return customEvent;
     }
 
+    public static Task<int> PlayerFlipped(Transform transform)
+    {
+        return transform.localScale.x < 0 ? Task.FromResult(-1) : Task.FromResult(1);
+    }
+
     public static async Task<List<T>> GetGameObjectsWithCustomAttributes<T>() where T: System.Attribute
     {
         List<T> objectsWithCustomAttributes = new List<T>();

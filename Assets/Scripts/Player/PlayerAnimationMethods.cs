@@ -48,6 +48,7 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericStateBundl
 
     private void Update()
     {
+        //REMOVE THIS FROM HERE!!!!!!!!!!
         if (_anim != null && _anim.GetCurrentAnimatorStateInfo(0).IsName(PlayerAnimationConstants.SLIDING) &&
             ReturnCurrentAnimation() > _maxSlideTime)
         {
@@ -73,21 +74,13 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericStateBundl
         _stateMachine.AnimationPlayForFloat(name, state);
     }
 
-    public void RunningWalkingAnimation(float keystroke)
+    public void MovementAnimation(float keystroke)
     {
-        if (VectorChecker(keystroke) && !PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING))
-        {
-            PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_RUNNING, IsConcluded = false };
 
-            PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int) PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
-        }
+        PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = (VectorChecker(keystroke) && !PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING)) ?
+            PlayerMovementState.IS_RUNNING : PlayerMovementState.IS_WALKING, IsConcluded = false };
 
-        if (!VectorChecker(keystroke) && !PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING))
-        {
-            PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_WALKING, IsConcluded = false };
-
-            PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
-        }
+        PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
     }
 
     public void JumpingFallingAnimationHandler(bool keystroke)

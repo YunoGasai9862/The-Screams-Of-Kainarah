@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RakashStateMachine : MonoBehaviour, IObserver<GameStateConsumer>, IObserver<Player>, IObserver<EnemyHittableManager>
+public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<Player>, IObserver<EnemyHittableManager>
 {
     public const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
 
@@ -11,7 +11,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameStateConsumer>, I
 
     private const float MIN_DISTANCE_BETWEEN_PLAYER = 3f;
 
-    private GameStateConsumer GameState { get; set; }
+    private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
 
     private Player Player { get; set; }
 
@@ -48,7 +48,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameStateConsumer>, I
         {
             ObserverName = this.name,
             ObserverTag = this.name,
-            SubjectType = typeof(GlobalGameStateManager).ToString()
+            SubjectType = typeof(GameStateConsumer).ToString()
 
         }, CancellationToken.None);
 
@@ -80,9 +80,9 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameStateConsumer>, I
         }, CancellationToken.None));
     }
 
-    public void OnNotify(GameStateConsumer data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        GameState = data;
+        CurrentGameState.StateBundle = data.StateBundle;
     }
 
     public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
@@ -96,7 +96,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GameStateConsumer>, I
 
     protected void CustomOnStateUpdateLogic(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (GameState.Equals(GameStateConsumer.DIALOGUE_TAKING_PLACE))
+        if (CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
             RakashMovementCommandController.Execute(new MovementActionDelegatePackage()
             {

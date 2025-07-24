@@ -73,7 +73,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
 
     private void TriggerAnimation()
     {
-        _playerAttackStateMachine.SetAttackState(AnimationConstants.THROW_DAGGER, onThrowEvent.CanThrow);
+        _playerAttackStateMachine.SetAttackState(PlayerAnimationConstants.THROW_DAGGER, onThrowEvent.CanThrow);
     }
 
     public void CanPlayerThrowProjectile(bool canThrow)

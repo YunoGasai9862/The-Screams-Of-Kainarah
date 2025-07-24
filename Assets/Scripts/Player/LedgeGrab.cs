@@ -127,7 +127,9 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericStateBundle<PlayerState
 
             col.isTrigger = true;
 
-            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, PlayerSystem.IS_GRABBING);
+            //look for better way to make isConcluded compatible etc
+
+            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, !PlayerBundle.StateBundle.PlayerActionState.IsConcluded);
 
         }else
         {
@@ -137,7 +139,7 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericStateBundle<PlayerState
 
             col.isTrigger = false;
 
-            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, PlayerSystem.IS_GRABBING); 
+            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, !PlayerBundle.StateBundle.PlayerActionState.IsConcluded); 
 
             rb.gravityScale = startingGrav;
         }
@@ -145,7 +147,7 @@ public class LedgeGrab : MonoBehaviour, IObserver<GenericStateBundle<PlayerState
     }
     private async void FixedUpdate()
     {
-        int sign = await PlayerSystem.PlayerFlipped(transform);
+        int sign = await Helper.PlayerFlipped(transform);
 
         await GrabLedge(anim, rb);
 
