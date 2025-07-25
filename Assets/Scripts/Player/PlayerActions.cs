@@ -19,8 +19,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private SpriteRenderer _spriteRenderer;
 
-    private PlayerAnimationMethods _animationHandler;
-
     private Vector2 _keystrokeTrack;
 
     private bool _daggerInput = false;
@@ -36,6 +34,10 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     private IReceiver<bool> _attackReceiver;
 
     private Command<bool> _attackCommand;
+
+    private IReceiver<ActionExecuted> _animationReceiver;
+
+    private Command<ActionExecuted> _animationCommand;
 
     private IReceiver<bool> _throwingProjectileReceiver;
 
@@ -53,9 +55,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
-    private LedgeGrabController LedgeGrabController { get => GetComponent<LedgeGrabController>(); }
-
-    private AttackingController AttackingController { get => GetComponent<AttackingController>(); }
+    private PlayerAnimationController PlayerAnimationController { get; set; }
 
     private ThrowingProjectileController ThrowingProjectileController { get => GetComponent<ThrowingProjectileController>(); } //implement all the actions together
 
@@ -68,8 +68,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
-        _animationHandler = GetComponent<PlayerAnimationMethods>();
-
         _playerActionsModel = new PlayerActionsModel();
 
         _jumpReceiver = GetComponent<JumpingController>();
@@ -81,6 +79,10 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         _throwingProjectileReceiver = GetComponent<ThrowingProjectileController>();
 
         _attackCommand = new Command<bool>(_attackReceiver);
+
+        _animationReceiver = GetComponent<PlayerAnimationController>();
+
+        _animationCommand = new Command<ActionExecuted>(_animationReceiver);
 
         _jumpCommand = new Command<bool>(_jumpReceiver);
 

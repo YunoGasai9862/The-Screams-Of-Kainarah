@@ -2,7 +2,8 @@ using PlayerAnimationHandler;
 using System.Threading;
 using UnityEngine;
 
-public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>
+//convert it to a controller
+public class PlayerAnimationController : MonoBehaviour, IReceiver<ActionExecuted>, IObserver<GenericStateBundle<PlayerStateBundle>>
 {
     private AnimationStateMachine _stateMachine;
 
@@ -119,5 +120,15 @@ public class PlayerAnimationMethods : MonoBehaviour, IObserver<GenericStateBundl
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerStateBundle.StateBundle = data.StateBundle;
+    }
+
+    public ActionExecuted PerformAction(ActionExecuted value = default)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public ActionExecuted CancelAction()
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -4,7 +4,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IObserver<GameStateConsumer>, ISubject<IObserver<bool>>
+public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IObserver<GenericStateBundle<GameStateBundle>>, ISubject<IObserver<bool>>
 {
     private const string DIAMOND_TAG = "Crystal";
 
@@ -15,7 +15,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private AudioSource m_transact;
 
     private bool m_isSufficientFunds;
-    private GameStateConsumer CurrentGameState { get; set; }
+    private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
 
     private TMPro.TextMeshProUGUI m_funds;
 
@@ -35,7 +35,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         {
             ObserverName = this.name,
             ObserverTag = this.name,
-            SubjectType = typeof(GlobalGameStateManager).ToString()
+            SubjectType = typeof(GameStateConsumer).ToString()
 
         }, CancellationToken.None);
 
@@ -47,14 +47,14 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private void Update()
     {
-        if(m_transact == null && CurrentGameState.Equals(GameStateConsumer.SHOPPING))
+        if(m_transact == null && CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.SHOPPING))
         {
             m_transact = GameObject.FindWithTag("Transact").GetComponent<AudioSource>();
         }
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (CurrentGameState.Equals(GameStateConsumer.SHOPPING))
+        if (CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.SHOPPING))
         {
             m_insideObject = eventData.pointerClick.transform.gameObject;
 
@@ -117,14 +117,14 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
          InventoryManagementSystem.Instance.RemoveInvoke(funds);
     }
 
-    public void OnNotify(GameStateConsumer data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        CurrentGameState = data;
-    }
-
     public void OnNotifySubject(IObserver<bool> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         m_genericFlagDelegator.AddToSubjectObserversDict(gameObject.name, m_genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name],
            data);
+    }
+
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        CurrentGameState.StateBundle = data.StateBundle;
     }
 }
