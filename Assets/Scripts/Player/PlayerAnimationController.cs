@@ -47,6 +47,7 @@ public class PlayerAnimationController : MonoBehaviour, IReceiver<ActionExecuted
 
     }
 
+    //CONTROLELR SHOULD NOT BE DOING THIS - I NEED TO REMOVE THIS 
     private void Update()
     {
         //REMOVE THIS FROM HERE!!!!!!!!!!
@@ -57,7 +58,7 @@ public class PlayerAnimationController : MonoBehaviour, IReceiver<ActionExecuted
         }
     }
 
-    public bool VectorChecker(float compositionX)
+    private bool VectorChecker(float compositionX)
     {
         return compositionX != 0f;
     }
@@ -75,7 +76,7 @@ public class PlayerAnimationController : MonoBehaviour, IReceiver<ActionExecuted
         _stateMachine.AnimationPlayForFloat(name, state);
     }
 
-    public void MovementAnimation(float keystroke)
+    private void MovementAnimation(float keystroke)
     {
 
         PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = (VectorChecker(keystroke) && !PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING)) ?
@@ -84,7 +85,7 @@ public class PlayerAnimationController : MonoBehaviour, IReceiver<ActionExecuted
         PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
     }
 
-    public void JumpingFallingAnimationHandler(bool keystroke)
+    private void JumpingFallingAnimationHandler(bool keystroke)
     {
         PlayerStateBundle.StateBundle.PlayerMovementState = keystroke ?
             new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_JUMPING, IsConcluded = false } : 
@@ -92,27 +93,27 @@ public class PlayerAnimationController : MonoBehaviour, IReceiver<ActionExecuted
 
         PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
     }
-    public void UpdateJumpTime(string parameterName, float jumpTime)
+    private void UpdateJumpTime(string parameterName, float jumpTime)
     {
         PlayAnimation(parameterName, jumpTime);
     }
 
-    public void Sliding(bool keystroke)
+    private void Sliding(bool keystroke)
     {
         PlayAnimation(PlayerAnimationConstants.SLIDING, keystroke);
     }
 
-    public float ReturnCurrentAnimation()
+    private float ReturnCurrentAnimation()
     {
         return _anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
     }
 
-    public bool IsNameOfTheCurrentAnimation(string name)
+    private bool IsNameOfTheCurrentAnimation(string name)
     {
         return _anim.GetCurrentAnimatorStateInfo(0).IsName(name);
     }
 
-    public Animator getAnimator()
+    private Animator getAnimator()
     {
         return _anim;
     }

@@ -4,7 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericStateBundle<PlayerStateBundle>>
+[JumpingController]
+public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingControllerAttribute, ActionExecuted>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericStateBundle<PlayerStateBundle>>
 {
     [SerializeField] LayerMask groundLayer;
 
@@ -19,12 +20,14 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
     private const float JUMPING_SPEED = 0.5f;
 
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
-
+    
     private const float MAX_JUMP_TIME = 0.3f;
 
     private Rigidbody2D _rb;
 
-    private PlayerAnimationMethods _animationHandler;
+    private IReceiverEnhancedAsync<ReceiverType.JUMPING, ActionExecuted> _animationReceiver;
+
+    private ICommand<ActionExecuted> _animationCommand;
 
     private IOverlapChecker _movementHelperClass;
 
@@ -68,9 +71,13 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
     }
     private void Awake()
     {
+        //should give that one singe type of controller - and i think i we should move with this approach! Give me a moment that implements ActionExecuted!
+        _animationReceiver = GetComponent<IReceiver<ActionExecuted>>();
+
         _movementHelperClass = new MovementHelperClass();
+
         _col = GetComponent<CapsuleCollider2D>();
-        _animationHandler = GetComponent<PlayerAnimationMethods>();
+
         _rb = GetComponent<Rigidbody2D>();
 
         PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
@@ -219,5 +226,15 @@ public class JumpingController : MonoBehaviour, IReceiver<bool>, ISubject<IObser
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerStateBundle.StateBundle = data.StateBundle;
+    }
+
+    public ActionExecuted PerformAction(ActionExecuted value = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    ActionExecuted IReceiverEnhancedAsync<JumpingControllerAttribute, ActionExecuted>.CancelAction()
+    {
+        throw new NotImplementedException();
     }
 }
