@@ -7,9 +7,8 @@ public interface IReceiverAsync<T>
     Task<T> CancelAction();
 }
 
-public interface IReceiverEnhancedAsync<IDENTIFIER, VALUE>
+public interface IReceiverEnhancedAsync<TYPE, VALUE> where TYPE: MonoBehaviour
 {
-    VALUE PerformAction(VALUE value = default);
-
-    VALUE CancelAction();
+    Task<ActionExecuted<VALUE>> PerformAction(VALUE value = default);
+    Task<ActionExecuted<VALUE>> CancelAction();
 }

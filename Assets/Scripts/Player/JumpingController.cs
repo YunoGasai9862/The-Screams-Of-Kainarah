@@ -4,8 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[JumpingController]
-public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingControllerAttribute, ActionExecuted>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericStateBundle<PlayerStateBundle>>
+public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingController, bool>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericStateBundle<PlayerStateBundle>>
 {
     [SerializeField] LayerMask groundLayer;
 
@@ -25,7 +24,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
     private Rigidbody2D _rb;
 
-    private IReceiverEnhancedAsync<ReceiverType.JUMPING, ActionExecuted> _animationReceiver;
+    private IReceiverEnhancedAsync<PlayerAnimationController, ActionExecuted> _animationReceiver;
 
     private ICommand<ActionExecuted> _animationCommand;
 
@@ -53,26 +52,10 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle> { };
 
-    public bool CancelAction()
-    {
-        PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState> { CurrentState = PlayerMovementState.IS_JUMPING, IsConcluded = true };
-
-        PlayerStateEvent.Invoke(PlayerStateBundle);
-
-        return true;
-    }
-    public bool PerformAction(bool value)
-    {
-        _isJumpPressed = value;
-
-        SetPlayerInitialPosition(PlayerStateBundle.StateBundle.PlayerMovementState);
-
-        return true;
-    }
     private void Awake()
     {
         //should give that one singe type of controller - and i think i we should move with this approach! Give me a moment that implements ActionExecuted!
-        _animationReceiver = GetComponent<IReceiver<ActionExecuted>>();
+        _animationReceiver = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ActionExecuted>>();
 
         _movementHelperClass = new MovementHelperClass();
 
@@ -228,13 +211,21 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
         PlayerStateBundle.StateBundle = data.StateBundle;
     }
 
-    public ActionExecuted PerformAction(ActionExecuted value = default)
+    public async Task<ActionExecuted<bool>> PerformAction(bool value)
     {
-        throw new NotImplementedException();
+        _isJumpPressed = value;
+
+        await SetPlayerInitialPosition(PlayerStateBundle.StateBundle.PlayerMovementState);
+
+        return new ActionExecuted<bool>(_isJumpPressed);
     }
 
-    ActionExecuted IReceiverEnhancedAsync<JumpingControllerAttribute, ActionExecuted>.CancelAction()
+    public async Task<ActionExecuted<bool>> CancelAction()
     {
-        throw new NotImplementedException();
+        PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState> { CurrentState = PlayerMovementState.IS_JUMPING, IsConcluded = true };
+
+        await PlayerStateEvent.Invoke(PlayerStateBundle);
+
+        return new ActionExecuted<bool>(false);
     }
 }
