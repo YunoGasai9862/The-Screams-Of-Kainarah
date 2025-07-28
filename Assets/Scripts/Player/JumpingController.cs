@@ -24,7 +24,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
     private Rigidbody2D _rb;
 
-    private IReceiverEnhancedAsync<PlayerAnimationController, ActionExecuted> _animationReceiver;
+    private IReceiverEnhancedAsync<PlayerAnimationController, bool> _animationReceiver;
 
     private ICommand<ActionExecuted> _animationCommand;
 
@@ -55,7 +55,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
     private void Awake()
     {
         //should give that one singe type of controller - and i think i we should move with this approach! Give me a moment that implements ActionExecuted!
-        _animationReceiver = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ActionExecuted>>();
+        _animationReceiver = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, bool>>();
 
         _movementHelperClass = new MovementHelperClass();
 
@@ -120,6 +120,9 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
         if (!IsOnTheGround(groundLayer) && !IsOnTheLedge(ledgeLayer) && await IsYVelocityNegative(_rb))
         {
             _animationHandler.JumpingFallingAnimationHandler(false);
+
+            await _animationReceiver.PerformAction(false);
+
         }
 
         if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed) //on the ground

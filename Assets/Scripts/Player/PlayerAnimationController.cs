@@ -1,9 +1,10 @@
 using PlayerAnimationHandler;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 //convert it to a controller
-public class PlayerAnimationController : MonoBehaviour, IReceiver<ActionExecuted>, IObserver<GenericStateBundle<PlayerStateBundle>>
+public class PlayerAnimationController : MonoBehaviour, IReceiverEnhancedAsync<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>, IObserver<GenericStateBundle<PlayerStateBundle>>
 {
     private AnimationStateMachine _stateMachine;
 
@@ -47,17 +48,14 @@ public class PlayerAnimationController : MonoBehaviour, IReceiver<ActionExecuted
 
     }
 
-    //CONTROLELR SHOULD NOT BE DOING THIS - I NEED TO REMOVE THIS 
-    private void Update()
-    {
-        //REMOVE THIS FROM HERE!!!!!!!!!!
+    /**
+       //REMOVE THIS FROM HERE!!!!!!!!!! - put this in the slide controller!!
         if (_anim != null && _anim.GetCurrentAnimatorStateInfo(0).IsName(PlayerAnimationConstants.SLIDING) &&
             ReturnCurrentAnimation() > _maxSlideTime)
         {
             PlayAnimation(PlayerAnimationConstants.SLIDING, false);  //for fixing the Sliding Issue
         }
-    }
-
+     **/
     private bool VectorChecker(float compositionX)
     {
         return compositionX != 0f;
@@ -76,7 +74,7 @@ public class PlayerAnimationController : MonoBehaviour, IReceiver<ActionExecuted
         _stateMachine.AnimationPlayForFloat(name, state);
     }
 
-    private void MovementAnimation(float keystroke)
+    public void MovementAnimation(float keystroke)
     {
 
         PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = (VectorChecker(keystroke) && !PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING)) ?
@@ -85,7 +83,7 @@ public class PlayerAnimationController : MonoBehaviour, IReceiver<ActionExecuted
         PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
     }
 
-    private void JumpingFallingAnimationHandler(bool keystroke)
+    private void JumpAnimation(bool keystroke)
     {
         PlayerStateBundle.StateBundle.PlayerMovementState = keystroke ?
             new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_JUMPING, IsConcluded = false } : 
@@ -98,7 +96,7 @@ public class PlayerAnimationController : MonoBehaviour, IReceiver<ActionExecuted
         PlayAnimation(parameterName, jumpTime);
     }
 
-    private void Sliding(bool keystroke)
+    private void SlidingAnimation(bool keystroke)
     {
         PlayAnimation(PlayerAnimationConstants.SLIDING, keystroke);
     }
@@ -123,13 +121,31 @@ public class PlayerAnimationController : MonoBehaviour, IReceiver<ActionExecuted
         PlayerStateBundle.StateBundle = data.StateBundle;
     }
 
-    public ActionExecuted PerformAction(ActionExecuted value = default)
+    public Task<ActionExecuted<PlayerAnimationControllerPackage<bool>>> PerformAction(PlayerAnimationControllerPackage<bool> value = null)
     {
         throw new System.NotImplementedException();
     }
 
-    public ActionExecuted CancelAction()
+    public Task<ActionExecuted<PlayerAnimationControllerPackage<bool>>> CancelAction()
     {
         throw new System.NotImplementedException();
+    }
+
+    public void GetAnimationExecutionScenario(PlayerAnimationControllerPackage<bool> package)
+    {
+        switch(package.PlayerAnimationExecutionState)
+        {
+            case PlayerAnimationExecutionState.PLAY_JUMPING_ANIMATION:
+                break;
+
+            case PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION:
+                break;
+
+            case PlayerAnimationExecutionState.PLAY_MOVEMENT_ANIMATION:
+                break;
+
+            default:
+                break;
+        }
     }
 }
