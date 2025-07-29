@@ -21,7 +21,9 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, ISubject<I
 
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
-    private PlayerAnimationMethods _animationHandler;
+    private IReceiverEnhancedAsync<PlayerAnimationController, bool> _animationHandler;
+
+    private Command<bool>
 
     private IOverlapChecker _movementHelperClass;
 

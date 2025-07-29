@@ -26,7 +26,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
     private IReceiverEnhancedAsync<PlayerAnimationController, bool> _animationReceiver;
 
-    private ICommand<ActionExecuted> _animationCommand;
+    private ICommandAsyncEnhanced<PlayerAnimationController, bool> _animationCommand;
 
     private IOverlapChecker _movementHelperClass;
 
@@ -56,6 +56,8 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
     {
         //should give that one singe type of controller - and i think i we should move with this approach! Give me a moment that implements ActionExecuted!
         _animationReceiver = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, bool>>();
+
+        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, bool>(_animationReceiver);
 
         _movementHelperClass = new MovementHelperClass();
 

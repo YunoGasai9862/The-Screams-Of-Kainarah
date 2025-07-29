@@ -1,4 +1,6 @@
 
+using System;
+using System.Threading.Tasks;
 using UnityEngine;
 public class Command<T> : ICommand<T>
 {
@@ -33,6 +35,29 @@ public class Command<T, Z> : ICommand<T, Z>
     public Z Execute(T value = default)
     {
         return this._receiver.PerformAction(value);
+    }
+}
+
+public class CommandAsyncEnhanced<T, Z> : ICommandAsyncEnhanced<T, Z> where T: MonoBehaviour
+{
+    private IReceiverEnhancedAsync<T, Z> _receiver;
+
+    public CommandAsyncEnhanced(IReceiverEnhancedAsync<T, Z> receiver)
+    {
+        _receiver = receiver;
+    }
+    public async Task<ActionExecuted<Z>> Cancel(Z value = default)
+    {
+        return await _receiver.CancelAction();
+    }
+    public async Task<ActionExecuted<Z>> Execute(Z value = default)
+    {
+        return await _receiver.PerformAction(value);
+    }
+
+    public Type GetExecutingType()
+    {
+        return typeof(T);
     }
 }
 

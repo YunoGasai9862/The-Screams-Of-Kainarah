@@ -56,9 +56,43 @@ public class PlayerAnimationController : MonoBehaviour, IReceiverEnhancedAsync<P
             PlayAnimation(PlayerAnimationConstants.SLIDING, false);  //for fixing the Sliding Issue
         }
      **/
+
+    //TODO this needs to be taken care by the class that's executing the controller to keep things aligned and streamlined!
     private bool VectorChecker(float compositionX)
     {
         return compositionX != 0f;
+    }
+
+    public void MovementAnimation(bool keystroke)
+    {
+
+        PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = keystroke && !PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING) ?
+            PlayerMovementState.IS_RUNNING : PlayerMovementState.IS_WALKING, IsConcluded = false };
+
+        PlayerStateEvent.Invoke(PlayerStateBundle);
+
+        PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
+    }
+
+    private void JumpAnimation(bool keystroke)
+    {
+        PlayerStateBundle.StateBundle.PlayerMovementState = keystroke ?
+            new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_JUMPING, IsConcluded = false } : 
+            new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_FALLING, IsConcluded = false };
+
+        PlayerStateEvent.Invoke(PlayerStateBundle);
+
+        PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
+    }
+
+    private void UpdateJumpTime(string parameterName, float jumpTime)
+    {
+        PlayAnimation(parameterName, jumpTime);
+    }
+
+    private void SlidingAnimation(bool keystroke)
+    {
+        PlayAnimation(PlayerAnimationConstants.SLIDING, keystroke);
     }
 
     private void PlayAnimation(string name, int state)
@@ -72,33 +106,6 @@ public class PlayerAnimationController : MonoBehaviour, IReceiverEnhancedAsync<P
     private void PlayAnimation(string name, float state)
     {
         _stateMachine.AnimationPlayForFloat(name, state);
-    }
-
-    public void MovementAnimation(float keystroke)
-    {
-
-        PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = (VectorChecker(keystroke) && !PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING)) ?
-            PlayerMovementState.IS_RUNNING : PlayerMovementState.IS_WALKING, IsConcluded = false };
-
-        PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
-    }
-
-    private void JumpAnimation(bool keystroke)
-    {
-        PlayerStateBundle.StateBundle.PlayerMovementState = keystroke ?
-            new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_JUMPING, IsConcluded = false } : 
-            new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_FALLING, IsConcluded = false };
-
-        PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
-    }
-    private void UpdateJumpTime(string parameterName, float jumpTime)
-    {
-        PlayAnimation(parameterName, jumpTime);
-    }
-
-    private void SlidingAnimation(bool keystroke)
-    {
-        PlayAnimation(PlayerAnimationConstants.SLIDING, keystroke);
     }
 
     private float ReturnCurrentAnimation()
@@ -136,12 +143,15 @@ public class PlayerAnimationController : MonoBehaviour, IReceiverEnhancedAsync<P
         switch(package.PlayerAnimationExecutionState)
         {
             case PlayerAnimationExecutionState.PLAY_JUMPING_ANIMATION:
+                JumpAnimation(package.Value);
                 break;
 
             case PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION:
+                SlidingAnimation(package.Value);
                 break;
 
             case PlayerAnimationExecutionState.PLAY_MOVEMENT_ANIMATION:
+                MovementAnimation(package.Value);
                 break;
 
             default:
