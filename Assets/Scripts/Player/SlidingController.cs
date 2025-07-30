@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, ISubject<IObserver<CharacterVelocity>>
+public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<AnimationDetails>, ISubject<IObserver<CharacterVelocity>>
 {
     private const float MAX_ANIMATION_TIME = 0.6f;
 
@@ -21,9 +21,9 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, ISubject<I
 
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
-    private IReceiverEnhancedAsync<PlayerAnimationController, bool> _animationHandler;
+    private IReceiverEnhancedAsync<PlayerAnimationController, PlayerAnimationControllerPackage<bool>> _animationHandler;
 
-    private Command<bool>
+    private CommandAsyncEnhanced<PlayerAnimationController, PlayerAnimationControllerPackage<bool>> _animationCommand;
 
     private IOverlapChecker _movementHelperClass;
 
@@ -46,7 +46,9 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, ISubject<I
         PlayerVelocityDelegator.AddToSubjectsDict(typeof(SlidingController).ToString(), name, new Subject<IObserver<CharacterVelocity>>());
         PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(SlidingController).ToString())[name].SetSubject(this);
 
-        _animationHandler = GetComponent<PlayerAnimationMethods>();
+        _animationHandler = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>>();
+        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>(_animationHandler);
+
         _movementHelperClass = new MovementHelperClass();
         _rb = GetComponent<Rigidbody2D>();
         _anim = GetComponent<Animator>();
@@ -54,7 +56,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, ISubject<I
         _col= GetComponent<CapsuleCollider2D>();
     }
 
-    private Task Slide()
+    private async Task Slide()
     {
         if (IS_SLIDING && _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _col, groundLayer, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
@@ -62,21 +64,20 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, ISubject<I
 
             PlayerVelocityDelegator.NotifyObservers(new CharacterVelocity() { VelocityX = slidingSpeed }, gameObject.name, typeof(SlidingController), CancellationToken.None);
 
-            PlayerStateEvent.Invoke(PlayerStateBundle);
+            await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-            _animationHandler.Sliding(true); //set animation
+            await _animationCommand.Execute(new PlayerAnimationControllerPackage<bool>() { PlayerAnimationExecutionState = PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION, Value = true });
         }
 
         if (_animationHandler.ReturnCurrentAnimation() > MAX_ANIMATION_TIME && _animationHandler.IsNameOfTheCurrentAnimation(PlayerAnimationConstants.SLIDING))
         {
             PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_SLIDING, IsConcluded = true };
 
-            PlayerStateEvent.Invoke(PlayerStateBundle);
+            await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-            _animationHandler.Sliding(false);
+            await _animationCommand.Execute(new PlayerAnimationControllerPackage<bool>() { PlayerAnimationExecutionState = PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION, Value = false });
         }
 
-        return Task.CompletedTask;
     }
 
     async Task<bool> IReceiverAsync<bool>.PerformAction(bool value)
