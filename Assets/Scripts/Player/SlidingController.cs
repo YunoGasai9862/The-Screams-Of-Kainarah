@@ -17,7 +17,11 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
 
     private PlayerVelocityDelegator PlayerVelocityDelegator { get; set; }
 
+    private AnimationDetailsDelegator AnimationDetailsDelegator { get; set;  }
+
     private PlayerStateEvent PlayerStateEvent { get; set; }
+
+    private AnimationDetails AnimationDetails { get; set; }
 
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
@@ -46,6 +50,12 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
         PlayerVelocityDelegator.AddToSubjectsDict(typeof(SlidingController).ToString(), name, new Subject<IObserver<CharacterVelocity>>());
         PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(SlidingController).ToString())[name].SetSubject(this);
 
+        AnimationDetailsDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            SubjectType = typeof(PlayerAnimationController).ToString(),
+        }, CancellationToken.None);
+
         _animationHandler = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>>();
         _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>(_animationHandler);
 
@@ -69,7 +79,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
             await _animationCommand.Execute(new PlayerAnimationControllerPackage<bool>() { PlayerAnimationExecutionState = PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION, Value = true });
         }
 
-        if (_animationHandler.ReturnCurrentAnimation() > MAX_ANIMATION_TIME && _animationHandler.IsNameOfTheCurrentAnimation(PlayerAnimationConstants.SLIDING))
+        if (AnimationDetails.CurrentAnimationTime > MAX_ANIMATION_TIME && AnimationDetails.CurrentAnimationStateInfo.IsName(PlayerAnimationConstants.SLIDING))
         {
             PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_SLIDING, IsConcluded = true };
 
@@ -107,5 +117,10 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
     public void OnNotifySubject(IObserver<CharacterVelocity> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         PlayerVelocityDelegator.AddToSubjectObserversDict(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(SlidingController).ToString())[gameObject.name], observer);
+    }
+
+    public void OnNotify(AnimationDetails data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        AnimationDetails = data;
     }
 }

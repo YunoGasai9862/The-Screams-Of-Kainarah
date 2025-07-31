@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 //convert it to a controller
-public class PlayerAnimationController : MonoBehaviour, IReceiverEnhancedAsync<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>, IObserver<GenericStateBundle<PlayerStateBundle>>
+public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>, IObserver<GenericStateBundle<PlayerStateBundle>>
 {
     private AnimationStateMachine _stateMachine;
 
@@ -16,6 +16,8 @@ public class PlayerAnimationController : MonoBehaviour, IReceiverEnhancedAsync<P
 
     private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
+    private AnimationDetailsDelegator AnimationDetailsDelegator { get; set; }
+
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
     private void Awake()
@@ -24,11 +26,18 @@ public class PlayerAnimationController : MonoBehaviour, IReceiverEnhancedAsync<P
 
         PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
 
+        AnimationDetailsDelegator = Helper.GetDelegator<AnimationDetailsDelegator>();
+
         PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
 
         if (PlayerStateDelegator == null)
         {
             throw new DelegatorNotFoundException("PlayerStateDelegator not found!!");
+        }
+
+        if (AnimationDetailsDelegator == null)
+        {
+            throw new DelegatorNotFoundException("AnimationDetailsDelegator not found!!");
         }
 
         if (PlayerStateEvent == null)
@@ -39,6 +48,9 @@ public class PlayerAnimationController : MonoBehaviour, IReceiverEnhancedAsync<P
 
     private void Start()
     {
+        AnimationDetailsDelegator.AddToSubjectsDict(typeof(PlayerAnimationController).ToString(), name, new Subject<IObserver<AnimationDetails>>());
+        AnimationDetailsDelegator.GetSubsetSubjectsDictionary(typeof(PlayerAnimationController).ToString())[name].SetSubject(this);
+
         StartCoroutine(PlayerStateDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
@@ -113,9 +125,9 @@ public class PlayerAnimationController : MonoBehaviour, IReceiverEnhancedAsync<P
         return _anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
     }
 
-    private bool IsNameOfTheCurrentAnimation(string name)
+    private AnimatorStateInfo GetCurrentStateInfo()
     {
-        return _anim.GetCurrentAnimatorStateInfo(0).IsName(name);
+        return _anim.GetCurrentAnimatorStateInfo(0);
     }
 
     private Animator getAnimator()
@@ -157,5 +169,19 @@ public class PlayerAnimationController : MonoBehaviour, IReceiverEnhancedAsync<P
             default:
                 break;
         }
+    }
+
+    public void OnNotifySubject(IObserver<AnimationDetails> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        AnimationDetailsDelegator.NotifyObserver(observer, new AnimationDetails()
+        {
+            CurrentAnimationStateInfo = GetCurrentStateInfo(),
+            CurrentAnimationTime = ReturnCurrentAnimation()
+        },
+        new NotificationContext()
+        {
+            SubjectType = typeof(PlayerAnimationController).ToString()
+        },
+        CancellationToken.None);
     }
 }
