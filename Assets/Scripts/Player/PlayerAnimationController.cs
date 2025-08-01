@@ -69,12 +69,6 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         }
      **/
 
-    //TODO this needs to be taken care by the class that's executing the controller to keep things aligned and streamlined!
-    private bool VectorChecker(float compositionX)
-    {
-        return compositionX != 0f;
-    }
-
     public void MovementAnimation(bool keystroke)
     {
 

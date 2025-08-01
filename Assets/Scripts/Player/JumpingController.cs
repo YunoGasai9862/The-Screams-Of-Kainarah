@@ -24,9 +24,9 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
     private Rigidbody2D _rb;
 
-    private IReceiverEnhancedAsync<PlayerAnimationController, bool> _animationReceiver;
+    private IReceiverEnhancedAsync<PlayerAnimationController, PlayerAnimationControllerPackage<bool>> _animationReceiver;
 
-    private ICommandAsyncEnhanced<PlayerAnimationController, bool> _animationCommand;
+    private CommandAsyncEnhanced<PlayerAnimationController, PlayerAnimationControllerPackage<bool>> _animationCommand;
 
     private IOverlapChecker _movementHelperClass;
 
@@ -55,9 +55,9 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
     private void Awake()
     {
         //should give that one singe type of controller - and i think i we should move with this approach! Give me a moment that implements ActionExecuted!
-        _animationReceiver = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, bool>>();
+        _animationReceiver = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>>();
 
-        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, bool>(_animationReceiver);
+        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>(_animationReceiver);
 
         _movementHelperClass = new MovementHelperClass();
 
@@ -89,6 +89,8 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
         PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[name].SetSubject(this);
 
     }
+
+    //REMOVE THIS! -OR FIND A BETTER WAY TO REFACTOR THIS
     private async void Update()
     {
         await HandleJumpingMechanism();
@@ -121,10 +123,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
         if (!IsOnTheGround(groundLayer) && !IsOnTheLedge(ledgeLayer) && await IsYVelocityNegative(_rb))
         {
-            _animationHandler.JumpingFallingAnimationHandler(false);
-
-            await _animationReceiver.PerformAction(false);
-
+            await _animationCommand.Execute(new PlayerAnimationControllerPackage<bool>() { PlayerAnimationExecutionState = PlayerAnimationExecutionState.PLAY_JUMPING_ANIMATION, Value = false });
         }
 
         if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed) //on the ground
@@ -151,7 +150,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
             CharacterVelocity.VelocityY = JumpSpeed * JUMPING_SPEED;
 
-            _animationHandler.JumpingFallingAnimationHandler(true); 
+            await _animationCommand.Execute(new PlayerAnimationControllerPackage<bool>() { PlayerAnimationExecutionState = PlayerAnimationExecutionState.PLAY_JUMPING_ANIMATION, Value = true });
         }
 
     }

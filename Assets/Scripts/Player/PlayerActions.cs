@@ -23,9 +23,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private bool _daggerInput = false;
 
-    private IReceiver<bool> _jumpReceiver;
+    private IReceiverEnhancedAsync<JumpingController, bool> _jumpReceiver;
 
-    private Command<bool> _jumpCommand;
+    private CommandAsyncEnhanced<JumpingController, bool> _jumpCommand;
 
     private IReceiverAsync<bool> _slideReceiver;
 
@@ -35,9 +35,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private Command<bool> _attackCommand;
 
-    private IReceiver<ActionExecuted> _animationReceiver;
+    private IReceiverEnhancedAsync<PlayerAnimationController, PlayerAnimationControllerPackage<bool>> _animationReceiver;
 
-    private Command<ActionExecuted> _animationCommand;
+    private CommandAsyncEnhanced<PlayerAnimationController, PlayerAnimationControllerPackage<bool>> _animationCommand;
 
     private IReceiver<bool> _throwingProjectileReceiver;
 
@@ -55,8 +55,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
-    private PlayerAnimationController PlayerAnimationController { get; set; }
-
     private ThrowingProjectileController ThrowingProjectileController { get => GetComponent<ThrowingProjectileController>(); } //implement all the actions together
 
     //Force = -2m * sqrt (g * h)
@@ -70,7 +68,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _playerActionsModel = new PlayerActionsModel();
 
-        _jumpReceiver = GetComponent<JumpingController>();
+        _jumpReceiver = GetComponent<IReceiverEnhancedAsync<JumpingController, bool>>();
 
         _slideReceiver = GetComponent<SlidingController>();
 
@@ -80,11 +78,11 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _attackCommand = new Command<bool>(_attackReceiver);
 
-        _animationReceiver = GetComponent<PlayerAnimationController>();
+        _animationReceiver = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>>();
 
-        _animationCommand = new Command<ActionExecuted>(_animationReceiver);
+        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>(_animationReceiver);
 
-        _jumpCommand = new Command<bool>(_jumpReceiver);
+        _jumpCommand = new CommandAsyncEnhanced<JumpingController, bool>(_jumpReceiver);
 
         _slideCommand = new CommandAsync<bool>(_slideReceiver);
 
@@ -165,7 +163,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         _rocky2DActions.PlayerAttack.BoostAttack.Enable();
     }
 
-    private void Update()
+    private async void Update()
     {
         //make it better - but still this is an improvement, enhancement from singleton
         //more modular
@@ -175,7 +173,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         if (CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE)) 
         {
             //we'll need to deal with this differently now - this class should not be making the actual animatioon calls, but delegate it appropriately via controllers!!!
-            _animationHandler.UpdateMovementState(PlayerAnimationHandler.AnimationStateKeeper.StateKeeper.IDLE, false, true);
+            await _animationCommand.Execute(new PlayerAnimationControllerPackage<bool>() { PlayerAnimationExecutionState = PlayerAnimationExecutionState.PLAY_MOVEMENT_ANIMATION, Value = false });
             return;
         }
 
@@ -185,15 +183,15 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         //Flipping
         if (KeystrokeMagnitudeChecker(_keystrokeTrack))
         {
-            if (!CurrentPlayerState.State.Equals(PlayerState.IS_GRABBING))
+            if (CurrentPlayerState.StateBundle.PlayerActionState.CurrentState != PlayerActionState.IS_GRABBING)
                 FlipCharacter(_keystrokeTrack);
         }
 
         //jumping
-        _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
+        await _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
 
         //ledge grab
-        if (CurrentPlayerState.State.Equals(PlayerState.IS_GRABBING)) //tackles the ledgeGrab
+        if (CurrentPlayerState.StateBundle.PlayerActionState.CurrentState == PlayerActionState.IS_GRABBING) //tackles the ledgeGrab
         {
             LedgeGrabController.PerformLedgeGrab();
         }
@@ -345,12 +343,12 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        CurrentPlayerState.State = data.StateBundle;
+        CurrentPlayerState.StateBundle = data.StateBundle;
     }
 
     public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        CurrentGameState.State = data.StateBundle;
+        CurrentGameState.StateBundle = data.StateBundle;
     }
 
     #endregion
