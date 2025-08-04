@@ -1,4 +1,5 @@
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngineInternal;
@@ -26,6 +27,10 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     private IReceiverEnhancedAsync<JumpingController, bool> _jumpReceiver;
 
     private CommandAsyncEnhanced<JumpingController, bool> _jumpCommand;
+
+    private IReceiverEnhancedAsync<SlidingController, bool> _slidingReceiver;
+
+    private CommandAsyncEnhanced<SlidingController, bool> _slidingCommand;
 
     private IReceiverAsync<bool> _slideReceiver;
 
@@ -83,6 +88,10 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>(_animationReceiver);
 
         _jumpCommand = new CommandAsyncEnhanced<JumpingController, bool>(_jumpReceiver);
+
+        _slidingReceiver = GetComponent<IReceiverEnhancedAsync<SlidingController, bool>>();
+
+        _slidingCommand = new CommandAsyncEnhanced<SlidingController, bool>(_slidingReceiver);
 
         _slideCommand = new CommandAsync<bool>(_slideReceiver);
 
@@ -178,7 +187,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         }
 
         //movement
-        _keystrokeTrack = PlayerMovement();
+        _keystrokeTrack = await PlayerMovement();
 
         //Flipping
         if (KeystrokeMagnitudeChecker(_keystrokeTrack))
@@ -193,7 +202,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         //ledge grab
         if (CurrentPlayerState.StateBundle.PlayerActionState.CurrentState == PlayerActionState.IS_GRABBING) //tackles the ledgeGrab
         {
-            LedgeGrabController.PerformLedgeGrab();
+            await _slidingCommand.Execute(true);
         }
 
         //sliding
@@ -205,7 +214,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     }
 
     #region Controller Mechnism
-    private Vector2 PlayerMovement()
+    private async Task<Vector2> PlayerMovement()
     {
         Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>(); //reads the value
 
@@ -216,8 +225,12 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         CharacterControllerMove(_playerActionsModel.CharacterVelocityX * _playerActionsModel.CharacterSpeed, _playerActionsModel.CharacterVelocityY);
 
-        _animationHandler.RunningWalkingAnimation(keystroke.x);  //for movement, plays the animation
-
+         await _animationCommand.Execute(new PlayerAnimationControllerPackage<bool>()
+        {
+            PlayerAnimationExecutionState = PlayerAnimationExecutionState.PLAY_MOVEMENT_ANIMATION,
+            Value = keystroke.x == 0 ? false : true
+        });
+        
         _playerActionsModel.CharacterSpeed = _playerActionsModel.OriginalSpeed; //reset speed
 
         return keystroke;
@@ -258,16 +271,16 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private void BeginSlideAction(InputAction.CallbackContext context)
     {
-        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.State.Equals(PlayerState.IS_ATTACKING)) ? false : context.ReadValueAsButton();
+        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState == PlayerAttackState.IS_ATTACKING) ? false : context.ReadValueAsButton();
 
         //not sliding - see if needs to be in another way later!
-        CurrentPlayerState.State = PlayerState.CURRENT_ACTION_CONCLUDED;
+        CurrentPlayerState.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_SLIDING, IsConcluded = true };
 
         _playerStateEvent.Invoke(CurrentPlayerState);
     }
     private void EndSlideAction(InputAction.CallbackContext context)
     {
-        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.State.Equals(PlayerState.IS_ATTACKING)) ? false : context.ReadValueAsButton();
+        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState == PlayerAttackState.IS_ATTACKING) ? false : context.ReadValueAsButton();
     }
 
     //attacking mechanism centralized
