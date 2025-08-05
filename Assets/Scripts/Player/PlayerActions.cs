@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -206,7 +207,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         }
 
         //sliding
-        if (_playerActionsModel.GetSlidePressed && !PlayerSystem.slideVariableEvent.PlayerFinishedSliding)
+        if (_playerActionsModel.GetSlidePressed && IsSlidingActionConcluded(CurrentPlayerState.StateBundle))
             _slideCommand.Execute();
         else
             _slideCommand.Cancel();
@@ -295,7 +296,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
     {
-        _playerActionsModel.LeftMouseButtonPressed = CurrentPlayerState.State.Equals(PlayerState.IS_SLIDING) ? false : context.ReadValueAsButton();
+        _playerActionsModel.LeftMouseButtonPressed = IsSlidingActionInProgress(CurrentPlayerState.StateBundle) ? false : context.ReadValueAsButton();
         _playerActionsModel.TimeForMouseClickEnd = (float)context.time;
 
         AttackingController.InvokeOnMouseClickEvent(_playerActionsModel.TimeForMouseClickStart, _playerActionsModel.TimeForMouseClickEnd);
@@ -306,7 +307,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private void HandlePlayerAttackStart(InputAction.CallbackContext context)
     {
-        _playerActionsModel.LeftMouseButtonPressed = (CurrentPlayerState.State.Equals(PlayerState.IS_SLIDING)) ? false : context.ReadValueAsButton();
+        _playerActionsModel.LeftMouseButtonPressed = IsSlidingActionInProgress(CurrentPlayerState.StateBundle) ? false : context.ReadValueAsButton();
         _playerActionsModel.TimeForMouseClickStart = (float)context.time;
 
         //send time stamps to the attacking controller
@@ -328,21 +329,8 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         _playerActionsModel.VBoostKeyPressed = context.ReadValueAsButton();
     }
 
-    #endregion
 
-    #region Helper functions
-    private void FlipCharacter(Vector2 keystroke)
-    {
-        if (_playerActionsModel.KeyStrokeDifference == -1 && transform.localScale.x < 0)
-        {
-            transform.localScale = new Vector3(1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
-
-        }
-        else if (_playerActionsModel.KeyStrokeDifference == 1 && transform.localScale.x < 0 || _playerActionsModel.KeyStrokeDifference == -1 && transform.localScale.x > 0)
-        {
-            transform.localScale = new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        }
-    }
+    #region Observer Pattern
 
     public void OnNotify(CharacterSpeed data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
@@ -362,6 +350,36 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState.StateBundle = data.StateBundle;
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Helper functions
+    private void FlipCharacter(Vector2 keystroke)
+    {
+        if (_playerActionsModel.KeyStrokeDifference == -1 && transform.localScale.x < 0)
+        {
+            transform.localScale = new Vector3(1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+
+        }
+        else if (_playerActionsModel.KeyStrokeDifference == 1 && transform.localScale.x < 0 || _playerActionsModel.KeyStrokeDifference == -1 && transform.localScale.x > 0)
+        {
+            transform.localScale = new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        }
+    }
+
+    private bool IsSlidingActionConcluded(PlayerStateBundle playerStateBundle)
+    {
+        return playerStateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_SLIDING &&
+               playerStateBundle.PlayerMovementState.IsConcluded;
+    }
+
+    private bool IsSlidingActionInProgress(PlayerStateBundle playerStateBundle)
+    {
+        return playerStateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_SLIDING &&
+               !playerStateBundle.PlayerMovementState.IsConcluded;
     }
 
     #endregion

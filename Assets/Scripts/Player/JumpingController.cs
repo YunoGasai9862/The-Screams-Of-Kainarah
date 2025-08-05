@@ -160,7 +160,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
         bool isOnLedgeOrGround = (IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer));
         bool isJumpPressed = _isJumpPressed;
 
-        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(!PlayerStateBundle.State.Equals(PlayerMovementState.IS_JUMPING), isOnLedgeOrGround, isJumpPressed));
+        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState != PlayerMovementState.IS_JUMPING, isOnLedgeOrGround, isJumpPressed));
     }
 
     private Task SetPlayerInitialPosition(State<PlayerMovementState> currentPlayerState)

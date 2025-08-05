@@ -263,7 +263,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
         Vector2 pos = transform.position;
 
         //make it better
-        int sign = await PlayerSystemReference.PlayerFlipped(transform);
+        int sign = await Helper.PlayerFlipped(transform);
 
         pos.x = transform.position.x + sign;
         Physics.Raycast(transform.position, transform.right * sign, out hit, 1f);

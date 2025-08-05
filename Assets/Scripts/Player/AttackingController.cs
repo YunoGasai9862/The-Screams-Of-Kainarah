@@ -22,9 +22,7 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     private bool _isPlayerEligibleForStartingAttack = false;
 
     private float timeDifferencebetweenStates;
-
     private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>();
-
     private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
     private int PlayerAttackStateInt { get; set; }
     private string PlayerAttackStateName { get; set; }
