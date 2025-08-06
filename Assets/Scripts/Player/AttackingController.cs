@@ -1,9 +1,11 @@
 using CoreCode;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
-public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>
+public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<AttackingController, ControllerPackage<PlayerAttackingExecutionState, bool>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>
 {
     private const float TIME_DIFFERENCE_MAX = 1.5f;
 
@@ -251,17 +253,24 @@ public class AttackingController : MonoBehaviour, IReceiver<bool>, IObserver<Gen
     }
 
     #endregion
-    public bool PerformAction(bool value)
+    public Task<ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, bool>>> PerformAction(ControllerPackage<PlayerAttackingExecutionState, bool> value)
     {
-        LeftMouseButtonPressed = value;
+        LeftMouseButtonPressed = value.Value;
         InitiatePlayerAttack();
-        return true;
+        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, bool>>(value));
     }
 
-    public bool CancelAction()
+    public Task<ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, bool>>> CancelAction()
     {
         EndPlayerAttack();
-        return true;
+        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, bool>>(
+              new ControllerPackage<PlayerAttackingExecutionState, bool>()
+              {
+                  ExecutionState = PlayerAttackingExecutionState.CANCELLED,
+                  
+              }
+            )
+         );
     }
     private void SetAttackBoostMode(bool shouldBoost)
     {

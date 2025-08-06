@@ -25,9 +25,9 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
 
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
-    private IReceiverEnhancedAsync<PlayerAnimationController, PlayerAnimationControllerPackage<bool>> _animationHandler;
+    private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState,bool>> _animationHandler;
 
-    private CommandAsyncEnhanced<PlayerAnimationController, PlayerAnimationControllerPackage<bool>> _animationCommand;
+    private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>> _animationCommand;
 
     private IOverlapChecker _movementHelperClass;
 
@@ -56,8 +56,8 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
             SubjectType = typeof(PlayerAnimationController).ToString(),
         }, CancellationToken.None);
 
-        _animationHandler = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>>();
-        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>(_animationHandler);
+        _animationHandler = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>>();
+        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>(_animationHandler);
 
         _movementHelperClass = new MovementHelperClass();
         _rb = GetComponent<Rigidbody2D>();
@@ -76,7 +76,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-            await _animationCommand.Execute(new PlayerAnimationControllerPackage<bool>() { PlayerAnimationExecutionState = PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION, Value = true });
+            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, bool>() { ExecutionState = PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION, Value = true });
         }
 
         if (AnimationDetails.CurrentAnimationTime > MAX_ANIMATION_TIME && AnimationDetails.CurrentAnimationStateInfo.IsName(PlayerAnimationConstants.SLIDING))
@@ -85,7 +85,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-            await _animationCommand.Execute(new PlayerAnimationControllerPackage<bool>() { PlayerAnimationExecutionState = PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION, Value = false });
+            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, bool>() { ExecutionState = PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION, Value = false });
         }
 
     }

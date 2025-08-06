@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 //convert it to a controller
-public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, PlayerAnimationControllerPackage<bool>>, IObserver<GenericStateBundle<PlayerStateBundle>>
+public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>, IObserver<GenericStateBundle<PlayerStateBundle>>
 {
     private AnimationStateMachine _stateMachine;
 
@@ -124,29 +124,26 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         return _anim.GetCurrentAnimatorStateInfo(0);
     }
 
-    private Animator getAnimator()
-    {
-        return _anim;
-    }
-
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerStateBundle.StateBundle = data.StateBundle;
     }
 
-    public Task<ActionExecuted<PlayerAnimationControllerPackage<bool>>> PerformAction(PlayerAnimationControllerPackage<bool> value = null)
+    public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>> PerformAction(ControllerPackage<PlayerAnimationExecutionState, bool> value = null)
+    {
+        GetAnimationExecutionScenario(value);
+
+        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>(value));
+    }
+
+    public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>> CancelAction()
     {
         throw new System.NotImplementedException();
     }
 
-    public Task<ActionExecuted<PlayerAnimationControllerPackage<bool>>> CancelAction()
+    public void GetAnimationExecutionScenario(ControllerPackage<PlayerAnimationExecutionState, bool> package)
     {
-        throw new System.NotImplementedException();
-    }
-
-    public void GetAnimationExecutionScenario(PlayerAnimationControllerPackage<bool> package)
-    {
-        switch(package.PlayerAnimationExecutionState)
+        switch(package.ExecutionState)
         {
             case PlayerAnimationExecutionState.PLAY_JUMPING_ANIMATION:
                 JumpAnimation(package.Value);
