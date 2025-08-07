@@ -48,7 +48,7 @@ public class CommandAsyncEnhanced<T, Z> : ICommandAsyncEnhanced<T, Z> where T: M
     }
     public async Task<ActionExecuted<Z>> Cancel(Z value = default)
     {
-        return await _receiver.CancelAction();
+        return await _receiver.CancelAction(value);
     }
     public async Task<ActionExecuted<Z>> Execute(Z value = default)
     {

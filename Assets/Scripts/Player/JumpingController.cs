@@ -224,7 +224,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
         return new ActionExecuted<bool>(_isJumpPressed);
     }
 
-    public async Task<ActionExecuted<bool>> CancelAction()
+    public async Task<ActionExecuted<bool>> CancelAction(bool value)
     {
         PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState> { CurrentState = PlayerMovementState.IS_JUMPING, IsConcluded = true };
 

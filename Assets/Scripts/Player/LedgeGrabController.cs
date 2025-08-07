@@ -245,7 +245,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
         return new ActionExecuted<bool>(true);
     }
 
-    public async Task<ActionExecuted<bool>> CancelAction()
+    public async Task<ActionExecuted<bool>> CancelAction(bool value)
     {
         await CancelLedgeGrab();
 

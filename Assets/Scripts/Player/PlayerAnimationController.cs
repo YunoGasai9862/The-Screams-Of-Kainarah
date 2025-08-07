@@ -136,7 +136,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>(value));
     }
 
-    public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>> CancelAction()
+    public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>> CancelAction(ControllerPackage<PlayerAnimationExecutionState, bool> value = null)
     {
         throw new System.NotImplementedException();
     }

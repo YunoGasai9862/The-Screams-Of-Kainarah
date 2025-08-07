@@ -37,9 +37,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private CommandAsync<bool> _slideCommand;
 
-    private IReceiver<bool> _attackReceiver;
+    private IReceiverEnhancedAsync<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>> _attackReceiver;
 
-    private Command<bool> _attackCommand;
+    private CommandAsyncEnhanced<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>> _attackCommand;
 
     private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>> _animationReceiver;
 
@@ -78,11 +78,11 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _slideReceiver = GetComponent<SlidingController>();
 
-        _attackReceiver = GetComponent<AttackingController>();
+        _attackReceiver = GetComponent<IReceiverEnhancedAsync<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>>();
 
         _throwingProjectileReceiver = GetComponent<ThrowingProjectileController>();
 
-        _attackCommand = new Command<bool>(_attackReceiver);
+        _attackCommand = new CommandAsyncEnhanced<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>(_attackReceiver);
 
         _animationReceiver = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>>();
 
@@ -294,35 +294,71 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         _throwingProjectileCommand.Execute();
     }
 
-    private void HandlePlayerAttackCancel(InputAction.CallbackContext context)
+    private async void HandlePlayerAttackCancel(InputAction.CallbackContext context)
     {
         _playerActionsModel.LeftMouseButtonPressed = IsSlidingActionInProgress(CurrentPlayerState.StateBundle) ? false : context.ReadValueAsButton();
         _playerActionsModel.TimeForMouseClickEnd = (float)context.time;
 
-        AttackingController.InvokeOnMouseClickEvent(_playerActionsModel.TimeForMouseClickStart, _playerActionsModel.TimeForMouseClickEnd);
+        await _attackCommand.Execute(new ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>()
+        {
+            ExecutionState = PlayerAttackingExecutionState.ON_CLICK_EVENT,
+            Value = new AttackingDetails()
+            {
+                AttackingStartTime = _playerActionsModel.TimeForMouseClickStart,
+                AttackingEndTime = _playerActionsModel.TimeForMouseClickEnd
+            }
+        });
 
-        _attackCommand.Cancel(_playerActionsModel.LeftMouseButtonPressed);
-
+        await _attackCommand.Cancel(new ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>()
+        {
+            ExecutionState = PlayerAttackingExecutionState.ATTACKING_ACTION,
+            Value = new AttackingDetails()
+            { 
+                AttackingValue = _playerActionsModel.LeftMouseButtonPressed
+            } 
+        });
     }
 
-    private void HandlePlayerAttackStart(InputAction.CallbackContext context)
+    private async void HandlePlayerAttackStart(InputAction.CallbackContext context)
     {
         _playerActionsModel.LeftMouseButtonPressed = IsSlidingActionInProgress(CurrentPlayerState.StateBundle) ? false : context.ReadValueAsButton();
         _playerActionsModel.TimeForMouseClickStart = (float)context.time;
 
         //send time stamps to the attacking controller
-        AttackingController.InvokeOnMouseClickEvent(_playerActionsModel.TimeForMouseClickStart, _playerActionsModel.TimeForMouseClickEnd);
+        await _attackCommand.Execute(new ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>()
+        {
+            ExecutionState = PlayerAttackingExecutionState.ON_CLICK_EVENT,
+            Value = new AttackingDetails()
+            {
+                AttackingStartTime = _playerActionsModel.TimeForMouseClickStart,
+                AttackingEndTime = _playerActionsModel.TimeForMouseClickEnd
+            }
+        });
 
         //execute Attack
-        _attackCommand.Execute(_playerActionsModel.LeftMouseButtonPressed);
+        await _attackCommand.Execute(new ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>()
+        {
+            ExecutionState = PlayerAttackingExecutionState.ATTACKING_ACTION,
+            Value = new AttackingDetails()
+            {
+                AttackingValue = _playerActionsModel.LeftMouseButtonPressed
+            }
+        });
     }
 
     //boost v attack
-    private void HandleBoostAttackStart(InputAction.CallbackContext context)
+    private async void HandleBoostAttackStart(InputAction.CallbackContext context)
     {
         _playerActionsModel.VBoostKeyPressed = context.ReadValueAsButton();
-        AttackingController.AlertBoostEventForKeyPressed(_playerActionsModel.VBoostKeyPressed);
 
+        await _attackCommand.Execute(new ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>()
+        {
+            ExecutionState = PlayerAttackingExecutionState.BOOST_ATTACK,
+            Value = new AttackingDetails()
+            {
+                AttackingValue = _playerActionsModel.VBoostKeyPressed
+            }
+        });
     }
     private void HandleBoostAttackCancel(InputAction.CallbackContext context)
     {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
-public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<AttackingController, ControllerPackage<PlayerAttackingExecutionState, bool>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>
+public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>
 {
     private const float TIME_DIFFERENCE_MAX = 1.5f;
 
@@ -113,8 +113,10 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
             ResetAttackingState();
         }
     }
-    private void InitiatePlayerAttack()
+    private void InitiatePlayerAttack(bool leftMouseButtonPressed)
     {
+        LeftMouseButtonPressed = leftMouseButtonPressed;
+
         if (CanPlayerAttack()) //ground attack
         {
             CurrentPlayerState.StateBundle.PlayerAttackState = new State<PlayerAttackState>() { CurrentState = PlayerAttackState.IS_ATTACKING, IsConcluded = false };
@@ -134,7 +136,6 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
         if (CanPlayerAttackWhileJumping())
         {
             PlayerAttackStateMachine.SetAttackState(jumpAttackStateName, LeftMouseButtonPressed);
-
         }
     }
     private bool CanPlayerAttackWhileJumping()
@@ -253,18 +254,19 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     }
 
     #endregion
-    public Task<ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, bool>>> PerformAction(ControllerPackage<PlayerAttackingExecutionState, bool> value)
+    public Task<ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>> PerformAction(ControllerPackage<PlayerAttackingExecutionState, AttackingDetails> value)
     {
-        LeftMouseButtonPressed = value.Value;
-        InitiatePlayerAttack();
-        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, bool>>(value));
+        DelegateExecutionState(value);
+        
+        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>(value));
     }
 
-    public Task<ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, bool>>> CancelAction()
+    public Task<ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>> CancelAction(ControllerPackage<PlayerAttackingExecutionState, AttackingDetails> value)
     {
         EndPlayerAttack();
-        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, bool>>(
-              new ControllerPackage<PlayerAttackingExecutionState, bool>()
+
+        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>(
+              new ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>()
               {
                   ExecutionState = PlayerAttackingExecutionState.CANCELLED,
                   
@@ -312,5 +314,29 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentPlayerState = data;
+    }
+
+    private void DelegateExecutionState(ControllerPackage<PlayerAttackingExecutionState, AttackingDetails> controllerPackage)
+    {
+        switch(controllerPackage.ExecutionState)
+        {
+            case PlayerAttackingExecutionState.ON_CLICK_EVENT:
+                InvokeOnMouseClickEvent(controllerPackage.Value.AttackingStartTime, controllerPackage.Value.AttackingEndTime);
+                break;
+
+            case PlayerAttackingExecutionState.ATTACKING_ACTION:
+                InitiatePlayerAttack(controllerPackage.Value.AttackingValue);
+                break;
+
+            case PlayerAttackingExecutionState.BOOST_ATTACK:
+                AlertBoostEventForKeyPressed(controllerPackage.Value.AttackingValue);
+                break;
+
+            case PlayerAttackingExecutionState.CANCELLED:
+                break;
+
+            default:
+                break;
+        }
     }
 }

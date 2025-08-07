@@ -4,5 +4,7 @@ public enum PlayerAttackingExecutionState
 
     ATTACKING_ACTION,
 
+    BOOST_ATTACK,
+
     CANCELLED
 }
