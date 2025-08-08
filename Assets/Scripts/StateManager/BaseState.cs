@@ -12,6 +12,8 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
     protected GenericStateBundle<T> StateBundle { get; set; }
     private void Start()
     {
+        Debug.Log("Adding the state event!");
+
         GetEvent().AddListener(PingStateListeners);
     }
 

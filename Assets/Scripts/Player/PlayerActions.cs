@@ -53,8 +53,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private GlobalGameStateDelegator _globalGameStateDelegator;
 
-    private FloatDelegator _floatDelegator;
-
     private PlayerVelocityDelegator _playerVelocityDelegator;
 
     private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
@@ -105,8 +103,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
 
         _playerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
-
-        _floatDelegator = Helper.GetDelegator<FloatDelegator>();
 
         _playerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
 

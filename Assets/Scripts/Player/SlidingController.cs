@@ -44,6 +44,8 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
     private void Awake()
     {
         PlayerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
+
+        AnimationDetailsDelegator = Helper.GetDelegator<AnimationDetailsDelegator>();
     }
     void Start()
     {
