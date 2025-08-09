@@ -23,4 +23,26 @@ public class PlayerStateConsumer : BaseState<PlayerStateBundle>
     {
         return playerStateEvent.GetInstance();
     }
+
+    protected override GenericStateBundle<PlayerStateBundle> GetInitialState()
+    {
+        return new GenericStateBundle<PlayerStateBundle>()
+        {
+            StateBundle = new PlayerStateBundle()
+            {
+                PlayerActionState = new State<PlayerActionState>()
+                {
+                    CurrentState = PlayerActionState.IDLE
+                },
+                PlayerAttackState = new State<PlayerAttackState>()
+                {
+                    CurrentState = PlayerAttackState.IDLE,
+                },
+                PlayerMovementState = new State<PlayerMovementState>()
+                {
+                    CurrentState = PlayerMovementState.IS_IDLE,
+                }
+            }
+        };
+    }
 }

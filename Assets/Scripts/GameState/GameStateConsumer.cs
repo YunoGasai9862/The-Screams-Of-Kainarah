@@ -24,4 +24,18 @@ public class GameStateConsumer : BaseState<GameStateBundle>
     {
         return gameStateEvent.GetInstance();
     }
+
+    protected override GenericStateBundle<GameStateBundle> GetInitialState()
+    {
+        return new GenericStateBundle<GameStateBundle>
+        {
+            StateBundle = new GameStateBundle()
+            {
+                GameState = new State<GameState>()
+                {
+                    CurrentState = GameState.FREE_MOVEMENT
+                }
+            }
+        };
+    }
 }

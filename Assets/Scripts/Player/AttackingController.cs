@@ -107,6 +107,11 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     // Update is called once per frame
     void Update()
     {
+        if (CurrentPlayerState.StateBundle == null)
+        {
+            Debug.Log("CurrentPlayerState.StateBundle is null - skipping update!");
+        }
+
         if (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_SLIDING) || 
             PlayerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
         {
@@ -308,12 +313,14 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
     public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        CurrentGameState = data;
+        CurrentGameState.StateBundle = data.StateBundle;
     }
 
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        CurrentPlayerState = data;
+        Debug.Log($"PlayerStateBundle in Attacking Controller - {data.StateBundle}");
+
+        CurrentPlayerState.StateBundle = data.StateBundle;
     }
 
     private void DelegateExecutionState(ControllerPackage<PlayerAttackingExecutionState, AttackingDetails> controllerPackage)

@@ -9,12 +9,15 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
 {
     protected List<IObserver<GenericStateBundle<T>>> StateListeners { get; set; } = new List<IObserver<GenericStateBundle<T>>> { };
 
-    protected GenericStateBundle<T> StateBundle { get; set; }
+    protected GenericStateBundle<T> StateBundle { get; set; } = new GenericStateBundle<T>();
+
     private void Start()
     {
-        Debug.Log("Adding the state event!");
-
         GetEvent().AddListener(PingStateListeners);
+
+        AddSubject();
+
+        StateBundle = GetInitialState();
     }
 
     public async void PingStateListeners(GenericStateBundle<T> stateBundle)
@@ -26,7 +29,6 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
             await NotifyObserver(listener, StateBundle, CancellationToken.None);
         }
     }
-
 
     private Task NotifyObserver(IObserver<GenericStateBundle<T>> observer, GenericStateBundle<T> stateBundle, CancellationToken cancellationToken)
     {
@@ -41,8 +43,6 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
 
     public async void OnNotifySubject(IObserver<GenericStateBundle<T>> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        Debug.Log("Base Class On Notify through child class!");
-
         StateListeners.Add(observer);
 
         await NotifyObserver(observer, StateBundle, cancellationToken);
@@ -53,4 +53,6 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
     protected abstract UnityEvent<GenericStateBundle<T>> GetEvent(); 
 
     protected abstract BaseDelegatorEnhanced<GenericStateBundle<T>> GetDelegator();
+
+    protected abstract GenericStateBundle<T> GetInitialState();
 }
