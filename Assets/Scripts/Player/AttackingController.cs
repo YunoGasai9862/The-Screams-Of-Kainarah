@@ -107,12 +107,15 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     // Update is called once per frame
     void Update()
     {
-        if (CurrentPlayerState.StateBundle == null)
+        if (CurrentPlayerState == null || CurrentPlayerState.StateBundle == null)
         {
-            Debug.Log("CurrentPlayerState.StateBundle is null - skipping update!");
+            Debug.Log("CurrentPlayerState || CurrentPlayerState.StateBundle is null - skipping update!");
+            return;
         }
 
-        if (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_SLIDING) || 
+        Debug.Log($"NON NULL - {CurrentPlayerState}");
+
+        if (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_SLIDING || 
             PlayerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
         {
             ResetAttackingState();

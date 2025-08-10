@@ -12,7 +12,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private float _maxSlideTime = 0.4f;
 
-    private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>();
+    private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>() { StateBundle = new PlayerStateBundle() };
 
     private PlayerStateDelegator PlayerStateDelegator { get; set; }
 

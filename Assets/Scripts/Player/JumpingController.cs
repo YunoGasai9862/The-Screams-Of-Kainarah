@@ -50,7 +50,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
-    private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle> { };
+    private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle> { StateBundle = new PlayerStateBundle() };
 
     private void Awake()
     {
@@ -84,10 +84,9 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
             SubjectType = typeof(PlayerStateConsumer).ToString()
         }, CancellationToken.None));
 
-        PlayerVelocityDelegator.AddToSubjectsDict(typeof(JumpingController).ToString(), name, new Subject<IObserver<CharacterVelocity>>());
+        PlayerVelocityDelegator.AddToSubjectsDict(typeof(JumpingController).ToString(), typeof(JumpingController).ToString(), new Subject<IObserver<CharacterVelocity>>());
 
-        PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[name].SetSubject(this);
-
+        PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[typeof(JumpingController).ToString()].SetSubject(this);
     }
 
     //REMOVE THIS! -OR FIND A BETTER WAY TO REFACTOR THIS
@@ -205,7 +204,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
     public void OnNotifySubject(IObserver<CharacterVelocity> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        PlayerVelocityDelegator.AddToSubjectObserversDict(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[gameObject.name], observer);
+        PlayerVelocityDelegator.AddToSubjectObserversDict(typeof(JumpingController).ToString(), PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[typeof(JumpingController).ToString()], observer);
 
         StartCoroutine(PlayerVelocityDelegator.NotifyObserver(observer, new CharacterVelocity() { VelocityY = - 10f}, new NotificationContext() { SubjectType = typeof(JumpingController).ToString()}, cancellationToken));
     }

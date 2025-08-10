@@ -51,7 +51,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
     private bool StartCalculatingGrabLedgeDisplacement { get; set; }
 
-    private GenericStateBundle<PlayerStateBundle> PlayerBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>();
+    private GenericStateBundle<PlayerStateBundle> PlayerBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>() { StateBundle = new PlayerStateBundle() };
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
@@ -103,6 +103,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
     async void Update()
     {
         greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, greenXOffset)), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
+
         redBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, redXOffset)), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
 
         if (!_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
@@ -225,7 +226,6 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
         CanGrab = false;
     }
     
-    //using in animations
     public Task StartLedgeGrab()
     {
         CanGrab = true;
@@ -235,6 +235,8 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
+        Debug.Log($"PlayerStateBundle in Ledge Grab Controller - {data.StateBundle}");
+
         PlayerBundle.StateBundle = data.StateBundle;
     }
 
