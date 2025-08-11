@@ -84,9 +84,11 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
             SubjectType = typeof(PlayerStateConsumer).ToString()
         }, CancellationToken.None));
 
-        PlayerVelocityDelegator.AddToSubjectsDict(typeof(JumpingController).ToString(), typeof(JumpingController).ToString(), new Subject<IObserver<CharacterVelocity>>());
+        Debug.Log($"PlayerName: {gameObject.name}");
 
-        PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[typeof(JumpingController).ToString()].SetSubject(this);
+        PlayerVelocityDelegator.AddToSubjectsDict(typeof(JumpingController).ToString(), gameObject.name, new Subject<IObserver<CharacterVelocity>>());
+
+        PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[gameObject.name].SetSubject(this);
     }
 
     //REMOVE THIS! -OR FIND A BETTER WAY TO REFACTOR THIS
@@ -104,6 +106,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
     }
     public async Task HandleJumpingMechanism()
     {
+        //THE PROBLEM IS WE ARE TRYING TO NOTIFY BEFORE WE HAVE THE DICT - FIX IT!!
         await HandleJumping();
 
         await HandleFalling();
@@ -204,7 +207,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
     public void OnNotifySubject(IObserver<CharacterVelocity> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        PlayerVelocityDelegator.AddToSubjectObserversDict(typeof(JumpingController).ToString(), PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[typeof(JumpingController).ToString()], observer);
+        PlayerVelocityDelegator.AddToSubjectObserversDict(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[gameObject.name], observer);
 
         StartCoroutine(PlayerVelocityDelegator.NotifyObserver(observer, new CharacterVelocity() { VelocityY = - 10f}, new NotificationContext() { SubjectType = typeof(JumpingController).ToString()}, cancellationToken));
     }

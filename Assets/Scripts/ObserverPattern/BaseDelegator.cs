@@ -76,6 +76,8 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
     public void AddToSubjectsDict(string mainSubjectIdentificationKey, string gameObjectInstanceIdentificationKeyForTheSubject, Subject<IObserver<T>> subject)
     {
+        Debug.Log($"Adding Key: {mainSubjectIdentificationKey} {gameObjectInstanceIdentificationKeyForTheSubject} {subject}");
+
         if (SubjectsDict.ContainsKey(mainSubjectIdentificationKey))
         {
             Debug.Log($"Key already exists {mainSubjectIdentificationKey}. Won't persist it again!");
@@ -103,8 +105,12 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
     public void AddToSubjectObserversDict(string uniqueSubjectkey, Subject<IObserver<T>> subject, IObserver<T> observer)
     {
+        Debug.Log($"AddToSubjectObserversDict for - {uniqueSubjectkey} {subject} {observer}");
+
         if (SubjectObserversDict.ContainsKey(uniqueSubjectkey))
         {
+            Debug.Log($"AddToSubjectObserversDict Contains already for - {uniqueSubjectkey} {subject} {observer}");
+
             SubjectObserversDict[uniqueSubjectkey].Add(new Association<T>() { Observer = observer, Subject = subject });
 
             return;
@@ -121,6 +127,8 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
     public List<Association<T>> GetSubjectAssociations(string subjectUniqueKey)
     {
+        Debug.Log($"SubjectUniqueKey: {subjectUniqueKey} - dic {SubjectObserversDict}");
+
         return SubjectObserversDict[subjectUniqueKey];
     }
 
