@@ -127,9 +127,12 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
     public List<Association<T>> GetSubjectAssociations(string subjectUniqueKey)
     {
-        Debug.Log($"SubjectUniqueKey: {subjectUniqueKey} - dic {SubjectObserversDict}");
+        if (SubjectObserversDict.TryGetValue(subjectUniqueKey, out List<Association<T>> associations))
+        {
+            return associations;
+        }
 
-        return SubjectObserversDict[subjectUniqueKey];
+        return new List<Association<T>>();
     }
 
     public Dictionary<string, Subject<IObserver<T>>> GetSubsetSubjectsDictionary(string key)
@@ -144,6 +147,11 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
     public void NotifyObservers(T valueToSend, string subjectIdentifyingKey, Type subjectType, CancellationToken cancellationToken)
     {
+        if (SubjectObserversDict == null)
+        {
+            Debug.Log($"SubjectObserversDict is null - skipping NotifyObservers for now!");
+        }
+
         foreach (Association<T> association in GetSubjectAssociations(subjectIdentifyingKey))
         {
             StartCoroutine(NotifyObserver(association.Observer, valueToSend, new NotificationContext()

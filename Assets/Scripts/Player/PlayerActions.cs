@@ -176,9 +176,22 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         //think of making it more better
         //make it entirely event based
+
+        if (CurrentGameState == null || CurrentGameState.StateBundle == null)
+        {
+            Debug.Log("CurrentGameState || CurrentGameState.StateBundle is null - skipping update!");
+            return;
+        }
+
+        if (CurrentPlayerState == null || CurrentPlayerState.StateBundle == null)
+        {
+            Debug.Log("CurrentPlayerState || CurrentPlayerState.StateBundle is null - skipping update!");
+            return;
+        }
+
+
         if (CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE)) 
         {
-            //we'll need to deal with this differently now - this class should not be making the actual animatioon calls, but delegate it appropriately via controllers!!!
             await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, bool>() { ExecutionState = PlayerAnimationExecutionState.PLAY_MOVEMENT_ANIMATION, Value = false });
             return;
         }
