@@ -72,8 +72,6 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
         PlayerAttackStateInt = 0;
 
-        GlobalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
-
         PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
 
         PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
@@ -81,6 +79,8 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
     private void Start()
     {
+        GlobalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
         StartCoroutine(GlobalGameStateDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,

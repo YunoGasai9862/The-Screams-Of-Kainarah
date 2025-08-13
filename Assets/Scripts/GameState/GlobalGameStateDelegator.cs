@@ -15,6 +15,8 @@ public class GlobalGameStateDelegator: BaseDelegatorEnhanced<GenericStateBundle<
         CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, 
         int sleepTimeInMilliSeconds = 1000, params object[] optional)
     {
+        Debug.Log($"Using Wrapper for - {notificationContext.SubjectType} / {observer} - length of the dict :{SubjectsDict.Count}");
+
         StartCoroutine(NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, maxRetries, sleepTimeInMilliSeconds));
     }
 }

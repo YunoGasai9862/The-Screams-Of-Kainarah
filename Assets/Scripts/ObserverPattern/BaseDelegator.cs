@@ -44,7 +44,7 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
     {
         if (maxRetries == 0)
         {
-            throw new ApplicationException($"No such subject type exists! - Please Register first {notificationContext.SubjectType}");
+            throw new ApplicationException($"No such subject type exists! - Please Register first {notificationContext.SubjectType}. Seeker: {observer}");
         }
 
         if (notificationContext.SubjectType == null)
@@ -56,7 +56,9 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
         if (SubjectsDict.TryGetValue(notificationContext.SubjectType, out Dictionary<string, Subject<IObserver<T>>> subjects))
         {
-            foreach(KeyValuePair<string, Subject<IObserver<T>>> keyValuePair in subjects)
+            Debug.Log($"Found the subject - {notificationContext.SubjectType} / Seeker: {observer}");
+
+            foreach (KeyValuePair<string, Subject<IObserver<T>>> keyValuePair in subjects)
             {
                 yield return new WaitUntil(() => !Helper.IsSubjectNull(keyValuePair.Value));
 
@@ -67,6 +69,8 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
         {
             yield return new WaitForSeconds(Helper.GetSecondsFromMilliSeconds(sleepTimeInMilliSeconds));
 
+            Debug.Log($"Retrying for - {notificationContext.SubjectType} / Seeker: {observer} length of the dict: {SubjectsDict.Count}");
+
             StartCoroutine(NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, maxRetries -= 1, sleepTimeInMilliSeconds, optional));
         }
         
@@ -76,7 +80,7 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
     public void AddToSubjectsDict(string mainSubjectIdentificationKey, string gameObjectInstanceIdentificationKeyForTheSubject, Subject<IObserver<T>> subject)
     {
-        Debug.Log($"Adding Key: {mainSubjectIdentificationKey} {gameObjectInstanceIdentificationKeyForTheSubject} {subject}");
+        Debug.Log($"Adding Key: mainSubjectIdentificationKey: {mainSubjectIdentificationKey} gameObjectInstanceIdentificationKeyForTheSubject: {gameObjectInstanceIdentificationKeyForTheSubject} subject: {subject}");
 
         if (SubjectsDict.ContainsKey(mainSubjectIdentificationKey))
         {
@@ -123,6 +127,10 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
     public Dictionary<string, List<Association<T>>> GetSubjectObserversDict()
     {
         return SubjectObserversDict;
+    }
+    public Dictionary<string, Dictionary<string, Subject<IObserver<T>>>> GetSubjectsDict()
+    {
+        return SubjectsDict;
     }
 
     public List<Association<T>> GetSubjectAssociations(string subjectUniqueKey)

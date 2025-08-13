@@ -100,8 +100,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _playerActionsModel.OriginalSpeed = _characterSpeed;
 
-        _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
-
         _playerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
 
         _playerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
@@ -132,12 +130,15 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private void Start()
     {
-        StartCoroutine(_globalGameStateDelegator.NotifySubject(this, new NotificationContext()
+        _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
+        _globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(GameStateConsumer).ToString()
-        }, CancellationToken.None));
+
+        }, CancellationToken.None);
 
         StartCoroutine(_playerVelocityDelegator.NotifySubject(this, new NotificationContext()
         {
@@ -176,6 +177,23 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         //think of making it more better
         //make it entirely event based
+
+        if (_globalGameStateDelegator.GetSubjectsDict().Count == 0)
+        {
+            //THE ISSUE IS HERE THE DICT COUNT FOR PLAYER ACTIONS/ATTACKING CONTROLLER IS ALWAYS ZERO! NEED TO FIND ANOTHER WAY!!
+            //Debug.Log("Count is zero - trying to find again!");
+
+            //_globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
+            //_globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+            //{
+            //    ObserverName = gameObject.name,
+            //    ObserverTag = gameObject.tag,
+            //    SubjectType = typeof(GameStateConsumer).ToString()
+
+            //}, CancellationToken.None);
+
+        }
 
         if (CurrentGameState == null || CurrentGameState.StateBundle == null)
         {
