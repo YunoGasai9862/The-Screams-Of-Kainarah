@@ -862,6 +862,7 @@ MonoBehaviour:
   jumpAttackStateName: AttackJ
   booksAttackStateName: BoostAttack
   powerUpBarFillEvent: {fileID: 2517715538828987300, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
+  globalGameStateDelegator: {fileID: 69422677378973300, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
 --- !u!114 &8744535595071973501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -985,6 +986,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterSpeed: 10
+  _globalGameStateDelegator: {fileID: 69422677378973300, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
+  _playerVelocityDelegator: {fileID: 4646125395787727100, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
+  _playerStateDelegator: {fileID: 4144875992386150418, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
 --- !u!114 &-5899582873674386158
 MonoBehaviour:
   m_ObjectHideFlags: 0

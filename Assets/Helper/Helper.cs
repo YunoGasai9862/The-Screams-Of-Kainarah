@@ -36,6 +36,8 @@ public class Helper: MonoBehaviour
             throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
         }
 
+        Debug.Log($"Delegator Found: {delegator}");
+
         return delegator;
     }
 

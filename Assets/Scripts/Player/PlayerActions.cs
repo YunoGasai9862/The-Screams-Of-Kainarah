@@ -9,8 +9,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 {
     [SerializeField] float _characterSpeed = 10f;
 
-    private PlayerStateDelegator _playerStateDelegator;
-
     private PlayerStateEvent _playerStateEvent;
 
     private PlayerInput _playerInput;
@@ -51,15 +49,21 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private PlayerActionsModel _playerActionsModel;
 
-    private GlobalGameStateDelegator _globalGameStateDelegator;
-
-    private PlayerVelocityDelegator _playerVelocityDelegator;
-
     private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
 
     private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
     private ThrowingProjectileController ThrowingProjectileController { get => GetComponent<ThrowingProjectileController>(); } //implement all the actions together
+
+    [SerializeField]
+    GlobalGameStateDelegator _globalGameStateDelegator;
+
+    [SerializeField]
+    PlayerVelocityDelegator _playerVelocityDelegator;
+
+    [SerializeField]
+    PlayerStateDelegator _playerStateDelegator;
+
 
     //Force = -2m * sqrt (g * h)
     private void Awake()
@@ -100,10 +104,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _playerActionsModel.OriginalSpeed = _characterSpeed;
 
-        _playerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
-
-        _playerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
-
         _playerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
 
         _rocky2DActions.PlayerMovement.Jump.started += BeginJumpAction; //i can add the same function
@@ -130,12 +130,12 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private void Start()
     {
-        _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+        Debug.Log(_globalGameStateDelegator);
 
         _globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
+            ObserverName = this.name,
+            ObserverTag = this.name,
             SubjectType = typeof(GameStateConsumer).ToString()
 
         }, CancellationToken.None);
@@ -172,38 +172,15 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private async void Update()
     {
-        //make it better - but still this is an improvement, enhancement from singleton
-        //more modular
-
-        //think of making it more better
-        //make it entirely event based
-
-        if (_globalGameStateDelegator.GetSubjectsDict().Count == 0)
-        {
-            //THE ISSUE IS HERE THE DICT COUNT FOR PLAYER ACTIONS/ATTACKING CONTROLLER IS ALWAYS ZERO! NEED TO FIND ANOTHER WAY!!
-            //Debug.Log("Count is zero - trying to find again!");
-
-            //_globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
-
-            //_globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
-            //{
-            //    ObserverName = gameObject.name,
-            //    ObserverTag = gameObject.tag,
-            //    SubjectType = typeof(GameStateConsumer).ToString()
-
-            //}, CancellationToken.None);
-
-        }
-
         if (CurrentGameState == null || CurrentGameState.StateBundle == null)
         {
-            Debug.Log("CurrentGameState || CurrentGameState.StateBundle is null - skipping update!");
+            Debug.Log("CurrentGameState || CurrentGameState.StateBundle is null - skipping update (PlayerActions)!");
             return;
         }
 
         if (CurrentPlayerState == null || CurrentPlayerState.StateBundle == null)
         {
-            Debug.Log("CurrentPlayerState || CurrentPlayerState.StateBundle is null - skipping update!");
+            Debug.Log("CurrentPlayerState || CurrentPlayerState.StateBundle is null - skipping update (PlayerActions)!");
             return;
         }
 
@@ -407,11 +384,15 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
+        Debug.Log($"PlayerStateBundle in PlayerActions - {data.StateBundle}");
+
         CurrentPlayerState.StateBundle = data.StateBundle;
     }
 
     public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
+        Debug.Log($"GameStateBundle in PlayerActions - {data.StateBundle}");
+
         CurrentGameState.StateBundle = data.StateBundle;
     }
 

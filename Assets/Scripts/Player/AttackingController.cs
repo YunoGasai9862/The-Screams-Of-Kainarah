@@ -34,8 +34,6 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     private bool PowerUpBarFilled { get; set; } = false;
     private PlayerAttackStateMachine PlayerAttackStateMachine { get; set; }
 
-    private GlobalGameStateDelegator GlobalGameStateDelegator { get; set; }
-
     private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
@@ -60,6 +58,9 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
     [SerializeField] PowerUpBarFillEvent powerUpBarFillEvent;
 
+    [SerializeField] GlobalGameStateDelegator globalGameStateDelegator;
+
+
     private void Awake()
     {
         _anim = GetComponent<Animator>();
@@ -79,14 +80,13 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
     private void Start()
     {
-        GlobalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
-
-        StartCoroutine(GlobalGameStateDelegator.NotifySubject(this, new NotificationContext()
+        globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
+            ObserverName = this.name,
+            ObserverTag = this.name,
             SubjectType = typeof(GameStateConsumer).ToString()
-        }, CancellationToken.None));
+
+        }, CancellationToken.None);
 
 
         StartCoroutine(PlayerStateDelegator.NotifySubject(this, new NotificationContext()
@@ -316,6 +316,8 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
     public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
+        Debug.Log($"GlobalGameStateBundle in Attacking Controller - {data.StateBundle}");
+
         CurrentGameState.StateBundle = data.StateBundle;
     }
 
