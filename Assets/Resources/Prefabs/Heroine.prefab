@@ -687,19 +687,19 @@ GameObject:
   - component: {fileID: 2357857119552702230}
   - component: {fileID: 2357857119552702228}
   - component: {fileID: 2357857118627078222}
-  - component: {fileID: 3387488181997499512}
   - component: {fileID: 8744535595071973501}
   - component: {fileID: 6549680331415743501}
   - component: {fileID: -7060034625620182088}
   - component: {fileID: 5169309916338779487}
   - component: {fileID: 3772540289453430958}
   - component: {fileID: 4678349112697046184}
-  - component: {fileID: 5161662302899238198}
   - component: {fileID: -5899582873674386158}
   - component: {fileID: -1774752956742986687}
   - component: {fileID: 3141289391138608163}
   - component: {fileID: -4991287181582915585}
   - component: {fileID: 8483737007340525891}
+  - component: {fileID: 7039490944618790539}
+  - component: {fileID: 199220884462997647}
   m_Layer: 7
   m_Name: Heroine
   m_TagString: Player
@@ -836,33 +836,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &3387488181997499512
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2357857119552702225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e412240ce6b30f439fffde879a0576b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Ground:
-    serializedVersion: 2
-    m_Bits: 64
-  ledge:
-    serializedVersion: 2
-    m_Bits: 8
-  IceTrail: {fileID: 1326094510711206718, guid: f87dcd0b34fb626439aac4d24529af72, type: 3}
-  IceTrail2: {fileID: 6942044088278875987, guid: 05dace05c5d30104880353dab19e2674, type: 3}
-  canAttackStateName: Attack
-  attackStateName: PlayerAttack
-  timeDifferenceStateName: ElapsedTime
-  jumpAttackStateName: AttackJ
-  booksAttackStateName: BoostAttack
-  powerUpBarFillEvent: {fileID: 2517715538828987300, guid: 6e9d360ab998c8d419d19f1f891821e8, type: 3}
-  globalGameStateDelegator: {fileID: 69422677378973300, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
 --- !u!114 &8744535595071973501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -973,22 +946,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afe0a9d3b8a6aed47afb17124abc2793, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5161662302899238198
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2357857119552702225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eab60c1316c33f34db139ccacbf1d3a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _characterSpeed: 10
-  _globalGameStateDelegator: {fileID: 69422677378973300, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
-  _playerVelocityDelegator: {fileID: 4646125395787727100, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
-  _playerStateDelegator: {fileID: 4144875992386150418, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
 --- !u!114 &-5899582873674386158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1558,6 +1515,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ab5e0e07444eef4ba3d841e424e64f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7039490944618790539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e412240ce6b30f439fffde879a0576b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Ground:
+    serializedVersion: 2
+    m_Bits: 64
+  ledge:
+    serializedVersion: 2
+    m_Bits: 8
+  IceTrail: {fileID: 1326094510711206718, guid: f87dcd0b34fb626439aac4d24529af72, type: 3}
+  IceTrail2: {fileID: 6942044088278875987, guid: 05dace05c5d30104880353dab19e2674, type: 3}
+  canAttackStateName: Attack
+  attackStateName: PlayerAttack
+  timeDifferenceStateName: ElapsedTime
+  jumpAttackStateName: AttackJ
+  booksAttackStateName: BoostAttack
+  powerUpBarFillEvent: {fileID: 2401602875940808177, guid: dbdc1cbe1bf814148afa12f2338e0aa3, type: 3}
+  globalGameStateDelegator: {fileID: 7488594600983117778, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
+--- !u!114 &199220884462997647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab60c1316c33f34db139ccacbf1d3a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterSpeed: 10
+  _globalGameStateDelegator: {fileID: 7488594600983117778, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
+  _playerVelocityDelegator: {fileID: 4646125395787727100, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
+  _playerStateDelegator: {fileID: 4144875992386150418, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
 --- !u!1 &3485019726026848876
 GameObject:
   m_ObjectHideFlags: 0

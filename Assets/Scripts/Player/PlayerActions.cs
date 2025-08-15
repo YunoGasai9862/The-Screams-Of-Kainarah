@@ -130,7 +130,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private void Start()
     {
-        Debug.Log(_globalGameStateDelegator);
+        Debug.Log($"Dict: {_globalGameStateDelegator.GetSubjectsDict()}");
 
         _globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {

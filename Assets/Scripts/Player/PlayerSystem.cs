@@ -5,11 +5,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject<IObserver<PlayerSystem>>
+public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject<IObserver<PlayerSystem>>, IObserver<GenericStateBundle<GameStateBundle>>
 {
     private HealthDelegator HealthDelegator { get; set; }
 
     private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
+
+    private GlobalGameStateDelegator GlobalGameStateDelegator { get; set; }
+
+    private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
 
     private Health PlayerHealth { get; set; }
 
@@ -25,10 +29,22 @@ public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject
         HealthDelegator = Helper.GetDelegator<HealthDelegator>();
 
         PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
+
+        GlobalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
     }
 
     private void Start()
     {
+        //this is not working either!
+        GlobalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        {
+            ObserverName = this.name,
+            ObserverTag = this.name,
+            SubjectType = typeof(GameStateConsumer).ToString()
+
+        }, CancellationToken.None);
+
+
         HealthDelegator.AddToSubjectsDict(typeof(PlayerSystem).ToString(), name, new Subject<IObserver<Health>>());
         HealthDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSystem).ToString())[name].SetSubject(this);
 
@@ -72,5 +88,12 @@ public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject
             SubjectType = typeof(PlayerSystem).ToString()
 
         }, CancellationToken.None));
+    }
+
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        Debug.Log("Got the bundle in Player System!");
+
+        CurrentGameState.StateBundle = data.StateBundle;
     }
 }

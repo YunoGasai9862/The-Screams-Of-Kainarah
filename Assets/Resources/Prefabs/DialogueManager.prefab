@@ -46,12 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8efb056396af0e4c80d3b92b783effb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myname: {fileID: 0}
-  maindialogue: {fileID: 0}
-  myanimator: {fileID: 0}
+  interlocutorTextArea: {fileID: 0}
+  dialogueTextArea: {fileID: 0}
+  dialogueTextAreaAnimation: {fileID: 0}
   nextDialogueTriggerEvent: {fileID: 0}
   audioTriggerEvent: {fileID: 0}
-  globalGameStateDelegator: {fileID: 0}
 --- !u!114 &3562592736067886651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,6 +65,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DialoguesAndOptions: {fileID: 11400000, guid: 399be5f2e16fa6147acdfdb4b6cf785b, type: 2}
   dialogueTriggerEvent: {fileID: 7796256848706690135, guid: dbdc1cbe1bf814148afa12f2338e0aa3, type: 3}
+  globalGameStateDelegator: {fileID: 0}
 --- !u!114 &850402733923161580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,4 +79,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueTriggerEvent: {fileID: 7796256848706690135, guid: dbdc1cbe1bf814148afa12f2338e0aa3, type: 3}
-  gameStateEvent: {fileID: 1507967191107950637, guid: dbdc1cbe1bf814148afa12f2338e0aa3, type: 3}
+  gameStateEvent: {fileID: 0}
+  globalGameStateDelegator: {fileID: 0}

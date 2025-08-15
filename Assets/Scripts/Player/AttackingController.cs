@@ -3,7 +3,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>
 {
@@ -80,6 +79,8 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
     private void Start()
     {
+        Debug.Log($"Attacking Controllers Global Game State Delegator : {globalGameStateDelegator} {this}");
+
         globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = this.name,
