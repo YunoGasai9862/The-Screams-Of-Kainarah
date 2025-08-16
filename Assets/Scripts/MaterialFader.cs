@@ -1,12 +1,9 @@
-using NUnit;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class SpawnPlayer : MonoBehaviour
+public class MaterialFader
 {
     const float SHADERFADEMAXVALUE = 1;
 
@@ -17,12 +14,6 @@ public class SpawnPlayer : MonoBehaviour
 
     private Material playerMaterial;
     private float _increment = 0.0f;
-    private SemaphoreSlim _semaphoreSlim;
-    private CancellationTokenSource _cancellationTokenSource;
-    private CancellationToken _cancellationToken;
-
-
-    public CancellationToken GetCancellationToken { get => _cancellationToken; set => _cancellationToken = value; }
 
     private void Awake()
     {
@@ -32,35 +23,10 @@ public class SpawnPlayer : MonoBehaviour
     }
     async void Start()
     {
-        await SpawnEntity(Player, locationToSpawn);
-        playerMaterial = Player.GetComponent<Renderer>().sharedMaterial; //we have to take it from the Renderer component                                                                     //direct material access is not allowed
+        playerMaterial = Player.GetComponent<Renderer>().sharedMaterial;
         playerMaterial.SetFloat("_FadeIn", _increment);
     }
-
-    async void Update()
-    {
-        try
-        {
-            await _semaphoreSlim.WaitAsync();
-
-            if (_increment <= 1 && !GetCancellationToken.IsCancellationRequested)
-            {
-                _increment += incrementValue * Time.deltaTime;
-                await FadeIn(playerMaterial, "_FadeIn", _increment, _cancellationTokenSource);
-            }
-        }
-        finally
-        {
-            _semaphoreSlim.Release(); //to release the lock on the last false condition
-        }
-    }
-
-    public async Task SpawnEntity(GameObject Player, Vector3 locationToSpawn)
-    {
-        await Task.Delay(TimeSpan.FromSeconds(0));
-        Instantiate(Player, locationToSpawn, Player.transform.rotation);
-    }
-    
+   
     public async Task ResetAnimationAndMaterialProperties(GameObject Player, CancellationToken token)
     {
         GetCancellationToken = token;
@@ -76,11 +42,12 @@ public class SpawnPlayer : MonoBehaviour
         material.SetFloat("_FadeIn", incrementValue);
         return incrementValue;
     }
-    private async Task FadeIn(Material playerMaterial, string property, float increment, CancellationTokenSource token)
+
+    //CONVERT TO A COROUTINE
+    private async Task FadeIn(Material playerMaterial, string property, float threshold, float increment, CancellationTokenSource token)
     {
-        if (playerMaterial.GetFloat("_FadeIn")> SHADERFADEMAXVALUE)
+        if (playerMaterial.GetFloat(property) > threshold)
         {
-            cancelPendingCalls(token);
             return;
         }
 
@@ -95,5 +62,4 @@ public class SpawnPlayer : MonoBehaviour
     {
         token.Cancel();
     }
-
 }

@@ -29,7 +29,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
     private static EnemyObserverListener _enemyObserverListener { get; set; }
     private static EntitiesToResetActionListener _entitiesToResetActionListener { get; set; }
     private static CheckPointActionListener _checkpointActionListener { get; set; }
-    private static SpawnPlayer _getSpawnPlayerScript { get; set; }
     private static CheckpointColliderListener _checkpointColliderListener { get; set; }
 
     private static DialogueManager _dialogueManager { get; set; }
@@ -52,7 +51,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
         _enemyObserverListener = FindFirstObjectByType<EnemyObserverListener>();
         _entitiesToResetActionListener = FindFirstObjectByType<EntitiesToResetActionListener>();
         _checkpointActionListener = FindFirstObjectByType<CheckPointActionListener>();
-        _getSpawnPlayerScript = FindFirstObjectByType<SpawnPlayer>();
         _checkpointColliderListener = FindFirstObjectByType<CheckpointColliderListener>();
         _dialogueManager = FindFirstObjectByType<DialogueManager>();
 
@@ -61,10 +59,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
 
     }
 
-    public static SpawnPlayer PlayerSpawn()
-    {
-        return _getSpawnPlayerScript;
-    }
     public static InventoryManager GetInventoryManager()
     {
         return _inventoryManager;
