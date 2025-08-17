@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEditor.AddressableAssets.Build.Layout;
 using UnityEngine;
-
+[Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "Player")]
 public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject<IObserver<PlayerSystem>>
 {
     private HealthDelegator HealthDelegator { get; set; }
