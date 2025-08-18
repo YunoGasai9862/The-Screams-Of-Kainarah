@@ -29,7 +29,8 @@ MonoBehaviour:
   - m_GUID: 48c8d0ed9ac830647a0af690b1f61479
     m_Address: Prefabs/Player
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Player
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4c9aa242ac42d29478150fb7c866aaf9
     m_Address: PlayerHittableItems

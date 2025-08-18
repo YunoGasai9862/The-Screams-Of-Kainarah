@@ -53,6 +53,8 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
                     continue;
                 }
 
+                Debug.Log($"PreloadAssets: {attribute.ToString()}");
+
                 dynamic preloadedAsset = await PreloadOnAssetType(attribute, preloader);
 
                 preloadedEntities.Add(await AddToPool(preloadedAsset, entityPoolManager));

@@ -10,7 +10,6 @@ public class GameStateConsumer : BaseState<GameStateBundle>
 
     protected override void AddSubject()
     {
-        Debug.Log($"type: {typeof(GameStateConsumer).ToString()}, object: {gameObject.name}");
         globalGameStateDelegator.AddToSubjectsDict(typeof(GameStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericStateBundle<GameStateBundle>>>());
 
         globalGameStateDelegator.GetSubsetSubjectsDictionary(typeof(GameStateConsumer).ToString())[gameObject.name].SetSubject(this);

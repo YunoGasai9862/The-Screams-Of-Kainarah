@@ -13,9 +13,13 @@ public class GameLoad : MonoBehaviour, IGameLoad
     {
         AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(label);
 
+        Debug.Log($"Handler: {handler}");
+
         await handler.Task;
 
         T loadedAsset = handler.Result;
+
+        Debug.Log($"loadedAsset: {loadedAsset}");
 
         UnityEngine.Object preloadedObject = await ProcessPreloadedAsset<T>(loadedAsset, assetType);
 

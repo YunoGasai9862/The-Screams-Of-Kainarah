@@ -56,8 +56,6 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
         if (SubjectsDict.TryGetValue(notificationContext.SubjectType, out Dictionary<string, Subject<IObserver<T>>> subjects))
         {
-            Debug.Log($"Found the subject - {notificationContext.SubjectType} / Seeker: {observer}");
-
             foreach (KeyValuePair<string, Subject<IObserver<T>>> keyValuePair in subjects)
             {
                 yield return new WaitUntil(() => !Helper.IsSubjectNull(keyValuePair.Value));
@@ -80,16 +78,10 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
     public void AddToSubjectsDict(string mainSubjectIdentificationKey, string gameObjectInstanceIdentificationKeyForTheSubject, Subject<IObserver<T>> subject)
     {
-        Debug.Log($"Adding Key: mainSubjectIdentificationKey: {mainSubjectIdentificationKey} gameObjectInstanceIdentificationKeyForTheSubject: {gameObjectInstanceIdentificationKeyForTheSubject} subject: {subject}");
-
         if (SubjectsDict.ContainsKey(mainSubjectIdentificationKey))
         {
-            Debug.Log($"Key already exists {mainSubjectIdentificationKey}. Won't persist it again!");
-
             if (SubjectsDict[mainSubjectIdentificationKey].ContainsKey(gameObjectInstanceIdentificationKeyForTheSubject))
             {
-                Debug.Log($"Game Object Identifier already exists {gameObjectInstanceIdentificationKeyForTheSubject} for the subject, won't persist it again!");
-
                 return;
 
             }else
@@ -109,12 +101,8 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
 
     public void AddToSubjectObserversDict(string uniqueSubjectkey, Subject<IObserver<T>> subject, IObserver<T> observer)
     {
-        Debug.Log($"AddToSubjectObserversDict for - {uniqueSubjectkey} {subject} {observer}");
-
         if (SubjectObserversDict.ContainsKey(uniqueSubjectkey))
         {
-            Debug.Log($"AddToSubjectObserversDict Contains already for - {uniqueSubjectkey} {subject} {observer}");
-
             SubjectObserversDict[uniqueSubjectkey].Add(new Association<T>() { Observer = observer, Subject = subject });
 
             return;
