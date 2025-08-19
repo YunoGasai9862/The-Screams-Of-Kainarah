@@ -8,11 +8,11 @@ public sealed class AssetAttribute: Attribute
 
     public string AddressLabel { get; set; }
 
-    public float PositionX { get; set; }
+    public float InitialPositionX { get; set; } = default;
 
-    public float PositionY { get; set; } 
+    public float InitialPositionY { get; set; } = default;
 
-    public float PositionZ { get; set; }
+    public float InitialPositionZ { get; set; } = default;
 
     public AssetAttribute()
     {

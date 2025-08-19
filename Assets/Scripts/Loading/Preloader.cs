@@ -30,14 +30,14 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
         return Task.CompletedTask;
     }
 
-    public async Task<UnityEngine.Object> PreloadAsset<T, Z>(Z label, Asset asset) where T: UnityEngine.Object
+    public async Task<UnityEngine.Object> PreloadAsset<T, Z>(Z label, Asset asset, Vector3 instantiateAt) where T: UnityEngine.Object
     {
-        return await PooledGameLoad.PreloadAsset<T, Z>(label, asset);
+        return await PooledGameLoad.PreloadAsset<T, Z>(label, asset, instantiateAt);
     }
 
-    public async Task<List<UnityEngine.Object>> PreloadAssets<Z>(Z label, Asset asset)
+    public async Task<List<UnityEngine.Object>> PreloadAssets<Z>(Z label, Asset asset, Vector3 instantiateAt)
     {
-        return await PooledGameLoad.PreloadAssets<Z>(label, asset);
+        return await PooledGameLoad.PreloadAssets<Z>(label, asset, instantiateAt);
     }
 
     private Task InitializePoolObjects(EntityPoolManager entityPoolManager)
@@ -56,6 +56,6 @@ public class Preloader: MonoBehaviour, IPreloadWithAction, IPreloadWithGenericAc
 
     public async void OnNotify(EntityPoolManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        await InitializePoolObjects(data); ;
+        await InitializePoolObjects(data);
     }
 }

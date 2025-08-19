@@ -90,10 +90,11 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
         switch (attribute.AssetType)
         {
             case Asset.SCRIPTABLE_OBJECT:
-                return (ScriptableObject) await preloader.PreloadAsset<ScriptableObject, string>(attribute.AddressLabel, attribute.AssetType);
+                return (ScriptableObject) await preloader.PreloadAsset<ScriptableObject, string>(attribute.AddressLabel, attribute.AssetType, Vector3.zero);
 
             case Asset.MONOBEHAVIOR:
-                return (GameObject) await preloader.PreloadAsset<GameObject, string>(attribute.AddressLabel, attribute.AssetType);
+                return (GameObject) await preloader.PreloadAsset<GameObject, string>(attribute.AddressLabel, attribute.AssetType, 
+                    new Vector3(attribute.InitialPositionX, attribute.InitialPositionY, attribute.InitialPositionZ));
 
             case Asset.NONE:
                 break;

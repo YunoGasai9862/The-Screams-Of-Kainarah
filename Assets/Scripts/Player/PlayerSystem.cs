@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-[Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "Player")]
+[Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "Player", InitialPositionX = -5.0f, InitialPositionY = 10.0f)]
 public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject<IObserver<PlayerSystem>>
 {
     private HealthDelegator HealthDelegator { get; set; }
