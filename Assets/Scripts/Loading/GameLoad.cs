@@ -8,10 +8,9 @@ using System;
 
 public class GameLoad : MonoBehaviour, IGameLoad
 {
-    //USE PRELOAD PACKAGE!!
-    public async Task<UnityEngine.Object> PreloadAsset<T, Z>(Z label, Asset assetType, Vector3 instantiateAt) where T : UnityEngine.Object
+    public async Task<UnityEngine.Object> PreloadAsset<T>(PreloadPackage preloadPackage) where T : UnityEngine.Object
     {
-        AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(label);
+        AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(preloadPackage.AddressableLable);
 
         Debug.Log($"Handler: {handler}");
 
@@ -21,14 +20,14 @@ public class GameLoad : MonoBehaviour, IGameLoad
 
         Debug.Log($"loadedAsset: {loadedAsset}");
 
-        UnityEngine.Object preloadedObject = await ProcessPreloadedAsset<T>(loadedAsset, assetType, instantiateAt);
+        UnityEngine.Object preloadedObject = await ProcessPreloadedAsset<T>(loadedAsset, preloadPackage);
 
         Addressables.Release(handler);
 
         return preloadedObject;
     }
 
-    public async Task<List<UnityEngine.Object>> PreloadAssets<Z>(Z label, Asset assetType, Vector3 instantiateAt)
+    public async Task<List<UnityEngine.Object>> PreloadAssets<Z>(Z label, PreloadPackage preloadPackage)
     {
         List<UnityEngine.Object> assets = new List<UnityEngine.Object>();
 
@@ -40,7 +39,7 @@ public class GameLoad : MonoBehaviour, IGameLoad
 
         foreach(UnityEngine.Object asset in loadedAsset)
         {
-           assets.Append(await ProcessPreloadedAsset<UnityEngine.Object>(asset, assetType, instantiateAt));
+           assets.Append(await ProcessPreloadedAsset(asset, preloadPackage));
         }
 
         Addressables.Release(handler);
@@ -48,12 +47,12 @@ public class GameLoad : MonoBehaviour, IGameLoad
         return assets;
     }
 
-    public Task<UnityEngine.Object> ProcessPreloadedAsset<T>(T loadedAsset, Asset assetType, Vector3 instantiateAt) where T : UnityEngine.Object
+    public Task<UnityEngine.Object> ProcessPreloadedAsset<T>(T loadedAsset, PreloadPackage preloadPackage) where T : UnityEngine.Object
     {
-        switch (assetType)
+        switch (preloadPackage.AssetType)
         {
             case Asset.MONOBEHAVIOR:
-                return Task.FromResult((UnityEngine.Object) Instantiate(loadedAsset as GameObject, instantiateAt, Quaternion.identity));
+                return Task.FromResult((UnityEngine.Object) Instantiate(loadedAsset as GameObject, preloadPackage.InstantiateAt, Quaternion.identity));
 
             case Asset.SCRIPTABLE_OBJECT:
                 return Task.FromResult((UnityEngine.Object)(loadedAsset as ScriptableObject));
