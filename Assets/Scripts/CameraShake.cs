@@ -105,4 +105,9 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
     {
         AsyncCoroutine = data;
     }
+
+    public void OnNotify(GenericStateBundle<CameraShakeBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new NotImplementedException();
+    }
 }
