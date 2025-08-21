@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>
+public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<GenericStateBundle<CameraShakeBundle>>
 {
     [Header("Target Camera")]
     [SerializeField] Camera _mainCamera;
@@ -82,7 +82,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>
 
     }
 
-
+    //TODO - this needs to be done on attack! The attacking controller should emit an event for this! Camera should not yikes do it!!
     private IEnumerator ExecuteShakeAnimation(List<string> animationNames)
     {
         yield return new WaitUntil(() => AsyncCoroutine != null);

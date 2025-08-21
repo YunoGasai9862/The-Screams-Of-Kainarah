@@ -10,13 +10,13 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private Animator _anim;
 
-    private float _maxSlideTime = 0.4f;
-
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>() { StateBundle = new PlayerStateBundle() };
 
     private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
     private AnimationDetailsDelegator AnimationDetailsDelegator { get; set; }
+
+    private FlagDelegator FlagDelegator { get; set; }
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
@@ -27,6 +27,8 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
 
         AnimationDetailsDelegator = Helper.GetDelegator<AnimationDetailsDelegator>();
+
+        FlagDelegator = Helper.GetDelegator<FlagDelegator>();   
 
         PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
 
@@ -60,15 +62,6 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     }
 
-    /**
-       //REMOVE THIS FROM HERE!!!!!!!!!! - put this in the slide controller!!
-        if (_anim != null && _anim.GetCurrentAnimatorStateInfo(0).IsName(PlayerAnimationConstants.SLIDING) &&
-            ReturnCurrentAnimation() > _maxSlideTime)
-        {
-            PlayAnimation(PlayerAnimationConstants.SLIDING, false);  //for fixing the Sliding Issue
-        }
-     **/
-
     public void MovementAnimation(bool keystroke)
     {
 
@@ -91,11 +84,6 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
     }
 
-    private void UpdateJumpTime(string parameterName, float jumpTime)
-    {
-        PlayAnimation(parameterName, jumpTime);
-    }
-
     private void SlidingAnimation(bool keystroke)
     {
         PlayAnimation(PlayerAnimationConstants.SLIDING, keystroke);
@@ -108,10 +96,6 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
     private void PlayAnimation(string name, bool state)
     {
         _stateMachine.AnimationPlayForBool(name, state);
-    }
-    private void PlayAnimation(string name, float state)
-    {
-        _stateMachine.AnimationPlayForFloat(name, state);
     }
 
     private float ReturnCurrentAnimation()
