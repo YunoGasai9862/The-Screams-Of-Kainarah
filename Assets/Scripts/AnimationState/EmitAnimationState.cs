@@ -1,8 +1,12 @@
 using System.Threading;
 using UnityEngine;
 
-public class EmitAnimationState : StateMachineBehaviour, ISubject<IObserver<GenericStateBundle<CameraShakeBundle>>>
+public class EmitAnimationState : StateMachineBehaviour, ISubject<IObserver<GenericStateBundle<EmitAnimationStateBundle>>>
 {
+    private void Awake()
+    {
+        
+    }
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     //{
@@ -32,7 +36,7 @@ public class EmitAnimationState : StateMachineBehaviour, ISubject<IObserver<Gene
     //{
     //    // Implement code that sets up animation IK (inverse kinematics)
     //}
-    public void OnNotifySubject(IObserver<GenericStateBundle<CameraShakeBundle>> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<GenericStateBundle<EmitAnimationStateBundle>> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         throw new System.NotImplementedException();
     }
