@@ -24,6 +24,9 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
     [Header("Async Coroutine Delegator")]
     [SerializeField] AsyncCoroutineDelegator asyncCoroutineDelegator;
 
+    [Header("Emit Animation Delegator")]
+    [SerializeField] EmitAnimationStateDelegator emitAnimationStateDelegator;
+
     private Vector3 _cameraOldPosition;
     private CancellationToken _token;
     private CancellationTokenSource _cancellationTokenSource;
@@ -35,11 +38,16 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
 
     private AsyncCoroutine AsyncCoroutine { get; set; }
 
+    private GenericStateBundle<EmitAnimationStateBundle> EmitAnimationStateBundle { get; set; } = new GenericStateBundle<EmitAnimationStateBundle>();
+
     private void Start()
     {
         _cancellationTokenSource= new CancellationTokenSource();
         _token = _cancellationTokenSource.Token;
+
         StartCoroutine(asyncCoroutineDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutine).ToString()), CancellationToken.None));
+
+        StartCoroutine(emitAnimationStateDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EmitAnimationStateConsumer).ToString()), CancellationToken.None));
     }
     void Update()
     {  
@@ -108,6 +116,6 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
 
     public void OnNotify(GenericStateBundle<EmitAnimationStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new NotImplementedException();
+        EmitAnimationStateBundle.StateBundle = data.StateBundle;
     }
 }

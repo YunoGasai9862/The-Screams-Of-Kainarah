@@ -1,24 +1,39 @@
+using UnityEngine;
 using UnityEngine.Events;
 
 public class EmitAnimationStateConsumer : BaseState<EmitAnimationStateBundle>
 {
+    [SerializeField]
+    EmitAnimationStateDelegator emitAnimationStateDelegator;
+
+    [SerializeField]
+    EmitAnimationStateEvent emitAnimationStateEvent;
+
     protected override void AddSubject()
     {
-        throw new System.NotImplementedException();
+        emitAnimationStateDelegator.AddToSubjectsDict(typeof(EmitAnimationStateConsumer).ToString(), name, new Subject<IObserver<GenericStateBundle<EmitAnimationStateBundle>>>());
+
+        emitAnimationStateDelegator.GetSubsetSubjectsDictionary(typeof(EmitAnimationStateConsumer).ToString())[name].SetSubject(this);
     }
 
     protected override BaseDelegatorEnhanced<GenericStateBundle<EmitAnimationStateBundle>> GetDelegator()
     {
-        throw new System.NotImplementedException();
+        return emitAnimationStateDelegator;
     }
 
     protected override UnityEvent<GenericStateBundle<EmitAnimationStateBundle>> GetEvent()
     {
-        throw new System.NotImplementedException();
+        return emitAnimationStateEvent.GetInstance();
     }
 
     protected override GenericStateBundle<EmitAnimationStateBundle> GetInitialState()
     {
-        throw new System.NotImplementedException();
+        return new GenericStateBundle<EmitAnimationStateBundle>()
+        {
+            StateBundle = new EmitAnimationStateBundle()
+            {
+                IsRunning = false
+            }
+        };
     }
 }

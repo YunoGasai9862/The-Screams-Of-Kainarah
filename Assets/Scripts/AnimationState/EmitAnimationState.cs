@@ -1,17 +1,24 @@
 using System.Threading;
 using UnityEngine;
 
-public class EmitAnimationState : StateMachineBehaviour, ISubject<IObserver<GenericStateBundle<EmitAnimationStateBundle>>>
+public class EmitAnimationState : StateMachineBehaviour
 {
+    private EmitAnimationStateEvent EmitAnimationStateEvent { get; set; }
     private void Awake()
     {
-        
+        EmitAnimationStateEvent = Helper.GetCustomEvent<EmitAnimationStateEvent>();
     }
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        EmitAnimationStateEvent.Invoke(new GenericStateBundle<EmitAnimationStateBundle>()
+        {
+            StateBundle = new EmitAnimationStateBundle()
+            {
+                IsRunning = true
+            }
+        }); 
+    }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -36,8 +43,4 @@ public class EmitAnimationState : StateMachineBehaviour, ISubject<IObserver<Gene
     //{
     //    // Implement code that sets up animation IK (inverse kinematics)
     //}
-    public void OnNotifySubject(IObserver<GenericStateBundle<EmitAnimationStateBundle>> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        throw new System.NotImplementedException();
-    }
 }
