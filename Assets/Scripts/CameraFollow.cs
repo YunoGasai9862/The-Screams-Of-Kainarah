@@ -1,18 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
-public class CameraFollow : MonoBehaviour
+public class CameraFollow : MonoBehaviour, IObserver<bool>
 {
-    private CameraShake _cameraShakeScript;
-
     [Header("Camera Follow Speed")]
     [SerializeField] float _cameraFollowSpeed;
 
-    private void Awake()
-    {
-        _cameraShakeScript= GetComponent<CameraShake>();
-    }
+    [Header("Generic Float Delegator")]
+    [SerializeField] FlagDelegator flagDelegator;
 
     void Update()
     {
@@ -20,5 +17,10 @@ public class CameraFollow : MonoBehaviour
         {
             FollowPlayer.TrackPlayer(transform, 0, 5, 0, _cameraFollowSpeed);
         }
+    }
+
+    public void OnNotify(bool data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+       
     }
 }

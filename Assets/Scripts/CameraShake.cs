@@ -11,15 +11,15 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
     [Header("Target Camera")]
     [SerializeField] Camera _mainCamera;
 
-    [Header("Target Body Tag")]
-    [SerializeField] string targetBodyTag;
-
     [Header("Shake Min and Max Range")]
     [SerializeField] float _minShake;
     [SerializeField] float _maxShake;
 
-    [Header("Target Body Animation Names For Camera Shake")]
-    [SerializeField] List<string> animationNames;
+    [Header("Time for shake")]
+    [SerializeField] float timeForShake; //0.03f (old)
+
+    [Header("Delay Between Each Shake")]
+    [SerializeField] float delay; //0.05f (old)
 
     [Header("Async Coroutine Delegator")]
     [SerializeField] AsyncCoroutineDelegator asyncCoroutineDelegator;
@@ -28,13 +28,10 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
     [SerializeField] EmitAnimationStateDelegator emitAnimationStateDelegator;
 
     private Vector3 _cameraOldPosition;
-    private CancellationToken _token;
-    private CancellationTokenSource _cancellationTokenSource;
-    private bool _shaking = false;
-    private GameObject _targetBody;
-    private Animator _animator;
 
-    public bool isShaking { get => _shaking; set => _shaking = value; }
+    private CancellationToken _token;
+
+    private CancellationTokenSource _cancellationTokenSource;
 
     private AsyncCoroutine AsyncCoroutine { get; set; }
 
@@ -43,27 +40,15 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
     private void Start()
     {
         _cancellationTokenSource= new CancellationTokenSource();
+
         _token = _cancellationTokenSource.Token;
 
         StartCoroutine(asyncCoroutineDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutine).ToString()), CancellationToken.None));
 
         StartCoroutine(emitAnimationStateDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EmitAnimationStateConsumer).ToString()), CancellationToken.None));
     }
-    void Update()
-    {  
-        //please improve that ewwwwww
-        if(_targetBody == null)
-        {
-            _targetBody = GameObject.FindWithTag(targetBodyTag);
-            _animator = _targetBody.GetComponent<Animator>();
-        }
-        else
-        {
-            StartCoroutine(ExecuteShakeAnimation(animationNames));
-        }
-    }
 
-    private async IAsyncEnumerator<WaitForSeconds> shakeCamera(Camera _mainCamera, float timeForCameraShake) //do it tomorrow
+    private async IAsyncEnumerator<WaitForSeconds> shakeCamera(Camera _mainCamera, float timeForCameraShake)
     {
         float timeSpent = 0f;
 
@@ -71,42 +56,28 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
 
         while (timeSpent < timeForCameraShake)
         {
-            float randomXThrust = UnityEngine.Random.Range(_minShake, _maxShake);  //i didn't know this work too, i was using adding to x and y, this will simply shake/translate the camera up and down
-            //only and only if there's a camera holder to keep the camera in place
-            float randomYThrust = UnityEngine.Random.Range(_minShake, _maxShake);
-
-            _mainCamera.transform.position = _cameraOldPosition + new Vector3(randomXThrust, randomYThrust, 0); //to avoid effecting the z-index (also add it to _cameraOldPosition)
+            _mainCamera.transform.position = _cameraOldPosition + new Vector3(UnityEngine.Random.Range(_minShake, _maxShake), UnityEngine.Random.Range(_minShake, _maxShake), 0);
 
             timeSpent += Time.deltaTime;
 
-            await Task.Delay(TimeSpan.FromSeconds(.05f));
-
+            await Task.Delay(TimeSpan.FromSeconds(delay));
         }
-        _mainCamera.transform.position = _cameraOldPosition; //sets back the position
 
-        _shaking = false;
+        _mainCamera.transform.position = _cameraOldPosition; 
 
-        yield return new WaitForSeconds(0f); //dummy return value for IAsync Type
-
+        yield return new WaitForSeconds(0f);
     }
 
-    //TODO - this needs to be done on attack! The attacking controller should emit an event for this! Camera should not yikes do it!!
-    private IEnumerator ExecuteShakeAnimation(List<string> animationNames)
+    private IEnumerator ExecuteShakeAnimation(EmitAnimationStateBundle stateBundle)
     {
-        yield return new WaitUntil(() => AsyncCoroutine != null);
-
-        foreach (string animationName in animationNames)
+        if (!stateBundle.IsRunning)
         {
-            if (_animator.GetCurrentAnimatorStateInfo(0).IsName(animationName) && !isShaking)
-            {
-                isShaking = true;
-
-                //test this tomorrow
-                AsyncCoroutine.ExecuteAsyncCoroutine(shakeCamera(_mainCamera, .03f));
-
-                break;
-            }
+            yield return null;
         }
+
+        yield return new WaitUntil(() => AsyncCoroutine != null);
+        
+        AsyncCoroutine.ExecuteAsyncCoroutine(shakeCamera(_mainCamera, timeForShake));  
     }
 
     public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
@@ -117,5 +88,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
     public void OnNotify(GenericStateBundle<EmitAnimationStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         EmitAnimationStateBundle.StateBundle = data.StateBundle;
+
+        StartCoroutine(ExecuteShakeAnimation(EmitAnimationStateBundle.StateBundle));
     }
 }
