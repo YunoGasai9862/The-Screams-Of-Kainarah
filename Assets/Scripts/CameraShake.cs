@@ -6,14 +6,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<GenericStateBundle<EmitAnimationStateBundle>>
+public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<GenericStateBundle<EmitAnimationStateBundle>>,ISubject<IObserver<bool>>
 {
     [Header("Target Camera")]
-    [SerializeField] Camera _mainCamera;
+    [SerializeField] Camera mainCamera;
 
     [Header("Shake Min and Max Range")]
-    [SerializeField] float _minShake;
-    [SerializeField] float _maxShake;
+    [SerializeField] float minShake;
+    [SerializeField] float maxShake;
 
     [Header("Time for shake")]
     [SerializeField] float timeForShake; //0.03f (old)
@@ -27,11 +27,10 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
     [Header("Emit Animation Delegator")]
     [SerializeField] EmitAnimationStateDelegator emitAnimationStateDelegator;
 
-    private Vector3 _cameraOldPosition;
+    [Header("Flag Delegator")]
+    [SerializeField] FlagDelegator flagDelegator;
 
-    private CancellationToken _token;
-
-    private CancellationTokenSource _cancellationTokenSource;
+    private Vector3 CameraOldPosition { get; set; }
 
     private AsyncCoroutine AsyncCoroutine { get; set; }
 
@@ -39,31 +38,31 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
 
     private void Start()
     {
-        _cancellationTokenSource= new CancellationTokenSource();
-
-        _token = _cancellationTokenSource.Token;
-
         StartCoroutine(asyncCoroutineDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutine).ToString()), CancellationToken.None));
 
         StartCoroutine(emitAnimationStateDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EmitAnimationStateConsumer).ToString()), CancellationToken.None));
     }
 
-    private async IAsyncEnumerator<WaitForSeconds> shakeCamera(Camera _mainCamera, float timeForCameraShake)
+    private async IAsyncEnumerator<WaitForSeconds> ShakeCamera(Camera _mainCamera, float timeForCameraShake)
     {
         float timeSpent = 0f;
 
-        _cameraOldPosition = _mainCamera.transform.position;
+        CameraOldPosition = _mainCamera.transform.position;
+
+        flagDelegator.NotifyObservers(false, name, typeof(CameraShake), CancellationToken.None);
 
         while (timeSpent < timeForCameraShake)
         {
-            _mainCamera.transform.position = _cameraOldPosition + new Vector3(UnityEngine.Random.Range(_minShake, _maxShake), UnityEngine.Random.Range(_minShake, _maxShake), 0);
+            mainCamera.transform.position = CameraOldPosition + new Vector3(UnityEngine.Random.Range(minShake, maxShake), UnityEngine.Random.Range(minShake, maxShake), 0);
 
             timeSpent += Time.deltaTime;
 
             await Task.Delay(TimeSpan.FromSeconds(delay));
         }
 
-        _mainCamera.transform.position = _cameraOldPosition; 
+        mainCamera.transform.position = CameraOldPosition;
+
+        flagDelegator.NotifyObservers(true, name, typeof(CameraShake), CancellationToken.None);
 
         yield return new WaitForSeconds(0f);
     }
@@ -77,7 +76,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
 
         yield return new WaitUntil(() => AsyncCoroutine != null);
         
-        AsyncCoroutine.ExecuteAsyncCoroutine(shakeCamera(_mainCamera, timeForShake));  
+        AsyncCoroutine.ExecuteAsyncCoroutine(ShakeCamera(mainCamera, timeForShake));  
     }
 
     public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
@@ -90,5 +89,10 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
         EmitAnimationStateBundle.StateBundle = data.StateBundle;
 
         StartCoroutine(ExecuteShakeAnimation(EmitAnimationStateBundle.StateBundle));
+    }
+
+    public void OnNotifySubject(IObserver<bool> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        flagDelegator.AddToSubjectObserversDict(typeof(CameraShake).ToString(), flagDelegator.GetSubsetSubjectsDictionary(typeof(CameraShake).ToString())[gameObject.name], observer);
     }
 }

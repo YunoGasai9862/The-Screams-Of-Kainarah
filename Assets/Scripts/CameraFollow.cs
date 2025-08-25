@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
@@ -11,9 +9,11 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>
     [Header("Generic Float Delegator")]
     [SerializeField] FlagDelegator flagDelegator;
 
+    private bool ShouldFollowPlayer { get; set; }
+
     void Update()
     {
-        if(!_cameraShakeScript.isShaking)
+        if(ShouldFollowPlayer)
         {
             FollowPlayer.TrackPlayer(transform, 0, 5, 0, _cameraFollowSpeed);
         }
@@ -21,6 +21,6 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>
 
     public void OnNotify(bool data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-       
+        ShouldFollowPlayer = data;
     }
 }
