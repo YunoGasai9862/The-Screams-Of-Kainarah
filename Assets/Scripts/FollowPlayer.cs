@@ -1,52 +1,37 @@
 using UnityEngine;
 
-public class FollowPlayer : MonoBehaviour
+public class FollowPlayer
 {
-    private static GameObject Player;
-
-    private void Start()
+    public static void TrackPlayerX(Transform follower, Transform toBeFollow, Vector3 offsetVector, float speed)
     {
-        Player = GameObject.FindWithTag("Player");
+        Vector3 newPosition= new(toBeFollow.position.x + offsetVector.x, offsetVector.y, offsetVector.z);
+        follower.transform.position = Vector3.MoveTowards(follower.transform.position, newPosition, speed * Time.deltaTime);
     }
 
-    private void Update()
+    public static void TrackPlayerY(Transform follower, Transform toBeFollow, Vector3 offsetVector, float speed)
     {
-        if(Player==null)
-            Player = GameObject.FindWithTag("Player");
+        Vector3 newPosition = new(offsetVector.x, toBeFollow.position.y + offsetVector.y, offsetVector.z);
+        follower.transform.position = Vector3.MoveTowards(follower.transform.position, newPosition, speed * Time.deltaTime);
     }
 
-    public static void TrackPlayerX(Transform Follower, float xOffset, float yOffset, float zOffset, float speed)
+    public static void TrackPlayerZ(Transform follower, Vector3 offsetVector, float speed)
     {
-        Vector3 newPosition= new(Player.transform.position.x + xOffset, yOffset, zOffset);
-        Follower.transform.position = Vector3.MoveTowards(Follower.transform.position, newPosition, speed * Time.deltaTime);
+        Vector3 newPosition = new(offsetVector.x, offsetVector.y, follower.transform.position.z + offsetVector.z);
+        follower.transform.position = Vector3.MoveTowards(follower.transform.position, newPosition, speed * Time.deltaTime);
     }
 
-    public static void TrackPlayerY(Transform Follower, float xOffset, float yOffset, float zOffset, float speed)
+    public static void TrackPlayer(Transform follower, Transform toBeFollow, Vector3 offsetVector, float speed)
     {
-        Vector3 newPosition = new(xOffset, Player.transform.position.y + yOffset, zOffset);
-        Follower.transform.position = Vector3.MoveTowards(Follower.transform.position, newPosition, speed * Time.deltaTime);
+        Vector3 newPosition = new(toBeFollow.position.x + offsetVector.x, toBeFollow.position.y + offsetVector.y, follower.transform.position.z + offsetVector.z);
+        follower.transform.position = Vector3.MoveTowards(follower.transform.position, newPosition, speed * Time.deltaTime);
     }
 
-    public static void TrackPlayerZ(Transform Follower, float xOffset, float yOffset, float zOffset, float speed)
+    public static void TrackPlayerX(Transform follower, Transform toBeFollow, float distance, Vector3 offsetVector, float speed)
     {
-        Vector3 newPosition = new(xOffset, yOffset, Follower.transform.position.z + zOffset);
-        Follower.transform.position = Vector3.MoveTowards(Follower.transform.position, newPosition, speed * Time.deltaTime);
-    }
-
-    public static void TrackPlayer(Transform Follower, float xOffset, float yOffset, float zOffset, float speed)
-    {
-        Vector3 newPosition = new(Player.transform.position.x + xOffset, Player.transform.position.y + yOffset, Follower.transform.position.z + zOffset);
-        Follower.transform.position = Vector3.MoveTowards(Follower.transform.position, newPosition, speed * Time.deltaTime);
-    }
-
-    public static void TrackPlayerX(Transform Follower, float distance, float xOffset, float yOffset, float zOffset, float speed)
-    {
-        if(Vector2.Distance(Follower.position, Player.transform.position) > distance)
+        if(Vector2.Distance(follower.position, toBeFollow.position) > distance)
         {
-            Vector3 newPosition = new(Player.transform.position.x + xOffset, yOffset, zOffset);
-            Follower.transform.position = Vector3.MoveTowards(Follower.transform.position, newPosition, speed * Time.deltaTime);
+            Vector3 newPosition = new(toBeFollow.position.x + offsetVector.x, offsetVector.y, offsetVector.z);
+            follower.transform.position = Vector3.MoveTowards(follower.transform.position, newPosition, speed * Time.deltaTime);
         }
     }
-
-
 }
