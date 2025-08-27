@@ -3,28 +3,46 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class MoonMovement : MonoBehaviour
+public class MoonMovement : MonoBehaviour, IObserver<Player>
 {
     [Header("Custom Variables")]
     [SerializeField] float moonSpeed;
     [SerializeField] float XOffset, YOffset, ZOffset;
     [SerializeField] float distanceBetweenPlayerAndMoon;
 
+    [Header("Attribute Delegator")]
+    [SerializeField] PlayerAttributesDelegator playerAttributesDelegator;
+
     private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
+
+    private Player PlayerTransform { get; set; }
 
     private void Start()
     {
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
+
+        StartCoroutine(playerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+        }, CancellationToken.None));
     }
     async void Update()
     {
-        await moveToFollowPlayer(gameObject.transform, distanceBetweenPlayerAndMoon, XOffset, YOffset, ZOffset, moonSpeed);
+        if (PlayerTransform == null)
+        {
+            Debug.Log($"Player Transform is null for [TrackPlayer] - exiting!");
+            return;
+        }
+
+        await FollowTarget(gameObject.transform, distanceBetweenPlayerAndMoon, new Vector3(XOffset, YOffset, ZOffset), moonSpeed);
     }
 
-    private async Task<bool> moveToFollowPlayer(Transform targetToFollow, float distanceBetweenPlayerAndMoon, float xOffset, float yOffset, float zOffset, float speed)
+    private async Task<bool> FollowTarget(Transform targetToFollow, float distanceBetweenPlayerAndMoon, Vector3 offset, float speed)
     {
 
         await semaphoreSlim.WaitAsync();
@@ -33,7 +51,7 @@ public class MoonMovement : MonoBehaviour
         {
             try
             {
-                FollowPlayer.TrackPlayerX(targetToFollow, distanceBetweenPlayerAndMoon, xOffset, yOffset, zOffset, speed);
+                FollowPlayer.TrackPlayerX(targetToFollow, distanceBetweenPlayerAndMoon, offset, speed);
 
             }
             catch (OperationCanceledException ex)
@@ -55,5 +73,10 @@ public class MoonMovement : MonoBehaviour
     {
         cancellationTokenSource.Cancel();
         semaphoreSlim.Release();
+    }
+
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        PlayerTransform.Transform = data.Transform;
     }
 }

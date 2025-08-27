@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class FollowPlayer
 {
-    public static void TrackPlayerX(Transform follower, Transform toBeFollow, Vector3 offsetVector, float speed)
+    public static void TrackPlayerX(Transform follower, float distanceXFromMainSource, Vector3 offsetVector, float speed)
     {
-        Vector3 newPosition= new(toBeFollow.position.x + offsetVector.x, offsetVector.y, offsetVector.z);
+        Vector3 newPosition= new(distanceXFromMainSource + offsetVector.x, offsetVector.y, offsetVector.z);
         follower.transform.position = Vector3.MoveTowards(follower.transform.position, newPosition, speed * Time.deltaTime);
     }
 

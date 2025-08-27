@@ -37,7 +37,7 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<Player>
     {
         if(ShouldFollowPlayer)
         {
-            FollowPlayer.TrackPlayer(transform, 0, 5, 0, _cameraFollowSpeed);
+            FollowPlayer.TrackPlayer(transform, PlayersTransform.transform, new Vector3(0, 5, 0), _cameraFollowSpeed);
         }
     }
 
