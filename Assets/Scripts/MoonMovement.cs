@@ -39,10 +39,10 @@ public class MoonMovement : MonoBehaviour, IObserver<Player>
             return;
         }
 
-        await FollowTarget(gameObject.transform, distanceBetweenPlayerAndMoon, new Vector3(XOffset, YOffset, ZOffset), moonSpeed);
+        await FollowTarget(gameObject.transform, PlayerTransform.Transform, new Vector3(XOffset + distanceBetweenPlayerAndMoon, YOffset, ZOffset), moonSpeed);
     }
 
-    private async Task<bool> FollowTarget(Transform targetToFollow, float distanceBetweenPlayerAndMoon, Vector3 offset, float speed)
+    private async Task<bool> FollowTarget(Transform self, Transform targetToFollow, Vector3 offset, float speed)
     {
 
         await semaphoreSlim.WaitAsync();
@@ -51,7 +51,7 @@ public class MoonMovement : MonoBehaviour, IObserver<Player>
         {
             try
             {
-                FollowPlayer.TrackPlayerX(targetToFollow, distanceBetweenPlayerAndMoon, offset, speed);
+                MovementUtilities.TrackPlayer(self, targetToFollow, offset, speed);
 
             }
             catch (OperationCanceledException ex)

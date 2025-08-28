@@ -1,7 +1,8 @@
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthBar : MonoBehaviour
+public class HealthBar : MonoBehaviour, IObserver<Player>
 {
 
     [SerializeField] Image Fill;
@@ -9,13 +10,19 @@ public class HealthBar : MonoBehaviour
     [SerializeField] Gradient gr;
     [SerializeField] string TargetEntityTag;
 
-    private AbstractEntity _targetEntity;
-    private GameObject _targetGameObject;
+    [Header("Attribute Delegator")]
+    [SerializeField] PlayerAttributesDelegator playerAttributesDelegator;
+
+    private Player Player { get; set; }
+
     private void Start()
     {
-        _targetGameObject = GameObject.FindGameObjectWithTag(TargetEntityTag);
-        if (_targetGameObject != null)
-            _targetEntity=_targetGameObject.GetComponent<AbstractEntity>();
+        StartCoroutine(playerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+        }, CancellationToken.None));
 
         Fill.color = gr.Evaluate(slide.value);
     }
@@ -38,4 +45,8 @@ public class HealthBar : MonoBehaviour
         Fill.color = gr.Evaluate(slide.value / 100.0f);
     }
 
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new System.NotImplementedException();
+    }
 }

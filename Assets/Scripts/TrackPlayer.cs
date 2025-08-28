@@ -27,7 +27,7 @@ public class TrackPlayer : MonoBehaviour, IObserver<Player>
             return;
         }
 
-        FollowPlayer.TrackPlayer(transform, Player.Transform, new Vector3(0, 25, 0), 0f);
+        MovementUtilities.TrackPlayer(transform, Player.Transform, new Vector3(0, 25, 0), 0f);
     }
 
     public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

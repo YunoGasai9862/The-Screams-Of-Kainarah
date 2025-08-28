@@ -100,15 +100,15 @@ MonoBehaviour:
   lightPackageDelegator: {fileID: 0}
   lightPreprocessDelegator: {fileID: 0}
   lightProperties:
-    m_LightName: 
+    m_LightName: MoonLight
     m_ShouldLightPulse: 0
-    m_InnerRadiusMin: 0
-    m_InnerRadiusMax: 0
-    m_OuterRadiusMin: 0
-    m_OuterRadiusMax: 0
-    m_MaxLightIntensity: 0
-    m_MinLightIntensity: 0
-  delayBetweenExecution: 0
+    m_InnerRadiusMin: 1
+    m_InnerRadiusMax: 2
+    m_OuterRadiusMin: 1
+    m_OuterRadiusMax: 2
+    m_MaxLightIntensity: 1.5
+    m_MinLightIntensity: 1.5
+  delayBetweenExecution: 0.1
 --- !u!1 &4890085813464346052
 GameObject:
   m_ObjectHideFlags: 0
@@ -215,3 +215,4 @@ MonoBehaviour:
   YOffset: 30
   ZOffset: 0
   distanceBetweenPlayerAndMoon: 40
+  playerAttributesDelegator: {fileID: 0}

@@ -35,9 +35,16 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<Player>
 
     void Update()
     {
+        if (PlayersTransform == null)
+        {
+            Debug.Log($"Player Transform is null for [CameraFollow] - exiting!");
+
+            return;
+        }
+
         if(ShouldFollowPlayer)
         {
-            FollowPlayer.TrackPlayer(transform, PlayersTransform.transform, new Vector3(0, 5, 0), _cameraFollowSpeed);
+            MovementUtilities.TrackPlayer(transform, PlayersTransform.transform, new Vector3(0, 5, 0), _cameraFollowSpeed);
         }
     }
 

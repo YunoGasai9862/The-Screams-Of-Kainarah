@@ -31,6 +31,12 @@ public class WaterCameraAndTextureFollow : MonoBehaviour, IObserver<Player>
 
     void Update()
     {
-        FollowPlayer.TrackPlayerX(transform, offsetX,transform.position.y, transform.position.z, WaterCamerSpeed);
+        if (Player == null)
+        {
+            Debug.Log($"Player Transform is null for [WaterCameraAndTextureFollow] - exiting!");
+            return;
+        }
+
+        MovementUtilities.TrackPlayer(transform, Player.Transform, new Vector3(offsetX, transform.position.y, transform.position.z), WaterCamerSpeed);
     }
 }
