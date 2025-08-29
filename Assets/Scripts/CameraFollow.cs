@@ -1,7 +1,7 @@
 using System.Threading;
 using UnityEngine;
 
-public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<Player>
+public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<IEntityTransform>
 {
     [Header("Camera Follow Speed")]
     [SerializeField] float _cameraFollowSpeed;
@@ -53,7 +53,7 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<Player>
         ShouldFollowPlayer = data;
     }
 
-    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityTransform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayersTransform = data.Transform;
     }

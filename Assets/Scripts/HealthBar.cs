@@ -2,7 +2,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthBar : MonoBehaviour, IObserver<Player>
+public class HealthBar : MonoBehaviour, IObserver<IEntityHealth>
 {
 
     [SerializeField] Image Fill;
@@ -13,7 +13,7 @@ public class HealthBar : MonoBehaviour, IObserver<Player>
     [Header("Attribute Delegator")]
     [SerializeField] PlayerAttributesDelegator playerAttributesDelegator;
 
-    private Player Player { get; set; }
+    private Health PlayerHealth { get; set; }
 
     private void Start()
     {
@@ -28,25 +28,24 @@ public class HealthBar : MonoBehaviour, IObserver<Player>
     }
     void Update()
     {
-        if(_targetGameObject==null)
+        if (PlayerHealth == null)
         {
-            _targetGameObject = GameObject.FindGameObjectWithTag(TargetEntityTag);
-            _targetEntity = _targetGameObject.GetComponent<AbstractEntity>();
+            Debug.Log($"PlayerHealth is null - HealthBar - Skipping!");
+            return;
         }
-        
-        if(_targetEntity!=null)
-           TrackHealth(_targetEntity);      
+
+         TrackHealth(PlayerHealth);      
     }
 
-    private void TrackHealth(AbstractEntity abstractEntity)
+    private void TrackHealth(Health health)
     {
-        slide.value = abstractEntity.Health.CurrentHealth;
+        slide.value = health.CurrentHealth;
 
         Fill.color = gr.Evaluate(slide.value / 100.0f);
     }
 
-    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityHealth data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new System.NotImplementedException();
+        PlayerHealth = data.Health;
     }
 }

@@ -1,5 +1,6 @@
+using Pathfinding.Util;
 using UnityEngine;
-public class Player
+public class Player: IEntityTransform, IEntityHealth
 {
    public Transform Transform { get; set; } 
 

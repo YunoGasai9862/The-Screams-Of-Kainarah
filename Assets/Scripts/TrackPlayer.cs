@@ -2,12 +2,12 @@
 using System.Threading;
 using UnityEngine;
 
-public class TrackPlayer : MonoBehaviour, IObserver<Player>
+public class TrackPlayer : MonoBehaviour, IObserver<IEntityTransform>
 {
     [Header("Attribute Delegator")]
     [SerializeField] PlayerAttributesDelegator playerAttributesDelegator;
 
-    private Player Player { get; set; }
+    private Transform PlayerTransform { get; set; }
 
     private void Start()
     {
@@ -21,17 +21,17 @@ public class TrackPlayer : MonoBehaviour, IObserver<Player>
 
     void Update()
     {
-        if (Player == null)
+        if (PlayerTransform == null)
         {
             Debug.Log($"Player Transform is null for [TrackPlayer] - exiting!");
             return;
         }
 
-        MovementUtilities.TrackPlayer(transform, Player.Transform, new Vector3(0, 25, 0), 0f);
+        MovementUtilities.TrackPlayer(transform, PlayerTransform, new Vector3(0, 25, 0), 0f);
     }
 
-    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityTransform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Player.Transform = data.Transform;
+        PlayerTransform = data.Transform;
     }
 }

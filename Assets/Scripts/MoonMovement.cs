@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class MoonMovement : MonoBehaviour, IObserver<Player>
+public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
 {
     [Header("Custom Variables")]
     [SerializeField] float moonSpeed;
@@ -75,7 +75,7 @@ public class MoonMovement : MonoBehaviour, IObserver<Player>
         semaphoreSlim.Release();
     }
 
-    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityTransform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerTransform.Transform = data.Transform;
     }

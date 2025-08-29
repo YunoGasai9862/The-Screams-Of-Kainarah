@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class WaterCameraAndTextureFollow : MonoBehaviour, IObserver<Player>
+public class WaterCameraAndTextureFollow : MonoBehaviour, IObserver<IEntityTransform>
 {
     [SerializeField]
     public float WaterCamerSpeed;
@@ -12,7 +12,7 @@ public class WaterCameraAndTextureFollow : MonoBehaviour, IObserver<Player>
     [Header("Attribute Delegator")]
     [SerializeField] PlayerAttributesDelegator playerAttributesDelegator;
 
-    private Player Player { get; set; }
+    private Transform PlayerTransform { get; set; }
 
     private void Start()
     {
@@ -24,19 +24,18 @@ public class WaterCameraAndTextureFollow : MonoBehaviour, IObserver<Player>
         }, CancellationToken.None));
     }
 
-    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityTransform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Player.Transform = data.Transform;
+        PlayerTransform = data.Transform;
     }
 
     void Update()
     {
-        if (Player == null)
-        {
+        if (PlayerTransform == null) { 
             Debug.Log($"Player Transform is null for [WaterCameraAndTextureFollow] - exiting!");
             return;
         }
 
-        MovementUtilities.TrackPlayer(transform, Player.Transform, new Vector3(offsetX, transform.position.y, transform.position.z), WaterCamerSpeed);
+        MovementUtilities.TrackPlayer(transform, PlayerTransform, new Vector3(offsetX, transform.position.y, transform.position.z), WaterCamerSpeed);
     }
 }
