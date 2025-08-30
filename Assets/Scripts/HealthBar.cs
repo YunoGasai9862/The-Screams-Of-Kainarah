@@ -8,7 +8,6 @@ public class HealthBar : MonoBehaviour, IObserver<IEntityHealth>
     [SerializeField] Image Fill;
     [SerializeField] Slider slide;
     [SerializeField] Gradient gr;
-    [SerializeField] string TargetEntityTag;
 
     [Header("Attribute Delegator")]
     [SerializeField] PlayerAttributesDelegator playerAttributesDelegator;

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IReceiverEnhancedAsync<LedgeGrabController, bool>
+public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IReceiverEnhancedAsync<LedgeGrabController, bool>, IObserver<IEntityRigidBody>
 {
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
 
@@ -252,5 +252,10 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
         await CancelLedgeGrab();
 
         return new ActionExecuted<bool>(true);
+    }
+
+    public void OnNotify(IEntityRigidBody data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<Player>, IObserver<EnemyHittableManager>
+public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<IEntityTransform>, IObserver<EnemyHittableManager>
 {
     public const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
 
@@ -85,9 +85,9 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<Ga
         CurrentGameState.StateBundle = data.StateBundle;
     }
 
-    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityTransform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Player = data;
+        Player.Transform = data.Transform;
     }
     public void OnNotify(EnemyHittableManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
