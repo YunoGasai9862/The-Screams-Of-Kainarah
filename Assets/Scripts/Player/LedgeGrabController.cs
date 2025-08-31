@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IReceiverEnhancedAsync<LedgeGrabController, bool>, IObserver<IEntityRigidBody>
+public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IReceiverEnhancedAsync<LedgeGrabController, bool>, IObserver<Player>
 {
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
 
@@ -29,15 +29,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
     private MovementHelperClass _helperFunc;
 
-    private Rigidbody2D rb;
-
     private float startingGrav;
-
-    private Collider2D col;
-
-    private Animator anim;
-
-    private SpriteRenderer sr;
 
     private float _timeSpent;
 
@@ -57,11 +49,17 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
     private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
+    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+
+    private Player Player { get; set; } = new Player();
+
     private void Awake()
     {
         _helperFunc = new MovementHelperClass();
 
         PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
+
+        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
 
         PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
 
@@ -84,16 +82,13 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
             SubjectType = typeof(PlayerStateConsumer).ToString()
         }, CancellationToken.None));
 
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+        }, CancellationToken.None));
 
-        rb = GetComponent<Rigidbody2D>();
-
-        col = GetComponent<CapsuleCollider2D>();
-
-        startingGrav = rb.gravityScale;  //the initially gravity is stored in the array
-
-        anim = GetComponent<Animator>();
-
-        sr = GetComponent<SpriteRenderer>();
 
         ledgradeAnimationEvent.AddListener(LedgeGrabEventAnimationKeeperListener);
     }
@@ -102,17 +97,17 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
     //if this needs to be done everyframe then it makes sense
     async void Update()
     {
-        greenBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, greenXOffset)), transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
+        greenBox = Physics2D.OverlapBox(new Vector2(Player.Transform.position.x + (await GetBoxPosition(Player.Renderer, greenXOffset)), Player.Transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
 
-        redBox = Physics2D.OverlapBox(new Vector2(transform.position.x + (await GetBoxPosition(sr, redXOffset)), transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
+        redBox = Physics2D.OverlapBox(new Vector2(Player.Transform.position.x + (await GetBoxPosition(Player.Renderer, redXOffset)), Player.Transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
 
-        if (!_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
+        if (!_helperFunc.OverlapAgainstLayerMaskChecker(Player.Collider, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
             PlayerBundle.StateBundle.PlayerMovementState.Equals(PlayerActionState.IS_GRABBING))
         {
             _timeSpent += Time.deltaTime;
         }
 
-        if(_helperFunc.OverlapAgainstLayerMaskChecker(ref col, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) || _helperFunc.OverlapAgainstLayerMaskChecker(ref col, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER))
+        if(_helperFunc.OverlapAgainstLayerMaskChecker(Player.Collider, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) || _helperFunc.OverlapAgainstLayerMaskChecker(Player.Collider, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
             _timeSpent = 0f;
 
@@ -128,11 +123,11 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
             await PlayerStateEvent.Invoke(PlayerBundle);
 
-            col.isTrigger = true;
+            Player.Collider.isTrigger = true;
 
             //look for better way to make isConcluded compatible etc
 
-            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, !PlayerBundle.StateBundle.PlayerActionState.IsConcluded);
+            Player.Animator.SetBool(PlayerAnimationConstants.LEDGE_GRAB, !PlayerBundle.StateBundle.PlayerActionState.IsConcluded);
 
         }else
         {
@@ -140,11 +135,11 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
             await PlayerStateEvent.Invoke(PlayerBundle);
 
-            col.isTrigger = false;
+            Player.Collider.isTrigger = false;
 
-            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, !PlayerBundle.StateBundle.PlayerActionState.IsConcluded); 
+            Player.Animator.SetBool(PlayerAnimationConstants.LEDGE_GRAB, !PlayerBundle.StateBundle.PlayerActionState.IsConcluded);
 
-            rb.gravityScale = startingGrav;
+            Player.Rigidbody.gravityScale = startingGrav;
         }
 
     }
@@ -152,7 +147,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
     {
         int sign = await Helper.PlayerFlipped(transform);
 
-        await GrabLedge(anim, rb);
+        await GrabLedge(Player.Animator, Player.Rigidbody);
 
         if(StartCalculatingGrabLedgeDisplacement)
         {
@@ -162,16 +157,16 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
             await PlayerStateEvent.Invoke(PlayerBundle);
 
-            await SetGravityValue(rb, startingGrav);
+            await SetGravityValue(Player.Rigidbody, startingGrav);
 
             StartCalculatingGrabLedgeDisplacement = false;
         }
     }
     public async Task HandleLedgeGrabCalculations(int sign, Vector2 force, Vector2 maximumVelocities)
     {
-        if (rb.linearVelocity.y < maximumVelocities.y)
+        if (Player.Rigidbody.linearVelocity.y < maximumVelocities.y)
         {
-            rb.AddForce(Vector2.up * displacements.y * force.y * rb.mass, ForceMode2D.Impulse);
+            Player.Rigidbody.AddForce(Vector2.up * displacements.y * force.y * Player.Rigidbody.mass, ForceMode2D.Impulse);
         }
 
         await Task.Delay(TimeSpan.FromSeconds(VELOCITY_ASYNC_DELAY));
@@ -242,7 +237,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
     public async Task<ActionExecuted<bool>> PerformAction(bool value)
     {
-        rb.linearVelocity = new Vector2(0, 0);
+        Player.Rigidbody.linearVelocity = new Vector2(0, 0);
 
         return new ActionExecuted<bool>(true);
     }
@@ -254,8 +249,10 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
         return new ActionExecuted<bool>(true);
     }
 
-    public void OnNotify(IEntityRigidBody data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new NotImplementedException();
+        Player = data;
+
+        startingGrav = Player.Rigidbody.gravityScale;  //the initially gravity is stored in the array
     }
 }
