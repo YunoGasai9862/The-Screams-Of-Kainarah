@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingController, bool>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericStateBundle<PlayerStateBundle>>
+public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingController, bool>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>
 {
     [SerializeField] LayerMask groundLayer;
 
@@ -39,6 +39,8 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
     public PlayerJumpTimeEvent onPlayerJumpTimeEvent;
 
     public CharacterVelocity CharacterVelocity { get; set; } = new CharacterVelocity();
+
+    private Player Player { get; set; }
 
     public Vector3 PlayerInitialPosition { get => _playerInitialPosition; set=> _playerInitialPosition = value; }
 
@@ -94,6 +96,12 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
     //REMOVE THIS! -OR FIND A BETTER WAY TO REFACTOR THIS
     private async void Update()
     {
+        if (Player == null)
+        {
+            Debug.Log("Player is null - skipping update for Jumping Controller!");
+            return;
+        }
+
         await HandleJumpingMechanism();
 
         //no grabbing - since all of them are under a single state now
@@ -180,11 +188,11 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
     }
     private bool IsOnTheGround(LayerMask ground)
     {
-        return _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _col, ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
+        return _movementHelperClass.OverlapAgainstLayerMaskChecker(Player.Collider, ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
     }
     private bool IsOnTheLedge(LayerMask ledge)
     {
-        return _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _col, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER);
+        return _movementHelperClass.OverlapAgainstLayerMaskChecker(Player.Collider, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER);
     }
     public async Task<bool> MaxJumpHeightChecker(float maxJumpHeight)
     {
@@ -233,5 +241,10 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
         await PlayerStateEvent.Invoke(PlayerStateBundle);
 
         return new ActionExecuted<bool>(false);
+    }
+
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        Player = data;
     }
 }

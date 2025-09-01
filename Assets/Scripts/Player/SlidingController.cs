@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<AnimationDetails>, ISubject<IObserver<CharacterVelocity>>
+public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<AnimationDetails>, ISubject<IObserver<CharacterVelocity>>, IObserver<Player>
 {
     private const float MAX_ANIMATION_TIME = 0.6f;
 
@@ -18,6 +18,8 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
     private PlayerVelocityDelegator PlayerVelocityDelegator { get; set; }
 
     private AnimationDetailsDelegator AnimationDetailsDelegator { get; set;  }
+
+    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
@@ -33,11 +35,7 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
 
     private PlayerAttackStateMachine _playerAttackStateMachine;
 
-    private Collider2D _col;
-
-    private Animator _anim;
-
-    private Rigidbody2D _rb;
+    private Player Player { get; set; }
 
     private bool IS_SLIDING { get; set; } = false;
 
@@ -46,31 +44,36 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
         PlayerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
 
         AnimationDetailsDelegator = Helper.GetDelegator<AnimationDetailsDelegator>();
+
+        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
     }
-    void Start()
+void Start()
     {
         PlayerVelocityDelegator.AddToSubjectsDict(typeof(SlidingController).ToString(), name, new Subject<IObserver<CharacterVelocity>>());
         PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(SlidingController).ToString())[name].SetSubject(this);
 
-        AnimationDetailsDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(AnimationDetailsDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             SubjectType = typeof(PlayerAnimationController).ToString(),
-        }, CancellationToken.None);
+        }, CancellationToken.None));
+
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            SubjectType = typeof(PlayerAttributesNotifier).ToString(),
+        }, CancellationToken.None));
 
         _animationHandler = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>>();
+
         _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>(_animationHandler);
 
         _movementHelperClass = new MovementHelperClass();
-        _rb = GetComponent<Rigidbody2D>();
-        _anim = GetComponent<Animator>();
-        _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
-        _col= GetComponent<CapsuleCollider2D>();
     }
 
     private async Task Slide()
     {
-        if (IS_SLIDING && _movementHelperClass.OverlapAgainstLayerMaskChecker(ref _col, groundLayer, COLLIDER_DISTANCE_FROM_THE_LAYER))
+        if (IS_SLIDING && _movementHelperClass.OverlapAgainstLayerMaskChecker(Player.Collider, groundLayer, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
             PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_SLIDING, IsConcluded = false };
 
@@ -94,10 +97,18 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
 
     async Task<bool> IReceiverAsync<bool>.PerformAction(bool value)
     {
-        if (await IsVelocityXGreaterThanZero(_rb) && !_playerAttackStateMachine.IsInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
+        if (Player == null)
+        {
+            Debug.Log($"Player is null - SlidingController - PerformAction - Skipping execution");
+
+            return await Task.FromResult(false);
+        }
+
+        if (await IsVelocityXGreaterThanZero(Player.Rigidbody) && !_playerAttackStateMachine.IsInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
         {
             await Slide();
         }
+
         return await Task.FromResult(true);
     }
     async Task<bool> IReceiverAsync<bool>.CancelAction()
@@ -124,5 +135,12 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
     public void OnNotify(AnimationDetails data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         AnimationDetails = data;
+    }
+
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        Player = data;
+
+        _playerAttackStateMachine = new PlayerAttackStateMachine(data.Animator);
     }
 }

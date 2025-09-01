@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>
+public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<Player>
 {
     private const float TIME_DIFFERENCE_MAX = 1.5f;
 
@@ -13,10 +13,6 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     private MouseClickEvent _onMouseClickEvent = new MouseClickEvent();
 
     private PlayerBoostAttackEvent _playerBoostAttackEvent = new PlayerBoostAttackEvent();
-
-    private Animator _anim;
-
-    private Collider2D col;
 
     private MovementHelperClass _movementHelper;
 
@@ -35,7 +31,11 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
     private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
+    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+
     private PlayerStateEvent PlayerStateEvent { get; set; }
+
+    private Player Player { get; set; }
         
     [SerializeField] LayerMask Ground;
 
@@ -62,12 +62,6 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
     private void Awake()
     {
-        _anim = GetComponent<Animator>();
-
-        PlayerAttackStateMachine = new PlayerAttackStateMachine(_anim);
-
-        col = GetComponent<CapsuleCollider2D>();
-
         _movementHelper = new MovementHelperClass();
 
         PlayerAttackStateInt = 0;
@@ -75,12 +69,12 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
         PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
 
         PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
+
+        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
     }
 
     private void Start()
     {
-        Debug.Log($"Attacking Controllers Global Game State Delegator : {globalGameStateDelegator} {this}");
-
         globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = this.name,
@@ -98,6 +92,14 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
         }, CancellationToken.None));
 
 
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+        }, CancellationToken.None));
+
+
         //event subscription
         _onMouseClickEvent.AddListener(SetMouseClickBeginEndTime);
         _playerBoostAttackEvent.AddListener(SetAttackBoostMode);
@@ -110,7 +112,13 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     {
         if (CurrentPlayerState == null || CurrentPlayerState.StateBundle == null)
         {
-            Debug.Log("CurrentPlayerState || CurrentPlayerState.StateBundle is null - skipping update!");
+            Debug.Log("CurrentPlayerState || CurrentPlayerState.StateBundle is null - skipping update for Attacking Controller!");
+            return;
+        }
+
+        if (Player == null)
+        {
+            Debug.Log("Player is null - skipping update for Attacking Controller!");
             return;
         }
 
@@ -150,7 +158,7 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     private bool CanPlayerAttackWhileJumping()
     {
         return (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_JUMPING && CurrentPlayerState.StateBundle.PlayerMovementState.IsConcluded) && 
-            !_movementHelper.OverlapAgainstLayerMaskChecker(ref col, Ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
+            !_movementHelper.OverlapAgainstLayerMaskChecker(Player.Collider, Ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
     }
 
     private void EndPlayerAttack()
@@ -327,6 +335,15 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
         Debug.Log($"PlayerStateBundle in Attacking Controller - {data.StateBundle}");
 
         CurrentPlayerState.StateBundle = data.StateBundle;
+    }
+
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        Debug.Log($"Player in Attacking Controller - {data}");
+
+        Player = data;
+
+        PlayerAttackStateMachine = new PlayerAttackStateMachine(Player.Animator);
     }
 
     private void DelegateExecutionState(ControllerPackage<PlayerAttackingExecutionState, AttackingDetails> controllerPackage)
