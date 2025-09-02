@@ -843,6 +843,7 @@ GameObject:
   - component: {fileID: 6549680331415743501}
   - component: {fileID: -1774752956742986687}
   - component: {fileID: 3141289391138608163}
+  - component: {fileID: 4384524292391764552}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -874,7 +875,6 @@ RectTransform:
   - {fileID: 4986595797237407197}
   - {fileID: 3250406820822219408}
   - {fileID: 7410792661903009745}
-  - {fileID: 4294611955198777478}
   - {fileID: 5047914245799074223}
   - {fileID: 7446961893405646460}
   - {fileID: 7055934320424962903}
@@ -1534,6 +1534,18 @@ ParticleSystemForceField:
         m_RotationOrder: 4
     m_MultiplyDragByParticleSize: 1
     m_MultiplyDragByParticleVelocity: 1
+--- !u!114 &4384524292391764552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abcd4b3f51043fb4ba7a10012a82994f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2747015121616660501
 GameObject:
   m_ObjectHideFlags: 0
@@ -1710,54 +1722,6 @@ MonoBehaviour:
   booksAttackStateName: BoostAttack
   powerUpBarFillEvent: {fileID: 2401602875940808177, guid: dbdc1cbe1bf814148afa12f2338e0aa3, type: 3}
   globalGameStateDelegator: {fileID: 7488594600983117778, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
---- !u!1 &5919960888681189155
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4294611955198777478}
-  - component: {fileID: 8810745347401534463}
-  m_Layer: 7
-  m_Name: PlayerAttributeNotifier
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &4294611955198777478
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5919960888681189155}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1875905215411050442}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8810745347401534463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5919960888681189155}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abcd4b3f51043fb4ba7a10012a82994f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6758309677310741080
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,35 +5,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 [Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "Player", InitialPositionX = -5.0f, InitialPositionY = 10.0f)]
-public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject<IObserver<PlayerSystem>>
+public class PlayerSystem : MonoBehaviour, ISubject<IObserver<PlayerSystem>>
 {
-    private HealthDelegator HealthDelegator { get; set; }
-
     private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
-
-    private GlobalGameStateDelegator GlobalGameStateDelegator { get; set; }
-
-    private Health PlayerHealth { get; set; }
 
     private void Awake()
     {
-        PlayerHealth = new Health()
-        {
-            MaxHealth = 100f,
-            CurrentHealth = 100f,
-            EntityName = name
-        };
-
-        HealthDelegator = Helper.GetDelegator<HealthDelegator>();
-
         PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
     }
 
     private void Start()
     {
-        HealthDelegator.AddToSubjectsDict(typeof(PlayerSystem).ToString(), name, new Subject<IObserver<Health>>());
-        HealthDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSystem).ToString())[name].SetSubject(this);
-
         PlayerSystemDelegator.AddToSubjectsDict(typeof(PlayerSystem).ToString(), name, new Subject<IObserver<PlayerSystem>>());
         PlayerSystemDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSystem).ToString())[name].SetSubject(this);
     }
@@ -56,15 +38,6 @@ public class PlayerSystem : MonoBehaviour, ISubject<IObserver<Health>>, ISubject
         List<string> animationNames = await GetPlayerAnimationsList(anim);
 
         return animationNames.Where(e => e.Equals(search) || e.Contains(search)).FirstOrDefault();
-    }
-
-    public void OnNotifySubject(IObserver<Health> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        StartCoroutine(HealthDelegator.NotifyObserver(data, PlayerHealth, new NotificationContext()
-        {
-            SubjectType = typeof(PlayerSystem).ToString()
-
-        }, CancellationToken.None));
     }
 
     public void OnNotifySubject(IObserver<PlayerSystem> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)

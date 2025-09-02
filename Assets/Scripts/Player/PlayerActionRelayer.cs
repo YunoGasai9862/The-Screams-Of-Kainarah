@@ -8,7 +8,7 @@ using static CheckPoints;
 using static SceneData;
 using static DialoguesAndOptions;
 using PlayerHittableItemsNS;
-public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<PlayerSystem>, IGameStateHandler
+public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateHandler
 {
     private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
 
@@ -32,15 +32,11 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
     public SemaphoreSlim GetSemaphore { get => _semaphoreSlim; set => _semaphoreSlim = value; }
     private DialogueSystem DialogueSystemFetched { get; set; }
     
-    private PlayerSystem PlayerSystemReference { get; set; }
-
     private Health PlayerHealth { get; set; }
 
-    private HealthDelegator HealthDelegator { get; set; }
-
-    private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
-
     private bool InSight { get; set; }
+
+    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
     private void Start()
     {
@@ -53,20 +49,11 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
             Debug.Log($"Exception: {ex.StackTrace}");
         }
 
-        StartCoroutine(HealthDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = name,
             ObserverTag = tag,
-            SubjectType = typeof(PlayerSystem).ToString()
-
-        }, CancellationToken.None));
-
-
-        StartCoroutine(PlayerSystemDelegator.NotifySubject(this, new NotificationContext()
-        {
-            ObserverName = name,
-            ObserverTag = tag,
-            SubjectType = typeof(PlayerSystem).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier).ToString()
 
         }, CancellationToken.None));
     }
@@ -86,9 +73,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
 
         anim = GetComponent<Animator>();
 
-        HealthDelegator = Helper.GetDelegator<HealthDelegator>();
-
-        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
+        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
     }
 
     private async void Update()
@@ -116,12 +101,6 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
     }
     private async void FixedUpdate()
     {
-        if (PlayerSystemReference == null)
-        {
-            Debug.Log("PlayerSystemReference is null for [PlayerActionRelayer - FixedUpdate] - exiting!");
-            return;
-        }
-
         if (await IfPortalExists(sr, "Portal"))
         {
             //Instantiate(TeleportTransition, transform.position, Quaternion.identity);
@@ -293,14 +272,9 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Health>, IObserver<P
         data.AddToObjectsToPersist(playerData);
     }
 
-    public void OnNotify(Health data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        PlayerHealth = data;
-    }
-
-    public void OnNotify(PlayerSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        PlayerSystemReference = data;
+        PlayerHealth = data.Health;
     }
 }
 

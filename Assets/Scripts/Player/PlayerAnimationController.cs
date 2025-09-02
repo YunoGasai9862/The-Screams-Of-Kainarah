@@ -4,11 +4,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 //convert it to a controller
-public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>, IObserver<GenericStateBundle<PlayerStateBundle>>
+public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<IEntityAnimator>
 {
-    private AnimationStateMachine _stateMachine;
-
-    private Animator _anim;
+    private AnimationStateMachine AnimationStateMachine { get; set; }
 
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>() { StateBundle = new PlayerStateBundle() };
 
@@ -16,19 +14,19 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private AnimationDetailsDelegator AnimationDetailsDelegator { get; set; }
 
-    private FlagDelegator FlagDelegator { get; set; }
+    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
+    private Animator PlayerAnimator { get; set; }
+
     private void Awake()
     {
-        _stateMachine = new AnimationStateMachine(GetComponent<Animator>());
-
         PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
 
         AnimationDetailsDelegator = Helper.GetDelegator<AnimationDetailsDelegator>();
 
-        FlagDelegator = Helper.GetDelegator<FlagDelegator>();   
+        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
 
         PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
 
@@ -46,6 +44,11 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         {
             throw new CustomEventNotFoundException("PlayerStateEvent not found!!");
         }
+
+        if (PlayerAttributesDelegator == null)
+        {
+            throw new DelegatorNotFoundException("PlayerAttributesDelegator not found!!");
+        }
     }
 
     private void Start()
@@ -58,6 +61,13 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(PlayerStateConsumer).ToString()
+        }, CancellationToken.None));
+
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None));
 
     }
@@ -91,21 +101,21 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private void PlayAnimation(string name, int state)
     {
-        _stateMachine.AnimationPlayForInt(name, state);
+        AnimationStateMachine.AnimationPlayForInt(name, state);
     }
     private void PlayAnimation(string name, bool state)
     {
-        _stateMachine.AnimationPlayForBool(name, state);
+        AnimationStateMachine.AnimationPlayForBool(name, state);
     }
 
     private float ReturnCurrentAnimation()
     {
-        return _anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
+        return PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
     }
 
     private AnimatorStateInfo GetCurrentStateInfo()
     {
-        return _anim.GetCurrentAnimatorStateInfo(0);
+        return PlayerAnimator.GetCurrentAnimatorStateInfo(0);
     }
 
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
@@ -115,6 +125,13 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>> PerformAction(ControllerPackage<PlayerAnimationExecutionState, bool> value = null)
     {
+        if (PlayerAnimator == null)
+        {
+            Debug.Log("PlayerAnimator is null - Skipping PerformAction in PlayerAnimationController");
+
+            return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>(null));
+        }
+
         GetAnimationExecutionScenario(value);
 
         return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>(value));
@@ -148,7 +165,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     public void OnNotifySubject(IObserver<AnimationDetails> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        AnimationDetailsDelegator.NotifyObserver(observer, new AnimationDetails()
+        StartCoroutine(AnimationDetailsDelegator.NotifyObserver(observer, new AnimationDetails()
         {
             CurrentAnimationStateInfo = GetCurrentStateInfo(),
             CurrentAnimationTime = ReturnCurrentAnimation()
@@ -157,6 +174,13 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         {
             SubjectType = typeof(PlayerAnimationController).ToString()
         },
-        CancellationToken.None);
+        CancellationToken.None));
+    }
+
+    public void OnNotify(IEntityAnimator data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        PlayerAnimator = data.Animator;
+
+        AnimationStateMachine = new AnimationStateMachine(PlayerAnimator);
     }
 }
