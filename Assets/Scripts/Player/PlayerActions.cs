@@ -5,23 +5,15 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngineInternal;
 
-public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>
+public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>, IObserver<IEntityRigidBody>
 {
     [SerializeField] float _characterSpeed = 10f;
 
     private PlayerStateEvent _playerStateEvent;
 
-    private PlayerInput _playerInput;
-
     private Rocky2DActions _rocky2DActions;
 
-    private Rigidbody2D _rb;
-
-    private SpriteRenderer _spriteRenderer;
-
     private Vector2 _keystrokeTrack;
-
-    private bool _daggerInput = false;
 
     private IReceiverEnhancedAsync<JumpingController, bool> _jumpReceiver;
 
@@ -54,29 +46,36 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
     private ThrowingProjectileController ThrowingProjectileController { get => GetComponent<ThrowingProjectileController>(); } //implement all the actions together
+   
+    private GlobalGameStateDelegator _globalGameStateDelegator;
 
-    [SerializeField]
-    GlobalGameStateDelegator _globalGameStateDelegator;
+    private PlayerVelocityDelegator _playerVelocityDelegator;
 
-    [SerializeField]
-    PlayerVelocityDelegator _playerVelocityDelegator;
+    private PlayerStateDelegator _playerStateDelegator;
 
-    [SerializeField]
-    PlayerStateDelegator _playerStateDelegator;
+    private PlayerAttributesDelegator _playerAttributesDelegator;
+
+    private Rigidbody2D _rb;
 
 
     //Force = -2m * sqrt (g * h)
     private void Awake()
     {
-        _playerInput = GetComponent<PlayerInput>();
+
+        _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
+        _playerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
+
+        _playerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
+
+        _playerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
 
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
 
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-
         _playerActionsModel = new PlayerActionsModel();
 
-        _jumpReceiver = GetComponent<IReceiverEnhancedAsync<JumpingController, bool>>();
+        //better <3
+        _jumpReceiver = Helper.FindReceiver<JumpingController, IReceiverBase<bool>>();
 
         _slideReceiver = GetComponent<SlidingController>();
 
@@ -99,8 +98,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         _slideCommand = new CommandAsync<bool>(_slideReceiver);
 
         _throwingProjectileCommand = new Command<bool>(_throwingProjectileReceiver);
-
-        _rb = GetComponent<Rigidbody2D>();
 
         _playerActionsModel.OriginalSpeed = _characterSpeed;
 
@@ -130,8 +127,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private void Start()
     {
-        Debug.Log($"Dict: {_globalGameStateDelegator.GetSubjectsDict()}");
-
         _globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = this.name,
@@ -159,6 +154,13 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(PlayerStateConsumer).ToString()
+        }, CancellationToken.None));
+
+        StartCoroutine(_playerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerAttributesDelegator).ToString()
         }, CancellationToken.None));
 
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
@@ -424,6 +426,11 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     {
         return playerStateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_SLIDING &&
                !playerStateBundle.PlayerMovementState.IsConcluded;
+    }
+
+    public void OnNotify(IEntityRigidBody data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        _rb = data.Rigidbody;
     }
 
     #endregion

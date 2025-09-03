@@ -51,6 +51,24 @@ public class Helper: MonoBehaviour
         return customEvent;
     }
 
+    public static TYPE FindReceiver<TYPE, IMPLEMENTATION>() where TYPE: MonoBehaviour
+    {
+        TYPE customObject = (TYPE)(UnityEngine.Object)FindFirstObjectByType<TYPE>();
+
+        if (customObject == null)
+        {
+            throw new ApplicationException($" {typeof(TYPE).Name} Not Found in the Scene");
+        }
+
+        if (!(customObject is IMPLEMENTATION))
+        {
+            throw new ApplicationException($" {typeof(TYPE).Name} Does not Implement {typeof(IMPLEMENTATION)}");
+        }
+
+        return customObject;
+    }
+
+
     public static Task<int> PlayerFlipped(Transform transform)
     {
         return transform.localScale.x < 0 ? Task.FromResult(-1) : Task.FromResult(1);
