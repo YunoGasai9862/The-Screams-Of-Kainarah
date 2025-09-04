@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public interface IReceiverAsync<T>
+public interface IReceiverAsync<T> : IReceiverBase<T>
 {
     Task<T> PerformAction(T value = default);
     Task<T> CancelAction();
@@ -10,7 +10,7 @@ public interface IReceiverAsync<T>
 
 public interface IReceiverBase<VALUE>
 {
-    public Type getType()
+    public Type GetType()
     {
         return typeof(VALUE);
     }

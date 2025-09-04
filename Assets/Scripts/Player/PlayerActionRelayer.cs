@@ -8,7 +8,7 @@ using static CheckPoints;
 using static SceneData;
 using static DialoguesAndOptions;
 using PlayerHittableItemsNS;
-public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateHandler
+public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateHandler, IObserver<PickableItemsUtility>
 {
     private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
 
@@ -22,7 +22,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
     private Animator anim;
     private float ENEMYATTACK = 5f;
     private bool pickedUp;
-    private PickableItemsHandler _pickableItems;
+    private PickableItemsUtility _pickableItems;
     private SemaphoreSlim _semaphoreSlim;
     private SemaphoreSlim _semaphoreSlimForCheckpoint;
     private CancellationTokenSource _cancellationTokenSource;
@@ -31,8 +31,8 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
     public SemaphoreSlim GetCheckPointSemaphore { get => _semaphoreSlimForCheckpoint; set => _semaphoreSlimForCheckpoint = value; }
     public SemaphoreSlim GetSemaphore { get => _semaphoreSlim; set => _semaphoreSlim = value; }
     private DialogueSystem DialogueSystemFetched { get; set; }
-    
-    private Health PlayerHealth { get; set; }
+
+    private Player Player { get; set; } = new Player();
 
     private bool InSight { get; set; }
 
@@ -67,24 +67,20 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
 
         _cancellationToken = _cancellationTokenSource.Token;
 
-        _pickableItems= GameObject.FindWithTag("PickableItemsManager").GetComponent<PickableItemsHandler>();
-
-        sr = GetComponent<SpriteRenderer>();
-
-        anim = GetComponent<Animator>();
+        _pickableItems = Helper.FindObject<PickableItemsUtility>();
 
         PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
     }
 
     private async void Update()
     {
-        if (PlayerHealth == null)
+        if (Player.Health == null)
         {
             Debug.Log("PlayerHealth is null for [PlayerActionRelayer - Update] - exiting!");
             return;
         }
 
-        if (await IsPlayerDead(PlayerHealth.CurrentHealth) && GetCheckPointSemaphore.CurrentCount!=0)
+        if (await IsPlayerDead(Player.Health.CurrentHealth) && GetCheckPointSemaphore.CurrentCount!=0)
         {
             await GetCheckPointSemaphore.WaitAsync();
             anim.SetBool(PlayerAnimationConstants.DEATH, true);
@@ -274,7 +270,12 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
 
     public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        PlayerHealth = data.Health;
+        Player = data;
+    }
+
+    public void OnNotify(PickableItemsUtility data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        _pickableItems = data;
     }
 }
 

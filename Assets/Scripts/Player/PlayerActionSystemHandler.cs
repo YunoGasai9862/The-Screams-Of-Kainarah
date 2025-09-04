@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 {
-    [SerializeField] PickableItemsHandler pickableItems;
+    [SerializeField] PickableItemsUtility pickableItems;
     [SerializeField] PlayerPowerUpModeEvent playerPowerUpModeEvent;
     [SerializeField] CrystalUIIncrementEvent crystalUIIncrementEvent;
 

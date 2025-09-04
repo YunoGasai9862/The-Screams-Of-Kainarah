@@ -47,7 +47,8 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
 
         PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
     }
-void Start()
+
+    void Start()
     {
         PlayerVelocityDelegator.AddToSubjectsDict(typeof(SlidingController).ToString(), name, new Subject<IObserver<CharacterVelocity>>());
         PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(SlidingController).ToString())[name].SetSubject(this);

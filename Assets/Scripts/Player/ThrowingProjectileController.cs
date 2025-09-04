@@ -9,7 +9,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
 
     private ThrowableProjectileEvent onThrowEvent = new ThrowableProjectileEvent();
 
-    private PickableItemsHandler _pickableItems;
+    private PickableItemsUtility _pickableItems;
     private PlayerAttackStateMachine _playerAttackStateMachine;
     private Animator _anim;
 
@@ -22,7 +22,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     }
     private void Start()
     {
-        _pickableItems = GameObject.FindWithTag(pickableItemClassTag).GetComponent<PickableItemsHandler>();
+        _pickableItems = GameObject.FindWithTag(pickableItemClassTag).GetComponent<PickableItemsUtility>();
 
         onThrowEvent.AddListener(CanPlayerThrowProjectile);
     }

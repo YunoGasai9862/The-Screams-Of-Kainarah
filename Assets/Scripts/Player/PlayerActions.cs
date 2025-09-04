@@ -74,26 +74,21 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _playerActionsModel = new PlayerActionsModel();
 
-        //better <3
         _jumpReceiver = Helper.FindReceiver<JumpingController, IReceiverBase<bool>>();
 
-        _slideReceiver = GetComponent<SlidingController>();
+        _slideReceiver = Helper.FindReceiver<SlidingController, IReceiverBase<bool>>();
 
-        _attackReceiver = GetComponent<IReceiverEnhancedAsync<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>>();
+        _attackReceiver = Helper.FindReceiver<AttackingController, IReceiverBase<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>>();
 
-        _throwingProjectileReceiver = GetComponent<ThrowingProjectileController>();
+        _throwingProjectileReceiver = Helper.FindReceiver<ThrowingProjectileController, IReceiverBase<bool>>();
+
+        _animationReceiver = Helper.FindReceiver<PlayerAnimationController, IReceiverBase<ControllerPackage<PlayerAnimationExecutionState, bool>>>();
 
         _attackCommand = new CommandAsyncEnhanced<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>(_attackReceiver);
-
-        _animationReceiver = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>>();
 
         _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>(_animationReceiver);
 
         _jumpCommand = new CommandAsyncEnhanced<JumpingController, bool>(_jumpReceiver);
-
-        _slidingReceiver = GetComponent<IReceiverEnhancedAsync<SlidingController, bool>>();
-
-        _slidingCommand = new CommandAsyncEnhanced<SlidingController, bool>(_slidingReceiver);
 
         _slideCommand = new CommandAsync<bool>(_slideReceiver);
 

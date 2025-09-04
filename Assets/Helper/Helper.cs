@@ -29,7 +29,7 @@ public class Helper: MonoBehaviour
 
     public static T GetDelegator<T>() where T: UnityEngine.Object
     {
-        T delegator = (T)(UnityEngine.Object) FindFirstObjectByType<T>();
+        T delegator = FindObject<T>();
 
         if (delegator == null)
         {
@@ -41,7 +41,7 @@ public class Helper: MonoBehaviour
 
     public static T GetCustomEvent<T>() where T : UnityEngine.Object
     {
-        T customEvent = (T)(UnityEngine.Object)FindFirstObjectByType<T>();
+        T customEvent = FindObject<T>();
 
         if (customEvent == null)
         {
@@ -66,6 +66,11 @@ public class Helper: MonoBehaviour
         }
 
         return customObject;
+    }
+
+    public static TYPE FindObject<TYPE>() where TYPE : UnityEngine.Object
+    {
+        return (TYPE)(UnityEngine.Object)FindFirstObjectByType<TYPE>();
     }
 
 
