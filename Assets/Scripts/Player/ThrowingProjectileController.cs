@@ -13,7 +13,10 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     private PlayerAttackStateMachine _playerAttackStateMachine;
     private Animator _anim;
 
+    private PickableItemsUtility PickableItemsUtility { get; set; }
+
     [SerializeField] string pickableItemClassTag;
+    [SerializeField] PickableItems pickableItems;
     private void Awake()   
     {
         _anim= GetComponent<Animator>();
@@ -22,7 +25,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     }
     private void Start()
     {
-        _pickableItems = GameObject.FindWithTag(pickableItemClassTag).GetComponent<PickableItemsUtility>();
+        PickableItemsUtility = new PickableItemsUtility(pickableItems);
 
         onThrowEvent.AddListener(CanPlayerThrowProjectile);
     }
@@ -32,7 +35,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
 
         if (daggerExistsInInventory)
         {
-            ThrowDagger(_pickableItems.ReturnGameObjectForTheKey(DAGGER_ITEM_NAME));
+            ThrowDagger(PickableItemsUtility.GetGameObject(DAGGER_ITEM_NAME));
         }
 
     }

@@ -155,7 +155,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerAttributesDelegator).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None));
 
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement

@@ -6,13 +6,15 @@ using UnityEngine;
 
 public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 {
-    [SerializeField] PickableItemsUtility pickableItems;
+    [SerializeField] PickableItems pickableItems;
     [SerializeField] PlayerPowerUpModeEvent playerPowerUpModeEvent;
     [SerializeField] CrystalUIIncrementEvent crystalUIIncrementEvent;
 
-    Dictionary<String, Func<Collider2D, Task >> _playerActionHandlerDic;
+    private Dictionary<String, Func<Collider2D, Task >> _playerActionHandlerDic;
 
     private InstantiatorController _gameObject;
+
+    private PickableItemsUtility PickableItemsUtility { get; set; }
     private float DIAMOND_PICK_UP_VALUE { get; set; } = 20f;
     private int CRYSTAL_UI_INCREMENT_VALUE { get; set; } = 1;
 
@@ -24,10 +26,12 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
              { "Health" , value => OnHealthPickup(value) },
              { "Dagger" , value => OnDaggerPickup(value) }
         };
+
+        PickableItemsUtility = new PickableItemsUtility(pickableItems);
     }
     private Task<bool> OnDaggerPickup(Collider2D collider)
     {
-        GameObject temp = pickableItems.ReturnGameObjectForTheKey(collider.tag);
+        GameObject temp = PickableItemsUtility.GetGameObject(collider.tag);
         InventoryManagementSystem.Instance.AddInvoke(temp.GetComponent<SpriteRenderer>().sprite, temp.tag);
         return Task.FromResult(true); //adds it to the inventory
 
@@ -36,7 +40,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     private async Task<bool> OnHealthPickup(Collider2D collider)
     {
         Vector2 _pickupPos = new(collider.transform.position.x, collider.transform.position.y - 1f);
-        InstantiatorController _gameObject = pickupEffectInstantiator(pickableItems.ReturnGameObjectForTheKey(collider.tag), _pickupPos);
+        InstantiatorController _gameObject = pickupEffectInstantiator(PickableItemsUtility.GetGameObject(collider.tag), _pickupPos);
         _gameObject.DestroyGameObject(3f);
         return await Task.FromResult(true);
 
@@ -44,7 +48,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
 
     private async Task<bool> OnCrystalPickup(Collider2D collision)
     {
-       pickupEffectInstantiator(pickableItems.ReturnGameObjectForTheKey(collision.tag), collision.transform.position);
+       pickupEffectInstantiator(PickableItemsUtility.GetGameObject(collision.tag), collision.transform.position);
        playerPowerUpModeEvent.GetInstance().Invoke(DIAMOND_PICK_UP_VALUE);
        await collision.GetComponent<MoveCrystal>().crystalCollideEvent.Invoke(collision, true);
        await InvokeCrystalUIEvent(crystalUIIncrementEvent, CRYSTAL_UI_INCREMENT_VALUE);

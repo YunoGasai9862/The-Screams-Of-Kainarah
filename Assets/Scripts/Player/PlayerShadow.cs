@@ -4,12 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerShadow : MonoBehaviour
+public class PlayerShadow : MonoBehaviour, IObserver<Player>
 {
     private Vector2 m_Position;
-    private SpriteRenderer m_SpriteRenderer;
     private Vector2 m_newPosition;
-    private Vector2 m_parentPos;
     private CancellationToken _token;
     private CancellationTokenSource _tokenSource;
 
@@ -17,18 +15,30 @@ public class PlayerShadow : MonoBehaviour
     public float initialoffsetY;
     public float initialoffsetX;
 
+    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+
+    private Player Player { get; set; } = new Player();
+
     private void Awake()
     {
         m_Position = new Vector2(transform.position.x + initialoffsetX, transform.position.y + initialoffsetY);
-        m_SpriteRenderer = transform.parent.GetComponent<SpriteRenderer>();
-        m_parentPos = transform.parent.position;
         _tokenSource= new CancellationTokenSource();
         _token = _tokenSource.Token;
+
+        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();   
+
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+        }, CancellationToken.None));
+
     }
     // Update is called once per frame
      async void Update()
     {
-        m_newPosition = await ShadowObjectsNewPosition(m_SpriteRenderer, m_parentPos, m_Position, 0.5f, 10);
+        m_newPosition = await ShadowObjectsNewPosition(Player.Renderer, Player.Transform.position, m_Position, 0.5f, 10);
 
         if(!_token.IsCancellationRequested) //extra check due to async programming
         {
@@ -36,7 +46,7 @@ public class PlayerShadow : MonoBehaviour
 
             m_Position = transform.position;
 
-            m_parentPos = transform.parent.position;
+            Player.Transform.position = transform.parent.position;
         }
     }
 
@@ -58,4 +68,8 @@ public class PlayerShadow : MonoBehaviour
 
     }
 
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        Player = data;
+    }
 }

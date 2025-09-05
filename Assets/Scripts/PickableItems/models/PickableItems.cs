@@ -17,5 +17,4 @@ public class PickableItems : ScriptableObject
     }
 
     public PickableEntities[] pickableEntities;
-
 }

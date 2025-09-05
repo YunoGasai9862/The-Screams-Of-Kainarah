@@ -3,11 +3,22 @@ using UnityEngine;
 
 public class PickableItemsUtility
 {
-    public bool DidPlayerCollideWithaPickableItem(string collisionObjectName, PickableItems pickableItems)
+    public PickableItems PickableItems { get; private set; }
+    public PickableItemsUtility(PickableItems pickableItems)
     {
-        for (int i = 0; i < pickableItems.pickableEntities.Length; i++)
+        if (pickableItems == null)
         {
-            var element = pickableItems.pickableEntities[i];
+            throw new NullException("Pickable Items is null!");
+        }
+
+        PickableItems = pickableItems;
+    }
+
+    public bool IsPickableItem(string collisionObjectName)
+    {
+        for (int i = 0; i < PickableItems.pickableEntities.Length; i++)
+        {
+            var element = PickableItems.pickableEntities[i];
 
             if (collisionObjectName == element.objectName)
             {
@@ -17,11 +28,11 @@ public class PickableItemsUtility
 
         return false;
     }
-    public GameObject ReturnGameObjectForTheKey(string keyName, PickableItems pickableItems)
+    public GameObject GetGameObject(string keyName)
     {
-        for (int i = 0; i < pickableItems.pickableEntities.Length; i++)
+        for (int i = 0; i < PickableItems.pickableEntities.Length; i++)
         {
-            var element = pickableItems.pickableEntities[i];
+            var element = PickableItems.pickableEntities[i];
 
             if (keyName == element.objectName)
             {
@@ -32,11 +43,11 @@ public class PickableItemsUtility
         return null;
     }
 
-    public bool ShouldThisItemBeDisabled(string collisionObjectName, PickableItems pickableItems)
+    public bool ShouldThisItemBeDisabled(string collisionObjectName)
     {
-        for (int i = 0; i < pickableItems.pickableEntities.Length; i++)
+        for (int i = 0; i < PickableItems.pickableEntities.Length; i++)
         {
-            var element = pickableItems.pickableEntities[i];
+            var element = PickableItems.pickableEntities[i];
 
             if (collisionObjectName == element.objectName)
             {

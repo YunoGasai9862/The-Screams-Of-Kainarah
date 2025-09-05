@@ -8,21 +8,21 @@ using static CheckPoints;
 using static SceneData;
 using static DialoguesAndOptions;
 using PlayerHittableItemsNS;
-public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateHandler, IObserver<PickableItemsUtility>
+public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateHandler
 {
     private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
 
-    [SerializeField] SpriteRenderer sr;
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
     [SerializeField] string[] checkpointTags;
     [SerializeField] float playerHealth;
     [SerializeField] MainThreadDispatcherEvent mainThreadDispatcherEvent;
+    [SerializeField] PickableItems pickableItems;
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
     private bool pickedUp;
-    private PickableItemsUtility _pickableItems;
+    private PickableItemsUtility _pickableItemsUtility;
     private SemaphoreSlim _semaphoreSlim;
     private SemaphoreSlim _semaphoreSlimForCheckpoint;
     private CancellationTokenSource _cancellationTokenSource;
@@ -67,7 +67,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
 
         _cancellationToken = _cancellationTokenSource.Token;
 
-        _pickableItems = Helper.FindObject<PickableItemsUtility>();
+        _pickableItemsUtility = new PickableItemsUtility(pickableItems);
 
         PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
     }
@@ -97,7 +97,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
     }
     private async void FixedUpdate()
     {
-        if (await IfPortalExists(sr, "Portal"))
+        if (await IfPortalExists(Player.Renderer, "Portal"))
         {
             //Instantiate(TeleportTransition, transform.position, Quaternion.identity);
             StartCoroutine(WaiterFunction());
@@ -137,7 +137,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
     {
         if (await CanPlayerBeAttacked(SceneSingleton.PlayerHittableItems, collision.collider))
         {
-            PlayerHealth.CurrentHealth -= ENEMYATTACK;
+            Player.Health.CurrentHealth -= ENEMYATTACK;
         }
     }
 
@@ -178,11 +178,11 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
 
     private async Task ItemCollisionHandler(Collider2D collision)
     {
-        pickedUp = _pickableItems.DidPlayerCollideWithaPickableItem(collision.tag);
+        pickedUp = _pickableItemsUtility.IsPickableItem(collision.tag);
 
         if (pickedUp)
         {
-            bool shouldBedisabled = _pickableItems.ShouldThisItemBeDisabled(collision.tag);
+            bool shouldBedisabled = _pickableItemsUtility.ShouldThisItemBeDisabled(collision.tag);
 
             if (shouldBedisabled)
                 collision.gameObject.SetActive(false);
@@ -271,11 +271,6 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
     public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
-    }
-
-    public void OnNotify(PickableItemsUtility data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        _pickableItems = data;
     }
 }
 
