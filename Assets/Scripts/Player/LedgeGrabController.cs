@@ -145,6 +145,11 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
     }
     private async void FixedUpdate()
     {
+        if (Player.Animator == null)
+        {
+            Debug.Log($"Animator is null in Ledge Grab Controller - skipping fixed update!");
+        }
+
         int sign = await Helper.PlayerFlipped(transform);
 
         await GrabLedge(Player.Animator, Player.Rigidbody);
