@@ -1,22 +1,25 @@
 using CoreCode;
 using PlayerAnimationHandler;
 using System;
+using System.Threading;
 using UnityEngine;
 
-public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
+public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, IObserver<ScriptableObject>
 {
     private const string DAGGER_ITEM_NAME = "Dagger";
 
     private ThrowableProjectileEvent onThrowEvent = new ThrowableProjectileEvent();
 
-    private PickableItemsUtility _pickableItems;
     private PlayerAttackStateMachine _playerAttackStateMachine;
+
     private Animator _anim;
 
     private PickableItemsUtility PickableItemsUtility { get; set; }
 
+    private ScriptableObjectDelegator ScriptableObjectDelegator { get; set; }
+
     [SerializeField] string pickableItemClassTag;
-    [SerializeField] PickableItems pickableItems;
+
     private void Awake()   
     {
         _anim= GetComponent<Animator>();
@@ -25,9 +28,18 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     }
     private void Start()
     {
-        PickableItemsUtility = new PickableItemsUtility(pickableItems);
-
         onThrowEvent.AddListener(CanPlayerThrowProjectile);
+
+        ScriptableObjectDelegator = Helper.GetDelegator< ScriptableObjectDelegator>();
+
+        StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = name,
+            ObserverTag = tag,
+            SubjectType = typeof(PickableItems).ToString()
+
+        }, CancellationToken.None));
+
     }
     private async void ThrowDaggerHandler()
     {
@@ -90,5 +102,11 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>
     public void DidHalfAnimationPass()
     {
         ThrowDaggerHandler();
+    }
+
+    public void OnNotify(ScriptableObject data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        PickableItemsUtility = new PickableItemsUtility((PickableItems)data);
+
     }
 }

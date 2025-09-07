@@ -8,7 +8,7 @@ using static CheckPoints;
 using static SceneData;
 using static DialoguesAndOptions;
 using PlayerHittableItemsNS;
-public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateHandler
+public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateHandler, IObserver<ScriptableObject>
 {
     private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
 
@@ -17,7 +17,6 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
     [SerializeField] string[] checkpointTags;
     [SerializeField] float playerHealth;
     [SerializeField] MainThreadDispatcherEvent mainThreadDispatcherEvent;
-    [SerializeField] PickableItems pickableItems;
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
@@ -38,8 +37,12 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
 
     private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
+    private ScriptableObjectDelegator ScriptableObjectDelegator { get; set; }
+
     private void Start()
     {
+
+
         try
         {
             SceneSingleton.InsertIntoGameStateHandlerList(this);
@@ -56,6 +59,14 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
 
         }, CancellationToken.None));
+
+        StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = name,
+            ObserverTag = tag,
+            SubjectType = typeof(PickableItems).ToString()
+
+        }, CancellationToken.None));
     }
     private void Awake()
     {
@@ -67,9 +78,9 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
 
         _cancellationToken = _cancellationTokenSource.Token;
 
-        _pickableItemsUtility = new PickableItemsUtility(pickableItems);
-
         PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
+
+        ScriptableObjectDelegator = Helper.GetDelegator<ScriptableObjectDelegator>();
     }
 
     private async void Update()
@@ -271,6 +282,11 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
     public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
+    }
+
+    public void OnNotify(ScriptableObject data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        _pickableItemsUtility = new PickableItemsUtility((PickableItems)data);
     }
 }
 

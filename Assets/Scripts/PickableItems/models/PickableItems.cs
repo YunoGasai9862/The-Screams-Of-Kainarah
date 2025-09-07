@@ -11,11 +11,13 @@ public class PickableItems : ScriptableObject, ISubject<IObserver<ScriptableObje
 {
     private ScriptableObjectDelegator ScriptableObjectDelegator { get; set; }
 
-    private void Awake()
+    private void OnEnable()
     {
-        Debug.Log($"Pickable Items Awake!");
+        Debug.Log($"Pickable Items OnEnable!");
 
         ScriptableObjectDelegator = Helper.GetDelegator<ScriptableObjectDelegator>();
+
+        Debug.Log($"Found the Scriptable Object Delegator: {ScriptableObjectDelegator}");
     }
 
     [Serializable]

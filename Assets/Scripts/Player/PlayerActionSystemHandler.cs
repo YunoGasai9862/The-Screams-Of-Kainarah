@@ -4,9 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
+public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>, IObserver<ScriptableObject>
 {
-    [SerializeField] PickableItems pickableItems;
     [SerializeField] PlayerPowerUpModeEvent playerPowerUpModeEvent;
     [SerializeField] CrystalUIIncrementEvent crystalUIIncrementEvent;
 
@@ -15,6 +14,8 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
     private InstantiatorController _gameObject;
 
     private PickableItemsUtility PickableItemsUtility { get; set; }
+
+    private ScriptableObjectDelegator ScriptableObjectDelegator { get; set; }
     private float DIAMOND_PICK_UP_VALUE { get; set; } = 20f;
     private int CRYSTAL_UI_INCREMENT_VALUE { get; set; } = 1;
 
@@ -27,7 +28,13 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
              { "Dagger" , value => OnDaggerPickup(value) }
         };
 
-        PickableItemsUtility = new PickableItemsUtility(pickableItems);
+        StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = name,
+            ObserverTag = tag,
+            SubjectType = typeof(PickableItems).ToString()
+
+        }, CancellationToken.None));
     }
     private Task<bool> OnDaggerPickup(Collider2D collider)
     {
@@ -84,5 +91,11 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>
         {
             invokeFunc.Invoke(data);
         }
+    }
+
+    public void OnNotify(ScriptableObject data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        PickableItemsUtility = new PickableItemsUtility((PickableItems)data);
+
     }
 }
