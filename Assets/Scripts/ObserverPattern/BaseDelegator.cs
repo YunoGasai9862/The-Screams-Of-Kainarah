@@ -60,6 +60,8 @@ public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
             {
                 yield return new WaitUntil(() => !Helper.IsSubjectNull(keyValuePair.Value));
 
+                Debug.Log($"Key: {keyValuePair.Key}, Value: {keyValuePair.Value}");
+
                 keyValuePair.Value.NotifySubject(observer, notificationContext, cancellationToken);
             }
         }

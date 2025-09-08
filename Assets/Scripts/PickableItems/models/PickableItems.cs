@@ -1,10 +1,7 @@
 
-using NUnit.Framework.Constraints;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 [CreateAssetMenu(fileName = "PickableItems", menuName = "Scriptable Pickable Items")]
 public class PickableItems : ScriptableObject, ISubject<IObserver<ScriptableObject>>
@@ -13,9 +10,11 @@ public class PickableItems : ScriptableObject, ISubject<IObserver<ScriptableObje
 
     private void OnEnable()
     {
-        Debug.Log($"Pickable Items OnEnable!");
-
         ScriptableObjectDelegator = Helper.GetDelegator<ScriptableObjectDelegator>();
+
+        ScriptableObjectDelegator.AddToSubjectsDict(typeof(PickableItems).ToString(), name, new Subject<IObserver<ScriptableObject>>());
+
+        ScriptableObjectDelegator.GetSubsetSubjectsDictionary(typeof(PickableItems).ToString())[name].SetSubject(this);
 
         Debug.Log($"Found the Scriptable Object Delegator: {ScriptableObjectDelegator}");
     }
@@ -32,7 +31,6 @@ public class PickableItems : ScriptableObject, ISubject<IObserver<ScriptableObje
 
     public void OnNotifySubject(IObserver<ScriptableObject> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        //CHECK IF THIS WILL WORK OTHERWISE ALSO CREATE A SEPARATE DELEGATOR FOR PICKABLE ITEMS (CASTING ISSUES)
         ScriptableObjectDelegator.NotifyObjectWrapper(observer, (PickableItems) this, new NotificationContext()
         {
             SubjectType = typeof(PickableItems).ToString(),

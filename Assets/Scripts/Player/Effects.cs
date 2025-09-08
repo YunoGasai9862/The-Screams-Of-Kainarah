@@ -20,6 +20,8 @@ public class Effects: MonoBehaviour, IObserver<IEntityRenderer<Renderer>>
 
     public void OnNotify(IEntityRenderer<Renderer> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
+        Debug.Log($"Material Fader: {MaterialFader} - data : {data.Renderer}");
+
         MaterialFader.FadeFloat(new MaterialPropertyUpdate<float>()
         {
             Material = data.Renderer.sharedMaterial,
