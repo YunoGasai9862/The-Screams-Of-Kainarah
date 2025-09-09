@@ -38,7 +38,7 @@ public class PlayerShadow : MonoBehaviour, IObserver<Player>
     // Update is called once per frame
      async void Update()
     {
-        m_newPosition = await ShadowObjectsNewPosition(Player.Renderer, Player.Transform.position, m_Position, 0.5f, 10);
+        m_newPosition = await ShadowObjectsNewPosition(Player.SpriteRendererValue.Renderer, Player.Transform.position, m_Position, 0.5f, 10);
 
         if(!_token.IsCancellationRequested) //extra check due to async programming
         {

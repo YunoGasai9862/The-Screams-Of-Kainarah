@@ -108,7 +108,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
     }
     private async void FixedUpdate()
     {
-        if (await IfPortalExists(Player.Renderer, "Portal"))
+        if (await IfPortalExists("Portal"))
         {
             //Instantiate(TeleportTransition, transform.position, Quaternion.identity);
             StartCoroutine(WaiterFunction());
@@ -243,15 +243,17 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
     }
 
 
-    private async Task<bool> IfPortalExists(SpriteRenderer sr, string portalTag)
+    private async Task<bool> IfPortalExists(string portalTag)
     {
         RaycastHit hit; //using 3D raycast because of 3D object, portal
+
         Vector2 pos = transform.position;
 
         //make it better
         int sign = await Helper.PlayerFlipped(transform);
 
         pos.x = transform.position.x + sign;
+
         Physics.Raycast(transform.position, transform.right * sign, out hit, 1f);
         Debug.DrawRay(pos, transform.right * sign, Color.red);
 

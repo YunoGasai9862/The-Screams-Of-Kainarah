@@ -21,6 +21,8 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>, I
 
     private void Awake()
     {
+        ScriptableObjectDelegator = Helper.GetDelegator<ScriptableObjectDelegator>();
+
         _playerActionHandlerDic = new Dictionary<String, Func<Collider2D, Task>>
         {
              { "Crystal", value => OnCrystalPickup(value)},

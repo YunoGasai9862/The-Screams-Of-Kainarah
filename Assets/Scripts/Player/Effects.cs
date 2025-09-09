@@ -1,7 +1,7 @@
 using System.Threading;
 using UnityEngine;
 
-public class Effects: MonoBehaviour, IObserver<IEntityRenderer<Renderer>>
+public class Effects: MonoBehaviour, IObserver<Player>
 {
     private MaterialFader MaterialFader { get; set; } = new MaterialFader();
 
@@ -18,13 +18,13 @@ public class Effects: MonoBehaviour, IObserver<IEntityRenderer<Renderer>>
         }, CancellationToken.None));
     }
 
-    public void OnNotify(IEntityRenderer<Renderer> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log($"Material Fader: {MaterialFader} - data : {data.Renderer}");
+        Debug.Log($"Material Fader: {MaterialFader} - data : {data.DefaultRendererValue.Renderer}");
 
         MaterialFader.FadeFloat(new MaterialPropertyUpdate<float>()
         {
-            Material = data.Renderer.sharedMaterial,
+            Material = data.DefaultRendererValue.Renderer.sharedMaterial,
             PropertyName = "_FadeIn",
             Value = 1.0f
         }, 0.1f, 1);

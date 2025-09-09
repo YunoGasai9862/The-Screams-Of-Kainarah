@@ -97,9 +97,9 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
     //if this needs to be done everyframe then it makes sense
     async void Update()
     {
-        greenBox = Physics2D.OverlapBox(new Vector2(Player.Transform.position.x + (await GetBoxPosition(Player.Renderer, greenXOffset)), Player.Transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
+        greenBox = Physics2D.OverlapBox(new Vector2(Player.Transform.position.x + (await GetBoxPosition(Player.SpriteRendererValue.Renderer, greenXOffset)), Player.Transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
 
-        redBox = Physics2D.OverlapBox(new Vector2(Player.Transform.position.x + (await GetBoxPosition(Player.Renderer, redXOffset)), Player.Transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
+        redBox = Physics2D.OverlapBox(new Vector2(Player.Transform.position.x + (await GetBoxPosition(Player.SpriteRendererValue.Renderer, redXOffset)), Player.Transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
 
         if (!_helperFunc.OverlapAgainstLayerMaskChecker(Player.Collider, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
             PlayerBundle.StateBundle.PlayerMovementState.Equals(PlayerActionState.IS_GRABBING))
@@ -145,11 +145,6 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
     }
     private async void FixedUpdate()
     {
-        if (Player.Animator == null)
-        {
-            Debug.Log($"Animator is null in Ledge Grab Controller - skipping fixed update!");
-        }
-
         int sign = await Helper.PlayerFlipped(transform);
 
         await GrabLedge(Player.Animator, Player.Rigidbody);
@@ -206,6 +201,12 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
     }
     private async Task GrabLedge(Animator anim, Rigidbody2D rb)
     {
+        if (Player.Animator == null || Player.Rigidbody == null)
+        {
+            Debug.Log($"Animator or Rigidbody is null in Ledge Grab Controller - skipping GrabLedge!");
+            return;
+        }
+
         if (anim.GetCurrentAnimatorStateInfo(0).IsName(PlayerAnimationConstants.LEDGE_GRAB)
            && CanGrab)
         {
