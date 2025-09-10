@@ -242,6 +242,13 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     }
     public bool CanPlayerAttack()
     {
+        if (CurrentGameState.StateBundle == null)
+        {
+            Debug.Log("Bundle is null - skipping CanPlayerAttack!");
+
+            return false;
+        }
+
         bool isInventoryOpen = SceneSingleton.GetInventoryManager().IsPouchOpen;
 
         return !CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE) &&

@@ -17,7 +17,7 @@ public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
 
-    private Player PlayerTransform { get; set; }
+    private Transform PlayerTransform { get; set; }
 
     private void Start()
     {
@@ -39,7 +39,7 @@ public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
             return;
         }
 
-        await FollowTarget(gameObject.transform, PlayerTransform.Transform, new Vector3(XOffset + distanceBetweenPlayerAndMoon, YOffset, ZOffset), moonSpeed);
+        await FollowTarget(gameObject.transform, PlayerTransform, new Vector3(XOffset + distanceBetweenPlayerAndMoon, YOffset, ZOffset), moonSpeed);
     }
 
     private async Task<bool> FollowTarget(Transform self, Transform targetToFollow, Vector3 offset, float speed)
@@ -77,6 +77,6 @@ public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
 
     public void OnNotify(IEntityTransform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        PlayerTransform.Transform = data.Transform;
+        PlayerTransform = data.Transform;
     }
 }

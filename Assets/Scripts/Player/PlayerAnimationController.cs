@@ -1,4 +1,5 @@
 using PlayerAnimationHandler;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -163,8 +164,12 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         }
     }
 
-    public void OnNotifySubject(IObserver<AnimationDetails> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    private IEnumerator NotifyAnimationDetailsObservers(IObserver<AnimationDetails> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
+        yield return new WaitUntil(() => PlayerAnimator != null);
+
+        Debug.Log($"Finally PlayerAnimator is not null!");
+
         StartCoroutine(AnimationDetailsDelegator.NotifyObserver(observer, new AnimationDetails()
         {
             CurrentAnimationStateInfo = GetCurrentStateInfo(),
@@ -175,6 +180,12 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
             SubjectType = typeof(PlayerAnimationController).ToString()
         },
         CancellationToken.None));
+    }
+
+
+    public void OnNotifySubject(IObserver<AnimationDetails> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        StartCoroutine(NotifyAnimationDetailsObservers(observer, notificationContext, cancellationToken, semaphoreSlim, optional));
     }
 
     public void OnNotify(IEntityAnimator data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

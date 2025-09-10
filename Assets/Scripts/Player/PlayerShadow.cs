@@ -17,7 +17,7 @@ public class PlayerShadow : MonoBehaviour, IObserver<Player>
 
     private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
-    private Player Player { get; set; } = new Player();
+    private Player Player { get; set; }
 
     private void Awake()
     {
@@ -38,6 +38,13 @@ public class PlayerShadow : MonoBehaviour, IObserver<Player>
     // Update is called once per frame
      async void Update()
     {
+
+        if (Player == null)
+        {
+            Debug.Log("Player is null in PlayerShadow - skipping Update for the time being!");
+            return;
+        }
+
         m_newPosition = await ShadowObjectsNewPosition(Player.SpriteRendererValue.Renderer, Player.Transform.position, m_Position, 0.5f, 10);
 
         if(!_token.IsCancellationRequested) //extra check due to async programming
