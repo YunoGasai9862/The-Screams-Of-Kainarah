@@ -51,7 +51,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
     private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
-    private Player Player { get; set; } = new Player();
+    private Player Player { get; set; }
 
     private void Awake()
     {
@@ -97,6 +97,12 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
     //if this needs to be done everyframe then it makes sense
     async void Update()
     {
+        if (Player == null)
+        {
+            Debug.Log($"Player is null is the LedgeGrabController - skipping async Update!");
+            return;
+        }
+
         greenBox = Physics2D.OverlapBox(new Vector2(Player.Transform.position.x + (await GetBoxPosition(Player.SpriteRendererValue.Renderer, greenXOffset)), Player.Transform.position.y + greenYOffset), new Vector2(greenXsize, greenYSize), 0, ledge);
 
         redBox = Physics2D.OverlapBox(new Vector2(Player.Transform.position.x + (await GetBoxPosition(Player.SpriteRendererValue.Renderer, redXOffset)), Player.Transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
@@ -145,7 +151,13 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
     }
     private async void FixedUpdate()
     {
-        int sign = await Helper.PlayerFlipped(transform);
+        if (Player == null)
+        {
+            Debug.Log($"Player is null is the LedgeGrabController - skipping async FixedUpdate!");
+            return;
+        }
+
+        int sign = await Helper.PlayerFlipped(Player.Transform);
 
         await GrabLedge(Player.Animator, Player.Rigidbody);
 
@@ -259,6 +271,6 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
     {
         Player = data;
 
-        startingGrav = Player.Rigidbody.gravityScale;  //the initially gravity is stored in the array
+        startingGrav = Player.Rigidbody.gravityScale; 
     }
 }

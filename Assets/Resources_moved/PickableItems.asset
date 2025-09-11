@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: PickableItems
   m_EditorClassIdentifier: 
   pickableEntities:
-  - objectName: 
+  - objectName: Test
     prefabToInstantiate: {fileID: 0}
-    shouldBeDisabledAfterSomeTime: 0
+    shouldBeDisabledAfterSomeTime: 1

@@ -4,20 +4,10 @@ using System.Threading;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PickableItems", menuName = "Scriptable Pickable Items")]
+[Asset(AssetType = Asset.SCRIPTABLE_OBJECT, AddressLabel = "PickableItems")]
 public class PickableItems : ScriptableObject, ISubject<IObserver<ScriptableObject>>
 {
     private ScriptableObjectDelegator ScriptableObjectDelegator { get; set; }
-
-    private void OnEnable()
-    {
-        ScriptableObjectDelegator = Helper.GetDelegator<ScriptableObjectDelegator>();
-
-        ScriptableObjectDelegator.AddToSubjectsDict(typeof(PickableItems).ToString(), name, new Subject<IObserver<ScriptableObject>>());
-
-        ScriptableObjectDelegator.GetSubsetSubjectsDictionary(typeof(PickableItems).ToString())[name].SetSubject(this);
-
-        Debug.Log($"Found the Scriptable Object Delegator: {ScriptableObjectDelegator}");
-    }
 
     [Serializable]
     public class PickableEntities
@@ -36,5 +26,22 @@ public class PickableItems : ScriptableObject, ISubject<IObserver<ScriptableObje
             SubjectType = typeof(PickableItems).ToString(),
 
         }, CancellationToken.None);
+    }
+
+    public void SetupAsSubject()
+    {
+        Debug.Log("OnEnable for PickableItems");
+
+        ScriptableObjectDelegator = Helper.GetDelegator<ScriptableObjectDelegator>();
+
+        Debug.Log($"Found the Scriptable Object Delegator: {ScriptableObjectDelegator}");
+
+        Debug.Log("Adding to the AddToSubjectsDict");
+
+        ScriptableObjectDelegator.AddToSubjectsDict(typeof(PickableItems).ToString(), typeof(PickableItems).ToString(), new Subject<IObserver<ScriptableObject>>());
+
+        Debug.Log("Adding to the GetSubsetSubjectsDictionary");
+
+        ScriptableObjectDelegator.GetSubsetSubjectsDictionary(typeof(PickableItems).ToString())[typeof(PickableItems).ToString()].SetSubject(this);
     }
 }

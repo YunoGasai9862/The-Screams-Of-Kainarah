@@ -24,7 +24,8 @@ MonoBehaviour:
   - m_GUID: 3cc1420013048a64eb6013b035deb691
     m_Address: PickableItems
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - PickableItems
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 48c8d0ed9ac830647a0af690b1f61479
     m_Address: Prefabs/Player

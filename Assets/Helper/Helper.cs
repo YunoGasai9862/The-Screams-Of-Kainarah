@@ -29,14 +29,22 @@ public class Helper: MonoBehaviour
 
     public static T GetDelegator<T>() where T: UnityEngine.Object
     {
-        T delegator = FindObject<T>();
-
-        if (delegator == null)
+        try
         {
-            throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
-        }
+            T delegator = FindObject<T>();
 
-        return delegator;
+            if (delegator == null)
+            {
+                throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
+            }
+
+            return delegator;
+
+        }catch(Exception ex)
+        {
+            Debug.Log($"Exception occured while finding the delegator - {ex.Message}");
+            throw ex;
+        }
     }
 
     public static T GetCustomEvent<T>() where T : UnityEngine.Object
