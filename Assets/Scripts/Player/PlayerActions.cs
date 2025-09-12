@@ -1,9 +1,7 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngineInternal;
 
 public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>, IObserver<IEntityRigidBody>
 {
@@ -18,8 +16,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     private IReceiverEnhancedAsync<JumpingController, bool> _jumpReceiver;
 
     private CommandAsyncEnhanced<JumpingController, bool> _jumpCommand;
-
-    private IReceiverEnhancedAsync<SlidingController, bool> _slidingReceiver;
 
     private CommandAsyncEnhanced<SlidingController, bool> _slidingCommand;
 
@@ -122,14 +118,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private void Start()
     {
-        _globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
-        {
-            ObserverName = this.name,
-            ObserverTag = this.name,
-            SubjectType = typeof(GameStateConsumer).ToString()
-
-        }, CancellationToken.None);
-
         StartCoroutine(_playerVelocityDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
@@ -156,6 +144,13 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
+        }, CancellationToken.None));
+
+        StartCoroutine(_globalGameStateDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(GameStateConsumer).ToString()
         }, CancellationToken.None));
 
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement

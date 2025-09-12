@@ -28,9 +28,19 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
         await ExecuteDelegatesForGameObjects(preloadedEntities.Where(pe => pe is GameObject).Cast<GameObject>().ToList());
     }
 
-    private Task ExecuteDelegatesForScriptableObjects(List<ScriptableObject> preloadEntities)
+    private async Task ExecuteDelegatesForScriptableObjects(List<ScriptableObject> preloadEntities)
     {
-        return Task.CompletedTask;
+        foreach(ScriptableObject scriptableObject in preloadEntities)
+        {
+            Debug.Log($"ExecuteDelegatesForScriptableObjects - {scriptableObject}");
+
+            if (scriptableObject is IDelegate)
+            {
+                Debug.Log($"Implements IDelegate - {scriptableObject}");
+
+                await ExecuteDelegateMethod((IDelegate)scriptableObject);
+            }
+        }
     }
 
     private async Task ExecuteDelegatesForGameObjects(List<GameObject> preloadedEntities)

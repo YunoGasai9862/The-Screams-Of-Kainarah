@@ -83,7 +83,6 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
         }, CancellationToken.None);
 
-
         StartCoroutine(PlayerStateDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,

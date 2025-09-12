@@ -5,9 +5,15 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "PickableItems", menuName = "Scriptable Pickable Items")]
 [Asset(AssetType = Asset.SCRIPTABLE_OBJECT, AddressLabel = "PickableItems")]
-public class PickableItems : ScriptableObject, ISubject<IObserver<ScriptableObject>>
+public class PickableItems : ScriptableObject, ISubject<IObserver<ScriptableObject>>, IDelegate
 {
     private ScriptableObjectDelegator ScriptableObjectDelegator { get; set; }
+    public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
+
+    private void OnEnable()
+    {
+        InvokeCustomMethod += SetupAsSubject;
+    }
 
     [Serializable]
     public class PickableEntities
@@ -30,17 +36,9 @@ public class PickableItems : ScriptableObject, ISubject<IObserver<ScriptableObje
 
     public void SetupAsSubject()
     {
-        Debug.Log("OnEnable for PickableItems");
-
         ScriptableObjectDelegator = Helper.GetDelegator<ScriptableObjectDelegator>();
 
-        Debug.Log($"Found the Scriptable Object Delegator: {ScriptableObjectDelegator}");
-
-        Debug.Log("Adding to the AddToSubjectsDict");
-
         ScriptableObjectDelegator.AddToSubjectsDict(typeof(PickableItems).ToString(), typeof(PickableItems).ToString(), new Subject<IObserver<ScriptableObject>>());
-
-        Debug.Log("Adding to the GetSubsetSubjectsDictionary");
 
         ScriptableObjectDelegator.GetSubsetSubjectsDictionary(typeof(PickableItems).ToString())[typeof(PickableItems).ToString()].SetSubject(this);
     }
