@@ -1,9 +1,10 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>, IObserver<IEntityRigidBody>
+public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>, IObserver<IEntityRigidBody>, IDelegate
 {
     [SerializeField] float _characterSpeed = 10f;
 
@@ -42,7 +43,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>();
 
     private ThrowingProjectileController ThrowingProjectileController { get => GetComponent<ThrowingProjectileController>(); } //implement all the actions together
-   
+
+    public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
+
     private GlobalGameStateDelegator _globalGameStateDelegator;
 
     private PlayerVelocityDelegator _playerVelocityDelegator;
@@ -57,15 +60,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     //Force = -2m * sqrt (g * h)
     private void Awake()
     {
-
-        _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
-
-        _playerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
-
-        _playerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
-
-        _playerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
-
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
 
         _playerActionsModel = new PlayerActionsModel();
@@ -118,6 +112,27 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private void Start()
     {
+        InvokeCustomMethod += NotifySubjects;
+
+        _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
+
+        _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
+
+        _rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
+
+        _rocky2DActions.PlayerAttack.BoostAttack.Enable();
+    }
+
+    private void NotifySubjects()
+    {
+        _playerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
+
+        _playerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
+
+        _playerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
+
+        _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+
         StartCoroutine(_playerVelocityDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
@@ -146,20 +161,15 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None));
 
-        StartCoroutine(_globalGameStateDelegator.NotifySubject(this, new NotificationContext()
+        _globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(GameStateConsumer).ToString()
-        }, CancellationToken.None));
+        }, CancellationToken.None);
 
-        _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
+        Debug.Log($"_globalGameStateDelegator count: {_globalGameStateDelegator.GetSubjectsDict().Count}");
 
-        _rocky2DActions.PlayerAttack.Attack.Enable(); //activates the Action Map
-
-        _rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
-
-        _rocky2DActions.PlayerAttack.BoostAttack.Enable();
     }
 
     private async void Update()

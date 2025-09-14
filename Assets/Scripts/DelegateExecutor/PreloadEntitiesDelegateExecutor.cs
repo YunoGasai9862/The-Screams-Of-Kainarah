@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,11 +48,17 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
     {
         foreach (GameObject preloadEntity in preloadedEntities)
         {
-            IDelegate delegateObject;
+            List<IDelegate> iDelegates = new List<IDelegate>();
 
-            if (preloadEntity.gameObject.TryGetComponent(out delegateObject))
+            iDelegates.AddRange(preloadEntity.gameObject.GetComponentsInChildren<IDelegate>());
+
+            iDelegates.AddRange(preloadEntity.gameObject.GetComponents<IDelegate>());
+
+            foreach (IDelegate del in iDelegates)
             {
-                await ExecuteDelegateMethod(delegateObject);
+                Debug.Log($"Executing delegate: {del}");
+
+                await ExecuteDelegateMethod(del);
             }
         }
     }

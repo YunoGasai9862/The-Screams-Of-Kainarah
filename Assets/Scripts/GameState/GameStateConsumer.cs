@@ -13,6 +13,8 @@ public class GameStateConsumer : BaseState<GameStateBundle>
         globalGameStateDelegator.AddToSubjectsDict(typeof(GameStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericStateBundle<GameStateBundle>>>());
 
         globalGameStateDelegator.GetSubsetSubjectsDictionary(typeof(GameStateConsumer).ToString())[gameObject.name].SetSubject(this);
+
+        Debug.Log($"Added to the dictionary for GameStateConsumer {globalGameStateDelegator.GetSubjectsDict().Count}");
     }
 
     protected override BaseDelegatorEnhanced<GenericStateBundle<GameStateBundle>> GetDelegator()
