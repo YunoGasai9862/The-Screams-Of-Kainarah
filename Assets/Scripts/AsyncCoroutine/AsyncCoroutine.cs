@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "AsyncCoroutine")]
+[Asset(Asset.MONOBEHAVIOR,  "AsyncCoroutine", InstantiationOrder = 5)]
 public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IAsyncCoroutine<WaitUntil>, ISubject<IObserver<AsyncCoroutine>>
 {
     private AsyncCoroutineDelegator m_asyncCoroutineDelegator;

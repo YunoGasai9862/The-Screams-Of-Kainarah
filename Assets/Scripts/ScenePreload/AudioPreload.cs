@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Asset(AssetType = Asset.MONOBEHAVIOR, AddressLabel = "Audio")]
+[Asset(Asset.MONOBEHAVIOR, "Audio", InstantiationOrder = 6)]
 public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate, IObserver<EntityPoolManager>, IObserver<IAWSPolly>
 {
     private string PersistencePath { get; set; }

@@ -4,7 +4,7 @@ using System.Threading;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PickableItems", menuName = "Scriptable Pickable Items")]
-[Asset(AssetType = Asset.SCRIPTABLE_OBJECT, AddressLabel = "PickableItems")]
+[Asset(Asset.SCRIPTABLE_OBJECT, "PickableItems", InstantiationOrder = 2)]
 public class PickableItems : ScriptableObject, ISubject<IObserver<ScriptableObject>>, IDelegate
 {
     private ScriptableObjectDelegator ScriptableObjectDelegator { get; set; }
