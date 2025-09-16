@@ -5,20 +5,21 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.Threading;
+using System.Linq;
 
-public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
+public class PreloaderManager : MonoBehaviour
 {
     [SerializeField]
-    GameObject preloader;
+    GameObject preloaderPrefab;
+
+    [SerializeField]
+    GameObject entityPoolManagerPrefab;
 
     [SerializeField]
     ExecutePreloadingEvent executePreloadingEvent;
 
     [SerializeField]
     PreloadedEntitiesEvent preloadedEntitiesEvent;
-
-    [SerializeField]
-    public EntityPoolManagerDelegator entityPoolManagerDelegator;
 
     private List<UnityEngine.Object> PreloadedEntities { get; set; } = new List<UnityEngine.Object>();
 
@@ -27,18 +28,18 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
 
     private async void Start()
     {
-        StartCoroutine(entityPoolManagerDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EntityPoolManager).ToString()), CancellationToken.None));
+        EntityPoolManager = await InstantiateDependency<EntityPoolManager>(entityPoolManagerPrefab);
 
-        PreloaderInstance = await InstantiatePreloader(preloader);
+        PreloaderInstance = await InstantiateDependency<Preloader>(preloaderPrefab);
 
         await Helper.SetAsParent(PreloaderInstance.gameObject, gameObject);
 
         await executePreloadingEvent.AddListener(ExecutePreloading);
     }
 
-    private async Task<List<UnityEngine.Object>> PreloadAssets(Preloader preloader, EntityPoolManager entityPoolManager)
+    private async Task<List<AssetAttribute>> GetAssetAttributesForPreloading(Preloader preloader)
     {
-        List<UnityEngine.Object> preloadedEntities = new List<UnityEngine.Object>();
+        List<AssetAttribute> assetAttributes = new List<AssetAttribute>();
 
         try
         {
@@ -53,19 +54,33 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
                     continue;
                 }
 
-                Debug.Log($"PreloadAssets: {attribute.ToString()}");
+                Debug.Log($"AssetAttribute: {attribute.ToString()}");
 
-                dynamic preloadedAsset = await PreloadOnAssetType(attribute, preloader);
+                assetAttributes.Add(attribute);
 
-                preloadedEntities.Add(await AddToPool(preloadedAsset, entityPoolManager));
             }
         }catch (Exception ex)
         {
             Debug.Log(ex.ToString());   
         }
 
+        return assetAttributes.OrderBy(asset => asset.InstantiationOrder).ToList();
+    }
+
+    private async Task<List<UnityEngine.Object>> PreloadAssets(Preloader preloader, List<AssetAttribute> assets, EntityPoolManager entityPoolManager)
+    {
+        List<UnityEngine.Object> preloadedEntities = new List<UnityEngine.Object>();
+
+        foreach (AssetAttribute asset in assets)
+        {
+            dynamic preloadedAsset = await PreloadOnAssetType(asset, preloader);
+
+            preloadedEntities.Add(await AddToPool(preloadedAsset, entityPoolManager));
+        }
+
         return preloadedEntities;
     }
+
 
     private async Task<UnityEngine.Object> AddToPool(dynamic entity, EntityPoolManager entityPoolManager)
     {
@@ -121,9 +136,11 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
         StartCoroutine(ExecutePreloadAssets());
     }
 
-    private async void SetPreloadedEntitiesAndInvokePreloadedEntitiesEvent(Preloader preloader, EntityPoolManager entityPoolManager)
+    private async void PreloadEntities(Preloader preloader, EntityPoolManager entityPoolManager)
     {
-        PreloadedEntities.AddRange(await PreloadAssets(preloader, entityPoolManager));
+        List<AssetAttribute> assetsToPreload =  await GetAssetAttributesForPreloading(preloader);
+
+        PreloadedEntities.AddRange(await PreloadAssets(preloader, assetsToPreload, entityPoolManager));
 
         await preloadedEntitiesEvent.Invoke(PreloadedEntities);
     }
@@ -132,18 +149,13 @@ public class PreloaderManager : MonoBehaviour, IObserver<EntityPoolManager>
     {
         yield return new WaitUntil(() => EntityPoolManager != null);
 
-        SetPreloadedEntitiesAndInvokePreloadedEntitiesEvent(PreloaderInstance, EntityPoolManager);
+        PreloadEntities(PreloaderInstance, EntityPoolManager);
     }
 
-    private Task<Preloader> InstantiatePreloader(GameObject preloader)
+    private Task<T> InstantiateDependency<T>(GameObject dependency)
     {
-        GameObject preloaderInstance = Instantiate(preloader);
+        GameObject instantiatedDependency = Instantiate(dependency);
 
-        return Task.FromResult(preloaderInstance.GetComponent<Preloader>());
-    }
-
-    public void OnNotify(EntityPoolManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        EntityPoolManager = data;
+        return Task.FromResult(instantiatedDependency.GetComponent<T>());
     }
 }
