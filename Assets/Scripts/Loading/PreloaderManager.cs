@@ -10,31 +10,30 @@ using System.Linq;
 public class PreloaderManager : MonoBehaviour
 {
     [SerializeField]
-    GameObject preloaderPrefab;
-
-    [SerializeField]
-    GameObject entityPoolManagerPrefab;
-
-    [SerializeField]
-    ExecutePreloadingEvent executePreloadingEvent;
+    List<PreloadDto> entitiesToPreload;
 
     [SerializeField]
     PreloadedEntitiesEvent preloadedEntitiesEvent;
 
     private List<UnityEngine.Object> PreloadedEntities { get; set; } = new List<UnityEngine.Object>();
 
-    private Preloader PreloaderInstance { get; set; }
+    private Preloader Preloader{ get; set; }
     private EntityPoolManager EntityPoolManager { get; set; }
+    private GameLoad GameLoad { get; set; }
 
     private async void Start()
     {
         EntityPoolManager = await InstantiateDependency<EntityPoolManager>(entityPoolManagerPrefab);
 
-        PreloaderInstance = await InstantiateDependency<Preloader>(preloaderPrefab);
+        Preloader = await InstantiateDependency<Preloader>(preloaderPrefab);
 
-        await Helper.SetAsParent(PreloaderInstance.gameObject, gameObject);
+        GameLoad = await InstantiateDependency<GameLoad>(gameloadPrefab);
 
-        await executePreloadingEvent.AddListener(ExecutePreloading);
+        await Helper.SetAsParent(Preloader.gameObject, gameObject);
+
+        await Helper.SetAsParent(GameLoad.gameObject, gameObject);
+
+        await PreloadEntities(Preloader, EntityPoolManager);
     }
 
     private async Task<List<AssetAttribute>> GetAssetAttributesForPreloading(Preloader preloader)
@@ -131,25 +130,14 @@ public class PreloaderManager : MonoBehaviour
 
         return new UnityEngine.Object();
     }
-    private void ExecutePreloading()
-    {
-        StartCoroutine(ExecutePreloadAssets());
-    }
 
-    private async void PreloadEntities(Preloader preloader, EntityPoolManager entityPoolManager)
+    private async Task PreloadEntities(Preloader preloader, EntityPoolManager entityPoolManager)
     {
         List<AssetAttribute> assetsToPreload =  await GetAssetAttributesForPreloading(preloader);
 
         PreloadedEntities.AddRange(await PreloadAssets(preloader, assetsToPreload, entityPoolManager));
 
         await preloadedEntitiesEvent.Invoke(PreloadedEntities);
-    }
-
-    private IEnumerator ExecutePreloadAssets()
-    {
-        yield return new WaitUntil(() => EntityPoolManager != null);
-
-        PreloadEntities(PreloaderInstance, EntityPoolManager);
     }
 
     private Task<T> InstantiateDependency<T>(GameObject dependency)
