@@ -3,14 +3,12 @@ using System.Threading.Tasks;
 using System.Reflection;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
-using System.Threading;
 using System.Linq;
 
 public class PreloaderManager : MonoBehaviour
 {
     [SerializeField]
-    List<PreloadDto> entitiesToPreload;
+    List<DependencyDto> dependencies;
 
     [SerializeField]
     PreloadedEntitiesEvent preloadedEntitiesEvent;
@@ -23,15 +21,7 @@ public class PreloaderManager : MonoBehaviour
 
     private async void Start()
     {
-        EntityPoolManager = await InstantiateDependency<EntityPoolManager>(entityPoolManagerPrefab);
-
-        Preloader = await InstantiateDependency<Preloader>(preloaderPrefab);
-
-        GameLoad = await InstantiateDependency<GameLoad>(gameloadPrefab);
-
-        await Helper.SetAsParent(Preloader.gameObject, gameObject);
-
-        await Helper.SetAsParent(GameLoad.gameObject, gameObject);
+        await InstantiateDependencies(dependencies);
 
         await PreloadEntities(Preloader, EntityPoolManager);
     }
@@ -138,6 +128,27 @@ public class PreloaderManager : MonoBehaviour
         PreloadedEntities.AddRange(await PreloadAssets(preloader, assetsToPreload, entityPoolManager));
 
         await preloadedEntitiesEvent.Invoke(PreloadedEntities);
+    }
+
+    private async Task InstantiateDependencies(List<DependencyDto> dependencies)
+    {
+        foreach (DependencyDto dependency in dependencies)
+        {
+            switch(dependency.DependencyType)
+            {
+                case DependencyType.PRELOADER:
+                    Preloader = await InstantiateDependency<Preloader>(dependency.Dependency);
+                    break;
+                case DependencyType.GAMELOAD:
+                    GameLoad = await InstantiateDependency<GameLoad>(dependency.Dependency);
+                    break;
+                case DependencyType.ENTITYPOOL_MANAGER:
+                    EntityPoolManager = await InstantiateDependency<EntityPoolManager>(dependency.Dependency);
+                    break;
+                default:
+                    throw new ApplicationException($"Unknown dependency type found: {dependency.DependencyType}");
+            }
+        }
     }
 
     private Task<T> InstantiateDependency<T>(GameObject dependency)
