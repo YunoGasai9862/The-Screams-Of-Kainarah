@@ -14,8 +14,6 @@ public class PreloaderManager : MonoBehaviour
     PreloadedEntitiesEvent preloadedEntitiesEvent;
 
     private List<UnityEngine.Object> PreloadedEntities { get; set; } = new List<UnityEngine.Object>();
-
-    private Preloader Preloader{ get; set; }
     private EntityPoolManager EntityPoolManager { get; set; }
     private GameLoad GameLoad { get; set; }
 
@@ -23,10 +21,10 @@ public class PreloaderManager : MonoBehaviour
     {
         await InstantiateDependencies(dependencies);
 
-        await PreloadEntities(Preloader, EntityPoolManager);
+        await PreloadEntities(EntityPoolManager);
     }
 
-    private async Task<List<AssetAttribute>> GetAssetAttributesForPreloading(Preloader preloader)
+    private async Task<List<AssetAttribute>> GetAssetAttributesForPreloading()
     {
         List<AssetAttribute> assetAttributes = new List<AssetAttribute>();
 
@@ -56,13 +54,13 @@ public class PreloaderManager : MonoBehaviour
         return assetAttributes.OrderBy(asset => asset.InstantiationOrder).ToList();
     }
 
-    private async Task<List<UnityEngine.Object>> PreloadAssets(Preloader preloader, List<AssetAttribute> assets, EntityPoolManager entityPoolManager)
+    private async Task<List<UnityEngine.Object>> PreloadAssets(List<AssetAttribute> assets, EntityPoolManager entityPoolManager)
     {
         List<UnityEngine.Object> preloadedEntities = new List<UnityEngine.Object>();
 
         foreach (AssetAttribute asset in assets)
         {
-            dynamic preloadedAsset = await PreloadOnAssetType(asset, preloader);
+            dynamic preloadedAsset = await PreloadOnAssetType(asset);
 
             preloadedEntities.Add(await AddToPool(preloadedAsset, entityPoolManager));
         }
@@ -89,12 +87,12 @@ public class PreloaderManager : MonoBehaviour
         return new UnityEngine.Object();
     }
 
-    private async Task<dynamic> PreloadOnAssetType(AssetAttribute attribute, Preloader preloader)
+    private async Task<dynamic> PreloadOnAssetType(AssetAttribute attribute)
     {
         switch (attribute.AssetType)
         {
             case Asset.SCRIPTABLE_OBJECT:
-                return (ScriptableObject)await preloader.PreloadAsset<ScriptableObject>(
+                return (ScriptableObject)await GameLoad.PreloadAsset<ScriptableObject>(
                     new PreloadPackage()
                     {
                         AddressableLable = attribute.AddressLabel,
@@ -103,7 +101,7 @@ public class PreloaderManager : MonoBehaviour
                 );
                     
             case Asset.MONOBEHAVIOR:
-                return (GameObject)await preloader.PreloadAsset<GameObject>(new PreloadPackage()
+                return (GameObject)await GameLoad.PreloadAsset<GameObject>(new PreloadPackage()
                     {
                         AddressableLable = attribute.AddressLabel,
                         AssetType = attribute.AssetType,
@@ -121,11 +119,11 @@ public class PreloaderManager : MonoBehaviour
         return new UnityEngine.Object();
     }
 
-    private async Task PreloadEntities(Preloader preloader, EntityPoolManager entityPoolManager)
+    private async Task PreloadEntities(EntityPoolManager entityPoolManager)
     {
-        List<AssetAttribute> assetsToPreload =  await GetAssetAttributesForPreloading(preloader);
+        List<AssetAttribute> assetsToPreload =  await GetAssetAttributesForPreloading();
 
-        PreloadedEntities.AddRange(await PreloadAssets(preloader, assetsToPreload, entityPoolManager));
+        PreloadedEntities.AddRange(await PreloadAssets(assetsToPreload, entityPoolManager));
 
         await preloadedEntitiesEvent.Invoke(PreloadedEntities);
     }
@@ -136,9 +134,6 @@ public class PreloaderManager : MonoBehaviour
         {
             switch(dependency.DependencyType)
             {
-                case DependencyType.PRELOADER:
-                    Preloader = await InstantiateDependency<Preloader>(dependency.Dependency);
-                    break;
                 case DependencyType.GAMELOAD:
                     GameLoad = await InstantiateDependency<GameLoad>(dependency.Dependency);
                     break;

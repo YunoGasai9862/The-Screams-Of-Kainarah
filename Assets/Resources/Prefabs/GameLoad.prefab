@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8002205491152099721}
-  - component: {fileID: 7182932466039989730}
+  - component: {fileID: 1355147904086612592}
   m_Layer: 0
-  m_Name: GameLoadManager
+  m_Name: GameLoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7182932466039989730
+--- !u!114 &1355147904086612592
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,9 +41,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1209952798196197149}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abf02c04f2153454bb5db2d4be96a800, type: 3}
+  m_Script: {fileID: 11500000, guid: 47c583ba0debe7c489264efa12f6278e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameLoad: {fileID: 484126927614385757, guid: 28738748b9cab064583cc7cacfd7cd56, type: 3}
-  entityPoolManagerDelegator: {fileID: 0}
-  executePreloadingEvent: {fileID: 0}

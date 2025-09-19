@@ -1,8 +1,16 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class DependencyDto
 {
-    public GameObject Dependency { get; set; }
+    [SerializeField]
+    private GameObject dependency;
 
-    public DependencyType DependencyType { get; set; }
+    [SerializeField]
+    private DependencyType dependencyType;
+
+    public GameObject Dependency { get { return dependency; } }
+
+    public DependencyType DependencyType { get { return dependencyType; } }
 }
