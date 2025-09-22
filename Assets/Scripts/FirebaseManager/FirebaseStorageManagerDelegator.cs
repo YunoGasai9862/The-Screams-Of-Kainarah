@@ -9,6 +9,6 @@ public class FirebaseStorageManagerDelegator : BaseDelegator<FirebaseStorageMana
 {
     private void OnEnable()
     {
-        Subject = new Subject<IObserver<FirebaseStorageManager>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<FirebaseStorageManager>>>>();
     }
 }

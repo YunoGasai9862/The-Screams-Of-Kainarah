@@ -52,7 +52,7 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
 
     protected abstract UnityEvent<GenericStateBundle<T>> GetEvent(); 
 
-    protected abstract BaseDelegatorEnhanced<GenericStateBundle<T>> GetDelegator();
+    protected abstract BaseDelegator<GenericStateBundle<T>> GetDelegator();
 
     protected abstract GenericStateBundle<T> GetInitialState();
 }

@@ -14,7 +14,7 @@ public class PlayerStateConsumer : BaseState<PlayerStateBundle>
         playerStateDelegator.GetSubsetSubjectsDictionary(typeof(PlayerStateConsumer).ToString())[gameObject.name].SetSubject(this);
     }
 
-    protected override BaseDelegatorEnhanced<GenericStateBundle<PlayerStateBundle>> GetDelegator()
+    protected override BaseDelegator<GenericStateBundle<PlayerStateBundle>> GetDelegator()
     {
         return playerStateDelegator;
     }

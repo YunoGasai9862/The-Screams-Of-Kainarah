@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class HealthDelegator: BaseDelegatorEnhanced<Health>
+public class HealthDelegator: BaseDelegator<Health>
 {
     private void Awake()
     {

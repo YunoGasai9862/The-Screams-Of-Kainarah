@@ -4,7 +4,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngineInternal;
 
-public class GlobalGameStateDelegator: BaseDelegatorEnhanced<GenericStateBundle<GameStateBundle>>
+public class GlobalGameStateDelegator: BaseDelegator<GenericStateBundle<GameStateBundle>>
 {
     private void Awake()
     {

@@ -16,7 +16,7 @@ public class EmitAnimationStateConsumer : BaseState<EmitAnimationStateBundle>
         emitAnimationStateDelegator.GetSubsetSubjectsDictionary(typeof(EmitAnimationStateConsumer).ToString())[name].SetSubject(this);
     }
 
-    protected override BaseDelegatorEnhanced<GenericStateBundle<EmitAnimationStateBundle>> GetDelegator()
+    protected override BaseDelegator<GenericStateBundle<EmitAnimationStateBundle>> GetDelegator()
     {
         return emitAnimationStateDelegator;
     }

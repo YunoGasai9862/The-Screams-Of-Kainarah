@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-public class PlayerAttributesDelegator : BaseDelegatorEnhanced<Player>
+public class PlayerAttributesDelegator : BaseDelegator<Player>
 {
     private void OnEnable()
     {

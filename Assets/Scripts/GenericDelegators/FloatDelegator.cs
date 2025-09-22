@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class FloatDelegator : BaseDelegatorEnhanced<float>
+public class FloatDelegator : BaseDelegator<float>
 {
     private void Awake()
     {

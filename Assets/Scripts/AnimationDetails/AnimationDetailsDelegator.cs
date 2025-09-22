@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class AnimationDetailsDelegator: BaseDelegatorEnhanced<AnimationDetails>
+public class AnimationDetailsDelegator: BaseDelegator<AnimationDetails>
 {
     private void Awake()
     {

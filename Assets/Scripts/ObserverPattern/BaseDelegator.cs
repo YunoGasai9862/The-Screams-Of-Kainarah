@@ -6,28 +6,6 @@ using System;
 
 public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 {
-    public Subject<IObserver<T>> Subject { get; set; }
-
-    public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
-    {
-        observer.OnNotify(value, notificationContext, semaphoreSlim, cancellationToken, optional);
-
-        yield return null;
-    }
-
-    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
-    {
-        yield return new WaitUntil(() => !Helper.IsSubjectNull(Subject));
-
-        Subject.NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, optional);
-
-        yield return null;
-    }
-}
-
-
-public abstract class BaseDelegatorEnhanced<T> : MonoBehaviour, IDelegator<T>
-{
     protected Dictionary<string, Dictionary<string, Subject<IObserver<T>>>> SubjectsDict { get; set; }
 
     protected Dictionary<string, List<Association<T>>> SubjectObserversDict { get; set; }

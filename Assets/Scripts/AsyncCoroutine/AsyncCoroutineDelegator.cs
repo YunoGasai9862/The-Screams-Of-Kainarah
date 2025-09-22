@@ -1,10 +1,11 @@
 
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AsyncCoroutineDelegator: BaseDelegator<AsyncCoroutine>
 {
     private void OnEnable()
     {
-        Subject = new Subject<IObserver<AsyncCoroutine>>();
+        SubjectsDict = new Dictionary <string, Dictionary<string, Subject<IObserver<AsyncCoroutine>>>>();
     }
 }

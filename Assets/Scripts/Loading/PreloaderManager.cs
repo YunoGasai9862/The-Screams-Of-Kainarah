@@ -150,6 +150,8 @@ public class PreloaderManager : MonoBehaviour
     {
         GameObject instantiatedDependency = Instantiate(dependency);
 
+        PreloadedEntities.Add(instantiatedDependency);  
+
         return Task.FromResult(instantiatedDependency.GetComponent<T>());
     }
 }

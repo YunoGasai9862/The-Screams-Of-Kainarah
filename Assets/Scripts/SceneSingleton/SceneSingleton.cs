@@ -55,7 +55,9 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
         _dialogueManager = FindFirstObjectByType<DialogueManager>();
 
         //delegators
-        sceneSingletonDelegator.Subject.SetSubject(this);
+        sceneSingletonDelegator.AddToSubjectsDict(typeof(SceneSingleton).ToString(), name, new Subject<IObserver<SceneSingleton>>());
+
+        sceneSingletonDelegator.GetSubsetSubjectsDictionary(typeof(SceneSingleton).ToString())[name].SetSubject(this);
 
     }
 

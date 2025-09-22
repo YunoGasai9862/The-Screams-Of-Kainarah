@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class LightPreprocessDelegator: BaseDelegatorEnhanced<ILightPreprocess>
+public class LightPreprocessDelegator: BaseDelegator<ILightPreprocess>
 {
     private void OnEnable()
     {

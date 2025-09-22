@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 [Asset(Asset.MONOBEHAVIOR,  "AsyncCoroutine", InstantiationOrder = 5)]
@@ -11,7 +12,9 @@ public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IA
     {
         m_asyncCoroutineDelegator = Helper.GetDelegator<AsyncCoroutineDelegator>();
 
-        m_asyncCoroutineDelegator.Subject.SetSubject(this);
+        m_asyncCoroutineDelegator.AddToSubjectsDict(typeof(AsyncCoroutine).ToString(), name, new Subject<IObserver<AsyncCoroutine>>());
+
+        m_asyncCoroutineDelegator.GetSubsetSubjectsDictionary(typeof(AsyncCoroutine).ToString())[name].SetSubject(this);
     }
 
     public async Task ExecuteAsyncCoroutine(IAsyncEnumerator<WaitForSeconds> asyncCoroutine)

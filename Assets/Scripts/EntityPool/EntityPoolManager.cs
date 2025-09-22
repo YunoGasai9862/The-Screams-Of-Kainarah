@@ -3,17 +3,17 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Threading;
 
-//FIX THIS TOO
-public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, ISubject<IObserver<EntityPoolManager>>
+public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, ISubject<IObserver<EntityPoolManager>>
 {
-    [SerializeField]
-    EntityPoolManagerDelegator entityPoolManagerDelegator;
-
     private Dictionary<string, EntityPool> entityPoolDict = new Dictionary<string, EntityPool>();
+
+    public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
+
+    private EntityPoolManagerDelegator EntityPoolManagerDelegator { get; set; }
 
     private void Start()
     {
-        entityPoolManagerDelegator.Subject.SetSubject(this);
+        InvokeCustomMethod += SetEntityPoolManagerDelegator;
     }
 
     public void Pool(EntityPool entityPool)
@@ -64,8 +64,15 @@ public class EntityPoolManager: MonoBehaviour, IEntityPoolManager, ISubject<IObs
         return null;
     }
 
+    private void SetEntityPoolManagerDelegator()
+    {
+        EntityPoolManagerDelegator.AddToSubjectsDict(typeof(EntityPoolManager).ToString(), name, new Subject<IObserver<EntityPoolManager>>());
+
+        EntityPoolManagerDelegator.GetSubsetSubjectsDictionary(typeof(EntityPoolManager).ToString())[name].SetSubject(this);
+    }
+
     public void OnNotifySubject(IObserver<EntityPoolManager> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(entityPoolManagerDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
+        StartCoroutine(EntityPoolManagerDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
     }
 }

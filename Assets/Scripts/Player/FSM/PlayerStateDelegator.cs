@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class PlayerStateDelegator: BaseDelegatorEnhanced<GenericStateBundle<PlayerStateBundle>>
+public class PlayerStateDelegator: BaseDelegator<GenericStateBundle<PlayerStateBundle>>
 {
     private void Awake()
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class EnemyHittableManagerDelegator: BaseDelegatorEnhanced<EnemyHittableManager>
+public class EnemyHittableManagerDelegator: BaseDelegator<EnemyHittableManager>
 {
     private void Awake()
     {

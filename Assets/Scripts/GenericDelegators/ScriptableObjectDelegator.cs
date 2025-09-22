@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class ScriptableObjectDelegator : BaseDelegatorEnhanced<ScriptableObject>
+public class ScriptableObjectDelegator : BaseDelegator<ScriptableObject>
 {
     public void Awake()
     {

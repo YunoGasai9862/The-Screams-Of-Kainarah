@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class EmitAnimationStateDelegator: BaseDelegatorEnhanced<GenericStateBundle<EmitAnimationStateBundle>>
+public class EmitAnimationStateDelegator: BaseDelegator<GenericStateBundle<EmitAnimationStateBundle>>
 {
     private void Awake()
     {

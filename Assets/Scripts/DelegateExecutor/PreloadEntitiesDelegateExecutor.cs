@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
 {
-
     [SerializeField]
     PreloadedEntitiesEvent preloadedEntitiesEvent;
 

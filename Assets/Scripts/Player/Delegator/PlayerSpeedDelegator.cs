@@ -1,6 +1,6 @@
 
 using System.Collections.Generic;
-public class PlayerSpeedDelegator: BaseDelegatorEnhanced<CharacterSpeed>
+public class PlayerSpeedDelegator: BaseDelegator<CharacterSpeed>
 {
     private void Awake()
     {

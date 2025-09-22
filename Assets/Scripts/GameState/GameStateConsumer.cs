@@ -17,7 +17,7 @@ public class GameStateConsumer : BaseState<GameStateBundle>
         Debug.Log($"Added to the dictionary for GameStateConsumer {globalGameStateDelegator.GetSubjectsDict().Count}");
     }
 
-    protected override BaseDelegatorEnhanced<GenericStateBundle<GameStateBundle>> GetDelegator()
+    protected override BaseDelegator<GenericStateBundle<GameStateBundle>> GetDelegator()
     {
         return globalGameStateDelegator;
     }

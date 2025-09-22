@@ -1,6 +1,6 @@
 
 using System.Collections.Generic;
-public class PlayerSystemDelegator: BaseDelegatorEnhanced<PlayerSystem>
+public class PlayerSystemDelegator: BaseDelegator<PlayerSystem>
 {
     private void Awake()
     {
