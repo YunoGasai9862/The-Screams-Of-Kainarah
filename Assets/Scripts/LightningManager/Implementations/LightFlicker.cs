@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 using UnityEngine;
 public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<ILightPreprocess>>
 {
-    [SerializeField]
-    LightPreprocessDelegator lightPreprocessDelegator;
+    private LightPreprocessDelegator LightPreprocessDelegator { get; set; }
+
     private void Start()
     {
-        lightPreprocessDelegator.AddToSubjectsDict(typeof(LightFlicker).ToString(), gameObject.name, new Subject<IObserver<ILightPreprocess>>());
+        LightPreprocessDelegator = Helper.GetDelegator<LightPreprocessDelegator>();
 
-        lightPreprocessDelegator.GetSubsetSubjectsDictionary(typeof(LightFlicker).ToString())[gameObject.name].SetSubject(this);
+        LightPreprocessDelegator.AddToSubjectsDict(typeof(LightFlicker).ToString(), gameObject.name, new Subject<IObserver<ILightPreprocess>>());
+
+        LightPreprocessDelegator.GetSubsetSubjectsDictionary(typeof(LightFlicker).ToString())[gameObject.name].SetSubject(this);
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0)
@@ -40,6 +42,6 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
 
     public void OnNotifySubject(IObserver<ILightPreprocess> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(lightPreprocessDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
+        StartCoroutine(LightPreprocessDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
     }
 }

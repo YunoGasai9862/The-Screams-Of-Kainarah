@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: b7063152c68b66041806e52030dac4d9
   m_currentHash:
     serializedVersion: 2
-    Hash: 00000000000000000000000000000000
+    Hash: 0a40a183898188c60640cc593403af1c
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -107,6 +107,7 @@ MonoBehaviour:
     - PickableItems
     - Delegators
     - DelegatorsManager
+    - LightManager
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: fddaf8095ec2d344bb5a1aeb7f9adbb1, type: 2}

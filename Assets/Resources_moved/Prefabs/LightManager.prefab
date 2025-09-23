@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1188053340674238591}
-  - component: {fileID: 2236852628710010784}
+  - component: {fileID: 4328223115667805198}
   m_Layer: 0
   m_Name: CelestialBodyLightning
   m_TagString: CelestialBodyLightning
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4507698862783483380}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2236852628710010784
+--- !u!114 &4328223115667805198
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,10 +41,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 905878295734587877}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0ec5bf7225f87d4fa6f29b28b420403, type: 3}
+  m_Script: {fileID: 11500000, guid: 7d0aaee203665ca468a9e6b0e1835a4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightPreprocessDelegator: {fileID: 0}
 --- !u!1 &7785353586573861411
 GameObject:
   m_ObjectHideFlags: 0
@@ -54,8 +53,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4507698862783483380}
+  - component: {fileID: 5249129146506024769}
   m_Layer: 0
-  m_Name: LightFlickerImplementation
+  m_Name: LightManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,6 +78,18 @@ Transform:
   - {fileID: 1188053340674238591}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5249129146506024769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7785353586573861411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c86c06378d03d5044a27335da1e665d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9021485085009579092
 GameObject:
   m_ObjectHideFlags: 0
@@ -87,7 +99,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3290761466139668717}
-  - component: {fileID: 3355908980485203269}
+  - component: {fileID: 7689163212672928109}
   m_Layer: 0
   m_Name: LightFlicker
   m_TagString: LightFlicker
@@ -110,7 +122,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4507698862783483380}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3355908980485203269
+--- !u!114 &7689163212672928109
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -119,7 +131,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 9021485085009579092}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59ebe1445e7b55a44a1715f94287c679, type: 3}
+  m_Script: {fileID: 11500000, guid: ea44a3a694e397544ad7c77c9c497ca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightPreprocessDelegator: {fileID: 0}

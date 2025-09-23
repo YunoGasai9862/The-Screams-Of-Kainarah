@@ -62,6 +62,8 @@ public class PreloaderManager : MonoBehaviour
         {
             dynamic preloadedAsset = await PreloadOnAssetType(asset);
 
+            Debug.Log($"Preloading: {asset.ToString()}");
+
             preloadedEntities.Add(await AddToPool(preloadedAsset, entityPoolManager));
         }
 
