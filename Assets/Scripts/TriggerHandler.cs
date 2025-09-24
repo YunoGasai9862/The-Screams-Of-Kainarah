@@ -23,13 +23,13 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private FlagDelegator m_genericFlagDelegator;
 
-    private void Start()
+    private async void Start()
     {
         m_funds = GameObject.FindGameObjectWithTag(FUNDS_TEXT_TAG).GetComponent<TMPro.TextMeshProUGUI>();
 
-        m_genericFlagDelegator = Helper.GetDelegator<FlagDelegator>();
+        m_genericFlagDelegator = await Helper.GetDelegator<FlagDelegator>();
 
-        m_globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+        m_globalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
 
         m_globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {

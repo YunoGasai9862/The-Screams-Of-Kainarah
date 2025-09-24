@@ -9,7 +9,7 @@ public class PlayerAttributesNotifier: MonoBehaviour, ISubject<IObserver<Player>
 
     private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
-    private void OnEnable()
+    private async void OnEnable()
     {
         PlayerHealth = new Health()
         {
@@ -35,7 +35,7 @@ public class PlayerAttributesNotifier: MonoBehaviour, ISubject<IObserver<Player>
             Health = PlayerHealth,
         };  
 
-        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
     }
 
     private void Start()

@@ -7,9 +7,9 @@ public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<
 {
     private LightPreprocessDelegator LightPreprocessDelegator { get; set; }
 
-    private void Start()
+    private async void Start()
     {
-        LightPreprocessDelegator = Helper.GetDelegator<LightPreprocessDelegator>();
+        LightPreprocessDelegator = await Helper.GetDelegator<LightPreprocessDelegator>();
 
         LightPreprocessDelegator.AddToSubjectsDict(typeof(CelestialBodyLightning).ToString(), gameObject.name, new Subject<IObserver<ILightPreprocess>>());
 

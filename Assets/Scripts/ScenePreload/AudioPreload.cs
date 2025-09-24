@@ -38,9 +38,9 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     }
     private async void Start()
     {
-        m_entityPoolManagerDelegator = Helper.GetDelegator<EntityPoolManagerDelegator>();
+        m_entityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
 
-        m_awsPollyManagementDelegator = Helper.GetDelegator<AWSPollyManagementDelegator>();
+        m_awsPollyManagementDelegator = await Helper.GetDelegator<AWSPollyManagementDelegator>();
 
         m_audioGeneratedEvent = Helper.GetCustomEvent<AudioGeneratedEvent>();
 

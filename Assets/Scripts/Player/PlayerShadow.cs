@@ -19,13 +19,13 @@ public class PlayerShadow : MonoBehaviour, IObserver<Player>
 
     private Player Player { get; set; }
 
-    private void Awake()
+    private async void Awake()
     {
         m_Position = new Vector2(transform.position.x + initialoffsetX, transform.position.y + initialoffsetY);
         _tokenSource= new CancellationTokenSource();
         _token = _tokenSource.Token;
 
-        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();   
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();   
 
         StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
         {

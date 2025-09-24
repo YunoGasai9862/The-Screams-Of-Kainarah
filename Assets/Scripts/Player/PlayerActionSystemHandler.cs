@@ -19,9 +19,9 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>, I
     private float DIAMOND_PICK_UP_VALUE { get; set; } = 20f;
     private int CRYSTAL_UI_INCREMENT_VALUE { get; set; } = 1;
 
-    private void Awake()
+    private async void Awake()
     {
-        ScriptableObjectDelegator = Helper.GetDelegator<ScriptableObjectDelegator>();
+        ScriptableObjectDelegator = await Helper.GetDelegator<ScriptableObjectDelegator>();
 
         _playerActionHandlerDic = new Dictionary<String, Func<Collider2D, Task>>
         {

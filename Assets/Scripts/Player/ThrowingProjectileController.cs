@@ -26,11 +26,11 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, IObs
         _playerAttackStateMachine = new PlayerAttackStateMachine(_anim);
         ProjectileThrowAnimationEvent.AddEventListener(DidHalfAnimationPass);
     }
-    private void Start()
+    private async void Start()
     {
         onThrowEvent.AddListener(CanPlayerThrowProjectile);
 
-        ScriptableObjectDelegator = Helper.GetDelegator< ScriptableObjectDelegator>();
+        ScriptableObjectDelegator = await Helper.GetDelegator< ScriptableObjectDelegator>();
 
         StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new NotificationContext()
         {

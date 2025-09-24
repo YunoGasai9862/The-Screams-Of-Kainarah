@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DelegatorsManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2087559645847863040, guid: 013a6568a6fe75a49af03c3a1e2fa68a, type: 3}
+      propertyPath: m_TagString
+      value: DelegatorsManager
+      objectReference: {fileID: 0}
     - target: {fileID: 5259885328938532175, guid: 013a6568a6fe75a49af03c3a1e2fa68a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

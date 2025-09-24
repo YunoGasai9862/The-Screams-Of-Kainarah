@@ -123,15 +123,15 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         _rocky2DActions.PlayerAttack.BoostAttack.Enable();
     }
 
-    private void NotifySubjects()
+    private async void NotifySubjects()
     {
-        _playerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
+        _playerVelocityDelegator = await Helper.GetDelegator<PlayerVelocityDelegator>();
 
-        _playerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
+        _playerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
 
-        _playerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
+        _playerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
-        _globalGameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+        _globalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
 
         StartCoroutine(_playerVelocityDelegator.NotifySubject(this, new NotificationContext()
         {

@@ -9,9 +9,9 @@ public class PlayerSystem : MonoBehaviour, ISubject<IObserver<PlayerSystem>>
 {
     private PlayerSystemDelegator PlayerSystemDelegator { get; set; }
 
-    private void Awake()
+    private async void Awake()
     {
-        PlayerSystemDelegator = Helper.GetDelegator<PlayerSystemDelegator>();
+        PlayerSystemDelegator = await Helper.GetDelegator<PlayerSystemDelegator>();
     }
 
     private void Start()

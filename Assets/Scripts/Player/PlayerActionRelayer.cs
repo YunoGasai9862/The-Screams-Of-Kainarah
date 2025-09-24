@@ -68,7 +68,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
 
         }, CancellationToken.None));
     }
-    private void Awake()
+    private async void Awake()
     {
         _semaphoreSlim = new SemaphoreSlim(1); //using at two places
 
@@ -78,9 +78,9 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
 
         _cancellationToken = _cancellationTokenSource.Token;
 
-        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
-        ScriptableObjectDelegator = Helper.GetDelegator<ScriptableObjectDelegator>();
+        ScriptableObjectDelegator = await Helper.GetDelegator<ScriptableObjectDelegator>();
     }
 
     private async void Update()

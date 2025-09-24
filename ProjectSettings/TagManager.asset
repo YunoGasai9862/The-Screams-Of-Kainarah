@@ -49,6 +49,8 @@ TagManager:
   - CelestialBodyLightning
   - CandleLightPackageGenerator
   - CelestialBodiesLightPackageGenerator
+  - DelegatorsManager
+  - LightManager
   layers:
   - Default
   - TransparentFX

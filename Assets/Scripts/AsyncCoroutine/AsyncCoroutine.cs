@@ -8,9 +8,9 @@ using UnityEngine;
 public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IAsyncCoroutine<WaitUntil>, ISubject<IObserver<AsyncCoroutine>>
 {
     private AsyncCoroutineDelegator m_asyncCoroutineDelegator;
-    private void Start()
+    private async void Start()
     {
-        m_asyncCoroutineDelegator = Helper.GetDelegator<AsyncCoroutineDelegator>();
+        m_asyncCoroutineDelegator = await Helper.GetDelegator<AsyncCoroutineDelegator>();
 
         m_asyncCoroutineDelegator.AddToSubjectsDict(typeof(AsyncCoroutine).ToString(), name, new Subject<IObserver<AsyncCoroutine>>());
 

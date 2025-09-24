@@ -60,17 +60,17 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     [SerializeField] GlobalGameStateDelegator globalGameStateDelegator;
 
 
-    private void Awake()
+    private async void Awake()
     {
         _movementHelper = new MovementHelperClass();
 
         PlayerAttackStateInt = 0;
 
-        PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
+        PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
 
         PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
 
-        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
     }
 
     private void Start()

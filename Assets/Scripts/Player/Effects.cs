@@ -7,9 +7,9 @@ public class Effects: MonoBehaviour, IObserver<Player>
 
     public PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
-    private void Awake()
+    private async void Awake()
     {
-        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
         StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
         {

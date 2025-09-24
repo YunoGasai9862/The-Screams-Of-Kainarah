@@ -34,9 +34,9 @@ public class PickableItems : ScriptableObject, ISubject<IObserver<ScriptableObje
         }, CancellationToken.None);
     }
 
-    public void SetupAsSubject()
+    public async void SetupAsSubject()
     {
-        ScriptableObjectDelegator = Helper.GetDelegator<ScriptableObjectDelegator>();
+        ScriptableObjectDelegator = await Helper.GetDelegator<ScriptableObjectDelegator>();
 
         ScriptableObjectDelegator.AddToSubjectsDict(typeof(PickableItems).ToString(), typeof(PickableItems).ToString(), new Subject<IObserver<ScriptableObject>>());
 

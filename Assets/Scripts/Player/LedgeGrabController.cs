@@ -53,13 +53,13 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
     private Player Player { get; set; }
 
-    private void Awake()
+    private async void Awake()
     {
         _helperFunc = new MovementHelperClass();
 
-        PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
+        PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
 
-        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
         PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
 

@@ -21,13 +21,13 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private Animator PlayerAnimator { get; set; }
 
-    private void Awake()
+    private async void Awake()
     {
-        PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
+        PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
 
-        AnimationDetailsDelegator = Helper.GetDelegator<AnimationDetailsDelegator>();
+        AnimationDetailsDelegator = await Helper.GetDelegator<AnimationDetailsDelegator>();
 
-        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
         PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
 

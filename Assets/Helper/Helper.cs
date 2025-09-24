@@ -27,24 +27,27 @@ public class Helper: MonoBehaviour
         yield return new WaitUntil(() => variable != null);
     }
 
-    public static T GetDelegator<T>() where T: UnityEngine.Object
+    public static async Task<T> GetDelegator<T>() where T: UnityEngine.Object
     {
-        try
+        int retryLimit = 3;
+
+        int waitLimitInSeconds = 3;
+
+        for (int i=0; i<retryLimit; i++)
         {
             T delegator = FindObject<T>();
 
             if (delegator == null)
             {
-                throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
+                await Task.Delay(waitLimitInSeconds * 1000);
+
+                continue;
             }
 
-            return delegator;
-
-        }catch(Exception ex)
-        {
-            Debug.Log($"Exception occured while finding the delegator - {ex.Message}");
-            throw ex;
+             return delegator;
         }
+
+        throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
     public static T GetCustomEvent<T>() where T : UnityEngine.Object

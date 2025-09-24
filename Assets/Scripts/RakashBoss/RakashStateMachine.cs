@@ -36,11 +36,11 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<Ga
     [SerializeField]
     EnemyHittableManagerDelegator enemyHittableManagerDelegator;
 
-    private void Awake()
+    private async void Awake()
     {
-        GameStateDelegator = Helper.GetDelegator<GlobalGameStateDelegator>();
+        GameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
 
-        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
         Animator= GetComponent<Animator>();
 

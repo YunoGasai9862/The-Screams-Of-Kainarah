@@ -39,13 +39,13 @@ public class SlidingController : MonoBehaviour, IReceiverAsync<bool>, IObserver<
 
     private bool IS_SLIDING { get; set; } = false;
 
-    private void Awake()
+    private async void Awake()
     {
-        PlayerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
+        PlayerVelocityDelegator = await Helper.GetDelegator<PlayerVelocityDelegator>();
 
-        AnimationDetailsDelegator = Helper.GetDelegator<AnimationDetailsDelegator>();
+        AnimationDetailsDelegator = await Helper.GetDelegator<AnimationDetailsDelegator>();
 
-        PlayerAttributesDelegator = Helper.GetDelegator<PlayerAttributesDelegator>();
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
     }
 
     void Start()

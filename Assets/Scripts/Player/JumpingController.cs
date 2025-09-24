@@ -54,7 +54,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle> { StateBundle = new PlayerStateBundle() };
 
-    private void Awake()
+    private async void Awake()
     {
         //should give that one singe type of controller - and i think i we should move with this approach! Give me a moment that implements ActionExecuted!
         _animationReceiver = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>>();
@@ -67,11 +67,11 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
         _rb = GetComponent<Rigidbody2D>();
 
-        PlayerStateDelegator = Helper.GetDelegator<PlayerStateDelegator>();
+        PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
 
         PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
 
-        PlayerVelocityDelegator = Helper.GetDelegator<PlayerVelocityDelegator>();
+        PlayerVelocityDelegator = await Helper.GetDelegator<PlayerVelocityDelegator>();
     }
     private void Start()
     {
