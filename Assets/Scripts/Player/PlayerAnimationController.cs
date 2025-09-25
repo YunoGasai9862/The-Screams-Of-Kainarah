@@ -29,7 +29,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
-        PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
+        PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
         if (PlayerStateDelegator == null)
         {

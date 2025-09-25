@@ -61,7 +61,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
-        PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
+        PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
         if (PlayerStateDelegator == null)
         {

@@ -42,7 +42,7 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
         m_awsPollyManagementDelegator = await Helper.GetDelegator<AWSPollyManagementDelegator>();
 
-        m_audioGeneratedEvent = Helper.GetCustomEvent<AudioGeneratedEvent>();
+        m_audioGeneratedEvent = await Helper.GetCustomEvent<AudioGeneratedEvent>();
 
         await m_audioGeneratedEvent.AddListener(AudioGeneratedListener);
 

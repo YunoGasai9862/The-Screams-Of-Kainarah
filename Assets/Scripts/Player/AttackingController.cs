@@ -68,7 +68,7 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
         PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
 
-        PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
+        PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
     }

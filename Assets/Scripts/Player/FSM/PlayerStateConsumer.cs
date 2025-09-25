@@ -1,27 +1,32 @@
 using UnityEngine.Events;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class PlayerStateConsumer : BaseState<PlayerStateBundle>
 {
-    [SerializeField] PlayerStateDelegator playerStateDelegator;
+     public PlayerStateDelegator PlayerStateDelegator { get; set; }
 
-    [SerializeField] PlayerStateEvent playerStateEvent;
+     public PlayerStateEvent PlayerStateEvent { get; set; }
 
-    protected override void AddSubject()
+    protected override async void AddSubject()
     {
-        playerStateDelegator.AddToSubjectsDict(typeof(PlayerStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericStateBundle<PlayerStateBundle>>>());
+        PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
 
-        playerStateDelegator.GetSubsetSubjectsDictionary(typeof(PlayerStateConsumer).ToString())[gameObject.name].SetSubject(this);
+        PlayerStateDelegator.AddToSubjectsDict(typeof(PlayerStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericStateBundle<PlayerStateBundle>>>());
+
+        PlayerStateDelegator.GetSubsetSubjectsDictionary(typeof(PlayerStateConsumer).ToString())[gameObject.name].SetSubject(this);
     }
 
     protected override BaseDelegator<GenericStateBundle<PlayerStateBundle>> GetDelegator()
     {
-        return playerStateDelegator;
+        return PlayerStateDelegator;
     }
 
-    protected override UnityEvent<GenericStateBundle<PlayerStateBundle>> GetEvent()
+    protected override async Task<UnityEvent<GenericStateBundle<PlayerStateBundle>>> GetEvent()
     {
-        return playerStateEvent.GetInstance();
+        PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
+
+        return PlayerStateEvent.GetInstance();
     }
 
     protected override GenericStateBundle<PlayerStateBundle> GetInitialState()

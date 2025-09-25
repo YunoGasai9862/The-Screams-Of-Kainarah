@@ -1,29 +1,33 @@
+using Pathfinding;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class EmitAnimationStateConsumer : BaseState<EmitAnimationStateBundle>
 {
-    [SerializeField]
-    EmitAnimationStateDelegator emitAnimationStateDelegator;
+    private EmitAnimationStateDelegator EmitAnimationStateDelegator { get; set; }
 
-    [SerializeField]
-    EmitAnimationStateEvent emitAnimationStateEvent;
+    private EmitAnimationStateEvent EmitAnimationStateEvent { get; set; }
 
     protected override void AddSubject()
     {
-        emitAnimationStateDelegator.AddToSubjectsDict(typeof(EmitAnimationStateConsumer).ToString(), name, new Subject<IObserver<GenericStateBundle<EmitAnimationStateBundle>>>());
+        EmitAnimationStateDelegator.AddToSubjectsDict(typeof(EmitAnimationStateConsumer).ToString(), name, new Subject<IObserver<GenericStateBundle<EmitAnimationStateBundle>>>());
 
-        emitAnimationStateDelegator.GetSubsetSubjectsDictionary(typeof(EmitAnimationStateConsumer).ToString())[name].SetSubject(this);
+        EmitAnimationStateDelegator.GetSubsetSubjectsDictionary(typeof(EmitAnimationStateConsumer).ToString())[name].SetSubject(this);
     }
 
-    protected override BaseDelegator<GenericStateBundle<EmitAnimationStateBundle>> GetDelegator()
-    {
-        return emitAnimationStateDelegator;
+    protected override async Task<BaseDelegator<GenericStateBundle<EmitAnimationStateBundle>>> GetDelegator()
+    { 
+        EmitAnimationStateDelegator = await Helper.GetDelegator<EmitAnimationStateDelegator>();
+
+        return EmitAnimationStateDelegator;
     }
 
-    protected override UnityEvent<GenericStateBundle<EmitAnimationStateBundle>> GetEvent()
+    protected override async Task<UnityEvent<GenericStateBundle<EmitAnimationStateBundle>>> GetEvent()
     {
-        return emitAnimationStateEvent.GetInstance();
+        EmitAnimationStateEvent = await Helper.GetCustomEvent<EmitAnimationStateEvent>();
+
+        return EmitAnimationStateEvent.GetInstance();
     }
 
     protected override GenericStateBundle<EmitAnimationStateBundle> GetInitialState()

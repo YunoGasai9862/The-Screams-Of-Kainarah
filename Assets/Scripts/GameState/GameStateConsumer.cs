@@ -1,30 +1,35 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class GameStateConsumer : BaseState<GameStateBundle>
 {
-    [SerializeField] GlobalGameStateDelegator globalGameStateDelegator;
+     private GlobalGameStateDelegator GlobalGameStateDelegator { get; set; }
 
-    [SerializeField] GameStateEvent gameStateEvent;
+     private GameStateEvent GameStateEvent { get; set; }
 
-    protected override void AddSubject()
+    protected override async void AddSubject()
     {
-        globalGameStateDelegator.AddToSubjectsDict(typeof(GameStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericStateBundle<GameStateBundle>>>());
+        GlobalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
 
-        globalGameStateDelegator.GetSubsetSubjectsDictionary(typeof(GameStateConsumer).ToString())[gameObject.name].SetSubject(this);
+        GlobalGameStateDelegator.AddToSubjectsDict(typeof(GameStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericStateBundle<GameStateBundle>>>());
 
-        Debug.Log($"Added to the dictionary for GameStateConsumer {globalGameStateDelegator.GetSubjectsDict().Count}");
+        GlobalGameStateDelegator.GetSubsetSubjectsDictionary(typeof(GameStateConsumer).ToString())[gameObject.name].SetSubject(this);
+
+        Debug.Log($"Added to the dictionary for GameStateConsumer {GlobalGameStateDelegator.GetSubjectsDict().Count}");
     }
 
     protected override BaseDelegator<GenericStateBundle<GameStateBundle>> GetDelegator()
     {
-        return globalGameStateDelegator;
+        return GlobalGameStateDelegator;
     }
 
-    protected override UnityEvent<GenericStateBundle<GameStateBundle>> GetEvent()
+    protected override async Task<UnityEvent<GenericStateBundle<GameStateBundle>>> GetEvent()
     {
-        return gameStateEvent.GetInstance();
+        GameStateEvent = await Helper.GetCustomEvent<GameStateEvent>();
+
+        return GameStateEvent.GetInstance();
     }
 
     protected override GenericStateBundle<GameStateBundle> GetInitialState()

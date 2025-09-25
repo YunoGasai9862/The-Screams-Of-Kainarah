@@ -58,7 +58,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
 
     //Force = -2m * sqrt (g * h)
-    private void Awake()
+    private async Task Awake()
     {
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
 
@@ -86,7 +86,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _playerActionsModel.OriginalSpeed = _characterSpeed;
 
-        _playerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
+        _playerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
         _rocky2DActions.PlayerMovement.Jump.started += BeginJumpAction; //i can add the same function
 

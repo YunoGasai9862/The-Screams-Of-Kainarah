@@ -27,12 +27,8 @@ public class Helper: MonoBehaviour
         yield return new WaitUntil(() => variable != null);
     }
 
-    public static async Task<T> GetDelegator<T>() where T: UnityEngine.Object
+    public static async Task<T> GetDelegator<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T: UnityEngine.Object
     {
-        int retryLimit = 3;
-
-        int waitLimitInSeconds = 3;
-
         for (int i=0; i<retryLimit; i++)
         {
             T delegator = FindObject<T>();
@@ -50,16 +46,23 @@ public class Helper: MonoBehaviour
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
-    public static T GetCustomEvent<T>() where T : UnityEngine.Object
+    public static async Task<T> GetCustomEvent<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
     {
-        T customEvent = FindObject<T>();
-
-        if (customEvent == null)
+        for (int i = 0; i < retryLimit; i++)
         {
-            throw new CustomEventNotFoundException($" {typeof(T).Name} Not Found in the Scene");
+            T customEvent = FindObject<T>();
+
+            if (customEvent == null)
+            {
+                await Task.Delay(waitLimitInSeconds * 1000);
+
+                continue;
+            }
+
+            return customEvent;
         }
 
-        return customEvent;
+        throw new CustomEventNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
     public static TYPE FindReceiver<TYPE, IMPLEMENTATION>() where TYPE: MonoBehaviour

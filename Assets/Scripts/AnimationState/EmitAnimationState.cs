@@ -4,9 +4,9 @@ using UnityEngine;
 public class EmitAnimationState : StateMachineBehaviour
 {
     private EmitAnimationStateEvent EmitAnimationStateEvent { get; set; }
-    private void Awake()
+    private async void Awake()
     {
-        EmitAnimationStateEvent = Helper.GetCustomEvent<EmitAnimationStateEvent>();
+        EmitAnimationStateEvent = await Helper.GetCustomEvent<EmitAnimationStateEvent>();
     }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state

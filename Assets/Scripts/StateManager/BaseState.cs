@@ -11,9 +11,10 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
 
     protected GenericStateBundle<T> StateBundle { get; set; } = new GenericStateBundle<T>();
 
-    private void Start()
+    private async void Start()
     {
-        GetEvent().AddListener(PingStateListeners);
+        //MORE HERE
+        (await GetEvent()).AddListener(PingStateListeners);
 
         AddSubject();
 
@@ -30,15 +31,13 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
         }
     }
 
-    private Task NotifyObserver(IObserver<GenericStateBundle<T>> observer, GenericStateBundle<T> stateBundle, CancellationToken cancellationToken)
+    private async Task NotifyObserver(IObserver<GenericStateBundle<T>> observer, GenericStateBundle<T> stateBundle, CancellationToken cancellationToken)
     {
-        StartCoroutine(GetDelegator().NotifyObserver(observer, stateBundle, new NotificationContext()
+        StartCoroutine((await GetDelegator()).NotifyObserver(observer, stateBundle, new NotificationContext()
         {
             SubjectType = typeof(BaseState<T>).ToString()
 
         }, cancellationToken));
-
-        return Task.CompletedTask;
     }
 
     public async void OnNotifySubject(IObserver<GenericStateBundle<T>> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
@@ -50,9 +49,9 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
 
     protected abstract void AddSubject();
 
-    protected abstract UnityEvent<GenericStateBundle<T>> GetEvent(); 
+    protected abstract Task<UnityEvent<GenericStateBundle<T>>> GetEvent(); 
 
-    protected abstract BaseDelegator<GenericStateBundle<T>> GetDelegator();
+    protected abstract Task<BaseDelegator<GenericStateBundle<T>>> GetDelegator();
 
     protected abstract GenericStateBundle<T> GetInitialState();
 }

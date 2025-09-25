@@ -69,7 +69,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
         PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
 
-        PlayerStateEvent = Helper.GetCustomEvent<PlayerStateEvent>();
+        PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
         PlayerVelocityDelegator = await Helper.GetDelegator<PlayerVelocityDelegator>();
     }
