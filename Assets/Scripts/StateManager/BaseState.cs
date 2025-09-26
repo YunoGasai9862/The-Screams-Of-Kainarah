@@ -13,10 +13,13 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
 
     private async void Start()
     {
-        //MORE HERE
-        (await GetEvent()).AddListener(PingStateListeners);
+        await AddEvent();
 
-        AddSubject();
+        await AddDelegator();
+
+        await AddSubject();
+
+        (await GetEvent()).AddListener(PingStateListeners);
 
         StateBundle = GetInitialState();
     }
@@ -47,7 +50,11 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
         await NotifyObserver(observer, StateBundle, cancellationToken);
     }
 
-    protected abstract void AddSubject();
+    protected abstract Task AddSubject();
+
+    protected abstract Task AddDelegator();
+
+    protected abstract Task AddEvent();
 
     protected abstract Task<UnityEvent<GenericStateBundle<T>>> GetEvent(); 
 

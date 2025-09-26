@@ -64,8 +64,10 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IS
         return null;
     }
 
-    private void SetEntityPoolManagerDelegator()
+    private async void SetEntityPoolManagerDelegator()
     {
+        EntityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
+
         EntityPoolManagerDelegator.AddToSubjectsDict(typeof(EntityPoolManager).ToString(), name, new Subject<IObserver<EntityPoolManager>>());
 
         EntityPoolManagerDelegator.GetSubsetSubjectsDictionary(typeof(EntityPoolManager).ToString())[name].SetSubject(this);

@@ -9,24 +9,32 @@ public class EmitAnimationStateConsumer : BaseState<EmitAnimationStateBundle>
 
     private EmitAnimationStateEvent EmitAnimationStateEvent { get; set; }
 
-    protected override void AddSubject()
+    protected override async Task AddDelegator()
+    {
+        EmitAnimationStateDelegator = await Helper.GetDelegator<EmitAnimationStateDelegator>();
+    }
+
+    protected override async Task AddEvent()
+    {
+        EmitAnimationStateEvent = await Helper.GetCustomEvent<EmitAnimationStateEvent>();
+    }
+
+    protected override Task AddSubject()
     {
         EmitAnimationStateDelegator.AddToSubjectsDict(typeof(EmitAnimationStateConsumer).ToString(), name, new Subject<IObserver<GenericStateBundle<EmitAnimationStateBundle>>>());
 
         EmitAnimationStateDelegator.GetSubsetSubjectsDictionary(typeof(EmitAnimationStateConsumer).ToString())[name].SetSubject(this);
+
+        return Task.CompletedTask;
     }
 
     protected override async Task<BaseDelegator<GenericStateBundle<EmitAnimationStateBundle>>> GetDelegator()
     { 
-        EmitAnimationStateDelegator = await Helper.GetDelegator<EmitAnimationStateDelegator>();
-
         return EmitAnimationStateDelegator;
     }
 
     protected override async Task<UnityEvent<GenericStateBundle<EmitAnimationStateBundle>>> GetEvent()
     {
-        EmitAnimationStateEvent = await Helper.GetCustomEvent<EmitAnimationStateEvent>();
-
         return EmitAnimationStateEvent.GetInstance();
     }
 

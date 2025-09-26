@@ -8,24 +8,30 @@ public class PlayerStateConsumer : BaseState<PlayerStateBundle>
 
      public PlayerStateEvent PlayerStateEvent { get; set; }
 
-    protected override async void AddSubject()
+    protected override async Task AddDelegator()
     {
         PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
+    }
 
+    protected override async Task AddEvent()
+    {
+        PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
+    }
+
+    protected override async Task AddSubject()
+    {
         PlayerStateDelegator.AddToSubjectsDict(typeof(PlayerStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericStateBundle<PlayerStateBundle>>>());
 
         PlayerStateDelegator.GetSubsetSubjectsDictionary(typeof(PlayerStateConsumer).ToString())[gameObject.name].SetSubject(this);
     }
 
-    protected override BaseDelegator<GenericStateBundle<PlayerStateBundle>> GetDelegator()
+    protected override async Task<BaseDelegator<GenericStateBundle<PlayerStateBundle>>> GetDelegator()
     {
         return PlayerStateDelegator;
     }
 
     protected override async Task<UnityEvent<GenericStateBundle<PlayerStateBundle>>> GetEvent()
     {
-        PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
-
         return PlayerStateEvent.GetInstance();
     }
 

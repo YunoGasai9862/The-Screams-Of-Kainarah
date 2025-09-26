@@ -9,10 +9,18 @@ public class GameStateConsumer : BaseState<GameStateBundle>
 
      private GameStateEvent GameStateEvent { get; set; }
 
-    protected override async void AddSubject()
+    protected override async Task AddDelegator()
     {
         GlobalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
+    }
 
+    protected override async Task AddEvent()
+    {
+        GameStateEvent = await Helper.GetCustomEvent<GameStateEvent>();
+    }
+
+    protected override async Task AddSubject()
+    {
         GlobalGameStateDelegator.AddToSubjectsDict(typeof(GameStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericStateBundle<GameStateBundle>>>());
 
         GlobalGameStateDelegator.GetSubsetSubjectsDictionary(typeof(GameStateConsumer).ToString())[gameObject.name].SetSubject(this);
@@ -20,15 +28,13 @@ public class GameStateConsumer : BaseState<GameStateBundle>
         Debug.Log($"Added to the dictionary for GameStateConsumer {GlobalGameStateDelegator.GetSubjectsDict().Count}");
     }
 
-    protected override BaseDelegator<GenericStateBundle<GameStateBundle>> GetDelegator()
+    protected override async Task<BaseDelegator<GenericStateBundle<GameStateBundle>>> GetDelegator()
     {
         return GlobalGameStateDelegator;
     }
 
     protected override async Task<UnityEvent<GenericStateBundle<GameStateBundle>>> GetEvent()
     {
-        GameStateEvent = await Helper.GetCustomEvent<GameStateEvent>();
-
         return GameStateEvent.GetInstance();
     }
 
