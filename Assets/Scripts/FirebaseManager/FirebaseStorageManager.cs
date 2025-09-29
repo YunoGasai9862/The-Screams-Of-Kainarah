@@ -4,11 +4,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+
+[AssetAttribute(Asset.MONOBEHAVIOR, "FirebaseStorageManager", InstantiationOrder = 9)]
 public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<IObserver<FirebaseStorageManager>>
 {
-
-    [SerializeField]
-    public FirebaseStorageManagerDelegator firebaseStorageManagerDelegator;
+    private FirebaseStorageManagerDelegator FirebaseStorageManagerDelegator { get; set; }
 
     FirebaseStorage FirebaseStorage { get; set; }
     StorageReference MediaStorageReference { get; set; }
@@ -19,11 +19,13 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<
 
     string FirebaseStorageLocationURL { get; set; }
 
-    private void Start()
+    private async void Start()
     {
-        firebaseStorageManagerDelegator.AddToSubjectsDict(typeof(FirebaseStorageManager).ToString(), name, new Subject<IObserver<FirebaseStorageManager>>());
+        FirebaseStorageManagerDelegator = await Helper.GetDelegator<FirebaseStorageManagerDelegator>();
 
-        firebaseStorageManagerDelegator.GetSubsetSubjectsDictionary(typeof(FirebaseStorageManager).ToString())[name].SetSubject(this);
+        FirebaseStorageManagerDelegator.AddToSubjectsDict(typeof(FirebaseStorageManager).ToString(), name, new Subject<IObserver<FirebaseStorageManager>>());
+
+        FirebaseStorageManagerDelegator.GetSubsetSubjectsDictionary(typeof(FirebaseStorageManager).ToString())[name].SetSubject(this);
 
         InitializeFirebaseStorage();
 
@@ -122,6 +124,6 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<
 
     public void OnNotifySubject(IObserver<FirebaseStorageManager> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(firebaseStorageManagerDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
+        StartCoroutine(FirebaseStorageManagerDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
     }
 }

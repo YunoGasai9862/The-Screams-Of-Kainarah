@@ -37,5 +37,4 @@ public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IA
     {
         StartCoroutine(m_asyncCoroutineDelegator.NotifyObserver(data, this, notificationContext, cancellationToken: cancellationToken));
     }
-
 }

@@ -66,11 +66,15 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IS
 
     private async void SetEntityPoolManagerDelegator()
     {
+        Debug.Log($"SetEntityPoolManagerDelegator");
+
         EntityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
 
         EntityPoolManagerDelegator.AddToSubjectsDict(typeof(EntityPoolManager).ToString(), name, new Subject<IObserver<EntityPoolManager>>());
 
         EntityPoolManagerDelegator.GetSubsetSubjectsDictionary(typeof(EntityPoolManager).ToString())[name].SetSubject(this);
+
+        Debug.Log($"Length of the dictionary for EntityPoolManagerDelegator: {EntityPoolManagerDelegator.GetSubjectsDict().Count}");
     }
 
     public void OnNotifySubject(IObserver<EntityPoolManager> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)

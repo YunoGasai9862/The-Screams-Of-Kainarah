@@ -59,6 +59,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 728effec4261f464ea8854da68ab00d9
+    m_Address: Prefabs/FirebaseStorageManager
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - FirebaseStorageManager
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 930e2577fd067014aa992f32b4c75095
     m_Address: DelegatorsManager
     m_ReadOnly: 0
