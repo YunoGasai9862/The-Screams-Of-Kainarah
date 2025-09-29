@@ -71,6 +71,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - CheckPoints
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d67ed17dd6bdb8c43a1e3480997656df
+    m_Address: Prefabs/AWSPollyManager
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AWSPollyManager
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dcfb91314fa429145a308d707bf9d85d
     m_Address: Assets/Resources_moved/Prefabs/AudioPreload.prefab
     m_ReadOnly: 0

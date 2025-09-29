@@ -18,7 +18,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
     }
 
     //later convert it to for-loop based retry method
-    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)
+    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         if (maxRetries == 0)
         {
@@ -47,7 +47,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
         {
             yield return new WaitForSeconds(Helper.GetSecondsFromMilliSeconds(sleepTimeInMilliSeconds));
 
-            Debug.Log($"Retrying for - {notificationContext.SubjectType} / Seeker: {observer} length of the dict: {SubjectsDict.Count}");
+            Debug.Log($"Retrying for - {notificationContext.SubjectType} / Seeker: {observer} length of the dict: {SubjectsDict.Count} - retries left: {maxRetries}");
 
             StartCoroutine(NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, maxRetries -= 1, sleepTimeInMilliSeconds, optional));
         }
@@ -136,5 +136,12 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
             }, cancellationToken));
         }
+    }
+
+
+    public void NotifySubjectWrapper(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken,
+        SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    {
+        StartCoroutine(NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, maxRetries, sleepTimeInMilliSeconds));
     }
 }

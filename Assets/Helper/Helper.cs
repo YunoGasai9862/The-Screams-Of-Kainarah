@@ -147,9 +147,9 @@ public class Helper: MonoBehaviour
         return false;
     }
 
-    public static int GetSecondsFromMilliSeconds(int milliSeconds)
+    public static float GetSecondsFromMilliSeconds(int milliSeconds)
     {
-        return milliSeconds / 1000;
+        return milliSeconds / 1000.0f;
     }
 
     public static NotificationContext BuildNotificationContext(string name, string tag, string subjectType)

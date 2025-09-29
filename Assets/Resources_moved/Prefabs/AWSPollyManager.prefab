@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7508572765551215568}
   m_Layer: 0
   m_Name: AWSPollyManager
-  m_TagString: Untagged
+  m_TagString: AWSPollyManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,7 +46,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FirebaseStorageURL: gs://the-screams-of-kainarah.appspot.com
   AWSKeysfileNameOnFireBase: AWSKeys.txt
-  audioGeneratedEvent: {fileID: 0}
-  firebaseStorageManagerDelegator: {fileID: 0}
-  awsPollyManagementDelegator: {fileID: 0}
-  asyncCoroutineDelegator: {fileID: 0}
+  audioGeneratedEvent: {fileID: 6214167793977575340, guid: dbdc1cbe1bf814148afa12f2338e0aa3, type: 3}

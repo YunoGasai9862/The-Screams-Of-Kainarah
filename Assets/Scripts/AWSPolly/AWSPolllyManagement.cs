@@ -9,8 +9,11 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 
+[AssetAttribute(Asset.MONOBEHAVIOR, "AWSPollyManager", InstantiationOrder = 6)]
 public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseStorageManager>, IObserver<AsyncCoroutine>, ISubject<IObserver<IAWSPolly>>
 {
+    //gs://the-screams-of-kainarah.appspot.com
+    //AWSKeys.txt
     private const int AWS_ACCESS_KEY_INDEX = 0;
 
     private const int SECRET_AWS_ASCCESS_KEY_INDEX = 1;
@@ -25,8 +28,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
     private FileUtils FileUtils { get; set; } = new FileUtils();
 
-    private int VOICE_GENERATION_DELAY { get; set; } = 500;
-
     private SemaphoreSlim AWSSemaphore { get; set; } = new SemaphoreSlim(1);
 
     private FirebaseStorageManager FirebaseStorageManagerInstance { get; set; }
@@ -34,7 +35,12 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     private AWSAccessResource AWSAccessResource { get; set; }
 
     private AsyncCoroutine AsyncCoroutine { get; set; }
-    
+
+    private FirebaseStorageManagerDelegator FirebaseStorageManagerDelegator { get; set; }
+
+    private AWSPollyManagementDelegator AWSPollyManagementDelegator { get; set; }
+
+    private AsyncCoroutineDelegator AsyncCoroutineDelegator { get; set; }
 
     [SerializeField]
     string FirebaseStorageURL;
@@ -42,12 +48,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
     string AWSKeysfileNameOnFireBase;
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
-    [SerializeField]
-    FirebaseStorageManagerDelegator firebaseStorageManagerDelegator;
-    [SerializeField]
-    AWSPollyManagementDelegator awsPollyManagementDelegator;
-    [SerializeField]
-    AsyncCoroutineDelegator asyncCoroutineDelegator;
 
     private void Awake()
     {
@@ -56,15 +56,23 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         CancellationToken = CancellationTokenSource.Token;
     }
 
-    private void Start()
+    private async void Start()
     {
-        StartCoroutine(firebaseStorageManagerDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(FirebaseStorageManager).ToString()), CancellationToken));
+        FirebaseStorageManagerDelegator = await Helper.GetDelegator<FirebaseStorageManagerDelegator>();
 
-        StartCoroutine(asyncCoroutineDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutineDelegator).ToString()), CancellationToken));
+        AsyncCoroutineDelegator = await Helper.GetDelegator<AsyncCoroutineDelegator>();
 
-        awsPollyManagementDelegator.AddToSubjectsDict(typeof(AWSPolllyManagement).ToString(), name, new Subject<IObserver<IAWSPolly>>());
+        AWSPollyManagementDelegator = await Helper.GetDelegator<AWSPollyManagementDelegator>();
 
-        awsPollyManagementDelegator.GetSubsetSubjectsDictionary(typeof(AWSPolllyManagement).ToString())[name].SetSubject(this);
+        FirebaseStorageManagerDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(FirebaseStorageManager).ToString()), CancellationToken);
+
+        AsyncCoroutineDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutineDelegator).ToString()), CancellationToken);
+
+        AWSPollyManagementDelegator.AddToSubjectsDict(typeof(AWSPolllyManagement).ToString(), name, new Subject<IObserver<IAWSPolly>>());
+
+        AWSPollyManagementDelegator.GetSubsetSubjectsDictionary(typeof(AWSPolllyManagement).ToString())[name].SetSubject(this);
+
+        Debug.Log($"AWSPollyManagementDelegator Length in AWSPOLLYMANAGEMENT : {AWSPollyManagementDelegator.GetSubjectsDict().Count}");
     }
 
 
@@ -180,7 +188,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
     public void OnNotifySubject(IObserver<IAWSPolly> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(awsPollyManagementDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
+        StartCoroutine(AWSPollyManagementDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
     }
 
     public async void OnNotify(FirebaseStorageManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
