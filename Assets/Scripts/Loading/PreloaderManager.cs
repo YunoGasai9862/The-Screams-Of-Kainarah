@@ -67,8 +67,6 @@ public class PreloaderManager : MonoBehaviour
             preloadedEntities.Add(await AddToPool(preloadedAsset, entityPoolManager));
         }
 
-        Debug.Log($"Returning {preloadedEntities.Count}");
-
         return preloadedEntities;
     }
 
@@ -128,8 +126,6 @@ public class PreloaderManager : MonoBehaviour
         List<AssetAttribute> assetsToPreload =  await GetAssetAttributesForPreloading();
 
         PreloadedEntities.AddRange(await PreloadAssets(assetsToPreload, entityPoolManager));
-
-        Debug.Log($"Invoking - {preloadedEntitiesEvent}");
 
         await preloadedEntitiesEvent.Invoke(PreloadedEntities);
     }

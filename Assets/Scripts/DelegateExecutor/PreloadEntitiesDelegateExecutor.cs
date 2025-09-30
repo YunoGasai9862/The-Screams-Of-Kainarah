@@ -11,8 +11,6 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
 
     private void Start()
     {
-        Debug.Log($"PreloadEntitiesDelegateExecutor Start");
-
         preloadedEntitiesEvent.AddListener(PreloadEntitiesEventListener);
     }
 
@@ -34,12 +32,8 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
     {
         foreach(ScriptableObject scriptableObject in preloadEntities)
         {
-            Debug.Log($"ExecuteDelegatesForScriptableObjects - {scriptableObject}");
-
             if (scriptableObject is IDelegate)
             {
-                Debug.Log($"Implements IDelegate - {scriptableObject}");
-
                 await ExecuteDelegateMethod((IDelegate)scriptableObject);
             }
         }
@@ -57,8 +51,6 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
 
             foreach (IDelegate del in iDelegates)
             {
-                Debug.Log($"Executing delegate: {del}");
-
                 await ExecuteDelegateMethod(del);
             }
         }
@@ -66,8 +58,6 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
 
     private async void PreloadEntitiesEventListener(List<UnityEngine.Object> preloadedEntities)
     {
-        Debug.Log($"Inside PreloadEntitiesEventListener");
-
         await ExecuteDelegates(preloadedEntities);
     }
     

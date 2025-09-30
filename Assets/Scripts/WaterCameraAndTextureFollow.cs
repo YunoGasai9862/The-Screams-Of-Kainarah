@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using System.Threading;
 using UnityEngine;
 
@@ -9,19 +8,20 @@ public class WaterCameraAndTextureFollow : MonoBehaviour, IObserver<IEntityTrans
     public float WaterCamerSpeed;
     public float offsetX;
 
-    [Header("Attribute Delegator")]
-    [SerializeField] PlayerAttributesDelegator playerAttributesDelegator;
+    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
     private Transform PlayerTransform { get; set; }
 
-    private void Start()
+    private async void Start()
     {
-        StartCoroutine(playerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
-        }, CancellationToken.None));
+        }, CancellationToken.None);
     }
 
     public void OnNotify(IEntityTransform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

@@ -12,14 +12,16 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericStateBundl
     public DialogueTriggerEvent dialogueTriggerEvent;
     [SerializeField]
     public GameStateEvent gameStateEvent;
-    [SerializeField]
-    GlobalGameStateDelegator globalGameStateDelegator;
 
-    private void Start()
+    private GlobalGameStateDelegator GlobalGameStateDelegator { get; set; }
+
+    private async void Start()
     {
-        dialogueTriggerEvent.AddListener(TriggerCoroutine);
+        await dialogueTriggerEvent.AddListener(TriggerCoroutine);
 
-        globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        GlobalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
+
+        GlobalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = this.name,
             ObserverTag = this.name,

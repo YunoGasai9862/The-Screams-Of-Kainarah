@@ -12,8 +12,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
     [Header("Triggering Event")]
     [SerializeField] DialogueTriggerEvent dialogueTriggerEvent;
 
-    [Header("Triggering Event")]
-    [SerializeField] GlobalGameStateDelegator globalGameStateDelegator;
+    private GlobalGameStateDelegator GlobalGameStateDelegator {get; set; }
 
     private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
 
@@ -31,9 +30,11 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
         PlayerObserverListenerHelper.DialogueSystem.RemoveOberver(this); 
     }
 
-    private void Start()
+    private async void Start()
     {
-        globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        GlobalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
+
+        GlobalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = this.name,
             ObserverTag = this.name,
