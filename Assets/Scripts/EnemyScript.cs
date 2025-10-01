@@ -28,7 +28,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
     [Header("Enter Attack Anim Param name")]
     [SerializeField] string animationAttackParam;
     [SerializeField] string[] extraAnimations;
-    [SerializeField] EnemyHittableManagerDelegator enemyHittableManagerDelegator;
+    private EnemyHittableManagerDelegator EnemyHittableManagerDelegator { get; set; }
 
     public override Health Health { get; set; }
 
@@ -41,8 +41,9 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
         wayPointsMovementScript = gameObject.GetComponent<WayPointsMovement>();
     }
 
-    void Start()
+    private async void Start()
     {
+        EnemyHittableManagerDelegator = await Helper.GetDelegator<EnemyHittableManagerDelegator>();
 
         Health = new Health()
         {
@@ -53,15 +54,14 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
 
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
-        //InsertIntoGameStateHandlerList(this);
 
-        StartCoroutine(enemyHittableManagerDelegator.NotifySubject(this, new NotificationContext()
+        EnemyHittableManagerDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             SubjectType = typeof(EnemyHittableManager).ToString(),
             ObserverName = name,
             ObserverTag = tag
 
-        }, CancellationToken.None));
+        }, CancellationToken.None);
     }
 
     async void Update()

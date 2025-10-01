@@ -14,8 +14,7 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
     [SerializeField] private CheckPoints checkpointsScriptableObject;
     [SerializeField] private EventStringMapper eventStringMapperScriptableObject;
 
-    [Header("Delegators")]
-    [SerializeField] private SceneSingletonDelegator sceneSingletonDelegator;
+    private SceneSingletonDelegator _sceneSingletonDelegator { get; set; }
 
     public static DialoguesAndOptions DialogueAndOptions => _instance.dialogueAndOptions;
     public static PlayerHittableItemsScriptableObject PlayerHittableItems => _instance.playerHittableItemsScriptableObject;
@@ -43,7 +42,7 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
             _instance = this; //creating an instance (singleton pattern)
     }
 
-    private void Start()
+    private async void Start()
     {
         _inventoryManager = FindFirstObjectByType<InventoryManager>();
         _playerHelperClassForOtherPurposes = FindFirstObjectByType<PlayerActionRelayer>();
@@ -54,10 +53,10 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
         _checkpointColliderListener = FindFirstObjectByType<CheckpointColliderListener>();
         _dialogueManager = FindFirstObjectByType<DialogueManager>();
 
-        //delegators
-        sceneSingletonDelegator.AddToSubjectsDict(typeof(SceneSingleton).ToString(), name, new Subject<IObserver<SceneSingleton>>());
 
-        sceneSingletonDelegator.GetSubsetSubjectsDictionary(typeof(SceneSingleton).ToString())[name].SetSubject(this);
+        _sceneSingletonDelegator = await Helper.GetDelegator<SceneSingletonDelegator>();
+        _sceneSingletonDelegator.AddToSubjectsDict(typeof(SceneSingleton).ToString(), name, new Subject<IObserver<SceneSingleton>>());
+        _sceneSingletonDelegator.GetSubsetSubjectsDictionary(typeof(SceneSingleton).ToString())[name].SetSubject(this);
 
     }
 
@@ -107,6 +106,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
 
     public void OnNotifySubject(IObserver<SceneSingleton> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(sceneSingletonDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
+        StartCoroutine(_sceneSingletonDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
     }
 }

@@ -7,14 +7,13 @@ using UnityEngine;
 public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>
 {
     [SerializeField]
-    HealthDelegator healthDelegator;
-    [SerializeField]
     GameObject rakashDeadBodyPrefab;
 
     private AnimationUtility AnimationUtility { get; set; }
 
     private List<RakashAttack> BlockingAttacks { get; set; }
 
+    private HealthDelegator HealthDelegator { get; set; }
 
     private const float HEALTH_DEPLETED_MARK = 0;
 
@@ -22,9 +21,11 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
 
     private Health RakashHealth { get; set; }
 
-    private void Start()
+    private async void Start()
     {
         AnimationUtility = new AnimationUtility();
+
+        HealthDelegator = await Helper.GetDelegator<HealthDelegator>();
 
         BlockingAttacks = new List<RakashAttack>()
         {
@@ -33,13 +34,13 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
            RakashAttack.ATTACK_02
         };
 
-        StartCoroutine(healthDelegator.NotifySubject(this, new NotificationContext()
+        HealthDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = name,
             ObserverTag = tag,
             SubjectType = typeof(RakashManager).ToString()
 
-        }, CancellationToken.None));
+        }, CancellationToken.None);
     }
 
     private IEnumerator Attack(AttackAnimationPackage value)

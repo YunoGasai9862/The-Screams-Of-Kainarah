@@ -5,15 +5,15 @@ using EnemyHittable;
 using System.Threading;
 public class EnemyHittableManager : MonoBehaviour, ISubject<IObserver<EnemyHittableManager>>
 {
+   private EnemyHittableManagerDelegator EnemyHittableManagerDelegator { get; set; }
 
-    [SerializeField]
-    EnemyHittableManagerDelegator enemyHittableManagerDelegator;
-
-    private void Start()
+    private async void Start()
     {
-        enemyHittableManagerDelegator.AddToSubjectsDict(typeof(EnemyHittableManager).ToString(), gameObject.name, new Subject<IObserver<EnemyHittableManager>>());
+        EnemyHittableManagerDelegator = await Helper.GetDelegator<EnemyHittableManagerDelegator>();
 
-        enemyHittableManagerDelegator.GetSubsetSubjectsDictionary(typeof(EnemyHittableManager).ToString())[gameObject.name].SetSubject(this);
+        EnemyHittableManagerDelegator.AddToSubjectsDict(typeof(EnemyHittableManager).ToString(), gameObject.name, new Subject<IObserver<EnemyHittableManager>>());
+
+        EnemyHittableManagerDelegator.GetSubsetSubjectsDictionary(typeof(EnemyHittableManager).ToString())[gameObject.name].SetSubject(this);
     }
 
     public Task<bool> IsEntityAnAttackObject(Collider2D collider, EnemyHittableObjects objects)
@@ -33,7 +33,7 @@ public class EnemyHittableManager : MonoBehaviour, ISubject<IObserver<EnemyHitta
 
     public void OnNotifySubject(IObserver<EnemyHittableManager> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(enemyHittableManagerDelegator.NotifyObserver(data, this, new NotificationContext()
+        StartCoroutine(EnemyHittableManagerDelegator.NotifyObserver(data, this, new NotificationContext()
         {
             SubjectType = typeof(EnemyHittableManager).ToString()
 

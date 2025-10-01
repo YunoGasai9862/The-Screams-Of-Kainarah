@@ -1,4 +1,5 @@
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,19 +10,20 @@ public class HealthBar : MonoBehaviour, IObserver<IEntityHealth>
     [SerializeField] Slider slide;
     [SerializeField] Gradient gr;
 
-    [Header("Attribute Delegator")]
-    [SerializeField] PlayerAttributesDelegator playerAttributesDelegator;
+    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
     private Health PlayerHealth { get; set; }
 
-    private void Start()
+    private async void Start()
     {
-        StartCoroutine(playerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
-        }, CancellationToken.None));
+        }, CancellationToken.None);
 
         Fill.color = gr.Evaluate(slide.value);
     }

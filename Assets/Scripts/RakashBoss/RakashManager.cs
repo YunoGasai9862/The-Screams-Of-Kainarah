@@ -4,8 +4,7 @@ using UnityEngine;
 using static SceneData;
 public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserver<Health>>
 {
-    [SerializeField]
-    HealthDelegator healthDelegator;
+    private HealthDelegator HealthDelegator { get; set; }
 
     public override Health Health { get; set; }
 
@@ -19,11 +18,13 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserv
         };
     }
 
-    void Start()
+    private async void Start()
     {
-        healthDelegator.AddToSubjectsDict(typeof(RakashManager).ToString(), name, new Subject<IObserver<Health>>());
+        HealthDelegator = await Helper.GetDelegator<HealthDelegator>();
 
-        healthDelegator.GetSubsetSubjectsDictionary(typeof(RakashManager).ToString())[name].SetSubject(this);
+        HealthDelegator.AddToSubjectsDict(typeof(RakashManager).ToString(), name, new Subject<IObserver<Health>>());
+
+        HealthDelegator.GetSubsetSubjectsDictionary(typeof(RakashManager).ToString())[name].SetSubject(this);
 
         SceneSingleton.InsertIntoGameStateHandlerList(this);
     }
@@ -35,7 +36,7 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserv
 
     public void OnNotifySubject(IObserver<Health> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(healthDelegator.NotifyObserver(data, Health, new NotificationContext()
+        StartCoroutine(HealthDelegator.NotifyObserver(data, Health, new NotificationContext()
         {
             SubjectType = typeof(RakashManager).ToString()  
         }, CancellationToken.None));
