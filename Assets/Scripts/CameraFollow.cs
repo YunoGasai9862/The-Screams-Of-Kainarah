@@ -1,4 +1,5 @@
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<IEntityTransform>
@@ -6,31 +7,33 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<IEntityTra
     [Header("Camera Follow Speed")]
     [SerializeField] float _cameraFollowSpeed;
 
-    [Header("Generic Float Delegator")]
-    [SerializeField] FlagDelegator flagDelegator;
+    private FlagDelegator FlagDelegator { get; set; }
 
-    [Header("Attribute Delegator")]
-    [SerializeField] PlayerAttributesDelegator playerAttributesDelegator;
+    private PlayerAttributesDelegator PlayerAttributesDelegator {get; set; }
 
     private bool ShouldFollowPlayer { get; set; }
 
     private Transform PlayersTransform { get; set;}
 
-    private void Start()
+    private async void Start()
     {
-        StartCoroutine(flagDelegator.NotifySubject(this, new NotificationContext()
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+
+        FlagDelegator = await Helper.GetDelegator<FlagDelegator>();
+
+        FlagDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(CameraShake).ToString()
-        }, CancellationToken.None));
+        }, CancellationToken.None);
 
-        StartCoroutine(playerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
-        }, CancellationToken.None));
+        }, CancellationToken.None);
     }
 
     void Update()

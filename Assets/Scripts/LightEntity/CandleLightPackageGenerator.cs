@@ -7,12 +7,9 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<LightPackage>>, IObserver<ILightPreprocess>, IObserver<Player>, ILightPackageGenerator
 {
-    [SerializeField]
-    LightPackageDelegator lightPackageDelegator;
-    [SerializeField]
-    LightPreprocessDelegator lightPreprocessDelegator;
-    [SerializeField]
-    PlayerAttributesDelegator playerAttributesDelegator;
+    private LightPackageDelegator LightPackageDelegator { get; set; }
+    private LightPreprocessDelegator LightPreprocessDelegator { get; set; }
+    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
     [SerializeField]
     LightProperties lightProperties;
     [SerializeField]
@@ -42,23 +39,29 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
         await SetupCancellationTokens();
 
-        StartCoroutine(lightPreprocessDelegator.NotifySubject(this, new NotificationContext()
+        LightPackageDelegator = await Helper.GetDelegator<LightPackageDelegator>();
+
+        LightPreprocessDelegator = await Helper.GetDelegator<LightPreprocessDelegator>();
+
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+
+        LightPreprocessDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(LightFlicker).ToString()
-        }, CancellationToken.None));
+        }, CancellationToken.None);
 
-        StartCoroutine(playerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
-         }, CancellationToken.None));
+         }, CancellationToken.None);
 
-        lightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), transform.parent.gameObject.name, new Subject<IObserver<LightPackage>>() { });
+        LightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), transform.parent.gameObject.name, new Subject<IObserver<LightPackage>>() { });
 
-        lightPackageDelegator.GetSubsetSubjectsDictionary(typeof(CandleLightPackageGenerator).ToString())[transform.parent.gameObject.name].SetSubject(this);
+        LightPackageDelegator.GetSubsetSubjectsDictionary(typeof(CandleLightPackageGenerator).ToString())[transform.parent.gameObject.name].SetSubject(this);
     }
 
     public IEnumerator PingCustomLightning(LightPackage lightPackage, IObserver<LightPackage> observer, float delayPerExecutionInSeconds = 1)
@@ -69,7 +72,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
             lightPackage.LightProperties.ShouldLightPulse = Vector2.Distance(Player.Transform.position, gameObject.transform.position) < minDistanceFromPlayerForLightFlicker ? true : false;
 
-            StartCoroutine(lightPackageDelegator.NotifyObserver(observer, lightPackage, new NotificationContext()
+            StartCoroutine(LightPackageDelegator.NotifyObserver(observer, lightPackage, new NotificationContext()
             {
                 SubjectType = typeof(CandleLightPackageGenerator).ToString(),
             }, lightPackage.CancellationToken));
@@ -124,7 +127,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
     {
         return !Helper.AreObjectsNull(new List<UnityEngine.Object>
         {
-            lightPreprocessDelegator
+            LightPreprocessDelegator
         })
             && LightPreprocess != null
             && Player != null;

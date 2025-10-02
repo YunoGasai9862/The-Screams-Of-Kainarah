@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, IObserver<AsyncCoroutine>, IObserver<LightPackage>
@@ -11,20 +12,19 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
     public float maxIntensity;
     public float minIntensity;
 
-    [Header("Async Coroutine Delegator Reference")]
-    [SerializeField]
-    public AsyncCoroutineDelegator asyncCoroutineDelegator;
+    private AsyncCoroutineDelegator AsyncCoroutineDelegator { get; set; }
 
-    [Header("LightPackage Coroutine Delegator Reference")]
-    [SerializeField]
-    public LightPackageDelegator lightPackageDelegator;
+    private LightPackageDelegator LightPackageDelegator { get; set; }
 
-    private void Start()
+    private async void Start()
     {
-        StartCoroutine(asyncCoroutineDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutine).ToString()), CancellationToken.None));
+        LightPackageDelegator = await Helper.GetDelegator<LightPackageDelegator>();
 
-        StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CandleLightPackageGenerator).ToString()), CancellationToken.None));
-        StartCoroutine(lightPackageDelegator.NotifySubject(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CelestialBodiesLightPackageGenerator).ToString()), CancellationToken.None));
+        AsyncCoroutineDelegator = await Helper.GetDelegator<AsyncCoroutineDelegator>();
+
+        AsyncCoroutineDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutine).ToString()), CancellationToken.None);
+        LightPackageDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CandleLightPackageGenerator).ToString()), CancellationToken.None);
+        LightPackageDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CelestialBodiesLightPackageGenerator).ToString()), CancellationToken.None);
     }
 
     public IEnumerator ExecuteLightningLogic(LightPackage lightPackage)

@@ -10,8 +10,7 @@ public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
     [SerializeField] float XOffset, YOffset, ZOffset;
     [SerializeField] float distanceBetweenPlayerAndMoon;
 
-    [Header("Attribute Delegator")]
-    [SerializeField] PlayerAttributesDelegator playerAttributesDelegator;
+    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
     private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
     private CancellationTokenSource cancellationTokenSource;
@@ -19,17 +18,19 @@ public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
 
     private Transform PlayerTransform { get; set; }
 
-    private void Start()
+    private async void Start()
     {
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
 
-        StartCoroutine(playerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
-        }, CancellationToken.None));
+        }, CancellationToken.None);
     }
     async void Update()
     {
@@ -52,7 +53,6 @@ public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
             try
             {
                 MovementUtilities.TrackPlayer(self, targetToFollow, offset, speed);
-
             }
             catch (OperationCanceledException ex)
             {
@@ -62,7 +62,6 @@ public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
             finally
             {
                 semaphoreSlim.Release();
-
             }
         }
 
