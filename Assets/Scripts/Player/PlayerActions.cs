@@ -58,7 +58,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
 
     //Force = -2m * sqrt (g * h)
-    private async Task Awake()
+    private async void Awake()
     {
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
 
@@ -133,33 +133,33 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _globalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
 
-        StartCoroutine(_playerVelocityDelegator.NotifySubject(this, new NotificationContext()
+        _playerVelocityDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(SlidingController).ToString()
-        }, CancellationToken.None));
+        }, CancellationToken.None);
 
-        StartCoroutine(_playerVelocityDelegator.NotifySubject(this, new NotificationContext()
+        _playerVelocityDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(JumpingController).ToString()
-        }, CancellationToken.None));
+        }, CancellationToken.None);
 
-        StartCoroutine(_playerStateDelegator.NotifySubject(this, new NotificationContext()
+        _playerStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(PlayerStateConsumer).ToString()
-        }, CancellationToken.None));
+        }, CancellationToken.None);
 
-        StartCoroutine(_playerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        _playerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
-        }, CancellationToken.None));
+        }, CancellationToken.None);
 
         _globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {

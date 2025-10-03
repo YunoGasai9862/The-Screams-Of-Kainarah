@@ -41,8 +41,6 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
 
     private void Start()
     {
-
-
         try
         {
             SceneSingleton.InsertIntoGameStateHandlerList(this);

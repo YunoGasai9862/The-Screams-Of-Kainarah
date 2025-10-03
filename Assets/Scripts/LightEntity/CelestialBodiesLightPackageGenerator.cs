@@ -6,10 +6,10 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILightPreprocess>, ISubject<IObserver<LightPackage>>, ILightPackageGenerator
 {
-    [SerializeField]
-    LightPackageDelegator lightPackageDelegator;
-    [SerializeField]
-    LightPreprocessDelegator lightPreprocessDelegator;
+    private LightPackageDelegator LightPackageDelegator { get; set; }
+
+    private LightPreprocessDelegator LightPreprocessDelegator { get; set; }
+
     [SerializeField]
     LightProperties lightProperties;
     [SerializeField]
@@ -35,17 +35,21 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
         await SetupCancellationTokens();
 
-        StartCoroutine(lightPreprocessDelegator.NotifySubject(this, new NotificationContext()
+        LightPreprocessDelegator = await Helper.GetDelegator<LightPreprocessDelegator>();
+
+        LightPackageDelegator = await Helper.GetDelegator<LightPackageDelegator>();
+
+        LightPreprocessDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(CelestialBodyLightning).ToString()
-        }, CancellationToken.None));
+        }, CancellationToken.None);
 
         //subject for custom lightning
-        lightPackageDelegator.AddToSubjectsDict(typeof(CelestialBodiesLightPackageGenerator).ToString(), gameObject.name, new Subject<IObserver<LightPackage>>());
+        LightPackageDelegator.AddToSubjectsDict(typeof(CelestialBodiesLightPackageGenerator).ToString(), gameObject.name, new Subject<IObserver<LightPackage>>());
 
-        lightPackageDelegator.GetSubsetSubjectsDictionary(typeof(CelestialBodiesLightPackageGenerator).ToString())[gameObject.name].SetSubject(this);
+        LightPackageDelegator.GetSubsetSubjectsDictionary(typeof(CelestialBodiesLightPackageGenerator).ToString())[gameObject.name].SetSubject(this);
     }
 
 
@@ -92,7 +96,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         {
             lightPackage.LightSemaphore.WaitAsync();
 
-            StartCoroutine(lightPackageDelegator.NotifyObserver(observer, lightPackage, new NotificationContext()
+            StartCoroutine(LightPackageDelegator.NotifyObserver(observer, lightPackage, new NotificationContext()
             {
                 SubjectType = typeof(CelestialBodiesLightPackageGenerator).ToString()
             }, lightPackage.CancellationToken, lightPackage.LightSemaphore));
@@ -106,7 +110,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
     {
         return !Helper.AreObjectsNull(new List<UnityEngine.Object>
         {
-            lightPreprocessDelegator
+            LightPreprocessDelegator
         })
             && CelestialLightningLightPreprocess != null;
     }

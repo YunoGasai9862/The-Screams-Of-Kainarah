@@ -87,7 +87,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
 
         }
 
-        if (isEnemyHealthZero(Health.CurrentHealth))
+        if (IsEnemyHealthZero(Health))
         {
             if (!cancellationToken.IsCancellationRequested)
                 Destroy(gameObject);
@@ -152,9 +152,9 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
         cancellationTokenSource.Cancel();
     }
 
-    private bool isEnemyHealthZero(float enemyHealth)
+    private bool IsEnemyHealthZero(Health health)
     {
-       return enemyHealth==0? true: false;
+       return (health != null && health.CurrentHealth == 0 ) ? true: false;
     }
 
     public override void GameStateHandler(SceneData data)
