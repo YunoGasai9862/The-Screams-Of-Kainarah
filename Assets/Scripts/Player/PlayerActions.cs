@@ -64,15 +64,15 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _playerActionsModel = new PlayerActionsModel();
 
-        _jumpReceiver = Helper.FindReceiver<JumpingController, IReceiverBase<bool>>();
+        _jumpReceiver = await Helper.FindReceiver<JumpingController, IReceiverBase<bool>>();
 
-        _slideReceiver = Helper.FindReceiver<SlidingController, IReceiverBase<bool>>();
+        _slideReceiver = await Helper.FindReceiver<SlidingController, IReceiverBase<bool>>();
 
-        _attackReceiver = Helper.FindReceiver<AttackingController, IReceiverBase<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>>();
+        _attackReceiver = await Helper.FindReceiver<AttackingController, IReceiverBase<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>>();
 
-        _throwingProjectileReceiver = Helper.FindReceiver<ThrowingProjectileController, IReceiverBase<bool>>();
+        _throwingProjectileReceiver = await  Helper.FindReceiver<ThrowingProjectileController, IReceiverBase<bool>>();
 
-        _animationReceiver = Helper.FindReceiver<PlayerAnimationController, IReceiverBase<ControllerPackage<PlayerAnimationExecutionState, bool>>>();
+        _animationReceiver = await Helper.FindReceiver<PlayerAnimationController, IReceiverBase<ControllerPackage<PlayerAnimationExecutionState, bool>>>();
 
         _attackCommand = new CommandAsyncEnhanced<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>(_attackReceiver);
 
@@ -417,14 +417,16 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     }
 
     private bool IsSlidingActionConcluded(PlayerStateBundle playerStateBundle)
-    {
-        return playerStateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_SLIDING &&
+    {   
+        return playerStateBundle.PlayerMovementState != null &&
+               playerStateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_SLIDING &&
                playerStateBundle.PlayerMovementState.IsConcluded;
     }
 
     private bool IsSlidingActionInProgress(PlayerStateBundle playerStateBundle)
     {
-        return playerStateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_SLIDING &&
+        return  playerStateBundle.PlayerMovementState != null &&
+                playerStateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_SLIDING &&
                !playerStateBundle.PlayerMovementState.IsConcluded;
     }
 

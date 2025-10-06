@@ -46,26 +46,6 @@ public class Helper: MonoBehaviour
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
-    public static async Task<T> GetReceiver<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
-    {
-        for (int i = 0; i < retryLimit; i++)
-        {
-            T receiver = FindObject<T>();
-
-            if (receiver == null)
-            {
-                await Task.Delay(waitLimitInSeconds * 1000);
-
-                continue;
-            }
-
-            return receiver;
-        }
-
-        throw new ReceiverNotFounderException($" {typeof(T).Name} Not Found in the Scene");
-    }
-
-
     public static async Task<T> GetCustomEvent<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
     {
         for (int i = 0; i < retryLimit; i++)
@@ -85,21 +65,29 @@ public class Helper: MonoBehaviour
         throw new CustomEventNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
-    public static TYPE FindReceiver<TYPE, IMPLEMENTATION>() where TYPE: MonoBehaviour
+    public static async Task<TYPE> FindReceiver<TYPE, IMPLEMENTATION>(int retryLimit = 3, int waitLimitInSeconds = 3) where TYPE: MonoBehaviour
     {
-        TYPE customObject = (TYPE)(UnityEngine.Object)FindFirstObjectByType<TYPE>();
 
-        if (customObject == null)
+        for (int i = 0; i < retryLimit; i++)
         {
-            throw new ApplicationException($" {typeof(TYPE).Name} Not Found in the Scene");
+            TYPE receiver = (TYPE)(UnityEngine.Object)FindFirstObjectByType<TYPE>();
+
+            if (receiver == null)
+            {
+                await Task.Delay(waitLimitInSeconds * 1000);
+
+                continue;
+            }
+
+            if (!(receiver is IMPLEMENTATION))
+            {
+                throw new ApplicationException($" {typeof(TYPE).Name} Does not Implement {typeof(IMPLEMENTATION)}");
+            }
+
+            return receiver;
         }
 
-        if (!(customObject is IMPLEMENTATION))
-        {
-            throw new ApplicationException($" {typeof(TYPE).Name} Does not Implement {typeof(IMPLEMENTATION)}");
-        }
-
-        return customObject;
+        throw new ReceiverNotFounderException($" {typeof(TYPE).Name} Not Found in the Scene");
     }
 
     public static TYPE FindObject<TYPE>() where TYPE : UnityEngine.Object

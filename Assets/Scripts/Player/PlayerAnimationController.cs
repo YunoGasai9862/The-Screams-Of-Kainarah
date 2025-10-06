@@ -4,8 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-//convert it to a controller
-public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<IEntityAnimator>
+public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>, 
+    IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<IEntityAnimator>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
 
@@ -167,8 +167,6 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
     private IEnumerator NotifyAnimationDetailsObservers(IObserver<AnimationDetails> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         yield return new WaitUntil(() => PlayerAnimator != null);
-
-        Debug.Log($"Finally PlayerAnimator is not null!");
 
         StartCoroutine(AnimationDetailsDelegator.NotifyObserver(observer, new AnimationDetails()
         {
