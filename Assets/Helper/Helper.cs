@@ -46,6 +46,26 @@ public class Helper: MonoBehaviour
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
+    public static async Task<T> GetReceiver<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
+    {
+        for (int i = 0; i < retryLimit; i++)
+        {
+            T receiver = FindObject<T>();
+
+            if (receiver == null)
+            {
+                await Task.Delay(waitLimitInSeconds * 1000);
+
+                continue;
+            }
+
+            return receiver;
+        }
+
+        throw new ReceiverNotFounderException($" {typeof(T).Name} Not Found in the Scene");
+    }
+
+
     public static async Task<T> GetCustomEvent<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
     {
         for (int i = 0; i < retryLimit; i++)

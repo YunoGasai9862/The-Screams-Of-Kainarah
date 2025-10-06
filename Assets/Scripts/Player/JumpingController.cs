@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingController, bool>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>
+public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingController, bool>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>, IObserver<IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>>
 {
     [SerializeField] LayerMask groundLayer;
 
@@ -22,15 +22,11 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
     
     private const float MAX_JUMP_TIME = 0.3f;
 
-    private Rigidbody2D _rb;
-
     private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>> _animationReceiver;
 
     private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>> _animationCommand;
 
     private IOverlapChecker _movementHelperClass;
-
-    private Collider2D _col;
 
     private bool _isJumpPressed;
 
@@ -52,26 +48,21 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
+    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle> { StateBundle = new PlayerStateBundle() };
 
     private async void Awake()
     {
-        //should give that one singe type of controller - and i think i we should move with this approach! Give me a moment that implements ActionExecuted!
-        _animationReceiver = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>>();
-
-        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>(_animationReceiver);
-
         _movementHelperClass = new MovementHelperClass();
-
-        _col = GetComponent<CapsuleCollider2D>();
-
-        _rb = GetComponent<Rigidbody2D>();
 
         PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
 
         PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
         PlayerVelocityDelegator = await Helper.GetDelegator<PlayerVelocityDelegator>();
+
+        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
     }
     private void Start()
     {
@@ -86,7 +77,12 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
             SubjectType = typeof(PlayerStateConsumer).ToString()
         }, CancellationToken.None));
 
-        Debug.Log($"PlayerName: {gameObject.name}");
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+        }, CancellationToken.None));
 
         PlayerVelocityDelegator.AddToSubjectsDict(typeof(JumpingController).ToString(), gameObject.name, new Subject<IObserver<CharacterVelocity>>());
 
@@ -131,7 +127,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
             CharacterVelocity.VelocityY = -JumpSpeed * FALLING_SPEED;
         }
 
-        if (!IsOnTheGround(groundLayer) && !IsOnTheLedge(ledgeLayer) && await IsYVelocityNegative(_rb))
+        if (!IsOnTheGround(groundLayer) && !IsOnTheLedge(ledgeLayer) && await IsYVelocityNegative(Player.Rigidbody))
         {
             await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, bool>() { ExecutionState = PlayerAnimationExecutionState.PLAY_JUMPING_ANIMATION, Value = false });
         }
@@ -246,5 +242,12 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
     public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
+    }
+
+    public void OnNotify(IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        _animationReceiver = data;
+
+        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>(_animationReceiver);
     }
 }
