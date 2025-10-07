@@ -128,8 +128,6 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
     {
         if (PlayerAnimator == null)
         {
-            Debug.Log("PlayerAnimator is null - Skipping PerformAction in PlayerAnimationController");
-
             return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>(null));
         }
 

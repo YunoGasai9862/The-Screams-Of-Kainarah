@@ -18,11 +18,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private CommandAsyncEnhanced<JumpingController, bool> _jumpCommand;
 
-    private CommandAsyncEnhanced<SlidingController, bool> _slidingCommand;
+    private IReceiverEnhancedAsync<SlidingController, bool> _slideReceiver;
 
-    private IReceiverAsync<bool> _slideReceiver;
-
-    private CommandAsync<bool> _slideCommand;
+    private CommandAsyncEnhanced<SlidingController, bool> _slideCommand;
 
     private IReceiverEnhancedAsync<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>> _attackReceiver;
 
@@ -38,9 +36,15 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private PlayerActionsModel _playerActionsModel;
 
-    private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
+    private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>()
+    {
+        StateBundle = new GameStateBundle()
+    };
 
-    private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>();
+    private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>()
+    {
+        StateBundle = new PlayerStateBundle()
+    };
 
     private ThrowingProjectileController ThrowingProjectileController { get => GetComponent<ThrowingProjectileController>(); } //implement all the actions together
 
@@ -80,7 +84,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _jumpCommand = new CommandAsyncEnhanced<JumpingController, bool>(_jumpReceiver);
 
-        _slideCommand = new CommandAsync<bool>(_slideReceiver);
+        _slideCommand = new CommandAsyncEnhanced<SlidingController, bool>(_slideReceiver);
 
         _throwingProjectileCommand = new Command<bool>(_throwingProjectileReceiver);
 
@@ -209,15 +213,11 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         //ledge grab
         if (CurrentPlayerState.StateBundle.PlayerActionState.CurrentState == PlayerActionState.IS_GRABBING) //tackles the ledgeGrab
         {
-            await _slidingCommand.Execute(true);
+            await _slideCommand.Execute(true);
         }
 
         //sliding
-        if (_playerActionsModel.GetSlidePressed && IsSlidingActionConcluded(CurrentPlayerState.StateBundle))
-            _slideCommand.Execute();
-        else
-            _slideCommand.Cancel();
-
+        _ = _playerActionsModel.GetSlidePressed && IsSlidingActionConcluded(CurrentPlayerState.StateBundle) ? await _slideCommand.Execute() : await _slideCommand.Cancel();
     }
 
     #region Controller Mechnism
@@ -386,15 +386,11 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log($"PlayerStateBundle in PlayerActions - {data.StateBundle}");
-
         CurrentPlayerState.StateBundle = data.StateBundle;
     }
 
     public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log($"GameStateBundle in PlayerActions - {data.StateBundle}");
-
         CurrentGameState.StateBundle = data.StateBundle;
     }
 

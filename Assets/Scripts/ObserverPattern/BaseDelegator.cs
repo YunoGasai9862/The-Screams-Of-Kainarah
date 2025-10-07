@@ -17,7 +17,6 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
         yield return null;
     }
 
-    //later convert it to for-loop based retry method
     public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         if (maxRetries == 0)
@@ -37,8 +36,6 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
             foreach (KeyValuePair<string, Subject<IObserver<T>>> keyValuePair in subjects)
             {
                 yield return new WaitUntil(() => !Helper.IsSubjectNull(keyValuePair.Value));
-
-                Debug.Log($"Key: {keyValuePair.Key}, Value: {keyValuePair.Value}");
 
                 keyValuePair.Value.NotifySubject(observer, notificationContext, cancellationToken);
             }

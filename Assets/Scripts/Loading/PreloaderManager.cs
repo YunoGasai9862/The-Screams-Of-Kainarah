@@ -41,8 +41,6 @@ public class PreloaderManager : MonoBehaviour
                     continue;
                 }
 
-                Debug.Log($"AssetAttribute: {attribute.ToString()}");
-
                 assetAttributes.Add(attribute);
 
             }
@@ -61,8 +59,6 @@ public class PreloaderManager : MonoBehaviour
         foreach (AssetAttribute asset in assets)
         {
             dynamic preloadedAsset = await PreloadOnAssetType(asset);
-
-            Debug.Log($"Preloading: {asset.ToString()}");
 
             preloadedEntities.Add(await AddToPool(preloadedAsset, entityPoolManager));
         }

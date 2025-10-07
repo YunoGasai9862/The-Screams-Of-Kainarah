@@ -12,8 +12,6 @@ public class GameLoad : MonoBehaviour, IGameLoad
     {
         AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(preloadPackage.AddressableLable);
 
-        Debug.Log($"Handler: {handler}");
-
         await handler.Task;
 
         T loadedAsset = handler.Result;

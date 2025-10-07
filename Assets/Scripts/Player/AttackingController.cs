@@ -19,8 +19,14 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     private bool _isPlayerEligibleForStartingAttack = false;
 
     private float timeDifferencebetweenStates;
-    private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>();
-    private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
+    private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>()
+    {
+        StateBundle = new PlayerStateBundle()
+    };
+    private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>()
+    {
+        StateBundle = new GameStateBundle()
+    };
     private int PlayerAttackStateInt { get; set; }
     private string PlayerAttackStateName { get; set; }
     private bool LeftMouseButtonPressed { get; set; }
@@ -120,8 +126,6 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
             Debug.Log("Player is null - skipping update for Attacking Controller!");
             return;
         }
-
-        Debug.Log($"NON NULL - {CurrentPlayerState}");
 
         if (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_SLIDING || 
             PlayerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
@@ -331,22 +335,16 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
     public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log($"GlobalGameStateBundle in Attacking Controller - {data.StateBundle}");
-
         CurrentGameState.StateBundle = data.StateBundle;
     }
 
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log($"PlayerStateBundle in Attacking Controller - {data.StateBundle}");
-
         CurrentPlayerState.StateBundle = data.StateBundle;
     }
 
     public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log($"Player in Attacking Controller - {data}");
-
         Player = data;
 
         PlayerAttackStateMachine = new PlayerAttackStateMachine(Player.Animator);

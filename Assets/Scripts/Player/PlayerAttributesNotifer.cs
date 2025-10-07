@@ -47,8 +47,6 @@ public class PlayerAttributesNotifier: MonoBehaviour, ISubject<IObserver<Player>
 
     public void OnNotifySubject(IObserver<Player> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        Debug.Log($"Player In PlaterAttributesNotifier {Player}");
-
         StartCoroutine(PlayerAttributesDelegator.NotifyObserver(data, Player, notificationContext, cancellationToken, semaphoreSlim));
     }
 }

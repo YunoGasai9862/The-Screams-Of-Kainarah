@@ -248,8 +248,6 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log($"PlayerStateBundle in Ledge Grab Controller - {data.StateBundle}");
-
         PlayerBundle.StateBundle = data.StateBundle;
     }
 
