@@ -45,14 +45,14 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<Lig
 
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
-        LightPreprocessDelegator.NotifySubject(this, new NotificationContext()
+        LightPreprocessDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
             SubjectType = typeof(LightFlicker).ToString()
         }, CancellationToken.None);
 
-        PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
