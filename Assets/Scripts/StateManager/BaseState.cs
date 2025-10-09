@@ -21,7 +21,7 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
 
         (await GetEvent()).AddListener(PingStateListeners);
 
-        StateBundle = GetInitialState();
+        PingStateListeners(GetInitialState());
     }
 
     public async void PingStateListeners(GenericStateBundle<T> stateBundle)

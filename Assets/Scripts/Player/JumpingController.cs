@@ -138,7 +138,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
         if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed) //on the ground
         {
-            PlayerStateBundle.StateBundle.PlayerActionState = new State<PlayerActionState>() { CurrentState = PlayerActionState.IS_GRABBING, IsConcluded = true };
+            PlayerStateBundle.StateBundle.PlayerActionState = new State<PlayerActionState>() { CurrentState = PlayerActionState.IDLE, IsConcluded = false };
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 

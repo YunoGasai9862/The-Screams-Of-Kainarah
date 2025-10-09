@@ -4,13 +4,15 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>, IObserver<IEntityRigidBody>, IDelegate
+public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>, IObserver<IEntityRigidBody>, IDelegate
 {
     [SerializeField] float _characterSpeed = 10f;
 
     private PlayerStateEvent _playerStateEvent;
 
     private Rocky2DActions _rocky2DActions;
+
+    private Player Player { get; set; }
 
     private Vector2 _keystrokeTrack;
 
@@ -203,7 +205,8 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         //Flipping
         if (KeystrokeMagnitudeChecker(_keystrokeTrack))
         {
-            if (CurrentPlayerState.StateBundle.PlayerActionState.CurrentState != PlayerActionState.IS_GRABBING)
+            Debug.Log($"State: {CurrentPlayerState.StateBundle.PlayerActionState.CurrentState}");
+            if (!CurrentPlayerState.StateBundle.PlayerActionState.CurrentState.Equals(PlayerActionState.IS_GRABBING)) { }
                 FlipCharacter(_keystrokeTrack);
         }
 
@@ -211,7 +214,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         await _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
 
         //ledge grab
-        if (CurrentPlayerState.StateBundle.PlayerActionState.CurrentState == PlayerActionState.IS_GRABBING) //tackles the ledgeGrab
+        if (CurrentPlayerState.StateBundle.PlayerActionState.CurrentState.Equals(PlayerActionState.IS_GRABBING)) //tackles the ledgeGrab
         {
             await _slideCommand.Execute(true);
         }
@@ -401,14 +404,14 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     #region Helper functions
     private void FlipCharacter(Vector2 keystroke)
     {
-        if (_playerActionsModel.KeyStrokeDifference == -1 && transform.localScale.x < 0)
+        if (_playerActionsModel.KeyStrokeDifference == -1 && Player.Transform.localScale.x < 0)
         {
-            transform.localScale = new Vector3(1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            Player.Transform.localScale = new Vector3(1 * Player.Transform.localScale.x, Player.Transform.localScale.y, Player.Transform.localScale.z);
 
         }
-        else if (_playerActionsModel.KeyStrokeDifference == 1 && transform.localScale.x < 0 || _playerActionsModel.KeyStrokeDifference == -1 && transform.localScale.x > 0)
+        else if (_playerActionsModel.KeyStrokeDifference == 1 && Player.Transform.localScale.x < 0 || _playerActionsModel.KeyStrokeDifference == -1 && Player.Transform.localScale.x > 0)
         {
-            transform.localScale = new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            Player.Transform.localScale = new Vector3(-1 * Player.Transform.localScale.x, Player.Transform.localScale.y, Player.Transform.localScale.z);
         }
     }
 
@@ -429,6 +432,11 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     public void OnNotify(IEntityRigidBody data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         _rb = data.Rigidbody;
+    }
+
+    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        Player = data;
     }
 
     #endregion
