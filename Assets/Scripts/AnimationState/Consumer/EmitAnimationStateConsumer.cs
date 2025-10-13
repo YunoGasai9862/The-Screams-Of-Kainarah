@@ -1,6 +1,4 @@
-using Pathfinding;
 using System.Threading.Tasks;
-using UnityEngine;
 using UnityEngine.Events;
 
 public class EmitAnimationStateConsumer : BaseState<EmitAnimationStateBundle>

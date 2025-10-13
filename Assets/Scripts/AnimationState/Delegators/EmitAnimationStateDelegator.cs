@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 
-//NEED TO RESOLVE THIS ----!
-public class EmitAnimationStateDelegator: BaseDelegator<GenericStateBundle<EmitAnimationStateBundle>>
+public class EmitAnimationStateDelegator: BaseDelegator<AnimationStateBundle<EmitAnimationStateBundle, IAnimationState<>>>
 {
     private void Awake()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<GenericStateBundle<EmitAnimationStateBundle>>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<AnimationStateBundle<EmitAnimationStateBundle, IAnimationState<>>>>>>();
     }
 }
