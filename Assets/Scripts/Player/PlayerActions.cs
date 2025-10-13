@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>, IObserver<IEntityRigidBody>, IDelegate
+public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>, IDelegate
 {
     [SerializeField] float _characterSpeed = 10f;
 
@@ -59,8 +59,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     private PlayerStateDelegator _playerStateDelegator;
 
     private PlayerAttributesDelegator _playerAttributesDelegator;
-
-    private Rigidbody2D _rb;
 
 
     //Force = -2m * sqrt (g * h)
@@ -261,7 +259,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     }
     private void CharacterControllerMove(float CharacterPositionX, float CharacterPositionY)
     {
-        _rb.linearVelocity = new Vector2(CharacterPositionX, CharacterPositionY);
+        Player.Rigidbody.linearVelocity = new Vector2(CharacterPositionX, CharacterPositionY);
     }
 
     private bool KeystrokeMagnitudeChecker(Vector2 _keystrokeTrack)
@@ -427,11 +425,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         return  playerStateBundle.PlayerMovementState != null &&
                 playerStateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_SLIDING &&
                !playerStateBundle.PlayerMovementState.IsConcluded;
-    }
-
-    public void OnNotify(IEntityRigidBody data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        _rb = data.Rigidbody;
     }
 
     public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

@@ -17,6 +17,8 @@ namespace PlayerAnimationHandler
         }
         public void AnimationPlayForInt(string constName, int state)
         {
+            //GETTING SPAMMED WITH IDLE 0 all the time
+            //MAKE DECISION TO NOT LET THE IDLE ANIMATION SPAM!!
             _animator.SetInteger(constName, state);
         }
         public void AnimationPlayForBool(string constName, bool state)

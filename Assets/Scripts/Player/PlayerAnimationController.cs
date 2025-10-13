@@ -1,5 +1,7 @@
+using NUnit.Framework;
 using PlayerAnimationHandler;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -7,6 +9,13 @@ using UnityEngine;
 public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>, 
     IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<IEntityAnimator>
 {
+
+    private List<PlayerMovementState> ON_GROUND_ANIMATIONS = new List<PlayerMovementState>()
+    {
+        PlayerMovementState.IS_IDLE,
+        PlayerMovementState.IS_RUNNING,
+    };
+
     private AnimationStateMachine AnimationStateMachine { get; set; }
 
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>() { StateBundle = new PlayerStateBundle() };
@@ -75,9 +84,13 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     public void MovementAnimation(bool keystroke)
     {
+        if (ON_GROUND_ANIMATIONS.Contains(PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState) && PlayerStateBundle.StateBundle.PlayerMovementState.IsConcluded)
+        {
+            return;
+        }
 
-        PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = keystroke && !PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING) ?
-            PlayerMovementState.IS_RUNNING : PlayerMovementState.IS_WALKING, IsConcluded = false };
+        PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = keystroke ?
+            PlayerMovementState.IS_RUNNING : PlayerMovementState.IS_IDLE, IsConcluded = false };
 
         PlayerStateEvent.Invoke(PlayerStateBundle);
 

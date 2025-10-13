@@ -8,7 +8,5 @@ public enum PlayerMovementState
 
     IS_FALLING = 3,
 
-    IS_SLIDING = 4,
-
-    IS_WALKING = 5,
+    IS_SLIDING = 4
 }

@@ -1,8 +1,9 @@
 using System;
 
-public class GenericStateBundle<T> where T: IStateBundle
+public class GenericStateBundle<StateBundleT, EnimationStateConsumerZ>  where StateBundleT : IStateBundle
+                                                                        where EnimationStateConsumerZ : IEnimationState
 {
-    public T? StateBundle { get; set; }
+    public StateBundleT? StateBundle { get; set; }
 
     public override string ToString()
     {

@@ -16,6 +16,8 @@ public class EmitAnimationState : StateMachineBehaviour
         {
             StateBundle = new EmitAnimationStateBundle()
             {
+                AnimatorStateInfo = stateInfo,
+
                 IsRunning = true
             }
         }); 
@@ -34,7 +36,9 @@ public class EmitAnimationState : StateMachineBehaviour
         {
             StateBundle = new EmitAnimationStateBundle()
             {
-                IsRunning = false
+                AnimatorStateInfo = stateInfo,
+
+                IsRunning = false,
             }
         });
     }

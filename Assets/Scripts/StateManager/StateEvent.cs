@@ -1,5 +1,5 @@
-using System;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Events;
 
 public abstract class StateEvent<T> : UnityEventWTAsync<GenericStateBundle<T>> where T : IStateBundle
