@@ -1,5 +1,5 @@
 using System;
 
-public interface IAnimationState<in T>
+public interface IAnimationState<T>
 {
 }

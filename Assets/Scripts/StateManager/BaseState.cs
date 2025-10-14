@@ -62,3 +62,61 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
 
     protected abstract GenericStateBundle<T> GetInitialState();
 }
+
+public abstract class BaseState<T, Z> : MonoBehaviour, ISubject<IObserver<GenericStateBundle<T, Z>>> where T : IStateBundle
+{
+    protected List<IObserver<GenericStateBundle<T, Z>>> StateListeners { get; set; } = new List<IObserver<GenericStateBundle<T, Z>>> { };
+
+    protected GenericStateBundle<T, Z> StateBundle { get; set; } = new GenericStateBundle<T, Z>();
+
+    private async void Start()
+    {
+        await AddEvent();
+
+        await AddDelegator();
+
+        await AddSubject();
+
+        (await GetEvent()).AddListener(PingStateListeners);
+
+        PingStateListeners(GetInitialState());
+    }
+
+    public async void PingStateListeners(GenericStateBundle<T, Z> stateBundle)
+    {
+        StateBundle = stateBundle;
+
+        foreach (IObserver<GenericStateBundle<T, Z>> listener in StateListeners)
+        {
+            await NotifyObserver(listener, StateBundle, CancellationToken.None);
+        }
+    }
+
+    private async Task NotifyObserver(IObserver<GenericStateBundle<T, Z>> observer, GenericStateBundle<T, Z> stateBundle, CancellationToken cancellationToken)
+    {
+        StartCoroutine((await GetDelegator()).NotifyObserver(observer, stateBundle, new NotificationContext()
+        {
+            SubjectType = typeof(BaseState<T>).ToString()
+
+        }, cancellationToken));
+    }
+
+    public async void OnNotifySubject(IObserver<GenericStateBundle<T, Z>> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        StateListeners.Add(observer);
+
+        await NotifyObserver(observer, StateBundle, cancellationToken);
+    }
+
+    protected abstract Task AddSubjects();
+
+    protected abstract Task AddDelegators();
+
+    protected abstract Task AddEvents();
+
+    protected abstract List<Task<UnityEvent<GenericStateBundle<T, Z>>>> GetEvent();
+
+    protected abstract List<Task<BaseDelegator<GenericStateBundle<T, Z>>>> GetDelegator();
+
+    protected abstract List<GenericStateBundle<T, Z>> GetInitialStates();
+}

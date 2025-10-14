@@ -3,13 +3,13 @@ using UnityEngine.Events;
 
 public class EmitAnimationStateConsumer : BaseState<EmitAnimationStateBundle>
 {
-    private EmitAnimationStateDelegator EmitAnimationStateDelegator { get; set; }
+    private EmitAnimationAttackStateDelegator EmitAnimationAttackStateDelegator { get; set; }
 
     private EmitAnimationStateEvent EmitAnimationStateEvent { get; set; }
 
     protected override async Task AddDelegator()
     {
-        EmitAnimationStateDelegator = await Helper.GetDelegator<EmitAnimationStateDelegator>();
+        EmitAnimationAttackStateDelegator = await Helper.GetDelegator<EmitAnimationAttackStateDelegator>();
     }
 
     protected override async Task AddEvent()
@@ -19,16 +19,16 @@ public class EmitAnimationStateConsumer : BaseState<EmitAnimationStateBundle>
 
     protected override Task AddSubject()
     {
-        EmitAnimationStateDelegator.AddToSubjectsDict(typeof(EmitAnimationStateConsumer).ToString(), name, new Subject<IObserver<GenericStateBundle<EmitAnimationStateBundle>>>());
+        EmitAnimationAttackStateDelegator.AddToSubjectsDict(typeof(EmitAnimationStateConsumer).ToString(), name, new Subject<IObserver<AnimationStateBundle<EmitAnimationStateBundle, IAnimationState<PlayerAttackState>>>>());
 
-        EmitAnimationStateDelegator.GetSubsetSubjectsDictionary(typeof(EmitAnimationStateConsumer).ToString())[name].SetSubject(this);
+        EmitAnimationAttackStateDelegator.GetSubsetSubjectsDictionary(typeof(EmitAnimationStateConsumer).ToString())[name].SetSubject(this);
 
         return Task.CompletedTask;
     }
 
     protected override async Task<BaseDelegator<GenericStateBundle<EmitAnimationStateBundle>>> GetDelegator()
     { 
-        return EmitAnimationStateDelegator;
+        return  EmitAnimationAttackStateDelegator;
     }
 
     protected override async Task<UnityEvent<GenericStateBundle<EmitAnimationStateBundle>>> GetEvent()
