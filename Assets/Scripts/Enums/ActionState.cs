@@ -1,4 +1,4 @@
-public enum PlayerActionState
+public enum ActionState
 {
     IS_GRABBING,
 

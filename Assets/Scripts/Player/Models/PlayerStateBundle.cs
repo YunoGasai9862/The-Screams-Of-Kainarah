@@ -1,6 +1,6 @@
 public class PlayerStateBundle : IStateBundle
 {
-    public State<PlayerActionState> PlayerActionState { get; set; } = new State<PlayerActionState>();
+    public State<ActionState> PlayerActionState { get; set; } = new State<ActionState>();
 
     public State<PlayerMovementState> PlayerMovementState { get; set; } = new State<PlayerMovementState>();
 

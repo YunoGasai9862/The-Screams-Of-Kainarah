@@ -1,4 +1,4 @@
-public enum PlayerMovementState
+public enum MovementState
 {
     IS_IDLE = 0,
 

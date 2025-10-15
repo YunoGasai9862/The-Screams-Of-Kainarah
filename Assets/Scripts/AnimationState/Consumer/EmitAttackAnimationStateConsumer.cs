@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-public class EmitAnimationStateConsumer : BaseState<EmitAnimationStateBundle>
+public class EmitAttackAnimationStateConsumer : BaseState<EmitAnimationStateBundle, AttackState>
 {
     private EmitAnimationAttackStateDelegator EmitAnimationAttackStateDelegator { get; set; }
 

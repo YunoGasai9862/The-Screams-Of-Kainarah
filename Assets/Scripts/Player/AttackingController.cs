@@ -139,7 +139,7 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
         if (CanPlayerAttack()) //ground attack
         {
-            CurrentPlayerState.StateBundle.PlayerAttackState = new State<PlayerAttackState>() { CurrentState = PlayerAttackState.IS_ATTACKING, IsConcluded = false };
+            CurrentPlayerState.StateBundle.PlayerAttackState = new State<AttackState>() { CurrentState = AttackState.IS_ATTACKING, IsConcluded = false };
 
             PlayerStateEvent.Invoke(CurrentPlayerState);
 
@@ -168,7 +168,7 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     {
         _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
-        CurrentPlayerState.StateBundle.PlayerAttackState = new State<PlayerAttackState>() { CurrentState = PlayerAttackState.IS_ATTACKING, IsConcluded = false };
+        CurrentPlayerState.StateBundle.PlayerAttackState = new State<AttackState>() { CurrentState = AttackState.IS_ATTACKING, IsConcluded = false };
 
         PlayerAttackStateMachine.SetAttackState(jumpAttackStateName, (int)CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState); //no jump attack
 
@@ -224,7 +224,7 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     {
         PlayerAttackStateInt = 0; //resets the attackingstate
 
-        CurrentPlayerState.StateBundle.PlayerAttackState = new State<PlayerAttackState>() { CurrentState = PlayerAttackState.IS_ATTACKING, IsConcluded = true };
+        CurrentPlayerState.StateBundle.PlayerAttackState = new State<AttackState>() { CurrentState = AttackState.IS_ATTACKING, IsConcluded = true };
 
         PlayerStateEvent.Invoke(CurrentPlayerState);
 

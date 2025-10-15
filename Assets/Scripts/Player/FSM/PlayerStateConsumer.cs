@@ -41,9 +41,9 @@ public class PlayerStateConsumer : BaseState<PlayerStateBundle>
         {
             StateBundle = new PlayerStateBundle()
             {
-                PlayerActionState = new State<PlayerActionState>()
+                PlayerActionState = new State<ActionState>()
                 {
-                    CurrentState = PlayerActionState.IDLE
+                    CurrentState = ActionState.IDLE
                 },
                 PlayerAttackState = new State<PlayerAttackState>()
                 {

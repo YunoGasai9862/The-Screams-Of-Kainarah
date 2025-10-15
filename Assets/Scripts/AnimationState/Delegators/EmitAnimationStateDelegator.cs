@@ -1,21 +1,21 @@
 using System.Collections.Generic;
 
-public class EmitAnimationStateDelegator<T>: BaseDelegator<AnimationStateBundle<EmitAnimationStateBundle, IAnimationState<T>>>
+public class EmitAnimationStateDelegator<T>: BaseDelegator<GenericStateBundle<EmitAnimationStateBundle, T>>
 {
     private void Awake()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<AnimationStateBundle<EmitAnimationStateBundle, IAnimationState<T>>>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<GenericStateBundle<EmitAnimationStateBundle, T>>>>>();
     }
 }
 
-public class EmitAnimationMovementStateDelegator : EmitAnimationStateDelegator<PlayerMovementState>
+public class EmitAnimationMovementStateDelegator : EmitAnimationStateDelegator<MovementState>
 {
 }
 
-public class EmitAnimationAttackStateDelegator : EmitAnimationStateDelegator<PlayerAttackState>
+public class EmitAnimationAttackStateDelegator : EmitAnimationStateDelegator<AttackState>
 {
 }
 
-public class EmitAnimationActionStateDelegator : EmitAnimationStateDelegator<PlayerActionState>
+public class EmitAnimationActionStateDelegator : EmitAnimationStateDelegator<ActionState>
 {
 }

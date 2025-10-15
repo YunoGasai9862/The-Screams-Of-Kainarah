@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<AnimationStateBundle<EmitAnimationStateBundle, IAnimationState<PlayerAttackState>>>, ISubject<IObserver<bool>>
+public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<GenericStateBundle<EmitAnimationStateBundle, AttackState>>, ISubject<IObserver<bool>>
 {
     [Header("Target Camera")]
     [SerializeField] Camera mainCamera;
@@ -31,7 +31,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<A
 
     private AsyncCoroutine AsyncCoroutine { get; set; }
 
-    private AnimationStateBundle<EmitAnimationStateBundle, IAnimationState<PlayerAttackState>> EmitAnimationStateBundle { get; set; } = new AnimationStateBundle<EmitAnimationStateBundle, IAnimationState<PlayerAttackState>>();
+    private GenericStateBundle<EmitAnimationStateBundle, AttackState> StateBundle { get; set; } = new GenericStateBundle<EmitAnimationStateBundle, AttackState>();
 
     private async void Start()
     {
@@ -91,11 +91,11 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<A
         AsyncCoroutine = data;
     }
 
-    public void OnNotify(AnimationStateBundle<EmitAnimationStateBundle, IAnimationState<PlayerAttackState>> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<EmitAnimationStateBundle, AttackState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        EmitAnimationStateBundle.StateBundle = data.StateBundle;
+        StateBundle.StateBundle = data.StateBundle;
 
-        StartCoroutine(ExecuteShakeAnimation(EmitAnimationStateBundle.StateBundle));
+        StartCoroutine(ExecuteShakeAnimation(StateBundle.StateBundle));
     }
 
     public void OnNotifySubject(IObserver<bool> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)

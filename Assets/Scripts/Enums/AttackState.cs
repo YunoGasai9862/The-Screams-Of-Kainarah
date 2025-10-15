@@ -1,5 +1,5 @@
 
-public enum PlayerAttackState
+public enum AttackState
 {
     IS_ATTACKING,
 
