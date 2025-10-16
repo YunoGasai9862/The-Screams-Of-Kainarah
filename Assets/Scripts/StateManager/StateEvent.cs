@@ -25,3 +25,27 @@ public abstract class StateEvent<T> : UnityEventWTAsync<GenericStateBundle<T>> w
         return Task.CompletedTask;
     }
 }
+
+public abstract class StateEvent<T, Z> : UnityEventWTAsync<GenericStateBundle<T, Z>> where T : IStateBundle
+{
+    private UnityEvent<GenericStateBundle<T, Z>> m_stateEvent = new UnityEvent<GenericStateBundle<T, Z>>();
+
+    public override Task AddListener(UnityAction<GenericStateBundle<T, Z>> action)
+    {
+        m_stateEvent.AddListener(action);
+
+        return Task.CompletedTask;
+    }
+
+    public override UnityEvent<GenericStateBundle<T, Z>> GetInstance()
+    {
+        return m_stateEvent;
+    }
+
+    public override Task Invoke(GenericStateBundle<T, Z> value)
+    {
+        m_stateEvent.Invoke(value);
+
+        return Task.CompletedTask;
+    }
+}

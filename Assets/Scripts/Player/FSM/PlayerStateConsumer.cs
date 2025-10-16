@@ -45,13 +45,13 @@ public class PlayerStateConsumer : BaseState<PlayerStateBundle>
                 {
                     CurrentState = ActionState.IDLE
                 },
-                PlayerAttackState = new State<PlayerAttackState>()
+                PlayerAttackState = new State<AttackState>()
                 {
-                    CurrentState = PlayerAttackState.IDLE,
+                    CurrentState = AttackState.IDLE,
                 },
-                PlayerMovementState = new State<PlayerMovementState>()
+                PlayerMovementState = new State<MovementState>()
                 {
-                    CurrentState = PlayerMovementState.IS_IDLE,
+                    CurrentState = MovementState.IS_IDLE,
                 }
             }
         };

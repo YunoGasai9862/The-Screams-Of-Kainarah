@@ -1,18 +1,18 @@
 using System.Threading;
 using UnityEngine;
 
-public class EmitAnimationState : StateMachineBehaviour
+public class EmitAttackAnimationState : StateMachineBehaviour
 {
-    private EmitAnimationStateEvent EmitAnimationStateEvent { get; set; }
+    private EmitAttackAnimationStateEvent EmitAttackAnimationStateEvent { get; set; }
     private async void Awake()
     {
-        EmitAnimationStateEvent = await Helper.GetCustomEvent<EmitAnimationStateEvent>();
+        EmitAttackAnimationStateEvent = await Helper.GetCustomEvent<EmitAttackAnimationStateEvent>();
     }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        EmitAnimationStateEvent.Invoke(new GenericStateBundle<EmitAnimationStateBundle>()
+        EmitAttackAnimationStateEvent.Invoke(new GenericStateBundle<EmitAnimationStateBundle, AttackState>()
         {
             StateBundle = new EmitAnimationStateBundle()
             {
@@ -32,7 +32,7 @@ public class EmitAnimationState : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        EmitAnimationStateEvent.Invoke(new GenericStateBundle<EmitAnimationStateBundle>()
+        EmitAttackAnimationStateEvent.Invoke(new GenericStateBundle<EmitAnimationStateBundle, AttackState>()
         {
             StateBundle = new EmitAnimationStateBundle()
             {

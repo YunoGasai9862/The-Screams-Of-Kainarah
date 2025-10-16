@@ -2,10 +2,10 @@ public class PlayerStateBundle : IStateBundle
 {
     public State<ActionState> PlayerActionState { get; set; } = new State<ActionState>();
 
-    public State<PlayerMovementState> PlayerMovementState { get; set; } = new State<PlayerMovementState>();
+    public State<MovementState> PlayerMovementState { get; set; } = new State<MovementState>();
 
-    public State<PlayerAttackState> PlayerAttackState { get; set; } = new State<PlayerAttackState>();
-
+    public State<AttackState> PlayerAttackState { get; set; } = new State<AttackState>();
+    
     public override string ToString()
     {
         return $"PlayerStateBundle - PlayerActionState : {PlayerActionState} - PlayerMovementState : {PlayerMovementState} - PlayerAttackState: {PlayerAttackState}";

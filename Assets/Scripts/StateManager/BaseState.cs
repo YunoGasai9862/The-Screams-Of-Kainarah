@@ -108,15 +108,15 @@ public abstract class BaseState<T, Z> : MonoBehaviour, ISubject<IObserver<Generi
         await NotifyObserver(observer, StateBundle, cancellationToken);
     }
 
-    protected abstract Task AddSubjects();
+    protected abstract Task AddSubject();
 
-    protected abstract Task AddDelegators();
+    protected abstract Task AddDelegator();
 
-    protected abstract Task AddEvents();
+    protected abstract Task AddEvent();
 
-    protected abstract List<Task<UnityEvent<GenericStateBundle<T, Z>>>> GetEvent();
+    protected abstract Task<UnityEvent<GenericStateBundle<T, Z>>> GetEvent();
 
-    protected abstract List<Task<BaseDelegator<GenericStateBundle<T, Z>>>> GetDelegator();
+    protected abstract Task<BaseDelegator<GenericStateBundle<T, Z>>> GetDelegator();
 
-    protected abstract List<GenericStateBundle<T, Z>> GetInitialStates();
+    protected abstract GenericStateBundle<T, Z> GetInitialState();
 }

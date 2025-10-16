@@ -127,7 +127,7 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
             return;
         }
 
-        if (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_SLIDING || 
+        if (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState == MovementState.IS_SLIDING || 
             PlayerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
         {
             ResetAttackingState();
@@ -160,7 +160,7 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     }
     private bool CanPlayerAttackWhileJumping()
     {
-        return (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_JUMPING && CurrentPlayerState.StateBundle.PlayerMovementState.IsConcluded) && 
+        return (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState == MovementState.IS_JUMPING && CurrentPlayerState.StateBundle.PlayerMovementState.IsConcluded) && 
             !_movementHelper.OverlapAgainstLayerMaskChecker(Player.Collider, Ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
     }
 
@@ -256,7 +256,7 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
         return !CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE) &&
                !CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.SHOPPING) && !isInventoryOpen &&
-               !CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState.Equals(PlayerMovementState.IS_JUMPING);
+               !CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState.Equals(MovementState.IS_JUMPING);
     }
 
     #region AnimationEventOnTheAnimationItself

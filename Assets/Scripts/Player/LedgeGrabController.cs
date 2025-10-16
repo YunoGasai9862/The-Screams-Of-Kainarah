@@ -108,7 +108,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
         redBox = Physics2D.OverlapBox(new Vector2(Player.Transform.position.x + (await GetBoxPosition(Player.SpriteRendererValue.Renderer, redXOffset)), Player.Transform.position.y + redYoffset), new Vector2(redXSize, redYSize), 0, ledge);
 
         if (!_helperFunc.OverlapAgainstLayerMaskChecker(Player.Collider, groundMask, COLLIDER_DISTANCE_FROM_THE_LAYER) && greenBox &&
-            PlayerBundle.StateBundle.PlayerMovementState.Equals(PlayerActionState.IS_GRABBING))
+            PlayerBundle.StateBundle.PlayerMovementState.Equals(ActionState.IS_GRABBING))
         {
             _timeSpent += Time.deltaTime;
         }
@@ -117,15 +117,15 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
         {
             _timeSpent = 0f;
 
-            PlayerBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState> { CurrentState = PlayerMovementState.IS_FALLING, IsConcluded = true };
+            PlayerBundle.StateBundle.PlayerMovementState = new State<MovementState> { CurrentState = MovementState.IS_FALLING, IsConcluded = true };
 
             await PlayerStateEvent.Invoke(PlayerBundle);
 
         }
 
-        if (greenBox && !redBox && !TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB)  && PlayerBundle.StateBundle.PlayerMovementState.CurrentState != PlayerMovementState.IS_FALLING)
+        if (greenBox && !redBox && !TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB)  && PlayerBundle.StateBundle.PlayerMovementState.CurrentState != MovementState.IS_FALLING)
         {
-            PlayerBundle.StateBundle.PlayerActionState = new State<PlayerActionState> { CurrentState = PlayerActionState.IS_GRABBING, IsConcluded = false };
+            PlayerBundle.StateBundle.PlayerActionState = new State<ActionState> { CurrentState = ActionState.IS_GRABBING, IsConcluded = false };
 
             await PlayerStateEvent.Invoke(PlayerBundle);
 
@@ -137,7 +137,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
         }else
         {
-            PlayerBundle.StateBundle.PlayerActionState = new State<PlayerActionState> { CurrentState = PlayerActionState.IS_GRABBING, IsConcluded = true };
+            PlayerBundle.StateBundle.PlayerActionState = new State<ActionState> { CurrentState = ActionState.IS_GRABBING, IsConcluded = true };
 
             await PlayerStateEvent.Invoke(PlayerBundle);
 
@@ -165,7 +165,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
         {
             await HandleLedgeGrabCalculations(sign, ledgeGrabForces, new Vector2(0, MAXIMUM_VELOCITY_Y_FORCE));
 
-            PlayerBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_FALLING, IsConcluded = false };
+            PlayerBundle.StateBundle.PlayerMovementState = new State<MovementState>() { CurrentState = MovementState.IS_FALLING, IsConcluded = false };
 
             await PlayerStateEvent.Invoke(PlayerBundle);
 
@@ -224,7 +224,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
         {
             await SetGravityValue(rb, 0f);
 
-            PlayerBundle.StateBundle.PlayerActionState = new State<PlayerActionState>() { CurrentState = PlayerActionState.IS_GRABBING, IsConcluded = true };
+            PlayerBundle.StateBundle.PlayerActionState = new State<ActionState>() { CurrentState = ActionState.IS_GRABBING, IsConcluded = true };
 
             await PlayerStateEvent.Invoke(PlayerBundle);
 

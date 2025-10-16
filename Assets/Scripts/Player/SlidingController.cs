@@ -81,7 +81,7 @@ public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingCo
     {
         if (IS_SLIDING && _movementHelperClass.OverlapAgainstLayerMaskChecker(Player.Collider, groundLayer, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
-            PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_SLIDING, IsConcluded = false };
+            PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState>() { CurrentState = MovementState.IS_SLIDING, IsConcluded = false };
 
             PlayerVelocityDelegator.NotifyObservers(new CharacterVelocity() { VelocityX = slidingSpeed }, gameObject.name, typeof(SlidingController), CancellationToken.None);
 
@@ -92,7 +92,7 @@ public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingCo
 
         if (AnimationDetails.CurrentAnimationTime > MAX_ANIMATION_TIME && AnimationDetails.CurrentAnimationStateInfo.IsName(PlayerAnimationConstants.SLIDING))
         {
-            PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_SLIDING, IsConcluded = true };
+            PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState>() { CurrentState = MovementState.IS_SLIDING, IsConcluded = true };
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
@@ -119,7 +119,7 @@ public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingCo
     }
     public async Task<ActionExecuted<bool>> CancelAction(bool value)
     {
-        PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_SLIDING, IsConcluded = true };
+        PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState>() { CurrentState = MovementState.IS_SLIDING, IsConcluded = true };
 
         PlayerVelocityDelegator.NotifyObservers(new CharacterVelocity() { VelocityX = 0 }, gameObject.name, typeof(SlidingController), CancellationToken.None);
 

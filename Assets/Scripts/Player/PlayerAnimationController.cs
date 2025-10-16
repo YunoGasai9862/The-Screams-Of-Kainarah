@@ -10,10 +10,10 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
     IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<IEntityAnimator>
 {
 
-    private List<PlayerMovementState> ON_GROUND_ANIMATIONS = new List<PlayerMovementState>()
+    private List<MovementState> ON_GROUND_ANIMATIONS = new List<MovementState>()
     {
-        PlayerMovementState.IS_IDLE,
-        PlayerMovementState.IS_RUNNING,
+        MovementState.IS_IDLE,
+        MovementState.IS_RUNNING,
     };
 
     private AnimationStateMachine AnimationStateMachine { get; set; }
@@ -89,8 +89,8 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
             return;
         }
 
-        PlayerStateBundle.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = keystroke ?
-            PlayerMovementState.IS_RUNNING : PlayerMovementState.IS_IDLE, IsConcluded = false };
+        PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState>() { CurrentState = keystroke ?
+            MovementState.IS_RUNNING : MovementState.IS_IDLE, IsConcluded = false };
 
         PlayerStateEvent.Invoke(PlayerStateBundle);
 
@@ -100,8 +100,8 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
     private void JumpAnimation(bool keystroke)
     {
         PlayerStateBundle.StateBundle.PlayerMovementState = keystroke ?
-            new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_JUMPING, IsConcluded = false } : 
-            new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_FALLING, IsConcluded = false };
+            new State<MovementState>() { CurrentState = MovementState.IS_JUMPING, IsConcluded = false } : 
+            new State<MovementState>() { CurrentState = MovementState.IS_FALLING, IsConcluded = false };
 
         PlayerStateEvent.Invoke(PlayerStateBundle);
 

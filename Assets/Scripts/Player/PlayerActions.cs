@@ -204,7 +204,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         if (KeystrokeMagnitudeChecker(_keystrokeTrack))
         {
             Debug.Log($"State: {CurrentPlayerState.StateBundle.PlayerActionState.CurrentState}");
-            if (!CurrentPlayerState.StateBundle.PlayerActionState.CurrentState.Equals(PlayerActionState.IS_GRABBING)) { }
+            if (!CurrentPlayerState.StateBundle.PlayerActionState.CurrentState.Equals(ActionState.IS_GRABBING)) { }
                 FlipCharacter(_keystrokeTrack);
         }
 
@@ -212,7 +212,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         await _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
 
         //ledge grab
-        if (CurrentPlayerState.StateBundle.PlayerActionState.CurrentState.Equals(PlayerActionState.IS_GRABBING)) //tackles the ledgeGrab
+        if (CurrentPlayerState.StateBundle.PlayerActionState.CurrentState.Equals(ActionState.IS_GRABBING)) //tackles the ledgeGrab
         {
             await _slideCommand.Execute(true);
         }
@@ -279,16 +279,16 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private void BeginSlideAction(InputAction.CallbackContext context)
     {
-        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState == PlayerAttackState.IS_ATTACKING) ? false : context.ReadValueAsButton();
+        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState == AttackState.IS_ATTACKING) ? false : context.ReadValueAsButton();
 
         //not sliding - see if needs to be in another way later!
-        CurrentPlayerState.StateBundle.PlayerMovementState = new State<PlayerMovementState>() { CurrentState = PlayerMovementState.IS_SLIDING, IsConcluded = true };
+        CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState>() { CurrentState = MovementState.IS_SLIDING, IsConcluded = true };
 
         _playerStateEvent.Invoke(CurrentPlayerState);
     }
     private void EndSlideAction(InputAction.CallbackContext context)
     {
-        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState == PlayerAttackState.IS_ATTACKING) ? false : context.ReadValueAsButton();
+        _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState == AttackState.IS_ATTACKING) ? false : context.ReadValueAsButton();
     }
 
     //attacking mechanism centralized
@@ -416,14 +416,14 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     private bool IsSlidingActionConcluded(PlayerStateBundle playerStateBundle)
     {   
         return playerStateBundle.PlayerMovementState != null &&
-               playerStateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_SLIDING &&
+               playerStateBundle.PlayerMovementState.CurrentState == MovementState.IS_SLIDING &&
                playerStateBundle.PlayerMovementState.IsConcluded;
     }
 
     private bool IsSlidingActionInProgress(PlayerStateBundle playerStateBundle)
     {
         return  playerStateBundle.PlayerMovementState != null &&
-                playerStateBundle.PlayerMovementState.CurrentState == PlayerMovementState.IS_SLIDING &&
+                playerStateBundle.PlayerMovementState.CurrentState == MovementState.IS_SLIDING &&
                !playerStateBundle.PlayerMovementState.IsConcluded;
     }
 

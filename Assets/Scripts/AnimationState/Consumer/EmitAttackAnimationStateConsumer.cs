@@ -5,7 +5,7 @@ public class EmitAttackAnimationStateConsumer : BaseState<EmitAnimationStateBund
 {
     private EmitAnimationAttackStateDelegator EmitAnimationAttackStateDelegator { get; set; }
 
-    private EmitAnimationStateEvent EmitAnimationStateEvent { get; set; }
+    private EmitAttackAnimationStateEvent EmitAnimationStateEvent { get; set; }
 
     protected override async Task AddDelegator()
     {
@@ -14,31 +14,31 @@ public class EmitAttackAnimationStateConsumer : BaseState<EmitAnimationStateBund
 
     protected override async Task AddEvent()
     {
-        EmitAnimationStateEvent = await Helper.GetCustomEvent<EmitAnimationStateEvent>();
+        EmitAnimationStateEvent = await Helper.GetCustomEvent<EmitAttackAnimationStateEvent>();
     }
 
     protected override Task AddSubject()
     {
-        EmitAnimationAttackStateDelegator.AddToSubjectsDict(typeof(EmitAnimationStateConsumer).ToString(), name, new Subject<IObserver<AnimationStateBundle<EmitAnimationStateBundle, IAnimationState<PlayerAttackState>>>>());
+        EmitAnimationAttackStateDelegator.AddToSubjectsDict(typeof(EmitAttackAnimationStateConsumer).ToString(), name, new Subject<IObserver<GenericStateBundle<EmitAnimationStateBundle, AttackState>>>());
 
-        EmitAnimationAttackStateDelegator.GetSubsetSubjectsDictionary(typeof(EmitAnimationStateConsumer).ToString())[name].SetSubject(this);
+        EmitAnimationAttackStateDelegator.GetSubsetSubjectsDictionary(typeof(EmitAttackAnimationStateConsumer).ToString())[name].SetSubject(this);
 
         return Task.CompletedTask;
     }
 
-    protected override async Task<BaseDelegator<GenericStateBundle<EmitAnimationStateBundle>>> GetDelegator()
+    protected override async Task<BaseDelegator<GenericStateBundle<EmitAnimationStateBundle, AttackState>>> GetDelegator()
     { 
-        return  EmitAnimationAttackStateDelegator;
+        return EmitAnimationAttackStateDelegator;
     }
 
-    protected override async Task<UnityEvent<GenericStateBundle<EmitAnimationStateBundle>>> GetEvent()
+    protected override async Task<UnityEvent<GenericStateBundle<EmitAnimationStateBundle, AttackState>>> GetEvent()
     {
         return EmitAnimationStateEvent.GetInstance();
     }
 
-    protected override GenericStateBundle<EmitAnimationStateBundle> GetInitialState()
+    protected override GenericStateBundle<EmitAnimationStateBundle, AttackState> GetInitialState()
     {
-        return new GenericStateBundle<EmitAnimationStateBundle>()
+        return new GenericStateBundle<EmitAnimationStateBundle, AttackState>()
         {
             StateBundle = new EmitAnimationStateBundle()
             {
