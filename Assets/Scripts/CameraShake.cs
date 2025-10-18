@@ -43,7 +43,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
 
         AsyncCoroutineDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutine).ToString()), CancellationToken.None);
 
-        EmitAnimationAttackStateDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EmitAnimationAttackStateDelegator).ToString()), CancellationToken.None);
+        EmitAnimationAttackStateDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EmitAttackAnimationStateConsumer).ToString()), CancellationToken.None);
 
         FlagDelegator.AddToSubjectsDict(typeof(CameraShake).ToString(), name, new Subject<IObserver<bool>>());
 

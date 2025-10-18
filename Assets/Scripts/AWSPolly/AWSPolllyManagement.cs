@@ -71,8 +71,6 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
         AWSPollyManagementDelegator.AddToSubjectsDict(typeof(AWSPolllyManagement).ToString(), name, new Subject<IObserver<IAWSPolly>>());
 
         AWSPollyManagementDelegator.GetSubsetSubjectsDictionary(typeof(AWSPolllyManagement).ToString())[name].SetSubject(this);
-
-        Debug.Log($"AWSPollyManagementDelegator Length in AWSPOLLYMANAGEMENT : {AWSPollyManagementDelegator.GetSubjectsDict().Count}");
     }
 
 

@@ -171,9 +171,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
             ObserverTag = gameObject.tag,
             SubjectType = typeof(GameStateConsumer).ToString()
         }, CancellationToken.None);
-
-        Debug.Log($"_globalGameStateDelegator count: {_globalGameStateDelegator.GetSubjectsDict().Count}");
-
     }
 
     private async void Update()
