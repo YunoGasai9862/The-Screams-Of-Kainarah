@@ -1,30 +1,25 @@
-using NUnit.Framework;
 using PlayerAnimationHandler;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>, 
-    IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<IEntityAnimator>
+    IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<IEntityAnimator>, IObserver<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>>
 {
-
-    private List<MovementState> ON_GROUND_ANIMATIONS = new List<MovementState>()
-    {
-        MovementState.IS_IDLE,
-        MovementState.IS_RUNNING,
-    };
-
     private AnimationStateMachine AnimationStateMachine { get; set; }
 
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>() { StateBundle = new PlayerStateBundle() };
+
+    private GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> EmitMovementAnimationStateBundle { get; set; } = new GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>() { StateBundle = new EmitAnimationStateBundle<bool>()};
 
     private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
     private AnimationDetailsDelegator AnimationDetailsDelegator { get; set; }
 
     private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+
+    private EmitAnimationMovementStateDelegator EmitAnimationMovementStateDelegator { get; set; }
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
@@ -37,6 +32,8 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         AnimationDetailsDelegator = await Helper.GetDelegator<AnimationDetailsDelegator>();
 
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+
+        EmitAnimationMovementStateDelegator = await Helper.GetDelegator<EmitAnimationMovementStateDelegator>();
 
         PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
@@ -80,15 +77,17 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None));
 
+        StartCoroutine(EmitAnimationMovementStateDelegator.NotifySubject(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(EmitMovementAnimationStateConsumer).ToString()
+        }, CancellationToken.None));
+
     }
 
     public void MovementAnimation(bool keystroke)
     {
-        if (ON_GROUND_ANIMATIONS.Contains(PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState) && PlayerStateBundle.StateBundle.PlayerMovementState.IsConcluded)
-        {
-            return;
-        }
-
         PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState>() { CurrentState = keystroke ?
             MovementState.IS_RUNNING : MovementState.IS_IDLE, IsConcluded = false };
 
@@ -202,5 +201,10 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         PlayerAnimator = data.Animator;
 
         AnimationStateMachine = new AnimationStateMachine(PlayerAnimator);
+    }
+
+    public void OnNotify(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        EmitMovementAnimationStateBundle.StateBundle = data.StateBundle;
     }
 }
