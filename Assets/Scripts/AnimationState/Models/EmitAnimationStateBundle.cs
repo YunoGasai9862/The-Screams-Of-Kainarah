@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class EmitAnimationStateBundle : IStateBundle
+public class EmitAnimationStateBundle<T> : IStateBundle
 {
-    public bool IsRunning { get; set; }
+    public T Value { get; set; }
 
     public AnimatorStateInfo AnimatorStateInfo { get; set; }
 }

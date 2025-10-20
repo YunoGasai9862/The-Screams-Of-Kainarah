@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<GenericStateBundle<EmitAnimationStateBundle, AttackState>>, ISubject<IObserver<bool>>
+public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>, ISubject<IObserver<bool>>
 {
     [Header("Target Camera")]
     [SerializeField] Camera mainCamera;
@@ -31,7 +31,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
 
     private AsyncCoroutine AsyncCoroutine { get; set; }
 
-    private GenericStateBundle<EmitAnimationStateBundle, AttackState> StateBundle { get; set; } = new GenericStateBundle<EmitAnimationStateBundle, AttackState>();
+    private GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState> StateBundle { get; set; } = new GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>();
 
     private async void Start()
     {
@@ -74,9 +74,9 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
         yield return new WaitForSeconds(0f);
     }
 
-    private IEnumerator ExecuteShakeAnimation(EmitAnimationStateBundle stateBundle)
+    private IEnumerator ExecuteShakeAnimation(EmitAnimationStateBundle<bool> stateBundle)
     {
-        if (!stateBundle.IsRunning)
+        if (!stateBundle.Value)
         {
             yield return null;
         }
@@ -91,7 +91,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
         AsyncCoroutine = data;
     }
 
-    public void OnNotify(GenericStateBundle<EmitAnimationStateBundle, AttackState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         StateBundle.StateBundle = data.StateBundle;
 

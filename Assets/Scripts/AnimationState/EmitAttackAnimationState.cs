@@ -12,13 +12,13 @@ public class EmitAttackAnimationState : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        EmitAttackAnimationStateEvent.Invoke(new GenericStateBundle<EmitAnimationStateBundle, AttackState>()
+        EmitAttackAnimationStateEvent.Invoke(new GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>()
         {
-            StateBundle = new EmitAnimationStateBundle()
+            StateBundle = new EmitAnimationStateBundle<bool>()
             {
                 AnimatorStateInfo = stateInfo,
 
-                IsRunning = true
+                Value = true
             }
         }); 
     }
@@ -32,13 +32,13 @@ public class EmitAttackAnimationState : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        EmitAttackAnimationStateEvent.Invoke(new GenericStateBundle<EmitAnimationStateBundle, AttackState>()
+        EmitAttackAnimationStateEvent.Invoke(new GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>()
         {
-            StateBundle = new EmitAnimationStateBundle()
+            StateBundle = new EmitAnimationStateBundle<bool>()
             {
                 AnimatorStateInfo = stateInfo,
 
-                IsRunning = false,
+                Value = false,
             }
         });
     }

@@ -1,4 +1,4 @@
-public class EmitMovementAnimationStateEvent : StateEvent<EmitAnimationStateBundle, MovementState>
+public class EmitMovementAnimationStateEvent : StateEvent<EmitAnimationStateBundle<bool>, MovementState>
 {
 
 }

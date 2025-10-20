@@ -1,4 +1,4 @@
-public class EmitAttackAnimationStateEvent : StateEvent<EmitAnimationStateBundle, AttackState>
+public class EmitAttackAnimationStateEvent : StateEvent<EmitAnimationStateBundle<bool>, AttackState>
 {
 
 }
