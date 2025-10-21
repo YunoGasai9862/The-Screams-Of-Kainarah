@@ -88,6 +88,12 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     public void MovementAnimation(bool keystroke)
     {
+        if (EmitMovementAnimationStateBundle.StateBundle == null || EmitMovementAnimationStateBundle.StateBundle.Value)
+        {
+            Debug.Log($"Exiting because EmitMovementAnimationStateBundle.StateBundle.Value is: {EmitMovementAnimationStateBundle.StateBundle.Value}");
+            return;
+        }
+
         PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState>() { CurrentState = keystroke ?
             MovementState.IS_RUNNING : MovementState.IS_IDLE, IsConcluded = false };
 
@@ -205,6 +211,8 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     public void OnNotify(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
+        Debug.Log($"Incoming Value: {data.StateBundle.Value}");
+
         EmitMovementAnimationStateBundle.StateBundle = data.StateBundle;
     }
 }
