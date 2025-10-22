@@ -16,9 +16,12 @@ public class EmitAttackAnimationState : StateMachineBehaviour
         {
             StateBundle = new EmitAnimationStateBundle<bool>()
             {
-                AnimatorStateInfo = stateInfo,
+                CurrentAnimation = new EmitAnimationStateBundle<bool>.CurrentAnimationInfo<bool>()
+                {
+                    CurrentValue = true,
 
-                Value = true
+                    CurrentAnimatorStateInfo = stateInfo,
+                }
             }
         }); 
     }
@@ -36,9 +39,12 @@ public class EmitAttackAnimationState : StateMachineBehaviour
         {
             StateBundle = new EmitAnimationStateBundle<bool>()
             {
-                AnimatorStateInfo = stateInfo,
+                CurrentAnimation = new EmitAnimationStateBundle<bool>.CurrentAnimationInfo<bool>()
+                {
+                    CurrentValue = false,
 
-                Value = false,
+                    CurrentAnimatorStateInfo = stateInfo,
+                }
             }
         });
     }

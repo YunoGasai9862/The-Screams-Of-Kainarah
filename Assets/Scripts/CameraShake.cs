@@ -76,7 +76,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
 
     private IEnumerator ExecuteShakeAnimation(EmitAnimationStateBundle<bool> stateBundle)
     {
-        if (!stateBundle.Value)
+        if (!stateBundle.CurrentAnimation.CurrentValue)
         {
             yield return null;
         }

@@ -42,7 +42,10 @@ public class EmitMovementAnimationStateConsumer : BaseState<EmitAnimationStateBu
         {
             StateBundle = new EmitAnimationStateBundle<bool>()
             {
-                Value = false
+                CurrentAnimation = new EmitAnimationStateBundle<bool>.CurrentAnimationInfo<bool>()
+                {
+                    CurrentValue = true,
+                }
             }
         };
     }

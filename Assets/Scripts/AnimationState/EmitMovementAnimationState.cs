@@ -18,11 +18,14 @@ public class EmitMovementAnimationState : StateMachineBehaviour
         {
             StateBundle = new EmitAnimationStateBundle<bool>()
             {
-                AnimatorStateInfo = stateInfo,
+                CurrentAnimation = new EmitAnimationStateBundle<bool>.CurrentAnimationInfo<bool>()
+                {
+                    CurrentValue = true,
 
-                Value = true
+                    CurrentAnimatorStateInfo = stateInfo,
+                }
             }
-        });
+        }); 
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -41,9 +44,12 @@ public class EmitMovementAnimationState : StateMachineBehaviour
         {
             StateBundle = new EmitAnimationStateBundle<bool>()
             {
-                AnimatorStateInfo = stateInfo,
+                CurrentAnimation = new EmitAnimationStateBundle<bool>.CurrentAnimationInfo<bool>()
+                {
+                    CurrentValue = false,
 
-                Value = false,
+                    CurrentAnimatorStateInfo = stateInfo,
+                }
             }
         });
     }

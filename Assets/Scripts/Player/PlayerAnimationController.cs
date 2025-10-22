@@ -88,9 +88,9 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     public void MovementAnimation(bool keystroke)
     {
-        if (EmitMovementAnimationStateBundle.StateBundle == null || EmitMovementAnimationStateBundle.StateBundle.Value)
+        if (EmitMovementAnimationStateBundle.StateBundle == null || EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentValue)
         {
-            Debug.Log($"Exiting because EmitMovementAnimationStateBundle.StateBundle.Value is: {EmitMovementAnimationStateBundle.StateBundle.Value}");
+            Debug.Log($"Exiting because EmitMovementAnimationStateBundle.StateBundle.Value is: {EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentValue}");
             return;
         }
 
@@ -211,8 +211,11 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     public void OnNotify(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log($"Incoming Value: {data.StateBundle.Value}");
+        //TODO FIX THIS
+        Debug.Log($"Incoming Value: {data.StateBundle.CurrentAnimation.CurrentValue}");
 
-        EmitMovementAnimationStateBundle.StateBundle = data.StateBundle;
+        EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentValue = data.StateBundle.CurrentAnimation.CurrentValue;
+
+        EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo = data.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo;
     }
 }
