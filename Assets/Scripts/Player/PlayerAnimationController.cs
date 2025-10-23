@@ -11,7 +11,8 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>() { StateBundle = new PlayerStateBundle() };
 
-    private GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> EmitMovementAnimationStateBundle { get; set; } = new GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>() { StateBundle = new EmitAnimationStateBundle<bool>()};
+    private GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> EmitMovementAnimationStateBundle { get; set; } = new GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>()
+    { StateBundle = new EmitAnimationStateBundle<bool>() { PreviousAnimation = new EmitAnimationStateBundle<bool>.PreviousAnimationInfo() } };
 
     private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
@@ -86,23 +87,34 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     }
 
-    public void MovementAnimation(bool keystroke)
+    public void MovementAnimation(GenericStateBundle<PlayerStateBundle> bundle)
     {
-        if (EmitMovementAnimationStateBundle.StateBundle == null || EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentValue)
+        if (EmitMovementAnimationStateBundle.StateBundle == null || EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation == null)
         {
-            Debug.Log($"Exiting because EmitMovementAnimationStateBundle.StateBundle.Value is: {EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentValue}");
+            Debug.Log($"Bundles are null - will skip Movement Animation!");
             return;
         }
 
-        PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState>() { CurrentState = keystroke ?
-            MovementState.IS_RUNNING : MovementState.IS_IDLE, IsConcluded = false };
+        if (EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash == EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash)
+        {
+            Debug.Log($"The Hashes are the same - will skip: {EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash} - {EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash} Bundle: {PlayerStateBundle.StateBundle}");
+            return;
+        }
+
+        PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState>()
+        {
+            CurrentState = keystroke ? MovementState.IS_RUNNING : MovementState.IS_IDLE,
+            IsConcluded = false
+        };
 
         PlayerStateEvent.Invoke(PlayerStateBundle);
+
+        EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash = EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash;
 
         PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
     }
 
-    private void JumpAnimation(bool keystroke)
+    private void JumpAnimation(GenericStateBundle<PlayerStateBundle> bundle)
     {
         PlayerStateBundle.StateBundle.PlayerMovementState = keystroke ?
             new State<MovementState>() { CurrentState = MovementState.IS_JUMPING, IsConcluded = false } : 
@@ -113,7 +125,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
     }
 
-    private void SlidingAnimation(bool keystroke)
+    private void SlidingAnimation(GenericStateBundle<PlayerStateBundle> bundle)
     {
         PlayAnimation(PlayerAnimationConstants.SLIDING, keystroke);
     }
@@ -159,7 +171,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         throw new System.NotImplementedException();
     }
 
-    public void GetAnimationExecutionScenario(ControllerPackage<PlayerAnimationExecutionState, bool> package)
+    public void GetAnimationExecutionScenario(ControllerPackage<PlayerAnimationExecutionState, GenericStateBundle<PlayerStateBundle>> package)
     {
         switch(package.ExecutionState)
         {
@@ -211,11 +223,8 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     public void OnNotify(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        //TODO FIX THIS
         Debug.Log($"Incoming Value: {data.StateBundle.CurrentAnimation.CurrentValue}");
 
-        EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentValue = data.StateBundle.CurrentAnimation.CurrentValue;
-
-        EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo = data.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo;
+        EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation = data.StateBundle.CurrentAnimation;
     }
 }
