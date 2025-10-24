@@ -1,10 +1,10 @@
 public class PlayerStateBundle : IStateBundle
 {
-    public State<ActionState> PlayerActionState { get; set; } = new State<ActionState>();
+    public State<ActionState, bool> PlayerActionState { get; set; } = new State<ActionState, bool>();
 
-    public State<MovementState> PlayerMovementState { get; set; } = new State<MovementState>();
+    public State<MovementState, bool> PlayerMovementState { get; set; } = new State<MovementState, bool>();
 
-    public State<AttackState> PlayerAttackState { get; set; } = new State<AttackState>();
+    public State<AttackState, bool> PlayerAttackState { get; set; } = new State<AttackState, bool>();
     
     public override string ToString()
     {

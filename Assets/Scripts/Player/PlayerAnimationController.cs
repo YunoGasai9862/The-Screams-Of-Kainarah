@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>, 
+public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, GenericStateBundle<PlayerStateBundle>>>, 
     IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<IEntityAnimator>, IObserver<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
@@ -116,18 +116,18 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private void JumpAnimation(GenericStateBundle<PlayerStateBundle> bundle)
     {
-        PlayerStateBundle.StateBundle.PlayerMovementState = keystroke ?
-            new State<MovementState>() { CurrentState = MovementState.IS_JUMPING, IsConcluded = false } : 
-            new State<MovementState>() { CurrentState = MovementState.IS_FALLING, IsConcluded = false };
+        //PlayerStateBundle.StateBundle.PlayerMovementState = keystroke ?
+        //    new State<MovementState>() { CurrentState = MovementState.IS_JUMPING, IsConcluded = false } : 
+        //    new State<MovementState>() { CurrentState = MovementState.IS_FALLING, IsConcluded = false };
 
-        PlayerStateEvent.Invoke(PlayerStateBundle);
+        PlayerStateEvent.Invoke(bundle);
 
         PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
     }
 
     private void SlidingAnimation(GenericStateBundle<PlayerStateBundle> bundle)
     {
-        PlayAnimation(PlayerAnimationConstants.SLIDING, keystroke);
+        PlayAnimation(PlayerAnimationConstants.SLIDING, bundle.StateBundle.PlayerMovementState.CurrentState);
     }
 
     private void PlayAnimation(string name, int state)
@@ -154,16 +154,16 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         PlayerStateBundle.StateBundle = data.StateBundle;
     }
 
-    public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>> PerformAction(ControllerPackage<PlayerAnimationExecutionState, bool> value = null)
+    public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, GenericStateBundle<PlayerStateBundle>>>> PerformAction(ControllerPackage<PlayerAnimationExecutionState, GenericStateBundle<PlayerStateBundle>> value = null)
     {
         if (PlayerAnimator == null)
         {
-            return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>(null));
+            return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, GenericStateBundle<PlayerStateBundle>>>(null));
         }
 
         GetAnimationExecutionScenario(value);
 
-        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>(value));
+        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, GenericStateBundle<PlayerStateBundle>>>(value));
     }
 
     public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>> CancelAction(ControllerPackage<PlayerAnimationExecutionState, bool> value = null)
