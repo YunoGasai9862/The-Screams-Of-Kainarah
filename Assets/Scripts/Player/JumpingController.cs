@@ -22,9 +22,9 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
     
     private const float MAX_JUMP_TIME = 0.3f;
 
-    private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>> _animationReceiver;
+    private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> _animationReceiver;
 
-    private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>> _animationCommand;
+    private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> _animationCommand;
 
     private IOverlapChecker _movementHelperClass;
 
@@ -64,9 +64,9 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
-        _animationReceiver = await Helper.FindReceiver<PlayerAnimationController, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>>();
+        _animationReceiver = await Helper.FindReceiver<PlayerAnimationController, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>>();
 
-        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>(_animationReceiver);
+        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>(_animationReceiver);
     }
     private void Start()
     {
@@ -133,12 +133,14 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
         if (!IsOnTheGround(groundLayer) && !IsOnTheLedge(ledgeLayer) && await IsYVelocityNegative(Player.Rigidbody))
         {
-            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, bool>() { ExecutionState = PlayerAnimationExecutionState.PLAY_JUMPING_ANIMATION, Value = false });
+            PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_JUMPING, CurrentValue = false, IsConcluded = true };
+
+            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>() { ExecutionState = PlayerAnimationExecutionState.PLAY_JUMPING_ANIMATION, Value = PlayerStateBundle.StateBundle });
         }
 
         if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed) //on the ground
         {
-            PlayerStateBundle.StateBundle.PlayerActionState = new State<ActionState>() { CurrentState = ActionState.IDLE, IsConcluded = false };
+            PlayerStateBundle.StateBundle.PlayerActionState = new State<ActionState, bool>() { CurrentState = ActionState.IDLE, IsConcluded = false };
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
@@ -154,13 +156,15 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
     {
         if (await CanPlayerJump()) //jumping
         {
-            PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState>() { CurrentState = MovementState.IS_JUMPING, IsConcluded = false };
+            //TODO PLEASE CHECK HERE AND THEN SEND THE VALUE AFTER EVALUATING!!!!
+
+            PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_JUMPING, CurrentValue = true, IsConcluded = false };
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
             CharacterVelocity.VelocityY = JumpSpeed * JUMPING_SPEED;
 
-            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, bool>() { ExecutionState = PlayerAnimationExecutionState.PLAY_JUMPING_ANIMATION, Value = true });
+            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>() { ExecutionState = PlayerAnimationExecutionState.PLAY_JUMPING_ANIMATION, Value = PlayerStateBundle.StateBundle});
         }
 
     }
@@ -173,7 +177,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
         return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState != MovementState.IS_JUMPING, isOnLedgeOrGround, isJumpPressed));
     }
 
-    private Task SetPlayerInitialPosition(State<MovementState> currentPlayerState)
+    private Task SetPlayerInitialPosition(State<MovementState, bool> currentPlayerState)
     {
         if((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !currentPlayerState.CurrentState.Equals(MovementState.IS_JUMPING))
         {
@@ -236,7 +240,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
     public async Task<ActionExecuted<bool>> CancelAction(bool value)
     {
-        PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState> { CurrentState = MovementState.IS_JUMPING, IsConcluded = true };
+        PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool> { CurrentState = MovementState.IS_JUMPING, CurrentValue = false, IsConcluded = true };
 
         await PlayerStateEvent.Invoke(PlayerStateBundle);
 

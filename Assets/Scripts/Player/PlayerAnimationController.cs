@@ -4,17 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, GenericStateBundle<PlayerStateBundle>>>, 
-    IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<IEntityAnimator>, IObserver<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>>
+public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>, 
+    IObserver<IEntityAnimator>, IObserver<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
-
-    private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle>() { StateBundle = new PlayerStateBundle() };
-
     private GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> EmitMovementAnimationStateBundle { get; set; } = new GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>()
     { StateBundle = new EmitAnimationStateBundle<bool>() { PreviousAnimation = new EmitAnimationStateBundle<bool>.PreviousAnimationInfo() } };
-
-    private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
     private AnimationDetailsDelegator AnimationDetailsDelegator { get; set; }
 
@@ -22,35 +17,19 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private EmitAnimationMovementStateDelegator EmitAnimationMovementStateDelegator { get; set; }
 
-    private PlayerStateEvent PlayerStateEvent { get; set; }
-
     private Animator PlayerAnimator { get; set; }
 
     private async void Awake()
     {
-        PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
-
         AnimationDetailsDelegator = await Helper.GetDelegator<AnimationDetailsDelegator>();
 
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
         EmitAnimationMovementStateDelegator = await Helper.GetDelegator<EmitAnimationMovementStateDelegator>();
 
-        PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
-
-        if (PlayerStateDelegator == null)
-        {
-            throw new DelegatorNotFoundException("PlayerStateDelegator not found!!");
-        }
-
         if (AnimationDetailsDelegator == null)
         {
             throw new DelegatorNotFoundException("AnimationDetailsDelegator not found!!");
-        }
-
-        if (PlayerStateEvent == null)
-        {
-            throw new CustomEventNotFoundException("PlayerStateEvent not found!!");
         }
 
         if (PlayerAttributesDelegator == null)
@@ -63,13 +42,6 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
     {
         AnimationDetailsDelegator.AddToSubjectsDict(typeof(PlayerAnimationController).ToString(), name, new Subject<IObserver<AnimationDetails>>());
         AnimationDetailsDelegator.GetSubsetSubjectsDictionary(typeof(PlayerAnimationController).ToString())[name].SetSubject(this);
-
-        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new NotificationContext()
-        {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerStateConsumer).ToString()
-        }, CancellationToken.None));
 
         StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
         {
@@ -87,7 +59,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     }
 
-    public void MovementAnimation(GenericStateBundle<PlayerStateBundle> bundle)
+    public void MovementAnimation(PlayerStateBundle bundle)
     {
         if (EmitMovementAnimationStateBundle.StateBundle == null || EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation == null)
         {
@@ -97,37 +69,23 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
         if (EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash == EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash)
         {
-            Debug.Log($"The Hashes are the same - will skip: {EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash} - {EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash} Bundle: {PlayerStateBundle.StateBundle}");
+            Debug.Log($"The Hashes are the same - will skip: {EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash} - {EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash} Bundle: {bundle}");
             return;
         }
 
-        PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState>()
-        {
-            CurrentState = keystroke ? MovementState.IS_RUNNING : MovementState.IS_IDLE,
-            IsConcluded = false
-        };
-
-        PlayerStateEvent.Invoke(PlayerStateBundle);
-
         EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash = EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash;
 
-        PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
+        PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)bundle.PlayerMovementState.CurrentState);
     }
 
-    private void JumpAnimation(GenericStateBundle<PlayerStateBundle> bundle)
+    private void JumpAnimation(PlayerStateBundle bundle)
     {
-        //PlayerStateBundle.StateBundle.PlayerMovementState = keystroke ?
-        //    new State<MovementState>() { CurrentState = MovementState.IS_JUMPING, IsConcluded = false } : 
-        //    new State<MovementState>() { CurrentState = MovementState.IS_FALLING, IsConcluded = false };
-
-        PlayerStateEvent.Invoke(bundle);
-
-        PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)PlayerStateBundle.StateBundle.PlayerMovementState.CurrentState);
+        PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int) bundle.PlayerMovementState.CurrentState); 
     }
 
-    private void SlidingAnimation(GenericStateBundle<PlayerStateBundle> bundle)
+    private void SlidingAnimation(PlayerStateBundle bundle)
     {
-        PlayAnimation(PlayerAnimationConstants.SLIDING, bundle.StateBundle.PlayerMovementState.CurrentState);
+        PlayAnimation(PlayerAnimationConstants.SLIDING, bundle.PlayerMovementState.CurrentValue);
     }
 
     private void PlayAnimation(string name, int state)
@@ -149,29 +107,19 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         return PlayerAnimator.GetCurrentAnimatorStateInfo(0);
     }
 
-    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        PlayerStateBundle.StateBundle = data.StateBundle;
-    }
-
-    public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, GenericStateBundle<PlayerStateBundle>>>> PerformAction(ControllerPackage<PlayerAnimationExecutionState, GenericStateBundle<PlayerStateBundle>> value = null)
+    public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>> PerformAction(ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle> value = null)
     {
         if (PlayerAnimator == null)
         {
-            return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, GenericStateBundle<PlayerStateBundle>>>(null));
+            return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>(null));
         }
 
         GetAnimationExecutionScenario(value);
 
-        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, GenericStateBundle<PlayerStateBundle>>>(value));
+        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>(value));
     }
 
-    public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, bool>>> CancelAction(ControllerPackage<PlayerAnimationExecutionState, bool> value = null)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void GetAnimationExecutionScenario(ControllerPackage<PlayerAnimationExecutionState, GenericStateBundle<PlayerStateBundle>> package)
+    public void GetAnimationExecutionScenario(ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle> package)
     {
         switch(package.ExecutionState)
         {
@@ -226,5 +174,10 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         Debug.Log($"Incoming Value: {data.StateBundle.CurrentAnimation.CurrentValue}");
 
         EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation = data.StateBundle.CurrentAnimation;
+    }
+
+    public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>> CancelAction(ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle> value = null)
+    {
+        throw new System.NotImplementedException();
     }
 }

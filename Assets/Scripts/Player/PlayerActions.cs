@@ -28,9 +28,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private CommandAsyncEnhanced<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>> _attackCommand;
 
-    private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>> _animationReceiver;
+    private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> _animationReceiver;
 
-    private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>> _animationCommand;
+    private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> _animationCommand;
 
     private IReceiver<bool> _throwingProjectileReceiver;
 
@@ -76,11 +76,11 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _throwingProjectileReceiver = await  Helper.FindReceiver<ThrowingProjectileController, IReceiverBase<bool>>();
 
-        _animationReceiver = await Helper.FindReceiver<PlayerAnimationController, IReceiverBase<ControllerPackage<PlayerAnimationExecutionState, bool>>>();
+        _animationReceiver = await Helper.FindReceiver<PlayerAnimationController, IReceiverBase<ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>>();
 
         _attackCommand = new CommandAsyncEnhanced<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>(_attackReceiver);
 
-        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>(_animationReceiver);
+        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>(_animationReceiver);
 
         _jumpCommand = new CommandAsyncEnhanced<JumpingController, bool>(_jumpReceiver);
 
@@ -190,7 +190,12 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         if (CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE)) 
         {
-            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, bool>() { ExecutionState = PlayerAnimationExecutionState.PLAY_MOVEMENT_ANIMATION, Value = false });
+            //TODO EVALUATE HERE NOW!!!!!
+            //INVOKE STATE HERE AS WELL
+            //FOR ALL ANIMATIONS INVOKE THE STATE!!!
+            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>() { ExecutionState = PlayerAnimationExecutionState.PLAY_MOVEMENT_ANIMATION, 
+                Value = CurrentPlayerState.StateBundle});
+
             return;
         }
 
@@ -230,7 +235,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         CharacterControllerMove(_playerActionsModel.CharacterVelocityX * _playerActionsModel.CharacterSpeed, _playerActionsModel.CharacterVelocityY);
 
-         await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, bool>()
+         await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>()
         {
             ExecutionState = PlayerAnimationExecutionState.PLAY_MOVEMENT_ANIMATION,
             Value = keystroke.x == 0 ? false : true
@@ -279,7 +284,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState == AttackState.IS_ATTACKING) ? false : context.ReadValueAsButton();
 
         //not sliding - see if needs to be in another way later!
-        CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState>() { CurrentState = MovementState.IS_SLIDING, IsConcluded = true };
+        CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = false, IsConcluded = true };
 
         _playerStateEvent.Invoke(CurrentPlayerState);
     }

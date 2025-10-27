@@ -10,4 +10,14 @@ public class PlayerStateBundle : IStateBundle
     {
         return $"PlayerStateBundle - PlayerActionState : {PlayerActionState} - PlayerMovementState : {PlayerMovementState} - PlayerAttackState: {PlayerAttackState}";
     }
+
+    public PlayerStateBundle Clone()
+    {
+        return new PlayerStateBundle()
+        {
+            PlayerActionState = this.PlayerActionState,
+            PlayerMovementState = this.PlayerMovementState,
+            PlayerAttackState = this.PlayerAttackState
+        };
+    }
 }

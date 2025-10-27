@@ -117,7 +117,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
         {
             _timeSpent = 0f;
 
-            PlayerBundle.StateBundle.PlayerMovementState = new State<MovementState> { CurrentState = MovementState.IS_FALLING, IsConcluded = true };
+            PlayerBundle.StateBundle.PlayerMovementState = new State<MovementState, bool> { CurrentState = MovementState.IS_FALLING, CurrentValue = false, IsConcluded = true };
 
             await PlayerStateEvent.Invoke(PlayerBundle);
 
@@ -125,7 +125,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
         if (greenBox && !redBox && !TimeSpentGrabbing(_timeSpent, MAX_TIME_FOR_LEDGE_GRAB)  && PlayerBundle.StateBundle.PlayerMovementState.CurrentState != MovementState.IS_FALLING)
         {
-            PlayerBundle.StateBundle.PlayerActionState = new State<ActionState> { CurrentState = ActionState.IS_GRABBING, IsConcluded = false };
+            PlayerBundle.StateBundle.PlayerActionState = new State<ActionState, bool> { CurrentState = ActionState.IS_GRABBING, CurrentValue = true, IsConcluded = false };
 
             await PlayerStateEvent.Invoke(PlayerBundle);
 
@@ -137,8 +137,8 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
         }else
         {
-            PlayerBundle.StateBundle.PlayerActionState = new State<ActionState> { CurrentState = ActionState.IS_GRABBING, IsConcluded = true };
-
+            PlayerBundle.StateBundle.PlayerActionState = new State<ActionState, bool> { CurrentState = ActionState.IS_GRABBING, CurrentValue = false, IsConcluded = true };
+            
             await PlayerStateEvent.Invoke(PlayerBundle);
 
             Player.Collider.isTrigger = false;
@@ -165,7 +165,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
         {
             await HandleLedgeGrabCalculations(sign, ledgeGrabForces, new Vector2(0, MAXIMUM_VELOCITY_Y_FORCE));
 
-            PlayerBundle.StateBundle.PlayerMovementState = new State<MovementState>() { CurrentState = MovementState.IS_FALLING, IsConcluded = false };
+            PlayerBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_FALLING, CurrentValue = true, IsConcluded = false };
 
             await PlayerStateEvent.Invoke(PlayerBundle);
 
@@ -224,7 +224,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
         {
             await SetGravityValue(rb, 0f);
 
-            PlayerBundle.StateBundle.PlayerActionState = new State<ActionState>() { CurrentState = ActionState.IS_GRABBING, IsConcluded = true };
+            PlayerBundle.StateBundle.PlayerActionState = new State<ActionState, bool>() { CurrentState = ActionState.IS_GRABBING, CurrentValue = false, IsConcluded = true };
 
             await PlayerStateEvent.Invoke(PlayerBundle);
 
