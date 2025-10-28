@@ -1,6 +1,6 @@
 public enum PlayerAnimationExecutionState
 {
-    PLAY_JUMPING_ANIMATION,
+    PLAY_IN_AIR_ANIMATION,
 
     PLAY_SLIDING_ANIMATION,
 

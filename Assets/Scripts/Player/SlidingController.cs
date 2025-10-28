@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingController, bool>, IObserver<AnimationDetails>, ISubject<IObserver<CharacterVelocity>>, IObserver<Player>
+public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingController, PlayerStateBundle>, IObserver<AnimationDetails>, ISubject<IObserver<CharacterVelocity>>, IObserver<Player>
 {
     private const float MAX_ANIMATION_TIME = 0.6f;
 
@@ -30,9 +30,9 @@ public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingCo
          StateBundle = new PlayerStateBundle()
     };
 
-    private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState,bool>> _animationHandler;
+    private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> _animationHandler;
 
-    private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>> _animationCommand;
+    private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> _animationCommand;
 
     private IOverlapChecker _movementHelperClass;
 
@@ -70,9 +70,9 @@ public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingCo
             SubjectType = typeof(PlayerAttributesNotifier).ToString(),
         }, CancellationToken.None));
 
-        _animationHandler = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>>();
+        _animationHandler = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>>();
 
-        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, bool>>(_animationHandler);
+        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>(_animationHandler);
 
         _movementHelperClass = new MovementHelperClass();
     }
@@ -87,7 +87,7 @@ public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingCo
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, bool>() { ExecutionState = PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION, Value = true });
+            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>() { ExecutionState = PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION, Value = PlayerStateBundle.StateBundle });
         }
 
         if (AnimationDetails.CurrentAnimationTime > MAX_ANIMATION_TIME && AnimationDetails.CurrentAnimationStateInfo.IsName(PlayerAnimationConstants.SLIDING))
@@ -96,18 +96,18 @@ public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingCo
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, bool>() { ExecutionState = PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION, Value = false });
+            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>() { ExecutionState = PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION, Value = PlayerStateBundle.StateBundle });
         }
 
     }
 
-    public async Task<ActionExecuted<bool>> PerformAction(bool value)
+    public async Task<ActionExecuted<PlayerStateBundle>> PerformAction(PlayerStateBundle value)
     {
         if (Player == null)
         {
             Debug.Log($"Player is null - SlidingController - PerformAction - Skipping execution");
 
-            return await Task.FromResult(new ActionExecuted<bool>(false));
+            return await Task.FromResult(new ActionExecuted<PlayerStateBundle>(value));
         }
 
         if (await IsVelocityXGreaterThanZero(Player.Rigidbody) && !_playerAttackStateMachine.IsInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
@@ -115,9 +115,9 @@ public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingCo
             await Slide();
         }
 
-        return await Task.FromResult(new ActionExecuted<bool>(true));
+        return await Task.FromResult(new ActionExecuted<PlayerStateBundle>(value));
     }
-    public async Task<ActionExecuted<bool>> CancelAction(bool value)
+    public async Task<ActionExecuted<PlayerStateBundle>> CancelAction(PlayerStateBundle value)
     {
         PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = false, IsConcluded = true };
 
@@ -125,7 +125,7 @@ public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingCo
 
         await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-        return await Task.FromResult(new ActionExecuted<bool>(true));
+        return await Task.FromResult(new ActionExecuted<PlayerStateBundle>(value));
     }
 
     private Task<bool> IsVelocityXGreaterThanZero(Rigidbody2D rb)

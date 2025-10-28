@@ -157,20 +157,20 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
 
         if (CanPlayerAttackWhileJumping())
         {
+            Debug.Log("Yes can ttack!");
+
             PlayerAttackStateMachine.SetAttackState(jumpAttackStateName, LeftMouseButtonPressed);
         }
     }
     private bool CanPlayerAttackWhileJumping()
     {
-        return (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState == MovementState.IS_JUMPING && CurrentPlayerState.StateBundle.PlayerMovementState.IsConcluded) && 
+        return (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState == MovementState.IS_JUMPING && !CurrentPlayerState.StateBundle.PlayerMovementState.IsConcluded) && 
             !_movementHelper.OverlapAgainstLayerMaskChecker(Player.Collider, Ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
     }
 
     private void EndPlayerAttack()
     {
         _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
-
-        //TODO EVALUATE HERE NOW!!!!!
 
         CurrentPlayerState.StateBundle.PlayerAttackState = new State<AttackState, bool>() { CurrentState = AttackState.IS_ATTACKING, CurrentValue = true, IsConcluded = false };
 
@@ -228,15 +228,13 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
     {
         PlayerAttackStateInt = 0; //resets the attackingstate
 
-        //TODO EVALUATE HERE NOW!!!!!
         CurrentPlayerState.StateBundle.PlayerAttackState = new State<AttackState, bool>() { CurrentState = AttackState.IS_ATTACKING, CurrentValue = false, IsConcluded = true };
 
         PlayerStateEvent.Invoke(CurrentPlayerState);
 
-        //use this now - is concluded to track if the player can resume attacking again :))
         PlayerAttackStateMachine.CanAttack(canAttackStateName, CurrentPlayerState.StateBundle.PlayerAttackState.IsConcluded);
 
-        PlayerAttackStateMachine.CanAttack(jumpAttackStateName, CurrentPlayerState.StateBundle.PlayerAttackState.IsConcluded);
+        PlayerAttackStateMachine.CanAttack(jumpAttackStateName, !CurrentPlayerState.StateBundle.PlayerAttackState.IsConcluded);
     }
 
     private bool IsEnumValueEqualToLengthOfEnum<T>(string _playerAttackStateName)

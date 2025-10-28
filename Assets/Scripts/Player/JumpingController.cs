@@ -133,9 +133,11 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
         if (!IsOnTheGround(groundLayer) && !IsOnTheLedge(ledgeLayer) && await IsYVelocityNegative(Player.Rigidbody))
         {
-            PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_JUMPING, CurrentValue = false, IsConcluded = true };
+            PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_FALLING, CurrentValue = true, IsConcluded = false };
 
-            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>() { ExecutionState = PlayerAnimationExecutionState.PLAY_JUMPING_ANIMATION, Value = PlayerStateBundle.StateBundle });
+            await PlayerStateEvent.Invoke(PlayerStateBundle);
+
+            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>() { ExecutionState = PlayerAnimationExecutionState.PLAY_IN_AIR_ANIMATION, Value = PlayerStateBundle.StateBundle });
         }
 
         if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed) //on the ground
@@ -154,17 +156,15 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
     public async Task HandleJumping()
     {
-        if (await CanPlayerJump()) //jumping
+        if (await CanPlayerJump()) 
         {
-            //TODO PLEASE CHECK HERE AND THEN SEND THE VALUE AFTER EVALUATING!!!!
-
             PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_JUMPING, CurrentValue = true, IsConcluded = false };
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
             CharacterVelocity.VelocityY = JumpSpeed * JUMPING_SPEED;
 
-            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>() { ExecutionState = PlayerAnimationExecutionState.PLAY_JUMPING_ANIMATION, Value = PlayerStateBundle.StateBundle});
+            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>() { ExecutionState = PlayerAnimationExecutionState.PLAY_IN_AIR_ANIMATION, Value = PlayerStateBundle.StateBundle});
         }
 
     }

@@ -123,7 +123,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
     {
         switch(package.ExecutionState)
         {
-            case PlayerAnimationExecutionState.PLAY_JUMPING_ANIMATION:
+            case PlayerAnimationExecutionState.PLAY_IN_AIR_ANIMATION:
                 JumpAnimation(package.Value);
                 break;
 
