@@ -93,7 +93,6 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
         PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[gameObject.name].SetSubject(this);
     }
 
-    //REMOVE THIS! -OR FIND A BETTER WAY TO REFACTOR THIS
     private async void Update()
     {
         if (Player == null)
@@ -142,9 +141,11 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
         if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed) //on the ground
         {
-            PlayerStateBundle.StateBundle.PlayerActionState = new State<ActionState, bool>() { CurrentState = ActionState.IDLE, IsConcluded = false };
+            PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_IDLE, CurrentValue = true, IsConcluded = false };
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
+
+            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>() { ExecutionState = PlayerAnimationExecutionState.PLAY_IN_AIR_ANIMATION, Value = PlayerStateBundle.StateBundle });
 
             onPlayerJumpTimeEvent.Fall = false;
 

@@ -112,30 +112,12 @@ public class AttackingController : MonoBehaviour, IReceiverEnhancedAsync<Attacki
         //Monobehavior event
         powerUpBarFillEvent.AddListener(PowerUpFillMode);
     }
-    // Update is called once per frame
-    void Update()
-    {
-        if (CurrentPlayerState == null || CurrentPlayerState.StateBundle == null)
-        {
-            Debug.Log("CurrentPlayerState || CurrentPlayerState.StateBundle is null - skipping update for Attacking Controller!");
-            return;
-        }
 
-        if (Player == null)
-        {
-            Debug.Log("Player is null - skipping update for Attacking Controller!");
-            return;
-        }
-
-        if (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState == MovementState.IS_SLIDING || 
-            PlayerAttackStateMachine.IstheAttackCancelConditionTrue(PlayerAttackStateName, Enum.GetNames(typeof(PlayerAttackEnum.PlayerAttackSlash)))) //for the first status only
-        {
-            ResetAttackingState();
-        }
-    }
     private void InitiatePlayerAttack(bool leftMouseButtonPressed)
     {
         LeftMouseButtonPressed = leftMouseButtonPressed;
+
+        Debug.Log($"Attacking Value: {LeftMouseButtonPressed}");
 
         if (CanPlayerAttack()) //ground attack
         {

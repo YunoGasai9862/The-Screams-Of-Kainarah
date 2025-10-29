@@ -45,12 +45,10 @@ namespace CoreCode
         {
             foreach (string expectedStateNames in expectedStateName)
             {
-
                 if (stateName == expectedStateNames)
                 {
                     return _animator.GetCurrentAnimatorStateInfo(0).IsName(stateName) && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f;
                 }
-
             }
 
             return false;
