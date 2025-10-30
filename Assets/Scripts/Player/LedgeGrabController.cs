@@ -92,9 +92,7 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
         ledgradeAnimationEvent.AddListener(LedgeGrabEventAnimationKeeperListener);
     }
-    // Update is called once per frame - im not sure why controllers have it as updates
-    //find a better pattern/strategy or refine this
-    //if this needs to be done everyframe then it makes sense
+
     async void Update()
     {
         if (Player == null)

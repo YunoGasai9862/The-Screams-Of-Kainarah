@@ -67,12 +67,6 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
             return;
         }
 
-        if (EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash == EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash)
-        {
-            Debug.Log($"The Hashes are the same - will skip: {EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash} - {EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash} Bundle: {bundle}");
-            return;
-        }
-
         EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash = EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash;
 
         PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)bundle.PlayerMovementState.CurrentState);

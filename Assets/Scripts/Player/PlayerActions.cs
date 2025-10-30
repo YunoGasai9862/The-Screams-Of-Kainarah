@@ -205,7 +205,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         //Flipping
         if (KeystrokeMagnitudeChecker(_keystrokeTrack))
         {
-            Debug.Log($"State: {CurrentPlayerState.StateBundle.PlayerActionState.CurrentState}");
             if (!CurrentPlayerState.StateBundle.PlayerActionState.CurrentState.Equals(ActionState.IS_GRABBING)) { }
                 FlipCharacter(_keystrokeTrack);
         }
@@ -228,14 +227,19 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     {
         Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>(); //reads the value
 
-        if (keystroke.x != 0)
-            _playerActionsModel.KeyStrokeDifference = GetKeyStrokeDifference(keystroke);
+        _playerActionsModel.KeyStrokeDifference = GetKeyStrokeDifference(keystroke);
+
+        Debug.Log($"KeyStroke Diff: {_playerActionsModel.KeyStrokeDifference}");
 
         _playerActionsModel.CharacterVelocityX = keystroke.x;
 
         CharacterControllerMove(_playerActionsModel.CharacterVelocityX * _playerActionsModel.CharacterSpeed, _playerActionsModel.CharacterVelocityY);
 
-         await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>()
+        CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, bool> { CurrentState = _playerActionsModel.KeyStrokeDifference == 0 ? MovementState.IS_IDLE : MovementState.IS_RUNNING, CurrentValue = true, IsConcluded = false };
+
+        await _playerStateEvent.Invoke(CurrentPlayerState);
+
+        await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>()
         {
             ExecutionState = PlayerAnimationExecutionState.PLAY_MOVEMENT_ANIMATION,
             Value =  CurrentPlayerState.StateBundle
