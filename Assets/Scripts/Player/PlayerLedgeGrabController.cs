@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IReceiverEnhancedAsync<LedgeGrabController, bool>, IObserver<Player>
+public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IReceiverEnhancedAsync<PlayerLedgeGrabController, PlayerStateBundle>, IObserver<Player>
 {
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
 
@@ -92,6 +92,8 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
 
         ledgradeAnimationEvent.AddListener(LedgeGrabEventAnimationKeeperListener);
     }
+
+    //SNCE ITS A CONTROLLER - IT SHOULD NOT BE RNNNING IN UPDATE!! FIX IT!
 
     async void Update()
     {
@@ -249,18 +251,19 @@ public class LedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<P
         PlayerBundle.StateBundle = data.StateBundle;
     }
 
-    public async Task<ActionExecuted<bool>> PerformAction(bool value)
+    public async Task<ActionExecuted<PlayerStateBundle>> PerformAction(PlayerStateBundle value)
     {
-        Player.Rigidbody.linearVelocity = new Vector2(0, 0);
+        //WTF!!!
+        //Player.Rigidbody.linearVelocity = new Vector2(0, 0);
 
-        return new ActionExecuted<bool>(true);
+        return new ActionExecuted<PlayerStateBundle>(value);
     }
 
-    public async Task<ActionExecuted<bool>> CancelAction(bool value)
+    public async Task<ActionExecuted<PlayerStateBundle>> CancelAction(PlayerStateBundle value)
     {
         await CancelLedgeGrab();
 
-        return new ActionExecuted<bool>(true);
+        return new ActionExecuted<PlayerStateBundle>(value);
     }
 
     public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

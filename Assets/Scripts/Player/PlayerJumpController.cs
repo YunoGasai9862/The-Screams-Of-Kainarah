@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingController, bool>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>
+public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<PlayerJumpController, bool>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>
 {
     [SerializeField] LayerMask groundLayer;
 
@@ -88,9 +88,9 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None));
 
-        PlayerVelocityDelegator.AddToSubjectsDict(typeof(JumpingController).ToString(), gameObject.name, new Subject<IObserver<CharacterVelocity>>());
+        PlayerVelocityDelegator.AddToSubjectsDict(typeof(PlayerJumpController).ToString(), gameObject.name, new Subject<IObserver<CharacterVelocity>>());
 
-        PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[gameObject.name].SetSubject(this);
+        PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerJumpController).ToString())[gameObject.name].SetSubject(this);
     }
 
     private async void Update()
@@ -118,7 +118,7 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
         await HandleFalling();
 
-        PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(JumpingController), CancellationToken.None);
+        PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(PlayerJumpController), CancellationToken.None);
 
         await Task.FromResult(true);
     }
@@ -220,9 +220,9 @@ public class JumpingController : MonoBehaviour, IReceiverEnhancedAsync<JumpingCo
 
     public void OnNotifySubject(IObserver<CharacterVelocity> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        PlayerVelocityDelegator.AddToSubjectObserversDict(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(JumpingController).ToString())[gameObject.name], observer);
+        PlayerVelocityDelegator.AddToSubjectObserversDict(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerJumpController).ToString())[gameObject.name], observer);
 
-        StartCoroutine(PlayerVelocityDelegator.NotifyObserver(observer, new CharacterVelocity() { VelocityY = - 10f}, new NotificationContext() { SubjectType = typeof(JumpingController).ToString()}, cancellationToken));
+        StartCoroutine(PlayerVelocityDelegator.NotifyObserver(observer, new CharacterVelocity() { VelocityY = - 10f}, new NotificationContext() { SubjectType = typeof(PlayerJumpController).ToString()}, cancellationToken));
     }
 
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

@@ -67,6 +67,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
             return;
         }
 
+        //need to stop the spam from 0 again!!
         EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash = EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash;
 
         PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)bundle.PlayerMovementState.CurrentState);
@@ -84,6 +85,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private void PlayAnimation(string name, int state)
     {
+        Debug.Log($"NAME: {name}, state: {state}");
         AnimationStateMachine.AnimationPlayForInt(name, state);
     }
     private void PlayAnimation(string name, bool state)

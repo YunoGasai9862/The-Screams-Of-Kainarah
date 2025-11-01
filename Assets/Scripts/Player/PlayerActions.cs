@@ -16,21 +16,25 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private Vector2 _keystrokeTrack;
 
-    private IReceiverEnhancedAsync<JumpingController, bool> _jumpReceiver;
+    private IReceiverEnhancedAsync<PlayerJumpController, bool> _jumpReceiver;
 
-    private CommandAsyncEnhanced<JumpingController, bool> _jumpCommand;
+    private CommandAsyncEnhanced<PlayerJumpController, bool> _jumpCommand;
 
-    private IReceiverEnhancedAsync<SlidingController, PlayerStateBundle> _slideReceiver;
+    private IReceiverEnhancedAsync<PlayerSlideController, PlayerStateBundle> _slideReceiver;
 
-    private CommandAsyncEnhanced<SlidingController, PlayerStateBundle> _slideCommand;
+    private CommandAsyncEnhanced<PlayerSlideController, PlayerStateBundle> _slideCommand;
 
-    private IReceiverEnhancedAsync<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>> _attackReceiver;
+    private IReceiverEnhancedAsync<PlayerAttackController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>> _attackReceiver;
 
-    private CommandAsyncEnhanced<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>> _attackCommand;
+    private CommandAsyncEnhanced<PlayerAttackController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>> _attackCommand;
 
     private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> _animationReceiver;
 
     private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> _animationCommand;
+
+    private IReceiverEnhancedAsync<PlayerLedgeGrabController, PlayerStateBundle> _ledgeGrabReceiver;
+
+    private CommandAsyncEnhanced<PlayerLedgeGrabController, PlayerStateBundle> _ledgeGrabCommand;
 
     private IReceiver<bool> _throwingProjectileReceiver;
 
@@ -68,23 +72,27 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _playerActionsModel = new PlayerActionsModel();
 
-        _jumpReceiver = await Helper.FindReceiver<JumpingController, IReceiverBase<bool>>();
+        _jumpReceiver = await Helper.FindReceiver<PlayerJumpController, IReceiverBase<bool>>();
 
-        _slideReceiver = await Helper.FindReceiver<SlidingController, IReceiverBase<PlayerStateBundle>>();
+        _slideReceiver = await Helper.FindReceiver<PlayerSlideController, IReceiverBase<PlayerStateBundle>>();
 
-        _attackReceiver = await Helper.FindReceiver<AttackingController, IReceiverBase<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>>();
+        _ledgeGrabReceiver = await Helper.FindReceiver<PlayerLedgeGrabController, IReceiverBase<PlayerStateBundle>>();
+
+        _attackReceiver = await Helper.FindReceiver<PlayerAttackController, IReceiverBase<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>>();
 
         _throwingProjectileReceiver = await  Helper.FindReceiver<ThrowingProjectileController, IReceiverBase<bool>>();
 
         _animationReceiver = await Helper.FindReceiver<PlayerAnimationController, IReceiverBase<ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>>();
 
-        _attackCommand = new CommandAsyncEnhanced<AttackingController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>(_attackReceiver);
+        _attackCommand = new CommandAsyncEnhanced<PlayerAttackController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>(_attackReceiver);
 
         _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>(_animationReceiver);
 
-        _jumpCommand = new CommandAsyncEnhanced<JumpingController, bool>(_jumpReceiver);
+        _jumpCommand = new CommandAsyncEnhanced<PlayerJumpController, bool>(_jumpReceiver);
 
-        _slideCommand = new CommandAsyncEnhanced<SlidingController, PlayerStateBundle>(_slideReceiver);
+        _slideCommand = new CommandAsyncEnhanced<PlayerSlideController, PlayerStateBundle>(_slideReceiver);
+
+        _ledgeGrabCommand = new CommandAsyncEnhanced<PlayerLedgeGrabController, PlayerStateBundle>(_ledgeGrabReceiver);
 
         _throwingProjectileCommand = new Command<bool>(_throwingProjectileReceiver);
 
@@ -141,14 +149,14 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
-            SubjectType = typeof(SlidingController).ToString()
+            SubjectType = typeof(PlayerSlideController).ToString()
         }, CancellationToken.None);
 
         _playerVelocityDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,
-            SubjectType = typeof(JumpingController).ToString()
+            SubjectType = typeof(PlayerJumpController).ToString()
         }, CancellationToken.None);
 
         _playerStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
@@ -202,20 +210,15 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         //movement
         _keystrokeTrack = await PlayerMovement();
 
-        //Flipping
-        if (KeystrokeMagnitudeChecker(_keystrokeTrack))
-        {
-            if (!CurrentPlayerState.StateBundle.PlayerActionState.CurrentState.Equals(ActionState.IS_GRABBING)) { }
-                FlipCharacter(_keystrokeTrack);
-        }
-
         //jumping
         await _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
 
         //ledge grab
+        //also check for condition etc
+        //this needs refactoring from the ledge grab as well
         if (CurrentPlayerState.StateBundle.PlayerActionState.CurrentState.Equals(ActionState.IS_GRABBING)) //tackles the ledgeGrab
         {
-            await _slideCommand.Execute(CurrentPlayerState.StateBundle);
+            await _ledgeGrabCommand.Execute(CurrentPlayerState.StateBundle);
         }
 
         //sliding
@@ -228,8 +231,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>(); //reads the value
 
         _playerActionsModel.KeyStrokeDifference = GetKeyStrokeDifference(keystroke);
-
-        Debug.Log($"KeyStroke Diff: {_playerActionsModel.KeyStrokeDifference}");
 
         _playerActionsModel.CharacterVelocityX = keystroke.x;
 
@@ -244,8 +245,13 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
             ExecutionState = PlayerAnimationExecutionState.PLAY_MOVEMENT_ANIMATION,
             Value =  CurrentPlayerState.StateBundle
         });
-        
-        _playerActionsModel.CharacterSpeed = _playerActionsModel.OriginalSpeed; //reset speed
+
+        if (KeystrokeMagnitudeChecker(keystroke))
+        {
+            FlipCharacter(keystroke);
+        }
+
+        _playerActionsModel.CharacterSpeed = _playerActionsModel.OriginalSpeed;
 
         return keystroke;
     }
@@ -266,6 +272,8 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     private void CharacterControllerMove(float CharacterPositionX, float CharacterPositionY)
     {
         Player.Rigidbody.linearVelocity = new Vector2(CharacterPositionX, CharacterPositionY);
+
+        Debug.Log($"Speed: {Player.Rigidbody.linearVelocity}");
     }
 
     private bool KeystrokeMagnitudeChecker(Vector2 _keystrokeTrack)

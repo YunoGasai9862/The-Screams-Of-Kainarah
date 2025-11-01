@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingController, PlayerStateBundle>, IObserver<AnimationDetails>, ISubject<IObserver<CharacterVelocity>>, IObserver<Player>
+public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<PlayerSlideController, PlayerStateBundle>, IObserver<AnimationDetails>, ISubject<IObserver<CharacterVelocity>>, IObserver<Player>
 {
     private const float MAX_ANIMATION_TIME = 0.6f;
 
@@ -55,8 +55,8 @@ public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingCo
 
     void Start()
     {
-        PlayerVelocityDelegator.AddToSubjectsDict(typeof(SlidingController).ToString(), name, new Subject<IObserver<CharacterVelocity>>());
-        PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(SlidingController).ToString())[name].SetSubject(this);
+        PlayerVelocityDelegator.AddToSubjectsDict(typeof(PlayerSlideController).ToString(), name, new Subject<IObserver<CharacterVelocity>>());
+        PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSlideController).ToString())[name].SetSubject(this);
 
         StartCoroutine(AnimationDetailsDelegator.NotifySubject(this, new NotificationContext()
         {
@@ -83,7 +83,7 @@ public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingCo
         {
             PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = true, IsConcluded = false };
             
-            PlayerVelocityDelegator.NotifyObservers(new CharacterVelocity() { VelocityX = slidingSpeed }, gameObject.name, typeof(SlidingController), CancellationToken.None);
+            PlayerVelocityDelegator.NotifyObservers(new CharacterVelocity() { VelocityX = slidingSpeed }, gameObject.name, typeof(PlayerSlideController), CancellationToken.None);
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
@@ -121,7 +121,7 @@ public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingCo
     {
         PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = false, IsConcluded = true };
 
-        PlayerVelocityDelegator.NotifyObservers(new CharacterVelocity() { VelocityX = 0 }, gameObject.name, typeof(SlidingController), CancellationToken.None);
+        PlayerVelocityDelegator.NotifyObservers(new CharacterVelocity() { VelocityX = 0 }, gameObject.name, typeof(PlayerSlideController), CancellationToken.None);
 
         await PlayerStateEvent.Invoke(PlayerStateBundle);
 
@@ -135,7 +135,7 @@ public class SlidingController : MonoBehaviour, IReceiverEnhancedAsync<SlidingCo
 
     public void OnNotifySubject(IObserver<CharacterVelocity> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        PlayerVelocityDelegator.AddToSubjectObserversDict(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(SlidingController).ToString())[gameObject.name], observer);
+        PlayerVelocityDelegator.AddToSubjectObserversDict(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSlideController).ToString())[gameObject.name], observer);
     }
 
     public void OnNotify(AnimationDetails data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
