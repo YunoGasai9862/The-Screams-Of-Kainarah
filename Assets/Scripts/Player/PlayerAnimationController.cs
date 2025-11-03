@@ -19,6 +19,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private Animator PlayerAnimator { get; set; }
 
+    private PlayerStateBundle InternalPlayerStateBundle { get; set; } = new PlayerStateBundle();
     private async void Awake()
     {
         AnimationDetailsDelegator = await Helper.GetDelegator<AnimationDetailsDelegator>();
@@ -67,7 +68,14 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
             return;
         }
 
-        //need to stop the spam from 0 again!!
+        if (ShouldSkipMovementAnimation(bundle))
+        {
+            Debug.Log($"Values are the same - skipping! {InternalPlayerStateBundle.PlayerMovementState.CurrentState} - {bundle.PlayerMovementState.CurrentState}");
+            return;
+        }
+
+        InternalPlayerStateBundle.PlayerMovementState = bundle.PlayerMovementState;
+
         EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash = EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash;
 
         PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)bundle.PlayerMovementState.CurrentState);
@@ -101,6 +109,12 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
     private AnimatorStateInfo GetCurrentStateInfo()
     {
         return PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+    }
+
+    private bool ShouldSkipMovementAnimation(PlayerStateBundle bundle)
+    {
+        return InternalPlayerStateBundle.PlayerMovementState != null && (int)InternalPlayerStateBundle.PlayerMovementState.CurrentState == (int)bundle.PlayerMovementState.CurrentState &&
+              EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash != EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash;
     }
 
     public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>> PerformAction(ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle> value = null)
