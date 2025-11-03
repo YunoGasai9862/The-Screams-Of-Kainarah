@@ -19,14 +19,8 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
     private bool _isPlayerEligibleForStartingAttack = false;
 
     private float timeDifferencebetweenStates;
-    private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>()
-    {
-        StateBundle = new PlayerStateBundle()
-    };
-    private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>()
-    {
-        StateBundle = new GameStateBundle()
-    };
+    private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>();
+    private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
     private int PlayerAttackStateInt { get; set; }
     private string PlayerAttackStateName { get; set; }
     private bool LeftMouseButtonPressed { get; set; }
@@ -38,6 +32,8 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
     private PlayerStateDelegator PlayerStateDelegator { get; set; }
 
     private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+    
+    private GlobalGameStateDelegator GlobalGameStateDelegator { get; set; } 
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
@@ -63,8 +59,6 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
     [SerializeField] PowerUpBarFillEvent powerUpBarFillEvent;
 
-    [SerializeField] GlobalGameStateDelegator globalGameStateDelegator;
-
 
     private async void Awake()
     {
@@ -77,11 +71,13 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+
+        GlobalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
     }
 
     private void Start()
     {
-        globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        StartCoroutine(GlobalGameStateDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = this.name,
             ObserverTag = this.name,
@@ -117,11 +113,9 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
     {
         LeftMouseButtonPressed = leftMouseButtonPressed;
 
-        Debug.Log($"Attacking Value: {LeftMouseButtonPressed}");
-
-        if (CanPlayerAttack()) //ground attack
+        if (CanPlayerAttack())
         {
-            //TODO EVALUATE HERE NOW!!!!!
+            Debug.Log($"Yes can attack: {LeftMouseButtonPressed}");
 
             CurrentPlayerState.StateBundle.PlayerAttackState = new State<AttackState, bool>() { CurrentState = AttackState.IS_ATTACKING,  CurrentValue = true, IsConcluded = false };
 
@@ -139,8 +133,6 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
         if (CanPlayerAttackWhileJumping())
         {
-            Debug.Log("Yes can ttack!");
-
             PlayerAttackStateMachine.SetAttackState(jumpAttackStateName, LeftMouseButtonPressed);
         }
     }
@@ -239,8 +231,9 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
         bool isInventoryOpen = SceneSingleton.GetInventoryManager().IsPouchOpen;
 
-        return !CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE) &&
-               !CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.SHOPPING) && !isInventoryOpen &&
+        return CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.FREE_MOVEMENT) &&
+               !CurrentGameState.StateBundle.GameState.IsConcluded &&
+               !isInventoryOpen &&
                !CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState.Equals(MovementState.IS_JUMPING);
     }
 
@@ -321,6 +314,8 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
     public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState.StateBundle = data.StateBundle;
+
+        Debug.Log($"Incoming state in attack controller : {CurrentGameState.StateBundle}");
     }
 
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

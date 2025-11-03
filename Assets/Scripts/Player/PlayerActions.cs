@@ -272,8 +272,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     private void CharacterControllerMove(float CharacterPositionX, float CharacterPositionY)
     {
         Player.Rigidbody.linearVelocity = new Vector2(CharacterPositionX, CharacterPositionY);
-
-        Debug.Log($"Speed: {Player.Rigidbody.linearVelocity}");
     }
 
     private bool KeystrokeMagnitudeChecker(Vector2 _keystrokeTrack)

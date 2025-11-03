@@ -24,8 +24,6 @@ public class GameStateConsumer : BaseState<GameStateBundle>
         GlobalGameStateDelegator.AddToSubjectsDict(typeof(GameStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericStateBundle<GameStateBundle>>>());
 
         GlobalGameStateDelegator.GetSubsetSubjectsDictionary(typeof(GameStateConsumer).ToString())[gameObject.name].SetSubject(this);
-
-        Debug.Log($"Added to the dictionary for GameStateConsumer {GlobalGameStateDelegator.GetSubjectsDict().Count}");
     }
 
     protected override async Task<BaseDelegator<GenericStateBundle<GameStateBundle>>> GetDelegator()
@@ -46,7 +44,9 @@ public class GameStateConsumer : BaseState<GameStateBundle>
             {
                 GameState = new State<GameState>()
                 {
-                    CurrentState = GameState.FREE_MOVEMENT
+                    CurrentState = GameState.FREE_MOVEMENT,
+
+                    IsConcluded = false
                 }
             }
         };

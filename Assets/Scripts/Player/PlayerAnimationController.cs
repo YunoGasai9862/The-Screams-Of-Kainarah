@@ -93,7 +93,6 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private void PlayAnimation(string name, int state)
     {
-        Debug.Log($"NAME: {name}, state: {state}");
         AnimationStateMachine.AnimationPlayForInt(name, state);
     }
     private void PlayAnimation(string name, bool state)
@@ -181,8 +180,6 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     public void OnNotify(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        Debug.Log($"Incoming Value: {data.StateBundle.CurrentAnimation.CurrentValue}");
-
         EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation = data.StateBundle.CurrentAnimation;
     }
 

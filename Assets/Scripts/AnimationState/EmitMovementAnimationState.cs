@@ -12,8 +12,6 @@ public class EmitMovementAnimationState : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.Log($"Running[OnStateEnter]: {stateInfo.shortNameHash}");
-
         EmitMovementAnimationStateEvent.Invoke(new GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>()
         {
             StateBundle = new EmitAnimationStateBundle<bool>()
@@ -37,9 +35,6 @@ public class EmitMovementAnimationState : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //USE HASH TO RESOLVE IN THE ANIMATION CONTROLLER!!
-        Debug.Log($"Running[OnStateExit]: {stateInfo.shortNameHash}");
-
         EmitMovementAnimationStateEvent.Invoke(new GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>()
         {
             StateBundle = new EmitAnimationStateBundle<bool>()
