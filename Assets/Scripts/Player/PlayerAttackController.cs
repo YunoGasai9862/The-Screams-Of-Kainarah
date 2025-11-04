@@ -43,10 +43,6 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
     [SerializeField] LayerMask ledge;
 
-    [SerializeField] GameObject IceTrail;
-
-    [SerializeField] GameObject IceTrail2;
-
     [SerializeField] string canAttackStateName;
 
     [SerializeField] string attackStateName;
@@ -83,7 +79,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
             ObserverTag = this.name,
             SubjectType = typeof(GameStateConsumer).ToString()
 
-        }, CancellationToken.None);
+        }, CancellationToken.None));
 
         StartCoroutine(PlayerStateDelegator.NotifySubject(this, new NotificationContext()
         {
@@ -238,20 +234,6 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
     }
 
     #region AnimationEventOnTheAnimationItself
-    public void Icetail()
-    {
-        InstantiatorController iceTrail = new(IceTrail);
-        iceTrail.InstantiateGameObject(transform.position, Quaternion.identity);
-        iceTrail.SetGameObjectParent(transform);
-    }
-
-    public void Icetail2()
-    {
-        InstantiatorController iceTrail = new(IceTrail2);
-        iceTrail.InstantiateGameObject(transform.position, Quaternion.identity);
-        iceTrail.SetGameObjectParent(transform);
-    }
-
     public void BoostAttackStateManagement()
     {
         ShouldBoost = false;
@@ -261,6 +243,13 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
     #endregion
     public Task<ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>> PerformAction(ControllerPackage<PlayerAttackingExecutionState, AttackingDetails> value)
     {
+        if (CurrentGameState.StateBundle == null)
+        {
+            Debug.Log("Bundle is null - skipping CanPlayerAttack!");
+
+            return null;
+        }
+
         DelegateExecutionState(value);
         
         return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>(value));
@@ -314,8 +303,6 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
     public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState.StateBundle = data.StateBundle;
-
-        Debug.Log($"Incoming state in attack controller : {CurrentGameState.StateBundle}");
     }
 
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

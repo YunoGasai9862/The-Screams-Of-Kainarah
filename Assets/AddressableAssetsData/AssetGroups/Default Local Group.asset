@@ -28,7 +28,7 @@ MonoBehaviour:
     - PickableItems
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 48c8d0ed9ac830647a0af690b1f61479
-    m_Address: Prefabs/Player
+    m_Address: Assets/Resources_moved/Prefabs/Player.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - Player

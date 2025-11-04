@@ -1572,6 +1572,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd340cc5115ea94694dd292eb2e84ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  iceTrailPrefabs:
+  - {fileID: 1326094510711206718, guid: f87dcd0b34fb626439aac4d24529af72, type: 3}
+  - {fileID: 6942044088278875987, guid: 05dace05c5d30104880353dab19e2674, type: 3}
 --- !u!1 &2747015121616660501
 GameObject:
   m_ObjectHideFlags: 0
@@ -1739,15 +1742,12 @@ MonoBehaviour:
   ledge:
     serializedVersion: 2
     m_Bits: 8
-  IceTrail: {fileID: 1326094510711206718, guid: f87dcd0b34fb626439aac4d24529af72, type: 3}
-  IceTrail2: {fileID: 6942044088278875987, guid: 05dace05c5d30104880353dab19e2674, type: 3}
   canAttackStateName: Attack
   attackStateName: PlayerAttack
   timeDifferenceStateName: ElapsedTime
   jumpAttackStateName: AttackJ
   booksAttackStateName: BoostAttack
   powerUpBarFillEvent: {fileID: 2401602875940808177, guid: dbdc1cbe1bf814148afa12f2338e0aa3, type: 3}
-  globalGameStateDelegator: {fileID: 7488594600983117778, guid: 530ccccfda1cb2940ad5b09cc8336682, type: 3}
 --- !u!1 &6758309677310741080
 GameObject:
   m_ObjectHideFlags: 0
