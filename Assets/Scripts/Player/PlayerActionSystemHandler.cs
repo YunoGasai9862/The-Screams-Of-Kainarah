@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>, IObserver<ScriptableObject>
 {
@@ -10,10 +11,9 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>, I
     [SerializeField] CrystalUIIncrementEvent crystalUIIncrementEvent;
 
     private Dictionary<String, Func<Collider2D, Task >> _playerActionHandlerDic;
-
-    private InstantiatorController _gameObject;
-
     private PickableItemsUtility PickableItemsUtility { get; set; }
+
+    private InstantiateUtility InstantiateUtilityInstannce { get; set; } = new InstantiateUtility();
 
     private ScriptableObjectDelegator ScriptableObjectDelegator { get; set; }
     private float DIAMOND_PICK_UP_VALUE { get; set; } = 20f;
@@ -49,19 +49,30 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>, I
     private async Task<bool> OnHealthPickup(Collider2D collider)
     {
         Vector2 _pickupPos = new(collider.transform.position.x, collider.transform.position.y - 1f);
-        InstantiatorController _gameObject = pickupEffectInstantiator(PickableItemsUtility.GetGameObject(collider.tag), _pickupPos);
-        _gameObject.DestroyGameObject(3f);
+
+        InstantiateUtilityInstannce.SetPrefab(PickableItemsUtility.GetGameObject(collider.tag));
+
+        InstantiateUtilityInstannce.InstantiateObject(_pickupPos, Quaternion.identity);
+
+        InstantiateUtilityInstannce.DestroyObjectAfter(3f);
+
         return await Task.FromResult(true);
 
     }
 
-    private async Task<bool> OnCrystalPickup(Collider2D collision)
+    private async Task<bool> OnCrystalPickup(Collider2D collider)
     {
-       pickupEffectInstantiator(PickableItemsUtility.GetGameObject(collision.tag), collision.transform.position);
-       playerPowerUpModeEvent.GetInstance().Invoke(DIAMOND_PICK_UP_VALUE);
-       await collision.GetComponent<MoveCrystal>().crystalCollideEvent.Invoke(collision, true);
-       await InvokeCrystalUIEvent(crystalUIIncrementEvent, CRYSTAL_UI_INCREMENT_VALUE);
-       return await Task.FromResult(true);
+        InstantiateUtilityInstannce.SetPrefab(PickableItemsUtility.GetGameObject(collider.tag));
+
+        InstantiateUtilityInstannce.InstantiateObject(collider.transform.position, Quaternion.identity);
+
+        playerPowerUpModeEvent.GetInstance().Invoke(DIAMOND_PICK_UP_VALUE);
+
+        await collider.GetComponent<MoveCrystal>().crystalCollideEvent.Invoke(collider, true);
+
+        await InvokeCrystalUIEvent(crystalUIIncrementEvent, CRYSTAL_UI_INCREMENT_VALUE);
+
+        return await Task.FromResult(true);
     }
 
     private Task InvokeCrystalUIEvent(CrystalUIIncrementEvent crystalUIIncrementEvent, int crystalValue)
@@ -79,12 +90,6 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>, I
     private void OnDisable()
     {
         PlayerObserverListenerHelper.ColliderSubjects.RemoveOberver(this); //Remove PlayerActionSystem as an observer when an event is handled/or the observer is no longer needed
-    }
-    private InstantiatorController pickupEffectInstantiator(GameObject prefab, Vector3 position)
-    {
-        _gameObject = new(prefab);
-        _gameObject.InstantiateGameObject(position, Quaternion.identity);
-        return _gameObject;
     }
 
     public void OnNotify(Collider2D data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

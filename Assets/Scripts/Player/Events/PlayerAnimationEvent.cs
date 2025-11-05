@@ -10,9 +10,9 @@ public class PlayerAnimationEvent: MonoBehaviour
     {
         iceTrailPrefabs.ForEach(prefab =>
         {
-            InstantiatorController iceTrail = new(prefab);
-            iceTrail.InstantiateGameObject(transform.position, Quaternion.identity);
-            iceTrail.SetGameObjectParent(transform);
+            InstantiateUtility iceTrail = new(prefab);
+            iceTrail.InstantiateObject(transform.position, Quaternion.identity);
+            iceTrail.SetObjectsParent(transform);
         });
     }
 }

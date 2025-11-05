@@ -856,6 +856,7 @@ GameObject:
   - component: {fileID: 3141289391138608163}
   - component: {fileID: 4384524292391764552}
   - component: {fileID: 1530532710849007330}
+  - component: {fileID: 711252207702442547}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -1572,6 +1573,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd340cc5115ea94694dd292eb2e84ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &711252207702442547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357857119552702225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 055bc56c2af200b44a311860c8127b81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationEvent
   iceTrailPrefabs:
   - {fileID: 1326094510711206718, guid: f87dcd0b34fb626439aac4d24529af72, type: 3}
   - {fileID: 6942044088278875987, guid: 05dace05c5d30104880353dab19e2674, type: 3}

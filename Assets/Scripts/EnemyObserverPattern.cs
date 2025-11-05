@@ -24,7 +24,7 @@ public class EnemyObserverPattern : MonoBehaviour, IExtendedObserver<Collider2D,
 
     private Dictionary<string, System.Action<object, object>> enemyActionDictionary;
     private AnimationStateMachine _stateTracker;
-    private InstantiatorController _gameObjectCreator;
+    private InstantiateUtility _gameObjectCreator;
     private GameObject _enemyGameObject;
     private int animationPosInTheObject;
     public GameObject enemyGameObject { get => _enemyGameObject; set=>_enemyGameObject = value;}
@@ -32,7 +32,7 @@ public class EnemyObserverPattern : MonoBehaviour, IExtendedObserver<Collider2D,
     private void Awake()
     {
         _stateTracker = new AnimationStateMachine(animator);
-        _gameObjectCreator = new InstantiatorController(Hit);
+        _gameObjectCreator = new InstantiateUtility(Hit);
         enemyActionDictionary = new Dictionary<string, System.Action<object, object>>() //object is required here
         {
             {"Sword",  (animName,  value) => PlayHitAnimation(animName, value)}, //lambda expression for passing values
@@ -57,9 +57,9 @@ public class EnemyObserverPattern : MonoBehaviour, IExtendedObserver<Collider2D,
     }
     private async void HandleGameObjectCreation()
     {
-        _gameObjectCreator.InstantiateGameObject(_enemyGameObject.transform.position, Quaternion.identity);
+        _gameObjectCreator.InstantiateObject(_enemyGameObject.transform.position, Quaternion.identity);
         await Task.Delay(1000);
-        _gameObjectCreator.DestroyGameObject(0f);
+        _gameObjectCreator.DestroyObjectAfter();
     }
     public void OnNotify(Collider2D Data, string value1, bool value2)
     {

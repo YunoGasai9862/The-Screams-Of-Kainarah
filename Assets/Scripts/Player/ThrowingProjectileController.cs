@@ -53,9 +53,9 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, IObs
     }
     private void ThrowDagger(GameObject prefab)
     {
-        InstantiatorController dagger = new(prefab);
+        InstantiateUtility dagger = new(prefab);
 
-        GameObject daggerGameObject = dagger.InstantiateGameObject(GetDaggerPositionWithOffset(2, -1), Quaternion.identity);
+        GameObject daggerGameObject = dagger.InstantiateObject(GetDaggerPositionWithOffset(2, -1), Quaternion.identity);
 
         InventoryManagementSystem.Instance.RemoveInvoke(prefab.gameObject.tag); //invoking event for removal
 
