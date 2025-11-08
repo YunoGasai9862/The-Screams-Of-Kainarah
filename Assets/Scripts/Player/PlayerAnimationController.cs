@@ -144,6 +144,9 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
                 MovementAnimation(package.Value);
                 break;
 
+            case PlayerAnimationExecutionState.RESET:
+                //TODO
+                break;
             default:
                 break;
         }

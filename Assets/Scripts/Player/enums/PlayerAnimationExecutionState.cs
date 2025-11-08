@@ -4,5 +4,7 @@ public enum PlayerAnimationExecutionState
 
     PLAY_SLIDING_ANIMATION,
 
-    PLAY_MOVEMENT_ANIMATION
+    PLAY_MOVEMENT_ANIMATION,
+
+    RESET
 }
