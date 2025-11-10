@@ -17,8 +17,6 @@ namespace PlayerAnimationHandler
         }
         public void AnimationPlayForInt(string constName, int state)
         {
-            //GETTING SPAMMED WITH IDLE 0 all the time
-            //MAKE DECISION TO NOT LET THE IDLE ANIMATION SPAM!!
             _animator.SetInteger(constName, state);
         }
         public void AnimationPlayForBool(string constName, bool state)
@@ -28,6 +26,34 @@ namespace PlayerAnimationHandler
         public void AnimationPlayForFloat(string constName, float state)
         {
             _animator.SetFloat(constName, state);
+        }
+
+        public void ResetParameters()
+        {
+            foreach (AnimatorControllerParameter parameter in _animator.parameters)
+            {
+                switch(parameter.type)
+                {
+                    case AnimatorControllerParameterType.Float:
+                        _animator.SetFloat(parameter.name, 0f);
+                        break;
+
+                    case AnimatorControllerParameterType.Bool:
+                        _animator.SetBool(parameter.name, false);
+                        break;
+
+                    case AnimatorControllerParameterType.Int:
+                        _animator.SetInteger(parameter.name, 0);
+                        break;
+
+                    case AnimatorControllerParameterType.Trigger:
+                        _animator.ResetTrigger(_animator.GetInteger(parameter.name)); 
+                        break;
+
+                    default:
+                        throw new System.Exception($"Unknown type: {parameter.type}");
+                }
+            }
         }
     }
 }

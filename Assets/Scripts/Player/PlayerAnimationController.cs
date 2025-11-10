@@ -145,11 +145,16 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
                 break;
 
             case PlayerAnimationExecutionState.RESET:
-                //TODO
+                ResetAnimations();
                 break;
             default:
                 break;
         }
+    }
+
+    private void ResetAnimations()
+    {
+        AnimationStateMachine.ResetParameters();
     }
 
     private IEnumerator NotifyAnimationDetailsObservers(IObserver<AnimationDetails> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
