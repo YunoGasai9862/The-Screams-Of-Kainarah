@@ -27,9 +27,7 @@ public class PlayerStateMachineReset: StateMachineBehaviour
         {
             StateBundle = new PlayerStateBundle()
             {
-                PlayerActionState = new State<ActionState, bool>() { CurrentState = ActionState.IDLE, CurrentValue = true, IsConcluded = false },
-                PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_IDLE, CurrentValue = true, IsConcluded = false },
-                PlayerAttackState = new State<AttackState, bool>() { CurrentState = AttackState.IDLE, CurrentValue = true, IsConcluded = false }
+                PlayerGlobalState = new State<GlobalState, bool>() { CurrentState = GlobalState.RESET, CurrentValue = true, IsConcluded = false }
             }
         });
     }

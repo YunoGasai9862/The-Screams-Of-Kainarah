@@ -1,5 +1,7 @@
 public class PlayerStateBundle : IStateBundle
 {
+    public State<GlobalState, bool> PlayerGlobalState { get; set; } = new State<GlobalState, bool>();
+
     public State<ActionState, bool> PlayerActionState { get; set; } = new State<ActionState, bool>();
 
     public State<MovementState, bool> PlayerMovementState { get; set; } = new State<MovementState, bool>();
@@ -17,7 +19,8 @@ public class PlayerStateBundle : IStateBundle
         {
             PlayerActionState = this.PlayerActionState,
             PlayerMovementState = this.PlayerMovementState,
-            PlayerAttackState = this.PlayerAttackState
+            PlayerAttackState = this.PlayerAttackState,
+            PlayerGlobalState = this.PlayerGlobalState
         };
     }
 }

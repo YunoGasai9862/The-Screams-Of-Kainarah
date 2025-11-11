@@ -28,6 +28,11 @@ public class PlayerAnimationResetController : MonoBehaviour, IObserver<GenericSt
 
     private async Task ResetAnimation(PlayerStateBundle playerStateBundle)
     {
+        if (!playerStateBundle.PlayerGlobalState.CurrentValue)
+        {
+            return;
+        }
+
         await AnimationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>()
         {
             ExecutionState = PlayerAnimationExecutionState.RESET,
@@ -37,6 +42,15 @@ public class PlayerAnimationResetController : MonoBehaviour, IObserver<GenericSt
 
     public async void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        await ResetAnimation(data.StateBundle);
+        switch (data.StateBundle.PlayerGlobalState.CurrentState)
+        {
+            case GlobalState.ANEW:
+                break;
+            case GlobalState.RESET:
+                await ResetAnimation(data.StateBundle);
+                break;
+            default:
+                break;
+        }
     }
 }

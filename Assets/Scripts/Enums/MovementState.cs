@@ -8,5 +8,5 @@ public enum MovementState
 
     IS_FALLING = 3,
 
-    IS_SLIDING = 4
+    IS_SLIDING = 4,
 }
