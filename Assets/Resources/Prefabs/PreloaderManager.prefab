@@ -45,8 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dependencies:
-  - dependency: {fileID: 0}
-    dependencyType: 1
-  - dependency: {fileID: 1209952798196197149, guid: 059364ee1a310464fa7b85373891d09d, type: 3}
-    dependencyType: 0
+  - entity: {fileID: 1209952798196197149, guid: 059364ee1a310464fa7b85373891d09d, type: 3}
+    reloadEntityType: 0
+  - entity: {fileID: 0}
+    reloadEntityType: 1
+  poolObjects: []
   preloadedEntitiesEvent: {fileID: 0}

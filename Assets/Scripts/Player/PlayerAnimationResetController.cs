@@ -28,11 +28,6 @@ public class PlayerAnimationResetController : MonoBehaviour, IObserver<GenericSt
 
     private async Task ResetAnimation(PlayerStateBundle playerStateBundle)
     {
-        if (!playerStateBundle.PlayerGlobalState.CurrentValue)
-        {
-            return;
-        }
-
         await AnimationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>()
         {
             ExecutionState = PlayerAnimationExecutionState.RESET,

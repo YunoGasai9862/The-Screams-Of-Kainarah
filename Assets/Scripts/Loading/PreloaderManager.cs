@@ -8,7 +8,10 @@ using System.Linq;
 public class PreloaderManager : MonoBehaviour
 {
     [SerializeField]
-    List<DependencyDto> dependencies;
+    List<PreloadDto> dependencies;
+
+    [SerializeField]
+    List<PreloadDto> poolObjects;
 
     [SerializeField]
     PreloadedEntitiesEvent preloadedEntitiesEvent;
@@ -20,6 +23,8 @@ public class PreloaderManager : MonoBehaviour
     private async void Start()
     {
         await InstantiateDependencies(dependencies);
+
+        await PoolEntites();
 
         await PreloadEntities(EntityPoolManager);
     }
@@ -126,20 +131,25 @@ public class PreloaderManager : MonoBehaviour
         await preloadedEntitiesEvent.Invoke(PreloadedEntities);
     }
 
-    private async Task InstantiateDependencies(List<DependencyDto> dependencies)
+    private async Task PoolEntites()
     {
-        foreach (DependencyDto dependency in dependencies)
+
+    }
+
+    private async Task InstantiateDependencies(List<PreloadDto> dependencies)
+    {
+        foreach (PreloadDto dependency in dependencies)
         {
-            switch(dependency.DependencyType)
+            switch(dependency.PreloadEntityType)
             {
-                case DependencyType.GAMELOAD:
-                    GameLoad = await InstantiateDependency<GameLoad>(dependency.Dependency);
+                case PreloadEntityType.GAMELOAD:
+                    GameLoad = await InstantiateDependency<GameLoad>(dependency.Entity);
                     break;
-                case DependencyType.ENTITYPOOL_MANAGER:
-                    EntityPoolManager = await InstantiateDependency<EntityPoolManager>(dependency.Dependency);
+                case PreloadEntityType.ENTITYPOOL_MANAGER:
+                    EntityPoolManager = await InstantiateDependency<EntityPoolManager>(dependency.Entity);
                     break;
                 default:
-                    throw new ApplicationException($"Unknown dependency type found: {dependency.DependencyType}");
+                    throw new ApplicationException($"Unknown dependency type found: {dependency.PreloadEntityType}");
             }
         }
     }

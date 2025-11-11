@@ -145,15 +145,20 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
                 break;
 
             case PlayerAnimationExecutionState.RESET:
-                ResetAnimations();
+                ResetAnimations(package.Value);
                 break;
             default:
                 break;
         }
     }
 
-    private void ResetAnimations()
+    private void ResetAnimations(PlayerStateBundle playerStateBundle)
     {
+        if (!playerStateBundle.PlayerGlobalState.CurrentValue)
+        {
+            return;
+        }
+
         AnimationStateMachine.ResetParameters();
     }
 
