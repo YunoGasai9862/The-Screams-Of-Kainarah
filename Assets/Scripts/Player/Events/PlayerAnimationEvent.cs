@@ -1,18 +1,11 @@
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
-public class PlayerAnimationEvent: MonoBehaviour
+public class PlayerAnimationEvent : MonoBehaviour, IObserver<EntityPoolManager>
 {
-    [SerializeField]
-    List<GameObject> iceTrailPrefabs;
-
-    public void IceTrail()
+    public void OnNotify(EntityPoolManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        iceTrailPrefabs.ForEach(prefab =>
-        {
-            InstantiateUtility iceTrail = new(prefab);
-            iceTrail.InstantiateObject(transform.position, Quaternion.identity);
-            iceTrail.SetObjectsParent(transform);
-        });
+        throw new System.NotImplementedException();
     }
 }

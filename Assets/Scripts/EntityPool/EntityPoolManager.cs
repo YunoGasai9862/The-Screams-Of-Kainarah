@@ -5,7 +5,7 @@ using System.Threading;
 
 public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, ISubject<IObserver<EntityPoolManager>>
 {
-    private Dictionary<string, EntityPool> entityPoolDict = new Dictionary<string, EntityPool>();
+    private Dictionary<string, List<EntityPool>> entityPoolDict = new Dictionary<string, List<EntityPool>>();
 
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
 
@@ -18,11 +18,15 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IS
 
     public void Pool(EntityPool entityPool)
     {
-        entityPoolDict.Add(entityPool.Tag, entityPool);
+        List<EntityPool> entities = entityPoolDict.GetValueOrDefault(entityPool.Tag, new List<EntityPool>());
+
+        entities.Add(entityPool);
+
+        entityPoolDict.Add(entityPool.Tag, entities);
     }
     public void UnPool(string tag)
     { 
-        if (entityPoolDict.TryGetValue(tag, out EntityPool entityPool)) 
+        if (entityPoolDict.TryGetValue(tag, out List<EntityPool> entities)) 
         {
             entityPoolDict.Remove(tag);
         }
@@ -30,38 +34,38 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IS
 
     public void Activate(string tag)
     {
-        if (entityPoolDict.TryGetValue(tag, out EntityPool entityPool))
+        if (entityPoolDict.TryGetValue(tag, out List<EntityPool> entities))
         {
-            if (entityPool.Entity is MonoBehaviour)
+            foreach (EntityPool item in entities)
             {
-                GameObject EntityAsGameObject = (GameObject)entityPool.Entity;
+                if (item.Entity is MonoBehaviour)
+                {
+                    GameObject EntityAsGameObject = (GameObject)item.Entity;
 
-                EntityAsGameObject.SetActive(true);
+                    EntityAsGameObject.SetActive(true);
+                }
             }
         }
     }
     public void Deactivate(string tag)
     {
-        if (entityPoolDict.TryGetValue(tag, out EntityPool entityPool))
+        if (entityPoolDict.TryGetValue(tag, out List<EntityPool> entities))
         {
-            if (entityPool.Entity is MonoBehaviour)
+            foreach (EntityPool item in entities)
             {
-                GameObject EntityAsGameObject = (GameObject)entityPool.Entity;
+                if (item.Entity is MonoBehaviour)
+                {
+                    GameObject EntityAsGameObject = (GameObject)item.Entity;
 
-                EntityAsGameObject.SetActive(false);
+                    EntityAsGameObject.SetActive(false);
+                }
             }
         }
     }
 
-    public EntityPool GetPooledEntity(string tag)
+    public List<EntityPool> GetPooledEntity(string tag)
     {
-
-        if (entityPoolDict.TryGetValue(tag, out EntityPool entityPool))
-        {
-            return entityPool;
-        }
-
-        return null;
+        return entityPoolDict.GetValueOrDefault(tag, new List<EntityPool>());
     }
 
     private async void SetEntityPoolManagerDelegator()

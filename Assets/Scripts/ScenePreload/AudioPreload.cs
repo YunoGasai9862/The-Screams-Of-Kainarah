@@ -111,11 +111,14 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     {
         yield return new WaitUntil(() => EntityPoolManager != null && AWSPollyManager != null);
 
-        EntityPool dialogues = EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
+        List<EntityPool> dialogues = EntityPoolManager.GetPooledEntity(Constants.DIALOGUES_AND_OPTIONS);
 
-        DialoguesAndOptions = (DialoguesAndOptions)(dialogues.Entity);
+        dialogues.ForEach(dialogue =>
+        {
+            DialoguesAndOptions = (DialoguesAndOptions)(dialogue.Entity);
 
-        StartCoroutine(PreloadAudio(DialoguesAndOptions));
+            StartCoroutine(PreloadAudio(DialoguesAndOptions));
+        });
     }
 
     public void OnNotify(EntityPoolManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

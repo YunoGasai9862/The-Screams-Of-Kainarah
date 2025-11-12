@@ -24,7 +24,7 @@ public class PreloaderManager : MonoBehaviour
     {
         await InstantiateDependencies(dependencies);
 
-        await PoolEntites();
+        await PoolEntites(poolObjects, EntityPoolManager);
 
         await PreloadEntities(EntityPoolManager);
     }
@@ -131,9 +131,12 @@ public class PreloaderManager : MonoBehaviour
         await preloadedEntitiesEvent.Invoke(PreloadedEntities);
     }
 
-    private async Task PoolEntites()
+    private async Task PoolEntites(List<PreloadDto> entities, EntityPoolManager entityPoolManager)
     {
-
+        foreach (PreloadDto item in poolObjects)
+        {
+            await AddToPool(item.Entity, entityPoolManager);
+        }
     }
 
     private async Task InstantiateDependencies(List<PreloadDto> dependencies)

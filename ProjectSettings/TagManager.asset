@@ -54,6 +54,7 @@ TagManager:
   - AWSPollyManager
   - FirebaseStoreManager
   - AsyncCoroutine
+  - IceSecondary
   layers:
   - Default
   - TransparentFX
