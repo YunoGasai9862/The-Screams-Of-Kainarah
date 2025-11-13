@@ -12,8 +12,6 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
     private MouseClickEvent _onMouseClickEvent = new MouseClickEvent();
 
-    private PlayerBoostAttackEvent _playerBoostAttackEvent = new PlayerBoostAttackEvent();
-
     private MovementHelperClass _movementHelper;
 
     private bool _isPlayerEligibleForStartingAttack = false;
@@ -54,6 +52,8 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
     [SerializeField] string booksAttackStateName;
 
     [SerializeField] PowerUpBarFillEvent powerUpBarFillEvent;
+
+    [SerializeField] PlayerBoostAttackEvent playerBoostAttackEvent;
 
 
     private async void Awake()
@@ -99,7 +99,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
         //event subscription
         _onMouseClickEvent.AddListener(SetMouseClickBeginEndTime);
-        _playerBoostAttackEvent.AddListener(SetAttackBoostMode);
+        playerBoostAttackEvent.AddListener(SetAttackBoostMode);
 
         //Monobehavior event
         powerUpBarFillEvent.AddListener(PowerUpFillMode);
@@ -233,14 +233,6 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
                !CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState.Equals(MovementState.IS_JUMPING);
     }
 
-    #region AnimationEventOnTheAnimationItself
-    public void BoostAttackStateManagement()
-    {
-        ShouldBoost = false;
-        _playerBoostAttackEvent.Invoke(ShouldBoost);
-    }
-
-    #endregion
     public Task<ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>> PerformAction(ControllerPackage<PlayerAttackingExecutionState, AttackingDetails> value)
     {
         if (CurrentGameState.StateBundle == null)
@@ -293,7 +285,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         else
             ShouldBoost = false;
 
-        _playerBoostAttackEvent.Invoke(ShouldBoost);
+        playerBoostAttackEvent.Invoke(ShouldBoost);
     }
     public void PowerUpFillMode(bool filledUp)
     {
