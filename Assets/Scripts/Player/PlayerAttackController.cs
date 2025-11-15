@@ -35,6 +35,8 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
+    private PlayerBoostAttackEvent PlayerBoostAttackEvent { get; set; }
+
     private Player Player { get; set; }
         
     [SerializeField] LayerMask Ground;
@@ -53,8 +55,6 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
     [SerializeField] PowerUpBarFillEvent powerUpBarFillEvent;
 
-    [SerializeField] PlayerBoostAttackEvent playerBoostAttackEvent;
-
 
     private async void Awake()
     {
@@ -65,6 +65,8 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
 
         PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
+
+        PlayerBoostAttackEvent = await Helper.GetCustomEvent<PlayerBoostAttackEvent>();    
 
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
@@ -99,7 +101,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
         //event subscription
         _onMouseClickEvent.AddListener(SetMouseClickBeginEndTime);
-        playerBoostAttackEvent.AddListener(SetAttackBoostMode);
+        PlayerBoostAttackEvent.AddListener(SetAttackBoostMode);
 
         //Monobehavior event
         powerUpBarFillEvent.AddListener(PowerUpFillMode);
@@ -285,7 +287,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         else
             ShouldBoost = false;
 
-        playerBoostAttackEvent.Invoke(ShouldBoost);
+        PlayerBoostAttackEvent.Invoke(ShouldBoost);
     }
     public void PowerUpFillMode(bool filledUp)
     {

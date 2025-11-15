@@ -49,5 +49,9 @@ MonoBehaviour:
     reloadEntityType: 0
   - entity: {fileID: 0}
     reloadEntityType: 1
-  poolObjects: []
+  poolObjects:
+  - entity: {fileID: 6942044088278875987, guid: 05dace05c5d30104880353dab19e2674, type: 3}
+    reloadEntityType: 2
+  - entity: {fileID: 1326094510711206718, guid: f87dcd0b34fb626439aac4d24529af72, type: 3}
+    reloadEntityType: 2
   preloadedEntitiesEvent: {fileID: 0}

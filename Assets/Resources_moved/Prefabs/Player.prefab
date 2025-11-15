@@ -1586,8 +1586,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 055bc56c2af200b44a311860c8127b81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationEvent
-  iceTrailPrefabs:
-  - {fileID: 0}
+  iceTrailTag: Ice
 --- !u!1 &2747015121616660501
 GameObject:
   m_ObjectHideFlags: 0

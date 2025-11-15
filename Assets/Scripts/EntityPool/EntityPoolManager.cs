@@ -21,7 +21,7 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IS
 
         entities.Add(entityPool);
 
-        EntityPoolDict.Add(entityPool.Tag, entities);
+        EntityPoolDict[entityPool.Tag] = entities;
     }
     public void UnPool(string tag)
     { 

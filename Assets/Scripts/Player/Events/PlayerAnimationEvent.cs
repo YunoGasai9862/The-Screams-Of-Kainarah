@@ -9,8 +9,7 @@ public class PlayerAnimationEvent : MonoBehaviour, IObserver<EntityPoolManager>
     [SerializeField]
     private string iceTrailTag;
 
-    [SerializeField] 
-    PlayerBoostAttackEvent playerBoostAttackEvent;
+    private PlayerBoostAttackEvent PlayerBoostAttackEvent { get; set; }
 
     private EntityPoolManager EntityPoolManager { get; set; }
 
@@ -21,6 +20,8 @@ public class PlayerAnimationEvent : MonoBehaviour, IObserver<EntityPoolManager>
     private async void Start()
     {
         EntityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
+
+        PlayerBoostAttackEvent = await Helper.GetCustomEvent<PlayerBoostAttackEvent>();
 
         EntityPoolManagerDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EntityPoolManager).ToString()), CancellationToken.None);
     }
@@ -37,7 +38,7 @@ public class PlayerAnimationEvent : MonoBehaviour, IObserver<EntityPoolManager>
 
     public void DesolveBoostAttack()
     {
-        playerBoostAttackEvent.Invoke(false);
+        PlayerBoostAttackEvent.Invoke(false);
     }
 
     private async Task<List<GameObject>> GetObjects(string tag)
