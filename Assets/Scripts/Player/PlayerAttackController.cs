@@ -6,22 +6,12 @@ using UnityEngine;
 
 public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<PlayerAttackController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<Player>
 {
-    private const float TIME_DIFFERENCE_MAX = 1.5f;
-
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
 
-    private MouseClickEvent _onMouseClickEvent = new MouseClickEvent();
-
     private MovementHelperClass _movementHelper;
-
-    private bool _isPlayerEligibleForStartingAttack = false;
-
-    private float timeDifferencebetweenStates;
     private GenericStateBundle<PlayerStateBundle> CurrentPlayerState { get; set; } = new GenericStateBundle<PlayerStateBundle>();
     private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
-    private int PlayerAttackStateInt { get; set; }
-    private string PlayerAttackStateName { get; set; }
-    private bool LeftMouseButtonPressed { get; set; }
+    private int PlayerAttackStateInt { get; set; }    private bool LeftMouseButtonPressed { get; set; }
     private bool BoostKeyPressed { get; set; }
     private bool ShouldBoost { get; set; }
     private bool PowerUpBarFilled { get; set; } = false;
@@ -36,6 +26,8 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
     private PlayerBoostAttackEvent PlayerBoostAttackEvent { get; set; }
+
+    private MouseClickDto MouseClickDto { get; set; } = new MouseClickDto();
 
     private Player Player { get; set; }
         
@@ -98,12 +90,8 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None));
 
-
-        //event subscription
-        _onMouseClickEvent.AddListener(SetMouseClickBeginEndTime);
         PlayerBoostAttackEvent.AddListener(SetAttackBoostMode);
 
-        //Monobehavior event
         powerUpBarFillEvent.AddListener(PowerUpFillMode);
     }
 
@@ -143,13 +131,9 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
             return;
         }
 
-
-        _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
-
         CurrentPlayerState.StateBundle.PlayerAttackState = new State<AttackState, bool>() { CurrentState = AttackState.IS_ATTACKING, CurrentValue = true, IsConcluded = false };
 
         PlayerAttackStateMachine.SetAttackState(jumpAttackStateName, (int)CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState); //no jump attack
-
     }
    
     private void PlayerAttackMechanism<T>(bool isPlayerEligibleForStartingAttack)
@@ -158,9 +142,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         {
             PlayerAttackStateMachine.SetAttackState(attackStateName, PlayerAttackStateInt); //toggles state
 
-            timeDifferencebetweenStates = _onMouseClickEvent.TimeDifferenceBetweenPressAndRelease();
-
-            PlayerAttackStateMachine.TimeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName, timeDifferencebetweenStates); //keeps track of time elapsed
+            PlayerAttackStateMachine.TimeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName, MouseClickDto.TimeDifference); //keeps track of time elapsed
 
         }
     }
@@ -228,12 +210,8 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
     public void SetMouseClickBeginEndTime(float startTime, float endTime)
     {
-        _onMouseClickEvent.ClickStartTime = startTime;
-        _onMouseClickEvent.ClickEndTime = endTime;
-    }
-    public void InvokeOnMouseClickEvent(float startTime, float endTime)
-    {
-        _onMouseClickEvent.Invoke(startTime, endTime);
+        MouseClickDto.ClickStartTime = startTime;
+        MouseClickDto.ClickEndTime = endTime;
     }
 
     public void AlertBoostEventForKeyPressed(bool keyPressed)
@@ -275,7 +253,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         switch(controllerPackage.ExecutionState)
         {
             case PlayerAttackingExecutionState.ON_CLICK_EVENT:
-                InvokeOnMouseClickEvent(controllerPackage.Value.AttackingStartTime, controllerPackage.Value.AttackingEndTime);
+                SetMouseClickBeginEndTime(controllerPackage.Value.AttackingStartTime, controllerPackage.Value.AttackingEndTime);
                 break;
 
             case PlayerAttackingExecutionState.ATTACKING_ACTION:
