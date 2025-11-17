@@ -113,19 +113,13 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
         if (CanPlayerAttack())
         {
-            Debug.Log($"Yes can attack: {LeftMouseButtonPressed}");
-
             CurrentPlayerState.StateBundle.PlayerAttackState = new State<AttackState, bool>() { CurrentState = AttackState.IS_ATTACKING,  CurrentValue = true, IsConcluded = false };
 
             PlayerStateEvent.Invoke(CurrentPlayerState);
 
-            //keeps track of attacking state
-            (PlayerAttackStateInt, PlayerAttackStateName, _isPlayerEligibleForStartingAttack) = GetEnumStateAndName<PlayerAttackEnum.PlayerAttackSlash>( PlayerAttackStateInt, (int)PlayerAttackEnum.PlayerAttackSlash.Attack);
-
-            //sets the initial configuration for the attacking system
             PlayerAttackStateMachine.CanAttack(canAttackStateName, LeftMouseButtonPressed);
 
-            PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>(_isPlayerEligibleForStartingAttack);
+            PlayerAttackMechanism<PlayerAttackEnum.PlayerAttackSlash>(LeftMouseButtonPressed);
 
         }
 
@@ -142,6 +136,14 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
     private void EndPlayerAttack()
     {
+        if (CurrentPlayerState.StateBundle == null)
+        {
+            Debug.Log("CurrentPlayerState.StateBundle is null - skipping EndPlayerAttack!");
+
+            return;
+        }
+
+
         _isPlayerEligibleForStartingAttack = false; //stops so not to create an endless cycle
 
         CurrentPlayerState.StateBundle.PlayerAttackState = new State<AttackState, bool>() { CurrentState = AttackState.IS_ATTACKING, CurrentValue = true, IsConcluded = false };
@@ -149,30 +151,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         PlayerAttackStateMachine.SetAttackState(jumpAttackStateName, (int)CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState); //no jump attack
 
     }
-    private (int, string, bool) GetEnumStateAndName<T>(int playerAttackState, int initialStateOfTheEnum)
-    {
-        int enumSize = GetLenthofEnum<T>(); //returns the length of the Enum
-        string playerAttackStateName = String.Empty;
-
-        foreach (T PAS in Enum.GetValues(typeof(T)))
-        {
-            int dummy = Convert.ToInt32(PAS) - 1; //converts to INTEnumStateManipulator
-
-            if (playerAttackState == dummy)
-            {
-                dummy++;
-
-                playerAttackState = dummy <= enumSize ? dummy : initialStateOfTheEnum; //sets to the initial State of the Enum
-
-                playerAttackStateName = Enum.GetName(typeof(T), playerAttackState);
-
-                return (playerAttackState, playerAttackStateName, true);
-            }
-        }
-
-        return (playerAttackState, playerAttackStateName, false);
-    }
-
+   
     private void PlayerAttackMechanism<T>(bool isPlayerEligibleForStartingAttack)
     {
         if (isPlayerEligibleForStartingAttack) //cast Type <T>
@@ -181,37 +160,9 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
             timeDifferencebetweenStates = _onMouseClickEvent.TimeDifferenceBetweenPressAndRelease();
 
-            PlayerAttackStateMachine.TimeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName, timeDifferencebetweenStates);     //keeps track of time elapsed
+            PlayerAttackStateMachine.TimeDifferenceRequiredBetweenTwoStates(timeDifferenceStateName, timeDifferencebetweenStates); //keeps track of time elapsed
 
         }
-
-        if (IsEnumValueEqualToLengthOfEnum<T>(PlayerAttackStateName) || (IsTimeDifferenceWithinRange(timeDifferencebetweenStates, TIME_DIFFERENCE_MAX) &&
-            PlayerAttackStateName != PlayerAttackStateMachine.GetStateNameThroughEnum(1))) //dont do it for the first attackState
-        {
-            ResetAttackingState();
-            return;
-        }
-    }
-    private bool IsTimeDifferenceWithinRange(float value, float upperBoundary)
-    {
-        return value > upperBoundary;
-    }
-    private void ResetAttackingState()
-    {
-        PlayerAttackStateInt = 0; //resets the attackingstate
-
-        CurrentPlayerState.StateBundle.PlayerAttackState = new State<AttackState, bool>() { CurrentState = AttackState.IS_ATTACKING, CurrentValue = false, IsConcluded = true };
-
-        PlayerStateEvent.Invoke(CurrentPlayerState);
-
-        PlayerAttackStateMachine.CanAttack(canAttackStateName, CurrentPlayerState.StateBundle.PlayerAttackState.IsConcluded);
-
-        PlayerAttackStateMachine.CanAttack(jumpAttackStateName, !CurrentPlayerState.StateBundle.PlayerAttackState.IsConcluded);
-    }
-
-    private bool IsEnumValueEqualToLengthOfEnum<T>(string _playerAttackStateName)
-    {
-        return (int)Enum.Parse(typeof(T), _playerAttackStateName) == GetLenthofEnum<T>();
     }
 
     private int GetLenthofEnum<T>()
@@ -226,6 +177,14 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
             return false;
         }
+
+        if (CurrentGameState.StateBundle.GameState == null)
+        {
+            Debug.Log("StateBundle.GameState is null - skipping CanPlayerAttack!");
+
+            return false;
+        }
+
 
         bool isInventoryOpen = SceneSingleton.GetInventoryManager().IsPouchOpen;
 
