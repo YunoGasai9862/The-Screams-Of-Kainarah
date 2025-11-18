@@ -27,7 +27,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
     private PlayerBoostAttackEvent PlayerBoostAttackEvent { get; set; }
 
-    private MouseClickDto MouseClickDto { get; set; } = new MouseClickDto();
+    private MouseClickDto MouseClickDto { get; set; }
 
     private Player Player { get; set; }
         
@@ -208,12 +208,6 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         PlayerAttackStateMachine.SetAttackState(booksAttackStateName, shouldBoost);
     }
 
-    public void SetMouseClickBeginEndTime(float startTime, float endTime)
-    {
-        MouseClickDto.ClickStartTime = startTime;
-        MouseClickDto.ClickEndTime = endTime;
-    }
-
     public void AlertBoostEventForKeyPressed(bool keyPressed)
     {
         BoostKeyPressed = keyPressed;
@@ -253,7 +247,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         switch(controllerPackage.ExecutionState)
         {
             case PlayerAttackingExecutionState.ON_CLICK_EVENT:
-                SetMouseClickBeginEndTime(controllerPackage.Value.AttackingStartTime, controllerPackage.Value.AttackingEndTime);
+                MouseClickDto = controllerPackage.Value.MouseClickDto;
                 break;
 
             case PlayerAttackingExecutionState.ATTACKING_ACTION:

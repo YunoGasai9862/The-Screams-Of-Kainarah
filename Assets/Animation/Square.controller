@@ -180,7 +180,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 4
     m_ConditionEvent: ElapsedTime
-    m_EventTreshold: 1
+    m_EventTreshold: 0.1
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 9029469569708059048}
   m_Solo: 0
@@ -400,6 +400,18 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &-3149870844464502471
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299ce7c9464d9ca4cb158009f7ceb0a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttackStateMachineReset
 --- !u!1101 &-2808968069842069090
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -475,6 +487,7 @@ AnimatorState:
   - {fileID: -3475194552974987436}
   m_StateMachineBehaviours:
   - {fileID: 6473595167454790240}
+  - {fileID: 4876755851426354415}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -526,7 +539,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 4
     m_ConditionEvent: ElapsedTime
-    m_EventTreshold: 1
+    m_EventTreshold: 0.1
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2249588328966494599}
   m_Solo: 0
@@ -558,6 +571,7 @@ AnimatorState:
   - {fileID: 5337020999981087010}
   m_StateMachineBehaviours:
   - {fileID: 2894973083427158081}
+  - {fileID: 3473137272541279709}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -767,7 +781,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 4
     m_ConditionEvent: ElapsedTime
-    m_EventTreshold: 1
+    m_EventTreshold: 0.1
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1082994933963640561}
   m_Solo: 0
@@ -848,6 +862,7 @@ AnimatorState:
   - {fileID: 2099310863003867576}
   m_StateMachineBehaviours:
   - {fileID: -7887279641330843658}
+  - {fileID: -3149870844464502471}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -936,6 +951,18 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &2247229210754119658
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299ce7c9464d9ca4cb158009f7ceb0a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttackStateMachineReset
 --- !u!114 &2501250450480551530
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1019,6 +1046,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7519172bd057ca64ca6081db0ec21b3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStateMachineReset
+--- !u!114 &3473137272541279709
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299ce7c9464d9ca4cb158009f7ceb0a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttackStateMachineReset
 --- !u!1101 &3494663456262650916
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1055,9 +1094,6 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: Attack
     m_EventTreshold: 0
-  - m_ConditionMode: 6
-    m_ConditionEvent: PlayerAttack
-    m_EventTreshold: 1
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -1423219879816258009}
   m_Solo: 0
@@ -1206,6 +1242,18 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &4876755851426354415
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299ce7c9464d9ca4cb158009f7ceb0a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttackStateMachineReset
 --- !u!1101 &5318968581257373182
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1638,9 +1686,6 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: Attack
     m_EventTreshold: 0
-  - m_ConditionMode: 6
-    m_ConditionEvent: PlayerAttack
-    m_EventTreshold: 1
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -1423219879816258009}
   m_Solo: 0
@@ -1669,6 +1714,7 @@ AnimatorState:
   - {fileID: -818939586508150195}
   m_StateMachineBehaviours:
   - {fileID: -2785052917848819980}
+  - {fileID: 2247229210754119658}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1

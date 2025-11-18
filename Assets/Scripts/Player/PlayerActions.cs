@@ -322,8 +322,11 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
             ExecutionState = PlayerAttackingExecutionState.ON_CLICK_EVENT,
             Value = new AttackingDetails()
             {
-                AttackingStartTime = _playerActionsModel.TimeForMouseClickStart,
-                AttackingEndTime = _playerActionsModel.TimeForMouseClickEnd
+                MouseClickDto = new MouseClickDto()
+                {
+                    ClickStartTime  = _playerActionsModel.TimeForMouseClickStart,
+                    ClickEndTime = _playerActionsModel.TimeForMouseClickEnd
+                }
             }
         });
 
@@ -348,8 +351,11 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
             ExecutionState = PlayerAttackingExecutionState.ON_CLICK_EVENT,
             Value = new AttackingDetails()
             {
-                AttackingStartTime = _playerActionsModel.TimeForMouseClickStart,
-                AttackingEndTime = _playerActionsModel.TimeForMouseClickEnd
+                MouseClickDto = new MouseClickDto()
+                {
+                    ClickStartTime = _playerActionsModel.TimeForMouseClickStart,
+                    ClickEndTime = _playerActionsModel.TimeForMouseClickEnd
+                }
             }
         });
 
