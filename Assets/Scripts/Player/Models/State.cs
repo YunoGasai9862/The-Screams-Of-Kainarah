@@ -1,4 +1,6 @@
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 public class State<T, Z> where T: Enum 
 {
@@ -8,9 +10,11 @@ public class State<T, Z> where T: Enum
 
     public bool IsConcluded { get; set; }
 
+    public Reset Reset { get; set; }
+
     public override string ToString()
     {
-        return $"Current Statue: {CurrentState}, CurrentValue: {CurrentValue}, IsConcluded: {IsConcluded}";
+        return $"Current State: {CurrentState}, IsConcluded: {IsConcluded}, Reset: {Reset?.ToString()}";
     }
 }
 
@@ -20,8 +24,10 @@ public class State<T> where T : Enum
 
     public bool IsConcluded { get; set; }
 
+    public Reset Reset { get; set; }
+
     public override string ToString()
     {
-        return $"Current Statue: {CurrentState}, IsConcluded: {IsConcluded}";
+        return $"Current State: {CurrentState}, IsConcluded: {IsConcluded}, Reset: {Reset?.ToString()}";
     }
 }

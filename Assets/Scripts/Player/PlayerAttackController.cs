@@ -147,10 +147,6 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         }
     }
 
-    private int GetLenthofEnum<T>()
-    {
-        return Enum.GetNames(typeof(T)).Length;
-    }
     public bool CanPlayerAttack()
     {
         if (CurrentGameState.StateBundle == null)

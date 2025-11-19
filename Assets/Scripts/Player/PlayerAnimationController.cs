@@ -154,12 +154,24 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private void ResetAnimations(PlayerStateBundle playerStateBundle)
     {
+        GlobalReset(playerStateBundle);
+
+        SpecificReset(playerStateBundle);
+    }
+
+    private void GlobalReset(PlayerStateBundle playerStateBundle)
+    {
         if (!playerStateBundle.PlayerGlobalState.CurrentValue)
         {
             return;
         }
 
         AnimationStateMachine.ResetParameters();
+    }
+
+    private void SpecificReset(PlayerStateBundle playerStateBundle)
+    {
+
     }
 
     private IEnumerator NotifyAnimationDetailsObservers(IObserver<AnimationDetails> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
