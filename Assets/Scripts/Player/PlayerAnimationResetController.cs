@@ -35,17 +35,23 @@ public class PlayerAnimationResetController : MonoBehaviour, IObserver<GenericSt
         });
     }
 
-    public async void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    private async Task ResetState(GenericStateBundle<PlayerStateBundle> data, Reset reset)
     {
-        switch (data.StateBundle.PlayerGlobalState.CurrentState)
+        switch (reset.State)
         {
-            case GlobalState.ANEW:
-                break;
-            case GlobalState.RESET:
+            case Reset.ResetState.COMPLETE_RESET:
                 await ResetAnimation(data.StateBundle);
                 break;
-            default:
+
+            case Reset.ResetState.REVERT:
                 break;
         }
+    }
+
+    public async void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        await ResetState(data, data.StateBundle.PlayerActionState.Reset);
+        await ResetState(data, data.StateBundle.PlayerMovementState.Reset);
+        await ResetState(data, data.StateBundle.PlayerActionState.Reset);
     }
 }
