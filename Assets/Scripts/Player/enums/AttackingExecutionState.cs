@@ -1,4 +1,4 @@
-public enum PlayerAttackingExecutionState
+public enum AttackingExecutionState
 {
     ON_CLICK_EVENT,
 

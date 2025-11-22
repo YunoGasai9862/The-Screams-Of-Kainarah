@@ -24,13 +24,13 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private CommandAsyncEnhanced<PlayerSlideController, PlayerStateBundle> _slideCommand;
 
-    private IReceiverEnhancedAsync<PlayerAttackController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>> _attackReceiver;
+    private IReceiverEnhancedAsync<PlayerAttackController, ControllerPackage<AttackingExecutionState, AttackingDetails>> _attackReceiver;
 
-    private CommandAsyncEnhanced<PlayerAttackController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>> _attackCommand;
+    private CommandAsyncEnhanced<PlayerAttackController, ControllerPackage<AttackingExecutionState, AttackingDetails>> _attackCommand;
 
-    private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> _animationReceiver;
+    private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>> _animationReceiver;
 
-    private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> _animationCommand;
+    private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>> _animationCommand;
 
     private IReceiverEnhancedAsync<PlayerLedgeGrabController, PlayerStateBundle> _ledgeGrabReceiver;
 
@@ -78,15 +78,15 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _ledgeGrabReceiver = await Helper.FindReceiver<PlayerLedgeGrabController, IReceiverBase<PlayerStateBundle>>();
 
-        _attackReceiver = await Helper.FindReceiver<PlayerAttackController, IReceiverBase<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>>();
+        _attackReceiver = await Helper.FindReceiver<PlayerAttackController, IReceiverBase<ControllerPackage<AttackingExecutionState, AttackingDetails>>>();
 
         _throwingProjectileReceiver = await  Helper.FindReceiver<ThrowingProjectileController, IReceiverBase<bool>>();
 
-        _animationReceiver = await Helper.FindReceiver<PlayerAnimationController, IReceiverBase<ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>>();
+        _animationReceiver = await Helper.FindReceiver<PlayerAnimationController, IReceiverBase<ControllerPackage<AnimationExecutionState, PlayerStateBundle>>>();
 
-        _attackCommand = new CommandAsyncEnhanced<PlayerAttackController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>(_attackReceiver);
+        _attackCommand = new CommandAsyncEnhanced<PlayerAttackController, ControllerPackage<AttackingExecutionState, AttackingDetails>>(_attackReceiver);
 
-        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>(_animationReceiver);
+        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>(_animationReceiver);
 
         _jumpCommand = new CommandAsyncEnhanced<PlayerJumpController, bool>(_jumpReceiver);
 
@@ -201,7 +201,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
             CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_IDLE, CurrentValue = true, IsConcluded = false };
             await _playerStateEvent.Invoke(CurrentPlayerState);
 
-            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>() { ExecutionState = PlayerAnimationExecutionState.PLAY_MOVEMENT_ANIMATION, 
+            await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.MOVEMENT, 
                 Value = CurrentPlayerState.StateBundle});
 
             return;
@@ -240,9 +240,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         await _playerStateEvent.Invoke(CurrentPlayerState);
 
-        await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>()
+        await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>()
         {
-            ExecutionState = PlayerAnimationExecutionState.PLAY_MOVEMENT_ANIMATION,
+            ExecutionState = AnimationExecutionState.MOVEMENT,
             Value =  CurrentPlayerState.StateBundle
         });
 
@@ -317,9 +317,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         _playerActionsModel.LeftMouseButtonPressed = IsSlidingActionInProgress(CurrentPlayerState.StateBundle) ? false : context.ReadValueAsButton();
         _playerActionsModel.TimeForMouseClickEnd = (float)context.time;
 
-        await _attackCommand.Execute(new ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>()
+        await _attackCommand.Execute(new ControllerPackage<AttackingExecutionState, AttackingDetails>()
         {
-            ExecutionState = PlayerAttackingExecutionState.ON_CLICK_EVENT,
+            ExecutionState = AttackingExecutionState.ON_CLICK_EVENT,
             Value = new AttackingDetails()
             {
                 MouseClickDto = new MouseClickDto()
@@ -330,9 +330,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
             }
         });
 
-        await _attackCommand.Cancel(new ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>()
+        await _attackCommand.Cancel(new ControllerPackage<AttackingExecutionState, AttackingDetails>()
         {
-            ExecutionState = PlayerAttackingExecutionState.ATTACKING_ACTION,
+            ExecutionState = AttackingExecutionState.ATTACKING_ACTION,
             Value = new AttackingDetails()
             { 
                 AttackingValue = _playerActionsModel.LeftMouseButtonPressed
@@ -346,9 +346,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         _playerActionsModel.TimeForMouseClickStart = (float)context.time;
 
         //send time stamps to the attacking controller
-        await _attackCommand.Execute(new ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>()
+        await _attackCommand.Execute(new ControllerPackage<AttackingExecutionState, AttackingDetails>()
         {
-            ExecutionState = PlayerAttackingExecutionState.ON_CLICK_EVENT,
+            ExecutionState = AttackingExecutionState.ON_CLICK_EVENT,
             Value = new AttackingDetails()
             {
                 MouseClickDto = new MouseClickDto()
@@ -360,9 +360,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         });
 
         //execute Attack
-        await _attackCommand.Execute(new ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>()
+        await _attackCommand.Execute(new ControllerPackage<AttackingExecutionState, AttackingDetails>()
         {
-            ExecutionState = PlayerAttackingExecutionState.ATTACKING_ACTION,
+            ExecutionState = AttackingExecutionState.ATTACKING_ACTION,
             Value = new AttackingDetails()
             {
                 AttackingValue = _playerActionsModel.LeftMouseButtonPressed
@@ -375,9 +375,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     {
         _playerActionsModel.VBoostKeyPressed = context.ReadValueAsButton();
 
-        await _attackCommand.Execute(new ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>()
+        await _attackCommand.Execute(new ControllerPackage<AttackingExecutionState, AttackingDetails>()
         {
-            ExecutionState = PlayerAttackingExecutionState.BOOST_ATTACK,
+            ExecutionState = AttackingExecutionState.BOOST_ATTACK,
             Value = new AttackingDetails()
             {
                 AttackingValue = _playerActionsModel.VBoostKeyPressed

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<PlayerAttackController, ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<Player>
+public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<PlayerAttackController, ControllerPackage<AttackingExecutionState, AttackingDetails>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<Player>
 {
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
 
@@ -172,7 +172,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
                !CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState.Equals(MovementState.IS_JUMPING);
     }
 
-    public Task<ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>> PerformAction(ControllerPackage<PlayerAttackingExecutionState, AttackingDetails> value)
+    public Task<ActionExecuted<ControllerPackage<AttackingExecutionState, AttackingDetails>>> PerformAction(ControllerPackage<AttackingExecutionState, AttackingDetails> value)
     {
         if (CurrentGameState.StateBundle == null)
         {
@@ -183,17 +183,17 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
         DelegateExecutionState(value);
         
-        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>(value));
+        return Task.FromResult(new ActionExecuted<ControllerPackage<AttackingExecutionState, AttackingDetails>>(value));
     }
 
-    public Task<ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>> CancelAction(ControllerPackage<PlayerAttackingExecutionState, AttackingDetails> value)
+    public Task<ActionExecuted<ControllerPackage<AttackingExecutionState, AttackingDetails>>> CancelAction(ControllerPackage<AttackingExecutionState, AttackingDetails> value)
     {
         EndPlayerAttack();
 
-        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>>(
-              new ControllerPackage<PlayerAttackingExecutionState, AttackingDetails>()
+        return Task.FromResult(new ActionExecuted<ControllerPackage<AttackingExecutionState, AttackingDetails>>(
+              new ControllerPackage<AttackingExecutionState, AttackingDetails>()
               {
-                  ExecutionState = PlayerAttackingExecutionState.CANCELLED,
+                  ExecutionState = AttackingExecutionState.CANCELLED,
                   
               }
             )
@@ -238,23 +238,23 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         PlayerAttackStateMachine = new PlayerAttackStateMachine(Player.Animator);
     }
 
-    private void DelegateExecutionState(ControllerPackage<PlayerAttackingExecutionState, AttackingDetails> controllerPackage)
+    private void DelegateExecutionState(ControllerPackage<AttackingExecutionState, AttackingDetails> controllerPackage)
     {
         switch(controllerPackage.ExecutionState)
         {
-            case PlayerAttackingExecutionState.ON_CLICK_EVENT:
+            case AttackingExecutionState.ON_CLICK_EVENT:
                 MouseClickDto = controllerPackage.Value.MouseClickDto;
                 break;
 
-            case PlayerAttackingExecutionState.ATTACKING_ACTION:
+            case AttackingExecutionState.ATTACKING_ACTION:
                 InitiatePlayerAttack(controllerPackage.Value.AttackingValue);
                 break;
 
-            case PlayerAttackingExecutionState.BOOST_ATTACK:
+            case AttackingExecutionState.BOOST_ATTACK:
                 AlertBoostEventForKeyPressed(controllerPackage.Value.AttackingValue);
                 break;
 
-            case PlayerAttackingExecutionState.CANCELLED:
+            case AttackingExecutionState.CANCELLED:
                 break;
 
             default:

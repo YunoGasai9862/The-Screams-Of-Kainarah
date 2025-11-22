@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>, 
+public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<AnimationDetails>>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>, 
     IObserver<IEntityAnimator>, IObserver<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
@@ -116,63 +116,38 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
               EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash != EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash;
     }
 
-    public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>> PerformAction(ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle> value = null)
+    public Task<ActionExecuted<ControllerPackage<AnimationExecutionState, PlayerStateBundle>>> PerformAction(ControllerPackage<AnimationExecutionState, PlayerStateBundle> value = null)
     {
         if (PlayerAnimator == null)
         {
-            return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>(null));
+            return Task.FromResult(new ActionExecuted<ControllerPackage<AnimationExecutionState, PlayerStateBundle>>(null));
         }
 
         GetAnimationExecutionScenario(value);
 
-        return Task.FromResult(new ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>(value));
+        return Task.FromResult(new ActionExecuted<ControllerPackage<AnimationExecutionState, PlayerStateBundle>>(value));
     }
 
-    public void GetAnimationExecutionScenario(ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle> package)
+    public void GetAnimationExecutionScenario(ControllerPackage<AnimationExecutionState, PlayerStateBundle> package)
     {
         switch(package.ExecutionState)
         {
-            case PlayerAnimationExecutionState.PLAY_IN_AIR_ANIMATION:
+            case AnimationExecutionState.IN_AIR:
                 JumpAnimation(package.Value);
                 break;
 
-            case PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION:
+            case AnimationExecutionState.SLIDING:
                 SlidingAnimation(package.Value);
                 break;
 
-            case PlayerAnimationExecutionState.PLAY_MOVEMENT_ANIMATION:
+            case AnimationExecutionState.MOVEMENT:
                 MovementAnimation(package.Value);
-                break;
-
-            case PlayerAnimationExecutionState.RESET:
-                ResetAnimations(package.Value);
                 break;
             default:
                 break;
         }
     }
 
-    private void ResetAnimations(PlayerStateBundle playerStateBundle)
-    {
-        GlobalReset(playerStateBundle);
-
-        SpecificReset(playerStateBundle);
-    }
-
-    private void GlobalReset(PlayerStateBundle playerStateBundle)
-    {
-        if (!playerStateBundle.PlayerGlobalState.CurrentValue)
-        {
-            return;
-        }
-
-        AnimationStateMachine.ResetParameters();
-    }
-
-    private void SpecificReset(PlayerStateBundle playerStateBundle)
-    {
-
-    }
 
     private IEnumerator NotifyAnimationDetailsObservers(IObserver<AnimationDetails> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
@@ -208,7 +183,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation = data.StateBundle.CurrentAnimation;
     }
 
-    public Task<ActionExecuted<ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>> CancelAction(ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle> value = null)
+    public Task<ActionExecuted<ControllerPackage<AnimationExecutionState, PlayerStateBundle>>> CancelAction(ControllerPackage<AnimationExecutionState, PlayerStateBundle> value = null)
     {
         throw new System.NotImplementedException();
     }

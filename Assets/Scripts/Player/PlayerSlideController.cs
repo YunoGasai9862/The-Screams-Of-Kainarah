@@ -30,9 +30,9 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
          StateBundle = new PlayerStateBundle()
     };
 
-    private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> _animationHandler;
+    private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>> _animationHandler;
 
-    private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> _animationCommand;
+    private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>> _animationCommand;
 
     private IOverlapChecker _movementHelperClass;
 
@@ -70,9 +70,9 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
             SubjectType = typeof(PlayerAttributesNotifier).ToString(),
         }, CancellationToken.None));
 
-        _animationHandler = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>>();
+        _animationHandler = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>>();
 
-        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>(_animationHandler);
+        _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>(_animationHandler);
 
         _movementHelperClass = new MovementHelperClass();
     }
@@ -87,7 +87,7 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>() { ExecutionState = PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION, Value = PlayerStateBundle.StateBundle });
+            await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.SLIDING, Value = PlayerStateBundle.StateBundle });
         }
 
         if (AnimationDetails.CurrentAnimationTime > MAX_ANIMATION_TIME && AnimationDetails.CurrentAnimationStateInfo.IsName(PlayerAnimationConstants.SLIDING))
@@ -96,7 +96,7 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-            await _animationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>() { ExecutionState = PlayerAnimationExecutionState.PLAY_SLIDING_ANIMATION, Value = PlayerStateBundle.StateBundle });
+            await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.SLIDING, Value = PlayerStateBundle.StateBundle });
         }
 
     }

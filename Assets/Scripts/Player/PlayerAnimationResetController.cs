@@ -1,38 +1,15 @@
+using PlayerAnimationHandler;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerAnimationResetController : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>
+public class PlayerAnimationResetController : MonoBehaviour, IReceiverEnhancedAsync<PlayerAnimationResetController, ControllerPackage<Reset.ResetState, PlayerStateBundle>>
 {
-    private IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> AnimationReceiver { get; set; }
-
-    private CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>> AnimationCommand { get; set; }
-
-    private PlayerStateDelegator PlayerStateDelegator { get; set; }
-
-    private async void Awake()
-    {
-        AnimationReceiver = await Helper.FindReceiver<PlayerAnimationController, IReceiverBase<ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>>();
-
-        AnimationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>>(AnimationReceiver);
-
-        PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
-
-        PlayerStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
-        {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerStateConsumer).ToString()
-        }, CancellationToken.None);
-    }
+    private AnimationStateMachine AnimationStateMachine { get; set; }
 
     private async Task ResetAnimation(PlayerStateBundle playerStateBundle)
     {
-        await AnimationCommand.Execute(new ControllerPackage<PlayerAnimationExecutionState, PlayerStateBundle>()
-        {
-            ExecutionState = PlayerAnimationExecutionState.RESET,
-            Value = playerStateBundle
-        });
+        AnimationStateMachine.ResetParameters();
     }
 
     private async Task ResetState(GenericStateBundle<PlayerStateBundle> data, Reset reset)
@@ -43,15 +20,23 @@ public class PlayerAnimationResetController : MonoBehaviour, IObserver<GenericSt
                 await ResetAnimation(data.StateBundle);
                 break;
 
+            case Reset.ResetState.PARTIAL_RESET:
+                break;
+
             case Reset.ResetState.REVERT:
                 break;
         }
     }
 
-    public async void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    //use the controller/command etc from the animation reset script!
+
+    public Task<ActionExecuted<ControllerPackage<Reset.ResetState, PlayerStateBundle>>> PerformAction(ControllerPackage<Reset.ResetState, PlayerStateBundle> value = null)
     {
-        await ResetState(data, data.StateBundle.PlayerActionState.Reset);
-        await ResetState(data, data.StateBundle.PlayerMovementState.Reset);
-        await ResetState(data, data.StateBundle.PlayerActionState.Reset);
+        throw new System.NotImplementedException();
+    }
+
+    public Task<ActionExecuted<ControllerPackage<Reset.ResetState, PlayerStateBundle>>> CancelAction(ControllerPackage<Reset.ResetState, PlayerStateBundle> value = null)
+    {
+        throw new System.NotImplementedException();
     }
 }
