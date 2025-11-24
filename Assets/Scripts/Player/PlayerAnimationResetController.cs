@@ -1,5 +1,4 @@
 using PlayerAnimationHandler;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -7,20 +6,18 @@ public class PlayerAnimationResetController : MonoBehaviour, IReceiverEnhancedAs
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
 
-    private async Task ResetAnimation(PlayerStateBundle playerStateBundle)
+    private async Task ResetState(PlayerStateBundle data, Reset.ResetState reset)
     {
-        AnimationStateMachine.ResetParameters();
-    }
-
-    private async Task ResetState(GenericStateBundle<PlayerStateBundle> data, Reset reset)
-    {
-        switch (reset.State)
+        switch (reset)
         {
             case Reset.ResetState.COMPLETE_RESET:
-                await ResetAnimation(data.StateBundle);
+                AnimationStateMachine.ResetParameters();
                 break;
 
             case Reset.ResetState.PARTIAL_RESET:
+                AnimationStateMachine.ResetParameters(data.PlayerMovementState.Reset.ResetParameters);
+                AnimationStateMachine.ResetParameters(data.PlayerActionState.Reset.ResetParameters);
+                AnimationStateMachine.ResetParameters(data.PlayerAttackState.Reset.ResetParameters);
                 break;
 
             case Reset.ResetState.REVERT:
@@ -28,11 +25,11 @@ public class PlayerAnimationResetController : MonoBehaviour, IReceiverEnhancedAs
         }
     }
 
-    //use the controller/command etc from the animation reset script!
-
-    public Task<ActionExecuted<ControllerPackage<Reset.ResetState, PlayerStateBundle>>> PerformAction(ControllerPackage<Reset.ResetState, PlayerStateBundle> value = null)
+    public async Task<ActionExecuted<ControllerPackage<Reset.ResetState, PlayerStateBundle>>> PerformAction(ControllerPackage<Reset.ResetState, PlayerStateBundle> value = null)
     {
-        throw new System.NotImplementedException();
+        await ResetState(value.Value, value.ExecutionState);
+
+        return new ActionExecuted<ControllerPackage<Reset.ResetState, PlayerStateBundle>>(value);
     }
 
     public Task<ActionExecuted<ControllerPackage<Reset.ResetState, PlayerStateBundle>>> CancelAction(ControllerPackage<Reset.ResetState, PlayerStateBundle> value = null)

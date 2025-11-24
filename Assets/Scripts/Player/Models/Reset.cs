@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class Reset
 {
@@ -17,6 +18,8 @@ public class Reset
 
     public class Value
     {
+        public AnimatorControllerParameterType Type { get; set; }
+
         public dynamic OldValue { get; set; }
 
         public dynamic NewValue { get; set; }

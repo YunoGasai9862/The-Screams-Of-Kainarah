@@ -1,10 +1,13 @@
 
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 namespace PlayerAnimationHandler
 {
     public class AnimationStateMachine
     {
-        private Animator _animator; //each object will have its own AnimationStateMachine
+        private Animator _animator;
 
         public AnimationStateMachine(Animator animator)
         {
@@ -55,5 +58,45 @@ namespace PlayerAnimationHandler
                 }
             }
         }
+
+        public void ResetParameters(Dictionary<string, Reset.Value> resetParameters)
+        {
+            AnimatorControllerParameter[] animatorControllerParameters = _animator.parameters.ToArray();
+
+            foreach (KeyValuePair<string, Reset.Value> kvp in resetParameters)
+            {
+                AnimatorControllerParameter animatorControllerParameter = animatorControllerParameters.FirstOrDefault(acp => acp.name == kvp.Key);
+
+                if (animatorControllerParameter == null)
+                {
+                    Debug.Log($"kvp.Key: {kvp.Key} is absent from the AnimatorControllerParameter list!");
+                    continue;
+                }
+
+                switch (kvp.Value.Type)
+                {
+                    case AnimatorControllerParameterType.Float:
+                        _animator.SetFloat(kvp.Key, kvp.Value.NewValue);
+                        break;
+
+                    case AnimatorControllerParameterType.Bool:
+                        _animator.SetBool(kvp.Key, kvp.Value.NewValue);
+                        break;
+
+                    case AnimatorControllerParameterType.Int:
+                        _animator.SetInteger(kvp.Key, kvp.Value.NewValue);
+                        break;
+
+                    case AnimatorControllerParameterType.Trigger:
+                        _animator.ResetTrigger(_animator.GetInteger(kvp.Key));
+                        break;
+
+                    default:
+                        throw new System.Exception($"Unknown type: {kvp.Value.Type}");
+                }
+
+            }
+        }
+
     }
 }
