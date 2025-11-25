@@ -27,7 +27,18 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour
         {
             StateBundle = new PlayerStateBundle()
             {
-                PlayerAttackState = new State<AttackState, bool>() { CurrentState = AttackState.RESET, CurrentValue = true, IsConcluded = false}
+                PlayerAttackState = new State<AttackState, bool>() { Reset = 
+                    new Reset()
+                    { 
+                        ResetParameters = new System.Collections.Generic.Dictionary<string, Reset.Value>()
+                        {
+                            { "ElapsedTime", new  Reset.Value() { NewValue = 0 } },
+                            { "AttackJ", new  Reset.Value() { NewValue = false } },
+                            { "Attack", new  Reset.Value() { NewValue = false } }
+                        },
+                        State = Reset.ResetState.PARTIAL_RESET
+                    }  
+                }
             }
         });
     }

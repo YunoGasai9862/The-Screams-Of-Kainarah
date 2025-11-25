@@ -94,7 +94,6 @@ namespace PlayerAnimationHandler
                     default:
                         throw new System.Exception($"Unknown type: {kvp.Value.Type}");
                 }
-
             }
         }
 
