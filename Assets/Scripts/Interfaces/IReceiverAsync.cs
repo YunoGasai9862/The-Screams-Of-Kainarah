@@ -18,6 +18,6 @@ public interface IReceiverBase<VALUE>
 
 public interface IReceiverEnhancedAsync<TYPE, VALUE> : IReceiverBase<VALUE> where TYPE: MonoBehaviour
 {
-    Task<ActionExecuted<VALUE>> PerformAction(VALUE value = default);
-    Task<ActionExecuted<VALUE>> CancelAction(VALUE value = default);
+    Task<ActionExecuted> PerformAction(VALUE value = default);
+    Task<ActionExecuted> CancelAction(VALUE value = default);
 }

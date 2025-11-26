@@ -230,22 +230,22 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
         PlayerStateBundle.StateBundle = data.StateBundle;
     }
 
-    public async Task<ActionExecuted<bool>> PerformAction(bool value)
+    public async Task<ActionExecuted> PerformAction(bool value)
     {
         _isJumpPressed = value;
 
         await SetPlayerInitialPosition(PlayerStateBundle.StateBundle.PlayerMovementState);
 
-        return new ActionExecuted<bool>(_isJumpPressed);
+        return new ActionExecuted() { Result = _isJumpPressed };
     }
 
-    public async Task<ActionExecuted<bool>> CancelAction(bool value)
+    public async Task<ActionExecuted> CancelAction(bool value)
     {
         PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool> { CurrentState = MovementState.IS_JUMPING, CurrentValue = false, IsConcluded = true };
 
         await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-        return new ActionExecuted<bool>(false);
+        return new ActionExecuted() { Result = false };
     }
 
     public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

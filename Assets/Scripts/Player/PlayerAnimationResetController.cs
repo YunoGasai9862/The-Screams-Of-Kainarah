@@ -1,5 +1,6 @@
 using PlayerAnimationHandler;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -16,47 +17,45 @@ public class PlayerAnimationResetController : MonoBehaviour, IReceiverEnhancedAs
                 break;
 
             case Reset.ResetState.PARTIAL_RESET:
-                AnimationStateMachine.ResetParameters(state.Reset.ResetParameters);
-                break;
-
             case Reset.ResetState.REVERT:
+                AnimationStateMachine.ResetParameters(state.Reset.ResetParameters, state.Reset.State);
                 break;
         }
     }
 
-    public async Task<ActionExecuted<State<AttackState>>> PerformAction(State<AttackState> value = null)
+    public async Task<ActionExecuted> PerformAction(State<AttackState> value = null)
     {
         await ResetState(value);
 
-        return new ActionExecuted<State<AttackState>>(value);
+        return new ActionExecuted() { Result = true };
     }
 
-    public Task<ActionExecuted<State<AttackState>>> CancelAction(State<AttackState> value = null)
+    public Task<ActionExecuted> CancelAction(State<AttackState> value = null)
     {
-        throw new System.NotImplementedException();
+        return Task.FromResult(new ActionExecuted() { Result = false });
     }
 
-    public async Task<ActionExecuted<State<MovementState>>> PerformAction(State<MovementState> value = null)
-    {
-        await ResetState(value);
-
-        return new ActionExecuted<State<MovementState>>(value);
-    }
-
-    public Task<ActionExecuted<State<MovementState>>> CancelAction(State<MovementState> value = null)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public async Task<ActionExecuted<State<ActionState>>> PerformAction(State<ActionState> value = null)
+    public async Task<ActionExecuted> PerformAction(State<MovementState> value = null)
     {
         await ResetState(value);
 
-        return new ActionExecuted<State<ActionState>>(value);
+        return new ActionExecuted() { Result = true };
     }
 
-    public Task<ActionExecuted<State<ActionState>>> CancelAction(State<ActionState> value = null)
+    public Task<ActionExecuted> CancelAction(State<MovementState> value = null)
     {
-        throw new System.NotImplementedException();
+        return Task.FromResult(new ActionExecuted() { Result = false });
+    }
+
+    public async Task<ActionExecuted> PerformAction(State<ActionState> value = null)
+    {
+        await ResetState(value);
+
+        return new ActionExecuted() { Result = true };
+    }
+
+    public Task<ActionExecuted> CancelAction(State<ActionState> value = null)
+    {
+        return Task.FromResult(new ActionExecuted() { Result = false });
     }
 }

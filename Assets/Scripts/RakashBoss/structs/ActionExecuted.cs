@@ -1,6 +1,9 @@
-public struct ActionExecuted {  }
+public struct ActionExecuted
+{
+    public bool Result { get; set; }
+}
 
-public class  ActionExecuted<T>
+public class ActionExecuted<T>
 {
     public T Result { get; set; }
 

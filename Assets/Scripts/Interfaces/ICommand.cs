@@ -15,6 +15,6 @@ public interface ICommand<T, Z>
 public interface ICommandAsyncEnhanced<T, Z>
 {
     public System.Type GetExecutingType();
-    public abstract Task<ActionExecuted<Z>> Execute(Z value = default);
-    public abstract Task<ActionExecuted<Z>> Cancel(Z value = default);
+    public abstract Task<ActionExecuted> Execute(Z value = default);
+    public abstract Task<ActionExecuted> Cancel(Z value = default);
 }

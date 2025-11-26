@@ -251,19 +251,19 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
         PlayerBundle.StateBundle = data.StateBundle;
     }
 
-    public async Task<ActionExecuted<PlayerStateBundle>> PerformAction(PlayerStateBundle value)
+    public async Task<ActionExecuted> PerformAction(PlayerStateBundle value)
     {
         //WTF!!!
         //Player.Rigidbody.linearVelocity = new Vector2(0, 0);
 
-        return new ActionExecuted<PlayerStateBundle>(value);
+        return await Task.FromResult(new ActionExecuted() { Result = true });
     }
 
-    public async Task<ActionExecuted<PlayerStateBundle>> CancelAction(PlayerStateBundle value)
+    public async Task<ActionExecuted> CancelAction(PlayerStateBundle value)
     {
         await CancelLedgeGrab();
 
-        return new ActionExecuted<PlayerStateBundle>(value);
+        return await Task.FromResult(new ActionExecuted() { Result = false });
     }
 
     public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

@@ -59,7 +59,7 @@ namespace PlayerAnimationHandler
             }
         }
 
-        public void ResetParameters(Dictionary<string, Reset.Value> resetParameters)
+        public void ResetParameters(Dictionary<string, Reset.Value> resetParameters, Reset.ResetState state)
         {
             AnimatorControllerParameter[] animatorControllerParameters = _animator.parameters.ToArray();
 
@@ -76,15 +76,15 @@ namespace PlayerAnimationHandler
                 switch (kvp.Value.Type)
                 {
                     case AnimatorControllerParameterType.Float:
-                        _animator.SetFloat(kvp.Key, kvp.Value.NewValue);
+                        _animator.SetFloat(kvp.Key, state.Equals(Reset.ResetState.REVERT) ? kvp.Value.OldValue : kvp.Value.NewValue);
                         break;
 
                     case AnimatorControllerParameterType.Bool:
-                        _animator.SetBool(kvp.Key, kvp.Value.NewValue);
+                        _animator.SetBool(kvp.Key, state.Equals(Reset.ResetState.REVERT) ? kvp.Value.OldValue : kvp.Value.NewValue);
                         break;
 
                     case AnimatorControllerParameterType.Int:
-                        _animator.SetInteger(kvp.Key, kvp.Value.NewValue);
+                        _animator.SetInteger(kvp.Key, state.Equals(Reset.ResetState.REVERT) ? kvp.Value.OldValue : kvp.Value.NewValue);
                         break;
 
                     case AnimatorControllerParameterType.Trigger:
@@ -96,6 +96,5 @@ namespace PlayerAnimationHandler
                 }
             }
         }
-
     }
 }

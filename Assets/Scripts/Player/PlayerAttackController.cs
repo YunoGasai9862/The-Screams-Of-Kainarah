@@ -172,32 +172,26 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
                !CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState.Equals(MovementState.IS_JUMPING);
     }
 
-    public Task<ActionExecuted<ControllerPackage<AttackingExecutionState, AttackingDetails>>> PerformAction(ControllerPackage<AttackingExecutionState, AttackingDetails> value)
+    public Task<ActionExecuted> PerformAction(ControllerPackage<AttackingExecutionState, AttackingDetails> value)
     {
         if (CurrentGameState.StateBundle == null)
         {
             Debug.Log("Bundle is null - skipping CanPlayerAttack!");
 
-            return null;
+            return Task.FromResult(new ActionExecuted() { Result = false });
         }
 
         DelegateExecutionState(value);
-        
-        return Task.FromResult(new ActionExecuted<ControllerPackage<AttackingExecutionState, AttackingDetails>>(value));
+
+        return Task.FromResult(new ActionExecuted() { Result = true });
     }
 
-    public Task<ActionExecuted<ControllerPackage<AttackingExecutionState, AttackingDetails>>> CancelAction(ControllerPackage<AttackingExecutionState, AttackingDetails> value)
+    public Task<ActionExecuted> CancelAction(ControllerPackage<AttackingExecutionState, AttackingDetails> value)
     {
         EndPlayerAttack();
 
-        return Task.FromResult(new ActionExecuted<ControllerPackage<AttackingExecutionState, AttackingDetails>>(
-              new ControllerPackage<AttackingExecutionState, AttackingDetails>()
-              {
-                  ExecutionState = AttackingExecutionState.CANCELLED,
-                  
-              }
-            )
-         );
+        return Task.FromResult(new ActionExecuted() { Result = false });
+
     }
     private void SetAttackBoostMode(bool shouldBoost)
     {

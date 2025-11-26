@@ -101,13 +101,13 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
 
     }
 
-    public async Task<ActionExecuted<PlayerStateBundle>> PerformAction(PlayerStateBundle value)
+    public async Task<ActionExecuted> PerformAction(PlayerStateBundle value)
     {
         if (Player == null)
         {
             Debug.Log($"Player is null - SlidingController - PerformAction - Skipping execution");
 
-            return await Task.FromResult(new ActionExecuted<PlayerStateBundle>(value));
+            return await Task.FromResult(new ActionExecuted() { Result = false });
         }
 
         if (await IsVelocityXGreaterThanZero(Player.Rigidbody) && !_playerAttackStateMachine.IsInEitherOfTheAttackingStates<PlayerAttackEnum.PlayerAttackSlash>())
@@ -115,9 +115,9 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
             await Slide();
         }
 
-        return await Task.FromResult(new ActionExecuted<PlayerStateBundle>(value));
+        return await Task.FromResult(new ActionExecuted() { Result = true });
     }
-    public async Task<ActionExecuted<PlayerStateBundle>> CancelAction(PlayerStateBundle value)
+    public async Task<ActionExecuted> CancelAction(PlayerStateBundle value)
     {
         PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = false, IsConcluded = true };
 
@@ -125,7 +125,7 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
 
         await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-        return await Task.FromResult(new ActionExecuted<PlayerStateBundle>(value));
+        return await Task.FromResult(new ActionExecuted() { Result = false });
     }
 
     private Task<bool> IsVelocityXGreaterThanZero(Rigidbody2D rb)
