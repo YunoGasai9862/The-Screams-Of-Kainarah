@@ -1,11 +1,22 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAttackStateMachineReset : StateMachineBehaviour
 {
-    private PlayerStateEvent PlayerStateEvent { get; set; }
+    [SerializeField]
+    List<ResetSystem> reset;
+
+    private IReceiverEnhancedAsync<PlayerAnimationResetController, State<AttackState>> PlayerAnimationStateControllerAS { get; set; }
+
+    private CommandAsyncEnhanced<PlayerAnimationResetController, State<AttackState>> PlayerAnimationResetControllerCommandAS { get; set; }
+
+
     private async void Awake()
     {
-        PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
+        PlayerAnimationStateControllerAS = await Helper.FindReceiver<PlayerAnimationResetController, IReceiverEnhancedAsync<PlayerAnimationResetController, State<AttackState>>>();
+
+        PlayerAnimationResetControllerCommandAS = new CommandAsyncEnhanced<PlayerAnimationResetController, State<AttackState>>(PlayerAnimationStateControllerAS);
     }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -21,24 +32,17 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour
     //}
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    override async public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        PlayerStateEvent.Invoke(new GenericStateBundle<PlayerStateBundle>()
+        await PlayerAnimationResetControllerCommandAS.Execute(new State<AttackState>()
         {
-            StateBundle = new PlayerStateBundle()
+            Reset = new ResetSystem()
             {
-                PlayerAttackState = new State<AttackState, bool>() { Reset = 
-                    new Reset()
-                    { 
-                        ResetParameters = new System.Collections.Generic.Dictionary<string, Reset.Value>()
-                        {
-                            { "ElapsedTime", new  Reset.Value() { NewValue = 0 } },
-                            { "AttackJ", new  Reset.Value() { NewValue = false } },
-                            { "Attack", new  Reset.Value() { NewValue = false } }
-                        },
-                        State = Reset.ResetState.PARTIAL_RESET
-                    }  
-                }
+                ResetParameters = new List<ResetSystem.Reset> ()
+                {
+                    //TODO
+                },
+                State = ResetSystem.ResetState.PARTIAL_RESET
             }
         });
     }

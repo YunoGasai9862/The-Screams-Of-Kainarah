@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "EntitiesToReset", menuName ="Entities To Reset")]
+[CreateAssetMenu(fileName = "EntitiesToReset", menuName ="Entities To ResetSystem")]
 public class EntitiesToReset : ScriptableObject
 {
     [Serializable]

@@ -12,12 +12,12 @@ public class PlayerAnimationResetController : MonoBehaviour, IReceiverEnhancedAs
     {
         switch (state.Reset.State)
         {
-            case Reset.ResetState.COMPLETE_RESET:
+            case ResetSystem.ResetState.COMPLETE_RESET:
                 AnimationStateMachine.ResetParameters();
                 break;
 
-            case Reset.ResetState.PARTIAL_RESET:
-            case Reset.ResetState.REVERT:
+            case ResetSystem.ResetState.PARTIAL_RESET:
+            case ResetSystem.ResetState.REVERT:
                 AnimationStateMachine.ResetParameters(state.Reset.ResetParameters, state.Reset.State);
                 break;
         }

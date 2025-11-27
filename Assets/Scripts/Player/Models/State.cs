@@ -10,11 +10,11 @@ public class State<T, Z> where T: Enum
 
     public bool IsConcluded { get; set; }
 
-    public Reset Reset { get; set; }
+    public ResetSystem Reset { get; set; }
 
     public override string ToString()
     {
-        return $"Current State: {CurrentState}, IsConcluded: {IsConcluded}, Reset: {Reset?.ToString()}";
+        return $"Current State: {CurrentState}, IsConcluded: {IsConcluded}, ResetSystem: {Reset?.ToString()}";
     }
 }
 
@@ -24,10 +24,10 @@ public class State<T> where T : Enum
 
     public bool IsConcluded { get; set; }
 
-    public Reset Reset { get; set; }
+    public ResetSystem Reset { get; set; }
 
     public override string ToString()
     {
-        return $"Current State: {CurrentState}, IsConcluded: {IsConcluded}, Reset: {Reset?.ToString()}";
+        return $"Current State: {CurrentState}, IsConcluded: {IsConcluded}, ResetSystem: {Reset?.ToString()}";
     }
 }

@@ -59,40 +59,40 @@ namespace PlayerAnimationHandler
             }
         }
 
-        public void ResetParameters(Dictionary<string, Reset.Value> resetParameters, Reset.ResetState state)
+        public void ResetParameters(List<ResetSystem.Reset> resetParameters, ResetSystem.ResetState state)
         {
             AnimatorControllerParameter[] animatorControllerParameters = _animator.parameters.ToArray();
 
-            foreach (KeyValuePair<string, Reset.Value> kvp in resetParameters)
+            foreach (ResetSystem.Reset reset in resetParameters)
             {
-                AnimatorControllerParameter animatorControllerParameter = animatorControllerParameters.FirstOrDefault(acp => acp.name == kvp.Key);
+                AnimatorControllerParameter animatorControllerParameter = animatorControllerParameters.FirstOrDefault(acp => acp.name == reset.Key);
 
                 if (animatorControllerParameter == null)
                 {
-                    Debug.Log($"kvp.Key: {kvp.Key} is absent from the AnimatorControllerParameter list!");
+                    Debug.Log($"Key: {reset.Key} is absent from the AnimatorControllerParameter list!");
                     continue;
                 }
 
-                switch (kvp.Value.Type)
+                switch (reset.Val.Type)
                 {
                     case AnimatorControllerParameterType.Float:
-                        _animator.SetFloat(kvp.Key, state.Equals(Reset.ResetState.REVERT) ? kvp.Value.OldValue : kvp.Value.NewValue);
+                        _animator.SetFloat(reset.Key, state.Equals(ResetSystem.ResetState.REVERT) ? reset.Val.OldValue : reset.Val.NewValue);
                         break;
 
                     case AnimatorControllerParameterType.Bool:
-                        _animator.SetBool(kvp.Key, state.Equals(Reset.ResetState.REVERT) ? kvp.Value.OldValue : kvp.Value.NewValue);
+                        _animator.SetBool(reset.Key, state.Equals(ResetSystem.ResetState.REVERT) ? reset.Val.OldValue : reset.Val.NewValue);
                         break;
 
                     case AnimatorControllerParameterType.Int:
-                        _animator.SetInteger(kvp.Key, state.Equals(Reset.ResetState.REVERT) ? kvp.Value.OldValue : kvp.Value.NewValue);
+                        _animator.SetInteger(reset.Key, state.Equals(ResetSystem.ResetState.REVERT) ? reset.Val.OldValue : reset.Val.NewValue);
                         break;
 
                     case AnimatorControllerParameterType.Trigger:
-                        _animator.ResetTrigger(_animator.GetInteger(kvp.Key));
+                        _animator.ResetTrigger(_animator.GetInteger(reset.Key));
                         break;
 
                     default:
-                        throw new System.Exception($"Unknown type: {kvp.Value.Type}");
+                        throw new System.Exception($"Unknown type: {reset.Val.Type}");
                 }
             }
         }
