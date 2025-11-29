@@ -35,7 +35,7 @@ namespace PlayerAnimationHandler
         {
             foreach (AnimatorControllerParameter parameter in _animator.parameters)
             {
-                switch(parameter.type)
+                switch (parameter.type)
                 {
                     case AnimatorControllerParameterType.Float:
                         _animator.SetFloat(parameter.name, 0f);
@@ -50,7 +50,7 @@ namespace PlayerAnimationHandler
                         break;
 
                     case AnimatorControllerParameterType.Trigger:
-                        _animator.ResetTrigger(_animator.GetInteger(parameter.name)); 
+                        _animator.ResetTrigger(_animator.GetInteger(parameter.name));
                         break;
 
                     default:
@@ -65,36 +65,44 @@ namespace PlayerAnimationHandler
 
             foreach (ResetSystem.Reset reset in resetParameters)
             {
-                AnimatorControllerParameter animatorControllerParameter = animatorControllerParameters.FirstOrDefault(acp => acp.name == reset.Key);
+                AnimatorControllerParameter animatorControllerParameter = animatorControllerParameters.FirstOrDefault(acp => acp.name == reset.m_key);
 
                 if (animatorControllerParameter == null)
                 {
-                    Debug.Log($"Key: {reset.Key} is absent from the AnimatorControllerParameter list!");
+                    Debug.Log($"m_key: {reset.m_key} is absent from the AnimatorControllerParameter list!");
                     continue;
                 }
 
-                switch (reset.Val.Type)
+                switch (reset.m_val.m_type)
                 {
                     case AnimatorControllerParameterType.Float:
-                        _animator.SetFloat(reset.Key, state.Equals(ResetSystem.ResetState.REVERT) ? reset.Val.OldValue : reset.Val.NewValue);
+                        _animator.SetFloat(reset.m_key, state.Equals(ResetSystem.ResetState.REVERT) ? (float) Convert(reset.m_val.m_oldValue) : (float) Convert(reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Bool:
-                        _animator.SetBool(reset.Key, state.Equals(ResetSystem.ResetState.REVERT) ? reset.Val.OldValue : reset.Val.NewValue);
+                        _animator.SetBool(reset.m_key, state.Equals(ResetSystem.ResetState.REVERT) ? (bool) Convert(reset.m_val.m_oldValue) : (bool) Convert(reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Int:
-                        _animator.SetInteger(reset.Key, state.Equals(ResetSystem.ResetState.REVERT) ? reset.Val.OldValue : reset.Val.NewValue);
+                        _animator.SetInteger(reset.m_key, state.Equals(ResetSystem.ResetState.REVERT) ? (int) Convert(reset.m_val.m_oldValue) : (int)Convert(reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Trigger:
-                        _animator.ResetTrigger(_animator.GetInteger(reset.Key));
+                        _animator.ResetTrigger(_animator.GetInteger(reset.m_key));
                         break;
 
                     default:
-                        throw new System.Exception($"Unknown type: {reset.Val.Type}");
+                        throw new System.Exception($"Unknown type: {reset.m_val.m_type}");
                 }
             }
         }
+
+        //TODO!!!
+        private dynamic Convert(ResetSystem.Reset.Field field)
+        {
+            return null;
+        }
+
     }
+
 }

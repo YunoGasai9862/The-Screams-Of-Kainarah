@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerAttackStateMachineReset : StateMachineBehaviour
 {
     [SerializeField]
-    List<ResetSystem> reset;
+    ResetSystem.Reset resetSystem;
 
     private IReceiverEnhancedAsync<PlayerAnimationResetController, State<AttackState>> PlayerAnimationStateControllerAS { get; set; }
 
@@ -36,13 +36,14 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour
     {
         await PlayerAnimationResetControllerCommandAS.Execute(new State<AttackState>()
         {
+            //FIX LATER - CANT BE INITIALIZED!!
             Reset = new ResetSystem()
             {
-                ResetParameters = new List<ResetSystem.Reset> ()
+                resetParameters = new List<ResetSystem.Reset> ()
                 {
-                    //TODO
+                   
                 },
-                State = ResetSystem.ResetState.PARTIAL_RESET
+                state = ResetSystem.ResetState.PARTIAL_RESET
             }
         });
     }

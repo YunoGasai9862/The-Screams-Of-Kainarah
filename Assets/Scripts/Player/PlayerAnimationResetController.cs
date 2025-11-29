@@ -10,7 +10,7 @@ public class PlayerAnimationResetController : MonoBehaviour, IReceiverEnhancedAs
 
     private async Task ResetState<T>(State<T> state) where T: Enum
     {
-        switch (state.Reset.State)
+        switch (state.Reset.state)
         {
             case ResetSystem.ResetState.COMPLETE_RESET:
                 AnimationStateMachine.ResetParameters();
@@ -18,7 +18,7 @@ public class PlayerAnimationResetController : MonoBehaviour, IReceiverEnhancedAs
 
             case ResetSystem.ResetState.PARTIAL_RESET:
             case ResetSystem.ResetState.REVERT:
-                AnimationStateMachine.ResetParameters(state.Reset.ResetParameters, state.Reset.State);
+                AnimationStateMachine.ResetParameters(state.Reset.resetParameters, state.Reset.state);
                 break;
         }
     }

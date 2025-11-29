@@ -1,39 +1,62 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-public class ResetSystem
+[Serializable]
+[CreateAssetMenu(fileName = "ResetConfig", menuName = "Reset Config")]
+public class ResetSystem : ScriptableObject
 {
-    public ResetState State { get; set; }
-    public List<Reset> ResetParameters { get; set; } = new List<Reset>();
+    [SerializeField]
+    public ResetState state;
 
+    [SerializeField]
+    public List<Reset> resetParameters;
+
+    [Serializable]
     public enum ResetState
     {
         COMPLETE_RESET,
-        
+
         PARTIAL_RESET,
 
         REVERT
     }
 
+    [Serializable]
     public class Reset
     {
-        public string Key { get; set; }
+        [SerializeField]
+        public string m_key;
 
-        public Value Val { get; set; }
+        [SerializeField]
+        public Value m_val;
 
+        [Serializable]
         public class Value
         {
-            public AnimatorControllerParameterType Type { get; set; }
+            [SerializeField]
+            public AnimatorControllerParameterType m_type;
 
-            public dynamic OldValue { get; set; }
+            [SerializeField]
+            public Field m_oldValue;
 
-            public dynamic NewValue { get; set; }
+            [SerializeField]
+            public Field m_newValue;
 
             public override string ToString()
             {
-                return $"Old Value :{OldValue}, NewValue: {OldValue}";
+                return $"Old Value :{m_oldValue}, NewValue: {m_newValue}";
             }
+        }
+
+        [Serializable]
+        public class Field
+        {
+            [SerializeField]
+            public Type fieldType;
+
+            [SerializeField]
+            public string value;
         }
     }
 
@@ -41,8 +64,8 @@ public class ResetSystem
     {
         string result = "";
 
-        ResetParameters?.ForEach(val => result += $"ResetParametersKey : {val.Key} - ResetParametersValue: {val.Val.ToString()}\n");
+        resetParameters?.ForEach(val => result += $"ResetParametersKey : {val.m_key} - ResetParametersValue: {val.m_val.ToString()}\n");
 
-        return $"result, ResetState: {State}";
+        return $"result, ResetState: {state}";
     }
 }
