@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-[CreateAssetMenu(fileName = "ResetConfig", menuName = "Reset Config")]
-public class ResetSystem : ScriptableObject
+public class ResetSystem
 {
     [SerializeField]
     public ResetState state;
@@ -20,44 +18,6 @@ public class ResetSystem : ScriptableObject
         PARTIAL_RESET,
 
         REVERT
-    }
-
-    [Serializable]
-    public class Reset
-    {
-        [SerializeField]
-        public string m_key;
-
-        [SerializeField]
-        public Value m_val;
-
-        [Serializable]
-        public class Value
-        {
-            [SerializeField]
-            public AnimatorControllerParameterType m_type;
-
-            [SerializeField]
-            public Field m_oldValue;
-
-            [SerializeField]
-            public Field m_newValue;
-
-            public override string ToString()
-            {
-                return $"Old Value :{m_oldValue}, NewValue: {m_newValue}";
-            }
-        }
-
-        [Serializable]
-        public class Field
-        {
-            [SerializeField]
-            public Type fieldType;
-
-            [SerializeField]
-            public string value;
-        }
     }
 
     public override string ToString()

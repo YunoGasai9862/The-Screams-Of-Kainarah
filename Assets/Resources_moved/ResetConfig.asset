@@ -16,7 +16,6 @@ MonoBehaviour:
   resetParameters:
   - m_key: 
     m_val:
-      m_type: 0
-  - m_key: 
-    m_val:
-      m_type: 4
+      m_type: 3
+      m_oldValue: 
+      m_newValue: 

@@ -1,17 +1,14 @@
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(ResetSystem))]
+[CustomEditor(typeof(ResetConfig))]
 public class ResetSystemCustomEditor: Editor
 {
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
 
-        ResetSystem reset = (ResetSystem)target;
-
-        SerializedProperty state = serializedObject.FindProperty("state");
+        ResetConfig reset = (ResetConfig)target;
 
         SerializedProperty array = serializedObject.FindProperty("resetParameters");
 
@@ -28,7 +25,11 @@ public class ResetSystemCustomEditor: Editor
 
             SerializedProperty value = element.FindPropertyRelative("m_val");
 
+            GUILayout.Label("Main Key/Field Name");
+
             EditorGUILayout.PropertyField(key);
+
+            GUILayout.Label("Value (Type, Old Value, New Value)");
 
             EditorGUILayout.PropertyField(value);
         }

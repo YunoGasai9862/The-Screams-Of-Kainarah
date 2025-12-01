@@ -59,11 +59,11 @@ namespace PlayerAnimationHandler
             }
         }
 
-        public void ResetParameters(List<ResetSystem.Reset> resetParameters, ResetSystem.ResetState state)
+        public void ResetParameters(List<Reset> resetParameters, ResetSystem.ResetState state)
         {
             AnimatorControllerParameter[] animatorControllerParameters = _animator.parameters.ToArray();
 
-            foreach (ResetSystem.Reset reset in resetParameters)
+            foreach (Reset reset in resetParameters)
             {
                 AnimatorControllerParameter animatorControllerParameter = animatorControllerParameters.FirstOrDefault(acp => acp.name == reset.m_key);
 
@@ -76,15 +76,18 @@ namespace PlayerAnimationHandler
                 switch (reset.m_val.m_type)
                 {
                     case AnimatorControllerParameterType.Float:
-                        _animator.SetFloat(reset.m_key, state.Equals(ResetSystem.ResetState.REVERT) ? (float) Convert(reset.m_val.m_oldValue) : (float) Convert(reset.m_val.m_newValue));
+                        _animator.SetFloat(reset.m_key, state.Equals(ResetSystem.ResetState.REVERT) ? (float) Convert(reset.m_val.m_type, reset.m_val.m_oldValue) : 
+                            (float) Convert(reset.m_val.m_type, reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Bool:
-                        _animator.SetBool(reset.m_key, state.Equals(ResetSystem.ResetState.REVERT) ? (bool) Convert(reset.m_val.m_oldValue) : (bool) Convert(reset.m_val.m_newValue));
+                        _animator.SetBool(reset.m_key, state.Equals(ResetSystem.ResetState.REVERT) ? (bool) Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
+                            (bool) Convert(reset.m_val.m_type, reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Int:
-                        _animator.SetInteger(reset.m_key, state.Equals(ResetSystem.ResetState.REVERT) ? (int) Convert(reset.m_val.m_oldValue) : (int)Convert(reset.m_val.m_newValue));
+                        _animator.SetInteger(reset.m_key, state.Equals(ResetSystem.ResetState.REVERT) ? (int) Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
+                            (int) Convert(reset.m_val.m_type, reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Trigger:
@@ -97,8 +100,7 @@ namespace PlayerAnimationHandler
             }
         }
 
-        //TODO!!!
-        private dynamic Convert(ResetSystem.Reset.Field field)
+        private dynamic Convert(AnimatorControllerParameterType type, string value)
         {
             return null;
         }
