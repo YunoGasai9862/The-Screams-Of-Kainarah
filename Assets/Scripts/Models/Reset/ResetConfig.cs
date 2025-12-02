@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-[CreateAssetMenu(fileName = "ResetConfig", menuName = "Reset Config")]
-public class ResetConfig: ScriptableObject
+public abstract class ResetConfig: ScriptableObject
 {
     [Serializable]
     public class Reset
     {
-        public string key; 
-        
+        [SerializeField]
+        public string key;
+
+        [SerializeField]
         public AnimatorControllerParameterType type;
     }
+
+    [SerializeField]
+    public List<Reset> resetParameters;
 }

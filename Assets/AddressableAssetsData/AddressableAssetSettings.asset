@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: b7063152c68b66041806e52030dac4d9
   m_currentHash:
     serializedVersion: 2
-    Hash: b4e8c6703ba009dd40e7aac29104608f
+    Hash: 00000000000000000000000000000000
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -33,6 +33,7 @@ MonoBehaviour:
   m_UniqueBundleIds: 0
   m_EnableJsonCatalog: 0
   m_NonRecursiveBuilding: 1
+  m_AllowNestedBundleFolders: 0
   m_CCDEnabled: 0
   m_maxConcurrentWebRequests: 3
   m_UseUWRForLocalBundles: 0
@@ -110,6 +111,7 @@ MonoBehaviour:
     - LightManager
     - AWSPollyManager
     - FirebaseStorageManager
+    - ResetConfig
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: fddaf8095ec2d344bb5a1aeb7f9adbb1, type: 2}
