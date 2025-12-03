@@ -10,16 +10,6 @@ public class ResetSystem
     [SerializeField]
     public List<Reset> resetParameters;
 
-    [Serializable]
-    public enum ResetState
-    {
-        COMPLETE_RESET,
-
-        PARTIAL_RESET,
-
-        REVERT
-    }
-
     public override string ToString()
     {
         string result = "";

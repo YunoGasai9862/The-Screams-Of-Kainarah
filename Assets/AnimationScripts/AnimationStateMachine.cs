@@ -59,7 +59,7 @@ namespace PlayerAnimationHandler
             }
         }
 
-        public void ResetParameters(List<Reset> resetParameters, ResetSystem.ResetState state)
+        public void ResetParameters(List<Reset> resetParameters, ResetState state)
         {
             AnimatorControllerParameter[] animatorControllerParameters = _animator.parameters.ToArray();
 
@@ -76,17 +76,17 @@ namespace PlayerAnimationHandler
                 switch (reset.m_val.m_type)
                 {
                     case AnimatorControllerParameterType.Float:
-                        _animator.SetFloat(reset.m_key, state.Equals(ResetSystem.ResetState.REVERT) ? (float) Convert(reset.m_val.m_type, reset.m_val.m_oldValue) : 
+                        _animator.SetFloat(reset.m_key, state.Equals(ResetState.REVERT) ? (float) Convert(reset.m_val.m_type, reset.m_val.m_oldValue) : 
                             (float) Convert(reset.m_val.m_type, reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Bool:
-                        _animator.SetBool(reset.m_key, state.Equals(ResetSystem.ResetState.REVERT) ? (bool) Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
+                        _animator.SetBool(reset.m_key, state.Equals(ResetState.REVERT) ? (bool) Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
                             (bool) Convert(reset.m_val.m_type, reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Int:
-                        _animator.SetInteger(reset.m_key, state.Equals(ResetSystem.ResetState.REVERT) ? (int) Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
+                        _animator.SetInteger(reset.m_key, state.Equals(ResetState.REVERT) ? (int) Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
                             (int) Convert(reset.m_val.m_type, reset.m_val.m_newValue));
                         break;
 
@@ -102,9 +102,16 @@ namespace PlayerAnimationHandler
 
         private dynamic Convert(AnimatorControllerParameterType type, string value)
         {
+            switch (type)
+            {
+                case AnimatorControllerParameterType.Bool:
+                    return bool.Parse(value);
+                case AnimatorControllerParameterType.Int:
+                    return int.Parse(value);
+                case AnimatorControllerParameterType.Float:
+                    return float.Parse(value);
+            }
             return null;
         }
-
     }
-
 }

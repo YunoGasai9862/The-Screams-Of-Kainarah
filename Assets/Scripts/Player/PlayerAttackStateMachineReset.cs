@@ -1,11 +1,12 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
-public class PlayerAttackStateMachineReset : StateMachineBehaviour
+public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<EntityPoolManager>
 {
-    [SerializeField]
-    ResetConfig resetConfig;
+    //fetch from entity pool manager
+    private AttackResetConfig AttackResetConfig { get; set; }
 
     private IReceiverEnhancedAsync<PlayerAnimationResetController, State<AttackState>> PlayerAnimationStateControllerAS { get; set; }
 
@@ -36,16 +37,20 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour
     {
         await PlayerAnimationResetControllerCommandAS.Execute(new State<AttackState>()
         {
-            //FIX LATER - CANT BE INITIALIZED!!
             Reset = new ResetSystem()
             {
                 resetParameters = new List<Reset> ()
                 {
                    //use the value exactly from the ResetConfig - the type
                 },
-                state = ResetSystem.ResetState.PARTIAL_RESET
+                state = ResetState.PARTIAL_RESET
             }
         });
+    }
+
+    public void OnNotify(EntityPoolManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    {
+        throw new System.NotImplementedException();
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

@@ -1,6 +1,5 @@
 using PlayerAnimationHandler;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -8,16 +7,16 @@ public class PlayerAnimationResetController : MonoBehaviour, IReceiverEnhancedAs
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
 
-    private async Task ResetState<T>(State<T> state) where T: Enum
+    private async Task Reset<T>(State<T> state) where T: Enum
     {
         switch (state.Reset.state)
         {
-            case ResetSystem.ResetState.COMPLETE_RESET:
+            case ResetState.COMPLETE_RESET:
                 AnimationStateMachine.ResetParameters();
                 break;
 
-            case ResetSystem.ResetState.PARTIAL_RESET:
-            case ResetSystem.ResetState.REVERT:
+            case ResetState.PARTIAL_RESET:
+            case ResetState.REVERT:
                 AnimationStateMachine.ResetParameters(state.Reset.resetParameters, state.Reset.state);
                 break;
         }
@@ -25,7 +24,7 @@ public class PlayerAnimationResetController : MonoBehaviour, IReceiverEnhancedAs
 
     public async Task<ActionExecuted> PerformAction(State<AttackState> value = null)
     {
-        await ResetState(value);
+        await Reset(value);
 
         return new ActionExecuted() { Result = true };
     }
@@ -37,7 +36,7 @@ public class PlayerAnimationResetController : MonoBehaviour, IReceiverEnhancedAs
 
     public async Task<ActionExecuted> PerformAction(State<MovementState> value = null)
     {
-        await ResetState(value);
+        await Reset(value);
 
         return new ActionExecuted() { Result = true };
     }
@@ -49,7 +48,7 @@ public class PlayerAnimationResetController : MonoBehaviour, IReceiverEnhancedAs
 
     public async Task<ActionExecuted> PerformAction(State<ActionState> value = null)
     {
-        await ResetState(value);
+        await Reset(value);
 
         return new ActionExecuted() { Result = true };
     }

@@ -27,11 +27,9 @@ public class PlayerStateMachineReset: StateMachineBehaviour
         {
             StateBundle = new PlayerStateBundle()
             {
-                //FIX THIS LATER - CAN"T BE INITIALIZED!!
-                PlayerAttackState = new State<AttackState, bool>() { Reset = new ResetSystem() { state = ResetSystem.ResetState.COMPLETE_RESET } },
-                PlayerMovementState = new State<MovementState, bool>() { Reset = new ResetSystem() { state = ResetSystem.ResetState.COMPLETE_RESET } },
-                PlayerActionState = new State<ActionState, bool>() { Reset = new ResetSystem() { state = ResetSystem.ResetState.COMPLETE_RESET } }
-
+                PlayerAttackState = new State<AttackState, bool>() { Reset = new ResetSystem() { state = ResetState.COMPLETE_RESET } },
+                PlayerMovementState = new State<MovementState, bool>() { Reset = new ResetSystem() { state = ResetState.COMPLETE_RESET } },
+                PlayerActionState = new State<ActionState, bool>() { Reset = new ResetSystem() { state = ResetState.COMPLETE_RESET } }
             }
         });
     }
