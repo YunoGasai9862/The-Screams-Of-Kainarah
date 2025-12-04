@@ -5,17 +5,17 @@ using UnityEngine;
 public class ResetSystem
 {
     [SerializeField]
-    public ResetState state;
+    public ResetState State { get; set; }
 
     [SerializeField]
-    public List<Reset> resetParameters;
+    public List<Reset> ResetParameters { get; set; }
 
     public override string ToString()
     {
         string result = "";
 
-        resetParameters?.ForEach(val => result += $"ResetParametersKey : {val.m_key} - ResetParametersValue: {val.m_val.ToString()}\n");
+        ResetParameters?.ForEach(val => result += $"ResetParametersKey : {val.m_key} - ResetParametersValue: {val.m_val.ToString()}\n");
 
-        return $"result, ResetState: {state}";
+        return $"result, ResetState: {State}";
     }
 }

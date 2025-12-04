@@ -76,18 +76,18 @@ namespace PlayerAnimationHandler
                 switch (reset.m_val.m_type)
                 {
                     case AnimatorControllerParameterType.Float:
-                        _animator.SetFloat(reset.m_key, state.Equals(ResetState.REVERT) ? (float) Convert(reset.m_val.m_type, reset.m_val.m_oldValue) : 
-                            (float) Convert(reset.m_val.m_type, reset.m_val.m_newValue));
+                        _animator.SetFloat(reset.m_key, state.Equals(ResetState.REVERT) ? (float) Helper.Convert(reset.m_val.m_type, reset.m_val.m_oldValue) : 
+                            (float) Helper.Convert(reset.m_val.m_type, reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Bool:
-                        _animator.SetBool(reset.m_key, state.Equals(ResetState.REVERT) ? (bool) Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
-                            (bool) Convert(reset.m_val.m_type, reset.m_val.m_newValue));
+                        _animator.SetBool(reset.m_key, state.Equals(ResetState.REVERT) ? (bool) Helper.Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
+                            (bool) Helper.Convert(reset.m_val.m_type, reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Int:
-                        _animator.SetInteger(reset.m_key, state.Equals(ResetState.REVERT) ? (int) Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
-                            (int) Convert(reset.m_val.m_type, reset.m_val.m_newValue));
+                        _animator.SetInteger(reset.m_key, state.Equals(ResetState.REVERT) ? (int) Helper.Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
+                            (int) Helper.Convert(reset.m_val.m_type, reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Trigger:
@@ -98,20 +98,6 @@ namespace PlayerAnimationHandler
                         throw new System.Exception($"Unknown type: {reset.m_val.m_type}");
                 }
             }
-        }
-
-        private dynamic Convert(AnimatorControllerParameterType type, string value)
-        {
-            switch (type)
-            {
-                case AnimatorControllerParameterType.Bool:
-                    return bool.Parse(value);
-                case AnimatorControllerParameterType.Int:
-                    return int.Parse(value);
-                case AnimatorControllerParameterType.Float:
-                    return float.Parse(value);
-            }
-            return null;
         }
     }
 }

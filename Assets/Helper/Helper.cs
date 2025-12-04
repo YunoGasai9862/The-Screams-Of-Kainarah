@@ -65,6 +65,20 @@ public class Helper: MonoBehaviour
         throw new CustomEventNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
+    public static dynamic Convert(AnimatorControllerParameterType type, dynamic value)
+    {
+        switch (type)
+        {
+            case AnimatorControllerParameterType.Bool:
+                return bool.Parse(value);
+            case AnimatorControllerParameterType.Int:
+                return int.Parse(value);
+            case AnimatorControllerParameterType.Float:
+                return float.Parse(value);
+        }
+        return null;
+    }
+
     public static async Task<TYPE> FindReceiver<TYPE, IMPLEMENTATION>(int retryLimit = 3, int waitLimitInSeconds = 3) where TYPE: MonoBehaviour
     {
 

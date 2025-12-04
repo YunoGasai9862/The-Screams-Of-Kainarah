@@ -1,12 +1,18 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using UnityEngine;
 
 public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<EntityPoolManager>
 {
-    //fetch from entity pool manager
+    [SerializeField]
+    public string resetConfigEntityName;
     private AttackResetConfig AttackResetConfig { get; set; }
+
+    private EntityPoolManagerDelegator EntityPoolManagerDelegator { get; set; }
+
+    private EntityPoolManager EntityPoolManager { get; set; }
 
     private IReceiverEnhancedAsync<PlayerAnimationResetController, State<AttackState>> PlayerAnimationStateControllerAS { get; set; }
 
@@ -18,6 +24,17 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
         PlayerAnimationStateControllerAS = await Helper.FindReceiver<PlayerAnimationResetController, IReceiverEnhancedAsync<PlayerAnimationResetController, State<AttackState>>>();
 
         PlayerAnimationResetControllerCommandAS = new CommandAsyncEnhanced<PlayerAnimationResetController, State<AttackState>>(PlayerAnimationStateControllerAS);
+
+        EntityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
+
+        EntityPoolManagerDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        {
+
+            ObserverName = this.name,
+            ObserverTag = this.name,
+            SubjectType = typeof(EntityPoolManager).ToString()
+
+        }, CancellationToken.None);
     }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -39,18 +56,25 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
         {
             Reset = new ResetSystem()
             {
-                resetParameters = new List<Reset> ()
+                ResetParameters = AttackResetConfig.resetParameters.Select(reset => new Reset()
                 {
-                   //use the value exactly from the ResetConfig - the type
-                },
-                state = ResetState.PARTIAL_RESET
+                    m_key = reset.key,
+                    m_val = new Reset.Value()
+                    {
+                        m_type = reset.type,
+                        m_newValue = reset.type == AnimatorControllerParameterType.Int ? 0 : (reset.type == AnimatorControllerParameterType.Float? 0.0: (reset.type == AnimatorControllerParameterType.Bool ? false : null))
+                    }
+                }).ToList(),
+                State = ResetState.PARTIAL_RESET
             }
         });
     }
 
     public void OnNotify(EntityPoolManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        throw new System.NotImplementedException();
+        EntityPoolManager = data;
+
+        AttackResetConfig = (AttackResetConfig) EntityPoolManager.GetPooledEntity(resetConfigEntityName).FirstOrDefault(entity => entity.Name.Equals(resetConfigEntityName)).Entity;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

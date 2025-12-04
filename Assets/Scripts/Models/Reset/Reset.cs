@@ -18,10 +18,10 @@ public class Reset
         public AnimatorControllerParameterType m_type;
 
         [SerializeField]
-        public string m_oldValue;
+        public dynamic m_oldValue;
 
         [SerializeField]
-        public string m_newValue;
+        public dynamic m_newValue;
 
         public override string ToString()
         {
