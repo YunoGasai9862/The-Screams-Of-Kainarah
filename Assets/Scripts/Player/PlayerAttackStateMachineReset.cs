@@ -1,5 +1,3 @@
-using NUnit.Framework;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -19,7 +17,7 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
     private CommandAsyncEnhanced<PlayerAnimationResetController, State<AttackState>> PlayerAnimationResetControllerCommandAS { get; set; }
 
 
-    private async void Awake()
+    private async void OnEnable()   
     {
         PlayerAnimationStateControllerAS = await Helper.FindReceiver<PlayerAnimationResetController, IReceiverEnhancedAsync<PlayerAnimationResetController, State<AttackState>>>();
 

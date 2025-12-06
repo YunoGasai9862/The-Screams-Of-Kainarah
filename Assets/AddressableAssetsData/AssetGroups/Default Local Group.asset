@@ -83,6 +83,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - AWSPollyManager
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d87d0c0fc0104d142a3f7b9249f46f7e
+    m_Address: Assets/Resources_moved/AttackResetConfig.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AttackResetConfig
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dcfb91314fa429145a308d707bf9d85d
     m_Address: Assets/Resources_moved/Prefabs/AudioPreload.prefab
     m_ReadOnly: 0

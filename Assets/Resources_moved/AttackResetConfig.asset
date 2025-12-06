@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: AttackResetConfig
   m_EditorClassIdentifier: Assembly-CSharp::AttackResetConfig
   resetParameters:
-  - key: 
-    type: 4
+  - key: ElapsedTime
+    type: 1
