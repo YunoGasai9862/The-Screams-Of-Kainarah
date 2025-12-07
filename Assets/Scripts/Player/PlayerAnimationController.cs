@@ -110,10 +110,11 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
         return PlayerAnimator.GetCurrentAnimatorStateInfo(0);
     }
 
+    //check how emit movement animation state bundle is working - might need to fix it!
     private bool ShouldSkipMovementAnimation(PlayerStateBundle bundle)
     {
         return InternalPlayerStateBundle.PlayerMovementState != null && (int)InternalPlayerStateBundle.PlayerMovementState.CurrentState == (int)bundle.PlayerMovementState.CurrentState &&
-              EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash != EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash;
+               EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash != EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash;
     }
 
     public Task<ActionExecuted> PerformAction(ControllerPackage<AnimationExecutionState, PlayerStateBundle> value = null)

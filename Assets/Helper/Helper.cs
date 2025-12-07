@@ -70,11 +70,23 @@ public class Helper: MonoBehaviour
         switch (type)
         {
             case AnimatorControllerParameterType.Bool:
-                return bool.Parse(value);
+                if (!(value is bool))
+                {
+                    throw new ApplicationException("Value is not of bool type, but was specified as bool!" + $" value: {value}");
+                }
+                return (bool) value;
             case AnimatorControllerParameterType.Int:
-                return int.Parse(value);
+                if (!(value is int))
+                {
+                    throw new ApplicationException("Value is not of int type, but was specified as int!" + $" value: {value}");
+                }
+                return (int) value;
             case AnimatorControllerParameterType.Float:
-                return float.Parse(value);
+                if (!(value is float))
+                {
+                    throw new ApplicationException("Value is not of float type, but was specified as float!" + $" value: {value}");
+                }
+                return (float) value;
         }
         return null;
     }

@@ -60,7 +60,7 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
                     m_val = new Reset.Value()
                     {
                         m_type = reset.type,
-                        m_newValue = reset.type == AnimatorControllerParameterType.Int ? 0 : (reset.type == AnimatorControllerParameterType.Float? 0.0: (reset.type == AnimatorControllerParameterType.Bool ? false : null))
+                        m_newValue = reset.type == AnimatorControllerParameterType.Int ? 0 : (reset.type == AnimatorControllerParameterType.Float? 0.0f: (reset.type == AnimatorControllerParameterType.Bool ? false : null))
                     }
                 }).ToList(),
                 State = ResetState.PARTIAL_RESET
