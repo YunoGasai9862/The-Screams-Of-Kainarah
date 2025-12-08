@@ -5,6 +5,8 @@ public class PlayerStateBundle : IStateBundle
     public State<MovementState, bool> PlayerMovementState { get; set; } = new State<MovementState, bool>();
 
     public State<AttackState, bool> PlayerAttackState { get; set; } = new State<AttackState, bool>();
+
+    public State<LeapState, bool> PlayerLeapState { get; set; } = new State<LeapState, bool>();
     
     public override string ToString()
     {
@@ -18,6 +20,7 @@ public class PlayerStateBundle : IStateBundle
             PlayerActionState = this.PlayerActionState,
             PlayerMovementState = this.PlayerMovementState,
             PlayerAttackState = this.PlayerAttackState,
+            PlayerLeapState = this.PlayerLeapState
         };
     }
 }

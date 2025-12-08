@@ -118,7 +118,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
     }
     private bool CanPlayerAttackWhileJumping()
     {
-        return (CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState == MovementState.IS_JUMPING && !CurrentPlayerState.StateBundle.PlayerMovementState.IsConcluded) && 
+        return (CurrentPlayerState.StateBundle.PlayerLeapState.CurrentState == LeapState.IS_JUMPING && !CurrentPlayerState.StateBundle.PlayerMovementState.IsConcluded) && 
             !_movementHelper.OverlapAgainstLayerMaskChecker(Player.Collider, Ground, COLLIDER_DISTANCE_FROM_THE_LAYER);
     }
 
@@ -169,7 +169,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         return CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.FREE_MOVEMENT) &&
                !CurrentGameState.StateBundle.GameState.IsConcluded &&
                !isInventoryOpen &&
-               !CurrentPlayerState.StateBundle.PlayerMovementState.CurrentState.Equals(MovementState.IS_JUMPING);
+               !CurrentPlayerState.StateBundle.PlayerLeapState.CurrentState.Equals(LeapState.IS_JUMPING);
     }
 
     public Task<ActionExecuted> PerformAction(ControllerPackage<AttackingExecutionState, AttackingDetails> value)
