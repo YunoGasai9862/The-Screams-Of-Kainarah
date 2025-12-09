@@ -14,5 +14,6 @@ public class PlayerAnimationConstants
     public static string ATTACK3 { get; } = "Attack3";
     public static string ATTACK4 { get; } = "Attack4";
     public static string MOVEMENT { get;  } = "State";
+    public static string LEAP_STATE { get; } = "LeapState";
     public static string JUMP_TIME { get; } = "JumpTime";
 }

@@ -83,7 +83,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private void JumpAnimation(PlayerStateBundle bundle)
     {
-        PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int) bundle.PlayerMovementState.CurrentState); 
+        PlayAnimation(PlayerAnimationConstants.LEAP_STATE, (int) bundle.PlayerLeapState.CurrentState); 
     }
 
     private void SlidingAnimation(PlayerStateBundle bundle)
