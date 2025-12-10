@@ -88,7 +88,8 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private void SlidingAnimation(PlayerStateBundle bundle)
     {
-        PlayAnimation(PlayerAnimationConstants.SLIDING, bundle.PlayerMovementState.CurrentValue);
+        //MIGHT NEED TO REVISE/LOOK INTO
+        PlayAnimation(PlayerAnimationConstants.SLIDING, (int) bundle.PlayerMovementState.CurrentState);
     }
 
     private void PlayAnimation(string name, int state)

@@ -47,7 +47,7 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
     {
         yield return new WaitForSeconds(value.AttackDelay);
 
-        AnimationUtility.ExecuteAnimations(value.Animations, value.Animator);
+        AnimationUtility.ExecuteAnimationsWrapper(value.Animations, value.Animator);
     }
 
     private async Task<bool> IsAnAttack(List<RakashAttack> rakashAttacks, AnimatorStateInfo info)

@@ -14,6 +14,14 @@ public class AnimationUtility
         }
     }
 
+    public async void ExecuteAnimationsWrapper(List<Animation> animations, Animator animator)
+    {
+        foreach (Animation animation in animations)
+        {
+            await ExecuteAnimation(animation, animator);
+        }
+    }
+
     public async Task ExecuteAnimation(Animation animation, Animator animator)
     {
         string description = await ResolveAnimationName(animation);

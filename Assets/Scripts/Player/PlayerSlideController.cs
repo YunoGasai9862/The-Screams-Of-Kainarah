@@ -81,7 +81,7 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
     {
         if (IS_SLIDING && _movementHelperClass.OverlapAgainstLayerMaskChecker(Player.Collider, groundLayer, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
-            PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = true, IsConcluded = false };
+            PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, MovementDto>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = new MovementDto() { SlidingSpeed = new Vector2(slidingSpeed, 0) }, IsConcluded = false };
             
             PlayerVelocityDelegator.NotifyObservers(new CharacterVelocity() { VelocityX = slidingSpeed }, gameObject.name, typeof(PlayerSlideController), CancellationToken.None);
 
@@ -92,7 +92,7 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
 
         if (AnimationDetails.CurrentAnimationTime > MAX_ANIMATION_TIME && AnimationDetails.CurrentAnimationStateInfo.IsName(PlayerAnimationConstants.SLIDING))
         {
-            PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = false, IsConcluded = true };
+            PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, MovementDto>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = new MovementDto() { SlidingSpeed = new Vector2(slidingSpeed, 0) }, IsConcluded = true };
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
@@ -119,7 +119,7 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
     }
     public async Task<ActionExecuted> CancelAction(PlayerStateBundle value)
     {
-        PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = false, IsConcluded = true };
+        PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, MovementDto>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = new MovementDto() { SlidingSpeed = Vector2.zero }, IsConcluded = true };
 
         PlayerVelocityDelegator.NotifyObservers(new CharacterVelocity() { VelocityX = 0 }, gameObject.name, typeof(PlayerSlideController), CancellationToken.None);
 

@@ -96,7 +96,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _throwingProjectileCommand = new Command<bool>(_throwingProjectileReceiver);
 
-        _playerActionsModel.OriginalSpeed = _characterSpeed;
+        _playerActionsModel.OriginalSpeed = new Vector2(_characterSpeed, 0f);
 
         _playerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
@@ -198,7 +198,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         if (CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE)) 
         {
-            CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_IDLE, CurrentValue = true, IsConcluded = false };
+            CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, MovementDto>() { CurrentState = MovementState.IS_IDLE, CurrentValue = new MovementDto() { CharacterSpeed = _playerActionsModel.CharacterSpeed }, IsConcluded = false };
             await _playerStateEvent.Invoke(CurrentPlayerState);
 
             await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.MOVEMENT, 
@@ -232,11 +232,12 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _playerActionsModel.KeyStrokeDifference = GetKeyStrokeDifference(keystroke);
 
-        _playerActionsModel.CharacterVelocityX = keystroke.x;
+        _playerActionsModel.CharacterVelocity = new Vector2(keystroke.x, keystroke.y);
 
-        CharacterControllerMove(_playerActionsModel.CharacterVelocityX * _playerActionsModel.CharacterSpeed, _playerActionsModel.CharacterVelocityY);
+        CharacterControllerMove(_playerActionsModel.CharacterVelocity * _playerActionsModel.CharacterSpeed);
 
-        CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, bool> { CurrentState = _playerActionsModel.KeyStrokeDifference == 0 ? MovementState.IS_IDLE : MovementState.IS_RUNNING, CurrentValue = true, IsConcluded = false };
+        CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, MovementDto> { CurrentState = _playerActionsModel.KeyStrokeDifference == 0 ? MovementState.IS_IDLE : 
+            MovementState.IS_RUNNING, CurrentValue = new MovementDto() { CharacterSpeed = _playerActionsModel.CharacterSpeed }, IsConcluded = false };
 
         await _playerStateEvent.Invoke(CurrentPlayerState);
 
@@ -263,15 +264,15 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private void VelocityYEventHandler(float characterVelocityY)
     {
-        _playerActionsModel.CharacterVelocityY = characterVelocityY;
+        _playerActionsModel.CharacterVelocity = new Vector2(_playerActionsModel.CharacterVelocity.x, characterVelocityY);
     }
     private void CharacterSpeedHandler(float characterSpeed)
     {
-        _playerActionsModel.CharacterSpeed = characterSpeed;
+        _playerActionsModel.CharacterVelocity = new Vector2(_playerActionsModel.CharacterVelocity.x * characterSpeed, _playerActionsModel.CharacterSpeed.y);
     }
-    private void CharacterControllerMove(float CharacterPositionX, float CharacterPositionY)
+    private void CharacterControllerMove(Vector2 CharacterVelocity)
     {
-        Player.Rigidbody.linearVelocity = new Vector2(CharacterPositionX, CharacterPositionY);
+        Player.Rigidbody.linearVelocity = new Vector2(CharacterVelocity.x, CharacterVelocity.y);
     }
 
     private bool KeystrokeMagnitudeChecker(Vector2 _keystrokeTrack)
@@ -293,7 +294,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     {
         _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState == AttackState.IS_ATTACKING) ? false : context.ReadValueAsButton();
 
-        CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, bool>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = false, IsConcluded = true };
+        CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, MovementDto>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = new MovementDto() { CharacterSpeed = _playerActionsModel.CharacterSpeed,  }, IsConcluded = true };
 
         _playerStateEvent.Invoke(CurrentPlayerState);
     }

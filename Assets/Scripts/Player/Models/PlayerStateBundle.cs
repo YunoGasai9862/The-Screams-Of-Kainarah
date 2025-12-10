@@ -2,7 +2,7 @@ public class PlayerStateBundle : IStateBundle
 {
     public State<ActionState, bool> PlayerActionState { get; set; } = new State<ActionState, bool>();
 
-    public State<MovementState, bool> PlayerMovementState { get; set; } = new State<MovementState, bool>();
+    public State<MovementState, MovementDto> PlayerMovementState { get; set; } = new State<MovementState, MovementDto>();
 
     public State<AttackState, bool> PlayerAttackState { get; set; } = new State<AttackState, bool>();
 

@@ -51,10 +51,13 @@ public class PlayerStateConsumer : BaseState<PlayerStateBundle>
                     CurrentState = AttackState.IDLE,
                     CurrentValue = true
                 },
-                PlayerMovementState = new State<MovementState, bool >()
+                PlayerMovementState = new State<MovementState, MovementDto>()
                 {
                     CurrentState = MovementState.IS_IDLE,
-                    CurrentValue = true
+                    CurrentValue = new MovementDto()
+                    {
+                        CharacterSpeed = Vector2.zero
+                    }
                 }
             }
         };
