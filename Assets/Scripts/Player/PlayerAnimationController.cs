@@ -78,27 +78,18 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
         EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash = EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash;
 
-        PlayAnimation(PlayerAnimationConstants.MOVEMENT, (int)bundle.PlayerMovementState.CurrentState);
+        AnimationStateMachine.SetAnimation(PlayerAnimationConstants.CHARACTER_SPEED, bundle.PlayerMovementState.CurrentValue.CharacterSpeed.x);
     }
 
     private void JumpAnimation(PlayerStateBundle bundle)
     {
-        PlayAnimation(PlayerAnimationConstants.LEAP_STATE, (int) bundle.PlayerLeapState.CurrentState); 
+        AnimationStateMachine.SetAnimation(PlayerAnimationConstants.LEAP_STATE, (int) bundle.PlayerLeapState.CurrentState); 
     }
 
     private void SlidingAnimation(PlayerStateBundle bundle)
     {
         //MIGHT NEED TO REVISE/LOOK INTO
-        PlayAnimation(PlayerAnimationConstants.SLIDING, (int) bundle.PlayerMovementState.CurrentState);
-    }
-
-    private void PlayAnimation(string name, int state)
-    {
-        AnimationStateMachine.AnimationPlayForInt(name, state);
-    }
-    private void PlayAnimation(string name, bool state)
-    {
-        AnimationStateMachine.AnimationPlayForBool(name, state);
+        AnimationStateMachine.SetAnimation(PlayerAnimationConstants.SLIDING, (int) bundle.PlayerMovementState.CurrentState);
     }
 
     private float ReturnCurrentAnimation()

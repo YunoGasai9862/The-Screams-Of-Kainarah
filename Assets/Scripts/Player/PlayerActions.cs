@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<CharacterSpeed>, IObserver<CharacterVelocity>, IDelegate
+public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<CharacterVelocity>, IDelegate
 {
     [SerializeField] float _characterSpeed = 10f;
 
@@ -96,7 +96,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _throwingProjectileCommand = new Command<bool>(_throwingProjectileReceiver);
 
-        _playerActionsModel.OriginalSpeed = new Vector2(_characterSpeed, 0f);
+        _playerActionsModel.OriginalSpeed = new Vector2(0, 0);
+
+        _playerActionsModel.CharacterSpeed = new Vector2(_characterSpeed, 0f);
 
         _playerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
@@ -232,12 +234,14 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _playerActionsModel.KeyStrokeDifference = GetKeyStrokeDifference(keystroke);
 
-        _playerActionsModel.CharacterVelocity = new Vector2(keystroke.x, keystroke.y);
+        _playerActionsModel.CharacterVelocity = new Vector2(keystroke.x, keystroke.y) * _playerActionsModel.CharacterSpeed;
 
-        CharacterControllerMove(_playerActionsModel.CharacterVelocity * _playerActionsModel.CharacterSpeed);
+        Player.Rigidbody.linearVelocity = _playerActionsModel.CharacterVelocity;
+
+        Debug.Log($"Speed: {Player.Rigidbody.linearVelocity}");
 
         CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, MovementDto> { CurrentState = _playerActionsModel.KeyStrokeDifference == 0 ? MovementState.IS_IDLE : 
-            MovementState.IS_RUNNING, CurrentValue = new MovementDto() { CharacterSpeed = _playerActionsModel.CharacterSpeed }, IsConcluded = false };
+            MovementState.IS_RUNNING, CurrentValue =  new MovementDto() { CharacterSpeed = Player.Rigidbody.linearVelocity }, IsConcluded = false };
 
         await _playerStateEvent.Invoke(CurrentPlayerState);
 
@@ -252,8 +256,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
             FlipCharacter(keystroke);
         }
 
-        _playerActionsModel.CharacterSpeed = _playerActionsModel.OriginalSpeed;
-
         return keystroke;
     }
 
@@ -265,14 +267,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     private void VelocityYEventHandler(float characterVelocityY)
     {
         _playerActionsModel.CharacterVelocity = new Vector2(_playerActionsModel.CharacterVelocity.x, characterVelocityY);
-    }
-    private void CharacterSpeedHandler(float characterSpeed)
-    {
-        _playerActionsModel.CharacterVelocity = new Vector2(_playerActionsModel.CharacterVelocity.x * characterSpeed, _playerActionsModel.CharacterSpeed.y);
-    }
-    private void CharacterControllerMove(Vector2 CharacterVelocity)
-    {
-        Player.Rigidbody.linearVelocity = new Vector2(CharacterVelocity.x, CharacterVelocity.y);
     }
 
     private bool KeystrokeMagnitudeChecker(Vector2 _keystrokeTrack)
@@ -392,11 +386,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
 
     #region Observer Pattern
-
-    public void OnNotify(CharacterSpeed data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        CharacterSpeedHandler(data.Speed);
-    }
 
     public void OnNotify(CharacterVelocity data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {

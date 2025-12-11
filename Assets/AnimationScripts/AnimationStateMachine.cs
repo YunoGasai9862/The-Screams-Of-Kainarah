@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.Random;
 namespace PlayerAnimationHandler
 {
     public class AnimationStateMachine
@@ -18,17 +19,21 @@ namespace PlayerAnimationHandler
 
             _animator = animator;
         }
-        public void AnimationPlayForInt(string constName, int state)
+        public void SetAnimation<T>(string stateName, T value)
         {
-            _animator.SetInteger(constName, state);
-        }
-        public void AnimationPlayForBool(string constName, bool state)
-        {
-            _animator.SetBool(constName, state);
-        }
-        public void AnimationPlayForFloat(string constName, float state)
-        {
-            _animator.SetFloat(constName, state);
+
+            switch (value)
+            {
+                case bool val:
+                    _animator.SetBool(stateName, val);
+                    break;
+                case float val:
+                    _animator.SetFloat(stateName, val);
+                    break;
+                case int val:
+                    _animator.SetInteger(stateName, val);
+                    break;
+            }
         }
 
         public void ResetParameters()

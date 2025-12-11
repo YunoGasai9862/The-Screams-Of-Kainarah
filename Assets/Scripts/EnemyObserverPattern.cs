@@ -45,14 +45,14 @@ public class EnemyObserverPattern : MonoBehaviour, IExtendedObserver<Collider2D,
     private void PlayHitAnimation(object animName, object value)
     {
         AnimationFinder(_enemyAnimationScriptableObject, (string)animName, value);
-        _stateTracker.AnimationPlayForBool((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
+        _stateTracker.SetAnimation((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
         HandleGameObjectCreation();
  
     }
     private void AttackLogicInitiation(object animName, object value)
     {
         AnimationFinder(_enemyAnimationScriptableObject, (string)animName, value);
-        _stateTracker.AnimationPlayForBool((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
+        _stateTracker.SetAnimation((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
 
     }
     private async void HandleGameObjectCreation()
