@@ -96,11 +96,11 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _throwingProjectileCommand = new Command<bool>(_throwingProjectileReceiver);
 
-        _playerActionsModel.OriginalSpeed = new Vector2(0, 0);
-
         _playerActionsModel.CharacterSpeed = new Vector2(_characterSpeed, 0f);
 
         _playerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
+
+        _rocky2DActions.PlayerMovement.Movement.started += PlayerMovement;
 
         _rocky2DActions.PlayerMovement.Jump.started += BeginJumpAction; //i can add the same function
 
@@ -210,7 +210,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         }
 
         //movement
-        _keystrokeTrack = await PlayerMovement();
+        //_keystrokeTrack = await PlayerMovement();
 
         //jumping
         await _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
@@ -228,20 +228,20 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     }
 
     #region Controller Mechnism
-    private async Task<Vector2> PlayerMovement()
+    private void PlayerMovement(InputAction.CallbackContext context)
     {
         Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>(); //reads the value
 
         _playerActionsModel.KeyStrokeDifference = GetKeyStrokeDifference(keystroke);
 
-        _playerActionsModel.CharacterVelocity = new Vector2(keystroke.x, keystroke.y) * _playerActionsModel.CharacterSpeed;
+        _playerActionsModel.CharacterVelocity = new Vector2(keystroke.x, _playerActionsModel.CharacterVelocity.y) * _playerActionsModel.CharacterSpeed;
 
         Player.Rigidbody.linearVelocity = _playerActionsModel.CharacterVelocity;
 
-        Debug.Log($"Speed: {Player.Rigidbody.linearVelocity}");
+        Debug.Log($"In the PlayerMovement! {Player.Rigidbody.linearVelocity}");
 
         CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, MovementDto> { CurrentState = _playerActionsModel.KeyStrokeDifference == 0 ? MovementState.IS_IDLE : 
-            MovementState.IS_RUNNING, CurrentValue =  new MovementDto() { CharacterSpeed = Player.Rigidbody.linearVelocity }, IsConcluded = false };
+            MovementState.IS_RUNNING, CurrentValue =  new MovementDto() { CharacterSpeed = new Vector2(Math.Abs(Player.Rigidbody.linearVelocity.x), Math.Abs(Player.Rigidbody.linearVelocity.y)) }, IsConcluded = false };
 
         await _playerStateEvent.Invoke(CurrentPlayerState);
 
@@ -266,7 +266,11 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private void VelocityYEventHandler(float characterVelocityY)
     {
+        //we should not be getting spammed!
+
         _playerActionsModel.CharacterVelocity = new Vector2(_playerActionsModel.CharacterVelocity.x, characterVelocityY);
+
+        Debug.Log($"In the event Y handler! {_playerActionsModel.CharacterVelocity}");
     }
 
     private bool KeystrokeMagnitudeChecker(Vector2 _keystrokeTrack)

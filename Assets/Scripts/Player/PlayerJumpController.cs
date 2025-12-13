@@ -113,12 +113,9 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
     }
     public async Task HandleJumpingMechanism()
     {
-        //THE PROBLEM IS WE ARE TRYING TO NOTIFY BEFORE WE HAVE THE DICT - FIX IT!!
         await HandleJumping();
 
         await HandleFalling();
-
-        PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(PlayerJumpController), CancellationToken.None);
 
         await Task.FromResult(true);
     }
@@ -128,6 +125,8 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
         if (await CanPlayerFall(maxJumpHeight) || !_isJumpPressed || onPlayerJumpTimeEvent.Fall) //falling
         {
             CharacterVelocity.VelocityY = -JumpSpeed * FALLING_SPEED;
+
+            PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(PlayerJumpController), CancellationToken.None);
         }
 
         if (!IsOnTheGround(groundLayer) && !IsOnTheLedge(ledgeLayer) && await IsYVelocityNegative(Player.Rigidbody))
@@ -164,6 +163,8 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
             CharacterVelocity.VelocityY = JumpSpeed * JUMPING_SPEED;
+
+            PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(PlayerJumpController), CancellationToken.None);
 
             await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.IN_AIR, Value = PlayerStateBundle.StateBundle});
         }
