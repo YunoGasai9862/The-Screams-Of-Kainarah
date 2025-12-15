@@ -100,7 +100,9 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _playerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
-        _rocky2DActions.PlayerMovement.Movement.started += PlayerMovement;
+        _rocky2DActions.PlayerMovement.Movement.started += MovementBegin;
+
+        _rocky2DActions.PlayerMovement.Movement.canceled += MovementCancelled;
 
         _rocky2DActions.PlayerMovement.Jump.started += BeginJumpAction; //i can add the same function
 
@@ -135,6 +137,11 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         _rocky2DActions.PlayerAttack.ThrowProjectile.Enable();
 
         _rocky2DActions.PlayerAttack.BoostAttack.Enable();
+    }
+
+    private void FixedUpdate()
+    {
+        Player.Rigidbody.linearVelocity = _playerActionsModel.CharacterVelocity;
     }
 
     private async void NotifySubjects()
@@ -183,62 +190,17 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         }, CancellationToken.None);
     }
 
-    private async void Update()
-    {
-        if (CurrentGameState == null || CurrentGameState.StateBundle == null)
-        {
-            Debug.Log("CurrentGameState || CurrentGameState.StateBundle is null - skipping update (PlayerActions)!");
-            return;
-        }
-
-        if (CurrentPlayerState == null || CurrentPlayerState.StateBundle == null)
-        {
-            Debug.Log("CurrentPlayerState || CurrentPlayerState.StateBundle is null - skipping update (PlayerActions)!");
-            return;
-        }
-
-
-        if (CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE)) 
-        {
-            CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, MovementDto>() { CurrentState = MovementState.IS_IDLE, CurrentValue = new MovementDto() { CharacterSpeed = _playerActionsModel.CharacterSpeed }, IsConcluded = false };
-            await _playerStateEvent.Invoke(CurrentPlayerState);
-
-            await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.MOVEMENT, 
-                Value = CurrentPlayerState.StateBundle});
-
-            return;
-        }
-
-        //movement
-        //_keystrokeTrack = await PlayerMovement();
-
-        //jumping
-        await _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
-
-        //ledge grab
-        //also check for condition etc
-        //this needs refactoring from the ledge grab as well
-        if (CurrentPlayerState.StateBundle.PlayerActionState.CurrentState.Equals(ActionState.IS_GRABBING)) //tackles the ledgeGrab
-        {
-            await _ledgeGrabCommand.Execute(CurrentPlayerState.StateBundle);
-        }
-
-        //sliding
-        _ = _playerActionsModel.GetSlidePressed && IsSlidingActionConcluded(CurrentPlayerState.StateBundle) ? await _slideCommand.Execute() : await _slideCommand.Cancel();
-    }
 
     #region Controller Mechnism
-    private void PlayerMovement(InputAction.CallbackContext context)
+    private async void MovementBegin(InputAction.CallbackContext context)
     {
-        Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>(); //reads the value
+        Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>();
 
-        _playerActionsModel.KeyStrokeDifference = GetKeyStrokeDifference(keystroke);
+        Debug.Log($"MovementBegin {keystroke}");
+
+        _playerActionsModel.KeyStrokeDifference = Vector2.zero.x + keystroke.x;
 
         _playerActionsModel.CharacterVelocity = new Vector2(keystroke.x, _playerActionsModel.CharacterVelocity.y) * _playerActionsModel.CharacterSpeed;
-
-        Player.Rigidbody.linearVelocity = _playerActionsModel.CharacterVelocity;
-
-        Debug.Log($"In the PlayerMovement! {Player.Rigidbody.linearVelocity}");
 
         CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, MovementDto> { CurrentState = _playerActionsModel.KeyStrokeDifference == 0 ? MovementState.IS_IDLE : 
             MovementState.IS_RUNNING, CurrentValue =  new MovementDto() { CharacterSpeed = new Vector2(Math.Abs(Player.Rigidbody.linearVelocity.x), Math.Abs(Player.Rigidbody.linearVelocity.y)) }, IsConcluded = false };
@@ -255,13 +217,15 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         {
             FlipCharacter(keystroke);
         }
-
-        return keystroke;
     }
 
-    private float GetKeyStrokeDifference(Vector2 keystroke)
+    private async void MovementCancelled(InputAction.CallbackContext context)
     {
-        return Vector2.zero.x + keystroke.x;
+        Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>();
+
+        Debug.Log($"MovementCancelled {keystroke}");
+
+        _playerActionsModel.CharacterVelocity = new Vector2(keystroke.x, _playerActionsModel.CharacterVelocity.y);
     }
 
     private void VelocityYEventHandler(float characterVelocityY)
@@ -278,27 +242,35 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         return _keystrokeTrack.magnitude != 0;
     }
 
-    private void BeginJumpAction(InputAction.CallbackContext context)
+    private async void BeginJumpAction(InputAction.CallbackContext context)
     {
         _playerActionsModel.GetJumpPressed = _playerActionsModel.GetSlidePressed ? false : context.ReadValueAsButton();
+
+        await _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
     }
 
-    private void EndJumpAction(InputAction.CallbackContext context)
+    private async void EndJumpAction(InputAction.CallbackContext context)
     {
         _playerActionsModel.GetJumpPressed = _playerActionsModel.GetSlidePressed ? false : context.ReadValueAsButton();
+
+        await _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
     }
 
-    private void BeginSlideAction(InputAction.CallbackContext context)
+    private async void BeginSlideAction(InputAction.CallbackContext context)
     {
         _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState == AttackState.IS_ATTACKING) ? false : context.ReadValueAsButton();
 
         CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, MovementDto>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = new MovementDto() { CharacterSpeed = _playerActionsModel.CharacterSpeed,  }, IsConcluded = true };
 
-        _playerStateEvent.Invoke(CurrentPlayerState);
+        await _playerStateEvent.Invoke(CurrentPlayerState);
+
+        await _slideCommand.Execute();
     }
-    private void EndSlideAction(InputAction.CallbackContext context)
+    private async void EndSlideAction(InputAction.CallbackContext context)
     {
         _playerActionsModel.GetSlidePressed = (_playerActionsModel.GetJumpPressed == true || CurrentPlayerState.StateBundle.PlayerAttackState.CurrentState == AttackState.IS_ATTACKING) ? false : context.ReadValueAsButton();
+
+        await _slideCommand.Cancel();
     }
 
     //attacking mechanism centralized
@@ -313,7 +285,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private async void HandlePlayerAttackCancel(InputAction.CallbackContext context)
     {
-        _playerActionsModel.LeftMouseButtonPressed = IsSlidingActionInProgress(CurrentPlayerState.StateBundle) ? false : context.ReadValueAsButton();
+        _playerActionsModel.LeftMouseButtonPressed = context.ReadValueAsButton();
         _playerActionsModel.TimeForMouseClickEnd = (float)context.time;
 
         await _attackCommand.Execute(new ControllerPackage<AttackingExecutionState, AttackingDetails>()
@@ -341,7 +313,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private async void HandlePlayerAttackStart(InputAction.CallbackContext context)
     {
-        _playerActionsModel.LeftMouseButtonPressed = IsSlidingActionInProgress(CurrentPlayerState.StateBundle) ? false : context.ReadValueAsButton();
+        _playerActionsModel.LeftMouseButtonPressed = context.ReadValueAsButton();
         _playerActionsModel.TimeForMouseClickStart = (float)context.time;
 
         //send time stamps to the attacking controller
@@ -422,20 +394,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         {
             Player.Transform.localScale = new Vector3(-1 * Player.Transform.localScale.x, Player.Transform.localScale.y, Player.Transform.localScale.z);
         }
-    }
-
-    private bool IsSlidingActionConcluded(PlayerStateBundle playerStateBundle)
-    {   
-        return playerStateBundle.PlayerMovementState != null &&
-               playerStateBundle.PlayerMovementState.CurrentState == MovementState.IS_SLIDING &&
-               playerStateBundle.PlayerMovementState.IsConcluded;
-    }
-
-    private bool IsSlidingActionInProgress(PlayerStateBundle playerStateBundle)
-    {
-        return  playerStateBundle.PlayerMovementState != null &&
-                playerStateBundle.PlayerMovementState.CurrentState == MovementState.IS_SLIDING &&
-               !playerStateBundle.PlayerMovementState.IsConcluded;
     }
 
     public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
