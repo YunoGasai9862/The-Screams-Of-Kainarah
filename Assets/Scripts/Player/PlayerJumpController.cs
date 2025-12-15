@@ -14,9 +14,9 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
 
     [SerializeField] float maxJumpHeight;
 
-    private const float FALLING_SPEED = 0.8f;
+    private const float FALLING_SPPED_RATIO = 0.8f;
 
-    private const float JUMPING_SPEED = 0.5f;
+    private const float JUMPING_SPEED_RATIO = 0.5f;
 
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
     
@@ -32,9 +32,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
 
     private Vector3 _playerInitialPosition;
 
-    public PlayerJumpTimeEvent onPlayerJumpTimeEvent;
-
-    public CharacterVelocity CharacterVelocity { get; set; } = new CharacterVelocity();
+    private CharacterVelocity CharacterVelocity { get; set; } = new CharacterVelocity();
 
     private Player Player { get; set; }
 
@@ -70,10 +68,6 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
     }
     private void Start()
     {
-        onPlayerJumpTimeEvent = new PlayerJumpTimeEvent(MAX_JUMP_TIME);
-
-        onPlayerJumpTimeEvent.AddListener(MaxTimePassed);
-
         StartCoroutine(PlayerStateDelegator.NotifySubject(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
@@ -93,38 +87,12 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
         PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerJumpController).ToString())[gameObject.name].SetSubject(this);
     }
 
-    private async void Update()
-    {
-        if (Player == null)
-        {
-            Debug.Log("Player is null - skipping update for Jumping Controller!");
-            return;
-        }
-
-        await HandleJumpingMechanism();
-
-        //no grabbing - since all of them are under a single state now
-        if (PlayerStateBundle.StateBundle.PlayerLeapState.CurrentState.Equals(LeapState.IS_JUMPING))
-        {
-            TimeEclipsed += Time.deltaTime;
-        }
-
-        onPlayerJumpTimeEvent.ShouldFall(TimeEclipsed);
-    }
-    public async Task HandleJumpingMechanism()
-    {
-        await HandleJumping();
-
-        await HandleFalling();
-
-        await Task.FromResult(true);
-    }
-
+    //MORE CLEANUP
     public async Task HandleFalling()
     {
-        if (await CanPlayerFall(maxJumpHeight) || !_isJumpPressed || onPlayerJumpTimeEvent.Fall) //falling
+        if (await CanPlayerFall(maxJumpHeight) || !_isJumpPressed )
         {
-            CharacterVelocity.VelocityY = -JumpSpeed * FALLING_SPEED;
+            CharacterVelocity.VelocityY = (-1)  * JumpSpeed * FALLING_SPPED_RATIO;
 
             PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(PlayerJumpController), CancellationToken.None);
         }
@@ -146,14 +114,13 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
 
             await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.IN_AIR, Value = PlayerStateBundle.StateBundle });
 
-            onPlayerJumpTimeEvent.Fall = false;
-
             TimeEclipsed = 0;
         }
 
         await Task.FromResult(true);
     }
 
+    //MORE CLEANUP
     public async Task HandleJumping()
     {
         if (await CanPlayerJump()) 
@@ -162,7 +129,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-            CharacterVelocity.VelocityY = JumpSpeed * JUMPING_SPEED;
+            CharacterVelocity.VelocityY = JumpSpeed * JUMPING_SPEED_RATIO;
 
             PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(PlayerJumpController), CancellationToken.None);
 
@@ -209,11 +176,6 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
         return await Task.FromResult(false);
     }
 
-    public void MaxTimePassed(bool value)
-    {
-        onPlayerJumpTimeEvent.Fall = value;
-    }
-
     private Task<bool> IsYVelocityNegative(Rigidbody2D rb)
     {
         return rb.linearVelocity.y < 0 ? Task.FromResult(true) : Task.FromResult(false);
@@ -236,6 +198,10 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
         _isJumpPressed = value;
 
         await SetPlayerInitialPosition(PlayerStateBundle.StateBundle.PlayerMovementState);
+
+        await HandleJumping();
+
+        await HandleFalling();
 
         return new ActionExecuted() { Result = _isJumpPressed };
     }

@@ -230,8 +230,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private void VelocityYEventHandler(float characterVelocityY)
     {
-        //we should not be getting spammed!
-
         _playerActionsModel.CharacterVelocity = new Vector2(_playerActionsModel.CharacterVelocity.x, characterVelocityY);
 
         Debug.Log($"In the event Y handler! {_playerActionsModel.CharacterVelocity}");
