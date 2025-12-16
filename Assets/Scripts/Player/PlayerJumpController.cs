@@ -92,13 +92,17 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
     {
         if (await CanPlayerFall(maxJumpHeight) || !_isJumpPressed )
         {
+            Debug.Log($"HandleFalling - CanPlayerFall");
+
             CharacterVelocity.VelocityY = (-1)  * JumpSpeed * FALLING_SPPED_RATIO;
 
             PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(PlayerJumpController), CancellationToken.None);
         }
 
-        if (!IsOnTheGround(groundLayer) && !IsOnTheLedge(ledgeLayer) && await IsYVelocityNegative(Player.Rigidbody))
+        if (!IsOnTheGround(groundLayer) && !IsOnTheLedge(ledgeLayer) && IsYVelocityNegative(CharacterVelocity))
         {
+            Debug.Log($"HandleFalling - IsYVelocityNegative");
+
             PlayerStateBundle.StateBundle.PlayerLeapState = new State<LeapState, bool>() { CurrentState = LeapState.IS_FALLING, CurrentValue = true, IsConcluded = false };
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
@@ -106,13 +110,19 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
             await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.IN_AIR, Value = PlayerStateBundle.StateBundle });
         }
 
-        if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed) //on the ground
+        if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed) 
         {
+            Debug.Log($"HandleFalling - (IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !_isJumpPressed)");
+
             PlayerStateBundle.StateBundle.PlayerLeapState = new State<LeapState, bool>() { CurrentState = LeapState.IDLE, CurrentValue = true, IsConcluded = false };
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
             await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.IN_AIR, Value = PlayerStateBundle.StateBundle });
+
+            CharacterVelocity.VelocityY = 0;
+
+            PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(PlayerJumpController), CancellationToken.None);
 
             TimeEclipsed = 0;
         }
@@ -123,7 +133,8 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
     //MORE CLEANUP
     public async Task HandleJumping()
     {
-        if (await CanPlayerJump()) 
+        //add max height check
+        if (CanPlayerJump()) 
         {
             PlayerStateBundle.StateBundle.PlayerLeapState = new State<LeapState, bool>() { CurrentState = LeapState.IS_JUMPING, CurrentValue = true, IsConcluded = false };
 
@@ -135,29 +146,26 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
 
             await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.IN_AIR, Value = PlayerStateBundle.StateBundle});
         }
-
     }
 
-    private Task<bool> CanPlayerJump()
+    private bool CanPlayerJump()
     {
-        bool isOnLedgeOrGround = (IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer));
-        bool isJumpPressed = _isJumpPressed;
-
-        return Task.FromResult(MovementHelperFunctions.boolConditionAndTester(PlayerStateBundle.StateBundle.PlayerLeapState.CurrentState != LeapState.IS_JUMPING, isOnLedgeOrGround, isJumpPressed));
+        return !PlayerStateBundle.StateBundle.PlayerLeapState.CurrentState.Equals(LeapState.IS_JUMPING) && (IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && _isJumpPressed && CharacterVelocity.VelocityY == 0f;
     }
 
     private Task SetPlayerInitialPosition(State<MovementState, MovementDto> currentPlayerState)
     {
         if((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && !currentPlayerState.CurrentState.Equals(LeapState.IS_JUMPING))
         {
-            PlayerInitialPosition = transform.position;
+            PlayerInitialPosition = Player.Transform.position;
         }
+
         return Task.CompletedTask;
     }
     private async Task<bool> CanPlayerFall(float maxJumpHeight)
     {
         bool isOnLedgeOrGround = (IsOnTheGround(groundLayer) && IsOnTheLedge(ledgeLayer));
-        return MovementHelperFunctions.boolConditionAndTester(!isOnLedgeOrGround, await MaxJumpHeightChecker(maxJumpHeight));
+        return MovementHelperFunctions.boolConditionAndTester(!isOnLedgeOrGround, MaxJumpHeightChecker(maxJumpHeight));
     }
     private bool IsOnTheGround(LayerMask ground)
     {
@@ -167,18 +175,14 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
     {
         return _movementHelperClass.OverlapAgainstLayerMaskChecker(Player.Collider, ledge, COLLIDER_DISTANCE_FROM_THE_LAYER);
     }
-    public async Task<bool> MaxJumpHeightChecker(float maxJumpHeight)
+    public bool MaxJumpHeightChecker(float maxJumpHeight)
     {
-        if(transform.position.y >= PlayerInitialPosition.y + maxJumpHeight )
-        {
-            return await Task.FromResult(true);
-        }
-        return await Task.FromResult(false);
+        return Player.Transform.position.y >= PlayerInitialPosition.y + maxJumpHeight;
     }
 
-    private Task<bool> IsYVelocityNegative(Rigidbody2D rb)
+    private bool IsYVelocityNegative(CharacterVelocity characterVelocity)
     {
-        return rb.linearVelocity.y < 0 ? Task.FromResult(true) : Task.FromResult(false);
+        return characterVelocity.VelocityY < 0 ? true : false;
     }
 
     public void OnNotifySubject(IObserver<CharacterVelocity> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)

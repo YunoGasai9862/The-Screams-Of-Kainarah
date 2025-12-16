@@ -196,14 +196,20 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     {
         Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>();
 
-        Debug.Log($"MovementBegin {keystroke}");
-
         _playerActionsModel.KeyStrokeDifference = Vector2.zero.x + keystroke.x;
 
         _playerActionsModel.CharacterVelocity = new Vector2(keystroke.x, _playerActionsModel.CharacterVelocity.y) * _playerActionsModel.CharacterSpeed;
 
-        CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, MovementDto> { CurrentState = _playerActionsModel.KeyStrokeDifference == 0 ? MovementState.IS_IDLE : 
-            MovementState.IS_RUNNING, CurrentValue =  new MovementDto() { CharacterSpeed = new Vector2(Math.Abs(Player.Rigidbody.linearVelocity.x), Math.Abs(Player.Rigidbody.linearVelocity.y)) }, IsConcluded = false };
+        CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, MovementDto>
+        {
+            CurrentState = _playerActionsModel.KeyStrokeDifference == 0 ? MovementState.IS_IDLE : MovementState.IS_RUNNING,
+            CurrentValue = new MovementDto()
+            {
+                CharacterSpeed = _playerActionsModel.KeyStrokeDifference == 0 ? Vector2.zero : new Vector2(Math.Abs(_playerActionsModel.CharacterVelocity.x), Math.Abs(_playerActionsModel.CharacterVelocity.x))
+            },
+            IsConcluded = false
+        };
+
 
         await _playerStateEvent.Invoke(CurrentPlayerState);
 
@@ -223,9 +229,25 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     {
         Vector2 keystroke = _rocky2DActions.PlayerMovement.Movement.ReadValue<Vector2>();
 
-        Debug.Log($"MovementCancelled {keystroke}");
-
         _playerActionsModel.CharacterVelocity = new Vector2(keystroke.x, _playerActionsModel.CharacterVelocity.y);
+
+        CurrentPlayerState.StateBundle.PlayerMovementState = new State<MovementState, MovementDto>
+        {
+            CurrentState =  MovementState.IS_IDLE,
+            CurrentValue = new MovementDto()
+            {
+                CharacterSpeed = Vector2.zero
+            },
+            IsConcluded = false
+        };
+
+        await _playerStateEvent.Invoke(CurrentPlayerState);
+
+        await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>()
+        {
+            ExecutionState = AnimationExecutionState.MOVEMENT,
+            Value =  CurrentPlayerState.StateBundle
+        });
     }
 
     private void VelocityYEventHandler(float characterVelocityY)
