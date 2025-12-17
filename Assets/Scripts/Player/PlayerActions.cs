@@ -273,7 +273,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     {
         _playerActionsModel.GetJumpPressed = _playerActionsModel.GetSlidePressed ? false : context.ReadValueAsButton();
 
-        await _jumpCommand.Execute(_playerActionsModel.GetJumpPressed);
+        await _jumpCommand.Cancel(_playerActionsModel.GetJumpPressed);
     }
 
     private async void BeginSlideAction(InputAction.CallbackContext context)
