@@ -88,7 +88,6 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     private void SlidingAnimation(PlayerStateBundle bundle)
     {
-        //MIGHT NEED TO REVISE/LOOK INTO
         AnimationStateMachine.SetAnimation(PlayerAnimationConstants.SLIDING, (int) bundle.PlayerMovementState.CurrentState);
     }
 
@@ -140,7 +139,6 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
                 break;
         }
     }
-
 
     private IEnumerator NotifyAnimationDetailsObservers(IObserver<AnimationDetails> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {

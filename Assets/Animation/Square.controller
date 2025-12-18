@@ -429,9 +429,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 3
-    m_ConditionEvent: LeapState
-    m_EventTreshold: 0
+  - m_ConditionMode: 6
+    m_ConditionEvent: OverallState
+    m_EventTreshold: 1
   m_DstStateMachine: {fileID: 2354405258609712454}
   m_DstState: {fileID: 0}
   m_Solo: 0
@@ -533,8 +533,20 @@ AnimatorController:
   m_Name: Square
   serializedVersion: 5
   m_AnimatorParameters:
+  - m_Name: OverallState
+    m_Type: 3
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   - m_Name: Speed
     m_Type: 1
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: LeapState
+    m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
@@ -589,12 +601,6 @@ AnimatorController:
     m_Controller: {fileID: 9100000}
   - m_Name: BoostAttack
     m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: LeapState
-    m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
@@ -969,7 +975,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 6
-    m_ConditionEvent: LeapState
+    m_ConditionEvent: OverallState
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 1714140362405872374}
   m_DstState: {fileID: 0}
@@ -1017,7 +1023,10 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 6
+    m_ConditionEvent: OverallState
+    m_EventTreshold: 2
   m_DstStateMachine: {fileID: 5210476741123961739}
   m_DstState: {fileID: 0}
   m_Solo: 0
