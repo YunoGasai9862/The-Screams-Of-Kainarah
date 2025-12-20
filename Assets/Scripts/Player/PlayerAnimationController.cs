@@ -60,7 +60,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
     }
 
-    public void MovementAnimation(PlayerStateBundle bundle)
+    public void MovementAnimation(PlayerStateBundle bundle, AnimationExecutionState executionState)
     {
         if (EmitMovementAnimationStateBundle.StateBundle == null || EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation == null)
         {
@@ -78,17 +78,20 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
 
         EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash = EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash;
 
-        AnimationStateMachine.SetAnimation(PlayerAnimationConstants.CHARACTER_SPEED, bundle.PlayerMovementState.CurrentValue.CharacterSpeed.x);
+        AnimationStateMachine.SetAnimation(PlayerAnimationField.OverallState.ToString(), (int) executionState);
+        AnimationStateMachine.SetAnimation(PlayerAnimationField.Speed.ToString(), bundle.PlayerMovementState.CurrentValue.CharacterSpeed.x);
     }
 
-    private void JumpAnimation(PlayerStateBundle bundle)
+    private void JumpAnimation(PlayerStateBundle bundle, AnimationExecutionState executionState)
     {
-        AnimationStateMachine.SetAnimation(PlayerAnimationConstants.LEAP_STATE, (int) bundle.PlayerLeapState.CurrentState); 
+        AnimationStateMachine.SetAnimation(PlayerAnimationField.OverallState.ToString(), (int) executionState);
+        AnimationStateMachine.SetAnimation(PlayerAnimationField.LeapState.ToString(), (int) bundle.PlayerLeapState.CurrentState); 
     }
 
-    private void SlidingAnimation(PlayerStateBundle bundle)
+    private void SlidingAnimation(PlayerStateBundle bundle, AnimationExecutionState executionState)
     {
-        AnimationStateMachine.SetAnimation(PlayerAnimationConstants.SLIDING, (int) bundle.PlayerMovementState.CurrentState);
+        AnimationStateMachine.SetAnimation(PlayerAnimationField.OverallState.ToString(), (int) executionState);
+        AnimationStateMachine.SetAnimation(PlayerAnimationField.Sliding.ToString(), (int) bundle.PlayerMovementState.CurrentState);
     }
 
     private float ReturnCurrentAnimation()
@@ -124,16 +127,16 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<IObserver<Anima
     {
         switch(package.ExecutionState)
         {
-            case AnimationExecutionState.IN_AIR:
-                JumpAnimation(package.Value);
+            case AnimationExecutionState.LEAP:
+                JumpAnimation(package.Value, package.ExecutionState);
                 break;
 
-            case AnimationExecutionState.SLIDING:
-                SlidingAnimation(package.Value);
+            case AnimationExecutionState.INTERACTION:
+                SlidingAnimation(package.Value, package.ExecutionState);
                 break;
 
             case AnimationExecutionState.MOVEMENT:
-                MovementAnimation(package.Value);
+                MovementAnimation(package.Value, package.ExecutionState);
                 break;
             default:
                 break;

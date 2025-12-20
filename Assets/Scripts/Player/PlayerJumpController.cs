@@ -94,7 +94,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
 
             PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(PlayerJumpController), CancellationToken.None);
 
-            await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.IN_AIR, Value = PlayerStateBundle.StateBundle});
+            await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.LEAP, Value = PlayerStateBundle.StateBundle});
         }
 
         if (!IsOnTheGround(groundLayer) && !IsOnTheLedge(ledgeLayer) && IsAtMaxJumpHeight(maxJumpHeight))
@@ -109,7 +109,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
 
             PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(PlayerJumpController), CancellationToken.None);
 
-            await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.IN_AIR, Value = PlayerStateBundle.StateBundle });
+            await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.LEAP, Value = PlayerStateBundle.StateBundle });
         }
 
         Debug.Log("Exiting!!");

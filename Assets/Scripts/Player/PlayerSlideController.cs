@@ -87,16 +87,16 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-            await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.SLIDING, Value = PlayerStateBundle.StateBundle });
+            await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.INTERACTION, Value = PlayerStateBundle.StateBundle });
         }
 
-        if (AnimationDetails.CurrentAnimationTime > MAX_ANIMATION_TIME && AnimationDetails.CurrentAnimationStateInfo.IsName(PlayerAnimationConstants.SLIDING))
+        if (AnimationDetails.CurrentAnimationTime > MAX_ANIMATION_TIME && AnimationDetails.CurrentAnimationStateInfo.IsName(PlayerAnimationField.Sliding.ToString()))
         {
             PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, MovementDto>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = new MovementDto() { SlidingSpeed = new Vector2(slidingSpeed, 0) }, IsConcluded = true };
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
-            await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.SLIDING, Value = PlayerStateBundle.StateBundle });
+            await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.INTERACTION, Value = PlayerStateBundle.StateBundle });
         }
 
     }

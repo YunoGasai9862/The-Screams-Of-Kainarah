@@ -88,7 +88,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, IObs
 
     private void TriggerAnimation()
     {
-        _playerAttackStateMachine.SetAttackState(PlayerAnimationConstants.THROW_DAGGER, onThrowEvent.CanThrow);
+        _playerAttackStateMachine.SetAttackState(PlayerAnimationField.ThrowDagger.ToString(), onThrowEvent.CanThrow);
     }
 
     public void CanPlayerThrowProjectile(bool canThrow)

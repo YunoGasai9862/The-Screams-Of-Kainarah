@@ -133,7 +133,7 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
 
             //look for better way to make isConcluded compatible etc
 
-            Player.Animator.SetBool(PlayerAnimationConstants.LEDGE_GRAB, !PlayerBundle.StateBundle.PlayerActionState.IsConcluded);
+            Player.Animator.SetBool(PlayerAnimationField.LedgeGrab.ToString(), !PlayerBundle.StateBundle.PlayerActionState.IsConcluded);
 
         }else
         {
@@ -143,7 +143,7 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
 
             Player.Collider.isTrigger = false;
 
-            Player.Animator.SetBool(PlayerAnimationConstants.LEDGE_GRAB, !PlayerBundle.StateBundle.PlayerActionState.IsConcluded);
+            Player.Animator.SetBool(PlayerAnimationField.LedgeGrab.ToString(), !PlayerBundle.StateBundle.PlayerActionState.IsConcluded);
 
             Player.Rigidbody.gravityScale = startingGrav;
         }
@@ -219,7 +219,7 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
             return;
         }
 
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName(PlayerAnimationConstants.LEDGE_GRAB)
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName(PlayerAnimationField.LedgeGrab.ToString())
            && CanGrab)
         {
             await SetGravityValue(rb, 0f);
@@ -228,7 +228,7 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
 
             await PlayerStateEvent.Invoke(PlayerBundle);
 
-            anim.SetBool(PlayerAnimationConstants.LEDGE_GRAB, !PlayerBundle.StateBundle.PlayerActionState.IsConcluded);
+            anim.SetBool(PlayerAnimationField.LedgeGrab.ToString(), !PlayerBundle.StateBundle.PlayerActionState.IsConcluded);
         }
     }
 

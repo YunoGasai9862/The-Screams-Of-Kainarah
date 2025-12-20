@@ -92,7 +92,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
         if (await IsPlayerDead(Player.Health.CurrentHealth) && GetCheckPointSemaphore.CurrentCount!=0)
         {
             await GetCheckPointSemaphore.WaitAsync();
-            anim.SetBool(PlayerAnimationConstants.DEATH, true);
+            anim.SetBool(PlayerAnimationField.Death.ToString(), true);
             await Task.Delay(TimeSpan.FromSeconds(0.1f));
             await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, SceneSingleton.EntitiesToReset);
 

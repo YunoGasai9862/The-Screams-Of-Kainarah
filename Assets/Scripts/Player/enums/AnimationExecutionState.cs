@@ -1,8 +1,8 @@
 public enum AnimationExecutionState
 {
-    IN_AIR,
+    MOVEMENT,
 
-    SLIDING,
+    LEAP,
 
-    MOVEMENT
+    INTERACTION,
 }
