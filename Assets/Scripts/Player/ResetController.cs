@@ -1,29 +1,24 @@
+using Assets.Scripts.GenericDelegators;
+using Assets.Scripts.Models.Reset;
 using PlayerAnimationHandler;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-//MAKE IT GENERIC SO YOU CAN USE IT FOR OTHER ENTITIES AS WELL!!!
-public class ResetController : MonoBehaviour, IObserver<Player>, IReceiverEnhancedAsync<ResetController, State<AttackState>>, IReceiverEnhancedAsync<ResetController, State<MovementState>>, IReceiverEnhancedAsync<ResetController, State<ActionState>>
+public class ResetController : MonoBehaviour, ISubject<IObserver<ResetBundle>>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
 
-    private Player Player { get; set; }
-
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
-
+    private ResetControllerDelegator ResetControllerDelegator { get; set; }
 
     private async void Awake()
     {
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+        ResetControllerDelegator = await Helper.GetDelegator<ResetControllerDelegator>();
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
-        {
-            ObserverName = this.name,
-            ObserverTag = this.tag,
-            SubjectType = typeof(PlayerAttributesNotifier).ToString()
-        }, CancellationToken.None);
+        ResetControllerDelegator.AddToSubjectsDict(tag, name, new Subject<IObserver<ResetBundle>>());
+
+        ResetControllerDelegator.GetSubsetSubjectsDictionary(tag)[name].SetSubject(this);
     }
 
     private async Task Reset<T>(State<T> state) where T: Enum
@@ -47,46 +42,8 @@ public class ResetController : MonoBehaviour, IObserver<Player>, IReceiverEnhanc
         }
     }
 
-    public async Task<ActionExecuted> PerformAction(State<AttackState> value = null)
+    public void OnNotifySubject(IObserver<ResetBundle> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        await Reset(value);
-
-        return new ActionExecuted() { Result = true };
-    }
-
-    public Task<ActionExecuted> CancelAction(State<AttackState> value = null)
-    {
-        return Task.FromResult(new ActionExecuted() { Result = false });
-    }
-
-    public async Task<ActionExecuted> PerformAction(State<MovementState> value = null)
-    {
-        await Reset(value);
-
-        return new ActionExecuted() { Result = true };
-    }
-
-    public Task<ActionExecuted> CancelAction(State<MovementState> value = null)
-    {
-        return Task.FromResult(new ActionExecuted() { Result = false });
-    }
-
-    public async Task<ActionExecuted> PerformAction(State<ActionState> value = null)
-    {
-        await Reset(value);
-
-        return new ActionExecuted() { Result = true };
-    }
-
-    public Task<ActionExecuted> CancelAction(State<ActionState> value = null)
-    {
-        return Task.FromResult(new ActionExecuted() { Result = false });
-    }
-
-    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        Player = data;
-
-        AnimationStateMachine = new AnimationStateMachine(Player.Animator);
+        
     }
 }

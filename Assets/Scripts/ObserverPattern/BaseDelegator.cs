@@ -53,6 +53,13 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
         yield return null;
     }
 
+    //YEEHAW TRY THIS!!
+    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext<T> notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    {
+        yield return StartCoroutine(NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, maxRetries, sleepTimeInMilliSeconds, optional));
+    }
+
+
     public void AddToSubjectsDict(string mainSubjectIdentificationKey, string gameObjectInstanceIdentificationKeyForTheSubject, Subject<IObserver<T>> subject)
     {
         if (SubjectsDict.ContainsKey(mainSubjectIdentificationKey))
@@ -134,7 +141,6 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
             }, cancellationToken));
         }
     }
-
 
     public void NotifySubjectWrapper(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken,
         SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)

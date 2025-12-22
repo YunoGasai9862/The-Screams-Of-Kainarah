@@ -11,3 +11,13 @@ public class NotificationContext
         return $"ObserverName: {ObserverName} ObserverTag: {ObserverTag} SubjectType: {SubjectType}";
     }
 }
+
+public class NotificationContext<T> : NotificationContext
+{
+    public T ContextData { get; set; }
+
+    public override string ToString()
+    {
+        return $"{base.ToString()}, Context Data: {ContextData}";
+    }
+}
