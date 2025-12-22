@@ -4,7 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerAnimationResetController : MonoBehaviour, IObserver<Player>, IReceiverEnhancedAsync<PlayerAnimationResetController, State<AttackState>>, IReceiverEnhancedAsync<PlayerAnimationResetController, State<MovementState>>, IReceiverEnhancedAsync<PlayerAnimationResetController, State<ActionState>>
+//MAKE IT GENERIC SO YOU CAN USE IT FOR OTHER ENTITIES AS WELL!!!
+public class ResetController : MonoBehaviour, IObserver<Player>, IReceiverEnhancedAsync<ResetController, State<AttackState>>, IReceiverEnhancedAsync<ResetController, State<MovementState>>, IReceiverEnhancedAsync<ResetController, State<ActionState>>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
 

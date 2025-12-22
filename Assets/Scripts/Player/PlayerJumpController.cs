@@ -83,7 +83,6 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
 
     public async Task HandleJumping(bool canJump)
     {
-        Debug.Log($"Can Player Jump: - {CharacterVelocity.VelocityY}");
         if ((IsOnTheGround(groundLayer) || IsOnTheLedge(ledgeLayer)) && canJump) 
         {
             PlayerStateBundle.StateBundle.PlayerLeapState = new State<LeapState, bool>() { CurrentState = LeapState.IS_JUMPING, CurrentValue = true, IsConcluded = false };
@@ -111,8 +110,6 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
 
             await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.LEAP, Value = PlayerStateBundle.StateBundle });
         }
-
-        Debug.Log("Exiting!!");
     }
 
     private bool IsOnTheGround(LayerMask ground)

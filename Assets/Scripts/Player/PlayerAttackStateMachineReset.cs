@@ -12,16 +12,16 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
 
     private EntityPoolManager EntityPoolManager { get; set; }
 
-    private IReceiverEnhancedAsync<PlayerAnimationResetController, State<AttackState>> PlayerAnimationStateControllerAS { get; set; }
+    private IReceiverEnhancedAsync<ResetController, State<AttackState>> PlayerAnimationStateControllerAS { get; set; }
 
-    private CommandAsyncEnhanced<PlayerAnimationResetController, State<AttackState>> PlayerAnimationResetControllerCommandAS { get; set; }
+    private CommandAsyncEnhanced<ResetController, State<AttackState>> PlayerAnimationResetControllerCommandAS { get; set; }
 
 
     private async void OnEnable()   
     {
-        PlayerAnimationStateControllerAS = await Helper.FindReceiver<PlayerAnimationResetController, IReceiverEnhancedAsync<PlayerAnimationResetController, State<AttackState>>>();
+        PlayerAnimationStateControllerAS = await Helper.FindReceiver<ResetController, IReceiverEnhancedAsync<ResetController, State<AttackState>>>();
 
-        PlayerAnimationResetControllerCommandAS = new CommandAsyncEnhanced<PlayerAnimationResetController, State<AttackState>>(PlayerAnimationStateControllerAS);
+        PlayerAnimationResetControllerCommandAS = new CommandAsyncEnhanced<ResetController, State<AttackState>>(PlayerAnimationStateControllerAS);
 
         EntityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
 

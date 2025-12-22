@@ -1,6 +1,5 @@
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -253,8 +252,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
     private void VelocityYEventHandler(float characterVelocityY)
     {
         _playerActionsModel.CharacterVelocity = new Vector2(_playerActionsModel.CharacterVelocity.x, characterVelocityY);
-
-        Debug.Log($"In the event Y handler! {_playerActionsModel.CharacterVelocity}");
     }
 
     private bool KeystrokeMagnitudeChecker(Vector2 _keystrokeTrack)
@@ -293,7 +290,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         await _slideCommand.Cancel();
     }
 
-    //attacking mechanism centralized
     private void HandleDaggerInput(InputAction.CallbackContext context)
     {
         _playerActionsModel.DaggerInput = context.ReadValueAsButton();
