@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Threading;
 
-public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, ISubject<IObserver<EntityPoolManager>>
+public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, ISubject<EntityPoolManager>
 {
     private Dictionary<string, List<EntityPool>> EntityPoolDict { get; set; } = new Dictionary<string, List<EntityPool>>();
 
@@ -71,7 +71,7 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IS
     {
         EntityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
 
-        EntityPoolManagerDelegator.AddToSubjectsDict(typeof(EntityPoolManager).ToString(), name, new Subject<IObserver<EntityPoolManager>>());
+        EntityPoolManagerDelegator.AddToSubjectsDict(typeof(EntityPoolManager).ToString(), name, new Subject<EntityPoolManager>());
 
         EntityPoolManagerDelegator.GetSubsetSubjectsDictionary(typeof(EntityPoolManager).ToString())[name].SetSubject(this);
     }

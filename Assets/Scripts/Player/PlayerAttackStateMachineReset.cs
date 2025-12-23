@@ -1,3 +1,4 @@
+using Assets.Scripts.GenericDelegators;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -12,14 +13,14 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
 
     private EntityPoolManager EntityPoolManager { get; set; }
 
-    private IReceiverEnhancedAsync<ResetController, State<AttackState>> PlayerAnimationStateControllerAS { get; set; }
+    private ResetControllerDelegator ResetControllerDelegator { get; set; }
 
     private CommandAsyncEnhanced<ResetController, State<AttackState>> PlayerAnimationResetControllerCommandAS { get; set; }
 
 
     private async void OnEnable()   
     {
-        PlayerAnimationStateControllerAS = await Helper.FindReceiver<ResetController, IReceiverEnhancedAsync<ResetController, State<AttackState>>>();
+        ResetControllerDelegator = await Helper.GetDelegator<ResetControllerDelegator>();
 
         PlayerAnimationResetControllerCommandAS = new CommandAsyncEnhanced<ResetController, State<AttackState>>(PlayerAnimationStateControllerAS);
 

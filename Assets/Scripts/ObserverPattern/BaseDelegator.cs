@@ -6,9 +6,10 @@ using System;
 
 public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 {
-    protected Dictionary<string, Dictionary<string, Subject<IObserver<T>>>> SubjectsDict { get; set; }
+    protected Dictionary<string, Dictionary<string, Subject<T>>> SubjectsDict { get; set; }
 
     protected Dictionary<string, List<Association<T>>> SubjectObserversDict { get; set; }
+    Subject<T>
 
     public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
@@ -31,9 +32,9 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
         yield return new WaitUntil(() => !Helper.IsObjectNull(SubjectsDict));
 
-        if (SubjectsDict.TryGetValue(notificationContext.SubjectType, out Dictionary<string, Subject<IObserver<T>>> subjects))
+        if (SubjectsDict.TryGetValue(notificationContext.SubjectType, out Dictionary<string,Subject<T>> subjects))
         {
-            foreach (KeyValuePair<string, Subject<IObserver<T>>> keyValuePair in subjects)
+            foreach (KeyValuePair<string,Subject<T>> keyValuePair in subjects)
             {
                 yield return new WaitUntil(() => !Helper.IsSubjectNull(keyValuePair.Value));
 
@@ -53,14 +54,13 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
         yield return null;
     }
 
-    //YEEHAW TRY THIS!!
     public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext<T> notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         yield return StartCoroutine(NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
 
-    public void AddToSubjectsDict(string mainSubjectIdentificationKey, string gameObjectInstanceIdentificationKeyForTheSubject, Subject<IObserver<T>> subject)
+    public void AddToSubjectsDict(string mainSubjectIdentificationKey, string gameObjectInstanceIdentificationKeyForTheSubject,Subject<T> subject)
     {
         if (SubjectsDict.ContainsKey(mainSubjectIdentificationKey))
         {
@@ -76,14 +76,14 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
             return;
         }
 
-        SubjectsDict.Add(mainSubjectIdentificationKey, new Dictionary<string, Subject<IObserver<T>>> {
+        SubjectsDict.Add(mainSubjectIdentificationKey, new Dictionary<string,Subject<T>> {
 
             {gameObjectInstanceIdentificationKeyForTheSubject, subject }
         
         });
     }
 
-    public void AddToSubjectObserversDict(string uniqueSubjectkey, Subject<IObserver<T>> subject, IObserver<T> observer)
+    public void AddToSubjectObserversDict(string uniqueSubjectkey,Subject<T> subject, IObserver<T> observer)
     {
         if (SubjectObserversDict.ContainsKey(uniqueSubjectkey))
         {
@@ -100,7 +100,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
     {
         return SubjectObserversDict;
     }
-    public Dictionary<string, Dictionary<string, Subject<IObserver<T>>>> GetSubjectsDict()
+    public Dictionary<string, Dictionary<string,Subject<T>>> GetSubjectsDict()
     {
         return SubjectsDict;
     }
@@ -115,9 +115,9 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
         return new List<Association<T>>();
     }
 
-    public Dictionary<string, Subject<IObserver<T>>> GetSubsetSubjectsDictionary(string key)
+    public Dictionary<string,Subject<T>> GetSubsetSubjectsDictionary(string key)
     {
-        if (SubjectsDict.TryGetValue(key, out Dictionary<string, Subject<IObserver<T>>> subject))
+        if (SubjectsDict.TryGetValue(key, out Dictionary<string,Subject<T>> subject))
         {
             return subject;
         }

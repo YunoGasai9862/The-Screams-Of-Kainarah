@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class ResetController : MonoBehaviour, ISubject<IObserver<ResetBundle>>
+public class ResetController : MonoBehaviour, ISubject<ResetBundle>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
 
@@ -16,7 +16,7 @@ public class ResetController : MonoBehaviour, ISubject<IObserver<ResetBundle>>
     {
         ResetControllerDelegator = await Helper.GetDelegator<ResetControllerDelegator>();
 
-        ResetControllerDelegator.AddToSubjectsDict(tag, name, new Subject<IObserver<ResetBundle>>());
+        ResetControllerDelegator.AddToSubjectsDict(tag, name, new Subject<ResetBundle>());
 
         ResetControllerDelegator.GetSubsetSubjectsDictionary(tag)[name].SetSubject(this);
     }
@@ -42,8 +42,7 @@ public class ResetController : MonoBehaviour, ISubject<IObserver<ResetBundle>>
         }
     }
 
-    public void OnNotifySubject(IObserver<ResetBundle> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public async void OnNotifySubject(IObserver<ResetBundle> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        
     }
 }

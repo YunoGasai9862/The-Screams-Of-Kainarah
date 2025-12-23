@@ -5,7 +5,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "PickableItems", menuName = "Scriptable Pickable Items")]
 [Asset(Asset.SCRIPTABLE_OBJECT, "PickableItems", InstantiationOrder = 2)]
-public class PickableItems : ScriptableObject, ISubject<IObserver<ScriptableObject>>, IDelegate
+public class PickableItems : ScriptableObject, ISubject<ScriptableObject>, IDelegate
 {
     private ScriptableObjectDelegator ScriptableObjectDelegator { get; set; }
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
@@ -38,7 +38,7 @@ public class PickableItems : ScriptableObject, ISubject<IObserver<ScriptableObje
     {
         ScriptableObjectDelegator = await Helper.GetDelegator<ScriptableObjectDelegator>();
 
-        ScriptableObjectDelegator.AddToSubjectsDict(typeof(PickableItems).ToString(), typeof(PickableItems).ToString(), new Subject<IObserver<ScriptableObject>>());
+        ScriptableObjectDelegator.AddToSubjectsDict(typeof(PickableItems).ToString(), typeof(PickableItems).ToString(), new Subject<ScriptableObject>());
 
         ScriptableObjectDelegator.GetSubsetSubjectsDictionary(typeof(PickableItems).ToString())[typeof(PickableItems).ToString()].SetSubject(this);
     }

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILightPreprocess>, ISubject<IObserver<LightPackage>>, ILightPackageGenerator
+public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILightPreprocess>, ISubject<LightPackage>, ILightPackageGenerator
 {
     private LightPackageDelegator LightPackageDelegator { get; set; }
 
@@ -47,7 +47,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         }, CancellationToken.None);
 
         //subject for custom lightning
-        LightPackageDelegator.AddToSubjectsDict(typeof(CelestialBodiesLightPackageGenerator).ToString(), gameObject.name, new Subject<IObserver<LightPackage>>());
+        LightPackageDelegator.AddToSubjectsDict(typeof(CelestialBodiesLightPackageGenerator).ToString(), gameObject.name, new Subject<LightPackage>());
 
         LightPackageDelegator.GetSubsetSubjectsDictionary(typeof(CelestialBodiesLightPackageGenerator).ToString())[gameObject.name].SetSubject(this);
     }

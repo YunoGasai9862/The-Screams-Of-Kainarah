@@ -20,7 +20,7 @@ public class PlayerStateConsumer : BaseState<PlayerStateBundle>
 
     protected override async Task AddSubject()
     {
-        PlayerStateDelegator.AddToSubjectsDict(typeof(PlayerStateConsumer).ToString(), gameObject.name, new Subject<IObserver<GenericStateBundle<PlayerStateBundle>>>());
+        PlayerStateDelegator.AddToSubjectsDict(typeof(PlayerStateConsumer).ToString(), gameObject.name, new Subject<GenericStateBundle<PlayerStateBundle>>());
 
         PlayerStateDelegator.GetSubsetSubjectsDictionary(typeof(PlayerStateConsumer).ToString())[gameObject.name].SetSubject(this);
     }

@@ -158,7 +158,7 @@ public class Helper: MonoBehaviour
         return new FileInfo(path).Exists;
     }
 
-    public static bool IsSubjectNull<T>(Subject<IObserver<T>> subject)
+    public static bool IsSubjectNull<T>(Subject<T> subject)
     {
         return subject == null || subject.GetSubject() == null;
     }

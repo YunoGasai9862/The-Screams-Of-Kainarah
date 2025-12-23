@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 
-public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericStateBundle<T>>> where T : IStateBundle
+public abstract class BaseState<T>: MonoBehaviour, ISubject<GenericStateBundle<T>> where T : IStateBundle
 {
     protected List<IObserver<GenericStateBundle<T>>> StateListeners { get; set; } = new List<IObserver<GenericStateBundle<T>>> { };
 
@@ -63,7 +63,7 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<IObserver<GenericSta
     protected abstract GenericStateBundle<T> GetInitialState();
 }
 
-public abstract class BaseState<T, Z> : MonoBehaviour, ISubject<IObserver<GenericStateBundle<T, Z>>> where T : IStateBundle
+public abstract class BaseState<T, Z> : MonoBehaviour, ISubject<GenericStateBundle<T, Z>> where T : IStateBundle
 {
     protected List<IObserver<GenericStateBundle<T, Z>>> StateListeners { get; set; } = new List<IObserver<GenericStateBundle<T, Z>>> { };
 

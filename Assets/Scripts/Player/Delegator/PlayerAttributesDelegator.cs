@@ -5,6 +5,6 @@ public class PlayerAttributesDelegator : BaseDelegator<Player>
 {
     private void OnEnable()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<Player>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<Player>>>();
     }
 }

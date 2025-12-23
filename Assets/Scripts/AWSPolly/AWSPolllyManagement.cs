@@ -10,7 +10,7 @@ using System.Threading;
 using System.Collections.Generic;
 
 [AssetAttribute(Asset.MONOBEHAVIOR, "AWSPollyManager", InstantiationOrder = 6)]
-public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseStorageManager>, IObserver<AsyncCoroutine>, ISubject<IObserver<IAWSPolly>>
+public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseStorageManager>, IObserver<AsyncCoroutine>, ISubject<IAWSPolly>
 {
     //gs://the-screams-of-kainarah.appspot.com
     //AWSKeys.txt
@@ -68,7 +68,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
         AsyncCoroutineDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutine).ToString()), CancellationToken);
 
-        AWSPollyManagementDelegator.AddToSubjectsDict(typeof(AWSPolllyManagement).ToString(), name, new Subject<IObserver<IAWSPolly>>());
+        AWSPollyManagementDelegator.AddToSubjectsDict(typeof(AWSPolllyManagement).ToString(), name, new Subject<IAWSPolly>());
 
         AWSPollyManagementDelegator.GetSubsetSubjectsDictionary(typeof(AWSPolllyManagement).ToString())[name].SetSubject(this);
     }

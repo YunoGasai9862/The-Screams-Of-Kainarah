@@ -11,7 +11,7 @@ public class EnemyHittableManager : MonoBehaviour, ISubject<IObserver<EnemyHitta
     {
         EnemyHittableManagerDelegator = await Helper.GetDelegator<EnemyHittableManagerDelegator>();
 
-        EnemyHittableManagerDelegator.AddToSubjectsDict(typeof(EnemyHittableManager).ToString(), gameObject.name, new Subject<IObserver<EnemyHittableManager>>());
+        EnemyHittableManagerDelegator.AddToSubjectsDict(typeof(EnemyHittableManager).ToString(), gameObject.name, new Subject<EnemyHittableManager>());
 
         EnemyHittableManagerDelegator.GetSubsetSubjectsDictionary(typeof(EnemyHittableManager).ToString())[gameObject.name].SetSubject(this);
     }

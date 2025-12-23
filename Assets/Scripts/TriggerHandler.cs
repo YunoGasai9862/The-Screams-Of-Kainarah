@@ -4,7 +4,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IObserver<GenericStateBundle<GameStateBundle>>, ISubject<IObserver<bool>>
+public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IObserver<GenericStateBundle<GameStateBundle>>, ISubject<bool>
 {
     private const string DIAMOND_TAG = "Crystal";
 
@@ -39,7 +39,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
         }, CancellationToken.None);
 
-        m_genericFlagDelegator.AddToSubjectsDict(typeof(TriggerHandler).ToString(), gameObject.name, new Subject<IObserver<bool>>());
+        m_genericFlagDelegator.AddToSubjectsDict(typeof(TriggerHandler).ToString(), gameObject.name, new Subject<bool>());
 
         m_genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name].SetSubject(this);
 

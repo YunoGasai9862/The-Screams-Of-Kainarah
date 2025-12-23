@@ -24,7 +24,7 @@ public class SubjectAsync<T>
         return MSubject;
     }
 
-    public async Task NotifySubject(T value, SemaphoreSlim lockingThread = null, params object[] optional)
+    public async Task NotifySubject(IObserver<T> value, SemaphoreSlim lockingThread = null, params object[] optional)
     {
        await MSubject.OnNotifySubject(value, lockingThread, optional);
     }
@@ -48,7 +48,7 @@ public class Subject<T>
         return ISubject;
     }
 
-    public void NotifySubject(T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim lockingThread = null, params object[] optional)
+    public void NotifySubject(IObserver<T> value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim lockingThread = null, params object[] optional)
     {
         ISubject.OnNotifySubject(value, notificationContext, cancellationToken, lockingThread, optional);
     }

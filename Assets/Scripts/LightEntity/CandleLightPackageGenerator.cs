@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-public class CandleLightPackageGenerator : MonoBehaviour, ISubject<IObserver<LightPackage>>, IObserver<ILightPreprocess>, IObserver<Player>, ILightPackageGenerator
+public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>, IObserver<ILightPreprocess>, IObserver<Player>, ILightPackageGenerator
 {
     private LightPackageDelegator LightPackageDelegator { get; set; }
     private LightPreprocessDelegator LightPreprocessDelegator { get; set; }

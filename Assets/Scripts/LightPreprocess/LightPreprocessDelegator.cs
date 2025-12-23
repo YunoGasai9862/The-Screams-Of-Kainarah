@@ -6,6 +6,6 @@ public class LightPreprocessDelegator: BaseDelegator<ILightPreprocess>
 {
     private void OnEnable()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<ILightPreprocess>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<ILightPreprocess>>>();
     }
 }
