@@ -6,7 +6,7 @@ public class ScriptableObjectDelegator : BaseDelegator<ScriptableObject>
 {
     public void Awake()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<ScriptableObject>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<ScriptableObject>>>();
     }
 
     public void NotifySubjectWrapper(IObserver<ScriptableObject> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional)

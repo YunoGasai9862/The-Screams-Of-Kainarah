@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using UnityEngine;
 using static SceneData;
-public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserver<Health>>
+public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<Health>
 {
     private HealthDelegator HealthDelegator { get; set; }
 
@@ -22,7 +22,7 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<IObserv
     {
         HealthDelegator = await Helper.GetDelegator<HealthDelegator>();
 
-        HealthDelegator.AddToSubjectsDict(typeof(RakashManager).ToString(), name, new Subject<IObserver<Health>>());
+        HealthDelegator.AddToSubjectsDict(typeof(RakashManager).ToString(), name, new Subject<Health>());
 
         HealthDelegator.GetSubsetSubjectsDictionary(typeof(RakashManager).ToString())[name].SetSubject(this);
 

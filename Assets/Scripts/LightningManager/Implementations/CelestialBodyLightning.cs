@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<IObserver<ILightPreprocess>>
+public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<ILightPreprocess>
 {
     private LightPreprocessDelegator LightPreprocessDelegator { get; set; }
 
@@ -11,7 +11,7 @@ public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<
     {
         LightPreprocessDelegator = await Helper.GetDelegator<LightPreprocessDelegator>();
 
-        LightPreprocessDelegator.AddToSubjectsDict(typeof(CelestialBodyLightning).ToString(), gameObject.name, new Subject<IObserver<ILightPreprocess>>());
+        LightPreprocessDelegator.AddToSubjectsDict(typeof(CelestialBodyLightning).ToString(), gameObject.name, new Subject<ILightPreprocess>());
 
         LightPreprocessDelegator.GetSubsetSubjectsDictionary(typeof(CelestialBodyLightning).ToString())[gameObject.name].SetSubject(this);
     }

@@ -7,7 +7,7 @@ public class FlagDelegator : BaseDelegator<bool>
 {
     private void Awake()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<bool>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<bool>>>();
 
         SubjectObserversDict = new Dictionary<string, List<Association<bool>>>();
     }

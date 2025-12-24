@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
+public class SceneSingleton : MonoBehaviour, ISubject<SceneSingleton>
 {
     [Header("Scriptable Objects")]
     [SerializeField] private DialoguesAndOptions dialogueAndOptions;
@@ -55,7 +55,7 @@ public class SceneSingleton : MonoBehaviour, ISubject<IObserver<SceneSingleton>>
 
 
         _sceneSingletonDelegator = await Helper.GetDelegator<SceneSingletonDelegator>();
-        _sceneSingletonDelegator.AddToSubjectsDict(typeof(SceneSingleton).ToString(), name, new Subject<IObserver<SceneSingleton>>());
+        _sceneSingletonDelegator.AddToSubjectsDict(typeof(SceneSingleton).ToString(), name, new Subject<SceneSingleton>());
         _sceneSingletonDelegator.GetSubsetSubjectsDictionary(typeof(SceneSingleton).ToString())[name].SetSubject(this);
 
     }

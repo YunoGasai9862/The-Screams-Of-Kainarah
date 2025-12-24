@@ -8,6 +8,6 @@ public class GlobalGameStateDelegator: BaseDelegator<GenericStateBundle<GameStat
 {
     private void Awake()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<GenericStateBundle<GameStateBundle>>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<GenericStateBundle<GameStateBundle>>>>();
     }
 }

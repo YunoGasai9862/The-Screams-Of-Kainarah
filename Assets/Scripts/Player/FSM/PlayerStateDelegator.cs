@@ -4,6 +4,6 @@ public class PlayerStateDelegator: BaseDelegator<GenericStateBundle<PlayerStateB
 {
     private void Awake()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<GenericStateBundle<PlayerStateBundle>>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<GenericStateBundle<PlayerStateBundle>>>>();
     }
 }   

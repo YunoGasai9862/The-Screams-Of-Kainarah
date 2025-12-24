@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<ILightPreprocess>>
+public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<ILightPreprocess>
 {
     private LightPreprocessDelegator LightPreprocessDelegator { get; set; }
 
@@ -11,7 +11,7 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<IObserver<
     {
         LightPreprocessDelegator = await Helper.GetDelegator<LightPreprocessDelegator>();
 
-        LightPreprocessDelegator.AddToSubjectsDict(typeof(LightFlicker).ToString(), gameObject.name, new Subject<IObserver<ILightPreprocess>>());
+        LightPreprocessDelegator.AddToSubjectsDict(typeof(LightFlicker).ToString(), gameObject.name, new Subject<ILightPreprocess>());
 
         LightPreprocessDelegator.GetSubsetSubjectsDictionary(typeof(LightFlicker).ToString())[gameObject.name].SetSubject(this);
     }

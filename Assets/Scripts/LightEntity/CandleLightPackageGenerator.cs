@@ -59,7 +59,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
          }, CancellationToken.None);
 
-        LightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), transform.parent.gameObject.name, new Subject<IObserver<LightPackage>>() { });
+        LightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), transform.parent.gameObject.name, new Subject<LightPackage>() { });
 
         LightPackageDelegator.GetSubsetSubjectsDictionary(typeof(CandleLightPackageGenerator).ToString())[transform.parent.gameObject.name].SetSubject(this);
     }

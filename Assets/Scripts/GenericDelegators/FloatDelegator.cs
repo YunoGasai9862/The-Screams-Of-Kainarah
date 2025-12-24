@@ -7,7 +7,7 @@ public class FloatDelegator : BaseDelegator<float>
 {
     private void Awake()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<float>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<float>>>();
 
         SubjectObserversDict = new Dictionary<string, List<Association<float>>>();
     }

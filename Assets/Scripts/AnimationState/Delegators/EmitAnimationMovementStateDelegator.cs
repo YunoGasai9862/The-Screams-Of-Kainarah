@@ -4,6 +4,6 @@ public class EmitAnimationMovementStateDelegator : BaseDelegator<GenericStateBun
 {
     private void Awake()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>>>>();
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [AssetAttribute(Asset.MONOBEHAVIOR, "FirebaseStorageManager", InstantiationOrder = 9)]
-public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<IObserver<FirebaseStorageManager>>
+public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<FirebaseStorageManager>
 {
     private FirebaseStorageManagerDelegator FirebaseStorageManagerDelegator { get; set; }
 
@@ -23,7 +23,7 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<
     {
         FirebaseStorageManagerDelegator = await Helper.GetDelegator<FirebaseStorageManagerDelegator>();
 
-        FirebaseStorageManagerDelegator.AddToSubjectsDict(typeof(FirebaseStorageManager).ToString(), name, new Subject<IObserver<FirebaseStorageManager>>());
+        FirebaseStorageManagerDelegator.AddToSubjectsDict(typeof(FirebaseStorageManager).ToString(), name, new Subject<FirebaseStorageManager>());
 
         FirebaseStorageManagerDelegator.GetSubsetSubjectsDictionary(typeof(FirebaseStorageManager).ToString())[name].SetSubject(this);
 

@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>, ISubject<IObserver<bool>>
+public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>, ISubject<bool>
 {
     [Header("Target Camera")]
     [SerializeField] Camera mainCamera;
@@ -45,7 +45,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
 
         EmitAnimationAttackStateDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EmitAttackAnimationStateConsumer).ToString()), CancellationToken.None);
 
-        FlagDelegator.AddToSubjectsDict(typeof(CameraShake).ToString(), name, new Subject<IObserver<bool>>());
+        FlagDelegator.AddToSubjectsDict(typeof(CameraShake).ToString(), name, new Subject<bool>());
 
         FlagDelegator.GetSubsetSubjectsDictionary(typeof(CameraShake).ToString())[name].SetSubject(this);
     }

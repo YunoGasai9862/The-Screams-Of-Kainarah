@@ -9,6 +9,6 @@ public class SceneSingletonDelegator : BaseDelegator<SceneSingleton>
 {
     private void OnEnable()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<SceneSingleton>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<SceneSingleton>>>();
     }
 }

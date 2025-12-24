@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<PlayerJumpController, bool>, ISubject<IObserver<CharacterVelocity>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>
+public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<PlayerJumpController, bool>, ISubject<CharacterVelocity>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>
 {
     [SerializeField] LayerMask groundLayer;
 
@@ -76,7 +76,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None));
 
-        PlayerVelocityDelegator.AddToSubjectsDict(typeof(PlayerJumpController).ToString(), gameObject.name, new Subject<IObserver<CharacterVelocity>>());
+        PlayerVelocityDelegator.AddToSubjectsDict(typeof(PlayerJumpController).ToString(), gameObject.name, new Subject<CharacterVelocity>());
 
         PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerJumpController).ToString())[gameObject.name].SetSubject(this);
     }

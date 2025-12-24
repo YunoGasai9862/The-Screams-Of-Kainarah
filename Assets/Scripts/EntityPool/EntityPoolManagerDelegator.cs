@@ -5,6 +5,6 @@ public class EntityPoolManagerDelegator : BaseDelegator<EntityPoolManager>
 {
     private void OnEnable()
     {
-        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<IObserver<EntityPoolManager>>>>();
+        SubjectsDict = new Dictionary<string, Dictionary<string, Subject<EntityPoolManager>>>();
     }
 }

@@ -1,7 +1,7 @@
 using System.Threading;
 using UnityEngine;
 
-public class PlayerAttributesNotifier: MonoBehaviour, ISubject<IObserver<Player>>
+public class PlayerAttributesNotifier: MonoBehaviour, ISubject<Player>
 {
     private Player Player { get; set; }
 
@@ -40,7 +40,7 @@ public class PlayerAttributesNotifier: MonoBehaviour, ISubject<IObserver<Player>
 
     private void Start()
     {
-        PlayerAttributesDelegator.AddToSubjectsDict(typeof(PlayerAttributesNotifier).ToString(), gameObject.name, new Subject<IObserver<Player>>());
+        PlayerAttributesDelegator.AddToSubjectsDict(typeof(PlayerAttributesNotifier).ToString(), gameObject.name, new Subject<Player>());
 
         PlayerAttributesDelegator.GetSubsetSubjectsDictionary(typeof(PlayerAttributesNotifier).ToString())[gameObject.name].SetSubject(this);
     }

@@ -5,14 +5,14 @@ using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 [Asset(Asset.MONOBEHAVIOR,  "AsyncCoroutine", InstantiationOrder = 5)]
-public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IAsyncCoroutine<WaitUntil>, ISubject<IObserver<AsyncCoroutine>>
+public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IAsyncCoroutine<WaitUntil>, ISubject<AsyncCoroutine>
 {
     private AsyncCoroutineDelegator m_asyncCoroutineDelegator;
     private async void Start()
     {
         m_asyncCoroutineDelegator = await Helper.GetDelegator<AsyncCoroutineDelegator>();
 
-        m_asyncCoroutineDelegator.AddToSubjectsDict(typeof(AsyncCoroutine).ToString(), name, new Subject<IObserver<AsyncCoroutine>>());
+        m_asyncCoroutineDelegator.AddToSubjectsDict(typeof(AsyncCoroutine).ToString(), name, new Subject<AsyncCoroutine>());
 
         m_asyncCoroutineDelegator.GetSubsetSubjectsDictionary(typeof(AsyncCoroutine).ToString())[name].SetSubject(this);
     }

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using EnemyHittable;
 using System.Threading;
-public class EnemyHittableManager : MonoBehaviour, ISubject<IObserver<EnemyHittableManager>>
+public class EnemyHittableManager : MonoBehaviour, ISubject<EnemyHittableManager>
 {
    private EnemyHittableManagerDelegator EnemyHittableManagerDelegator { get; set; }
 

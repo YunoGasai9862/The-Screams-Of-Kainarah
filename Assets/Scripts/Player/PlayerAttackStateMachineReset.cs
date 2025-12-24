@@ -1,9 +1,10 @@
 using Assets.Scripts.GenericDelegators;
+using Assets.Scripts.Models.Reset;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
 
-public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<EntityPoolManager>
+public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<EntityPoolManager>, ISubject<ResetBundle>
 {
     [SerializeField]
     public string resetConfigEntityName;
@@ -21,8 +22,6 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
     private async void OnEnable()   
     {
         ResetControllerDelegator = await Helper.GetDelegator<ResetControllerDelegator>();
-
-        PlayerAnimationResetControllerCommandAS = new CommandAsyncEnhanced<ResetController, State<AttackState>>(PlayerAnimationStateControllerAS);
 
         EntityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
 
@@ -74,6 +73,11 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
         EntityPoolManager = data;
 
         AttackResetConfig = (AttackResetConfig) EntityPoolManager.GetPooledEntity(resetConfigEntityName).FirstOrDefault(entity => entity.Name.Equals(resetConfigEntityName)).Entity;
+    }
+
+    public void OnNotifySubject(IObserver<ResetBundle> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    {
+        throw new System.NotImplementedException();
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

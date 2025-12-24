@@ -1,12 +1,11 @@
 using Assets.Scripts.GenericDelegators;
 using Assets.Scripts.Models.Reset;
 using PlayerAnimationHandler;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class ResetController : MonoBehaviour, ISubject<ResetBundle>
+public class ResetController : MonoBehaviour, IObserver<ResetBundle>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
 
@@ -16,12 +15,15 @@ public class ResetController : MonoBehaviour, ISubject<ResetBundle>
     {
         ResetControllerDelegator = await Helper.GetDelegator<ResetControllerDelegator>();
 
-        ResetControllerDelegator.AddToSubjectsDict(tag, name, new Subject<ResetBundle>());
-
-        ResetControllerDelegator.GetSubsetSubjectsDictionary(tag)[name].SetSubject(this);
+        ResetControllerDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        {
+            ObserverName = gameObject.name,
+            ObserverTag = gameObject.tag,
+            SubjectType = typeof(PlayerAttackStateMachineReset).ToString()
+        }, CancellationToken.None);
     }
 
-    private async Task Reset<T>(State<T> state) where T: Enum
+    private async Task Reset(ResetSystem resetSystem)
     {
         if (AnimationStateMachine == null)
         {
@@ -29,7 +31,7 @@ public class ResetController : MonoBehaviour, ISubject<ResetBundle>
             return;
         }
 
-        switch (state.Reset.State)
+        switch (resetSystem.State)
         {
             case ResetState.COMPLETE_RESET:
                 AnimationStateMachine.ResetParameters();
@@ -37,12 +39,13 @@ public class ResetController : MonoBehaviour, ISubject<ResetBundle>
 
             case ResetState.PARTIAL_RESET:
             case ResetState.REVERT:
-                AnimationStateMachine.ResetParameters(state.Reset.ResetParameters, state.Reset.State);
+                AnimationStateMachine.ResetParameters(resetSystem.ResetParameters, resetSystem.State);
                 break;
         }
     }
 
-    public async void OnNotifySubject(IObserver<ResetBundle> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public async void OnNotify(ResetBundle data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
+        await Reset(data.ResetSystem);
     }
 }

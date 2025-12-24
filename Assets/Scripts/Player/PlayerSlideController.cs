@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<PlayerSlideController, PlayerStateBundle>, IObserver<AnimationDetails>, ISubject<IObserver<CharacterVelocity>>, IObserver<Player>
+public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<PlayerSlideController, PlayerStateBundle>, IObserver<AnimationDetails>, ISubject<CharacterVelocity>, IObserver<Player>
 {
     private const float MAX_ANIMATION_TIME = 0.6f;
 
@@ -55,7 +55,7 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
 
     void Start()
     {
-        PlayerVelocityDelegator.AddToSubjectsDict(typeof(PlayerSlideController).ToString(), name, new Subject<IObserver<CharacterVelocity>>());
+        PlayerVelocityDelegator.AddToSubjectsDict(typeof(PlayerSlideController).ToString(), name, new Subject<CharacterVelocity>());
         PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSlideController).ToString())[name].SetSubject(this);
 
         StartCoroutine(AnimationDetailsDelegator.NotifySubject(this, new NotificationContext()

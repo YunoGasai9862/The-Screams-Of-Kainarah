@@ -9,7 +9,6 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
     protected Dictionary<string, Dictionary<string, Subject<T>>> SubjectsDict { get; set; }
 
     protected Dictionary<string, List<Association<T>>> SubjectObserversDict { get; set; }
-    Subject<T>
 
     public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
