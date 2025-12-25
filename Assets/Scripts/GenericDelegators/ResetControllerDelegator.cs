@@ -8,6 +8,8 @@ namespace Assets.Scripts.GenericDelegators
         private void OnEnable()
         {
             SubjectsDict = new Dictionary<string, Dictionary<string, Subject<ResetBundle>>>();
+
+            SubjectObserversDict = new Dictionary<string, List<Association<ResetBundle>>>();
         }
     }
 }

@@ -1,5 +1,6 @@
 using Assets.Scripts.GenericDelegators;
 using Assets.Scripts.Models.Reset;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -16,14 +17,15 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
 
     private ResetControllerDelegator ResetControllerDelegator { get; set; }
 
-    private CommandAsyncEnhanced<ResetController, State<AttackState>> PlayerAnimationResetControllerCommandAS { get; set; }
-
-
     private async void OnEnable()   
     {
         ResetControllerDelegator = await Helper.GetDelegator<ResetControllerDelegator>();
 
         EntityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
+
+        ResetControllerDelegator.AddToSubjectsDict(name, name, new Subject<ResetBundle>());
+
+        ResetControllerDelegator.GetSubsetSubjectsDictionary(name)[name].SetSubject(this);
 
         EntityPoolManagerDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
@@ -50,9 +52,10 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override async public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        await PlayerAnimationResetControllerCommandAS.Execute(new State<AttackState>()
+        ResetControllerDelegator.NotifyObservers(new ResetBundle()
         {
-            Reset = new ResetSystem()
+            Animator = animator,
+            ResetSystem = new ResetSystem()
             {
                 ResetParameters = AttackResetConfig.resetParameters.Select(reset => new Reset()
                 {
@@ -60,12 +63,13 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
                     m_val = new Reset.Value()
                     {
                         m_type = reset.type,
-                        m_newValue = reset.type == AnimatorControllerParameterType.Int ? 0 : (reset.type == AnimatorControllerParameterType.Float? 0.0f: (reset.type == AnimatorControllerParameterType.Bool ? false : null))
+                        m_newValue = reset.type == AnimatorControllerParameterType.Int ? 0 : (reset.type == AnimatorControllerParameterType.Float ? 0.0f : (reset.type == AnimatorControllerParameterType.Bool ? false : null))
                     }
                 }).ToList(),
                 State = ResetState.PARTIAL_RESET
             }
-        });
+
+        }, name, CancellationToken.None);
     }
 
     public void OnNotify(EntityPoolManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
@@ -77,7 +81,7 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
 
     public void OnNotifySubject(IObserver<ResetBundle> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        throw new System.NotImplementedException();
+        ResetControllerDelegator.CreateAssociation(name, ResetControllerDelegator.GetSubsetSubjectsDictionary(name)[name], observer);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

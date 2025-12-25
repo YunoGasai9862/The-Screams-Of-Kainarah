@@ -82,7 +82,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
         });
     }
 
-    public void AddToSubjectObserversDict(string uniqueSubjectkey,Subject<T> subject, IObserver<T> observer)
+    public void CreateAssociation(string uniqueSubjectkey,Subject<T> subject, IObserver<T> observer)
     {
         if (SubjectObserversDict.ContainsKey(uniqueSubjectkey))
         {
@@ -124,7 +124,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
         return null;
     }
 
-    public void NotifyObservers(T valueToSend, string subjectIdentifyingKey, Type subjectType, CancellationToken cancellationToken)
+    public void NotifyObservers(T valueToSend, string subjectIdentifyingKey, CancellationToken cancellationToken)
     {
         if (SubjectObserversDict == null)
         {
@@ -135,7 +135,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
         {
             StartCoroutine(NotifyObserver(association.Observer, valueToSend, new NotificationContext()
             {
-                SubjectType = subjectType.ToString()
+                SubjectType = association.Subject.GetSubjectType().ToString()
 
             }, cancellationToken));
         }
