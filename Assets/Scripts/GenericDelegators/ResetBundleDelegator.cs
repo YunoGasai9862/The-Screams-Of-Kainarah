@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Assets.Scripts.GenericDelegators
 {
-	public class ResetControllerDelegator: BaseDelegator<ResetBundle>
+	public class ResetBundleDelegator: BaseDelegator<ResetBundle>
 	{
         private void OnEnable()
         {

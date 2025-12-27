@@ -59,9 +59,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
          }, CancellationToken.None);
 
-        LightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), transform.parent.gameObject.name, new Subject<LightPackage>() { });
-
-        LightPackageDelegator.GetSubsetSubjectsDictionary(typeof(CandleLightPackageGenerator).ToString())[transform.parent.gameObject.name].SetSubject(this);
+        LightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), transform.parent.gameObject.name, new Subject<LightPackage>(this, typeof(LightPackage)));
     }
 
     public IEnumerator PingCustomLightning(LightPackage lightPackage, IObserver<LightPackage> observer, float delayPerExecutionInSeconds = 1)

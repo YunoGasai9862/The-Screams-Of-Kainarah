@@ -68,9 +68,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, IObserver<FirebaseS
 
         AsyncCoroutineDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutine).ToString()), CancellationToken);
 
-        AWSPollyManagementDelegator.AddToSubjectsDict(typeof(AWSPolllyManagement).ToString(), name, new Subject<IAWSPolly>());
-
-        AWSPollyManagementDelegator.GetSubsetSubjectsDictionary(typeof(AWSPolllyManagement).ToString())[name].SetSubject(this);
+        AWSPollyManagementDelegator.AddToSubjectsDict(typeof(AWSPolllyManagement).ToString(), name, new Subject<IAWSPolly>(this, typeof(AWSPolllyManagement)));
     }
 
 

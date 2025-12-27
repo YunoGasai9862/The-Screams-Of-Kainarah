@@ -38,8 +38,6 @@ public class PickableItems : ScriptableObject, ISubject<ScriptableObject>, IDele
     {
         ScriptableObjectDelegator = await Helper.GetDelegator<ScriptableObjectDelegator>();
 
-        ScriptableObjectDelegator.AddToSubjectsDict(typeof(PickableItems).ToString(), typeof(PickableItems).ToString(), new Subject<ScriptableObject>());
-
-        ScriptableObjectDelegator.GetSubsetSubjectsDictionary(typeof(PickableItems).ToString())[typeof(PickableItems).ToString()].SetSubject(this);
+        ScriptableObjectDelegator.AddToSubjectsDict(typeof(PickableItems).ToString(), typeof(PickableItems).ToString(), new Subject<ScriptableObject>(this, typeof(ScriptableObject)));
     }
 }

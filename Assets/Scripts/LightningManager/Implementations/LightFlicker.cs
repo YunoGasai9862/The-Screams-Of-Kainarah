@@ -11,9 +11,7 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<ILightPrep
     {
         LightPreprocessDelegator = await Helper.GetDelegator<LightPreprocessDelegator>();
 
-        LightPreprocessDelegator.AddToSubjectsDict(typeof(LightFlicker).ToString(), gameObject.name, new Subject<ILightPreprocess>());
-
-        LightPreprocessDelegator.GetSubsetSubjectsDictionary(typeof(LightFlicker).ToString())[gameObject.name].SetSubject(this);
+        LightPreprocessDelegator.AddToSubjectsDict(typeof(LightFlicker).ToString(), gameObject.name, new Subject<ILightPreprocess>(this, typeof(LightFlicker)));
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0)

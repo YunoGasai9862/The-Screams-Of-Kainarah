@@ -23,9 +23,7 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<
     {
         FirebaseStorageManagerDelegator = await Helper.GetDelegator<FirebaseStorageManagerDelegator>();
 
-        FirebaseStorageManagerDelegator.AddToSubjectsDict(typeof(FirebaseStorageManager).ToString(), name, new Subject<FirebaseStorageManager>());
-
-        FirebaseStorageManagerDelegator.GetSubsetSubjectsDictionary(typeof(FirebaseStorageManager).ToString())[name].SetSubject(this);
+        FirebaseStorageManagerDelegator.AddToSubjectsDict(typeof(FirebaseStorageManager).ToString(), name, new Subject<FirebaseStorageManager>(this, typeof(FirebaseStorageManager)));
 
         InitializeFirebaseStorage();
 

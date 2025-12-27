@@ -22,9 +22,7 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<Health>
     {
         HealthDelegator = await Helper.GetDelegator<HealthDelegator>();
 
-        HealthDelegator.AddToSubjectsDict(typeof(RakashManager).ToString(), name, new Subject<Health>());
-
-        HealthDelegator.GetSubsetSubjectsDictionary(typeof(RakashManager).ToString())[name].SetSubject(this);
+        HealthDelegator.AddToSubjectsDict(typeof(RakashManager).ToString(), name, new Subject<Health>(this, typeof(RakashManager)));
 
         SceneSingleton.InsertIntoGameStateHandlerList(this);
     }

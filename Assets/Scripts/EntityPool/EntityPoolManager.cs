@@ -71,9 +71,7 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IS
     {
         EntityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
 
-        EntityPoolManagerDelegator.AddToSubjectsDict(typeof(EntityPoolManager).ToString(), name, new Subject<EntityPoolManager>());
-
-        EntityPoolManagerDelegator.GetSubsetSubjectsDictionary(typeof(EntityPoolManager).ToString())[name].SetSubject(this);
+        EntityPoolManagerDelegator.AddToSubjectsDict(typeof(EntityPoolManager).ToString(), name, new Subject<EntityPoolManager>(this, typeof(EntityPoolManager)));
     }
 
     public void OnNotifySubject(IObserver<EntityPoolManager> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)

@@ -45,9 +45,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
 
         EmitAnimationAttackStateDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EmitAttackAnimationStateConsumer).ToString()), CancellationToken.None);
 
-        FlagDelegator.AddToSubjectsDict(typeof(CameraShake).ToString(), name, new Subject<bool>());
-
-        FlagDelegator.GetSubsetSubjectsDictionary(typeof(CameraShake).ToString())[name].SetSubject(this);
+        FlagDelegator.AddToSubjectsDict(typeof(CameraShake).ToString(), name, new Subject<bool>(this, typeof(CameraShake)));
     }
 
     private async IAsyncEnumerator<WaitForSeconds> ShakeCamera(Camera _mainCamera, float timeForCameraShake)
@@ -56,7 +54,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
 
         CameraOldPosition = _mainCamera.transform.position;
 
-        FlagDelegator.NotifyObservers(false, name, typeof(CameraShake), CancellationToken.None);
+        FlagDelegator.NotifyObservers(true, name, CancellationToken.None);
 
         while (timeSpent < timeForCameraShake)
         {
@@ -69,7 +67,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
 
         mainCamera.transform.position = CameraOldPosition;
 
-        FlagDelegator.NotifyObservers(true, name, typeof(CameraShake), CancellationToken.None);
+        FlagDelegator.NotifyObservers(true, name, CancellationToken.None);
 
         yield return new WaitForSeconds(0f);
     }
@@ -100,6 +98,6 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
 
     public void OnNotifySubject(IObserver<bool> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        FlagDelegator.AddToSubjectObserversDict(typeof(CameraShake).ToString(), FlagDelegator.GetSubsetSubjectsDictionary(typeof(CameraShake).ToString())[gameObject.name], observer);
+        FlagDelegator.CreateAssociation(typeof(CameraShake).ToString(), FlagDelegator.GetSubsetSubjectsDictionary(typeof(CameraShake).ToString())[gameObject.name], observer);
     }
 }

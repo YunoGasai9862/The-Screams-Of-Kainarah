@@ -135,7 +135,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
         {
             StartCoroutine(NotifyObserver(association.Observer, valueToSend, new NotificationContext()
             {
-                SubjectType = association.Subject.GetSubjectType().ToString()
+                SubjectType = association.Subject.SubjectType.ToString()
 
             }, cancellationToken));
         }

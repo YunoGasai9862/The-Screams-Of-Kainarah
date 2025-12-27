@@ -40,9 +40,7 @@ public class PlayerAttributesNotifier: MonoBehaviour, ISubject<Player>
 
     private void Start()
     {
-        PlayerAttributesDelegator.AddToSubjectsDict(typeof(PlayerAttributesNotifier).ToString(), gameObject.name, new Subject<Player>());
-
-        PlayerAttributesDelegator.GetSubsetSubjectsDictionary(typeof(PlayerAttributesNotifier).ToString())[gameObject.name].SetSubject(this);
+        PlayerAttributesDelegator.AddToSubjectsDict(typeof(PlayerAttributesNotifier).ToString(), gameObject.name, new Subject<Player>(this, typeof(PlayerAttributesNotifier)));
     }
 
     public void OnNotifySubject(IObserver<Player> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)

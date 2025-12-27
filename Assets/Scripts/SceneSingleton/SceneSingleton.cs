@@ -55,9 +55,7 @@ public class SceneSingleton : MonoBehaviour, ISubject<SceneSingleton>
 
 
         _sceneSingletonDelegator = await Helper.GetDelegator<SceneSingletonDelegator>();
-        _sceneSingletonDelegator.AddToSubjectsDict(typeof(SceneSingleton).ToString(), name, new Subject<SceneSingleton>());
-        _sceneSingletonDelegator.GetSubsetSubjectsDictionary(typeof(SceneSingleton).ToString())[name].SetSubject(this);
-
+        _sceneSingletonDelegator.AddToSubjectsDict(typeof(SceneSingleton).ToString(), name, new Subject<SceneSingleton>(this, typeof(SceneSingleton)));
     }
 
     public static InventoryManager GetInventoryManager()

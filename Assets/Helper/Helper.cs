@@ -160,7 +160,7 @@ public class Helper: MonoBehaviour
 
     public static bool IsSubjectNull<T>(Subject<T> subject)
     {
-        return subject == null || subject.GetSubject() == null;
+        return subject == null || subject.ISubject == null;
     }
 
     public static bool IsObjectNull(System.Object obj)

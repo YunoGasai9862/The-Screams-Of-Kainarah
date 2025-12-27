@@ -76,9 +76,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
             SubjectType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None));
 
-        PlayerVelocityDelegator.AddToSubjectsDict(typeof(PlayerJumpController).ToString(), gameObject.name, new Subject<CharacterVelocity>());
-
-        PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerJumpController).ToString())[gameObject.name].SetSubject(this);
+        PlayerVelocityDelegator.AddToSubjectsDict(typeof(PlayerJumpController).ToString(), gameObject.name, new Subject<CharacterVelocity>(this, typeof(PlayerJumpController)));
     }
 
     public async Task HandleJumping(bool canJump)
@@ -91,7 +89,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
 
             CharacterVelocity.VelocityY = JumpSpeed * JUMPING_SPEED_RATIO;
 
-            PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(PlayerJumpController), CancellationToken.None);
+            PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, CancellationToken.None);
 
             await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.LEAP, Value = PlayerStateBundle.StateBundle});
         }
@@ -106,7 +104,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
 
             CharacterVelocity.VelocityY = (-1) * JumpSpeed * FALLING_SPPED_RATIO;
 
-            PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(PlayerJumpController), CancellationToken.None);
+            PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, CancellationToken.None);
 
             await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.LEAP, Value = PlayerStateBundle.StateBundle });
         }
@@ -128,7 +126,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
 
     public void OnNotifySubject(IObserver<CharacterVelocity> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        PlayerVelocityDelegator.AddToSubjectObserversDict(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerJumpController).ToString())[gameObject.name], observer);
+        PlayerVelocityDelegator.CreateAssociation(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerJumpController).ToString())[gameObject.name], observer);
 
         StartCoroutine(PlayerVelocityDelegator.NotifyObserver(observer, new CharacterVelocity() { VelocityY = - 10f}, new NotificationContext() { SubjectType = typeof(PlayerJumpController).ToString()}, cancellationToken));
     }
@@ -151,7 +149,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
     {
         CharacterVelocity.VelocityY = (-1) * JumpSpeed * FALLING_SPPED_RATIO;
 
-        PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, typeof(PlayerJumpController), CancellationToken.None);
+        PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, CancellationToken.None);
 
         return new ActionExecuted() { Result = false };
     }

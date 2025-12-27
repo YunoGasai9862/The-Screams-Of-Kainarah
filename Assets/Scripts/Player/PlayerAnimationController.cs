@@ -41,8 +41,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<AnimationDetail
 
     private void Start()
     {
-        AnimationDetailsDelegator.AddToSubjectsDict(typeof(PlayerAnimationController).ToString(), name, new Subject<AnimationDetails>());
-        AnimationDetailsDelegator.GetSubsetSubjectsDictionary(typeof(PlayerAnimationController).ToString())[name].SetSubject(this);
+        AnimationDetailsDelegator.AddToSubjectsDict(typeof(PlayerAnimationController).ToString(), name, new Subject<AnimationDetails>(this, typeof(PlayerAnimationController)));
 
         StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
         {

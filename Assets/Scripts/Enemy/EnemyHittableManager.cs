@@ -11,9 +11,7 @@ public class EnemyHittableManager : MonoBehaviour, ISubject<EnemyHittableManager
     {
         EnemyHittableManagerDelegator = await Helper.GetDelegator<EnemyHittableManagerDelegator>();
 
-        EnemyHittableManagerDelegator.AddToSubjectsDict(typeof(EnemyHittableManager).ToString(), gameObject.name, new Subject<EnemyHittableManager>());
-
-        EnemyHittableManagerDelegator.GetSubsetSubjectsDictionary(typeof(EnemyHittableManager).ToString())[gameObject.name].SetSubject(this);
+        EnemyHittableManagerDelegator.AddToSubjectsDict(typeof(EnemyHittableManager).ToString(), gameObject.name, new Subject<EnemyHittableManager>(this, typeof(EnemyHittableManager)));
     }
 
     public Task<bool> IsEntityAnAttackObject(Collider2D collider, EnemyHittableObjects objects)

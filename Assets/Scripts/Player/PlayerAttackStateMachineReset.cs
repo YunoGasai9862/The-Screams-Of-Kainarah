@@ -1,6 +1,5 @@
 using Assets.Scripts.GenericDelegators;
 using Assets.Scripts.Models.Reset;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -15,17 +14,15 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
 
     private EntityPoolManager EntityPoolManager { get; set; }
 
-    private ResetControllerDelegator ResetControllerDelegator { get; set; }
+    private ResetBundleDelegator ResetBundleDelegator { get; set; }
 
     private async void OnEnable()   
     {
-        ResetControllerDelegator = await Helper.GetDelegator<ResetControllerDelegator>();
+        ResetBundleDelegator = await Helper.GetDelegator<ResetBundleDelegator>();
 
         EntityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
 
-        ResetControllerDelegator.AddToSubjectsDict(name, name, new Subject<ResetBundle>());
-
-        ResetControllerDelegator.GetSubsetSubjectsDictionary(name)[name].SetSubject(this);
+        ResetBundleDelegator.AddToSubjectsDict(name, name, new Subject<ResetBundle>(this, typeof(ResetController)));
 
         EntityPoolManagerDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
@@ -52,7 +49,7 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override async public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        ResetControllerDelegator.NotifyObservers(new ResetBundle()
+        ResetBundleDelegator.NotifyObservers(new ResetBundle()
         {
             Animator = animator,
             ResetSystem = new ResetSystem()
@@ -81,7 +78,7 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
 
     public void OnNotifySubject(IObserver<ResetBundle> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        ResetControllerDelegator.CreateAssociation(name, ResetControllerDelegator.GetSubsetSubjectsDictionary(name)[name], observer);
+        ResetBundleDelegator.CreateAssociation(name, ResetBundleDelegator.GetSubsetSubjectsDictionary(name)[name], observer);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

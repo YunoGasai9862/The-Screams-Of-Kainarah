@@ -47,9 +47,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         }, CancellationToken.None);
 
         //subject for custom lightning
-        LightPackageDelegator.AddToSubjectsDict(typeof(CelestialBodiesLightPackageGenerator).ToString(), gameObject.name, new Subject<LightPackage>());
-
-        LightPackageDelegator.GetSubsetSubjectsDictionary(typeof(CelestialBodiesLightPackageGenerator).ToString())[gameObject.name].SetSubject(this);
+        LightPackageDelegator.AddToSubjectsDict(typeof(CelestialBodiesLightPackageGenerator).ToString(), gameObject.name, new Subject<LightPackage>(this, typeof(LightPackage)));
     }
 
 

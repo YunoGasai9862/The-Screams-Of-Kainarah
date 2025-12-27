@@ -11,9 +11,7 @@ public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<
     {
         LightPreprocessDelegator = await Helper.GetDelegator<LightPreprocessDelegator>();
 
-        LightPreprocessDelegator.AddToSubjectsDict(typeof(CelestialBodyLightning).ToString(), gameObject.name, new Subject<ILightPreprocess>());
-
-        LightPreprocessDelegator.GetSubsetSubjectsDictionary(typeof(CelestialBodyLightning).ToString())[gameObject.name].SetSubject(this);
+        LightPreprocessDelegator.AddToSubjectsDict(typeof(CelestialBodyLightning).ToString(), gameObject.name, new Subject<ILightPreprocess>(this, typeof(CelestialBodyLightning)));
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0)

@@ -5,17 +5,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
+//TF IS WRONG WITH THE NAMING - FIX THIS (DELEGATOR VS OTHERS)
 public class ResetController : MonoBehaviour, IObserver<ResetBundle>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
 
-    private ResetControllerDelegator ResetControllerDelegator { get; set; }
+    private ResetBundleDelegator ResetBundleDelegator { get; set; }
 
     private async void Awake()
     {
-        ResetControllerDelegator = await Helper.GetDelegator<ResetControllerDelegator>();
+        ResetBundleDelegator = await Helper.GetDelegator<ResetBundleDelegator>();
 
-        ResetControllerDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        ResetBundleDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
             ObserverName = gameObject.name,
             ObserverTag = gameObject.tag,

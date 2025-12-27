@@ -12,9 +12,7 @@ public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IA
     {
         m_asyncCoroutineDelegator = await Helper.GetDelegator<AsyncCoroutineDelegator>();
 
-        m_asyncCoroutineDelegator.AddToSubjectsDict(typeof(AsyncCoroutine).ToString(), name, new Subject<AsyncCoroutine>());
-
-        m_asyncCoroutineDelegator.GetSubsetSubjectsDictionary(typeof(AsyncCoroutine).ToString())[name].SetSubject(this);
+        m_asyncCoroutineDelegator.AddToSubjectsDict(typeof(AsyncCoroutine).ToString(), name, new Subject<AsyncCoroutine>(this, typeof(AsyncCoroutine)));
     }
 
     public async Task ExecuteAsyncCoroutine(IAsyncEnumerator<WaitForSeconds> asyncCoroutine)

@@ -39,10 +39,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
         }, CancellationToken.None);
 
-        m_genericFlagDelegator.AddToSubjectsDict(typeof(TriggerHandler).ToString(), gameObject.name, new Subject<bool>());
-
-        m_genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name].SetSubject(this);
-
+        m_genericFlagDelegator.AddToSubjectsDict(typeof(TriggerHandler).ToString(), gameObject.name, new Subject<bool>(this, typeof(TriggerHandler)));
     }
 
     private void Update()
@@ -64,7 +61,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
                 Debug.Log(m_isSufficientFunds);
 
-                m_genericFlagDelegator.NotifyObservers(m_isSufficientFunds, gameObject.name, typeof(TriggerHandler), CancellationToken.None);
+                m_genericFlagDelegator.NotifyObservers(m_isSufficientFunds, gameObject.name, CancellationToken.None);
 
                 if (m_isSufficientFunds)
                 {
@@ -119,8 +116,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnNotifySubject(IObserver<bool> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        m_genericFlagDelegator.AddToSubjectObserversDict(gameObject.name, m_genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name],
-           data);
+        m_genericFlagDelegator.CreateAssociation(gameObject.name, m_genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name], data);
     }
 
     public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

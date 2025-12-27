@@ -19,9 +19,7 @@ public class EmitAttackAnimationStateConsumer : BaseState<EmitAnimationStateBund
 
     protected override Task AddSubject()
     {
-        EmitAnimationAttackStateDelegator.AddToSubjectsDict(typeof(EmitAttackAnimationStateConsumer).ToString(), name, new Subject<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>());
-
-        EmitAnimationAttackStateDelegator.GetSubsetSubjectsDictionary(typeof(EmitAttackAnimationStateConsumer).ToString())[name].SetSubject(this);
+        EmitAnimationAttackStateDelegator.AddToSubjectsDict(typeof(EmitAttackAnimationStateConsumer).ToString(), name, new Subject<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>(this, typeof(EmitAttackAnimationStateConsumer)));
 
         return Task.CompletedTask;
     }
