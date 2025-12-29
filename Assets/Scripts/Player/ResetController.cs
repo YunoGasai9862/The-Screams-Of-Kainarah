@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-//TF IS WRONG WITH THE NAMING - FIX THIS (DELEGATOR VS OTHERS)
 public class ResetController : MonoBehaviour, IObserver<ResetBundle>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }

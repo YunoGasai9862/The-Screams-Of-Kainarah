@@ -22,7 +22,7 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<En
 
         EntityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
 
-        ResetBundleDelegator.AddToSubjectsDict(name, name, new Subject<ResetBundle>(this, typeof(ResetController)));
+        ResetBundleDelegator.AddToSubjectsDict(name, name, new Subject<ResetBundle>(this, typeof(PlayerAttackStateMachineReset)));
 
         EntityPoolManagerDelegator.NotifySubjectWrapper(this, new NotificationContext()
         {
