@@ -1,3 +1,4 @@
+using Assets.Annotations;
 using Assets.Scripts.GenericDelegators;
 using Assets.Scripts.Models.Reset;
 using PlayerAnimationHandler;
@@ -5,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
+
+[Observer(ObserverType = typeof(ResetController), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle)]
 public class ResetController : MonoBehaviour, IObserver<ResetBundle>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }

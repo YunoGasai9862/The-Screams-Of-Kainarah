@@ -12,5 +12,14 @@ namespace Assets.Annotations
         public Type SubjectType { get; set; }
 
         public Type ContextType { get; set; }
+
+        public ObserverAttribute() { }
+
+        public ObserverAttribute(Type observerType, Type subjectType, Type contextType)
+        {
+            ObserverType = observerType;
+            SubjectType = subjectType;
+            ContextType = contextType;
+        }
     }
 }

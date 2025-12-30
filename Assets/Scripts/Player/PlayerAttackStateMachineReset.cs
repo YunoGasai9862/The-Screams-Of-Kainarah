@@ -1,9 +1,11 @@
+using Assets.Annotations;
 using Assets.Scripts.GenericDelegators;
 using Assets.Scripts.Models.Reset;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
 
+[Subject(SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle)]
 public class PlayerAttackStateMachineReset : StateMachineBehaviour, IObserver<EntityPoolManager>, ISubject<ResetBundle>
 {
     [SerializeField]

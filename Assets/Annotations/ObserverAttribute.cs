@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Assets.Annotations
 {
@@ -11,5 +9,12 @@ namespace Assets.Annotations
 
         public Type ContextType { get; set; }
 
+        public SubjectAttribute(){}
+
+        public SubjectAttribute(Type subjectType, Type contextType)
+        {
+            SubjectType = subjectType;
+            ContextType = contextType;
+        }
     }
 }

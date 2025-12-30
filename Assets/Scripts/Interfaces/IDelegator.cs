@@ -6,3 +6,12 @@ public interface IDelegator<T>
 
     public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional);
 }
+
+public interface IDelegator
+{
+    public IEnumerator NotifyObserver(dynamic value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional);
+
+    public IEnumerator NotifySubject(NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 1000, params object[] optional);
+
+    public void BuildRegistry();
+}
