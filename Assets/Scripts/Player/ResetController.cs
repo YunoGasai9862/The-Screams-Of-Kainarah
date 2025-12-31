@@ -1,5 +1,4 @@
 using Assets.Annotations;
-using Assets.Scripts.GenericDelegators;
 using Assets.Scripts.Models.Reset;
 using PlayerAnimationHandler;
 using System.Threading;
@@ -7,23 +6,16 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 
-[Observer(ObserverType = typeof(ResetController), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle)]
-public class ResetController : MonoBehaviour, IObserver<ResetBundle>
+[Observer(ObserverType = typeof(ResetController), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
+public class ResetController : MonoBehaviour
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
 
-    private ResetBundleDelegator ResetBundleDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private async void Awake()
     {
-        ResetBundleDelegator = await Helper.GetDelegator<ResetBundleDelegator>();
 
-        ResetBundleDelegator.NotifySubjectWrapper(this, new NotificationContext()
-        {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerAttackStateMachineReset).ToString()
-        }, CancellationToken.None);
     }
 
     private async Task Reset(ResetSystem resetSystem)

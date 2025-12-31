@@ -1,57 +1,60 @@
+using Assets.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using UnityEngine;
-using System;
-using Assets.Annotations;
 
-public class BaseDelegator : MonoBehaviour, IDelegator
+public class Delegator : MonoBehaviour, IDelegator
 {
-    private Dictionary<SubjectAttribute, List<ObserverAttribute>> SubjectObserverAssociationsDict { get; set; }
+    private Dictionary<string, List<ObserverAttribute>> Observers { get; set; } = new Dictionary<string, List<ObserverAttribute>>();
 
+    private Dictionary<string, List<SubjectAttribute>> Subjects { get; set; } = new Dictionary<string, List<SubjectAttribute>>();
+
+    private void Awake()
+    {
+        BuildRegistry();
+    }
+
+    //CHECK HOW WILL YOU USE ON NOTIFY NOW!!!
     public IEnumerator NotifyObserver(dynamic value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         yield return null;
     }
 
-    public IEnumerator NotifySubject(NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
-    {
-        if (maxRetries == 0)
-        {
-            throw new ApplicationException($"No such subject type exists! - Please Register first {notificationContext.SubjectType}. Seeker: {observer}");
-        }
-
-        if (notificationContext.SubjectType == null)
-        {
-            throw new ApplicationException($"Subject type is null - please add it in the notification context object!");
-        }
-
-        //yield return new WaitUntil(() => !Helper.IsObjectNull(SubjectsDict));
-
-        //if (SubjectObserverAssociationsDict.TryGetValue(notificationContext.SubjectType, out Dictionary<string,Subject<T>> subjects))
-        //{
-        //    foreach (KeyValuePair<string,Subject<T>> keyValuePair in subjects)
-        //    {
-        //        yield return new WaitUntil(() => !Helper.IsSubjectNull(keyValuePair.Value));
-
-        //        keyValuePair.Value.NotifySubject(observer, notificationContext, cancellationToken);
-        //    }
-        //}
-        //else
-        //{
-        //    yield return new WaitForSeconds(Helper.GetSecondsFromMilliSeconds(sleepTimeInMilliSeconds));
-
-        //    Debug.Log($"Retrying for - {notificationContext.SubjectType} / Seeker: {observer} length of the dict: {SubjectsDict.Count} - retries left: {maxRetries}");
-
-        //    StartCoroutine(NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, maxRetries -= 1, sleepTimeInMilliSeconds, optional));
-        //}
-        
-
-        yield return null;
-    }
-
     public void BuildRegistry()
     {
+        try
+        {
+            Type[] types = Assembly.GetExecutingAssembly().GetTypes();
 
+            foreach (Type type in types)
+            {
+                ObserverAttribute observerAttribute = type.GetCustomAttribute<ObserverAttribute>();
+
+                if (observerAttribute == null)
+                {
+                    Debug.Log($"No ObserverAttribute found for type: {type.FullName}");
+                    continue;
+                }
+
+                SubjectAttribute subjectAttribute = type.GetCustomAttribute<SubjectAttribute>();
+
+                if (subjectAttribute == null)
+                {
+                    Debug.Log($"No SubjectAttribute found for type: {type.FullName}");
+                    continue;
+                }
+
+                Observers[observerAttribute.SubjectType.FullName].Add(observerAttribute);
+
+                Subjects[subjectAttribute.SubjectType.FullName].Add(subjectAttribute);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.Log(ex.ToString());
+        }
     }
 }
