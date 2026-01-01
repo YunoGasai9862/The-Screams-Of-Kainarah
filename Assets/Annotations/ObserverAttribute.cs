@@ -3,16 +3,19 @@
 namespace Assets.Annotations
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class SubjectAttribute : Attribute
+    public class ObserverAttribute : Attribute
     {
+        public Type ObserverType { get; set; }
+
         public Type SubjectType { get; set; }
 
         public Type ContextType { get; set; }
 
-        public SubjectAttribute(){}
+        public ObserverAttribute() { }
 
-        public SubjectAttribute(Type subjectType, Type contextType)
+        public ObserverAttribute(Type observerType, Type subjectType, Type contextType)
         {
+            ObserverType = observerType;
             SubjectType = subjectType;
             ContextType = contextType;
         }

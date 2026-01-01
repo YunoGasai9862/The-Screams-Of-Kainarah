@@ -7,7 +7,7 @@ using UnityEngine;
 
 
 [Observer(ObserverType = typeof(ResetController), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
-public class ResetController : MonoBehaviour
+public class ResetController : MonoBehaviour, INotify<ResetBundle>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
 
@@ -42,5 +42,10 @@ public class ResetController : MonoBehaviour
     public async void OnNotify(ResetBundle data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         await Reset(data.ResetSystem);
+    }
+
+    public Task Notify(NotificationContext<ResetBundle> value)
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -1,23 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Assets.Annotations
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class ObserverAttribute : Attribute
+    public class SubjectAttribute : Attribute
     {
-        public Type ObserverType { get; set; }
-
         public Type SubjectType { get; set; }
 
         public Type ContextType { get; set; }
 
-        public ObserverAttribute() { }
+        public SubjectAttribute() { }
 
-        public ObserverAttribute(Type observerType, Type subjectType, Type contextType)
+        public SubjectAttribute(Type subjectType, Type contextType)
         {
-            ObserverType = observerType;
             SubjectType = subjectType;
             ContextType = contextType;
         }

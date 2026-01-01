@@ -1,12 +1,15 @@
 using Assets.Annotations;
 using Assets.Scripts.Models.Reset;
+using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 [Subject(SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
-[Subject(SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-public class PlayerAttackStateMachineReset : StateMachineBehaviour
+[Observer(SubjectType = typeof(EntityPoolManager), ObserverType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(EntityPoolManager))]
+public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<EntityPoolManager>
 {
     [SerializeField]
     public string resetConfigEntityName;
@@ -56,11 +59,18 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour
         }, new NotificationContext() { }, CancellationToken.None);
     }
 
-    public void OnNotify(EntityPoolManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public Task Notify(NotificationContext<ResetBundle> value)
     {
-        EntityPoolManager = data;
+        throw new System.NotImplementedException();
+    }
 
-        AttackResetConfig = (AttackResetConfig) EntityPoolManager.GetPooledEntity(resetConfigEntityName).FirstOrDefault(entity => entity.Name.Equals(resetConfigEntityName)).Entity;
+    public Task Notify(NotificationContext<EntityPoolManager> value)
+    {
+        EntityPoolManager = value.ContextData;
+
+        AttackResetConfig = (AttackResetConfig)EntityPoolManager.GetPooledEntity(resetConfigEntityName).FirstOrDefault(entity => entity.Name.Equals(resetConfigEntityName)).Entity;
+
+        return Task.CompletedTask;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
