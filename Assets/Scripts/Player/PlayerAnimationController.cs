@@ -43,18 +43,18 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<AnimationDetail
     {
         AnimationDetailsDelegator.AddToSubjectsDict(typeof(PlayerAnimationController).ToString(), name, new Subject<AnimationDetails>(this, typeof(PlayerAnimationController)));
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None));
 
-        StartCoroutine(EmitAnimationMovementStateDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(EmitAnimationMovementStateDelegator.NotifySubject(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(EmitMovementAnimationStateConsumer).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(EmitMovementAnimationStateConsumer).ToString()
         }, CancellationToken.None));
 
     }
@@ -142,7 +142,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<AnimationDetail
         }
     }
 
-    private IEnumerator NotifyAnimationDetailsObservers(IObserver<AnimationDetails> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    private IEnumerator NotifyAnimationDetailsObservers(IObserver<AnimationDetails> observer, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         yield return new WaitUntil(() => PlayerAnimator != null);
 
@@ -151,27 +151,27 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<AnimationDetail
             CurrentAnimationStateInfo = GetCurrentStateInfo(),
             CurrentAnimationTime = ReturnCurrentAnimation()
         },
-        new NotificationContext()
+        new Context()
         {
-            SubjectType = typeof(PlayerAnimationController).ToString()
+            EntityType = typeof(PlayerAnimationController).ToString()
         },
         CancellationToken.None));
     }
 
 
-    public void OnNotifySubject(IObserver<AnimationDetails> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<AnimationDetails> observer, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(NotifyAnimationDetailsObservers(observer, notificationContext, cancellationToken, semaphoreSlim, optional));
+        StartCoroutine(NotifyAnimationDetailsObservers(observer, context, cancellationToken, semaphoreSlim, optional));
     }
 
-    public void OnNotify(IEntityAnimator data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityAnimator data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerAnimator = data.Animator;
 
         AnimationStateMachine = new AnimationStateMachine(PlayerAnimator);
     }
 
-    public void OnNotify(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation = data.StateBundle.CurrentAnimation;
     }

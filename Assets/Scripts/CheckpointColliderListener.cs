@@ -34,7 +34,7 @@ public class CheckpointColliderListener : MonoBehaviour, IObserver<GameObject>
         }
     }
 
-    public async void OnNotify(GameObject data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public async void OnNotify(GameObject data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         SemaphoreSlim lockingThread = optional[0] as SemaphoreSlim;
 

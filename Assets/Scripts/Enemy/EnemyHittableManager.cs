@@ -29,11 +29,11 @@ public class EnemyHittableManager : MonoBehaviour, ISubject<EnemyHittableManager
         return Task.FromResult(false);
     }
 
-    public void OnNotifySubject(IObserver<EnemyHittableManager> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<EnemyHittableManager> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(EnemyHittableManagerDelegator.NotifyObserver(data, this, new NotificationContext()
+        StartCoroutine(EnemyHittableManagerDelegator.NotifyObserver(data, this, new Context()
         {
-            SubjectType = typeof(EnemyHittableManager).ToString()
+            EntityType = typeof(EnemyHittableManager).ToString()
 
         }, CancellationToken.None));
     }

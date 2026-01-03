@@ -27,11 +27,11 @@ public class PlayerShadow : MonoBehaviour, IObserver<Player>
 
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();   
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None));
 
     }
@@ -75,7 +75,7 @@ public class PlayerShadow : MonoBehaviour, IObserver<Player>
 
     }
 
-    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
     }

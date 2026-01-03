@@ -67,27 +67,27 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
     private void Start()
     {
-        StartCoroutine(GlobalGameStateDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(GlobalGameStateDelegator.NotifySubject(this, new Context()
         {
-            ObserverName = this.name,
-            ObserverTag = this.name,
-            SubjectType = typeof(GameStateConsumer).ToString()
+            Name = this.name,
+            Tag = this.name,
+            EntityType = typeof(GameStateConsumer).ToString()
 
         }, CancellationToken.None));
 
-        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerStateConsumer).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerStateConsumer).ToString()
         }, CancellationToken.None));
 
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None));
 
         PlayerBoostAttackEvent.AddListener(SetAttackBoostMode);
@@ -215,17 +215,17 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         PowerUpBarFilled = filledUp;
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState.StateBundle = data.StateBundle;
     }
 
-    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentPlayerState.StateBundle = data.StateBundle;
     }
 
-    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
 

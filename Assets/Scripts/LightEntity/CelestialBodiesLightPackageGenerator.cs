@@ -39,11 +39,11 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
         LightPackageDelegator = await Helper.GetDelegator<LightPackageDelegator>();
 
-        LightPreprocessDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        LightPreprocessDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(CelestialBodyLightning).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(CelestialBodyLightning).ToString()
         }, CancellationToken.None);
 
         //subject for custom lightning
@@ -71,7 +71,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
     }
 
 
-    public async void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public async void OnNotifySubject(IObserver<LightPackage> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         StartCoroutine(PrepareDataForCustomLightningGeneration(data));
     }
@@ -83,7 +83,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         CancellationToken = CancellationTokenSource.Token;
     }
 
-    public void OnNotify(ILightPreprocess data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(ILightPreprocess data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CelestialLightningLightPreprocess = data;
     }
@@ -94,9 +94,9 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         {
             lightPackage.LightSemaphore.WaitAsync();
 
-            StartCoroutine(LightPackageDelegator.NotifyObserver(observer, lightPackage, new NotificationContext()
+            StartCoroutine(LightPackageDelegator.NotifyObserver(observer, lightPackage, new Context()
             {
-                SubjectType = typeof(CelestialBodiesLightPackageGenerator).ToString()
+                EntityType = typeof(CelestialBodiesLightPackageGenerator).ToString()
             }, lightPackage.CancellationToken, lightPackage.LightSemaphore));
 
 

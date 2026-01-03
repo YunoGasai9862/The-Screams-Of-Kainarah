@@ -31,11 +31,11 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
         m_globalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
 
-        m_globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        m_globalGameStateDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = this.name,
-            ObserverTag = this.name,
-            SubjectType = typeof(GameStateConsumer).ToString()
+            Name = this.name,
+            Tag = this.name,
+            EntityType = typeof(GameStateConsumer).ToString()
 
         }, CancellationToken.None);
 
@@ -114,12 +114,12 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
          InventoryManagementSystem.Instance.RemoveInvoke(funds);
     }
 
-    public void OnNotifySubject(IObserver<bool> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<bool> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         m_genericFlagDelegator.CreateAssociation(gameObject.name, m_genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name], data);
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState.StateBundle = data.StateBundle;
     }

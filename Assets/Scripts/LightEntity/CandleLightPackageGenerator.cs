@@ -45,18 +45,18 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>
 
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
-        LightPreprocessDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        LightPreprocessDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(LightFlicker).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(LightFlicker).ToString()
         }, CancellationToken.None);
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerAttributesNotifier).ToString()
          }, CancellationToken.None);
 
         LightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), transform.parent.gameObject.name, new Subject<LightPackage>(this, typeof(LightPackage)));
@@ -70,9 +70,9 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>
 
             lightPackage.LightProperties.ShouldLightPulse = Vector2.Distance(Player.Transform.position, gameObject.transform.position) < minDistanceFromPlayerForLightFlicker ? true : false;
 
-            StartCoroutine(LightPackageDelegator.NotifyObserver(observer, lightPackage, new NotificationContext()
+            StartCoroutine(LightPackageDelegator.NotifyObserver(observer, lightPackage, new Context()
             {
-                SubjectType = typeof(CandleLightPackageGenerator).ToString(),
+                EntityType = typeof(CandleLightPackageGenerator).ToString(),
             }, lightPackage.CancellationToken));
 
             //unscaled yield (realTime) - waitForSeconds is scaled (RealTime wont stop if we set time.timeScale = 0)
@@ -99,7 +99,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>
         StartCoroutine(PingCustomLightning(PrepareLightPackage(), observer, delayBetweenExecution));
     }
 
-    public void OnNotifySubject(IObserver<LightPackage> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<LightPackage> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         StartCoroutine(PrepareDataForCustomLightningGeneration(data));
     }
@@ -111,12 +111,12 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>
         CancellationToken = CancellationTokenSource.Token;
     }
 
-    public void OnNotify(ILightPreprocess data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(ILightPreprocess data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         LightPreprocess = data;
     }
 
-    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
     }

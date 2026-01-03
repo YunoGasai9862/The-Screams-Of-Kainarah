@@ -50,9 +50,9 @@ public class Subject<T> : BaseSubject
         ISubject = subject;
     }
 
-    public void NotifySubject(IObserver<T> value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim lockingThread = null, params object[] optional)
+    public void NotifySubject(IObserver<T> value, Context context, CancellationToken cancellationToken, SemaphoreSlim lockingThread = null, params object[] optional)
     {
-        ISubject.OnNotifySubject(value, notificationContext, cancellationToken, lockingThread, optional);
+        ISubject.OnNotifySubject(value, context, cancellationToken, lockingThread, optional);
     }
 
 }

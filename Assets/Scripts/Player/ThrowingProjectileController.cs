@@ -32,11 +32,11 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, IObs
 
         ScriptableObjectDelegator = await Helper.GetDelegator< ScriptableObjectDelegator>();
 
-        StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new Context()
         {
-            ObserverName = name,
-            ObserverTag = tag,
-            SubjectType = typeof(PickableItems).ToString()
+            Name = name,
+            Tag = tag,
+            EntityType = typeof(PickableItems).ToString()
 
         }, CancellationToken.None));
 
@@ -104,7 +104,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, IObs
         ThrowDaggerHandler();
     }
 
-    public void OnNotify(ScriptableObject data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(ScriptableObject data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PickableItemsUtility = new PickableItemsUtility((PickableItems)data);
 

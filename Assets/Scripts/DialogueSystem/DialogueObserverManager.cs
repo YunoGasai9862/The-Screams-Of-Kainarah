@@ -34,17 +34,17 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
     {
         GlobalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
 
-        GlobalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        GlobalGameStateDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = this.name,
-            ObserverTag = this.name,
-            SubjectType = typeof(GameStateConsumer).ToString()
+            Name = this.name,
+            Tag = this.name,
+            EntityType = typeof(GameStateConsumer).ToString()
 
         }, CancellationToken.None);
 
     }
 
-    public async void OnNotify(DialogueSystem data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public async void OnNotify(DialogueSystem data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         if (data.DialogueSettings.ShouldTriggerDialogue && !CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
@@ -52,7 +52,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
         }
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState.StateBundle = data.StateBundle;
     }

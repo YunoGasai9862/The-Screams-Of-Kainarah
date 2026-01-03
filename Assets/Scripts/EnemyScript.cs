@@ -55,11 +55,11 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
 
-        EnemyHittableManagerDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        EnemyHittableManagerDelegator.NotifySubjectWrapper(this, new Context()
         {
-            SubjectType = typeof(EnemyHittableManager).ToString(),
-            ObserverName = name,
-            ObserverTag = tag
+            EntityType = typeof(EnemyHittableManager).ToString(),
+            Name = name,
+            Tag = tag
 
         }, CancellationToken.None);
     }
@@ -164,7 +164,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
         data.AddToObjectsToPersist(enemyData);
     }
 
-    public void OnNotify(EnemyHittableManager data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(EnemyHittableManager data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         EnemyHittableManager = data;
     }

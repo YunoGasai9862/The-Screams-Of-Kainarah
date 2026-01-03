@@ -5,19 +5,19 @@ namespace Assets.Annotations
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class ObserverAttribute : Attribute
     {
-        public Type ObserverType { get; set; }
+        public Context Context { get; set; }
 
         public Type SubjectType { get; set; }
 
-        public Type ContextType { get; set; }
+        public Type DataType { get; set; }
 
         public ObserverAttribute() { }
 
-        public ObserverAttribute(Type observerType, Type subjectType, Type contextType)
+        public ObserverAttribute(Context context, Type subjectType, Type contextType)
         {
-            ObserverType = observerType;
+            Context = context;
             SubjectType = subjectType;
-            ContextType = contextType;
+            DataType = contextType;
         }
     }
 }

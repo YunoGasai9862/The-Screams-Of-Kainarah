@@ -86,7 +86,7 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<Checkpoint>
 
     }
 
-    public async void OnNotify(Checkpoint data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public async void OnNotify(Checkpoint data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         if (CheckpointDict.TryGetValue(data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task> value))
         {

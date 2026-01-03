@@ -24,8 +24,8 @@ public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<
         yield return null;
     }
 
-    public void OnNotifySubject(IObserver<ILightPreprocess> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<ILightPreprocess> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(LightPreprocessDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
+        StartCoroutine(LightPreprocessDelegator.NotifyObserver(data, this, context, cancellationToken, semaphoreSlim));
     }
 }

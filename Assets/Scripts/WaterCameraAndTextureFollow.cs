@@ -16,15 +16,15 @@ public class WaterCameraAndTextureFollow : MonoBehaviour, IObserver<IEntityTrans
     {
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None);
     }
 
-    public void OnNotify(IEntityTransform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityTransform data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerTransform = data.Transform;
     }

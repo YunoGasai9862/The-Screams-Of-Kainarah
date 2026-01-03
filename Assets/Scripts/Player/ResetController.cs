@@ -39,13 +39,8 @@ public class ResetController : MonoBehaviour, INotify<ResetBundle>
         }
     }
 
-    public async void OnNotify(ResetBundle data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public async Task Notify(ResetBundle value)
     {
-        await Reset(data.ResetSystem);
-    }
-
-    public Task Notify(NotificationContext<ResetBundle> value)
-    {
-        throw new System.NotImplementedException();
+        await Reset(value.ResetSystem);
     }
 }

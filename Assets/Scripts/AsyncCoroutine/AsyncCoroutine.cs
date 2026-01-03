@@ -31,8 +31,8 @@ public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IA
         }
     }
 
-    public void OnNotifySubject(IObserver<AsyncCoroutine> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<AsyncCoroutine> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(m_asyncCoroutineDelegator.NotifyObserver(data, this, notificationContext, cancellationToken: cancellationToken));
+        StartCoroutine(m_asyncCoroutineDelegator.NotifyObserver(data, this, context, cancellationToken: cancellationToken));
     }
 }

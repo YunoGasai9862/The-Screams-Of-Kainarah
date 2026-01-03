@@ -11,11 +11,11 @@ public class TrackPlayer : MonoBehaviour, IObserver<IEntityTransform>
 
     private void Start()
     {
-        StartCoroutine(playerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(playerAttributesDelegator.NotifySubject(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None));
     }
 
@@ -30,7 +30,7 @@ public class TrackPlayer : MonoBehaviour, IObserver<IEntityTransform>
         MovementUtilities.TrackPlayer(transform, PlayerTransform, new Vector3(0, 25, 0), 0f);
     }
 
-    public void OnNotify(IEntityTransform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityTransform data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerTransform = data.Transform;
     }

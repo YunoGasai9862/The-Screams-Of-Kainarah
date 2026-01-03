@@ -102,8 +102,8 @@ public class SceneSingleton : MonoBehaviour, ISubject<SceneSingleton>
         return _checkpointColliderListener;
     }
 
-    public void OnNotifySubject(IObserver<SceneSingleton> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<SceneSingleton> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(_sceneSingletonDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
+        StartCoroutine(_sceneSingletonDelegator.NotifyObserver(data, this, context, cancellationToken, semaphoreSlim));
     }
 }

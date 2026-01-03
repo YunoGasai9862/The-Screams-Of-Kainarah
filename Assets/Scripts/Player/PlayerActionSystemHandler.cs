@@ -30,11 +30,11 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>, I
              { "Dagger" , value => OnDaggerPickup(value) }
         };
 
-        StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new Context()
         {
-            ObserverName = name,
-            ObserverTag = tag,
-            SubjectType = typeof(PickableItems).ToString()
+            Name = name,
+            Tag = tag,
+            EntityType = typeof(PickableItems).ToString()
 
         }, CancellationToken.None));
     }
@@ -92,7 +92,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>, I
         PlayerObserverListenerHelper.ColliderSubjects.RemoveOberver(this); //Remove PlayerActionSystem as an observer when an event is handled/or the observer is no longer needed
     }
 
-    public void OnNotify(Collider2D data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Collider2D data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         if (_playerActionHandlerDic.TryGetValue(data.tag, out var invokeFunc)) //simplified
         {
@@ -100,7 +100,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>, I
         }
     }
 
-    public void OnNotify(ScriptableObject data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(ScriptableObject data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PickableItemsUtility = new PickableItemsUtility((PickableItems)data);
 

@@ -92,7 +92,7 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
     }
 
 
-    void IObserver<bool>.OnNotify(bool data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    void IObserver<bool>.OnNotify(bool data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         shouldPlayPickUpAudio = true;
     }

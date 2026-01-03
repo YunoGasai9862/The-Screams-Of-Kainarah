@@ -21,11 +21,11 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericStateBundl
 
         GlobalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
 
-        GlobalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        GlobalGameStateDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = this.name,
-            ObserverTag = this.name,
-            SubjectType = typeof(GameStateConsumer).ToString()
+            Name = this.name,
+            Tag = this.name,
+            EntityType = typeof(GameStateConsumer).ToString()
 
         }, CancellationToken.None);
     }
@@ -76,7 +76,7 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericStateBundl
         await gameStateEvent.Invoke(GameStateBundle);
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         GameStateBundle = data;
     }

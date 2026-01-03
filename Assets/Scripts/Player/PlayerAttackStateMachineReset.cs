@@ -56,17 +56,13 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<Enti
                 State = ResetState.PARTIAL_RESET
             }
 
-        }, new NotificationContext() { }, CancellationToken.None);
+        }, new Context() { }, CancellationToken.None);
     }
 
-    public Task Notify(NotificationContext<ResetBundle> value)
-    {
-        throw new System.NotImplementedException();
-    }
 
-    public Task Notify(NotificationContext<EntityPoolManager> value)
+    public Task Notify(EntityPoolManager value)
     {
-        EntityPoolManager = value.ContextData;
+        EntityPoolManager = value;
 
         AttackResetConfig = (AttackResetConfig)EntityPoolManager.GetPooledEntity(resetConfigEntityName).FirstOrDefault(entity => entity.Name.Equals(resetConfigEntityName)).Entity;
 

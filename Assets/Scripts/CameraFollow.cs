@@ -21,18 +21,18 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<IEntityTra
 
         FlagDelegator = await Helper.GetDelegator<FlagDelegator>();
 
-        FlagDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        FlagDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(CameraShake).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(CameraShake).ToString()
         }, CancellationToken.None);
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None);
     }
 
@@ -51,12 +51,12 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<IEntityTra
         }
     }
 
-    public void OnNotify(bool data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(bool data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         ShouldFollowPlayer = data;
     }
 
-    public void OnNotify(IEntityTransform data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityTransform data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayersTransform = data.Transform;
     }

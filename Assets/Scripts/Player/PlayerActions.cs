@@ -153,39 +153,39 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _globalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
 
-        _playerVelocityDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        _playerVelocityDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerSlideController).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerSlideController).ToString()
         }, CancellationToken.None);
 
-        _playerVelocityDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        _playerVelocityDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerJumpController).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerJumpController).ToString()
         }, CancellationToken.None);
 
-        _playerStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        _playerStateDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerStateConsumer).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerStateConsumer).ToString()
         }, CancellationToken.None);
 
-        _playerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        _playerAttributesDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None);
 
-        _globalGameStateDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        _globalGameStateDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(GameStateConsumer).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(GameStateConsumer).ToString()
         }, CancellationToken.None);
     }
 
@@ -379,17 +379,17 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     #region Observer Pattern
 
-    public void OnNotify(CharacterVelocity data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(CharacterVelocity data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         VelocityYEventHandler(data.VelocityY);
     }
 
-    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentPlayerState.StateBundle = data.StateBundle;
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState.StateBundle = data.StateBundle;
     }
@@ -412,7 +412,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         }
     }
 
-    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
     }

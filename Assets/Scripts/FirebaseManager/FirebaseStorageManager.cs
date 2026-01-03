@@ -120,8 +120,8 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<
         return await mediaRelayerTCS.Task;
     }
 
-    public void OnNotifySubject(IObserver<FirebaseStorageManager> data, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<FirebaseStorageManager> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(FirebaseStorageManagerDelegator.NotifyObserver(data, this, notificationContext, cancellationToken, semaphoreSlim));
+        StartCoroutine(FirebaseStorageManagerDelegator.NotifyObserver(data, this, context, cancellationToken, semaphoreSlim));
     }
 }

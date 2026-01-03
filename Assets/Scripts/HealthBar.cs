@@ -18,11 +18,11 @@ public class HealthBar : MonoBehaviour, IObserver<IEntityHealth>
     {
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None);
 
         Fill.color = gr.Evaluate(slide.value);
@@ -45,7 +45,7 @@ public class HealthBar : MonoBehaviour, IObserver<IEntityHealth>
         Fill.color = gr.Evaluate(slide.value / 100.0f);
     }
 
-    public void OnNotify(IEntityHealth data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityHealth data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerHealth = data.Health;
     }

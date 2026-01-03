@@ -10,52 +10,52 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
     protected Dictionary<string, List<Association<T>>> SubjectObserversDict { get; set; }
 
-    public IEnumerator NotifyObserver(IObserver<T> observer, T value, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifyObserver(IObserver<T> observer, T value, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        observer.OnNotify(value, notificationContext, semaphoreSlim, cancellationToken, optional);
+        observer.OnNotify(value, context, semaphoreSlim, cancellationToken, optional);
 
         yield return null;
     }
 
-    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public IEnumerator NotifySubject(IObserver<T> observer, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         if (maxRetries == 0)
         {
-            throw new ApplicationException($"No such subject type exists! - Please Register first {notificationContext.SubjectType}. Seeker: {observer}");
+            throw new ApplicationException($"No such subject type exists! - Please Register first {context.EntityType}. Seeker: {observer}");
         }
 
-        if (notificationContext.SubjectType == null)
+        if (context.EntityType == null)
         {
             throw new ApplicationException($"Subject type is null - please add it in the notification context object!");
         }
 
         yield return new WaitUntil(() => !Helper.IsObjectNull(SubjectsDict));
 
-        if (SubjectsDict.TryGetValue(notificationContext.SubjectType, out Dictionary<string,Subject<T>> subjects))
+        if (SubjectsDict.TryGetValue(context.EntityType, out Dictionary<string,Subject<T>> subjects))
         {
             foreach (KeyValuePair<string,Subject<T>> keyValuePair in subjects)
             {
                 yield return new WaitUntil(() => !Helper.IsSubjectNull(keyValuePair.Value));
 
-                keyValuePair.Value.NotifySubject(observer, notificationContext, cancellationToken);
+                keyValuePair.Value.NotifySubject(observer, context, cancellationToken);
             }
         }
         else
         {
             yield return new WaitForSeconds(Helper.GetSecondsFromMilliSeconds(sleepTimeInMilliSeconds));
 
-            Debug.Log($"Retrying for - {notificationContext.SubjectType} / Seeker: {observer} length of the dict: {SubjectsDict.Count} - retries left: {maxRetries}");
+            Debug.Log($"Retrying for - {context.EntityType} / Seeker: {observer} length of the dict: {SubjectsDict.Count} - retries left: {maxRetries}");
 
-            StartCoroutine(NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, maxRetries -= 1, sleepTimeInMilliSeconds, optional));
+            StartCoroutine(NotifySubject(observer, context, cancellationToken, semaphoreSlim, maxRetries -= 1, sleepTimeInMilliSeconds, optional));
         }
         
 
         yield return null;
     }
 
-    public IEnumerator NotifySubject(IObserver<T> observer, NotificationContext<T> notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public IEnumerator NotifySubject(IObserver<T> observer, Context<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        yield return StartCoroutine(NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, maxRetries, sleepTimeInMilliSeconds, optional));
+        yield return StartCoroutine(NotifySubject(observer, context, cancellationToken, semaphoreSlim, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
 
@@ -133,17 +133,17 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
         foreach (Association<T> association in GetSubjectAssociations(subjectIdentifyingKey))
         {
-            StartCoroutine(NotifyObserver(association.Observer, valueToSend, new NotificationContext()
+            StartCoroutine(NotifyObserver(association.Observer, valueToSend, new Context()
             {
-                SubjectType = association.Subject.SubjectType.ToString()
+                EntityType = association.Subject.SubjectType.ToString()
 
             }, cancellationToken));
         }
     }
 
-    public void NotifySubjectWrapper(IObserver<T> observer, NotificationContext notificationContext, CancellationToken cancellationToken,
+    public void NotifySubjectWrapper(IObserver<T> observer, Context context, CancellationToken cancellationToken,
         SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        StartCoroutine(NotifySubject(observer, notificationContext, cancellationToken, semaphoreSlim, maxRetries, sleepTimeInMilliSeconds));
+        StartCoroutine(NotifySubject(observer, context, cancellationToken, semaphoreSlim, maxRetries, sleepTimeInMilliSeconds));
     }
 }

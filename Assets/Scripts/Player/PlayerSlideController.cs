@@ -55,16 +55,16 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
     {
         PlayerVelocityDelegator.AddToSubjectsDict(typeof(PlayerSlideController).ToString(), name, new Subject<CharacterVelocity>(this, typeof(PlayerSlideController)));
 
-        StartCoroutine(AnimationDetailsDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(AnimationDetailsDelegator.NotifySubject(this, new Context()
         {
-            ObserverName = gameObject.name,
-            SubjectType = typeof(PlayerAnimationController).ToString(),
+            Name = gameObject.name,
+            EntityType = typeof(PlayerAnimationController).ToString(),
         }, CancellationToken.None));
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new Context()
         {
-            ObserverName = gameObject.name,
-            SubjectType = typeof(PlayerAttributesNotifier).ToString(),
+            Name = gameObject.name,
+            EntityType = typeof(PlayerAttributesNotifier).ToString(),
         }, CancellationToken.None));
 
         _animationHandler = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>>();
@@ -130,17 +130,17 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
         return Task.FromResult(Mathf.Abs(rb.linearVelocity.x) > 0);
     }
 
-    public void OnNotifySubject(IObserver<CharacterVelocity> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<CharacterVelocity> observer, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         PlayerVelocityDelegator.CreateAssociation(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSlideController).ToString())[gameObject.name], observer);
     }
 
-    public void OnNotify(AnimationDetails data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(AnimationDetails data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         AnimationDetails = data;
     }
 
-    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
 

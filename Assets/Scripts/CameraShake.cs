@@ -84,19 +84,19 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
         AsyncCoroutine.ExecuteAsyncCoroutine(ShakeCamera(mainCamera, timeForShake));  
     }
 
-    public void OnNotify(AsyncCoroutine data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(AsyncCoroutine data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         AsyncCoroutine = data;
     }
 
-    public void OnNotify(GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         StateBundle.StateBundle = data.StateBundle;
 
         StartCoroutine(ExecuteShakeAnimation(StateBundle.StateBundle));
     }
 
-    public void OnNotifySubject(IObserver<bool> observer, NotificationContext notificationContext, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<bool> observer, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         FlagDelegator.CreateAssociation(typeof(CameraShake).ToString(), FlagDelegator.GetSubsetSubjectsDictionary(typeof(CameraShake).ToString())[gameObject.name], observer);
     }

@@ -75,18 +75,18 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
     }
     void Start()
     {
-        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerStateConsumer).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerStateConsumer).ToString()
         }, CancellationToken.None));
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new NotificationContext()
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new Context()
         {
-            ObserverName = gameObject.name,
-            ObserverTag = gameObject.tag,
-            SubjectType = typeof(PlayerAttributesNotifier).ToString()
+            Name = gameObject.name,
+            Tag = gameObject.tag,
+            EntityType = typeof(PlayerAttributesNotifier).ToString()
         }, CancellationToken.None));
 
 
@@ -246,7 +246,7 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
         return Task.CompletedTask;
     }
 
-    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerBundle.StateBundle = data.StateBundle;
     }
@@ -266,7 +266,7 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
         return await Task.FromResult(new ActionExecuted() { Result = false });
     }
 
-    public void OnNotify(Player data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
 

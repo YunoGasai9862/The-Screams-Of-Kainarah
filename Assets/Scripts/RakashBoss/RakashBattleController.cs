@@ -34,11 +34,11 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
            RakashAttack.ATTACK_02
         };
 
-        HealthDelegator.NotifySubjectWrapper(this, new NotificationContext()
+        HealthDelegator.NotifySubjectWrapper(this, new Context()
         {
-            ObserverName = name,
-            ObserverTag = tag,
-            SubjectType = typeof(RakashManager).ToString()
+            Name = name,
+            Tag = tag,
+            EntityType = typeof(RakashManager).ToString()
 
         }, CancellationToken.None);
     }
@@ -147,7 +147,7 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
 
     }
 
-    public void OnNotify(Health data, NotificationContext notificationContext, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Health data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         RakashHealth = data;
     }
