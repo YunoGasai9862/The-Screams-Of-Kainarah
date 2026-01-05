@@ -10,14 +10,14 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
     protected Dictionary<string, List<Association<T>>> SubjectObserversDict { get; set; }
 
-    public IEnumerator NotifyObserver(IObserver<T> observer, T value, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifyObserver(IObserver<T> observer, T value, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         observer.OnNotify(value, context, semaphoreSlim, cancellationToken, optional);
 
         yield return null;
     }
 
-    public IEnumerator NotifySubject(IObserver<T> observer, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public IEnumerator NotifySubject(IObserver<T> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         if (maxRetries == 0)
         {
@@ -133,7 +133,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
 
         foreach (Association<T> association in GetSubjectAssociations(subjectIdentifyingKey))
         {
-            StartCoroutine(NotifyObserver(association.Observer, valueToSend, new Context()
+            StartCoroutine(NotifyObserver(association.Observer, valueToSend, new ObserverContext()
             {
                 EntityType = association.Subject.SubjectType.ToString()
 
@@ -141,7 +141,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
         }
     }
 
-    public void NotifySubjectWrapper(IObserver<T> observer, Context context, CancellationToken cancellationToken,
+    public void NotifySubjectWrapper(IObserver<T> observer, ObserverContext context, CancellationToken cancellationToken,
         SemaphoreSlim semaphoreSlim = null, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         StartCoroutine(NotifySubject(observer, context, cancellationToken, semaphoreSlim, maxRetries, sleepTimeInMilliSeconds));

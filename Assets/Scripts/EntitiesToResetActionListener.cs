@@ -25,7 +25,7 @@ public class EntitiesToResetActionListener : MonoBehaviour, IObserver<EntitiesTo
         return Task.CompletedTask;
     }
 
-    public async void OnNotify(EntitiesToReset data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public async void OnNotify(EntitiesToReset data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         if (data != null)
         {

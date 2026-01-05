@@ -74,7 +74,7 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IS
         EntityPoolManagerDelegator.AddToSubjectsDict(typeof(EntityPoolManager).ToString(), name, new Subject<EntityPoolManager>(this, typeof(EntityPoolManager)));
     }
 
-    public void OnNotifySubject(IObserver<EntityPoolManager> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<EntityPoolManager> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         StartCoroutine(EntityPoolManagerDelegator.NotifyObserver(data, this, context, cancellationToken, semaphoreSlim));
     }

@@ -75,14 +75,14 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
     }
     void Start()
     {
-        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new Context()
+        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
             EntityType = typeof(PlayerStateConsumer).ToString()
         }, CancellationToken.None));
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new Context()
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
@@ -246,7 +246,7 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
         return Task.CompletedTask;
     }
 
-    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerBundle.StateBundle = data.StateBundle;
     }
@@ -266,7 +266,7 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
         return await Task.FromResult(new ActionExecuted() { Result = false });
     }
 
-    public void OnNotify(Player data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
 

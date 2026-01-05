@@ -21,14 +21,14 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<IEntityTra
 
         FlagDelegator = await Helper.GetDelegator<FlagDelegator>();
 
-        FlagDelegator.NotifySubjectWrapper(this, new Context()
+        FlagDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
             EntityType = typeof(CameraShake).ToString()
         }, CancellationToken.None);
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new Context()
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
@@ -51,12 +51,12 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<IEntityTra
         }
     }
 
-    public void OnNotify(bool data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(bool data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         ShouldFollowPlayer = data;
     }
 
-    public void OnNotify(IEntityTransform data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityTransform data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayersTransform = data.Transform;
     }

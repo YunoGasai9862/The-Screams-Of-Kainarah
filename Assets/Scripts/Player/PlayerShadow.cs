@@ -27,7 +27,7 @@ public class PlayerShadow : MonoBehaviour, IObserver<Player>
 
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();   
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new Context()
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
@@ -75,7 +75,7 @@ public class PlayerShadow : MonoBehaviour, IObserver<Player>
 
     }
 
-    public void OnNotify(Player data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
     }

@@ -18,7 +18,7 @@ public class HealthBar : MonoBehaviour, IObserver<IEntityHealth>
     {
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new Context()
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
@@ -45,7 +45,7 @@ public class HealthBar : MonoBehaviour, IObserver<IEntityHealth>
         Fill.color = gr.Evaluate(slide.value / 100.0f);
     }
 
-    public void OnNotify(IEntityHealth data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityHealth data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerHealth = data.Health;
     }

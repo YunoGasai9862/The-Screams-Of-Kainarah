@@ -25,7 +25,7 @@ public class DialogueResetActionListener : MonoBehaviour, IObserver<DialoguesAnd
         return Task.CompletedTask;
     }
 
-    public async void OnNotify(DialoguesAndOptions data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public async void OnNotify(DialoguesAndOptions data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         if (data != null)
         {

@@ -36,14 +36,14 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<GenericStateBundle<T
 
     private async Task NotifyObserver(IObserver<GenericStateBundle<T>> observer, GenericStateBundle<T> stateBundle, CancellationToken cancellationToken)
     {
-        StartCoroutine((await GetDelegator()).NotifyObserver(observer, stateBundle, new Context()
+        StartCoroutine((await GetDelegator()).NotifyObserver(observer, stateBundle, new ObserverContext()
         {
             EntityType = typeof(BaseState<T>).ToString()
 
         }, cancellationToken));
     }
 
-    public async void OnNotifySubject(IObserver<GenericStateBundle<T>> observer, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public async void OnNotifySubject(IObserver<GenericStateBundle<T>> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         StateListeners.Add(observer);
 
@@ -94,14 +94,14 @@ public abstract class BaseState<T, Z> : MonoBehaviour, ISubject<GenericStateBund
 
     private async Task NotifyObserver(IObserver<GenericStateBundle<T, Z>> observer, GenericStateBundle<T, Z> stateBundle, CancellationToken cancellationToken)
     {
-        StartCoroutine((await GetDelegator()).NotifyObserver(observer, stateBundle, new Context()
+        StartCoroutine((await GetDelegator()).NotifyObserver(observer, stateBundle, new ObserverContext()
         {
             EntityType = typeof(BaseState<T>).ToString()
 
         }, cancellationToken));
     }
 
-    public async void OnNotifySubject(IObserver<GenericStateBundle<T, Z>> observer, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public async void OnNotifySubject(IObserver<GenericStateBundle<T, Z>> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         StateListeners.Add(observer);
 

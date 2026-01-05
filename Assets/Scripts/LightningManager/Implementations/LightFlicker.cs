@@ -38,7 +38,7 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<ILightPrep
     }
 
 
-    public void OnNotifySubject(IObserver<ILightPreprocess> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<ILightPreprocess> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         StartCoroutine(LightPreprocessDelegator.NotifyObserver(data, this, context, cancellationToken, semaphoreSlim));
     }

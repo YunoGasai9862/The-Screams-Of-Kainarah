@@ -39,7 +39,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
         LightPackageDelegator = await Helper.GetDelegator<LightPackageDelegator>();
 
-        LightPreprocessDelegator.NotifySubjectWrapper(this, new Context()
+        LightPreprocessDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
@@ -71,7 +71,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
     }
 
 
-    public async void OnNotifySubject(IObserver<LightPackage> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public async void OnNotifySubject(IObserver<LightPackage> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         StartCoroutine(PrepareDataForCustomLightningGeneration(data));
     }
@@ -83,7 +83,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         CancellationToken = CancellationTokenSource.Token;
     }
 
-    public void OnNotify(ILightPreprocess data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(ILightPreprocess data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CelestialLightningLightPreprocess = data;
     }
@@ -94,7 +94,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         {
             lightPackage.LightSemaphore.WaitAsync();
 
-            StartCoroutine(LightPackageDelegator.NotifyObserver(observer, lightPackage, new Context()
+            StartCoroutine(LightPackageDelegator.NotifyObserver(observer, lightPackage, new ObserverContext()
             {
                 EntityType = typeof(CelestialBodiesLightPackageGenerator).ToString()
             }, lightPackage.CancellationToken, lightPackage.LightSemaphore));

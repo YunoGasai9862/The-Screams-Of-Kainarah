@@ -32,9 +32,9 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<Health>
         data.AddToObjectsToPersist(new ObjectData(transform.tag, transform.name, transform.position, transform.rotation));
     }
 
-    public void OnNotifySubject(IObserver<Health> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<Health> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(HealthDelegator.NotifyObserver(data, Health, new Context()
+        StartCoroutine(HealthDelegator.NotifyObserver(data, Health, new ObserverContext()
         {
             EntityType = typeof(RakashManager).ToString()  
         }, CancellationToken.None));

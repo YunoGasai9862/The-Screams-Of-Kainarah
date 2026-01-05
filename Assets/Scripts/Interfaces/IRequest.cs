@@ -4,6 +4,6 @@ namespace Assets.Scripts.Interfaces
 {
     public interface IRequest<T>
     {
-        public Task<T> Request<T>();
+        public Task<Context<T>> Request();
     }
 }

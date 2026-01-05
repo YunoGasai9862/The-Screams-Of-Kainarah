@@ -34,7 +34,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
     {
         GlobalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
 
-        GlobalGameStateDelegator.NotifySubjectWrapper(this, new Context()
+        GlobalGameStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
             Name = this.name,
             Tag = this.name,
@@ -44,7 +44,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
 
     }
 
-    public async void OnNotify(DialogueSystem data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public async void OnNotify(DialogueSystem data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         if (data.DialogueSettings.ShouldTriggerDialogue && !CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {
@@ -52,7 +52,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
         }
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState.StateBundle = data.StateBundle;
     }

@@ -1,17 +1,15 @@
 using System;
 using UnityEngine;
 
-public class Context
+public class SubjectContext: Context
 {
-    public string Name { get; set; }
-    public string Tag { get; set; }
     public override string ToString()
     {
-        return $"Name: {Name} Tag: {Tag}";
+        return $"{base.ToString()}";
     }
 }
 
-public class Context<T> : Context
+public class SubjectContext<T> : SubjectContext
 {
     /// <summary>
     /// Context data to be passed along with the subject/observer type

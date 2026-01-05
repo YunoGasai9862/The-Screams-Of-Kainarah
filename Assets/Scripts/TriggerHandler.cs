@@ -31,7 +31,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
         m_globalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
 
-        m_globalGameStateDelegator.NotifySubjectWrapper(this, new Context()
+        m_globalGameStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
             Name = this.name,
             Tag = this.name,
@@ -114,12 +114,12 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
          InventoryManagementSystem.Instance.RemoveInvoke(funds);
     }
 
-    public void OnNotifySubject(IObserver<bool> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<bool> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         m_genericFlagDelegator.CreateAssociation(gameObject.name, m_genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name], data);
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState.StateBundle = data.StateBundle;
     }

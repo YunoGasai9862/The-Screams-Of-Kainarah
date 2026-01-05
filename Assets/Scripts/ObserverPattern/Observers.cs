@@ -13,7 +13,7 @@ public class ObserverQueue<T>
         m_observers.Enqueue(observer);
     }
 
-    public void NotifyObservers(T value, CancellationToken cancellationToken, Context context = null, SemaphoreSlim lockingThread = null) //good to empty, so we dont notify the same observers again
+    public void NotifyObservers(T value, CancellationToken cancellationToken, ObserverContext context = null, SemaphoreSlim lockingThread = null) //good to empty, so we dont notify the same observers again
     {
         while (m_observers.Count > 0)
         {
@@ -40,7 +40,7 @@ public class ObserverList<T>
     {
         _potentialObservers.Remove(observer);
     }
-    public void NotifyObservers(T value, CancellationToken cancellationToken, Context context = null, SemaphoreSlim lockingThread = null)
+    public void NotifyObservers(T value, CancellationToken cancellationToken, ObserverContext context = null, SemaphoreSlim lockingThread = null)
     {
         foreach (var observer in _potentialObservers)
         {

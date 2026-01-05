@@ -25,7 +25,7 @@ public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
 
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new Context()
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
@@ -74,7 +74,7 @@ public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
         semaphoreSlim.Release();
     }
 
-    public void OnNotify(IEntityTransform data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityTransform data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerTransform = data.Transform;
     }

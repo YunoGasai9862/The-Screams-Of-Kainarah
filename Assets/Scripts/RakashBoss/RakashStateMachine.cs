@@ -44,7 +44,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<Ga
 
         Animator= GetComponent<Animator>();
 
-        GameStateDelegator.NotifySubjectWrapper(this, new Context()
+        GameStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
             Name = this.name,
             Tag = this.name,
@@ -52,7 +52,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<Ga
 
         }, CancellationToken.None);
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new Context()
+        PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
             Name = this.name,
             Tag = this.name,
@@ -71,7 +71,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<Ga
 
     private void Start()
     {
-        StartCoroutine(enemyHittableManagerDelegator.NotifySubject(this, new Context()
+        StartCoroutine(enemyHittableManagerDelegator.NotifySubject(this, new ObserverContext()
         {
             EntityType = typeof(EnemyHittableManager).ToString(),
             Name = name,
@@ -80,16 +80,16 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<Ga
         }, CancellationToken.None));
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState.StateBundle = data.StateBundle;
     }
 
-    public void OnNotify(IEntityTransform data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(IEntityTransform data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player.Transform = data.Transform;
     }
-    public void OnNotify(EnemyHittableManager data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(EnemyHittableManager data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         EnemyHittableManager = data;
     }

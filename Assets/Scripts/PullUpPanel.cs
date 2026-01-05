@@ -17,7 +17,7 @@ public class PullUpPanel : MonoBehaviour, IObserver<bool>
     {
         m_anim = GetComponent<Animator>();
 
-        StartCoroutine(flagDelegator.NotifySubject(this, new Context() {
+        StartCoroutine(flagDelegator.NotifySubject(this, new ObserverContext() {
             Name = this.name,
             Tag = this.name,
             EntityType = typeof(TriggerHandler).ToString()
@@ -34,7 +34,7 @@ public class PullUpPanel : MonoBehaviour, IObserver<bool>
         m_anim.SetBool(SUFFICIENT_FUNDS_ANIMATION_CONDITION, !data);
     }
 
-    public void OnNotify(bool data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(bool data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         if (data)
         {

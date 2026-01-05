@@ -1,4 +1,5 @@
 using Assets.Annotations;
+using Assets.Scripts.Interfaces;
 using Assets.Scripts.Models.Reset;
 using System;
 using System.Linq;
@@ -9,7 +10,7 @@ using UnityEngine;
 
 [Subject(SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
 [Observer(SubjectType = typeof(EntityPoolManager), ObserverType = typeof(PlayerAttackStateMachineReset), DataType = typeof(EntityPoolManager))]
-public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<EntityPoolManager>
+public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<EntityPoolManager>, IRequest<ResetBundle>
 {
     [SerializeField]
     public string resetConfigEntityName;
@@ -18,6 +19,8 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<Enti
     private EntityPoolManager EntityPoolManager { get; set; }
 
     private Delegator Delegator { get; set; }
+
+    private ResetBundle CurrentResetBundle { get; set; }
 
     private async void OnEnable()   
     {
@@ -39,26 +42,28 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<Enti
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override async public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        CurrentResetBundle = new ResetBundle()
+        {
+            Animator = animator,
+            ResetSystem = new ResetSystem()
+            {
+                ResetParameters = AttackResetConfig.resetParameters.Select(reset => new Reset()
+                {
+                    m_key = reset.key,
+                    m_val = new Reset.Value()
+                    {
+                        m_type = reset.type,
+                        m_newValue = reset.type == AnimatorControllerParameterType.Int ? 0 : (reset.type == AnimatorControllerParameterType.Float ? 0.0f : (reset.type == AnimatorControllerParameterType.Bool ? false : null))
+                    }
+                }).ToList(),
+                State = ResetState.PARTIAL_RESET
+            }
+
+        };
+
         Delegator.NotifyObserver(new Context<ResetBundle>()
         {
-            Data = new ResetBundle()
-            {
-                Animator = animator,
-                ResetSystem = new ResetSystem()
-                {
-                    ResetParameters = AttackResetConfig.resetParameters.Select(reset => new Reset()
-                    {
-                        m_key = reset.key,
-                        m_val = new Reset.Value()
-                        {
-                            m_type = reset.type,
-                            m_newValue = reset.type == AnimatorControllerParameterType.Int ? 0 : (reset.type == AnimatorControllerParameterType.Float ? 0.0f : (reset.type == AnimatorControllerParameterType.Bool ? false : null))
-                        }
-                    }).ToList(),
-                    State = ResetState.PARTIAL_RESET
-                }
-
-            }
+            Data = CurrentResetBundle
         }, CancellationToken.None);
     }
 
@@ -70,6 +75,11 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<Enti
         AttackResetConfig = (AttackResetConfig)EntityPoolManager.GetPooledEntity(resetConfigEntityName).FirstOrDefault(entity => entity.Name.Equals(resetConfigEntityName)).Entity;
 
         return Task.CompletedTask;
+    }
+
+    public Task<ResetBundle> Request()
+    {
+        return Task.FromResult(CurrentResetBundle);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

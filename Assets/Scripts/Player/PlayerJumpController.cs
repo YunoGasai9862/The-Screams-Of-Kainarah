@@ -62,14 +62,14 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
     }
     private void Start()
     {
-        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new Context()
+        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
             EntityType = typeof(PlayerStateConsumer).ToString()
         }, CancellationToken.None));
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new Context()
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
@@ -124,14 +124,14 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
         return Player.Transform.position.y >= PlayerInitialPosition.y + maxJumpHeight;
     }
 
-    public void OnNotifySubject(IObserver<CharacterVelocity> observer, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<CharacterVelocity> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         PlayerVelocityDelegator.CreateAssociation(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerJumpController).ToString())[gameObject.name], observer);
 
-        StartCoroutine(PlayerVelocityDelegator.NotifyObserver(observer, new CharacterVelocity() { VelocityY = - 10f}, new Context() { EntityType = typeof(PlayerJumpController).ToString()}, cancellationToken));
+        StartCoroutine(PlayerVelocityDelegator.NotifyObserver(observer, new CharacterVelocity() { VelocityY = - 10f}, new ObserverContext() { EntityType = typeof(PlayerJumpController).ToString()}, cancellationToken));
     }
 
-    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         PlayerStateBundle.StateBundle = data.StateBundle;
     }
@@ -154,7 +154,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
         return new ActionExecuted() { Result = false };
     }
 
-    public void OnNotify(Player data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
     }

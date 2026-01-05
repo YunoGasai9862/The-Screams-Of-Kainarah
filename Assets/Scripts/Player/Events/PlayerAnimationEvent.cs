@@ -62,7 +62,7 @@ public class PlayerAnimationEvent : MonoBehaviour, IObserver<EntityPoolManager>
         return Task.FromResult(EntityPoolManager.GetPooledEntity(tag));
     }
 
-    public async void OnNotify(EntityPoolManager data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public async void OnNotify(EntityPoolManager data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         EntityPoolManager = data;
 

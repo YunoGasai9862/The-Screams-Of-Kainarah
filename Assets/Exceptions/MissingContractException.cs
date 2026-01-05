@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Assets.Exceptions
 {
-    public class MissingContractException: BaseException
+    public class MissingContextException : BaseException
     {
-        public MissingContractException(string exceptionMessage): base(exceptionMessage)
+        public MissingContextException(string exceptionMessage): base(exceptionMessage)
         {
 
         }

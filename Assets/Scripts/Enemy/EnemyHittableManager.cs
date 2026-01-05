@@ -29,9 +29,9 @@ public class EnemyHittableManager : MonoBehaviour, ISubject<EnemyHittableManager
         return Task.FromResult(false);
     }
 
-    public void OnNotifySubject(IObserver<EnemyHittableManager> data, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<EnemyHittableManager> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(EnemyHittableManagerDelegator.NotifyObserver(data, this, new Context()
+        StartCoroutine(EnemyHittableManagerDelegator.NotifyObserver(data, this, new ObserverContext()
         {
             EntityType = typeof(EnemyHittableManager).ToString()
 

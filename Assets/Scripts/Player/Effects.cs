@@ -11,14 +11,14 @@ public class Effects: MonoBehaviour, IObserver<Player>
     {
         PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new Context()
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
             EntityType = typeof(PlayerAttributesNotifier).ToString(),
         }, CancellationToken.None));
     }
 
-    public void OnNotify(Player data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Debug.Log($"Material Fader: {MaterialFader} - data : {data.DefaultRendererValue.Renderer}");
 

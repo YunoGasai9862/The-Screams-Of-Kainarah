@@ -55,13 +55,13 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
     {
         PlayerVelocityDelegator.AddToSubjectsDict(typeof(PlayerSlideController).ToString(), name, new Subject<CharacterVelocity>(this, typeof(PlayerSlideController)));
 
-        StartCoroutine(AnimationDetailsDelegator.NotifySubject(this, new Context()
+        StartCoroutine(AnimationDetailsDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
             EntityType = typeof(PlayerAnimationController).ToString(),
         }, CancellationToken.None));
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new Context()
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
             EntityType = typeof(PlayerAttributesNotifier).ToString(),
@@ -130,17 +130,17 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
         return Task.FromResult(Mathf.Abs(rb.linearVelocity.x) > 0);
     }
 
-    public void OnNotifySubject(IObserver<CharacterVelocity> observer, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<CharacterVelocity> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
         PlayerVelocityDelegator.CreateAssociation(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSlideController).ToString())[gameObject.name], observer);
     }
 
-    public void OnNotify(AnimationDetails data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(AnimationDetails data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         AnimationDetails = data;
     }
 
-    public void OnNotify(Player data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
 

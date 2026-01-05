@@ -34,7 +34,7 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
            RakashAttack.ATTACK_02
         };
 
-        HealthDelegator.NotifySubjectWrapper(this, new Context()
+        HealthDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
             Name = name,
             Tag = tag,
@@ -147,7 +147,7 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
 
     }
 
-    public void OnNotify(Health data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Health data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         RakashHealth = data;
     }

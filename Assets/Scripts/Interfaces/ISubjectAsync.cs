@@ -10,7 +10,7 @@ public interface ISubjectAsync<T>
 //out - covariance allows you to pass dervied types where base type is expected (for return types)
 public interface ISubject<T>
 {
-    public void OnNotifySubject(IObserver<T> observer, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional);
+    public void OnNotifySubject(IObserver<T> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional);
 }
 
 public interface ISubjectAsync

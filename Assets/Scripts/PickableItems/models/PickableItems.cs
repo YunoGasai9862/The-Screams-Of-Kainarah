@@ -25,9 +25,9 @@ public class PickableItems : ScriptableObject, ISubject<ScriptableObject>, IDele
 
     public PickableEntities[] pickableEntities;
 
-    public void OnNotifySubject(IObserver<ScriptableObject> observer, Context context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public void OnNotifySubject(IObserver<ScriptableObject> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        ScriptableObjectDelegator.NotifyObjectWrapper(observer, (PickableItems) this, new Context()
+        ScriptableObjectDelegator.NotifyObjectWrapper(observer, (PickableItems) this, new ObserverContext()
         {
             EntityType = typeof(PickableItems).ToString(),
 

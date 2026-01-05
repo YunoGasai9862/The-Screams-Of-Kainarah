@@ -67,7 +67,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
     private void Start()
     {
-        StartCoroutine(GlobalGameStateDelegator.NotifySubject(this, new Context()
+        StartCoroutine(GlobalGameStateDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = this.name,
             Tag = this.name,
@@ -75,7 +75,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
         }, CancellationToken.None));
 
-        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new Context()
+        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
@@ -83,7 +83,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         }, CancellationToken.None));
 
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new Context()
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
@@ -215,17 +215,17 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         PowerUpBarFilled = filledUp;
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<GameStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentGameState.StateBundle = data.StateBundle;
     }
 
-    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         CurrentPlayerState.StateBundle = data.StateBundle;
     }
 
-    public void OnNotify(Player data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
 

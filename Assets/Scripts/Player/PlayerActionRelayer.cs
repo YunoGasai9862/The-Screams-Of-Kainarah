@@ -50,7 +50,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
             Debug.Log($"Exception: {ex.StackTrace}");
         }
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new Context()
+        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = name,
             Tag = tag,
@@ -58,7 +58,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
 
         }, CancellationToken.None));
 
-        StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new Context()
+        StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = name,
             Tag = tag,
@@ -279,12 +279,12 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
         data.AddToObjectsToPersist(playerData);
     }
 
-    public void OnNotify(Player data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         Player = data;
     }
 
-    public void OnNotify(ScriptableObject data, Context context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public void OnNotify(ScriptableObject data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         _pickableItemsUtility = new PickableItemsUtility((PickableItems)data);
     }
