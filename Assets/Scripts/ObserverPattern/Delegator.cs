@@ -1,5 +1,6 @@
 using Assets.Annotations;
 using Assets.Exceptions;
+using Assets.Scripts.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,6 +30,12 @@ public class Delegator : MonoBehaviour, IDelegator
         yield return null;
     }
 
+    //use name/tag from here to keep updating the dictionary??
+    public IEnumerator NotifySubject<T>(Context<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    {
+        throw new NotImplementedException();
+    }
+
     //we should check on generic interface assignment since we wouldn't know concrete implementation during reflection.
     //in order to do that, get interfaces first and then check on IsGenericFlag and TypeDefinition
     public void BuildRegistry()
@@ -51,8 +58,14 @@ public class Delegator : MonoBehaviour, IDelegator
 
                 if (observerAttribute != null && type.GetInterfaces().Any(interf => interf.IsGenericType && interf.GetGenericTypeDefinition() == typeof(INotify<>)))
                 {
-                    throw new MissingContractException("Observer must implement the INotify<*>!");
+                    throw new MissingContractException("Observer must implement INotify<*>!");
                 }
+
+                if (subjectAttribute != null && type.GetInterfaces().Any(interf => interf.IsGenericType && interf.GetGenericTypeDefinition() == typeof(IRequest<>)))
+                {
+                    throw new MissingContractException("Subject must implement IRequest!");
+                }
+
 
                 PopulateDictionary(Observers, observerAttribute, observerAttribute.SubjectType.FullName);
 

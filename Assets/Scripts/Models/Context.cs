@@ -5,7 +5,7 @@ public class Context
 {
     public string Name { get; set; }
     public string Tag { get; set; }
-    public Type EntityType { get; set; }
+    public string EntityType { get; set; }
 
     public override string ToString()
     {

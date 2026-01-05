@@ -1,12 +1,13 @@
 using Assets.Annotations;
 using Assets.Scripts.Models.Reset;
 using PlayerAnimationHandler;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
 
-[Observer(ObserverType = typeof(ResetController), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
+//see how can you grab name/tag???
+//because in case of multiple instances, you dont want to alert all the objects of the same type/name/tag at the same time?
+[Observer(ObserverType = typeof(ResetController), SubjectType = typeof(PlayerAttackStateMachineReset), DataType = typeof(ResetBundle))]
 public class ResetController : MonoBehaviour, INotify<ResetBundle>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
@@ -15,7 +16,6 @@ public class ResetController : MonoBehaviour, INotify<ResetBundle>
 
     private async void Awake()
     {
-
     }
 
     private async Task Reset(ResetSystem resetSystem)

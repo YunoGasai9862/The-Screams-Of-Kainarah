@@ -8,7 +8,7 @@ using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 [Subject(SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
-[Observer(SubjectType = typeof(EntityPoolManager), ObserverType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(EntityPoolManager))]
+[Observer(SubjectType = typeof(EntityPoolManager), ObserverType = typeof(PlayerAttackStateMachineReset), DataType = typeof(EntityPoolManager))]
 public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<EntityPoolManager>
 {
     [SerializeField]
@@ -39,24 +39,27 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<Enti
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override async public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Delegator.NotifyObserver(new ResetBundle()
+        Delegator.NotifyObserver(new Context<ResetBundle>()
         {
-            Animator = animator,
-            ResetSystem = new ResetSystem()
+            Data = new ResetBundle()
             {
-                ResetParameters = AttackResetConfig.resetParameters.Select(reset => new Reset()
+                Animator = animator,
+                ResetSystem = new ResetSystem()
                 {
-                    m_key = reset.key,
-                    m_val = new Reset.Value()
+                    ResetParameters = AttackResetConfig.resetParameters.Select(reset => new Reset()
                     {
-                        m_type = reset.type,
-                        m_newValue = reset.type == AnimatorControllerParameterType.Int ? 0 : (reset.type == AnimatorControllerParameterType.Float ? 0.0f : (reset.type == AnimatorControllerParameterType.Bool ? false : null))
-                    }
-                }).ToList(),
-                State = ResetState.PARTIAL_RESET
-            }
+                        m_key = reset.key,
+                        m_val = new Reset.Value()
+                        {
+                            m_type = reset.type,
+                            m_newValue = reset.type == AnimatorControllerParameterType.Int ? 0 : (reset.type == AnimatorControllerParameterType.Float ? 0.0f : (reset.type == AnimatorControllerParameterType.Bool ? false : null))
+                        }
+                    }).ToList(),
+                    State = ResetState.PARTIAL_RESET
+                }
 
-        }, new Context() { }, CancellationToken.None);
+            }
+        }, CancellationToken.None);
     }
 
 

@@ -11,5 +11,7 @@ public interface IDelegator
 {
     public IEnumerator NotifyObserver<T>(Context<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional);
 
+    public IEnumerator NotifySubject<T>(Context<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional);
+
     public void BuildRegistry();
 }
