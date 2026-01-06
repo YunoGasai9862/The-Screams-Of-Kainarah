@@ -36,7 +36,7 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<Health>
     {
         StartCoroutine(HealthDelegator.NotifyObserver(data, Health, new ObserverContext()
         {
-            EntityType = typeof(RakashManager).ToString()  
+            SubjectType = typeof(RakashManager)
         }, CancellationToken.None));
     }
 }

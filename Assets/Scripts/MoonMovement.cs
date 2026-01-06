@@ -29,7 +29,7 @@ public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(PlayerAttributesNotifier).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None);
     }
     async void Update()

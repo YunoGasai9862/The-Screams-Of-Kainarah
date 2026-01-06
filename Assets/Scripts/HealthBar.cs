@@ -22,7 +22,7 @@ public class HealthBar : MonoBehaviour, IObserver<IEntityHealth>
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(PlayerAttributesNotifier).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None);
 
         Fill.color = gr.Evaluate(slide.value);

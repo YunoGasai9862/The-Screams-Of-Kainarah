@@ -54,7 +54,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
         {
             Name = name,
             Tag = tag,
-            EntityType = typeof(PlayerAttributesNotifier).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier)
 
         }, CancellationToken.None));
 
@@ -62,7 +62,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
         {
             Name = name,
             Tag = tag,
-            EntityType = typeof(PickableItems).ToString()
+            SubjectType = typeof(PickableItems)
 
         }, CancellationToken.None));
     }

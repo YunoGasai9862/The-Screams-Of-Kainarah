@@ -31,7 +31,7 @@ public class PlayerShadow : MonoBehaviour, IObserver<Player>
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(PlayerAttributesNotifier).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None));
 
     }

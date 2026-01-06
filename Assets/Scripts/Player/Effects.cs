@@ -14,7 +14,7 @@ public class Effects: MonoBehaviour, IObserver<Player>
         StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
-            EntityType = typeof(PlayerAttributesNotifier).ToString(),
+            SubjectType = typeof(PlayerAttributesNotifier),
         }, CancellationToken.None));
     }
 

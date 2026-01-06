@@ -3,10 +3,6 @@ using UnityEngine;
 
 public class SubjectContext: Context
 {
-    public override string ToString()
-    {
-        return $"{base.ToString()}";
-    }
 }
 
 public class SubjectContext<T> : SubjectContext

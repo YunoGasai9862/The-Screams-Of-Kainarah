@@ -47,14 +47,14 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<AnimationDetail
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(PlayerAttributesNotifier).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None));
 
         StartCoroutine(EmitAnimationMovementStateDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(EmitMovementAnimationStateConsumer).ToString()
+            SubjectType = typeof(EmitMovementAnimationStateConsumer)
         }, CancellationToken.None));
 
     }
@@ -153,7 +153,7 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<AnimationDetail
         },
         new ObserverContext()
         {
-            EntityType = typeof(PlayerAnimationController).ToString()
+            SubjectType = typeof(PlayerAnimationController)
         },
         CancellationToken.None));
     }

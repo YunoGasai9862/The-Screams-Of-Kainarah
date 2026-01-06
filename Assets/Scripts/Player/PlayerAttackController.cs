@@ -71,7 +71,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         {
             Name = this.name,
             Tag = this.name,
-            EntityType = typeof(GameStateConsumer).ToString()
+            SubjectType = typeof(GameStateConsumer)
 
         }, CancellationToken.None));
 
@@ -79,7 +79,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(PlayerStateConsumer).ToString()
+            SubjectType = typeof(PlayerStateConsumer)
         }, CancellationToken.None));
 
 
@@ -87,7 +87,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(PlayerAttributesNotifier).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None));
 
         PlayerBoostAttackEvent.AddListener(SetAttackBoostMode);

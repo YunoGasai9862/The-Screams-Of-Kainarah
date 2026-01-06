@@ -20,7 +20,7 @@ public class WaterCameraAndTextureFollow : MonoBehaviour, IObserver<IEntityTrans
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(PlayerAttributesNotifier).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None);
     }
 

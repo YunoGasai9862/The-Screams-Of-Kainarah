@@ -79,14 +79,14 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(PlayerStateConsumer).ToString()
+            SubjectType = typeof(PlayerStateConsumer)
         }, CancellationToken.None));
 
         StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(PlayerAttributesNotifier).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None));
 
 

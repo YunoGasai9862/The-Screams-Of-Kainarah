@@ -35,7 +35,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         {
             Name = this.name,
             Tag = this.name,
-            EntityType = typeof(GameStateConsumer).ToString()
+            SubjectType = typeof(GameStateConsumer)
 
         }, CancellationToken.None);
 

@@ -25,7 +25,7 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericStateBundl
         {
             Name = this.name,
             Tag = this.name,
-            EntityType = typeof(GameStateConsumer).ToString()
+            SubjectType = typeof(GameStateConsumer)
 
         }, CancellationToken.None);
     }

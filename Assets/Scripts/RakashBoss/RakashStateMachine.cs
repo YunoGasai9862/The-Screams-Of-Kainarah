@@ -48,7 +48,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<Ga
         {
             Name = this.name,
             Tag = this.name,
-            EntityType = typeof(GameStateConsumer).ToString()
+            SubjectType = typeof(GameStateConsumer)
 
         }, CancellationToken.None);
 
@@ -56,7 +56,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<Ga
         {
             Name = this.name,
             Tag = this.name,
-            EntityType = typeof(PlayerAttributesNotifier).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier)
 
         }, CancellationToken.None);
 
@@ -73,7 +73,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<Ga
     {
         StartCoroutine(enemyHittableManagerDelegator.NotifySubject(this, new ObserverContext()
         {
-            EntityType = typeof(EnemyHittableManager).ToString(),
+            SubjectType = typeof(EnemyHittableManager),
             Name = name,
             Tag = tag
 

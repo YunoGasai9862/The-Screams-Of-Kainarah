@@ -36,7 +36,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, IObs
         {
             Name = name,
             Tag = tag,
-            EntityType = typeof(PickableItems).ToString()
+            SubjectType = typeof(PickableItems)
 
         }, CancellationToken.None));
 

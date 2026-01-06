@@ -38,7 +38,7 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
         {
             Name = name,
             Tag = tag,
-            EntityType = typeof(RakashManager).ToString()
+            SubjectType = typeof(RakashManager)
 
         }, CancellationToken.None);
     }

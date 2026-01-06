@@ -33,7 +33,7 @@ public class EnemyHittableManager : MonoBehaviour, ISubject<EnemyHittableManager
     {
         StartCoroutine(EnemyHittableManagerDelegator.NotifyObserver(data, this, new ObserverContext()
         {
-            EntityType = typeof(EnemyHittableManager).ToString()
+            SubjectType = typeof(EnemyHittableManager)
 
         }, CancellationToken.None));
     }

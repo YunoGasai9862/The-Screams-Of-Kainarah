@@ -66,14 +66,14 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(PlayerStateConsumer).ToString()
+            SubjectType = typeof(PlayerStateConsumer)
         }, CancellationToken.None));
 
         StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(PlayerAttributesNotifier).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None));
 
         PlayerVelocityDelegator.AddToSubjectsDict(typeof(PlayerJumpController).ToString(), gameObject.name, new Subject<CharacterVelocity>(this, typeof(PlayerJumpController)));
@@ -128,7 +128,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
     {
         PlayerVelocityDelegator.CreateAssociation(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerJumpController).ToString())[gameObject.name], observer);
 
-        StartCoroutine(PlayerVelocityDelegator.NotifyObserver(observer, new CharacterVelocity() { VelocityY = - 10f}, new ObserverContext() { EntityType = typeof(PlayerJumpController).ToString()}, cancellationToken));
+        StartCoroutine(PlayerVelocityDelegator.NotifyObserver(observer, new CharacterVelocity() { VelocityY = - 10f}, new ObserverContext() { SubjectType = typeof(PlayerJumpController)}, cancellationToken));
     }
 
     public void OnNotify(GenericStateBundle<PlayerStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)

@@ -186,13 +186,13 @@ public class Helper: MonoBehaviour
         return milliSeconds / 1000.0f;
     }
 
-    public static ObserverContext BuildNotificationContext(string name, string tag, string subjectType)
+    public static ObserverContext BuildNotificationContext(string name, string tag, Type subjectType)
     {
         return new ObserverContext()
         {
             Name = name,
             Tag = tag,
-            EntityType = subjectType
+            SubjectType = subjectType
         };
     }
 

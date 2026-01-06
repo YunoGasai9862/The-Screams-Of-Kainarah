@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 [Subject(SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
@@ -43,28 +42,24 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<Enti
     override async public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         CurrentResetBundle = new ResetBundle()
-        {
-            Animator = animator,
-            ResetSystem = new ResetSystem()
-            {
-                ResetParameters = AttackResetConfig.resetParameters.Select(reset => new Reset()
+         {
+                Animator = animator,
+                ResetSystem = new ResetSystem()
                 {
-                    m_key = reset.key,
-                    m_val = new Reset.Value()
+                    ResetParameters = AttackResetConfig.resetParameters.Select(reset => new Reset()
                     {
-                        m_type = reset.type,
-                        m_newValue = reset.type == AnimatorControllerParameterType.Int ? 0 : (reset.type == AnimatorControllerParameterType.Float ? 0.0f : (reset.type == AnimatorControllerParameterType.Bool ? false : null))
-                    }
-                }).ToList(),
-                State = ResetState.PARTIAL_RESET
-            }
-
+                        m_key = reset.key,
+                        m_val = new Reset.Value()
+                        {
+                            m_type = reset.type,
+                            m_newValue = reset.type == AnimatorControllerParameterType.Int ? 0 : (reset.type == AnimatorControllerParameterType.Float ? 0.0f : (reset.type == AnimatorControllerParameterType.Bool ? false : null))
+                        }
+                    }).ToList(),
+                    State = ResetState.PARTIAL_RESET
+                }     
         };
 
-        Delegator.NotifyObserver(new Context<ResetBundle>()
-        {
-            Data = CurrentResetBundle
-        }, CancellationToken.None);
+        Delegator.NotifyObserver(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, Name = name, EntityType = typeof(PlayerAttackStateMachineReset) }, CancellationToken.None);
     }
 
 

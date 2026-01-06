@@ -49,14 +49,14 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(LightFlicker).ToString()
+            SubjectType = typeof(LightFlicker)
         }, CancellationToken.None);
 
         PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(PlayerAttributesNotifier).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier)
          }, CancellationToken.None);
 
         LightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), transform.parent.gameObject.name, new Subject<LightPackage>(this, typeof(LightPackage)));
@@ -72,7 +72,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>
 
             StartCoroutine(LightPackageDelegator.NotifyObserver(observer, lightPackage, new ObserverContext()
             {
-                EntityType = typeof(CandleLightPackageGenerator).ToString(),
+                SubjectType = typeof(CandleLightPackageGenerator),
             }, lightPackage.CancellationToken));
 
             //unscaled yield (realTime) - waitForSeconds is scaled (RealTime wont stop if we set time.timeScale = 0)

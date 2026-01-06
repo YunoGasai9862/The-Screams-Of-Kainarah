@@ -20,7 +20,7 @@ public class PullUpPanel : MonoBehaviour, IObserver<bool>
         StartCoroutine(flagDelegator.NotifySubject(this, new ObserverContext() {
             Name = this.name,
             Tag = this.name,
-            EntityType = typeof(TriggerHandler).ToString()
+            SubjectType = typeof(TriggerHandler)
 
         }, CancellationToken.None));
     }

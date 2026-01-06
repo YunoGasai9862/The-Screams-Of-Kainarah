@@ -34,7 +34,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>, I
         {
             Name = name,
             Tag = tag,
-            EntityType = typeof(PickableItems).ToString()
+            SubjectType = typeof(PickableItems)
 
         }, CancellationToken.None));
     }

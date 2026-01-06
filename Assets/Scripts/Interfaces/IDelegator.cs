@@ -9,9 +9,9 @@ public interface IDelegator<T>
 
 public interface IDelegator
 {
-    public IEnumerator NotifyObserver<T>(Context<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional);
+    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional);
 
-    public IEnumerator NotifySubject<T>(Context<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional);
+    public IEnumerator NotifySubject<T>(ObserverContext<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional);
 
     public void BuildRegistry();
 }

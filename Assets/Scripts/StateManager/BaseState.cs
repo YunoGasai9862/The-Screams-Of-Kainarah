@@ -38,7 +38,7 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<GenericStateBundle<T
     {
         StartCoroutine((await GetDelegator()).NotifyObserver(observer, stateBundle, new ObserverContext()
         {
-            EntityType = typeof(BaseState<T>).ToString()
+            SubjectType = typeof(BaseState<T>)
 
         }, cancellationToken));
     }
@@ -96,7 +96,7 @@ public abstract class BaseState<T, Z> : MonoBehaviour, ISubject<GenericStateBund
     {
         StartCoroutine((await GetDelegator()).NotifyObserver(observer, stateBundle, new ObserverContext()
         {
-            EntityType = typeof(BaseState<T>).ToString()
+            SubjectType = typeof(BaseState<T>)
 
         }, cancellationToken));
     }

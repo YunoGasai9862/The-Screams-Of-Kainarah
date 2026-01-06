@@ -43,7 +43,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(CelestialBodyLightning).ToString()
+            SubjectType = typeof(CelestialBodyLightning)
         }, CancellationToken.None);
 
         //subject for custom lightning
@@ -96,7 +96,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
             StartCoroutine(LightPackageDelegator.NotifyObserver(observer, lightPackage, new ObserverContext()
             {
-                EntityType = typeof(CelestialBodiesLightPackageGenerator).ToString()
+                SubjectType = typeof(CelestialBodiesLightPackageGenerator)
             }, lightPackage.CancellationToken, lightPackage.LightSemaphore));
 
 

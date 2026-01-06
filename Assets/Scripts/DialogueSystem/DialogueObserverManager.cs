@@ -38,7 +38,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
         {
             Name = this.name,
             Tag = this.name,
-            EntityType = typeof(GameStateConsumer).ToString()
+            SubjectType = typeof(GameStateConsumer)
 
         }, CancellationToken.None);
 

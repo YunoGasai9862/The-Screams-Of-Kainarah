@@ -24,14 +24,14 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
             throw new ApplicationException($"No such subject type exists! - Please Register first {context.EntityType}. Seeker: {observer}");
         }
 
-        if (context.EntityType == null)
+        if (context.SubjectType == null)
         {
             throw new ApplicationException($"Subject type is null - please add it in the notification context object!");
         }
 
         yield return new WaitUntil(() => !Helper.IsObjectNull(SubjectsDict));
 
-        if (SubjectsDict.TryGetValue(context.EntityType, out Dictionary<string,Subject<T>> subjects))
+        if (SubjectsDict.TryGetValue(context.EntityType.ToString(), out Dictionary<string,Subject<T>> subjects))
         {
             foreach (KeyValuePair<string,Subject<T>> keyValuePair in subjects)
             {
@@ -135,7 +135,7 @@ public abstract class BaseDelegator<T> : MonoBehaviour, IDelegator<T>
         {
             StartCoroutine(NotifyObserver(association.Observer, valueToSend, new ObserverContext()
             {
-                EntityType = association.Subject.SubjectType.ToString()
+                SubjectType = association.Subject.SubjectType
 
             }, cancellationToken));
         }

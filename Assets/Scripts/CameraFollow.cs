@@ -25,14 +25,14 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<IEntityTra
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(CameraShake).ToString()
+            SubjectType = typeof(CameraShake)
         }, CancellationToken.None);
 
         PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
             Name = gameObject.name,
             Tag = gameObject.tag,
-            EntityType = typeof(PlayerAttributesNotifier).ToString()
+            SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None);
     }
 

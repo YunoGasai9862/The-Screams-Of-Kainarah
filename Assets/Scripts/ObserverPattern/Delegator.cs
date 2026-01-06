@@ -20,7 +20,7 @@ public class Delegator : MonoBehaviour, IDelegator
         BuildRegistry();
     }
 
-    public IEnumerator NotifyObserver<T>(Context<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         if (Subjects.TryGetValue(context.EntityType.ToString(), out List<SubjectAttribute> subjects))
         {
@@ -30,14 +30,14 @@ public class Delegator : MonoBehaviour, IDelegator
         yield return null;
     }
 
-    public IEnumerator NotifySubject<T>(Context<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifySubject<T>(ObserverContext<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        if (context == null || context.Name == null || context.Tag == null || context.EntityType == null)
+        if (context == null || context.Name == null || context.Tag == null || context.SubjectType == null)
         {
-            throw new MissingContextException($"Either the context is null or name/tag/EntityType are missing from the instance!");
+            throw new MissingContextException($"Either the context is null or name/tag/SubjectType are missing from the instance!");
         }
 
-        ObserverAttribute targetObserver = Observers.Values.FirstOrDefault(observer => observer.nam)
+        List<ObserverAttribute> targetObservers = Observers.Keys.Where(key => key == context.SubjectType.ToString()).Select(key => Observers[key]).FirstOrDefault().ToList();
 
         //keep building/storing the instances
         yield return null;

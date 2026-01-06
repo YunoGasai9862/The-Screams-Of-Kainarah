@@ -29,7 +29,7 @@ public class PickableItems : ScriptableObject, ISubject<ScriptableObject>, IDele
     {
         ScriptableObjectDelegator.NotifyObjectWrapper(observer, (PickableItems) this, new ObserverContext()
         {
-            EntityType = typeof(PickableItems).ToString(),
+            SubjectType = typeof(PickableItems),
 
         }, CancellationToken.None);
     }

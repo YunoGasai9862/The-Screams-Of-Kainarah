@@ -14,11 +14,11 @@ public class ResetController : MonoBehaviour, INotify<ResetBundle>
 
     private void Awake()
     {
-        StartCoroutine(Delegator.NotifySubject(new Context<ResetBundle>()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<ResetBundle>()
         {
             Name = name,
             Tag = tag,
-            EntityType = typeof(ResetController).ToString()
+            SubjectType = typeof(ResetController)
         }, CancellationToken.None));
     }
 
