@@ -1,6 +1,7 @@
 using Assets.Annotations;
 using Assets.Exceptions;
 using Assets.Scripts.Interfaces;
+using Assets.Scripts.ObserverPattern.models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ using UnityEngine;
 
 public class Delegator : MonoBehaviour, IDelegator
 {
-    private Dictionary<string, List<ObserverAttribute>> Observers { get; set; } = new Dictionary<string, List<ObserverAttribute>>();
+    private Dictionary<SubjectAttribute, ObserverBundle> Associations { get; set; } = new Dictionary<SubjectAttribute, ObserverBundle>();
 
-    private Dictionary<string, List<SubjectAttribute>> Subjects { get; set; } = new Dictionary<string, List<SubjectAttribute>>();
+    private List<Type> ExecutingAssemblyTypes { get; set; } = new List<Type>();
 
     private void Awake()
     {
@@ -37,7 +38,13 @@ public class Delegator : MonoBehaviour, IDelegator
             throw new MissingContextException($"Either the context is null or name/tag/SubjectType are missing from the instance!");
         }
 
+        //once the dictionary has been built, we need to query live instances to make sure what observer is claiming, really exists!!
         List<ObserverAttribute> targetObservers = Observers.Keys.Where(key => key == context.SubjectType.ToString()).Select(key => Observers[key]).FirstOrDefault().ToList();
+
+        targetObservers.ForEach(observer =>
+        {
+
+        });
 
         //keep building/storing the instances
         yield return null;
@@ -49,7 +56,7 @@ public class Delegator : MonoBehaviour, IDelegator
     {
         try
         {
-            Type[] types = Assembly.GetExecutingAssembly().GetTypes();
+            ExecutingAssemblyTypes = Assembly.GetExecutingAssembly().GetTypes().ToArray().ToList();
 
             foreach (Type type in types)
             {
@@ -84,15 +91,13 @@ public class Delegator : MonoBehaviour, IDelegator
         }
     }
 
-    private void PopulateDictionary<T> (Dictionary<string, List<T>> dictionary, T item, string key)
+    private void InjectSubjects()
     {
 
-        if (dictionary.TryGetValue(key, out List<T> list))
-        {
-            dictionary[key].Add(item);
-            return;
-        }
+    }
 
-        dictionary.Add(key, new List<T>() { item });
+    private void InjectObservers()
+    {
+
     }
 }
