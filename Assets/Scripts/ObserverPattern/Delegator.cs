@@ -23,10 +23,8 @@ public class Delegator : MonoBehaviour, IDelegator
 
     public IEnumerator NotifyObserver<T>(SubjectContext<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        if (Subjects.TryGetValue(context.EntityType.ToString(), out List<SubjectAttribute> subjects))
-        {
+        ObserverBundle bundle = Associations[Associations.Keys.FirstOrDefault(key => key.SubjectType.Equals(context.EntityType))];
 
-        }
 
         yield return null;
     }
@@ -39,12 +37,16 @@ public class Delegator : MonoBehaviour, IDelegator
         }
 
         //once the dictionary has been built, we need to query live instances to make sure what observer is claiming, really exists!!
-        List<ObserverAttribute> targetObservers = Observers.Keys.Where(key => key == context.SubjectType.ToString()).Select(key => Observers[key]).FirstOrDefault().ToList();
-
-        targetObservers.ForEach(observer =>
+        ObserverBundle observerBundle = Associations.Keys.Where(key => key.SubjectType == context.SubjectType).Select(key => Associations[key]).FirstOrDefault();
+        
+        if (observerBundle == null)
         {
+            throw new MissingContractException($"No observer found for the subject type: {context.SubjectType}!");
+        }
 
-        });
+        //now start building out the logic
+        List<GameObject> instances = observerBundle.ObserverIntances;
+
 
         //keep building/storing the instances
         yield return null;
@@ -58,32 +60,21 @@ public class Delegator : MonoBehaviour, IDelegator
         {
             ExecutingAssemblyTypes = Assembly.GetExecutingAssembly().GetTypes().ToArray().ToList();
 
-            foreach (Type type in types)
+            List<SubjectAttribute> subjects = Find<SubjectAttribute>(ExecutingAssemblyTypes, typeof(IRequest<>)).ToList();
+
+            List<ObserverAttribute> observers = Find<ObserverAttribute>(ExecutingAssemblyTypes, typeof(INotify<>)).ToList();
+
+            subjects.ForEach(subject =>
             {
-                ObserverAttribute observerAttribute = type.GetCustomAttribute<ObserverAttribute>();
-
-                SubjectAttribute subjectAttribute = type.GetCustomAttribute<SubjectAttribute>();
-
-                if (subjectAttribute == null && observerAttribute == null)
+                ObserverBundle bundle = new ObserverBundle()
                 {
-                    Debug.Log($"No SubjectAttribute & ObserverAttribute found for type: {type.FullName}");
-                    continue;
-                }
 
-                if (observerAttribute != null && type.GetInterfaces().Any(interf => interf.IsGenericType && interf.GetGenericTypeDefinition() == typeof(INotify<>)))
-                {
-                    throw new MissingContractException("Observer must implement INotify<*>!");
-                }
+                    ObserverAttribute = observers.Find(observer => observer.SubjectType.Equals(subject.SubjectType))
+                };
 
-                if (subjectAttribute != null && type.GetInterfaces().Any(interf => interf.IsGenericType && interf.GetGenericTypeDefinition() == typeof(IRequest<>)))
-                {
-                    throw new MissingContractException("Subject must implement IRequest<*>!");
-                }
+                Associations.Add(subject, bundle);
+            });
 
-                PopulateDictionary(Observers, observerAttribute, observerAttribute.SubjectType.FullName);
-
-                PopulateDictionary(Subjects, subjectAttribute, subjectAttribute.SubjectType.FullName);
-            }
         }
         catch (Exception ex)
         {
@@ -91,13 +82,27 @@ public class Delegator : MonoBehaviour, IDelegator
         }
     }
 
-    private void InjectSubjects()
+    private HashSet<T> Find<T>(List<Type> types, Type requiredInterfaceType = null) where T: Attribute
     {
+        HashSet<T> foundAttributes = new HashSet<T>();
 
-    }
+        foreach (Type type in types)
+        {
+            T attribute = type.GetCustomAttribute<T>();
 
-    private void InjectObservers()
-    {
+            if (attribute == null)
+            {
+                Debug.Log($"No {attribute} found for type: {type.FullName}");
 
+                continue;
+            }
+
+            if (!type.GetInterfaces().Any(interf => requiredInterfaceType != null && interf.IsGenericType && interf.GetGenericTypeDefinition() == requiredInterfaceType))
+            {
+                throw new MissingContractException($"The underlying type must implement {requiredInterfaceType}!");
+            }
+        }
+
+        return foundAttributes;
     }
 }
