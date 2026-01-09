@@ -23,7 +23,14 @@ public class Delegator : MonoBehaviour, IDelegator
 
     public IEnumerator NotifyObserver<T>(SubjectContext<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        ObserverBundle bundle = Associations[Associations.Keys.FirstOrDefault(key => key.SubjectType.Equals(context.EntityType))];
+        KeyValuePair<SubjectAttribute, ObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectType == context.EntityType).FirstOrDefault();
+
+        if (association.Value == null)
+        {
+            throw new MissingContractException($"No subject found for : {context.EntityType}!");
+        }
+
+        ObserverContext cachedObserverContext = association.Value.ObserverContexts.Where(observerContext => observerContext.Name.Equals(context.Name) && observerContext.Tag.Equals(context.Tag) && observerContext.SubjectType.Equals(context.EntityType)).FirstOrDefault();
 
 
         yield return null;
@@ -31,21 +38,30 @@ public class Delegator : MonoBehaviour, IDelegator
 
     public IEnumerator NotifySubject<T>(ObserverContext<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        if (context == null || context.Name == null || context.Tag == null || context.SubjectType == null)
+        if (context == null || context.Name == null || context.Tag == null || context.SubjectType == null || context.Instance == null)
         {
-            throw new MissingContextException($"Either the context is null or name/tag/SubjectType are missing from the instance!");
+            throw new MissingContextException($"Either the context is null or name/tag/SubjectType/Instance are missing from the instance!");
         }
 
         //once the dictionary has been built, we need to query live instances to make sure what observer is claiming, really exists!!
-        ObserverBundle observerBundle = Associations.Keys.Where(key => key.SubjectType == context.SubjectType).Select(key => Associations[key]).FirstOrDefault();
+         
+        KeyValuePair<SubjectAttribute, ObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectType == context.SubjectType).FirstOrDefault();
         
-        if (observerBundle == null)
+        if (association.Value == null)
         {
             throw new MissingContractException($"No observer found for the subject type: {context.SubjectType}!");
         }
 
         //now start building out the logic
-        List<GameObject> instances = observerBundle.ObserverIntances;
+        List<ObserverContext> observerContexts = association.Value.ObserverContexts;
+
+        ObserverContext cachedObserverContext = observerContexts.Where(observerContext => observerContext.Name.Equals(context.Name) && observerContext.Tag.Equals(context.Tag) && observerContext.SubjectType.Equals(context.SubjectType)).FirstOrDefault();
+
+        if (cachedObserverContext == null)
+        {
+            Associations[association.Key].ObserverContexts.Add(context);
+        }
+
 
 
         //keep building/storing the instances

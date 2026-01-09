@@ -9,13 +9,13 @@ namespace Assets.Scripts.ObserverPattern.models
 {
     public class ObserverBundle
     {
-        public List<GameObject> ObserverIntances { get; set; }
+        public List<ObserverContext> ObserverContexts { get; set; } = new List<ObserverContext>(); 
 
         public ObserverAttribute ObserverAttribute { get; set; }
 
         public override string ToString()
         {
-            return $"ObserverAttribute: {ObserverAttribute}, ObserverIntances : {string.Join(",", ObserverIntances.Select(val => val.ToString()))}";
+            return $"ObserverAttribute: {ObserverAttribute}, ObserverIntances : {string.Join(",", ObserverContexts.Select(val => val.ToString()))}";
         }
     }
 }

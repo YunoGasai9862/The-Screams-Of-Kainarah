@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class ObserverContext: Context
 {
+    public GameObject Instance { get; set; }
+
     public Type SubjectType { get; set; }
     public override string ToString()
     {
