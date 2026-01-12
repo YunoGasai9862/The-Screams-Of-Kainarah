@@ -13,7 +13,7 @@ using UnityEngine;
 public class Delegator : MonoBehaviour, IDelegator
 {
     //use subject bundle for storing subject's instance???
-    private Dictionary<SubjectAttribute, ObserverBundle> Associations { get; set; } = new Dictionary<SubjectAttribute, ObserverBundle>();
+    private Dictionary<SubjectBundle, ObserverBundle> Associations { get; set; } = new Dictionary<SubjectBundle, ObserverBundle>();
 
     private List<Type> ExecutingAssemblyTypes { get; set; } = new List<Type>();
 
@@ -24,32 +24,55 @@ public class Delegator : MonoBehaviour, IDelegator
 
     //TODO
     //need to implement retry mechanism - for the Subject instance
-    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        KeyValuePair<SubjectAttribute, ObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectType == context.EntityType).FirstOrDefault();
+        KeyValuePair<SubjectBundle, ObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
 
         if (association.Value == null)
         {
-            throw new MissingContractException($"No observer found for the subject type: {association.Key.SubjectType}!");
+            throw new MissingContractException($"No observer found for the subject type: {association.Key.SubjectAttribute.SubjectType}!");
         }
 
-        ObserverContext cachedObserverContext = GetObserverContext<T, SubjectContext<T>> (association, context);
+        List<ObserverContext> cachedObserverContext = GetObserverContext<T, SubjectContext<T>> (association, context);
 
+        if (cachedObserverContext == null || cachedObserverContext.Count == 0)
+        {
+            Debug.LogWarning($"The cached observers are null or either have not broadcasted their presence. Retrying...");
+
+            StartCoroutine(NotifyObserver<T>(context, cancellationToken, maxRetries - 1, sleepTimeInMilliSeconds, semaphoreSlim, optional));
+        }
+
+        cachedObserverContext.ForEach(observer =>
+        {
+            INotify<T> observerNotify = observer.Instance.GetComponent<INotify<T>>();
+
+            if (observerNotify == null)
+            {
+                throw new MissingContractException($"The observer instance does not implement the INotify<{typeof(T).Name}");
+            }
+
+            observerNotify.Notify(context.Data);
+        });
 
         yield return null;
     }
 
     //TODO
     //need to implement retry mechanism - for the Observer Instance
-    public IEnumerator NotifySubject<T>(ObserverContext<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifySubject<T>(ObserverContext<T> context, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
+        if (maxRetries == 0)
+        {
+            throw new MissingContextException($"Unable to fish for the subject type within the scene: {context.SubjectType}!");
+        }
+
         if (context == null || context.SubjectType == null || context.Instance == null)
         {
             throw new MissingContextException($"Either the context is null or SubjectType/Instance are missing from the instance!");
         }
 
         //once the dictionary has been built, we need to query live instances to make sure what observer is claiming, really exists!!
-        KeyValuePair<SubjectAttribute, ObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectType == context.SubjectType).FirstOrDefault();
+        KeyValuePair<SubjectBundle, ObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
 
         if (association.Value == null)
         {
@@ -57,16 +80,31 @@ public class Delegator : MonoBehaviour, IDelegator
         }
 
         //now start building out the logic
-        List<ObserverContext> observerContexts = association.Value.ObserverContexts;
-
-        ObserverContext cachedObserverContext = GetObserverContext<T, ObserverContext<T>>(observerContexts, context);
+        ObserverContext cachedObserverContext = GetObserverContext<T, ObserverContext<T>>(association.Value.ObserverContexts, context);
 
         if (cachedObserverContext == null)
         {
             Associations[association.Key].ObserverContexts.Add(context);
         }
 
-        //keep building/storing the instances
+        //will need to retry if instance is null
+        if (association.Key.SubjectContext.Instance == null)
+        {
+            Debug.LogWarning($"The subject instance is null for the subject type: {context.SubjectType}. Attemping a retry...");
+
+            StartCoroutine(NotifySubject<T>(context, cancellationToken, maxRetries - 1, sleepTimeInMilliSeconds, semaphoreSlim, optional));
+        }
+
+        //see if its better to store it??
+        IRequest<T> subjectRequest = association.Key.SubjectContext.Instance.GetComponent<IRequest<T>>();
+
+        if (subjectRequest == null)
+        {
+            throw new MissingContractException($"The subject instance does not implement the IRequest<{typeof(T).Name}");
+        }
+
+        subjectRequest.Request();
+
         yield return null;
     }
 
@@ -86,11 +124,10 @@ public class Delegator : MonoBehaviour, IDelegator
             {
                 ObserverBundle bundle = new ObserverBundle()
                 {
-
                     ObserverAttribute = observers.Find(observer => observer.SubjectType.Equals(subject.SubjectType))
                 };
 
-                Associations.Add(subject, bundle);
+                Associations.Add(new SubjectBundle() {SubjectAttribute = subject }, bundle);
             });
 
         }
@@ -131,11 +168,11 @@ public class Delegator : MonoBehaviour, IDelegator
                                                          observerContext.SubjectType.Equals(context.SubjectType)).FirstOrDefault();
     }
 
-    private ObserverContext GetObserverContext<T, Z>(KeyValuePair<SubjectAttribute, ObserverBundle> association, Z context) where Z : SubjectContext<T>
+    private List<ObserverContext> GetObserverContext<T, Z>(KeyValuePair<SubjectBundle, ObserverBundle> association, Z context) where Z : SubjectContext<T>
     {
         return association.Value.ObserverContexts.Where(observerContext => observerContext.Instance.name.Equals(context.Instance.name) &&
                                                                            observerContext.Instance.tag.Equals(context.Instance.tag) && 
-                                                                           observerContext.SubjectType.Equals(context.EntityType)).FirstOrDefault();
+                                                                           observerContext.SubjectType.Equals(context.EntityType)).ToList();
     }
 
 }
