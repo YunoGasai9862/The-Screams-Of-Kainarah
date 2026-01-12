@@ -12,6 +12,7 @@ using UnityEngine;
 
 public class Delegator : MonoBehaviour, IDelegator
 {
+    //use subject bundle for storing subject's instance???
     private Dictionary<SubjectAttribute, ObserverBundle> Associations { get; set; } = new Dictionary<SubjectAttribute, ObserverBundle>();
 
     private List<Type> ExecutingAssemblyTypes { get; set; } = new List<Type>();
@@ -21,32 +22,35 @@ public class Delegator : MonoBehaviour, IDelegator
         BuildRegistry();
     }
 
+    //TODO
+    //need to implement retry mechanism - for the Subject instance
     public IEnumerator NotifyObserver<T>(SubjectContext<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         KeyValuePair<SubjectAttribute, ObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectType == context.EntityType).FirstOrDefault();
 
         if (association.Value == null)
         {
-            throw new MissingContractException($"No subject found for : {context.EntityType}!");
+            throw new MissingContractException($"No observer found for the subject type: {association.Key.SubjectType}!");
         }
 
-        ObserverContext cachedObserverContext = association.Value.ObserverContexts.Where(observerContext => observerContext.Name.Equals(context.Name) && observerContext.Tag.Equals(context.Tag) && observerContext.SubjectType.Equals(context.EntityType)).FirstOrDefault();
+        ObserverContext cachedObserverContext = GetObserverContext<T, SubjectContext<T>> (association, context);
 
 
         yield return null;
     }
 
+    //TODO
+    //need to implement retry mechanism - for the Observer Instance
     public IEnumerator NotifySubject<T>(ObserverContext<T> context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        if (context == null || context.Name == null || context.Tag == null || context.SubjectType == null || context.Instance == null)
+        if (context == null || context.SubjectType == null || context.Instance == null)
         {
-            throw new MissingContextException($"Either the context is null or name/tag/SubjectType/Instance are missing from the instance!");
+            throw new MissingContextException($"Either the context is null or SubjectType/Instance are missing from the instance!");
         }
 
         //once the dictionary has been built, we need to query live instances to make sure what observer is claiming, really exists!!
-         
         KeyValuePair<SubjectAttribute, ObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectType == context.SubjectType).FirstOrDefault();
-        
+
         if (association.Value == null)
         {
             throw new MissingContractException($"No observer found for the subject type: {context.SubjectType}!");
@@ -55,14 +59,12 @@ public class Delegator : MonoBehaviour, IDelegator
         //now start building out the logic
         List<ObserverContext> observerContexts = association.Value.ObserverContexts;
 
-        ObserverContext cachedObserverContext = observerContexts.Where(observerContext => observerContext.Name.Equals(context.Name) && observerContext.Tag.Equals(context.Tag) && observerContext.SubjectType.Equals(context.SubjectType)).FirstOrDefault();
+        ObserverContext cachedObserverContext = GetObserverContext<T, ObserverContext<T>>(observerContexts, context);
 
         if (cachedObserverContext == null)
         {
             Associations[association.Key].ObserverContexts.Add(context);
         }
-
-
 
         //keep building/storing the instances
         yield return null;
@@ -98,7 +100,7 @@ public class Delegator : MonoBehaviour, IDelegator
         }
     }
 
-    private HashSet<T> Find<T>(List<Type> types, Type requiredInterfaceType = null) where T: Attribute
+    private HashSet<T> Find<T>(List<Type> types, Type requiredInterfaceType = null) where T : Attribute
     {
         HashSet<T> foundAttributes = new HashSet<T>();
 
@@ -121,4 +123,19 @@ public class Delegator : MonoBehaviour, IDelegator
 
         return foundAttributes;
     }
+
+    private ObserverContext GetObserverContext<T, Z>(List<ObserverContext> observerContexts, Z context) where Z: ObserverContext<T>
+    {
+        return observerContexts.Where(observerContext => observerContext.Instance.name.Equals(context.Instance.name) &&
+                                                         observerContext.Instance.tag.Equals(context.Instance.tag) &&
+                                                         observerContext.SubjectType.Equals(context.SubjectType)).FirstOrDefault();
+    }
+
+    private ObserverContext GetObserverContext<T, Z>(KeyValuePair<SubjectAttribute, ObserverBundle> association, Z context) where Z : SubjectContext<T>
+    {
+        return association.Value.ObserverContexts.Where(observerContext => observerContext.Instance.name.Equals(context.Instance.name) &&
+                                                                           observerContext.Instance.tag.Equals(context.Instance.tag) && 
+                                                                           observerContext.SubjectType.Equals(context.EntityType)).FirstOrDefault();
+    }
+
 }

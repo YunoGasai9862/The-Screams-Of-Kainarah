@@ -3,13 +3,11 @@ using UnityEngine;
 
 public class Context
 {
-    public string Name { get; set; }
-    public string Tag { get; set; }
-
+    public GameObject Instance { get; set; }
     public Type EntityType { get; set; }
     public override string ToString()
     {
-        return $"Name: {Name} Tag: {Tag} EntityType: {EntityType}";
+        return $"Instance: {Instance} EntityType: {EntityType}";
     }
 }
 
