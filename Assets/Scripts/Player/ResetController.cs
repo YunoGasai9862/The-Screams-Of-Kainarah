@@ -16,8 +16,7 @@ public class ResetController : MonoBehaviour, INotify<ResetBundle>
     {
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<ResetBundle>()
         {
-            Name = name,
-            Tag = tag,
+            Instance = gameObject,
             SubjectType = typeof(ResetController)
         }, CancellationToken.None));
     }

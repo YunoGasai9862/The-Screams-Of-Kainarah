@@ -36,8 +36,7 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
 
         HealthDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
-            Name = name,
-            Tag = tag,
+            Instance = gameObject,
             SubjectType = typeof(RakashManager)
 
         }, CancellationToken.None);

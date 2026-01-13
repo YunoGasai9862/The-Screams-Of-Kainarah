@@ -2,5 +2,5 @@ public enum Asset
 {
     MONOBEHAVIOR,
     SCRIPTABLE_OBJECT,
-    NONE
+    PLAYER_STATE_MACHINE
 }

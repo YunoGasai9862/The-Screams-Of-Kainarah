@@ -20,8 +20,7 @@ public class HealthBar : MonoBehaviour, IObserver<IEntityHealth>
 
         PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None);
 

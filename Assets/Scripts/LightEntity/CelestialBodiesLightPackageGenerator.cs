@@ -41,8 +41,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
         LightPreprocessDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(CelestialBodyLightning)
         }, CancellationToken.None);
 

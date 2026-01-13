@@ -33,8 +33,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
         m_globalGameStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
-            Name = this.name,
-            Tag = this.name,
+            Instance = gameObject,
             SubjectType = typeof(GameStateConsumer)
 
         }, CancellationToken.None);

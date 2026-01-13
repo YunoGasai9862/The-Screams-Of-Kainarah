@@ -18,8 +18,7 @@ public class PullUpPanel : MonoBehaviour, IObserver<bool>
         m_anim = GetComponent<Animator>();
 
         StartCoroutine(flagDelegator.NotifySubject(this, new ObserverContext() {
-            Name = this.name,
-            Tag = this.name,
+            Instance = gameObject,
             SubjectType = typeof(TriggerHandler)
 
         }, CancellationToken.None));

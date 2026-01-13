@@ -52,16 +52,14 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
 
         StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
-            Name = name,
-            Tag = tag,
+            Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
 
         }, CancellationToken.None));
 
         StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new ObserverContext()
         {
-            Name = name,
-            Tag = tag,
+            Instance = gameObject,
             SubjectType = typeof(PickableItems)
 
         }, CancellationToken.None));

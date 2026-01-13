@@ -12,7 +12,6 @@ using UnityEngine;
 
 public class Delegator : MonoBehaviour, IDelegator
 {
-    //use subject bundle for storing subject's instance???
     private Dictionary<SubjectBundle, ObserverBundle> Associations { get; set; } = new Dictionary<SubjectBundle, ObserverBundle>();
 
     private List<Type> ExecutingAssemblyTypes { get; set; } = new List<Type>();
@@ -22,8 +21,6 @@ public class Delegator : MonoBehaviour, IDelegator
         BuildRegistry();
     }
 
-    //TODO
-    //need to implement retry mechanism - for the Subject instance
     public IEnumerator NotifyObserver<T>(SubjectContext<T> context, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         KeyValuePair<SubjectBundle, ObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
@@ -33,13 +30,22 @@ public class Delegator : MonoBehaviour, IDelegator
             throw new MissingContractException($"No observer found for the subject type: {association.Key.SubjectAttribute.SubjectType}!");
         }
 
+        if (association.Key.SubjectContext.Instance == null)
+        {
+            Debug.LogWarning($"The subject instance is null for the subject type: {context.EntityType}. Will update the dictionary with the current instance!");
+
+            association.Key.SubjectContext.Instance = context.Instance;
+        }
+
         List<ObserverContext> cachedObserverContext = GetObserverContext<T, SubjectContext<T>> (association, context);
 
         if (cachedObserverContext == null || cachedObserverContext.Count == 0)
         {
             Debug.LogWarning($"The cached observers are null or either have not broadcasted their presence. Retrying...");
 
-            StartCoroutine(NotifyObserver<T>(context, cancellationToken, maxRetries - 1, sleepTimeInMilliSeconds, semaphoreSlim, optional));
+            yield return new WaitForSeconds(sleepTimeInMilliSeconds);
+
+            yield return StartCoroutine(NotifyObserver<T>(context, cancellationToken, maxRetries - 1, sleepTimeInMilliSeconds, semaphoreSlim, optional));
         }
 
         cachedObserverContext.ForEach(observer =>
@@ -57,8 +63,6 @@ public class Delegator : MonoBehaviour, IDelegator
         yield return null;
     }
 
-    //TODO
-    //need to implement retry mechanism - for the Observer Instance
     public IEnumerator NotifySubject<T>(ObserverContext<T> context, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         if (maxRetries == 0)
@@ -71,7 +75,6 @@ public class Delegator : MonoBehaviour, IDelegator
             throw new MissingContextException($"Either the context is null or SubjectType/Instance are missing from the instance!");
         }
 
-        //once the dictionary has been built, we need to query live instances to make sure what observer is claiming, really exists!!
         KeyValuePair<SubjectBundle, ObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
 
         if (association.Value == null)
@@ -79,7 +82,6 @@ public class Delegator : MonoBehaviour, IDelegator
             throw new MissingContractException($"No observer found for the subject type: {context.SubjectType}!");
         }
 
-        //now start building out the logic
         ObserverContext cachedObserverContext = GetObserverContext<T, ObserverContext<T>>(association.Value.ObserverContexts, context);
 
         if (cachedObserverContext == null)
@@ -87,15 +89,16 @@ public class Delegator : MonoBehaviour, IDelegator
             Associations[association.Key].ObserverContexts.Add(context);
         }
 
-        //will need to retry if instance is null
         if (association.Key.SubjectContext.Instance == null)
         {
             Debug.LogWarning($"The subject instance is null for the subject type: {context.SubjectType}. Attemping a retry...");
 
-            StartCoroutine(NotifySubject<T>(context, cancellationToken, maxRetries - 1, sleepTimeInMilliSeconds, semaphoreSlim, optional));
+            yield return new WaitForSeconds(sleepTimeInMilliSeconds);
+
+            yield return StartCoroutine(NotifySubject<T>(context, cancellationToken, maxRetries - 1, sleepTimeInMilliSeconds, semaphoreSlim, optional));
         }
 
-        //see if its better to store it??
+        //see if its better to store it?? (compare letter the difference/performance)
         IRequest<T> subjectRequest = association.Key.SubjectContext.Instance.GetComponent<IRequest<T>>();
 
         if (subjectRequest == null)

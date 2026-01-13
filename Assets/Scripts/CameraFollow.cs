@@ -23,15 +23,13 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<IEntityTra
 
         FlagDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(CameraShake)
         }, CancellationToken.None);
 
         PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None);
     }

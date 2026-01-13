@@ -58,8 +58,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
         EnemyHittableManagerDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
             SubjectType = typeof(EnemyHittableManager),
-            Name = name,
-            Tag = tag
+            Instance = gameObject,
 
         }, CancellationToken.None);
     }

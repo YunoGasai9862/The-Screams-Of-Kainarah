@@ -32,8 +32,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, IObserver<Collider2D>, I
 
         StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new ObserverContext()
         {
-            Name = name,
-            Tag = tag,
+            Instance = gameObject,
             SubjectType = typeof(PickableItems)
 
         }, CancellationToken.None));

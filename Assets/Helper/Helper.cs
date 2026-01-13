@@ -190,8 +190,7 @@ public class Helper: MonoBehaviour
     {
         return new ObserverContext()
         {
-            Name = name,
-            Tag = tag,
+            Instance = gameObject,
             SubjectType = subjectType
         };
     }

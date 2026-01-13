@@ -45,15 +45,13 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<AnimationDetail
 
         StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None));
 
         StartCoroutine(EmitAnimationMovementStateDelegator.NotifySubject(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(EmitMovementAnimationStateConsumer)
         }, CancellationToken.None));
 

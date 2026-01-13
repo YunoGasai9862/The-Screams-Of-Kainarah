@@ -23,8 +23,7 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericStateBundl
 
         GlobalGameStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
-            Name = this.name,
-            Tag = this.name,
+            Instance = gameObject,
             SubjectType = typeof(GameStateConsumer)
 
         }, CancellationToken.None);

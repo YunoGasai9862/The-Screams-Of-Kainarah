@@ -36,8 +36,7 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
 
         GlobalGameStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
-            Name = this.name,
-            Tag = this.name,
+            Instance = gameObject,
             SubjectType = typeof(GameStateConsumer)
 
         }, CancellationToken.None);

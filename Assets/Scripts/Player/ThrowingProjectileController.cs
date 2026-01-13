@@ -34,8 +34,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, IObs
 
         StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new ObserverContext()
         {
-            Name = name,
-            Tag = tag,
+            Instance = gameObject,
             SubjectType = typeof(PickableItems)
 
         }, CancellationToken.None));

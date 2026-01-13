@@ -155,36 +155,31 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
         _playerVelocityDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(PlayerSlideController)
         }, CancellationToken.None);
 
         _playerVelocityDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(PlayerJumpController)
         }, CancellationToken.None);
 
         _playerStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(PlayerStateConsumer)
         }, CancellationToken.None);
 
         _playerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None);
 
         _globalGameStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(GameStateConsumer)
         }, CancellationToken.None);
     }

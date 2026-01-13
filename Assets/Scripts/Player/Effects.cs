@@ -13,7 +13,7 @@ public class Effects: MonoBehaviour, IObserver<Player>
 
         StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
-            Name = gameObject.name,
+            Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier),
         }, CancellationToken.None));
     }

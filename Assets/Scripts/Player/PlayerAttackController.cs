@@ -69,24 +69,21 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
     {
         StartCoroutine(GlobalGameStateDelegator.NotifySubject(this, new ObserverContext()
         {
-            Name = this.name,
-            Tag = this.name,
+            Instance = gameObject,
             SubjectType = typeof(GameStateConsumer)
 
         }, CancellationToken.None));
 
         StartCoroutine(PlayerStateDelegator.NotifySubject(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(PlayerStateConsumer)
         }, CancellationToken.None));
 
 
         StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None));
 
