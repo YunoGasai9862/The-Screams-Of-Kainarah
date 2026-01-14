@@ -23,7 +23,7 @@ public class PlayerAnimationEvent : MonoBehaviour, IObserver<EntityPoolManager>
 
         PlayerBoostAttackEvent = await Helper.GetCustomEvent<PlayerBoostAttackEvent>();
 
-        EntityPoolManagerDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EntityPoolManager)), CancellationToken.None);
+        EntityPoolManagerDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(EntityPoolManager)), CancellationToken.None);
     }
 
     public void IceTrailAnimation()

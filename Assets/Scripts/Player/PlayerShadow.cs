@@ -29,8 +29,7 @@ public class PlayerShadow : MonoBehaviour, IObserver<Player>
 
         StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
         {
-            Name = gameObject.name,
-            Tag = gameObject.tag,
+            Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
         }, CancellationToken.None));
 

@@ -1,3 +1,5 @@
+using Amazon.Runtime.Internal;
+using Assets.Scripts.Interfaces;
 using System;
 using UnityEngine;
 
@@ -12,8 +14,10 @@ public class SubjectContext<T> : SubjectContext
     /// </summary>
     public T Data { get; set; }
 
+    public IRequest<T> IRequest { get; set; }
+
     public override string ToString()
     {
-        return $"{base.ToString()}, Context Data: {Data}";
+        return $"{base.ToString()}, Context Data: {Data}, IRequest<{typeof(T).Name}>";
     }
 }

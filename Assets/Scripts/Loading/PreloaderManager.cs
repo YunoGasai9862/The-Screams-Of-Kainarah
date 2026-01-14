@@ -112,9 +112,6 @@ public class PreloaderManager : MonoBehaviour
                     }
                 ); 
 
-            case Asset.NONE:
-                break;
-
             default:
                 break;
         }

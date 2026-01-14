@@ -46,9 +46,9 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
         await m_audioGeneratedEvent.AddListener(AudioGeneratedListener);
 
-        m_entityPoolManagerDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(EntityPoolManager)), CancellationToken.None);
+        m_entityPoolManagerDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(EntityPoolManager)), CancellationToken.None);
 
-        m_awsPollyManagementDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AWSPolllyManagement)), CancellationToken.None);
+        m_awsPollyManagementDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(AWSPolllyManagement)), CancellationToken.None);
     }
 
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)

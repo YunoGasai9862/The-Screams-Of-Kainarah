@@ -22,9 +22,9 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
 
         AsyncCoroutineDelegator = await Helper.GetDelegator<AsyncCoroutineDelegator>();
 
-        AsyncCoroutineDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(AsyncCoroutine)), CancellationToken.None);
-        LightPackageDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CandleLightPackageGenerator)), CancellationToken.None);
-        LightPackageDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject.name, gameObject.tag, typeof(CelestialBodiesLightPackageGenerator)), CancellationToken.None);
+        AsyncCoroutineDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(AsyncCoroutine)), CancellationToken.None);
+        LightPackageDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(CandleLightPackageGenerator)), CancellationToken.None);
+        LightPackageDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(CelestialBodiesLightPackageGenerator)), CancellationToken.None);
     }
 
     public IEnumerator ExecuteLightningLogic(LightPackage lightPackage)

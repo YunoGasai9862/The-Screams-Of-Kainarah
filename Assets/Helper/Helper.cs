@@ -186,7 +186,7 @@ public class Helper: MonoBehaviour
         return milliSeconds / 1000.0f;
     }
 
-    public static ObserverContext BuildNotificationContext(string name, string tag, Type subjectType)
+    public static ObserverContext BuildNotificationContext(GameObject gameObject, Type subjectType)
     {
         return new ObserverContext()
         {
