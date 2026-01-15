@@ -5,7 +5,6 @@ namespace Assets.Annotations
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class SubjectAttribute : Attribute
     {
-        //ADD THIS AND THEN SELECT THE ROUTE!!
         public Asset AssetType { get; set; }
         public Type SubjectType { get; set; }
 
@@ -13,8 +12,9 @@ namespace Assets.Annotations
 
         public SubjectAttribute() { }
 
-        public SubjectAttribute(Type subjectType, Type contextType)
+        public SubjectAttribute(Asset assetType, Type subjectType, Type contextType)
         {
+            AssetType = assetType;
             SubjectType = subjectType;
             ContextType = contextType;
         }

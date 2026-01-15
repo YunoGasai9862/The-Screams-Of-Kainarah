@@ -12,7 +12,7 @@ using UnityEngine;
 
 public class Delegator : MonoBehaviour, IDelegator
 {
-    private Dictionary<SubjectBundle, ObserverBundle> Associations { get; set; } = new Dictionary<SubjectBundle, ObserverBundle>();
+    private Dictionary<SubjectBundle<T>, ObserverBundle<T> Associations { get; set; } = new Dictionary<SubjectBundle<T>, ObserverBundle<T>();
 
     private List<Type> ExecutingAssemblyTypes { get; set; } = new List<Type>();
 
@@ -21,7 +21,7 @@ public class Delegator : MonoBehaviour, IDelegator
         BuildRegistry();
     }
 
-    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, IRequest<T> subject, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         KeyValuePair<SubjectBundle, ObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
 
@@ -45,7 +45,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
             yield return new WaitForSeconds(sleepTimeInMilliSeconds);
 
-            yield return StartCoroutine(NotifyObserver<T>(context, cancellationToken, maxRetries - 1, sleepTimeInMilliSeconds, semaphoreSlim, optional));
+            yield return StartCoroutine(NotifyObserver<T>(context, subject, cancellationToken, maxRetries - 1, sleepTimeInMilliSeconds, semaphoreSlim, optional));
         }
 
         cachedObserverContext.ForEach(observer =>
@@ -63,7 +63,7 @@ public class Delegator : MonoBehaviour, IDelegator
         yield return null;
     }
 
-    public IEnumerator NotifySubject<T>(ObserverContext<T> context, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifySubject<T>(ObserverContext context, INotify<T> observer, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         if (maxRetries == 0)
         {
@@ -82,7 +82,7 @@ public class Delegator : MonoBehaviour, IDelegator
             throw new MissingContractException($"No observer found for the subject type: {context.SubjectType}!");
         }
 
-        ObserverContext cachedObserverContext = GetObserverContext<T, ObserverContext<T>>(association.Value.ObserverContexts, context);
+        ObserverContext cachedObserverContext =  GetObserverContext<T, ObserverContext>(association.Value.ObserverContexts, context);
 
         if (cachedObserverContext == null)
         {
@@ -95,7 +95,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
             yield return new WaitForSeconds(sleepTimeInMilliSeconds);
 
-            yield return StartCoroutine(NotifySubject<T>(context, cancellationToken, maxRetries - 1, sleepTimeInMilliSeconds, semaphoreSlim, optional));
+            yield return StartCoroutine(NotifySubject<T>(context, observer, cancellationToken, maxRetries - 1, sleepTimeInMilliSeconds, semaphoreSlim, optional));
         }
 
         //see if its better to store it?? (compare letter the difference/performance)
@@ -164,7 +164,7 @@ public class Delegator : MonoBehaviour, IDelegator
         return foundAttributes;
     }
 
-    private ObserverContext GetObserverContext<T, Z>(List<ObserverContext> observerContexts, Z context) where Z: ObserverContext<T>
+    private ObserverContext GetObserverContext<T, Z>(List<ObserverContext> observerContexts, Z context) where Z: ObserverContext
     {
         return observerContexts.Where(observerContext => observerContext.Instance.name.Equals(context.Instance.name) &&
                                                          observerContext.Instance.tag.Equals(context.Instance.tag) &&
@@ -177,5 +177,4 @@ public class Delegator : MonoBehaviour, IDelegator
                                                                            observerContext.Instance.tag.Equals(context.Instance.tag) && 
                                                                            observerContext.SubjectType.Equals(context.EntityType)).ToList();
     }
-
 }

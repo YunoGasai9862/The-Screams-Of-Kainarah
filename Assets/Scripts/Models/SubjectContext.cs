@@ -14,10 +14,8 @@ public class SubjectContext<T> : SubjectContext
     /// </summary>
     public T Data { get; set; }
 
-    public IRequest<T> IRequest { get; set; }
-
     public override string ToString()
     {
-        return $"{base.ToString()}, Context Data: {Data}, IRequest<{typeof(T).Name}>";
+        return $"{base.ToString()}, Context Data: {Data}";
     }
 }
