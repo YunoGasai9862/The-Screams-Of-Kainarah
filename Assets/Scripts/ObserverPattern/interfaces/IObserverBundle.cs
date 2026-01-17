@@ -1,12 +1,17 @@
 ﻿using Assets.Annotations;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Assets.Scripts.ObserverPattern.interfaces
 {
     public interface IObserverBundle
     {
-        public ObserverAttribute GetObserverAttribute();
+        List<INotify> Observers { get; set; }
+        public ObserverAttribute ObserverAttribute { get; }
+    }
+
+    public interface IObserverBundle<T>
+    {
+        List<INotify<T>> Observers { get; set; }
+        public ObserverAttribute ObserverAttribute { get; }
     }
 }

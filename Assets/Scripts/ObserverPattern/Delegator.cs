@@ -1,6 +1,7 @@
 using Assets.Annotations;
 using Assets.Exceptions;
 using Assets.Scripts.Interfaces;
+using Assets.Scripts.ObserverPattern.interfaces;
 using Assets.Scripts.ObserverPattern.models;
 using System;
 using System.Collections;
@@ -12,7 +13,7 @@ using UnityEngine;
 
 public class Delegator : MonoBehaviour, IDelegator
 {
-    private Dictionary<SubjectBundle<T>, ObserverBundle<T> Associations { get; set; } = new Dictionary<SubjectBundle<T>, ObserverBundle<T>();
+    private Dictionary<ISubjectBundle, IObserverBundle> Associations { get; set; } = new Dictionary<ISubjectBundle, IObserverBundle>();
 
     private List<Type> ExecutingAssemblyTypes { get; set; } = new List<Type>();
 
@@ -23,18 +24,19 @@ public class Delegator : MonoBehaviour, IDelegator
 
     public IEnumerator NotifyObserver<T>(SubjectContext<T> context, IRequest<T> subject, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        KeyValuePair<SubjectBundle, ObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
+        KeyValuePair<ISubjectBundle, IObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
 
         if (association.Value == null)
         {
             throw new MissingContractException($"No observer found for the subject type: {association.Key.SubjectAttribute.SubjectType}!");
         }
 
-        if (association.Key.SubjectContext.Instance == null)
+
+        if (association.Key.Subject == null)
         {
             Debug.LogWarning($"The subject instance is null for the subject type: {context.EntityType}. Will update the dictionary with the current instance!");
 
-            association.Key.SubjectContext.Instance = context.Instance;
+            association.Key.Subject = (IRequest) subject;
         }
 
         List<ObserverContext> cachedObserverContext = GetObserverContext<T, SubjectContext<T>> (association, context);
@@ -75,7 +77,7 @@ public class Delegator : MonoBehaviour, IDelegator
             throw new MissingContextException($"Either the context is null or SubjectType/Instance are missing from the instance!");
         }
 
-        KeyValuePair<SubjectBundle, ObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
+        KeyValuePair<ISubjectBundle, IObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
 
         if (association.Value == null)
         {
@@ -171,9 +173,9 @@ public class Delegator : MonoBehaviour, IDelegator
                                                          observerContext.SubjectType.Equals(context.SubjectType)).FirstOrDefault();
     }
 
-    private List<ObserverContext> GetObserverContext<T, Z>(KeyValuePair<SubjectBundle, ObserverBundle> association, Z context) where Z : SubjectContext<T>
+    private List<INotify> GetObserverContext<T, Z>(KeyValuePair<ISubjectBundle, IObserverBundle> association, Z context) where Z : SubjectContext<T>
     {
-        return association.Value.ObserverContexts.Where(observerContext => observerContext.Instance.name.Equals(context.Instance.name) &&
+        return association.Value..Where(observerContext => observerContext. .name.Equals(context.Instance.name) &&
                                                                            observerContext.Instance.tag.Equals(context.Instance.tag) && 
                                                                            observerContext.SubjectType.Equals(context.EntityType)).ToList();
     }
