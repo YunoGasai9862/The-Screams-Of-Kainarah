@@ -8,25 +8,25 @@ namespace Assets.Scripts.ObserverPattern.models
 
     public class ObserverBundle<T> : IObserverBundle<T>
     {
-        public List<INotify<T>> Observers { get; set; } = new List<INotify<T>>();
+        public INotify<T> Observer { get; set; }
 
         public ObserverAttribute ObserverAttribute { get; set; }
 
         public override string ToString()
         {
-            return $"ObserverAttribute: {ObserverAttribute}, ObserverIntances : {string.Join(",", Observers.Select(val => val.ToString()))}";
+            return $"ObserverAttribute: {ObserverAttribute}, ObserverIntances : {Observer}";
         }
     }
 
     public class ObserverBundle: IObserverBundle
     {
-        public List<INotify> Observers { get; set; } = new List<INotify>(); 
+        public INotify Observer { get; set; }
 
         public ObserverAttribute ObserverAttribute { get; set; }
 
         public override string ToString()
         {
-            return $"ObserverAttribute: {ObserverAttribute}, ObserverIntances : {string.Join(",", Observers.Select(val => val.ToString()))}";
+            return $"ObserverAttribute: {ObserverAttribute}, ObserverIntances : {Observer}";
         }
     }
 }

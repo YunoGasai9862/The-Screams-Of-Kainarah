@@ -9,3 +9,8 @@ public class ObserverContext: Context
         return $"{base.ToString()} Subject Type: {SubjectType}";
     }
 }
+
+public class ObserverContext<T> : ObserverContext
+{
+
+}

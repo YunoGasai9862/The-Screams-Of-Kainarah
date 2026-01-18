@@ -1,3 +1,4 @@
+using Amazon.Runtime.Internal.Transform;
 using Assets.Annotations;
 using Assets.Exceptions;
 using Assets.Scripts.Interfaces;
@@ -13,7 +14,7 @@ using UnityEngine;
 
 public class Delegator : MonoBehaviour, IDelegator
 {
-    private Dictionary<ISubjectBundle, IObserverBundle> Associations { get; set; } = new Dictionary<ISubjectBundle, IObserverBundle>();
+    private Dictionary<ISubjectBundle, List<IObserverBundle>> Associations { get; set; } = new Dictionary<ISubjectBundle, List<IObserverBundle>>();
 
     private List<Type> ExecutingAssemblyTypes { get; set; } = new List<Type>();
 
@@ -24,7 +25,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
     public IEnumerator NotifyObserver<T>(SubjectContext<T> context, IRequest<T> subject, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
-        KeyValuePair<ISubjectBundle, IObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
+        KeyValuePair<ISubjectBundle, List<IObserverBundle>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
 
         if (association.Value == null)
         {
@@ -36,10 +37,11 @@ public class Delegator : MonoBehaviour, IDelegator
         {
             Debug.LogWarning($"The subject instance is null for the subject type: {context.EntityType}. Will update the dictionary with the current instance!");
 
+            //check later if the casting will work seamlessly
             association.Key.Subject = (IRequest) subject;
         }
 
-        List<ObserverContext> cachedObserverContext = GetObserverContext<T, SubjectContext<T>> (association, context);
+        List<INotify> cachedObserverContext = GetObserverBundles<T, SubjectContext<T>> (association, context);
 
         if (cachedObserverContext == null || cachedObserverContext.Count == 0)
         {
@@ -52,7 +54,8 @@ public class Delegator : MonoBehaviour, IDelegator
 
         cachedObserverContext.ForEach(observer =>
         {
-            INotify<T> observerNotify = observer.Instance.GetComponent<INotify<T>>();
+            //check later if the casting will work seamlessly
+            INotify<T> observerNotify = (INotify<T>) observer;
 
             if (observerNotify == null)
             {
@@ -65,7 +68,7 @@ public class Delegator : MonoBehaviour, IDelegator
         yield return null;
     }
 
-    public IEnumerator NotifySubject<T>(ObserverContext context, INotify<T> observer, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifySubject<T>(ObserverContext<T> context, INotify<T> observer, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
     {
         if (maxRetries == 0)
         {
@@ -77,21 +80,22 @@ public class Delegator : MonoBehaviour, IDelegator
             throw new MissingContextException($"Either the context is null or SubjectType/Instance are missing from the instance!");
         }
 
-        KeyValuePair<ISubjectBundle, IObserverBundle> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
+        KeyValuePair<ISubjectBundle, List<IObserverBundle>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
 
-        if (association.Value == null)
+        if (association.Value == null || association.Value.Count == 0)
         {
             throw new MissingContractException($"No observer found for the subject type: {context.SubjectType}!");
         }
 
-        ObserverContext cachedObserverContext =  GetObserverContext<T, ObserverContext>(association.Value.ObserverContexts, context);
+        IObserverBundle cachedObserverContext = GetObserverBundle<T, ObserverContext>(association.Value, context);
 
-        if (cachedObserverContext == null)
+        if (cachedObserverContext.Observer == null)
         {
-            Associations[association.Key].ObserverContexts.Add(context);
+            cachedObserverContext.Observer = observer;
+            Associations[association.Key].Add(cachedObserverContext);
         }
 
-        if (association.Key.SubjectContext.Instance == null)
+        if (association.Key.Subject == null)
         {
             Debug.LogWarning($"The subject instance is null for the subject type: {context.SubjectType}. Attemping a retry...");
 
@@ -101,7 +105,7 @@ public class Delegator : MonoBehaviour, IDelegator
         }
 
         //see if its better to store it?? (compare letter the difference/performance)
-        IRequest<T> subjectRequest = association.Key.SubjectContext.Instance.GetComponent<IRequest<T>>();
+        IRequest<T> subjectRequest = (IRequest<T>) association.Key.Subject;
 
         if (subjectRequest == null)
         {
@@ -125,15 +129,24 @@ public class Delegator : MonoBehaviour, IDelegator
 
             List<ObserverAttribute> observers = Find<ObserverAttribute>(ExecutingAssemblyTypes, typeof(INotify<>)).ToList();
 
-            subjects.ForEach(subject =>
+            foreach (SubjectAttribute subject in subjects)
             {
-                ObserverBundle bundle = new ObserverBundle()
+                ObserverBundle observerBundle = new ObserverBundle()
                 {
                     ObserverAttribute = observers.Find(observer => observer.SubjectType.Equals(subject.SubjectType))
                 };
 
-                Associations.Add(new SubjectBundle() {SubjectAttribute = subject }, bundle);
-            });
+                SubjectBundle subjectBundle = new SubjectBundle() { SubjectAttribute = subject };
+
+                //check if exists - append, otherwise create a new list!!!
+                if (Associations[subjectBundle] == null)
+                {
+                    Associations[subjectBundle] = new List<IObserverBundle>() { observerBundle };
+                    continue;
+                }
+
+                Associations[subjectBundle].Add(observerBundle);
+            }
 
         }
         catch (Exception ex)
@@ -166,17 +179,15 @@ public class Delegator : MonoBehaviour, IDelegator
         return foundAttributes;
     }
 
-    private ObserverContext GetObserverContext<T, Z>(List<ObserverContext> observerContexts, Z context) where Z: ObserverContext
+    private IObserverBundle GetObserverBundle<T, Z>(List<IObserverBundle> observers, Z context) where Z: ObserverContext
     {
-        return observerContexts.Where(observerContext => observerContext.Instance.name.Equals(context.Instance.name) &&
-                                                         observerContext.Instance.tag.Equals(context.Instance.tag) &&
-                                                         observerContext.SubjectType.Equals(context.SubjectType)).FirstOrDefault();
+        return observers.Where(observerContext => observerContext.ObserverAttribute.ObserverType.Equals(context.EntityType) &&
+                                                    typeof(T).Name.Equals(observerContext.ObserverAttribute.DataType) && 
+                                                    observerContext.ObserverAttribute.SubjectType.Equals(context.SubjectType)).FirstOrDefault();
     }
 
-    private List<INotify> GetObserverContext<T, Z>(KeyValuePair<ISubjectBundle, IObserverBundle> association, Z context) where Z : SubjectContext<T>
+    private List<INotify> GetObserverBundles<T, Z>(KeyValuePair<ISubjectBundle, List<IObserverBundle>> association, Z context) where Z : SubjectContext<T>
     {
-        return association.Value..Where(observerContext => observerContext. .name.Equals(context.Instance.name) &&
-                                                                           observerContext.Instance.tag.Equals(context.Instance.tag) && 
-                                                                           observerContext.SubjectType.Equals(context.EntityType)).ToList();
+        return association.Value.Where(observerContext => observerContext.ObserverAttribute.SubjectType.Equals(context.EntityType) && typeof(T).Name.Equals(context.Data.GetType())).Select(observer => observer.Observer).ToList();
     }
 }
