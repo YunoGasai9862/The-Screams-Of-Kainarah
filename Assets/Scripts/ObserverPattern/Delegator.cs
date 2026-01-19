@@ -91,7 +91,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
         if (cachedObserverContext.Observer == null)
         {
-            cachedObserverContext.Observer = observer;
+            cachedObserverContext.Observer = (INotify) observer;
             Associations[association.Key].Add(cachedObserverContext);
         }
 
@@ -115,6 +115,17 @@ public class Delegator : MonoBehaviour, IDelegator
         subjectRequest.Request();
 
         yield return null;
+    }
+
+
+    public void NotifyObserverWrapper<T>(SubjectContext<T> context, IRequest<T> subject, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    {
+        StartCoroutine(NotifyObserver(context, subject, cancellationToken, maxRetries, sleepTimeInMilliSeconds, semaphoreSlim, optional));
+    }
+
+    public void NotifySubjectWrapper<T>(ObserverContext<T> context, INotify<T> observer, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    {
+        StartCoroutine(NotifySubject(context, observer, cancellationToken, maxRetries, sleepTimeInMilliSeconds, semaphoreSlim, optional));
     }
 
     //we should check on generic interface assignment since we wouldn't know concrete implementation during reflection.

@@ -18,7 +18,7 @@ public class ResetController : MonoBehaviour, INotify<ResetBundle>
         {
             Instance = gameObject,
             SubjectType = typeof(ResetController)
-        }, CancellationToken.None));
+        }, this, CancellationToken.None));
     }
 
     private async Task Reset(ResetSystem resetSystem)

@@ -59,7 +59,7 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<Enti
                 }     
         };
 
-        Delegator.NotifyObserver(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, IRequest = this, EntityType = typeof(PlayerAttackStateMachineReset) }, CancellationToken.None);
+        Delegator.NotifyObserverWrapper(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, EntityType = typeof(PlayerAttackStateMachineReset) }, this, CancellationToken.None);
     }
 
 

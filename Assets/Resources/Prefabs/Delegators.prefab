@@ -27,9 +27,9 @@ GameObject:
   - component: {fileID: 144212574971219078}
   - component: {fileID: 5866782267381795339}
   - component: {fileID: 7516203405443552849}
-  - component: {fileID: 1692345034864072499}
-  - component: {fileID: 8671877277905416285}
-  - component: {fileID: -8303338745244576634}
+  - component: {fileID: 4371099738859443033}
+  - component: {fileID: 4801371710900818342}
+  - component: {fileID: 2892981514822106842}
   m_Layer: 0
   m_Name: Delegators
   m_TagString: Untagged
@@ -268,7 +268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d39ca4b3ed3ded49a76877350bc88f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1692345034864072499
+--- !u!114 &4371099738859443033
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -280,19 +280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e137090bed001e648bd71c95035065d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmitAnimationActionStateDelegator
---- !u!114 &8671877277905416285
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3341719311373910614}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de6f530bd4a3bc34f9308b4c733ef9d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmitAnimationAttackStateDelegator
---- !u!114 &-8303338745244576634
+--- !u!114 &4801371710900818342
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -304,3 +292,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b42470bc697061b4e8731d193f0286a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmitAnimationMovementStateDelegator
+--- !u!114 &2892981514822106842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3341719311373910614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de6f530bd4a3bc34f9308b4c733ef9d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmitAnimationAttackStateDelegator
