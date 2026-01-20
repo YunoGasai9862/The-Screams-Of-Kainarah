@@ -1,10 +1,13 @@
+using Assets.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
-public class PlayerShadow : MonoBehaviour, IObserver<Player>
+[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerShadow), DataType = typeof(Player))]
+public class PlayerShadow : MonoBehaviour, INotify<Player>
 {
     private Vector2 m_Position;
     private Vector2 m_newPosition;
@@ -15,7 +18,7 @@ public class PlayerShadow : MonoBehaviour, IObserver<Player>
     public float initialoffsetY;
     public float initialoffsetX;
 
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private Player Player { get; set; }
 
@@ -25,13 +28,14 @@ public class PlayerShadow : MonoBehaviour, IObserver<Player>
         _tokenSource= new CancellationTokenSource();
         _token = _tokenSource.Token;
 
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();   
+        Delegator = await Helper.GetDelegator<Delegator>();   
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
+            EntityType = typeof(PlayerShadow),
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, CancellationToken.None));
+        }, this, CancellationToken.None);
 
     }
     // Update is called once per frame
@@ -74,8 +78,10 @@ public class PlayerShadow : MonoBehaviour, IObserver<Player>
 
     }
 
-    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public Task Notify(Player value)
     {
-        Player = data;
+        Player = value;
+
+        return Task.CompletedTask;
     }
 }

@@ -1,9 +1,14 @@
+using Assets.Annotations;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
+using static UnityEngine.Analytics.IAnalytic;
 
-public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IReceiverEnhancedAsync<PlayerLedgeGrabController, PlayerStateBundle>, IObserver<Player>
+[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerLedgeGrabController), DataType = typeof(Player))]
+[Observer(SubjectType = typeof(PlayerStateConsumer), ObserverType = typeof(PlayerLedgeGrabController), DataType = typeof(GenericStateBundle<PlayerStateBundle>))]
+public class PlayerLedgeGrabController : MonoBehaviour, IReceiverEnhancedAsync<PlayerLedgeGrabController, PlayerStateBundle>, INotify<Player>, INotify<GenericStateBundle<PlayerStateBundle>>
 {
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
 
@@ -47,9 +52,7 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
-    private PlayerStateDelegator PlayerStateDelegator { get; set; }
-
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private Player Player { get; set; }
 
@@ -57,15 +60,15 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
     {
         _helperFunc = new MovementHelperClass();
 
-        PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
         PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
-        if (PlayerStateDelegator == null)
+        if (Delegator == null)
         {
-            throw new DelegatorNotFoundException("PlayerStateDelegator not found!!");
+            throw new DelegatorNotFoundException("Delegator not found!!");
         }
 
         if (PlayerStateEvent == null)
@@ -73,20 +76,21 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
             throw new CustomEventNotFoundException("PlayerStateEvent not found!!");
         }
     }
-    void Start()
+    public void Start()
     {
-        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
         {
             Instance = gameObject,
-            SubjectType = typeof(PlayerStateConsumer)
-        }, CancellationToken.None));
-
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
-        {
-            Instance = gameObject,
+            EntityType = typeof(PlayerLedgeGrabController),
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, CancellationToken.None));
+        }, this, CancellationToken.None));
 
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<PlayerStateBundle>>()
+        {
+            Instance = gameObject,
+            EntityType = typeof(PlayerLedgeGrabController),
+            SubjectType = typeof(PlayerStateConsumer)
+        }, this, CancellationToken.None));
 
         ledgradeAnimationEvent.AddListener(LedgeGrabEventAnimationKeeperListener);
     }
@@ -244,11 +248,6 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
         return Task.CompletedTask;
     }
 
-    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        PlayerBundle.StateBundle = data.StateBundle;
-    }
-
     public async Task<ActionExecuted> PerformAction(PlayerStateBundle value)
     {
         //WTF!!!
@@ -264,10 +263,19 @@ public class PlayerLedgeGrabController : MonoBehaviour, IObserver<GenericStateBu
         return await Task.FromResult(new ActionExecuted() { Result = false });
     }
 
-    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public Task Notify(Player value)
     {
-        Player = data;
+        Player = value;
 
-        startingGrav = Player.Rigidbody.gravityScale; 
+        startingGrav = Player.Rigidbody.gravityScale;
+
+        return Task.CompletedTask;
+    }
+
+    public Task Notify(GenericStateBundle<PlayerStateBundle> value)
+    {
+        PlayerBundle.StateBundle = value.StateBundle;
+        
+        return Task.CompletedTask;  
     }
 }

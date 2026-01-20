@@ -1,10 +1,16 @@
+using Assets.Annotations;
 using CoreCode;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
+using static UnityEngine.Analytics.IAnalytic;
 
-public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<PlayerAttackController, ControllerPackage<AttackingExecutionState, AttackingDetails>>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<Player>
+[Observer(SubjectType = typeof(PlayerStateConsumer), ObserverType = typeof(PlayerAttackController), DataType = typeof(GenericStateBundle<PlayerStateBundle>))]
+[Observer(SubjectType = typeof(GameStateConsumer), ObserverType = typeof(PlayerAttackController), DataType = typeof(GenericStateBundle<GameStateBundle>))]
+[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerAttackController), DataType = typeof(Player))]
+public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<PlayerAttackController, ControllerPackage<AttackingExecutionState, AttackingDetails>>, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<GenericStateBundle<GameStateBundle>>, INotify<Player>
 {
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
 
@@ -17,11 +23,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
     private bool PowerUpBarFilled { get; set; } = false;
     private PlayerAttackStateMachine PlayerAttackStateMachine { get; set; }
 
-    private PlayerStateDelegator PlayerStateDelegator { get; set; }
-
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
-    
-    private GlobalGameStateDelegator GlobalGameStateDelegator { get; set; } 
+    private Delegator Delegator { get; set; }
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
@@ -54,38 +56,37 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
         PlayerAttackStateInt = 0;
 
-        PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
         PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
-        PlayerBoostAttackEvent = await Helper.GetCustomEvent<PlayerBoostAttackEvent>();    
-
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
-
-        GlobalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
+        PlayerBoostAttackEvent = await Helper.GetCustomEvent<PlayerBoostAttackEvent>();
     }
 
     private void Start()
     {
-        StartCoroutine(GlobalGameStateDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {
             Instance = gameObject,
+            EntityType = typeof(PlayerAttackController),
             SubjectType = typeof(GameStateConsumer)
 
-        }, CancellationToken.None));
+        }, this, CancellationToken.None));
 
-        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<PlayerStateBundle>>()
         {
             Instance = gameObject,
+            EntityType = typeof(PlayerAttackController),
             SubjectType = typeof(PlayerStateConsumer)
-        }, CancellationToken.None));
+        }, this, CancellationToken.None));
 
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
         {
             Instance = gameObject,
+            EntityType = typeof(PlayerAttackController),
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, CancellationToken.None));
+        }, this, CancellationToken.None));
 
         PlayerBoostAttackEvent.AddListener(SetAttackBoostMode);
 
@@ -212,23 +213,6 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         PowerUpBarFilled = filledUp;
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        CurrentGameState.StateBundle = data.StateBundle;
-    }
-
-    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        CurrentPlayerState.StateBundle = data.StateBundle;
-    }
-
-    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        Player = data;
-
-        PlayerAttackStateMachine = new PlayerAttackStateMachine(Player.Animator);
-    }
-
     private void DelegateExecutionState(ControllerPackage<AttackingExecutionState, AttackingDetails> controllerPackage)
     {
         switch(controllerPackage.ExecutionState)
@@ -251,5 +235,28 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
             default:
                 break;
         }
+    }
+
+    public Task Notify(GenericStateBundle<PlayerStateBundle> value)
+    {
+        CurrentPlayerState.StateBundle = value.StateBundle;
+
+        return Task.CompletedTask;
+    }
+
+    public Task Notify(GenericStateBundle<GameStateBundle> value)
+    {
+        CurrentGameState.StateBundle = value.StateBundle;
+
+        return Task.CompletedTask;
+    }
+
+    public Task Notify(Player value)
+    {
+        Player = value;
+
+        PlayerAttackStateMachine = new PlayerAttackStateMachine(Player.Animator);
+
+        return Task.CompletedTask;
     }
 }
