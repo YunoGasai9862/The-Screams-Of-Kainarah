@@ -9,7 +9,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using UnityEngine;
 
 public class Delegator : MonoBehaviour, IDelegator
@@ -23,7 +22,7 @@ public class Delegator : MonoBehaviour, IDelegator
         BuildRegistry();
     }
 
-    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, IRequest<T> subject, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         KeyValuePair<ISubjectBundle, List<IObserverBundle>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
 
@@ -49,7 +48,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
             yield return new WaitForSeconds(sleepTimeInMilliSeconds);
 
-            yield return StartCoroutine(NotifyObserver<T>(context, subject, cancellationToken, maxRetries - 1, sleepTimeInMilliSeconds, semaphoreSlim, optional));
+            yield return StartCoroutine(NotifyObserver<T>(context, subject, maxRetries - 1, sleepTimeInMilliSeconds, optional));
         }
 
         cachedObserverContext.ForEach(observer =>
@@ -68,7 +67,7 @@ public class Delegator : MonoBehaviour, IDelegator
         yield return null;
     }
 
-    public IEnumerator NotifySubject<T>(ObserverContext<T> context, INotify<T> observer, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public IEnumerator NotifySubject<T>(ObserverContext<T> context, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         if (maxRetries == 0)
         {
@@ -101,7 +100,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
             yield return new WaitForSeconds(sleepTimeInMilliSeconds);
 
-            yield return StartCoroutine(NotifySubject<T>(context, observer, cancellationToken, maxRetries - 1, sleepTimeInMilliSeconds, semaphoreSlim, optional));
+            yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
         }
 
         //see if its better to store it?? (compare letter the difference/performance)
@@ -118,14 +117,14 @@ public class Delegator : MonoBehaviour, IDelegator
     }
 
 
-    public void NotifyObserverWrapper<T>(SubjectContext<T> context, IRequest<T> subject, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public void NotifyObserverWrapper<T>(SubjectContext<T> context, IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        StartCoroutine(NotifyObserver(context, subject, cancellationToken, maxRetries, sleepTimeInMilliSeconds, semaphoreSlim, optional));
+        StartCoroutine(NotifyObserver(context, subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
-    public void NotifySubjectWrapper<T>(ObserverContext<T> context, INotify<T> observer, CancellationToken cancellationToken, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, SemaphoreSlim semaphoreSlim = null, params object[] optional)
+    public void NotifySubjectWrapper<T>(ObserverContext<T> context, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        StartCoroutine(NotifySubject(context, observer, cancellationToken, maxRetries, sleepTimeInMilliSeconds, semaphoreSlim, optional));
+        StartCoroutine(NotifySubject(context, observer, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
     //we should check on generic interface assignment since we wouldn't know concrete implementation during reflection.

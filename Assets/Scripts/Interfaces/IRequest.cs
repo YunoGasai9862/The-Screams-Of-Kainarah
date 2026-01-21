@@ -1,15 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections;
 
 namespace Assets.Scripts.Interfaces
 {
 
     public interface IRequest
     {
-        public Task<object> Request();
+        public IEnumerator Request();
     }
 
-    public interface IRequest<T>
+    //in case if we ever want to use <T> - great for signatures, etc
+    public interface IRequest<T>: IRequest
     {
-        public Task<T> Request();
     }
 }

@@ -1,59 +1,56 @@
+using Assets.Annotations;
+using Assets.Scripts.Interfaces;
+using Assets.Scripts.Models.Reset;
 using PlayerAnimationHandler;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
+using static UnityEngine.Analytics.IAnalytic;
 
-public class PlayerAnimationController : MonoBehaviour, ISubject<AnimationDetails>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>, 
-    IObserver<IEntityAnimator>, IObserver<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>>
+[Observer(SubjectType = typeof(EmitMovementAnimationStateConsumer), ObserverType = typeof(PlayerAnimationController), DataType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>))]
+[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerAnimationController), DataType = typeof(IEntityAnimator))]
+[Subject(SubjectType = typeof(PlayerAnimationController), ContextType = typeof(AnimationDetails))]
+public class PlayerAnimationController : MonoBehaviour, IRequest<AnimationDetails>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>,
+    INotify<IEntityAnimator>, INotify<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
     private GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> EmitMovementAnimationStateBundle { get; set; } = new GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>()
     { StateBundle = new EmitAnimationStateBundle<bool>() { PreviousAnimation = new EmitAnimationStateBundle<bool>.PreviousAnimationInfo() } };
 
-    private AnimationDetailsDelegator AnimationDetailsDelegator { get; set; }
-
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
-
-    private EmitAnimationMovementStateDelegator EmitAnimationMovementStateDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private Animator PlayerAnimator { get; set; }
 
     private PlayerStateBundle InternalPlayerStateBundle { get; set; } = new PlayerStateBundle();
     private async void Awake()
     {
-        AnimationDetailsDelegator = await Helper.GetDelegator<AnimationDetailsDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
-
-        EmitAnimationMovementStateDelegator = await Helper.GetDelegator<EmitAnimationMovementStateDelegator>();
-
-        if (AnimationDetailsDelegator == null)
+        if (Delegator == null)
         {
-            throw new DelegatorNotFoundException("AnimationDetailsDelegator not found!!");
-        }
-
-        if (PlayerAttributesDelegator == null)
-        {
-            throw new DelegatorNotFoundException("PlayerAttributesDelegator not found!!");
+            throw new DelegatorNotFoundException("Delegator not found!!");
         }
     }
 
     private void Start()
     {
-        AnimationDetailsDelegator.AddToSubjectsDict(typeof(PlayerAnimationController).ToString(), name, new Subject<AnimationDetails>(this, typeof(PlayerAnimationController)));
-
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<IEntityAnimator>()
         {
             Instance = gameObject,
+            EntityType = typeof(PlayerAnimationController),
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, CancellationToken.None));
+        }, this));
 
-        StartCoroutine(EmitAnimationMovementStateDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>> ()
         {
             Instance = gameObject,
+            EntityType = typeof(PlayerAnimationController),
             SubjectType = typeof(EmitMovementAnimationStateConsumer)
-        }, CancellationToken.None));
+        }, this));
 
     }
 
@@ -140,42 +137,35 @@ public class PlayerAnimationController : MonoBehaviour, ISubject<AnimationDetail
         }
     }
 
-    private IEnumerator NotifyAnimationDetailsObservers(IObserver<AnimationDetails> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        yield return new WaitUntil(() => PlayerAnimator != null);
-
-        StartCoroutine(AnimationDetailsDelegator.NotifyObserver(observer, new AnimationDetails()
-        {
-            CurrentAnimationStateInfo = GetCurrentStateInfo(),
-            CurrentAnimationTime = ReturnCurrentAnimation()
-        },
-        new ObserverContext()
-        {
-            SubjectType = typeof(PlayerAnimationController)
-        },
-        CancellationToken.None));
-    }
-
-
-    public void OnNotifySubject(IObserver<AnimationDetails> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        StartCoroutine(NotifyAnimationDetailsObservers(observer, context, cancellationToken, semaphoreSlim, optional));
-    }
-
-    public void OnNotify(IEntityAnimator data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        PlayerAnimator = data.Animator;
-
-        AnimationStateMachine = new AnimationStateMachine(PlayerAnimator);
-    }
-
-    public void OnNotify(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation = data.StateBundle.CurrentAnimation;
-    }
-
     public Task<ActionExecuted> CancelAction(ControllerPackage<AnimationExecutionState, PlayerStateBundle> value = null)
     {
         return Task.FromResult(new ActionExecuted() { Result = true });
+    }
+
+    public IEnumerator Request()
+    {
+        yield return new WaitUntil(() => PlayerAnimator != null);
+
+        StartCoroutine(Delegator.NotifyObserver(new SubjectContext<AnimationDetails>() { Data = new AnimationDetails()
+        {
+            CurrentAnimationStateInfo = GetCurrentStateInfo(),
+            CurrentAnimationTime = ReturnCurrentAnimation()
+        }}, this));
+    }
+
+    public IEnumerator Notify(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> value)
+    {
+        EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation = value.StateBundle.CurrentAnimation;
+
+        yield return null;
+    }
+
+    public IEnumerator Notify(IEntityAnimator value)
+    {
+        PlayerAnimator = value.Animator;
+
+        AnimationStateMachine = new AnimationStateMachine(PlayerAnimator);
+
+        yield return null;
     }
 }

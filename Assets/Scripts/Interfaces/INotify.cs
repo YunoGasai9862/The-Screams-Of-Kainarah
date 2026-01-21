@@ -1,12 +1,11 @@
-using System.Threading.Tasks;
-
+using System.Collections;
 
 public interface INotify
 {
-    public Task Notify(object value);
+    public IEnumerator Notify(object value);
 }
 
 public interface INotify<T>
 {
-    public Task Notify(T value);
+    public IEnumerator Notify(T value);
 }
