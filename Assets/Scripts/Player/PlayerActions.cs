@@ -1,9 +1,15 @@
+using Assets.Annotations;
 using System;
-using System.Threading;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<CharacterVelocity>, IDelegate
+[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(PlayerStateConsumer), DataType = typeof(GenericStateBundle<PlayerStateBundle>))]
+[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(PlayerAttributesNotifier), DataType = typeof(Player))]
+[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(GameStateConsumer), DataType = typeof(GenericStateBundle<GameStateBundle>))]
+[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(PlayerSlideController), DataType = typeof(CharacterVelocity))]
+[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(PlayerJumpController), DataType = typeof(CharacterVelocity))]
+public class PlayerActions : MonoBehaviour, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<Player>, INotify<GenericStateBundle<GameStateBundle>>, INotify<CharacterVelocity>, IDelegate
 {
     [SerializeField] float _characterSpeed = 10f;
 
@@ -55,14 +61,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
 
-    private GlobalGameStateDelegator _globalGameStateDelegator;
-
-    private PlayerVelocityDelegator _playerVelocityDelegator;
-
-    private PlayerStateDelegator _playerStateDelegator;
-
-    private PlayerAttributesDelegator _playerAttributesDelegator;
-
+    private Delegator Delegator { get; set; }
 
     //Force = -2m * sqrt (g * h)
     private async void Awake()
@@ -145,43 +144,7 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     private async void NotifySubjects()
     {
-        _playerVelocityDelegator = await Helper.GetDelegator<PlayerVelocityDelegator>();
-
-        _playerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
-
-        _playerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
-
-        _globalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
-
-        _playerVelocityDelegator.NotifySubjectWrapper(this, new ObserverContext()
-        {
-            Instance = gameObject,
-            SubjectType = typeof(PlayerSlideController)
-        }, CancellationToken.None);
-
-        _playerVelocityDelegator.NotifySubjectWrapper(this, new ObserverContext()
-        {
-            Instance = gameObject,
-            SubjectType = typeof(PlayerJumpController)
-        }, CancellationToken.None);
-
-        _playerStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
-        {
-            Instance = gameObject,
-            SubjectType = typeof(PlayerStateConsumer)
-        }, CancellationToken.None);
-
-        _playerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
-        {
-            Instance = gameObject,
-            SubjectType = typeof(PlayerAttributesNotifier)
-        }, CancellationToken.None);
-
-        _globalGameStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
-        {
-            Instance = gameObject,
-            SubjectType = typeof(GameStateConsumer)
-        }, CancellationToken.None);
+        Delegator = await Helper.GetDelegator<Delegator>();
     }
 
 
@@ -374,19 +337,32 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
 
     #region Observer Pattern
 
-    public void OnNotify(CharacterVelocity data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(GenericStateBundle<PlayerStateBundle> value)
     {
-        VelocityYEventHandler(data.VelocityY);
+        CurrentPlayerState.StateBundle = value.StateBundle;
+
+        yield return null;
     }
 
-    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(Player value)
     {
-        CurrentPlayerState.StateBundle = data.StateBundle;
+        Player = value;
+
+        yield return null;
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(GenericStateBundle<GameStateBundle> value)
     {
-        CurrentGameState.StateBundle = data.StateBundle;
+        CurrentGameState.StateBundle = value.StateBundle;
+
+        yield return null;
+    }
+
+    public IEnumerator Notify(CharacterVelocity value)
+    {
+        VelocityYEventHandler(value.VelocityY);
+
+        yield return null;
     }
 
     #endregion
@@ -407,10 +383,6 @@ public class PlayerActions : MonoBehaviour, IObserver<GenericStateBundle<PlayerS
         }
     }
 
-    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        Player = data;
-    }
 
     #endregion
 }

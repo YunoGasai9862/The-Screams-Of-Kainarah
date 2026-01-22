@@ -1,6 +1,7 @@
 using Assets.Annotations;
 using Assets.Scripts.Models.Reset;
 using PlayerAnimationHandler;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -18,15 +19,15 @@ public class ResetController : MonoBehaviour, INotify<ResetBundle>
         {
             Instance = gameObject,
             SubjectType = typeof(ResetController)
-        }, this, CancellationToken.None));
+        }, this));
     }
 
-    private async Task Reset(ResetSystem resetSystem)
+    private IEnumerator Reset(ResetSystem resetSystem)
     {
         if (AnimationStateMachine == null)
         {
             Debug.Log("AnimationStateMachine is null in Reset - exiting!");
-            return;
+            yield return null;
         }
 
         switch (resetSystem.State)
@@ -40,10 +41,12 @@ public class ResetController : MonoBehaviour, INotify<ResetBundle>
                 AnimationStateMachine.ResetParameters(resetSystem.ResetParameters, resetSystem.State);
                 break;
         }
+
+        yield return null;
     }
 
-    public async Task Notify(ResetBundle value)
+    public IEnumerator Notify(ResetBundle value)
     {
-        await Reset(value.ResetSystem);
+        yield return StartCoroutine(Reset(value.ResetSystem));
     }
 }

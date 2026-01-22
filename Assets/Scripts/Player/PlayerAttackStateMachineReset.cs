@@ -1,10 +1,8 @@
 using Assets.Annotations;
 using Assets.Scripts.Interfaces;
 using Assets.Scripts.Models.Reset;
-using System;
+using System.Collections;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
 [Subject(SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
@@ -59,22 +57,24 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<Enti
                 }     
         };
 
-        Delegator.NotifyObserverWrapper(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, EntityType = typeof(PlayerAttackStateMachineReset) }, this, CancellationToken.None);
+        Delegator.NotifyObserverWrapper(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, EntityType = typeof(PlayerAttackStateMachineReset) }, this);
     }
 
 
-    public Task Notify(EntityPoolManager value)
+    public IEnumerator Notify(EntityPoolManager value)
     {
         EntityPoolManager = value;
 
         AttackResetConfig = (AttackResetConfig)EntityPoolManager.GetPooledEntity(resetConfigEntityName).FirstOrDefault(entity => entity.Name.Equals(resetConfigEntityName)).Entity;
 
-        return Task.CompletedTask;
+        yield return null;
     }
 
-    public Task<ResetBundle> Request()
+    public IEnumerator Request()
     {
-        return Task.FromResult(CurrentResetBundle);
+        Delegator.NotifyObserverWrapper(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, EntityType = typeof(PlayerAttackStateMachineReset) }, this);
+
+        yield return null;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

@@ -1,10 +1,8 @@
 using Assets.Annotations;
 using System;
-using System.Threading;
+using System.Collections;
 using System.Threading.Tasks;
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
-using static UnityEngine.Analytics.IAnalytic;
 
 [Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerLedgeGrabController), DataType = typeof(Player))]
 [Observer(SubjectType = typeof(PlayerStateConsumer), ObserverType = typeof(PlayerLedgeGrabController), DataType = typeof(GenericStateBundle<PlayerStateBundle>))]
@@ -83,14 +81,14 @@ public class PlayerLedgeGrabController : MonoBehaviour, IReceiverEnhancedAsync<P
             Instance = gameObject,
             EntityType = typeof(PlayerLedgeGrabController),
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, this, CancellationToken.None));
+        }, this));
 
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<PlayerStateBundle>>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerLedgeGrabController),
             SubjectType = typeof(PlayerStateConsumer)
-        }, this, CancellationToken.None));
+        }, this));
 
         ledgradeAnimationEvent.AddListener(LedgeGrabEventAnimationKeeperListener);
     }
@@ -263,19 +261,19 @@ public class PlayerLedgeGrabController : MonoBehaviour, IReceiverEnhancedAsync<P
         return await Task.FromResult(new ActionExecuted() { Result = false });
     }
 
-    public Task Notify(Player value)
+    public IEnumerator Notify(Player value)
     {
         Player = value;
 
         startingGrav = Player.Rigidbody.gravityScale;
 
-        return Task.CompletedTask;
+        yield return null;
     }
 
-    public Task Notify(GenericStateBundle<PlayerStateBundle> value)
+    public IEnumerator Notify(GenericStateBundle<PlayerStateBundle> value)
     {
         PlayerBundle.StateBundle = value.StateBundle;
-        
-        return Task.CompletedTask;  
+
+        yield return null;
     }
 }
