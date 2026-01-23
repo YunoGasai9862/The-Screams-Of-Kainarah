@@ -9,7 +9,7 @@ namespace Assets.Annotations
 
         public Type SubjectType { get; set; }
 
-        public Type DataType { get; set; }
+        public Type ContextType { get; set; }
 
         public ObserverAttribute() { }
 
@@ -17,7 +17,7 @@ namespace Assets.Annotations
         {
             ObserverType = observerType;
             SubjectType = subjectType;
-            DataType = contextType;
+            ContextType = contextType;
         }
     }
 }

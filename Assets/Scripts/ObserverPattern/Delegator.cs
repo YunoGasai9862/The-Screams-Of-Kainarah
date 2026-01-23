@@ -22,7 +22,14 @@ public class Delegator : MonoBehaviour, IDelegator
         BuildRegistry();
     }
 
-    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    //Singular case (which should be the main one)
+    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, IRequest<T> subject, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    {
+        yield return null;
+    }
+
+    //Multiple case (ping all of them)
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         KeyValuePair<ISubjectBundle, List<IObserverBundle>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
 
@@ -48,7 +55,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
             yield return new WaitForSeconds(sleepTimeInMilliSeconds);
 
-            yield return StartCoroutine(NotifyObserver<T>(context, subject, maxRetries - 1, sleepTimeInMilliSeconds, optional));
+            yield return StartCoroutine(NotifyObservers<T>(context, subject, maxRetries - 1, sleepTimeInMilliSeconds, optional));
         }
 
         cachedObserverContext.ForEach(observer =>

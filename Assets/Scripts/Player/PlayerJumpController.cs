@@ -1,10 +1,14 @@
-using PlayerAnimationHandler;
-using System;
+using Assets.Annotations;
+using Assets.Scripts.Interfaces;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<PlayerJumpController, bool>, ISubject<CharacterVelocity>, IObserver<GenericStateBundle<PlayerStateBundle>>, IObserver<Player>
+[Subject(SubjectType = typeof(PlayerJumpController), ContextType = typeof(CharacterVelocity))]
+[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerJumpController), ContextType = typeof(Player))]
+[Observer(SubjectType = typeof(PlayerStateConsumer), ObserverType = typeof(PlayerJumpController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
+public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<PlayerJumpController, bool>, IRequest<CharacterVelocity>, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<Player>
 {
     [SerializeField] LayerMask groundLayer;
 
@@ -34,13 +38,9 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
 
     public float TimeEclipsed { get; set; }
 
-    private PlayerVelocityDelegator PlayerVelocityDelegator { get; set; }
-
-    private PlayerStateDelegator PlayerStateDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
-
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
 
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle> { StateBundle = new PlayerStateBundle() };
 
@@ -48,13 +48,9 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
     {
         _movementHelperClass = new MovementHelperClass();
 
-        PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
         PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
-
-        PlayerVelocityDelegator = await Helper.GetDelegator<PlayerVelocityDelegator>();
-
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
 
         _animationReceiver = await Helper.FindReceiver<PlayerAnimationController, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>>();
 
@@ -62,19 +58,17 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
     }
     private void Start()
     {
-        StartCoroutine(PlayerStateDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<PlayerStateBundle>>()
         {
             Instance = gameObject,
             SubjectType = typeof(PlayerStateConsumer)
-        }, CancellationToken.None));
+        }, this));
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
         {
             Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, CancellationToken.None));
-
-        PlayerVelocityDelegator.AddToSubjectsDict(typeof(PlayerJumpController).ToString(), gameObject.name, new Subject<CharacterVelocity>(this, typeof(PlayerJumpController)));
+        }, this));
     }
 
     public async Task HandleJumping(bool canJump)
@@ -129,10 +123,6 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
         StartCoroutine(PlayerVelocityDelegator.NotifyObserver(observer, new CharacterVelocity() { VelocityY = - 10f}, new ObserverContext() { SubjectType = typeof(PlayerJumpController)}, cancellationToken));
     }
 
-    public void OnNotify(GenericStateBundle<PlayerStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        PlayerStateBundle.StateBundle = data.StateBundle;
-    }
 
     public async Task<ActionExecuted> PerformAction(bool value)
     {
@@ -143,17 +133,32 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
         return new ActionExecuted() { Result = value };
     }
 
+    //need to add a utility for NotifyObservers (in collection :)))
     public async Task<ActionExecuted> CancelAction(bool value)
     {
         CharacterVelocity.VelocityY = (-1) * JumpSpeed * FALLING_SPPED_RATIO;
 
-        PlayerVelocityDelegator.NotifyObservers(CharacterVelocity, gameObject.name, CancellationToken.None);
+        Delegator.NotifyObservers(CharacterVelocity, gameObject.name, CancellationToken.None);
 
         return new ActionExecuted() { Result = false };
     }
 
-    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(GenericStateBundle<PlayerStateBundle> value)
     {
-        Player = data;
+        PlayerStateBundle.StateBundle = value.StateBundle;
+
+        yield return null;
+    }
+
+    public IEnumerator Notify(Player value)
+    {
+        Player = value;
+
+        yield return null;
+    }
+
+    public IEnumerator Request()
+    {
+        throw new System.NotImplementedException();
     }
 }

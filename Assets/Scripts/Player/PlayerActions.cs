@@ -4,11 +4,11 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(PlayerStateConsumer), DataType = typeof(GenericStateBundle<PlayerStateBundle>))]
-[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(PlayerAttributesNotifier), DataType = typeof(Player))]
-[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(GameStateConsumer), DataType = typeof(GenericStateBundle<GameStateBundle>))]
-[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(PlayerSlideController), DataType = typeof(CharacterVelocity))]
-[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(PlayerJumpController), DataType = typeof(CharacterVelocity))]
+[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(PlayerStateConsumer), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
+[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
+[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(PlayerSlideController), ContextType = typeof(CharacterVelocity))]
+[Observer(ObserverType = typeof(PlayerActions), SubjectType = typeof(PlayerJumpController), ContextType = typeof(CharacterVelocity))]
 public class PlayerActions : MonoBehaviour, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<Player>, INotify<GenericStateBundle<GameStateBundle>>, INotify<CharacterVelocity>, IDelegate
 {
     [SerializeField] float _characterSpeed = 10f;

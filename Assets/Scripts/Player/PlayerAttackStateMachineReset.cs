@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 
 [Subject(SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
-[Observer(SubjectType = typeof(EntityPoolManager), ObserverType = typeof(PlayerAttackStateMachineReset), DataType = typeof(EntityPoolManager))]
+[Observer(SubjectType = typeof(EntityPoolManager), ObserverType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(EntityPoolManager))]
 public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<EntityPoolManager>, IRequest<ResetBundle>
 {
     [SerializeField]

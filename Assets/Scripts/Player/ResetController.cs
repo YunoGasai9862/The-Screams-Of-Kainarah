@@ -2,11 +2,9 @@ using Assets.Annotations;
 using Assets.Scripts.Models.Reset;
 using PlayerAnimationHandler;
 using System.Collections;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
-[Observer(ObserverType = typeof(ResetController), SubjectType = typeof(PlayerAttackStateMachineReset), DataType = typeof(ResetBundle))]
+[Observer(ObserverType = typeof(ResetController), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
 public class ResetController : MonoBehaviour, INotify<ResetBundle>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }

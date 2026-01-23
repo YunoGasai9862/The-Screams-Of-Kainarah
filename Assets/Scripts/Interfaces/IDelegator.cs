@@ -10,7 +10,9 @@ public interface IDelegator<T>
 
 public interface IDelegator
 {
-    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional);
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional);
+
+    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, IRequest<T> subject, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional);
 
     public IEnumerator NotifySubject<T>(ObserverContext<T> context, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional);
 

@@ -130,10 +130,6 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
         return Task.FromResult(Mathf.Abs(rb.linearVelocity.x) > 0);
     }
 
-    public void OnNotifySubject(IObserver<CharacterVelocity> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        PlayerVelocityDelegator.CreateAssociation(gameObject.name, PlayerVelocityDelegator.GetSubsetSubjectsDictionary(typeof(PlayerSlideController).ToString())[gameObject.name], observer);
-    }
 
     public void OnNotify(AnimationDetails data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
