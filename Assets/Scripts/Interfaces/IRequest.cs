@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 
 namespace Assets.Scripts.Interfaces
 {
@@ -12,6 +11,5 @@ namespace Assets.Scripts.Interfaces
     //in case if we ever want to use <T> - great for signatures, etc
     public interface IRequest<T>: IRequest
     {
-        public new IEnumerator<T> Request();
     }
 }

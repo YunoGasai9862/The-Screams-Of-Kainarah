@@ -1,9 +1,16 @@
+using Assets.Annotations;
+using Assets.Scripts.Interfaces;
 using CoreCode;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<PlayerSlideController, PlayerStateBundle>, IObserver<AnimationDetails>, ISubject<CharacterVelocity>, IObserver<Player>
+[Observer(ObserverType = typeof(PlayerSlideController), SubjectType = typeof(PlayerAnimationController), ContextType = typeof(AnimationDetails))]
+[Observer(ObserverType = typeof(PlayerSlideController), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
+[Subject(SubjectType = typeof(PlayerSlideController), ContextType = typeof(CharacterVelocity))]
+public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<PlayerSlideController, PlayerStateBundle>, INotify<AnimationDetails>, IRequest<CharacterVelocity>, INotify<Player>
 {
     private const float MAX_ANIMATION_TIME = 0.6f;
 
@@ -13,11 +20,7 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
 
     [SerializeField] float slidingSpeed;
 
-    private PlayerVelocityDelegator PlayerVelocityDelegator { get; set; }
-
-    private AnimationDetailsDelegator AnimationDetailsDelegator { get; set;  }
-
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
@@ -42,30 +45,24 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
 
     private async void Awake()
     {
-        PlayerVelocityDelegator = await Helper.GetDelegator<PlayerVelocityDelegator>();
-
-        AnimationDetailsDelegator = await Helper.GetDelegator<AnimationDetailsDelegator>();
-
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
         PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>(); 
     }
 
     void Start()
     {
-        PlayerVelocityDelegator.AddToSubjectsDict(typeof(PlayerSlideController).ToString(), name, new Subject<CharacterVelocity>(this, typeof(PlayerSlideController)));
-
-        StartCoroutine(AnimationDetailsDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<AnimationDetails>()
         {
             Instance = gameObject,
             SubjectType = typeof(PlayerAnimationController),
-        }, CancellationToken.None));
+        }, this));
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
         {
             Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier),
-        }, CancellationToken.None));
+        }, this));
 
         _animationHandler = GetComponent<IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>>();
 
@@ -141,5 +138,20 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
         Player = data;
 
         _playerAttackStateMachine = new PlayerAttackStateMachine(data.Animator);
+    }
+
+    public IEnumerator Notify(AnimationDetails value)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public IEnumerator Notify(Player value)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public IEnumerator<CharacterVelocity> Request()
+    {
+        throw new System.NotImplementedException();
     }
 }

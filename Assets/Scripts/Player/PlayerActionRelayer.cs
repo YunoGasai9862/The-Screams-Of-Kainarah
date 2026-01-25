@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static CheckPoints;
-using static SceneData;
 using static DialoguesAndOptions;
 using PlayerHittableItemsNS;
+using Assets.Scripts.ScenePersistence.Models;
 public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateHandler, IObserver<ScriptableObject>
 {
     private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;

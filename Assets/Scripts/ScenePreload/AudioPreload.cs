@@ -1,15 +1,16 @@
 
 using Amazon.Polly;
-using System;
+using Assets.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
+[Observer(ObserverType = typeof(AudioPreload), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+[Observer(ObserverType = typeof(AudioPreload), SubjectType = typeof(AWSPolllyManagement), ContextType = typeof(IAWSPolly))]
 [Asset(Asset.MONOBEHAVIOR, "Audio", InstantiationOrder = 6)]
-public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate, IObserver<EntityPoolManager>, IObserver<IAWSPolly>
+public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate, INotify<EntityPoolManager>, INotify<IAWSPolly>
 {
     private string PersistencePath { get; set; }
 
@@ -23,9 +24,7 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
     public IAWSPolly AWSPollyManager { get; set; }
 
-    private EntityPoolManagerDelegator m_entityPoolManagerDelegator;
-
-    private AWSPollyManagementDelegator m_awsPollyManagementDelegator;
+    private Delegator Delegator { get; set; }
 
     private AudioGeneratedEvent m_audioGeneratedEvent;
    
@@ -38,17 +37,15 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     }
     private async void Start()
     {
-        m_entityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
-
-        m_awsPollyManagementDelegator = await Helper.GetDelegator<AWSPollyManagementDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
         m_audioGeneratedEvent = await Helper.GetCustomEvent<AudioGeneratedEvent>();
 
         await m_audioGeneratedEvent.AddListener(AudioGeneratedListener);
 
-        m_entityPoolManagerDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(EntityPoolManager)), CancellationToken.None);
+        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<EntityPoolManager>(gameObject, typeof(EntityPoolManager)), this);
 
-        m_awsPollyManagementDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(AWSPolllyManagement)), CancellationToken.None);
+        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<IAWSPolly>(gameObject, typeof(AWSPolllyManagement)), this);
     }
 
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
@@ -121,14 +118,18 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
         });
     }
 
-    public void OnNotify(EntityPoolManager data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(EntityPoolManager value)
     {
-        EntityPoolManager = data;
+        EntityPoolManager = value;
+
+        yield return null;
     }
 
-    public void OnNotify(IAWSPolly data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(IAWSPolly value)
     {
-        AWSPollyManager = data;
+        AWSPollyManager = value;
+
+        yield return null;
     }
 }
 

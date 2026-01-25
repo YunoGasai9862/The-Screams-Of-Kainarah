@@ -1,10 +1,12 @@
-using System;
-using System.Threading;
-using UnityEngine;
-using static SceneData;
-public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<Health>
+using Assets.Annotations;
+using Assets.Scripts.Interfaces;
+using Assets.Scripts.ScenePersistence.Models;
+using System.Collections;
+
+[Subject(SubjectType = typeof(RakashManager), ContextType = typeof(Health))]
+public class RakashManager : AbstractEntity, IGameStateHandler, IRequest<Health>
 {
-    private HealthDelegator HealthDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     public override Health Health { get; set; }
 
@@ -20,23 +22,26 @@ public class RakashManager : AbstractEntity, IGameStateHandler, ISubject<Health>
 
     private async void Start()
     {
-        HealthDelegator = await Helper.GetDelegator<HealthDelegator>();
-
-        HealthDelegator.AddToSubjectsDict(typeof(RakashManager).ToString(), name, new Subject<Health>(this, typeof(RakashManager)));
+        Delegator = await Helper.GetDelegator<Delegator>();
 
         SceneSingleton.InsertIntoGameStateHandlerList(this);
     }
 
     public override void GameStateHandler(SceneData data)
     {
-        data.AddToObjectsToPersist(new ObjectData(transform.tag, transform.name, transform.position, transform.rotation));
+        data.AddToObjectsToPersist(new SceneData.ObjectData(transform.tag, transform.name, transform.position, transform.rotation));
     }
 
-    public void OnNotifySubject(IObserver<Health> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public IEnumerator Request()
     {
-        StartCoroutine(HealthDelegator.NotifyObserver(data, Health, new ObserverContext()
+        //we need to consider a single instance later on
+        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<Health>()
         {
-            SubjectType = typeof(RakashManager)
-        }, CancellationToken.None));
+            EntityType = typeof(RakashManager),
+            Data = Health
+
+        }, this));
+
+        yield return null;
     }
 }

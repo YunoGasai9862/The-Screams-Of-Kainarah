@@ -1,10 +1,13 @@
+using Assets.Annotations;
+using Assets.Scripts.ScenePersistence.Models;
+using EnemyHittable;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using EnemyHittable;
-using static SceneSingleton;
-using static SceneData;
-public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
+
+[Observer(SubjectType = typeof(EnemyHittableManager), ObserverType = typeof(EnemyScript), ContextType = typeof(EnemyHittableManager))]
+public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>
 {
     private const int RAYSARRAYSIZE= 2;
     private const int HITINDEX = 0;
@@ -28,7 +31,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
     [Header("Enter Attack Anim Param name")]
     [SerializeField] string animationAttackParam;
     [SerializeField] string[] extraAnimations;
-    private EnemyHittableManagerDelegator EnemyHittableManagerDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     public override Health Health { get; set; }
 
@@ -43,7 +46,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
 
     private async void Start()
     {
-        EnemyHittableManagerDelegator = await Helper.GetDelegator<EnemyHittableManagerDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
         Health = new Health()
         {
@@ -55,12 +58,12 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
 
-        EnemyHittableManagerDelegator.NotifySubjectWrapper(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<EnemyHittableManager>()
         {
             SubjectType = typeof(EnemyHittableManager),
             Instance = gameObject,
 
-        }, CancellationToken.None);
+        }, this);
     }
 
     async void Update()
@@ -73,7 +76,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
             gameObject.GetComponent<Rigidbody2D>().linearVelocity = new Vector2(0, 0);
 
             if(!cancellationToken.IsCancellationRequested)
-                await GetEnemyOberverListenerObject().EnemyActionDelegator(playerCollider, gameObject, animationAttackParam, true);
+                await SceneSingleton.GetEnemyOberverListenerObject().EnemyActionDelegator(playerCollider, gameObject, animationAttackParam, true);
 
         }
         else
@@ -82,7 +85,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
 
             if (tempCollider!=null)
                 if(!cancellationToken.IsCancellationRequested)    
-                    await GetEnemyOberverListenerObject().EnemyActionDelegator(tempCollider, gameObject, animationAttackParam, false);
+                    await SceneSingleton.GetEnemyOberverListenerObject().EnemyActionDelegator(tempCollider, gameObject, animationAttackParam, false);
 
         }
 
@@ -128,7 +131,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
         if (gameObject != null && await EnemyHittableManager.IsEntityAnAttackObject(collision, _enemyHittableObjects))
         {
             Health.CurrentHealth -= HITPOINTS;
-            _ = await GetEnemyOberverListenerObject().EnemyActionDelegator(collision, gameObject, animationHitParam, true);
+            _ = await SceneSingleton.GetEnemyOberverListenerObject().EnemyActionDelegator(collision, gameObject, animationHitParam, true);
 
         }
     }
@@ -142,7 +145,7 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
 
         if (gameObject != null && await EnemyHittableManager.IsEntityAnAttackObject(collision, _enemyHittableObjects))
         {
-            _ = await GetEnemyOberverListenerObject().EnemyActionDelegator(collision, gameObject, animationHitParam, false);
+            _ = await SceneSingleton.GetEnemyOberverListenerObject().EnemyActionDelegator(collision, gameObject, animationHitParam, false);
 
         }
     }
@@ -158,13 +161,15 @@ public class EnemyScript : AbstractEntity, IObserver<EnemyHittableManager>
 
     public override void GameStateHandler(SceneData data)
     {
-        ObjectData enemyData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation);
+        SceneData.ObjectData enemyData = new SceneData.ObjectData(transform.tag, transform.name, transform.position, transform.rotation);
 
         data.AddToObjectsToPersist(enemyData);
     }
 
-    public void OnNotify(EnemyHittableManager data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(EnemyHittableManager value)
     {
-        EnemyHittableManager = data;
+        EnemyHittableManager = value;
+
+        yield return null;
     }
 }

@@ -194,6 +194,14 @@ public class Helper: MonoBehaviour
             SubjectType = subjectType
         };
     }
+    public static ObserverContext<T> BuildNotificationContext<T>(GameObject gameObject, Type subjectType)
+    {
+        return new ObserverContext<T>()
+        {
+            Instance = gameObject,
+            SubjectType = subjectType
+        };
+    }
 
     public static void ValidateLightSourcePresence(Light2D light2D)
     {

@@ -1,4 +1,5 @@
 
+using Assets.Scripts.ScenePersistence.Models;
 using UnityEngine;
 
 public abstract class AbstractEntity : MonoBehaviour, IGameStateHandler

@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEditor;
 using System.Collections;
 using UnityEngine.UIElements;
+using Assets.Scripts.ScenePersistence.Models;
 
 public class GameStateManager : MonoBehaviour, IGameState
 {

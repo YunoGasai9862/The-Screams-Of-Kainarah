@@ -4,8 +4,8 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerLedgeGrabController), DataType = typeof(Player))]
-[Observer(SubjectType = typeof(PlayerStateConsumer), ObserverType = typeof(PlayerLedgeGrabController), DataType = typeof(GenericStateBundle<PlayerStateBundle>))]
+[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerLedgeGrabController), ContextType = typeof(Player))]
+[Observer(SubjectType = typeof(PlayerStateConsumer), ObserverType = typeof(PlayerLedgeGrabController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
 public class PlayerLedgeGrabController : MonoBehaviour, IReceiverEnhancedAsync<PlayerLedgeGrabController, PlayerStateBundle>, INotify<Player>, INotify<GenericStateBundle<PlayerStateBundle>>
 {
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
