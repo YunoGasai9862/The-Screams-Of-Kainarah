@@ -1,9 +1,13 @@
+using Assets.Annotations;
 using EnemyHittable;
-using System.Threading;
+using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<GameStateBundle>>, IObserver<IEntityTransform>, IObserver<EnemyHittableManager>
+[Observer(ObserverType = typeof(RakashStateMachine), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
+[Observer(ObserverType = typeof(RakashStateMachine), SubjectType = typeof(EnemyHittableManager), ContextType = typeof(EnemyHittableManager))]
+[Observer(ObserverType = typeof(RakashStateMachine), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+public class RakashStateMachine : MonoBehaviour, INotify<GenericStateBundle<GameStateBundle>>, INotify<IEntityTransform>, INotify<EnemyHittableManager>
 {
     public const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
 
@@ -15,9 +19,7 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<Ga
 
     private Player Player { get; set; }
 
-    private GlobalGameStateDelegator GameStateDelegator { get; set; }
-
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private RakashControllerMovement RakashControllerMovement { get; set; }
 
@@ -33,30 +35,12 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<Ga
 
     [SerializeField]
     EnemyHittableObjects enemyHittableObjects;
-    [SerializeField]
-    EnemyHittableManagerDelegator enemyHittableManagerDelegator;
 
     private async void Awake()
     {
-        GameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
-
-        Animator= GetComponent<Animator>();
-
-        GameStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
-        {
-            Instance = gameObject,
-            SubjectType = typeof(GameStateConsumer)
-
-        }, CancellationToken.None);
-
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
-        {
-            Instance = gameObject,
-            SubjectType = typeof(PlayerAttributesNotifier)
-
-        }, CancellationToken.None);
+        Animator = GetComponent<Animator>();
 
         RakashControllerMovement = GetComponent<RakashControllerMovement>();
 
@@ -69,26 +53,26 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<Ga
 
     private void Start()
     {
-        StartCoroutine(enemyHittableManagerDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<GameStateBundle>>()
+        {
+            Instance = gameObject,
+            SubjectType = typeof(GameStateConsumer)
+
+        }, this));
+
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<IEntityTransform>()
+        {
+            Instance = gameObject,
+            SubjectType = typeof(PlayerAttributesNotifier)
+
+        }, this));
+
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<EnemyHittableManager>()
         {
             SubjectType = typeof(EnemyHittableManager),
             Instance = gameObject,
 
-        }, CancellationToken.None));
-    }
-
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        CurrentGameState.StateBundle = data.StateBundle;
-    }
-
-    public void OnNotify(IEntityTransform data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        Player.Transform = data.Transform;
-    }
-    public void OnNotify(EnemyHittableManager data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        EnemyHittableManager = data;
+        }, this));
     }
 
     protected void CustomOnStateUpdateLogic(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -162,5 +146,27 @@ public class RakashStateMachine : MonoBehaviour, IObserver<GenericStateBundle<Ga
                 AttackActionDelegate = BattleActionDelegate.TAKE_HIT
             });
         }
+    }
+
+
+    public IEnumerator Notify(GenericStateBundle<GameStateBundle> value)
+    {
+        CurrentGameState.StateBundle = value.StateBundle;
+
+        yield return null;
+    }
+
+    public IEnumerator Notify(IEntityTransform value)
+    {
+        Player.Transform = value.Transform;
+
+        yield return null;
+    }
+
+    public IEnumerator Notify(EnemyHittableManager value)
+    {
+        EnemyHittableManager = value;
+
+        yield return null;
     }
 }

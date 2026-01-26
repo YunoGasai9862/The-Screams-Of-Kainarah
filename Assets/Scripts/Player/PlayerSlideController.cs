@@ -2,7 +2,6 @@ using Assets.Annotations;
 using Assets.Scripts.Interfaces;
 using CoreCode;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -41,6 +40,8 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
 
     private Player Player { get; set; }
 
+    private CharacterVelocity CharacterVelocity { get; set; } = new CharacterVelocity() {VelocityX = 0f, VelocityY = 0f, VelocityZ = 0f };
+
     private bool IS_SLIDING { get; set; } = false;
 
     private async void Awake()
@@ -76,8 +77,12 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
         if (IS_SLIDING && _movementHelperClass.OverlapAgainstLayerMaskChecker(Player.Collider, groundLayer, COLLIDER_DISTANCE_FROM_THE_LAYER))
         {
             PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, MovementDto>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = new MovementDto() { SlidingSpeed = new Vector2(slidingSpeed, 0) }, IsConcluded = false };
-            
-            PlayerVelocityDelegator.NotifyObservers(new CharacterVelocity() { VelocityX = slidingSpeed }, gameObject.name, CancellationToken.None);
+
+            CharacterVelocity.VelocityX = slidingSpeed;
+
+            //we need to also notify here intentionally so we can pass the latest updated speed
+            //TODO allow the delegator to batch notify
+            Delegator.NotifyObserversWrapper(new SubjectContext<CharacterVelocity>() { EntityType = typeof(PlayerSlideController), Data = CharacterVelocity }, this);
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
@@ -115,7 +120,9 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
     {
         PlayerStateBundle.StateBundle.PlayerMovementState = new State<MovementState, MovementDto>() { CurrentState = MovementState.IS_SLIDING, CurrentValue = new MovementDto() { SlidingSpeed = Vector2.zero }, IsConcluded = true };
 
-        PlayerVelocityDelegator.NotifyObservers(new CharacterVelocity() { VelocityX = 0 }, gameObject.name, CancellationToken.None);
+        CharacterVelocity.VelocityX = 0f;
+
+        Delegator.NotifyObserversWrapper(new SubjectContext<CharacterVelocity>() { EntityType = typeof(PlayerSlideController), Data = CharacterVelocity }, this);
 
         await PlayerStateEvent.Invoke(PlayerStateBundle);
 
@@ -127,31 +134,24 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
         return Task.FromResult(Mathf.Abs(rb.linearVelocity.x) > 0);
     }
 
-
-    public void OnNotify(AnimationDetails data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        AnimationDetails = data;
-    }
-
-    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        Player = data;
-
-        _playerAttackStateMachine = new PlayerAttackStateMachine(data.Animator);
-    }
-
     public IEnumerator Notify(AnimationDetails value)
     {
-        throw new System.NotImplementedException();
+        AnimationDetails = value;
+
+        yield return null;
     }
 
     public IEnumerator Notify(Player value)
     {
-        throw new System.NotImplementedException();
+        Player = value;
+
+        _playerAttackStateMachine = new PlayerAttackStateMachine(value.Animator);
+
+        yield return null;
     }
 
-    public IEnumerator<CharacterVelocity> Request()
+    public IEnumerator Request()
     {
-        throw new System.NotImplementedException();
+        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<CharacterVelocity>() { EntityType = typeof(PlayerSlideController), Data = CharacterVelocity }, this));
     }
 }

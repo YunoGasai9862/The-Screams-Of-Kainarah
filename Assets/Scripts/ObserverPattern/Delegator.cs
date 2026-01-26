@@ -124,9 +124,9 @@ public class Delegator : MonoBehaviour, IDelegator
     }
 
 
-    public void NotifyObserverWrapper<T>(SubjectContext<T> context, IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public void NotifyObserversWrapper<T>(SubjectContext<T> context, IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        StartCoroutine(NotifyObserver(context, subject, maxRetries, sleepTimeInMilliSeconds, optional));
+        StartCoroutine(NotifyObservers(context, subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
     public void NotifySubjectWrapper<T>(ObserverContext<T> context, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)

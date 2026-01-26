@@ -1,10 +1,12 @@
 
-using System.Threading;
-using System.Threading.Tasks;
+using Assets.Annotations;
+using System.Collections;
 using UnityEngine;
 using static DialoguesAndOptions;
 
-public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>, IObserver<GenericStateBundle<GameStateBundle>>
+[Observer(ObserverType = typeof(DialogueObserverManager), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+[Observer(ObserverType = typeof(DialogueObserverManager), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(DialogueSystem))]
+public class DialogueObserverManager : MonoBehaviour, INotify<DialogueSystem>, INotify<GenericStateBundle<GameStateBundle>>
 {
     [Header("Dialogues And Options")]
     [SerializeField] DialoguesAndOptions DialoguesAndOptions;
@@ -12,47 +14,50 @@ public class DialogueObserverManager : MonoBehaviour, IObserver<DialogueSystem>,
     [Header("Triggering Event")]
     [SerializeField] DialogueTriggerEvent dialogueTriggerEvent;
 
-    private GlobalGameStateDelegator GlobalGameStateDelegator {get; set; }
+    private Delegator Delegator { get; set; }
 
     private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
 
-    private async Task TriggerDialogue(DialogueSystem dialogueSystem)
+    private IEnumerator TriggerDialogue(DialogueSystem dialogueSystem)
     {
-        await dialogueTriggerEvent.Invoke(dialogueSystem);
-    }
-    private void OnEnable()
-    {
-        PlayerObserverListenerHelper.DialogueSystem.AddObserver(this);
-    }
+        dialogueTriggerEvent.Invoke(dialogueSystem);
 
-    private void OnDisable()
-    {
-        PlayerObserverListenerHelper.DialogueSystem.RemoveOberver(this); 
+        yield return null;
     }
 
     private async void Start()
     {
-        GlobalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        GlobalGameStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>> ()
         {
             Instance = gameObject,
             SubjectType = typeof(GameStateConsumer)
 
-        }, CancellationToken.None);
+        }, this);
 
-    }
 
-    public async void OnNotify(DialogueSystem data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        if (data.DialogueSettings.ShouldTriggerDialogue && !CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE))
+        Delegator.NotifySubjectWrapper(new ObserverContext<DialogueSystem>()
         {
-            await TriggerDialogue(data);
-        }
+            Instance = gameObject,
+            SubjectType = typeof(PlayerActionRelayer)
+
+        }, this);
+
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(GenericStateBundle<GameStateBundle> value)
     {
-        CurrentGameState.StateBundle = data.StateBundle;
+        CurrentGameState.StateBundle = value.StateBundle;
+
+        yield return null;
+    }
+
+    public IEnumerator Notify(DialogueSystem value)
+    {
+        if (value.DialogueSettings.ShouldTriggerDialogue && !CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE))
+        {
+           yield return StartCoroutine(TriggerDialogue(value));
+        }
     }
 }
