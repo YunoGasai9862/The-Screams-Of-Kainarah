@@ -1,13 +1,17 @@
-using System.Threading;
+using Assets.Annotations;
+using Assets.Scripts.Interfaces;
+using Assets.Scripts.Models.Reset;
+using System.Collections;
 using UnityEngine;
 
-public class PlayerAttributesNotifier: MonoBehaviour, ISubject<Player>
+[Subject(SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
+public class PlayerAttributesNotifier: MonoBehaviour, IRequest<Player>
 {
     private Player Player { get; set; }
 
     private Health PlayerHealth { get; set; }
 
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private async void OnEnable()
     {
@@ -33,18 +37,13 @@ public class PlayerAttributesNotifier: MonoBehaviour, ISubject<Player>
             }, 
             Rigidbody = GetComponent<Rigidbody2D>(),
             Health = PlayerHealth,
-        };  
+        };
 
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
     }
 
-    private void Start()
+    public IEnumerator Request()
     {
-        PlayerAttributesDelegator.AddToSubjectsDict(typeof(PlayerAttributesNotifier).ToString(), gameObject.name, new Subject<Player>(this, typeof(PlayerAttributesNotifier)));
-    }
-
-    public void OnNotifySubject(IObserver<Player> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        StartCoroutine(PlayerAttributesDelegator.NotifyObserver(data, Player, context, cancellationToken, semaphoreSlim));
+        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<Player> { EntityType =  typeof(PlayerAttributesNotifier), Data = Player }, this));
     }
 }

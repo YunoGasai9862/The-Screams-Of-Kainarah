@@ -4,11 +4,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static CheckPoints;
-using static DialoguesAndOptions;
 using PlayerHittableItemsNS;
 using Assets.Scripts.ScenePersistence.Models;
-public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateHandler, IObserver<ScriptableObject>
+using Assets.Annotations;
+using Assets.Scripts.Interfaces;
+
+[Subject(SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(Collider2D))]
+[Subject(SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(bool))]
+[Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
+[Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(PickableItems), ContextType = typeof(ScriptableObject))]
+public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHandler, INotify<ScriptableObject>, IRequest<Collider2D>, IRequest<bool>
 {
     private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
 
@@ -35,9 +40,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
 
     private bool InSight { get; set; }
 
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
-
-    private ScriptableObjectDelegator ScriptableObjectDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private void Start()
     {
@@ -207,16 +210,16 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
         if (await GetOneOfTheCheckPoints(collision.tag, checkpointTags))
         {
             //call checkpoint replacement 
-            Checkpoint checkpoint = await GetCheckPointFromScriptableObject(SceneSingleton.CheckPoints, collision.tag);
+            CheckPoints.Checkpoint checkpoint = await GetCheckPointFromScriptableObject(SceneSingleton.CheckPoints, collision.tag);
 
             collision.gameObject.SetActive(false); //turn it off
 
-            await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<Checkpoint>(PlayerObserverListenerHelper.CheckPointsObserver, checkpoint);
+            await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<>(PlayerObserverListenerHelper.CheckPointsObserver, checkpoint);
 
         }
     }
 
-    private Task<Checkpoint> GetCheckPointFromScriptableObject(CheckPoints checkpointsScriptableObject, string tag)
+    private Task<CheckPoints.Checkpoint> GetCheckPointFromScriptableObject(CheckPoints checkpointsScriptableObject, string tag)
     {
         foreach(var cp in checkpointsScriptableObject.checkpoints)
         {
@@ -272,7 +275,7 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
     {
         AbstractEntity entity = GetComponent<AbstractEntity>();
 
-        ObjectData playerData = new ObjectData(transform.tag, transform.name, transform.position, transform.rotation, entity);
+        SceneData.ObjectData playerData = new SceneData.ObjectData(transform.tag, transform.name, transform.position, transform.rotation, entity);
 
         data.AddToObjectsToPersist(playerData);
     }
@@ -285,6 +288,21 @@ public class PlayerActionRelayer : MonoBehaviour, IObserver<Player>, IGameStateH
     public void OnNotify(ScriptableObject data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
         _pickableItemsUtility = new PickableItemsUtility((PickableItems)data);
+    }
+
+    public IEnumerator Request()
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerator Notify(ScriptableObject value)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerator Notify(Player value)
+    {
+        throw new NotImplementedException();
     }
 }
 

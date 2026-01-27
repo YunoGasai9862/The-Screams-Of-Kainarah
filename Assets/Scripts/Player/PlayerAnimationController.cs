@@ -1,18 +1,12 @@
 using Assets.Annotations;
 using Assets.Scripts.Interfaces;
-using Assets.Scripts.Models.Reset;
 using PlayerAnimationHandler;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
-using static UnityEngine.Analytics.IAnalytic;
 
-[Observer(SubjectType = typeof(EmitMovementAnimationStateConsumer), ObserverType = typeof(PlayerAnimationController), DataType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>))]
-[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerAnimationController), DataType = typeof(IEntityAnimator))]
+[Observer(SubjectType = typeof(EmitMovementAnimationStateConsumer), ObserverType = typeof(PlayerAnimationController), ContextType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>))]
+[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerAnimationController), ContextType = typeof(IEntityAnimator))]
 [Subject(SubjectType = typeof(PlayerAnimationController), ContextType = typeof(AnimationDetails))]
 public class PlayerAnimationController : MonoBehaviour, IRequest<AnimationDetails>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>,
     INotify<IEntityAnimator>, INotify<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>>
@@ -146,7 +140,7 @@ public class PlayerAnimationController : MonoBehaviour, IRequest<AnimationDetail
     {
         yield return new WaitUntil(() => PlayerAnimator != null);
 
-        StartCoroutine(Delegator.NotifyObserver(new SubjectContext<AnimationDetails>() { Data = new AnimationDetails()
+        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<AnimationDetails>() { Data = new AnimationDetails()
         {
             CurrentAnimationStateInfo = GetCurrentStateInfo(),
             CurrentAnimationTime = ReturnCurrentAnimation()
