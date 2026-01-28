@@ -13,8 +13,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<SceneSingleton>
     [SerializeField] private CheckPoints checkpointsScriptableObject;
     [SerializeField] private EventStringMapper eventStringMapperScriptableObject;
 
-    private SceneSingletonDelegator _sceneSingletonDelegator { get; set; }
-
     public static DialoguesAndOptions DialogueAndOptions => _instance.dialogueAndOptions;
     public static PlayerHittableItemsScriptableObject PlayerHittableItems => _instance.playerHittableItemsScriptableObject;
     public static EntitiesToReset EntitiesToReset => _instance.entitiesToResetScriptableObject;
@@ -23,8 +21,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<SceneSingleton>
 
     private static InventoryManager _inventoryManager { get; set; }
     private static PlayerActionRelayer _playerHelperClassForOtherPurposes { get; set; }
-    private static EntityListenerDelegator _entityListenerDelegator { get; set; }
-    private static EnemyObserverListener _enemyObserverListener { get; set; }
     private static EntitiesToResetActionListener _entitiesToResetActionListener { get; set; }
     private static CheckPointActionListener _checkpointActionListener { get; set; }
     private static CheckpointColliderListener _checkpointColliderListener { get; set; }
@@ -45,16 +41,10 @@ public class SceneSingleton : MonoBehaviour, ISubject<SceneSingleton>
     {
         _inventoryManager = FindFirstObjectByType<InventoryManager>();
         _playerHelperClassForOtherPurposes = FindFirstObjectByType<PlayerActionRelayer>();
-        _entityListenerDelegator = FindFirstObjectByType<EntityListenerDelegator>();
-        _enemyObserverListener = FindFirstObjectByType<EnemyObserverListener>();
         _entitiesToResetActionListener = FindFirstObjectByType<EntitiesToResetActionListener>();
         _checkpointActionListener = FindFirstObjectByType<CheckPointActionListener>();
         _checkpointColliderListener = FindFirstObjectByType<CheckpointColliderListener>();
         _dialogueManager = FindFirstObjectByType<DialogueManager>();
-
-
-        _sceneSingletonDelegator = await Helper.GetDelegator<SceneSingletonDelegator>();
-        _sceneSingletonDelegator.AddToSubjectsDict(typeof(SceneSingleton).ToString(), name, new Subject<SceneSingleton>(this, typeof(SceneSingleton)));
     }
 
     public static InventoryManager GetInventoryManager()
@@ -75,10 +65,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<SceneSingleton>
         return _playerHelperClassForOtherPurposes;
     }
 
-    public static EntityListenerDelegator GetEntityListenerDelegator()
-    {
-        return _entityListenerDelegator;
-    }
     public static EnemyObserverListener GetEnemyOberverListenerObject()
     {
         return _enemyObserverListener;

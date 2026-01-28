@@ -1,4 +1,6 @@
 using Assets.Annotations;
+using Assets.Scripts.Enemy.Models;
+using Assets.Scripts.Interfaces;
 using Assets.Scripts.ScenePersistence.Models;
 using EnemyHittable;
 using System.Collections;
@@ -7,7 +9,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Observer(SubjectType = typeof(EnemyHittableManager), ObserverType = typeof(EnemyScript), ContextType = typeof(EnemyHittableManager))]
-public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>
+[Subject(SubjectType = typeof(EnemyScript), ContextType = typeof(Collider2D))]
+public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IRequest<EnemyActionBundle>
 {
     private const int RAYSARRAYSIZE= 2;
     private const int HITINDEX = 0;
@@ -169,6 +172,17 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>
     public IEnumerator Notify(EnemyHittableManager value)
     {
         EnemyHittableManager = value;
+
+        yield return null;
+    }
+
+    public IEnumerator Request()
+    {
+       StartCoroutine(Delegator.NotifyObservers(new SubjectContext<Collider2D>()
+        {
+            EntityType = typeof(Collider2D),
+            Data = 
+        }, this));
 
         yield return null;
     }

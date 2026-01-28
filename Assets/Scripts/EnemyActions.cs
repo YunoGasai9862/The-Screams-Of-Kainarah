@@ -1,20 +1,19 @@
+using Assets.Annotations;
+using Assets.Scripts.Enemy.Models;
 using EnemyAnimation;
 using PlayerAnimationHandler;
-using System.Collections;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class EnemyObserverPattern : MonoBehaviour, IExtendedObserver<Collider2D, bool, string>
+[Observer(SubjectType = typeof(EnemyScript), ObserverType = typeof(EnemyActions), ContextType = typeof(Collider2D))]
+public class EnemyActions : MonoBehaviour, INotify<EnemyActionBundle>, IExtendedObserver<Collider2D, bool, string>
 {
     private enum enemyAttack
     {
         Attack1=0, Attack2=1
     }
 
-    [Header("Add the Script that delegates for enemies")]
-    [SerializeField] EnemyObserverListener _observerScript;
     [Header("Object to instantiate upon hit")]
     [SerializeField] GameObject Hit;
     [Header("Add Enemy's Animator Component")]
@@ -69,16 +68,6 @@ public class EnemyObserverPattern : MonoBehaviour, IExtendedObserver<Collider2D,
         }
     }
 
-    private void OnEnable()
-    {
-        _observerScript.getenemyColliderSubjects.AddObserver(this);
-    }
-
-    private void OnDisable()
-    {
-        _observerScript.getenemyColliderSubjects.RemoveOberver(this);
-
-    }
     private void AnimationFinder<T>(EnemyAnimationScriptableObject enemy, string paramToSearch, T valueToSet)
     {
         for(int i=0; i< enemy.eachAnimation.Length; i++)  
