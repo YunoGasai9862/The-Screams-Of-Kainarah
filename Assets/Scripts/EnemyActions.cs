@@ -2,12 +2,13 @@ using Assets.Annotations;
 using Assets.Scripts.Enemy.Models;
 using EnemyAnimation;
 using PlayerAnimationHandler;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Observer(SubjectType = typeof(EnemyScript), ObserverType = typeof(EnemyActions), ContextType = typeof(Collider2D))]
-public class EnemyActions : MonoBehaviour, INotify<EnemyActionBundle>, IExtendedObserver<Collider2D, bool, string>
+[Observer(SubjectType = typeof(EnemyScript), ObserverType = typeof(EnemyActions), ContextType = typeof(EnemyActionBundle))]
+public class EnemyActions : MonoBehaviour, INotify<EnemyActionBundle>
 {
     private enum enemyAttack
     {
@@ -26,6 +27,7 @@ public class EnemyActions : MonoBehaviour, INotify<EnemyActionBundle>, IExtended
     private InstantiateUtility _gameObjectCreator;
     private GameObject _enemyGameObject;
     private int animationPosInTheObject;
+
     public GameObject enemyGameObject { get => _enemyGameObject; set=>_enemyGameObject = value;}
 
     private void Awake()
@@ -60,13 +62,6 @@ public class EnemyActions : MonoBehaviour, INotify<EnemyActionBundle>, IExtended
         await Task.Delay(1000);
         _gameObjectCreator.DestroyObjectAfter();
     }
-    public void OnNotify(Collider2D Data, string value1, bool value2)
-    {
-        if (enemyActionDictionary.TryGetValue(Data.tag, out var func))  //put it in the func
-        {
-            func.Invoke(value1, value2);//similar to doing it separately
-        }
-    }
 
     private void AnimationFinder<T>(EnemyAnimationScriptableObject enemy, string paramToSearch, T valueToSet)
     {
@@ -95,5 +90,14 @@ public class EnemyActions : MonoBehaviour, INotify<EnemyActionBundle>, IExtended
                 }
             }
         }
+    }
+    public IEnumerator Notify(EnemyActionBundle value)
+    {
+        if (enemyActionDictionary.TryGetValue(value.ActionName, out var func))
+        {
+            func.Invoke(value.ActionName, value.ActionValue);
+        }
+        
+        yield return null;
     }
 }

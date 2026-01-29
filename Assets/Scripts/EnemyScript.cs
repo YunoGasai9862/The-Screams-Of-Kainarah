@@ -4,20 +4,16 @@ using Assets.Scripts.Interfaces;
 using Assets.Scripts.ScenePersistence.Models;
 using EnemyHittable;
 using System.Collections;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
 [Observer(SubjectType = typeof(EnemyHittableManager), ObserverType = typeof(EnemyScript), ContextType = typeof(EnemyHittableManager))]
-[Subject(SubjectType = typeof(EnemyScript), ContextType = typeof(Collider2D))]
+[Subject(SubjectType = typeof(EnemyScript), ContextType = typeof(EnemyActionBundle))]
 public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IRequest<EnemyActionBundle>
 {
     private const int RAYSARRAYSIZE= 2;
     private const int HITINDEX = 0;
 
     private WayPointsMovement wayPointsMovementScript;
-    private CancellationTokenSource cancellationTokenSource;
-    private CancellationToken cancellationToken;
     private const int HITPOINTS = 10;
     private RaycastHit2D[] rayReleased;
     private ContactFilter2D contactFilter2D;
@@ -58,9 +54,6 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
             EntityName = name
         };
 
-        cancellationTokenSource = new CancellationTokenSource();
-        cancellationToken = cancellationTokenSource.Token;
-
         Delegator.NotifySubjectWrapper(new ObserverContext<EnemyHittableManager>()
         {
             SubjectType = typeof(EnemyHittableManager),
@@ -69,55 +62,63 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
         }, this);
     }
 
-    async void Update()
+    private void Update()
     {
-
-        if (await isPlayerInSight())
+        //IMPROVE IT IF U CAN???
+        if (isPlayerInSight())
         {
             wayPointsMovementScript.shouldMove = false;
 
             gameObject.GetComponent<Rigidbody2D>().linearVelocity = new Vector2(0, 0);
 
-            if(!cancellationToken.IsCancellationRequested)
-                await SceneSingleton.GetEnemyOberverListenerObject().EnemyActionDelegator(playerCollider, gameObject, animationAttackParam, true);
+            if (playerCollider == null)
+            {
+                return;
+            }
 
+            StartCoroutine(Delegator.NotifyObservers(new SubjectContext<EnemyActionBundle>()
+            {
+                    EntityType = typeof(EnemyActionBundle),
+                    Data = new EnemyActionBundle() { Target = playerCollider, ActionName = animationAttackParam, ActionValue = true  }
+            }, this));
         }
         else
         {
             wayPointsMovementScript.shouldMove = true;
 
-            if (tempCollider!=null)
-                if(!cancellationToken.IsCancellationRequested)    
-                    await SceneSingleton.GetEnemyOberverListenerObject().EnemyActionDelegator(tempCollider, gameObject, animationAttackParam, false);
+            if (tempCollider == null)
+            {
+                return;
+            }
 
+            StartCoroutine(Delegator.NotifyObservers(new SubjectContext<EnemyActionBundle>()
+            {
+                EntityType = typeof(EnemyActionBundle),
+                Data = new EnemyActionBundle() { Target = tempCollider, ActionName = animationAttackParam, ActionValue = false }
+            }, this));
         }
 
         if (IsEnemyHealthZero(Health))
         {
-            if (!cancellationToken.IsCancellationRequested)
-                Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 
-    private async Task<bool> isPlayerInSight()
+    private bool isPlayerInSight()
     {
         Debug.DrawRay(transform.position, transform.right * 3f, Color.cyan);
 
-        await Task.Delay(System.TimeSpan.FromSeconds(.1f));
+        
+        int numOfObjectsInContact = Physics2D.Raycast(transform.position, transform.right, contactFilter2D, rayReleased, 3f);
 
-        if(!cancellationToken.IsCancellationRequested)
+        if (numOfObjectsInContact > 0)
         {
-            int numOfObjectsInContact = Physics2D.Raycast(transform.position, transform.right, contactFilter2D, rayReleased, 3f);
+            playerCollider = rayReleased[HITINDEX].collider;
+            tempCollider = playerCollider;
+            return true;
 
-            if (numOfObjectsInContact > 0)
-            {
-                playerCollider = rayReleased[HITINDEX].collider;
-                tempCollider = playerCollider;
-                return true;
-
-            }
         }
-
+  
         return false;
     }
 
@@ -152,10 +153,6 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
 
         }
     }
-    private void OnDisable()
-    {
-        cancellationTokenSource.Cancel();
-    }
 
     private bool IsEnemyHealthZero(Health health)
     {
@@ -178,10 +175,10 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
 
     public IEnumerator Request()
     {
-       StartCoroutine(Delegator.NotifyObservers(new SubjectContext<Collider2D>()
+        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<EnemyActionBundle>()
         {
-            EntityType = typeof(Collider2D),
-            Data = 
+            EntityType = typeof(EnemyActionBundle),
+            Data = new EnemyActionBundle() { Target = tempCollider, ActionName = animationAttackParam, ActionValue = false }
         }, this));
 
         yield return null;

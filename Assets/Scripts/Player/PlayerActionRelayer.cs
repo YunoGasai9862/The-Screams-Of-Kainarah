@@ -1,19 +1,22 @@
+using Assets.Annotations;
+using Assets.Scripts.Interfaces;
+using Assets.Scripts.ScenePersistence.Models;
+using PlayerHittableItemsNS;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using PlayerHittableItemsNS;
-using Assets.Scripts.ScenePersistence.Models;
-using Assets.Annotations;
-using Assets.Scripts.Interfaces;
 
 [Subject(SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(Collider2D))]
 [Subject(SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(bool))]
+[Subject(SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(DialoguesAndOptions.DialogueSystem))]
+[Subject(SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(EntitiesToReset))]
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(PickableItems), ContextType = typeof(ScriptableObject))]
-public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHandler, INotify<ScriptableObject>, IRequest<Collider2D>, IRequest<bool>
+public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHandler, INotify<ScriptableObject>, IRequest<Collider2D>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<EntitiesToReset>
 {
     private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
 
@@ -27,14 +30,7 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
     private float ENEMYATTACK = 5f;
     private bool pickedUp;
     private PickableItemsUtility _pickableItemsUtility;
-    private SemaphoreSlim _semaphoreSlim;
-    private SemaphoreSlim _semaphoreSlimForCheckpoint;
-    private CancellationTokenSource _cancellationTokenSource;
-    private CancellationToken _cancellationToken;
-
-    public SemaphoreSlim GetCheckPointSemaphore { get => _semaphoreSlimForCheckpoint; set => _semaphoreSlimForCheckpoint = value; }
-    public SemaphoreSlim GetSemaphore { get => _semaphoreSlim; set => _semaphoreSlim = value; }
-    private DialogueSystem DialogueSystemFetched { get; set; }
+    private DialoguesAndOptions.DialogueSystem DialogueSystemFetched { get; set; }
 
     private Player Player { get; set; } = new Player();
 
@@ -53,14 +49,14 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
             Debug.Log($"Exception: {ex.StackTrace}");
         }
 
-        StartCoroutine(PlayerAttributesDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(this, new ObserverContext()
         {
             Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
 
         }, CancellationToken.None));
 
-        StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(this, new ObserverContext()
         {
             Instance = gameObject,
             SubjectType = typeof(PickableItems)
@@ -69,20 +65,10 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
     }
     private async void Awake()
     {
-        _semaphoreSlim = new SemaphoreSlim(1); //using at two places
-
-        _semaphoreSlimForCheckpoint = new SemaphoreSlim(1);
-
-        _cancellationTokenSource = new CancellationTokenSource();
-
-        _cancellationToken = _cancellationTokenSource.Token;
-
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
-
-        ScriptableObjectDelegator = await Helper.GetDelegator<ScriptableObjectDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
     }
 
-    private async void Update()
+    private void Update()
     {
         if (Player.Health == null)
         {
@@ -90,16 +76,15 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
             return;
         }
 
-        if (await IsPlayerDead(Player.Health.CurrentHealth) && GetCheckPointSemaphore.CurrentCount!=0)
+        if (IsPlayerDead(Player.Health.CurrentHealth))
         {
-            await GetCheckPointSemaphore.WaitAsync();
             anim.SetBool(PlayerAnimationField.Death.ToString(), true);
-            await Task.Delay(TimeSpan.FromSeconds(0.1f));
-            await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, SceneSingleton.EntitiesToReset);
+
+            SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, SceneSingleton.EntitiesToReset);
 
             if (!_cancellationTokenSource.IsCancellationRequested)
             {
-                await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, lockingThread : GetCheckPointSemaphore);
+                SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, lockingThread : GetCheckPointSemaphore);
 
             }
         }
@@ -113,8 +98,6 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
             StartCoroutine(WaiterFunction());
             GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
-
-        await GetSemaphore.WaitAsync();
 
         await IsGameObjectInSightForDialogueTrigger(SceneSingleton.DialogueAndOptions, _cancellationToken, GetSemaphore);
 
@@ -174,9 +157,9 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
         return Task.FromResult(false);
     }
 
-    private Task<bool> IsPlayerDead(float health)
+    private bool IsPlayerDead(float health)
     {
-        return health == 0 ? Task.FromResult(true) : Task.FromResult(false);
+        return health == 0;
     }
 
     private async void OnTriggerEnter2D(Collider2D collision)
@@ -266,11 +249,6 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
         yield return new WaitForSeconds(1f);
     }
 
-    private void OnDisable()
-    {
-       _cancellationTokenSource.Cancel();
-    }
-
     public void GameStateHandler(SceneData data)
     {
         AbstractEntity entity = GetComponent<AbstractEntity>();
@@ -280,27 +258,36 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
         data.AddToObjectsToPersist(playerData);
     }
 
-    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        Player = data;
-    }
-
-    public void OnNotify(ScriptableObject data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        _pickableItemsUtility = new PickableItemsUtility((PickableItems)data);
-    }
-
-    public IEnumerator Request()
-    {
-        throw new NotImplementedException();
-    }
-
     public IEnumerator Notify(ScriptableObject value)
     {
-        throw new NotImplementedException();
+        _pickableItemsUtility = new PickableItemsUtility((PickableItems)value);
+
+        yield return null;
     }
 
     public IEnumerator Notify(Player value)
+    {
+        Player = value;
+
+        yield return null;
+    }
+
+    public IEnumerator<DialoguesAndOptions.DialogueSystem> Request()
+    {
+        throw new NotImplementedException();
+    }
+
+    IEnumerator<EntitiesToReset> IRequest<EntitiesToReset>.Request()
+    {
+        throw new NotImplementedException();
+    }
+
+    IEnumerator<bool> IRequest<bool>.Request()
+    {
+        throw new NotImplementedException();
+    }
+
+    IEnumerator<Collider2D> IRequest<Collider2D>.Request()
     {
         throw new NotImplementedException();
     }
