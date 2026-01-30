@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
-using System;
 
 public abstract class BaseState<T>: MonoBehaviour, ISubject<GenericStateBundle<T>> where T : IStateBundle
 {
@@ -11,11 +10,13 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<GenericStateBundle<T
 
     protected GenericStateBundle<T> StateBundle { get; set; } = new GenericStateBundle<T>();
 
+    private Delegator Delegator { get; set; }
+
     private async void Start()
     {
-        await AddEvent();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        await AddDelegator();
+        await AddEvent();
 
         await AddSubject();
 
@@ -36,7 +37,7 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<GenericStateBundle<T
 
     private async Task NotifyObserver(IObserver<GenericStateBundle<T>> observer, GenericStateBundle<T> stateBundle, CancellationToken cancellationToken)
     {
-        StartCoroutine((await GetDelegator()).NotifyObserver(observer, stateBundle, new ObserverContext()
+        Delegator.NotifyObserversWrapper(observer, stateBundle, new ObserverContext()
         {
             SubjectType = typeof(BaseState<T>)
 
@@ -52,13 +53,9 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<GenericStateBundle<T
 
     protected abstract Task AddSubject();
 
-    protected abstract Task AddDelegator();
-
     protected abstract Task AddEvent();
 
     protected abstract Task<UnityEvent<GenericStateBundle<T>>> GetEvent(); 
-
-    protected abstract Task<BaseDelegator<GenericStateBundle<T>>> GetDelegator();
 
     protected abstract GenericStateBundle<T> GetInitialState();
 }
@@ -69,11 +66,13 @@ public abstract class BaseState<T, Z> : MonoBehaviour, ISubject<GenericStateBund
 
     protected GenericStateBundle<T, Z> StateBundle { get; set; } = new GenericStateBundle<T, Z>();
 
+    private Delegator Delegator { get; set; }
+
     private async void Start()
     {
-        await AddEvent();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        await AddDelegator();
+        await AddEvent();
 
         await AddSubject();
 
@@ -92,13 +91,14 @@ public abstract class BaseState<T, Z> : MonoBehaviour, ISubject<GenericStateBund
         }
     }
 
+    //need to omit IObserver from here too??
     private async Task NotifyObserver(IObserver<GenericStateBundle<T, Z>> observer, GenericStateBundle<T, Z> stateBundle, CancellationToken cancellationToken)
     {
-        StartCoroutine((await GetDelegator()).NotifyObserver(observer, stateBundle, new ObserverContext()
+        Delegator.NotifyObserversWrapper(new ObserverContext<GenericStateBundle<T, Z>>()
         {
             SubjectType = typeof(BaseState<T>)
 
-        }, cancellationToken));
+        }, cancellationToken);
     }
 
     public async void OnNotifySubject(IObserver<GenericStateBundle<T, Z>> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
@@ -110,13 +110,9 @@ public abstract class BaseState<T, Z> : MonoBehaviour, ISubject<GenericStateBund
 
     protected abstract Task AddSubject();
 
-    protected abstract Task AddDelegator();
-
     protected abstract Task AddEvent();
 
     protected abstract Task<UnityEvent<GenericStateBundle<T, Z>>> GetEvent();
-
-    protected abstract Task<BaseDelegator<GenericStateBundle<T, Z>>> GetDelegator();
 
     protected abstract GenericStateBundle<T, Z> GetInitialState();
 }

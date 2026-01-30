@@ -1,31 +1,28 @@
 
-using System.Threading;
+using Assets.Annotations;
+using System.Collections;
 using UnityEngine;
 
-public class WaterCameraAndTextureFollow : MonoBehaviour, IObserver<IEntityTransform>
+[Observer(ObserverType = typeof(WaterCameraAndTextureFollow), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
+public class WaterCameraAndTextureFollow : MonoBehaviour, INotify<IEntityTransform>
 {
     [SerializeField]
     public float WaterCamerSpeed;
     public float offsetX;
 
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private Transform PlayerTransform { get; set; }
 
     private async void Start()
     {
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
         {
             Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, CancellationToken.None);
-    }
-
-    public void OnNotify(IEntityTransform data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        PlayerTransform = data.Transform;
+        }, this);
     }
 
     void Update()
@@ -36,5 +33,12 @@ public class WaterCameraAndTextureFollow : MonoBehaviour, IObserver<IEntityTrans
         }
 
         MovementUtilities.TrackPlayer(transform, PlayerTransform, new Vector3(offsetX, transform.position.y, transform.position.z), WaterCamerSpeed);
+    }
+
+    public IEnumerator Notify(IEntityTransform value)
+    {
+        PlayerTransform = value.Transform;
+
+        yield return null;
     }
 }
