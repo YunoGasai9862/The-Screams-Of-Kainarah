@@ -1,6 +1,6 @@
 using Assets.Annotations;
 using Assets.Scripts.Enemy.Models;
-using Assets.Scripts.Interfaces;
+using Assets.Scripts.Interfaces.Mediator;
 using Assets.Scripts.ScenePersistence.Models;
 using EnemyHittable;
 using System.Collections;

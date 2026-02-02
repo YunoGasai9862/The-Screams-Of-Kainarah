@@ -1,7 +1,6 @@
-using Amazon.Runtime.Internal.Transform;
 using Assets.Annotations;
 using Assets.Exceptions;
-using Assets.Scripts.Interfaces;
+using Assets.Scripts.Interfaces.Mediator;
 using Assets.Scripts.ObserverPattern.interfaces;
 using Assets.Scripts.ObserverPattern.models;
 using System;

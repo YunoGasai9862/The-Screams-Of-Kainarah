@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
+using Assets.Scripts.Interfaces.Mediator;
 
 public abstract class BaseState<T>: MonoBehaviour, ISubject<GenericStateBundle<T>> where T : IStateBundle
 {
@@ -41,7 +43,7 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<GenericStateBundle<T
         {
             SubjectType = typeof(BaseState<T>)
 
-        }, cancellationToken));
+        }, cancellationToken);
     }
 
     public async void OnNotifySubject(IObserver<GenericStateBundle<T>> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
@@ -60,9 +62,10 @@ public abstract class BaseState<T>: MonoBehaviour, ISubject<GenericStateBundle<T
     protected abstract GenericStateBundle<T> GetInitialState();
 }
 
-public abstract class BaseState<T, Z> : MonoBehaviour, ISubject<GenericStateBundle<T, Z>> where T : IStateBundle
+
+public abstract class BaseState<T, Z> : MonoBehaviour, IRequest<GenericStateBundle<T, Z>> where T : IStateBundle
 {
-    protected List<IObserver<GenericStateBundle<T, Z>>> StateListeners { get; set; } = new List<IObserver<GenericStateBundle<T, Z>>> { };
+    protected List<INotify<GenericStateBundle<T, Z>>> StateListeners { get; set; } = new List<INotify<GenericStateBundle<T, Z>>> { };
 
     protected GenericStateBundle<T, Z> StateBundle { get; set; } = new GenericStateBundle<T, Z>();
 
@@ -74,41 +77,41 @@ public abstract class BaseState<T, Z> : MonoBehaviour, ISubject<GenericStateBund
 
         await AddEvent();
 
-        await AddSubject();
-
         (await GetEvent()).AddListener(PingStateListeners);
 
         PingStateListeners(GetInitialState());
     }
 
-    public async void PingStateListeners(GenericStateBundle<T, Z> stateBundle)
+    public IEnumerator PingStateListeners(GenericStateBundle<T, Z> stateBundle)
     {
         StateBundle = stateBundle;
 
-        foreach (IObserver<GenericStateBundle<T, Z>> listener in StateListeners)
+        foreach (INotify<GenericStateBundle<T, Z>> listener in StateListeners)
         {
-            await NotifyObserver(listener, StateBundle, CancellationToken.None);
+            //single one??
+             StartCoroutine(Delegator.NotifyObserver(listener, StateBundle));
         }
     }
 
-    //need to omit IObserver from here too??
-    private async Task NotifyObserver(IObserver<GenericStateBundle<T, Z>> observer, GenericStateBundle<T, Z> stateBundle, CancellationToken cancellationToken)
+    private IEnumerator NotifyObservers(IRequest<GenericStateBundle<T, Z>> subject, GenericStateBundle<T, Z> stateBundle)
     {
-        Delegator.NotifyObserversWrapper(new ObserverContext<GenericStateBundle<T, Z>>()
+        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<GenericStateBundle<T, Z>>()
         {
-            SubjectType = typeof(BaseState<T>)
+            EntityType = typeof(BaseState<T, Z>),
+            Data = stateBundle
 
-        }, cancellationToken);
+        }, subject));
     }
 
-    public async void OnNotifySubject(IObserver<GenericStateBundle<T, Z>> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public IEnumerator<GenericStateBundle<T, Z>> Request()
     {
-        StateListeners.Add(observer);
+        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<GenericStateBundle<T, Z>>()
+        {
+            EntityType = typeof(BaseState<T, Z>),
+            Data = stateBundle
 
-        await NotifyObserver(observer, StateBundle, cancellationToken);
+        }, subject));
     }
-
-    protected abstract Task AddSubject();
 
     protected abstract Task AddEvent();
 

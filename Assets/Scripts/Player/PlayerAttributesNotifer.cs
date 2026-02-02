@@ -1,5 +1,5 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces;
+using Assets.Scripts.Interfaces.Mediator;
 using Assets.Scripts.Models.Reset;
 using System.Collections;
 using UnityEngine;

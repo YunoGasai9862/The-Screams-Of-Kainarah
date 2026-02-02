@@ -4,7 +4,7 @@ using Amazon.Polly;
 using Amazon.Polly.Model;
 using Amazon.Runtime;
 using Assets.Annotations;
-using Assets.Scripts.Interfaces;
+using Assets.Scripts.Interfaces.Mediator;
 using System;
 using System.Collections;
 using System.Collections.Generic;
