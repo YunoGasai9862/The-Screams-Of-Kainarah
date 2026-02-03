@@ -1,10 +1,14 @@
+using Assets.Annotations;
+using Assets.Scripts.Interfaces.Mediator;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IObserver<GenericStateBundle<GameStateBundle>>, ISubject<bool>
+[Observer(ObserverType = typeof(TriggerHandler), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+[Subject(SubjectType = typeof(TriggerHandler), ContextType = typeof(bool))]
+public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, INotify<GenericStateBundle<GameStateBundle>>, IRequest<bool>
 {
     private const string DIAMOND_TAG = "Crystal";
 
@@ -19,26 +23,20 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private TMPro.TextMeshProUGUI m_funds;
 
-    private GlobalGameStateDelegator m_globalGameStateDelegator;
-
-    private FlagDelegator m_genericFlagDelegator;
+    private Delegator Delegator { get; set; }
 
     private async void Start()
     {
         m_funds = GameObject.FindGameObjectWithTag(FUNDS_TEXT_TAG).GetComponent<TMPro.TextMeshProUGUI>();
 
-        m_genericFlagDelegator = await Helper.GetDelegator<FlagDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        m_globalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
-
-        m_globalGameStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {
             Instance = gameObject,
             SubjectType = typeof(GameStateConsumer)
 
-        }, CancellationToken.None);
-
-        m_genericFlagDelegator.AddToSubjectsDict(typeof(TriggerHandler).ToString(), gameObject.name, new Subject<bool>(this, typeof(TriggerHandler)));
+        }, this);
     }
 
     private void Update()
@@ -60,7 +58,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
                 Debug.Log(m_isSufficientFunds);
 
-                m_genericFlagDelegator.NotifyObservers(m_isSufficientFunds, gameObject.name, CancellationToken.None);
+                Delegator.NotifyObserversWrapper(new SubjectContext<bool>() { Data = m_isSufficientFunds, EntityType = typeof(TriggerHandler) }, this);
 
                 if (m_isSufficientFunds)
                 {
@@ -113,13 +111,17 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
          InventoryManagementSystem.Instance.RemoveInvoke(funds);
     }
 
-    public void OnNotifySubject(IObserver<bool> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public IEnumerator Notify(GenericStateBundle<GameStateBundle> value)
     {
-        m_genericFlagDelegator.CreateAssociation(gameObject.name, m_genericFlagDelegator.GetSubsetSubjectsDictionary(typeof(TriggerHandler).ToString())[gameObject.name], data);
+        CurrentGameState.StateBundle = value.StateBundle;
+
+        yield return null;
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator<bool> Request()
     {
-        CurrentGameState.StateBundle = data.StateBundle;
+        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<bool>() { Data = m_isSufficientFunds, EntityType = typeof(TriggerHandler) }, this));
+
+        yield return true;
     }
 }

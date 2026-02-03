@@ -1,35 +1,16 @@
-using System;
 using System.Threading.Tasks;
-using UnityEngine;
 using UnityEngine.Events;
 
 public class GameStateConsumer : BaseState<GameStateBundle>
 {
-     private GlobalGameStateDelegator GlobalGameStateDelegator { get; set; }
-
      private GameStateEvent GameStateEvent { get; set; }
-
-    protected override async Task AddDelegator()
-    {
-        GlobalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
-    }
 
     protected override async Task AddEvent()
     {
         GameStateEvent = await Helper.GetCustomEvent<GameStateEvent>();
     }
 
-    protected override async Task AddSubject()
-    {
-        GlobalGameStateDelegator.AddToSubjectsDict(typeof(GameStateConsumer).ToString(), gameObject.name, new Subject<GenericStateBundle<GameStateBundle>>(this, typeof(GameStateConsumer)));
-    }
-
-    protected override async Task<BaseDelegator<GenericStateBundle<GameStateBundle>>> GetDelegator()
-    {
-        return GlobalGameStateDelegator;
-    }
-
-    protected override async Task<UnityEvent<GenericStateBundle<GameStateBundle>>> GetEvent()
+    protected override UnityEvent<GenericStateBundle<GameStateBundle>> GetEvent()
     {
         return GameStateEvent.GetInstance();
     }
