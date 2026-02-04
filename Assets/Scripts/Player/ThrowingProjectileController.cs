@@ -1,10 +1,10 @@
+using Assets.Annotations;
 using CoreCode;
-using PlayerAnimationHandler;
-using System;
-using System.Threading;
+using System.Collections;
 using UnityEngine;
 
-public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, IObserver<ScriptableObject>
+[Observer(ObserverType = typeof(ThrowingProjectileController), SubjectType = typeof(PickableItems), ContextType = typeof(ScriptableObject))]
+public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, INotify<ScriptableObject>
 {
     private const string DAGGER_ITEM_NAME = "Dagger";
 
@@ -16,7 +16,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, IObs
 
     private PickableItemsUtility PickableItemsUtility { get; set; }
 
-    private ScriptableObjectDelegator ScriptableObjectDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     [SerializeField] string pickableItemClassTag;
 
@@ -30,14 +30,14 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, IObs
     {
         onThrowEvent.AddListener(CanPlayerThrowProjectile);
 
-        ScriptableObjectDelegator = await Helper.GetDelegator< ScriptableObjectDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        StartCoroutine(ScriptableObjectDelegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<ScriptableObject>()
         {
             Instance = gameObject,
             SubjectType = typeof(PickableItems)
 
-        }, CancellationToken.None));
+        }, this));
 
     }
     private async void ThrowDaggerHandler()
@@ -103,9 +103,10 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, IObs
         ThrowDaggerHandler();
     }
 
-    public void OnNotify(ScriptableObject data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(ScriptableObject value)
     {
-        PickableItemsUtility = new PickableItemsUtility((PickableItems)data);
+        PickableItemsUtility = new PickableItemsUtility((PickableItems)value);
 
+        yield return null;
     }
 }

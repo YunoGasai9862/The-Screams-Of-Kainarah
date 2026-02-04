@@ -2,7 +2,7 @@ using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator;
 using CoreCode;
 using System.Collections;
-using System.Threading;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -150,8 +150,10 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
         yield return null;
     }
 
-    public IEnumerator Request()
+    public IEnumerator<CharacterVelocity> Request()
     {
-        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<CharacterVelocity>() { EntityType = typeof(PlayerSlideController), Data = CharacterVelocity }, this));
+       StartCoroutine(Delegator.NotifyObservers(new SubjectContext<CharacterVelocity>() { EntityType = typeof(PlayerSlideController), Data = CharacterVelocity }, this));
+
+        yield return null;
     }
 }

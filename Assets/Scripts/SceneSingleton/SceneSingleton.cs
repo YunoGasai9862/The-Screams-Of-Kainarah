@@ -1,10 +1,11 @@
-using EnemyHittable;
+using Assets.Annotations;
+using Assets.Scripts.Interfaces.Mediator;
 using PlayerHittableItemsNS;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
-public class SceneSingleton : MonoBehaviour, ISubject<SceneSingleton>
+[Subject(SubjectType = typeof(SceneSingleton), ContextType = typeof(SceneSingleton))]
+public class SceneSingleton : MonoBehaviour, IRequest<SceneSingleton>
 {
     [Header("Scriptable Objects")]
     [SerializeField] private DialoguesAndOptions dialogueAndOptions;
@@ -12,12 +13,6 @@ public class SceneSingleton : MonoBehaviour, ISubject<SceneSingleton>
     [SerializeField] private EntitiesToReset entitiesToResetScriptableObject;
     [SerializeField] private CheckPoints checkpointsScriptableObject;
     [SerializeField] private EventStringMapper eventStringMapperScriptableObject;
-
-    public static DialoguesAndOptions DialogueAndOptions => _instance.dialogueAndOptions;
-    public static PlayerHittableItemsScriptableObject PlayerHittableItems => _instance.playerHittableItemsScriptableObject;
-    public static EntitiesToReset EntitiesToReset => _instance.entitiesToResetScriptableObject;
-    public static CheckPoints CheckPoints => _instance.checkpointsScriptableObject;
-    public static EventStringMapper EventStringMapper => _instance.eventStringMapperScriptableObject;
 
     private static InventoryManager _inventoryManager { get; set; }
     private static PlayerActionRelayer _playerHelperClassForOtherPurposes { get; set; }
@@ -27,15 +22,9 @@ public class SceneSingleton : MonoBehaviour, ISubject<SceneSingleton>
 
     private static DialogueManager _dialogueManager { get; set; }
 
-    private static SceneSingleton _instance;
+    private Delegator Delegator { get; set; }
 
     private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; } = new List<IGameStateHandler>();
-
-    private void Awake()
-    {
-        if (_instance == null)
-            _instance = this; //creating an instance (singleton pattern)
-    }
 
     private async void Start()
     {
@@ -47,48 +36,45 @@ public class SceneSingleton : MonoBehaviour, ISubject<SceneSingleton>
         _dialogueManager = FindFirstObjectByType<DialogueManager>();
     }
 
-    public static InventoryManager GetInventoryManager()
+    public InventoryManager GetInventoryManager()
     {
         return _inventoryManager;
     }
-    public static List<IGameStateHandler> GameStateHandlerObjects()
+    public List<IGameStateHandler> GameStateHandlerObjects()
     {
         return _gameStateHandlerObjects;
     }
 
-    public static void InsertIntoGameStateHandlerList(IGameStateHandler handler)
+    public void InsertIntoGameStateHandlerList(IGameStateHandler handler)
     {
         _gameStateHandlerObjects.Add(handler);
     }
-    public static PlayerActionRelayer GetPlayerHelperClassObject()
+    public PlayerActionRelayer GetPlayerHelperClassObject()
     {
         return _playerHelperClassForOtherPurposes;
     }
 
-    public static EnemyObserverListener GetEnemyOberverListenerObject()
-    {
-        return _enemyObserverListener;
-    }
-
-    public static DialogueManager GetDialogueManager()
+    public DialogueManager GetDialogueManager()
     {
         return _dialogueManager;
     }
-    public static EntitiesToResetActionListener GetEntitiesToResetListenerObject()
+    public EntitiesToResetActionListener GetEntitiesToResetListenerObject()
     {
         return _entitiesToResetActionListener;
     }
-    public static CheckPointActionListener GetCheckPointActionListenerObject()
+    public CheckPointActionListener GetCheckPointActionListenerObject()
     {
         return _checkpointActionListener;
     }
-    public static CheckpointColliderListener GetCheckPointColliderActionListenerObject()
+    public CheckpointColliderListener GetCheckPointColliderActionListenerObject()
     {
         return _checkpointColliderListener;
     }
 
-    public void OnNotifySubject(IObserver<SceneSingleton> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public IEnumerator<SceneSingleton> Request()
     {
-        StartCoroutine(_sceneSingletonDelegator.NotifyObserver(data, this, context, cancellationToken, semaphoreSlim));
+        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<SceneSingleton>() { Data = this, EntityType = typeof(SceneSingleton) }, this));
+
+        yield return this;
     }
 }

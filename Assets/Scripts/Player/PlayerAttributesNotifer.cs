@@ -1,7 +1,6 @@
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator;
-using Assets.Scripts.Models.Reset;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [Subject(SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
@@ -42,8 +41,10 @@ public class PlayerAttributesNotifier: MonoBehaviour, IRequest<Player>
         Delegator = await Helper.GetDelegator<Delegator>();
     }
 
-    public IEnumerator Request()
+    public IEnumerator<Player> Request()
     {
-        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<Player> { EntityType =  typeof(PlayerAttributesNotifier), Data = Player }, this));
+        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<Player> { EntityType = typeof(PlayerAttributesNotifier), Data = Player }, this));
+
+        yield return null;
     }
 }
