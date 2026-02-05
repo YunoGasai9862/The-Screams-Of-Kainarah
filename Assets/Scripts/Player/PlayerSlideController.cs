@@ -1,5 +1,5 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator;
+using Assets.Scripts.Interfaces.Mediator.Base;
 using CoreCode;
 using System.Collections;
 using System.Collections.Generic;
