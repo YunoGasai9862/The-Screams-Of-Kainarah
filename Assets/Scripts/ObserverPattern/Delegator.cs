@@ -1,6 +1,6 @@
 using Assets.Annotations;
 using Assets.Exceptions;
-using Assets.Scripts.Interfaces.Mediator.Base;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Assets.Scripts.ObserverPattern.interfaces;
 using Assets.Scripts.ObserverPattern.models;
 using System;
@@ -26,12 +26,12 @@ public class Delegator : MonoBehaviour, IDelegator
         StartCoroutine(NotifyObserver(context, subject, observer, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
-    public void NotifyObserverWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.Enhanced.IRequest<T> subject, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public void NotifyObserverWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<T> subject, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         StartCoroutine(NotifyObserver(context, subject, observer, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
-    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.Enhanced.IRequest<T> subject, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<T> subject, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         yield return null;
     }
@@ -41,7 +41,7 @@ public class Delegator : MonoBehaviour, IDelegator
         yield return null;
     }
 
-    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.Enhanced.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         yield return StartCoroutine(NotifyObservers<T>(context, (IRequest<T>) subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
@@ -61,7 +61,7 @@ public class Delegator : MonoBehaviour, IDelegator
             Debug.LogWarning($"The subject instance is null for the subject type: {context.EntityType}. Will update the dictionary with the current instance!");
 
             //check later if the casting will work seamlessly
-            association.Key.Subject = (IRequest) subject;
+            association.Key.Subject = subject;
         }
 
         List<INotify> cachedObserverContext = GetObserverBundles<T, SubjectContext<T>> (association, context);
@@ -216,7 +216,7 @@ public class Delegator : MonoBehaviour, IDelegator
     private IObserverBundle GetObserverBundle<T, Z>(List<IObserverBundle> observers, Z context) where Z: ObserverContext
     {
         return observers.Where(observerContext => observerContext.ObserverAttribute.ObserverType.Equals(context.EntityType) &&
-                                                    typeof(T).Name.Equals(observerContext.ObserverAttribute.DataType) && 
+                                                    typeof(T).Name.Equals(observerContext.ObserverAttribute.ContextType) && 
                                                     observerContext.ObserverAttribute.SubjectType.Equals(context.SubjectType)).FirstOrDefault();
     }
 

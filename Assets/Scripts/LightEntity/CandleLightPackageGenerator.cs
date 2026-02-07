@@ -1,21 +1,25 @@
-using System;
+using Assets.Annotations;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV2;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>, IObserver<ILightPreprocess>, IObserver<Player>, ILightPackageGenerator
+
+[Subject(SubjectType = typeof(CandleLightPackageGenerator), ContextType = typeof(LightPackage))]
+[Observer(ObserverType = typeof(CandleLightPackageGenerator), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
+[Observer(ObserverType = typeof(CandleLightPackageGenerator), SubjectType = typeof(LightFlicker), ContextType = typeof(ILightPreprocess))]
+public class CandleLightPackageGenerator : MonoBehaviour, IRequest<LightPackage>, INotify<ILightPreprocess>, INotify<Player>, ILightPackageGenerator
 {
-    private LightPackageDelegator LightPackageDelegator { get; set; }
-    private LightPreprocessDelegator LightPreprocessDelegator { get; set; }
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
     [SerializeField]
     LightProperties lightProperties;
     [SerializeField]
     float minDistanceFromPlayerForLightFlicker;
     [SerializeField]
     float delayBetweenExecution;
+
+    private Delegator Delegator { get; set; }
 
     private ILightPreprocess LightPreprocess { get; set; }
 
@@ -39,28 +43,22 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>
 
         await SetupCancellationTokens();
 
-        LightPackageDelegator = await Helper.GetDelegator<LightPackageDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        LightPreprocessDelegator = await Helper.GetDelegator<LightPreprocessDelegator>();
-
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
-
-        LightPreprocessDelegator.NotifySubjectWrapper(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<ILightPreprocess>()
         {
             Instance = gameObject,
             SubjectType = typeof(LightFlicker)
-        }, CancellationToken.None);
+        }, this);
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
-         }, CancellationToken.None);
-
-        LightPackageDelegator.AddToSubjectsDict(typeof(CandleLightPackageGenerator).ToString(), transform.parent.gameObject.name, new Subject<LightPackage>(this, typeof(LightPackage)));
+         }, this);
     }
 
-    public IEnumerator PingCustomLightning(LightPackage lightPackage, IObserver<LightPackage> observer, float delayPerExecutionInSeconds = 1)
+    public IEnumerator PingCustomLightning(LightPackage lightPackage, INotify<LightPackage> observer, float delayPerExecutionInSeconds = 1)
     {
         while (true) 
         {
@@ -68,10 +66,7 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>
 
             lightPackage.LightProperties.ShouldLightPulse = Vector2.Distance(Player.Transform.position, gameObject.transform.position) < minDistanceFromPlayerForLightFlicker ? true : false;
 
-            StartCoroutine(LightPackageDelegator.NotifyObserver(observer, lightPackage, new ObserverContext()
-            {
-                SubjectType = typeof(CandleLightPackageGenerator),
-            }, lightPackage.CancellationToken));
+            StartCoroutine(Delegator.NotifyObserver(new SubjectContext<LightPackage>() { Data = lightPackage, EntityType = typeof(CandleLightPackageGenerator) }, this, observer));
 
             //unscaled yield (realTime) - waitForSeconds is scaled (RealTime wont stop if we set time.timeScale = 0)
             yield return new WaitForSeconds(delayPerExecutionInSeconds/2);
@@ -90,16 +85,11 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>
         };
     }
 
-    private IEnumerator PrepareDataForCustomLightningGeneration(IObserver<LightPackage> observer)
+    private IEnumerator PrepareDataForCustomLightningGeneration(INotify<LightPackage> observer)
     {
         yield return new WaitUntil(() => IsReadyToCustomLightningEntity());
 
         StartCoroutine(PingCustomLightning(PrepareLightPackage(), observer, delayBetweenExecution));
-    }
-
-    public void OnNotifySubject(IObserver<LightPackage> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        StartCoroutine(PrepareDataForCustomLightningGeneration(data));
     }
 
     private async Task SetupCancellationTokens()
@@ -109,23 +99,34 @@ public class CandleLightPackageGenerator : MonoBehaviour, ISubject<LightPackage>
         CancellationToken = CancellationTokenSource.Token;
     }
 
-    public void OnNotify(ILightPreprocess data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        LightPreprocess = data;
-    }
-
-    public void OnNotify(Player data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        Player = data;
-    }
-
     private bool IsReadyToCustomLightningEntity()
     {
         return !Helper.AreObjectsNull(new List<UnityEngine.Object>
         {
-            LightPreprocessDelegator
+            Delegator
         })
             && LightPreprocess != null
             && Player != null;
+    }
+
+    public IEnumerator Notify(ILightPreprocess value)
+    {
+        LightPreprocess = value;
+
+        yield return null;
+    }
+
+    public IEnumerator Notify(Player value)
+    {
+        Player = value;
+
+        yield return null;
+    }
+
+    public IEnumerator<LightPackage> Request(INotify<LightPackage> obsever)
+    {
+        StartCoroutine(PrepareDataForCustomLightningGeneration(obsever));
+
+        yield return null;
     }
 }

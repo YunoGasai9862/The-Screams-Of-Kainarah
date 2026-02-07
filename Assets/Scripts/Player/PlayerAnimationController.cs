@@ -1,5 +1,5 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.Base;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using PlayerAnimationHandler;
 using System.Collections;
 using System.Collections.Generic;
