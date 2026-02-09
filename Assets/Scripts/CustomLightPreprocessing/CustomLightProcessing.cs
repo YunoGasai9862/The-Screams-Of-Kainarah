@@ -1,9 +1,11 @@
+using Assets.Annotations;
 using System.Collections;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
-public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, IObserver<AsyncCoroutine>, IObserver<LightPackage>
+[Observer(ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(LightPackage))]
+[Observer(ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(LightPackage))]
+[Observer(ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(AsyncCoroutine))]
+public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, INotify<AsyncCoroutine>, INotify<LightPackage>
 {
     private AsyncCoroutine AsyncCoroutine { get; set; }
 
@@ -12,19 +14,15 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
     public float maxIntensity;
     public float minIntensity;
 
-    private AsyncCoroutineDelegator AsyncCoroutineDelegator { get; set; }
-
-    private LightPackageDelegator LightPackageDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private async void Start()
     {
-        LightPackageDelegator = await Helper.GetDelegator<LightPackageDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        AsyncCoroutineDelegator = await Helper.GetDelegator<AsyncCoroutineDelegator>();
-
-        AsyncCoroutineDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(AsyncCoroutine)), CancellationToken.None);
-        LightPackageDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(CandleLightPackageGenerator)), CancellationToken.None);
-        LightPackageDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(CelestialBodiesLightPackageGenerator)), CancellationToken.None);
+        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine)), this);
+        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<LightPackage>(gameObject, typeof(CandleLightPackageGenerator)), this);
+        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<LightPackage>(gameObject, typeof(CelestialBodiesLightPackageGenerator)), this);
     }
 
     public IEnumerator ExecuteLightningLogic(LightPackage lightPackage)
@@ -33,17 +31,19 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
 
         if (lightPackage != null && !lightPackage.CancellationToken.IsCancellationRequested)
         {
-            AsyncCoroutine.ExecuteAsyncCoroutine(lightPackage.LightPreprocess.GenerateCustomLighting(lightPackage)); //Async runner
+            AsyncCoroutine.ExecuteAsyncCoroutine(lightPackage.LightPreprocess.GenerateCustomLighting(lightPackage));
         }
     }
 
-    public void OnNotify(AsyncCoroutine data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(LightPackage value)
     {
-        AsyncCoroutine = data;
+        yield return StartCoroutine(ExecuteLightningLogic(value));
     }
 
-    public void OnNotify(LightPackage data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(AsyncCoroutine value)
     {
-        StartCoroutine(ExecuteLightningLogic(data));
+        AsyncCoroutine = value;
+
+        yield return null;
     }
 }

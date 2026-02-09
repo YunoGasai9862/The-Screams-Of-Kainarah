@@ -1,7 +1,6 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1.EnhancedV2;
+using Assets.Scripts.Interfaces.Mediator;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -149,7 +148,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
         yield return null;
     }
 
-    public IEnumerator<CharacterVelocity> Request()
+    public IEnumerator Request()
     {
        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<CharacterVelocity> { Data = CharacterVelocity, EntityType = typeof(PlayerJumpController) }, this));
 

@@ -1,5 +1,6 @@
 ﻿using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Assets.Scripts.Interfaces.Mediator;
+
 using Assets.Scripts.ObserverPattern.interfaces;
 
 namespace Assets.Scripts.ObserverPattern.models

@@ -1,8 +1,7 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Assets.Scripts.Interfaces.Mediator;
 using PlayerAnimationHandler;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -137,11 +136,6 @@ public class PlayerAnimationController : MonoBehaviour, IRequest<AnimationDetail
         return Task.FromResult(new ActionExecuted() { Result = true });
     }
 
-    public IEnumerator Request()
-    {
- 
-    }
-
     public IEnumerator Notify(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> value)
     {
         EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation = value.StateBundle.CurrentAnimation;
@@ -158,11 +152,11 @@ public class PlayerAnimationController : MonoBehaviour, IRequest<AnimationDetail
         yield return null;
     }
 
-    public IEnumerator<AnimationDetails> IRequest<AnimationDetails>.Request()
+    public IEnumerator Request()
     {
-         new WaitUntil(() => PlayerAnimator != null);
+        yield return new WaitUntil(() => PlayerAnimator != null);
 
-        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<AnimationDetails>()
+        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<AnimationDetails>()
         {
             Data = new AnimationDetails()
             {

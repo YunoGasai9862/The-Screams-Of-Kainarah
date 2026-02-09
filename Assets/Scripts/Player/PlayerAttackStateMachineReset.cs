@@ -1,5 +1,5 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Assets.Scripts.Interfaces.Mediator;
 using Assets.Scripts.Models.Reset;
 using System.Collections;
 using System.Linq;
@@ -57,7 +57,7 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<Enti
                 }     
         };
 
-        Delegator.NotifyObserverWrapper(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, EntityType = typeof(PlayerAttackStateMachineReset) }, this);
+        Delegator.NotifyObserversWrapper(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, EntityType = typeof(PlayerAttackStateMachineReset) }, this);
     }
 
 
@@ -72,7 +72,7 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<Enti
 
     public IEnumerator Request()
     {
-        Delegator.NotifyObserverWrapper(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, EntityType = typeof(PlayerAttackStateMachineReset) }, this);
+        Delegator.NotifyObserversWrapper(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, EntityType = typeof(PlayerAttackStateMachineReset) }, this);
 
         yield return null;
     }

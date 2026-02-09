@@ -1,4 +1,4 @@
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Assets.Scripts.Interfaces.Mediator;
 using System.Collections;
 using System.Threading;
 public interface IDelegator<T>

@@ -1,9 +1,10 @@
 using Assets.Annotations;
 using Assets.Scripts.Enemy.Models;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Assets.Scripts.Interfaces.Mediator;
 using Assets.Scripts.ScenePersistence.Models;
 using EnemyHittable;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [Observer(SubjectType = typeof(EnemyHittableManager), ObserverType = typeof(EnemyScript), ContextType = typeof(EnemyHittableManager))]
@@ -135,8 +136,12 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
         if (gameObject != null && await EnemyHittableManager.IsEntityAnAttackObject(collision, _enemyHittableObjects))
         {
             Health.CurrentHealth -= HITPOINTS;
-            _ = await SceneSingleton.GetEnemyOberverListenerObject().EnemyActionDelegator(collision, gameObject, animationHitParam, true);
 
+            Delegator.NotifyObserversWrapper(new SubjectContext<EnemyActionBundle>()
+            {
+                EntityType = typeof(EnemyActionBundle),
+                Data = new EnemyActionBundle() { Target = collision, ActionName = animationHitParam, ActionValue = true }
+            }, this);
         }
     }
     private async void OnTriggerExit2D(Collider2D collision)
@@ -149,7 +154,11 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
 
         if (gameObject != null && await EnemyHittableManager.IsEntityAnAttackObject(collision, _enemyHittableObjects))
         {
-            _ = await SceneSingleton.GetEnemyOberverListenerObject().EnemyActionDelegator(collision, gameObject, animationHitParam, false);
+            Delegator.NotifyObserversWrapper(new SubjectContext<EnemyActionBundle>()
+            {
+                EntityType = typeof(EnemyActionBundle),
+                Data = new EnemyActionBundle() { Target = collision, ActionName = animationHitParam, ActionValue = false }
+            }, this);
 
         }
     }
