@@ -1,14 +1,18 @@
+using Assets.Annotations;
+using Assets.Scripts.Interfaces.Mediator;
 using Firebase.Extensions;
 using Firebase.Storage;
 using System;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
 [AssetAttribute(Asset.MONOBEHAVIOR, "FirebaseStorageManager", InstantiationOrder = 9)]
-public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<FirebaseStorageManager>
+[Subject(SubjectType = typeof(FirebaseStorageManager), ContextType = typeof(FirebaseStorageManager))]
+public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, IRequest<FirebaseStorageManager>
 {
-    private FirebaseStorageManagerDelegator FirebaseStorageManagerDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     FirebaseStorage FirebaseStorage { get; set; }
     StorageReference MediaStorageReference { get; set; }
@@ -21,9 +25,7 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<
 
     private async void Start()
     {
-        FirebaseStorageManagerDelegator = await Helper.GetDelegator<FirebaseStorageManagerDelegator>();
-
-        FirebaseStorageManagerDelegator.AddToSubjectsDict(typeof(FirebaseStorageManager).ToString(), name, new Subject<FirebaseStorageManager>(this, typeof(FirebaseStorageManager)));
+        Delegator = await Helper.GetDelegator<Delegator>();
 
         InitializeFirebaseStorage();
 
@@ -122,6 +124,10 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, ISubject<
 
     public void OnNotifySubject(IObserver<FirebaseStorageManager> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(FirebaseStorageManagerDelegator.NotifyObserver(data, this, context, cancellationToken, semaphoreSlim));
+    }
+
+    public IEnumerator Request()
+    {
+       yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<FirebaseStorageManager> { EntityType = typeof(FirebaseStorageManager), Data = this}, this));
     }
 }

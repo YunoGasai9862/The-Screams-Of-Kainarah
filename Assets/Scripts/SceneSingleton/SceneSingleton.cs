@@ -24,7 +24,6 @@ public class SceneSingleton : MonoBehaviour, IRequest<SceneSingleton>
 
     private Delegator Delegator { get; set; }
 
-    private static List<IGameStateHandler> _gameStateHandlerObjects { get; set; } = new List<IGameStateHandler>();
 
     private async void Start()
     {
@@ -40,15 +39,7 @@ public class SceneSingleton : MonoBehaviour, IRequest<SceneSingleton>
     {
         return _inventoryManager;
     }
-    public List<IGameStateHandler> GameStateHandlerObjects()
-    {
-        return _gameStateHandlerObjects;
-    }
 
-    public void InsertIntoGameStateHandlerList(IGameStateHandler handler)
-    {
-        _gameStateHandlerObjects.Add(handler);
-    }
     public PlayerActionRelayer GetPlayerHelperClassObject()
     {
         return _playerHelperClassForOtherPurposes;

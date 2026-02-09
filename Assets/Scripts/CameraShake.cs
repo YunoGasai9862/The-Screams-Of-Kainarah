@@ -21,7 +21,7 @@ public class CameraShake : MonoBehaviour, IObserver<AsyncCoroutine>, IObserver<G
     [Header("Delay Between Each Shake")]
     [SerializeField] float delay; //0.05f (old)
 
-    private AsyncCoroutineDelegator AsyncCoroutineDelegator { get; set; }
+    private Delegator AsyncCoroutineDelegator { get; set; }
 
     private EmitAnimationAttackStateDelegator EmitAnimationAttackStateDelegator { get; set; }
 

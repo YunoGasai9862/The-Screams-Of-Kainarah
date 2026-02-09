@@ -4,31 +4,14 @@ using System.Threading.Tasks;
 
 public class PlayerStateConsumer : BaseState<PlayerStateBundle>
 {
-     public PlayerStateDelegator PlayerStateDelegator { get; set; }
-
      public PlayerStateEvent PlayerStateEvent { get; set; }
-
-    protected override async Task AddDelegator()
-    {
-        PlayerStateDelegator = await Helper.GetDelegator<PlayerStateDelegator>();
-    }
 
     protected override async Task AddEvent()
     {
         PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
     }
 
-    protected override async Task AddSubject()
-    {
-        PlayerStateDelegator.AddToSubjectsDict(typeof(PlayerStateConsumer).ToString(), gameObject.name, new Subject<GenericStateBundle<PlayerStateBundle>>(this, typeof(PlayerStateConsumer)));
-    }
-
-    protected override async Task<BaseDelegator<GenericStateBundle<PlayerStateBundle>>> GetDelegator()
-    {
-        return PlayerStateDelegator;
-    }
-
-    protected override async Task<UnityEvent<GenericStateBundle<PlayerStateBundle>>> GetEvent()
+    protected override UnityEvent<GenericStateBundle<PlayerStateBundle>> GetEvent()
     {
         return PlayerStateEvent.GetInstance();
     }

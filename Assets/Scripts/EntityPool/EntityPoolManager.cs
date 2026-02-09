@@ -8,7 +8,7 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IS
 
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
 
-    private EntityPoolManagerDelegator EntityPoolManagerDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private void Start()
     {
@@ -69,9 +69,7 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IS
 
     private async void SetEntityPoolManagerDelegator()
     {
-        EntityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
-
-        EntityPoolManagerDelegator.AddToSubjectsDict(typeof(EntityPoolManager).ToString(), name, new Subject<EntityPoolManager>(this, typeof(EntityPoolManager)));
+        Delegator = await Helper.GetDelegator<Delegator>();
     }
 
     public void OnNotifySubject(IObserver<EntityPoolManager> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)

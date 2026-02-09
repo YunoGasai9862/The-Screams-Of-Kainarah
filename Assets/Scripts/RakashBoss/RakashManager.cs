@@ -1,5 +1,5 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Assets.Scripts.Interfaces.Mediator;
 using Assets.Scripts.ScenePersistence.Models;
 using System.Collections;
 
@@ -34,7 +34,6 @@ public class RakashManager : AbstractEntity, IGameStateHandler, IRequest<Health>
 
     public IEnumerator Request()
     {
-        //we need to consider a single instance later on
         StartCoroutine(Delegator.NotifyObservers(new SubjectContext<Health>()
         {
             EntityType = typeof(RakashManager),
