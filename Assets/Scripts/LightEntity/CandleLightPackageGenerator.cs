@@ -1,5 +1,5 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV2;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV3;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Assets.Scripts.Interfaces.Mediator
+namespace Assets.Scripts.Interfaces.Mediator.EnhancedV1
 {
     public interface IRequest
     {

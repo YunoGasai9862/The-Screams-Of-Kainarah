@@ -1,5 +1,5 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV2;
 using System.Collections.Generic;
 using UnityEngine;
 

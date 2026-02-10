@@ -1,9 +1,10 @@
+using Assets.Scripts.Interfaces.Mediator.EnhancedV3;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<GenericStateBundle<T>> where T : IStateBundle
+public abstract class BaseState<T>: MonoBehaviour, IRequest<GenericStateBundle<T>> where T : IStateBundle
 {
     protected List<INotify<GenericStateBundle<T>>> StateListeners { get; set; } = new List<INotify<GenericStateBundle<T>>> { };
 
@@ -59,7 +60,7 @@ public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Med
 }
 
 
-public abstract class BaseState<T, Z> : MonoBehaviour, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<GenericStateBundle<T, Z>> where T : IStateBundle
+public abstract class BaseState<T, Z> : MonoBehaviour, IRequest<GenericStateBundle<T, Z>> where T : IStateBundle
 {
     protected List<INotify<GenericStateBundle<T, Z>>> StateListeners { get; set; } = new List<INotify<GenericStateBundle<T, Z>>> { };
 

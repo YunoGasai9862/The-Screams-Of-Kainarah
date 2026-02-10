@@ -1,17 +1,17 @@
-using System;
+using Assets.Annotations;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
-public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<ILightPreprocess>
+[Subject(SubjectType = typeof(CelestialBodyLightning), ContextType = typeof(ILightPreprocess))]
+public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, IRequest<ILightPreprocess>
 {
-    private LightPreprocessDelegator LightPreprocessDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private async void Start()
     {
-        LightPreprocessDelegator = await Helper.GetDelegator<LightPreprocessDelegator>();
-
-        LightPreprocessDelegator.AddToSubjectsDict(typeof(CelestialBodyLightning).ToString(), gameObject.name, new Subject<ILightPreprocess>(this, typeof(CelestialBodyLightning)));
+        Delegator = await Helper.GetDelegator<Delegator>();
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0)
@@ -24,8 +24,8 @@ public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, ISubject<
         yield return null;
     }
 
-    public void OnNotifySubject(IObserver<ILightPreprocess> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public IEnumerator Request()
     {
-        StartCoroutine(LightPreprocessDelegator.NotifyObserver(data, this, context, cancellationToken, semaphoreSlim));
+        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<ILightPreprocess>() { Data =  this,  EntityType = typeof(CelestialBodyLightning) }, this));
     }
 }

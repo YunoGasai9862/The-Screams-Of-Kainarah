@@ -1,5 +1,5 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Assets.Scripts.ScenePersistence.Models;
 using System.Collections;
 
