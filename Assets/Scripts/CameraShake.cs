@@ -4,7 +4,6 @@ using Assets.Scripts.Interfaces.Mediator.Base;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -31,17 +30,15 @@ public class CameraShake : MonoBehaviour, INotify<AsyncCoroutine>, INotify<Gener
 
     private AsyncCoroutine AsyncCoroutine { get; set; }
 
-    private 
-
     private GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState> StateBundle { get; set; } = new GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>();
 
     private async void Start()
     {
         Delegator = await Helper.GetDelegator<Delegator>();
 
-        Delegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(AsyncCoroutine)), CancellationToken.None);
+        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine)), this);
 
-        Delegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(EmitAttackAnimationStateConsumer)), CancellationToken.None);
+        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>(gameObject, typeof(EmitAttackAnimationStateConsumer)), this);
     }
 
     private async IAsyncEnumerator<WaitForSeconds> ShakeCamera(Camera _mainCamera, float timeForCameraShake)
@@ -50,7 +47,7 @@ public class CameraShake : MonoBehaviour, INotify<AsyncCoroutine>, INotify<Gener
 
         CameraOldPosition = _mainCamera.transform.position;
 
-        Delegator.NotifyObservers(true, name, CancellationToken.None);
+        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<bool>() { Data = true, EntityType = typeof(CameraShake) }, this));
 
         while (timeSpent < timeForCameraShake)
         {
@@ -63,7 +60,7 @@ public class CameraShake : MonoBehaviour, INotify<AsyncCoroutine>, INotify<Gener
 
         mainCamera.transform.position = CameraOldPosition;
 
-        Delegator.NotifyObservers(true, name, CancellationToken.None);
+        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<bool>() { Data = true, EntityType = typeof(CameraShake) }, this));
 
         yield return new WaitForSeconds(0f);
     }

@@ -1,15 +1,15 @@
-using System.Threading;
-using System.Threading.Tasks;
+using Assets.Annotations;
+using System.Collections;
 using UnityEngine;
 
-public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<IEntityTransform>
+[Observer(ObserverType = typeof(CameraFollow), SubjectType = typeof(CameraShake), ContextType = typeof(bool))]
+[Observer(ObserverType = typeof(CameraFollow), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
+public class CameraFollow : MonoBehaviour, INotify<bool>, INotify<IEntityTransform>
 {
     [Header("Camera Follow Speed")]
     [SerializeField] float _cameraFollowSpeed;
 
-    private FlagDelegator FlagDelegator { get; set; }
-
-    private PlayerAttributesDelegator PlayerAttributesDelegator {get; set; }
+    private Delegator Delegator { get; set; }
 
     private bool ShouldFollowPlayer { get; set; }
 
@@ -17,21 +17,19 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<IEntityTra
 
     private async void Start()
     {
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        FlagDelegator = await Helper.GetDelegator<FlagDelegator>();
-
-        FlagDelegator.NotifySubjectWrapper(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<bool>()
         {
             Instance = gameObject,
             SubjectType = typeof(CameraShake)
-        }, CancellationToken.None);
+        }, this);
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
         {
             Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, CancellationToken.None);
+        }, this);
     }
 
     void Update()
@@ -49,13 +47,17 @@ public class CameraFollow : MonoBehaviour, IObserver<bool>, IObserver<IEntityTra
         }
     }
 
-    public void OnNotify(bool data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(IEntityTransform value)
     {
-        ShouldFollowPlayer = data;
+        PlayersTransform = value.Transform;
+
+        yield return null;
     }
 
-    public void OnNotify(IEntityTransform data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(bool value)
     {
-        PlayersTransform = data.Transform;
+        ShouldFollowPlayer = value;
+
+        yield return null;
     }
 }

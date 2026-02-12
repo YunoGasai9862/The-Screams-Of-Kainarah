@@ -1,14 +1,14 @@
+using Assets.Scripts.Interfaces.Mediator.EnhancedV4;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILightPreprocess>, ISubject<LightPackage>, ILightPackageGenerator
-{
-    private LightPackageDelegator LightPackageDelegator { get; set; }
 
-    private LightPreprocessDelegator LightPreprocessDelegator { get; set; }
+public class CelestialBodiesLightPackageGenerator : MonoBehaviour, INotify<ILightPreprocess>, IRequest<LightPackage>, ILightPackageGenerator
+{
+    private Delegator Delegator { get; set; }
 
     [SerializeField]
     LightProperties lightProperties;
@@ -35,18 +35,13 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
 
         await SetupCancellationTokens();
 
-        LightPreprocessDelegator = await Helper.GetDelegator<LightPreprocessDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        LightPackageDelegator = await Helper.GetDelegator<LightPackageDelegator>();
-
-        LightPreprocessDelegator.NotifySubjectWrapper(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<ILightPreprocess>()
         {
             Instance = gameObject,
             SubjectType = typeof(CelestialBodyLightning)
-        }, CancellationToken.None);
-
-        //subject for custom lightning
-        LightPackageDelegator.AddToSubjectsDict(typeof(CelestialBodiesLightPackageGenerator).ToString(), gameObject.name, new Subject<LightPackage>(this, typeof(LightPackage)));
+        }, this);
     }
 
 
@@ -62,17 +57,8 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         };
     }
 
-    private IEnumerator PrepareDataForCustomLightningGeneration(IObserver<LightPackage> observer)
-    {
-        yield return new WaitUntil(() => IsReadyToCustomLightningEntity());
-
-        StartCoroutine(PingCustomLightning(PrepareLightPackage(), observer, delayBetweenExecution));
-    }
-
-
     public async void OnNotifySubject(IObserver<LightPackage> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(PrepareDataForCustomLightningGeneration(data));
     }
 
     private async Task SetupCancellationTokens()
@@ -82,18 +68,13 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
         CancellationToken = CancellationTokenSource.Token;
     }
 
-    public void OnNotify(ILightPreprocess data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        CelestialLightningLightPreprocess = data;
-    }
-
-    public IEnumerator PingCustomLightning(LightPackage lightPackage, IObserver<LightPackage> observer, float delayPerExecutionInSeconds = 1)
+    public IEnumerator PingCustomLightning(LightPackage lightPackage, INotify<LightPackage> observer, float delayPerExecutionInSeconds = 1)
     {
         while(true)
         {
             lightPackage.LightSemaphore.WaitAsync();
 
-            StartCoroutine(LightPackageDelegator.NotifyObserver(observer, lightPackage, new ObserverContext()
+            StartCoroutine(Delegator.NotifyObserver(observer, lightPackage, new ObserverContext()
             {
                 SubjectType = typeof(CelestialBodiesLightPackageGenerator)
             }, lightPackage.CancellationToken, lightPackage.LightSemaphore));
@@ -107,8 +88,22 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, IObserver<ILi
     {
         return !Helper.AreObjectsNull(new List<UnityEngine.Object>
         {
-            LightPreprocessDelegator
+            Delegator
         })
             && CelestialLightningLightPreprocess != null;
+    }
+
+    public IEnumerator Request(INotify<LightPackage> obsever)
+    {
+        yield return new WaitUntil(() => IsReadyToCustomLightningEntity());
+
+        StartCoroutine(PingCustomLightning(PrepareLightPackage(), obsever, delayBetweenExecution));
+    }
+
+    public IEnumerator Notify(ILightPreprocess value)
+    {
+        CelestialLightningLightPreprocess = value;
+
+        yield return null;
     }
 }
