@@ -1,45 +1,58 @@
+using Assets.Annotations;
 using System.Collections;
 using System.Threading;
 using UnityEngine;
 
-public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericStateBundle<GameStateBundle>>
+[Observer(ObserverType = typeof(DialogueTriggerManager), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+[Observer(ObserverType = typeof(DialogueTriggerManager), SubjectType = typeof(DialogueManager), ContextType = typeof(DialogueManager))]
+public class DialogueTriggerManager : MonoBehaviour, INotify<GenericStateBundle<GameStateBundle>>, INotify<DialogueManager>
 {
-    private int DialogueCounter { get; set; } = 0;
-    private GenericStateBundle<GameStateBundle> GameStateBundle { get; set; } = new GenericStateBundle<GameStateBundle>();
-    private SemaphoreSlim SemaphoreSlim { get; set;} =  new SemaphoreSlim(1);
-
     [SerializeField]
     public DialogueTriggerEvent dialogueTriggerEvent;
     [SerializeField]
     public GameStateEvent gameStateEvent;
 
-    private GlobalGameStateDelegator GlobalGameStateDelegator { get; set; }
+    private Delegator Delegator { get; set; }
+
+    private DialogueManager DialogueManager { get; set; }
+    private int DialogueCounter { get; set; } = 0;
+    private GenericStateBundle<GameStateBundle> GameStateBundle { get; set; } = new GenericStateBundle<GameStateBundle>();
+    private SemaphoreSlim SemaphoreSlim { get; set; } = new SemaphoreSlim(1);
 
     private async void Start()
     {
         await dialogueTriggerEvent.AddListener(TriggerCoroutine);
 
-        GlobalGameStateDelegator = await Helper.GetDelegator<GlobalGameStateDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        GlobalGameStateDelegator.NotifySubjectWrapper(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {
             Instance = gameObject,
             SubjectType = typeof(GameStateConsumer)
 
-        }, CancellationToken.None);
+        }, this);
+
+        Delegator.NotifySubjectWrapper(new ObserverContext<DialogueManager>()
+        {
+            Instance = gameObject,
+            SubjectType = typeof(DialogueManager)
+
+        }, this);
     }
 
     private IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
+        yield return new WaitUntil(() => DialogueManager != null);
+
         BroadcastGameState(new State<GameState>() { CurrentState = GameState.DIALOGUE_TAKING_PLACE, IsConcluded = false });
 
         foreach (DialogueSetup dialogue in dialogueSystem.DialogueSetup)
         {
-            SceneSingleton.GetDialogueManager().PrepareDialoguesQueue(dialogue);
+            DialogueManager.PrepareDialoguesQueue(dialogue);
 
             SemaphoreSlim.Wait();
 
-            StartCoroutine(SceneSingleton.GetDialogueManager().StartDialogue(SemaphoreSlim));
+            StartCoroutine(DialogueManager.StartDialogue(SemaphoreSlim));
 
             DialogueCounter++;
 
@@ -77,6 +90,19 @@ public class DialogueTriggerManager : MonoBehaviour, IObserver<GenericStateBundl
 
     public void OnNotify(GenericStateBundle<GameStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        GameStateBundle = data;
+    }
+
+    public IEnumerator Notify(GenericStateBundle<GameStateBundle> value)
+    {
+        GameStateBundle = value;
+
+        yield return null;
+    }
+
+    public IEnumerator Notify(DialogueManager value)
+    {
+        DialogueManager = value;
+
+        yield return null;
     }
 }

@@ -1,4 +1,6 @@
 
+using Amazon.Runtime.Internal;
+using Assets.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +9,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DialogueManager : MonoBehaviour
+[Subject(SubjectType = typeof(DialogueManager), ContextType = typeof(DialogueManager))]
+public class DialogueManager : MonoBehaviour, IRequest<DialogueManager>
 { 
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
     private const float ANIMATION_DELAY = 0.05f;

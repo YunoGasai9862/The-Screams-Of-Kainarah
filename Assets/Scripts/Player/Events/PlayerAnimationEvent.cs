@@ -1,10 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerAnimationEvent : MonoBehaviour, IObserver<EntityPoolManager>
+public class PlayerAnimationEvent : MonoBehaviour, INotify<EntityPoolManager>
 {
     [SerializeField]
     private string iceTrailTag;
@@ -13,17 +12,17 @@ public class PlayerAnimationEvent : MonoBehaviour, IObserver<EntityPoolManager>
 
     private EntityPoolManager EntityPoolManager { get; set; }
 
-    private EntityPoolManagerDelegator EntityPoolManagerDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private List<GameObject> PooledIceTrails { get; set; } = new List<GameObject>();
 
     private async void Start()
     {
-        EntityPoolManagerDelegator = await Helper.GetDelegator<EntityPoolManagerDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
         PlayerBoostAttackEvent = await Helper.GetCustomEvent<PlayerBoostAttackEvent>();
 
-        EntityPoolManagerDelegator.NotifySubjectWrapper(this, Helper.BuildNotificationContext(gameObject, typeof(EntityPoolManager)), CancellationToken.None);
+        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<EntityPoolManager>(gameObject, typeof(EntityPoolManager)), this);
     }
 
     public void IceTrailAnimation()
@@ -41,11 +40,11 @@ public class PlayerAnimationEvent : MonoBehaviour, IObserver<EntityPoolManager>
         PlayerBoostAttackEvent.Invoke(false);
     }
 
-    private async Task<List<GameObject>> GetObjects(string tag)
+    private List<GameObject> GetObjects(string tag)
     {
         List<GameObject> objects = new List<GameObject>();  
 
-        List<EntityPool> entityPools = await GetPooledEntities(tag);
+        List<EntityPool> entityPools = GetPooledEntities(tag);
 
         if (entityPools.Count == 0)
         {
@@ -57,15 +56,17 @@ public class PlayerAnimationEvent : MonoBehaviour, IObserver<EntityPoolManager>
         return objects;
     }
 
-    private Task<List<EntityPool>> GetPooledEntities(string tag)
+    private List<EntityPool> GetPooledEntities(string tag)
     {
-        return Task.FromResult(EntityPoolManager.GetPooledEntity(tag));
+        return EntityPoolManager.GetPooledEntity(tag);
     }
 
-    public async void OnNotify(EntityPoolManager data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(EntityPoolManager value)
     {
-        EntityPoolManager = data;
+        EntityPoolManager = value;
 
-        PooledIceTrails = await GetObjects(iceTrailTag);
+        PooledIceTrails = GetObjects(iceTrailTag);
+
+        yield return null;
     }
 }

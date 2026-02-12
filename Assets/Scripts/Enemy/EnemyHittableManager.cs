@@ -1,17 +1,20 @@
 
+using Assets.Annotations;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using EnemyHittable;
+using System.Collections;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using EnemyHittable;
-using System.Threading;
-public class EnemyHittableManager : MonoBehaviour, ISubject<EnemyHittableManager>
+
+[Subject(SubjectType = typeof(EnemyHittableManager), ContextType = typeof(EnemyHittableManager))]
+public class EnemyHittableManager : MonoBehaviour, IRequest<EnemyHittableManager>
 {
-   private EnemyHittableManagerDelegator EnemyHittableManagerDelegator { get; set; }
+   private Delegator Delegator { get; set; }
 
     private async void Start()
     {
-        EnemyHittableManagerDelegator = await Helper.GetDelegator<EnemyHittableManagerDelegator>();
-
-        EnemyHittableManagerDelegator.AddToSubjectsDict(typeof(EnemyHittableManager).ToString(), gameObject.name, new Subject<EnemyHittableManager>(this, typeof(EnemyHittableManager)));
+        Delegator = await Helper.GetDelegator<Delegator>();
     }
 
     public Task<bool> IsEntityAnAttackObject(Collider2D collider, EnemyHittableObjects objects)
@@ -31,10 +34,16 @@ public class EnemyHittableManager : MonoBehaviour, ISubject<EnemyHittableManager
 
     public void OnNotifySubject(IObserver<EnemyHittableManager> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
     {
-        StartCoroutine(EnemyHittableManagerDelegator.NotifyObserver(data, this, new ObserverContext()
-        {
-            SubjectType = typeof(EnemyHittableManager)
+    
+    }
 
-        }, CancellationToken.None));
+    public IEnumerator Request()
+    {
+        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<EnemyHittableManager>()
+        {
+            EntityType = typeof(EnemyHittableManager),
+            Data = this
+
+        }, this));
     }
 }

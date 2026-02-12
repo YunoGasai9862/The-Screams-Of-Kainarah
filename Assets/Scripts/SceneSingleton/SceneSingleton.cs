@@ -19,9 +19,6 @@ public class SceneSingleton : MonoBehaviour, IRequest<SceneSingleton>
     private static EntitiesToResetActionListener _entitiesToResetActionListener { get; set; }
     private static CheckPointActionListener _checkpointActionListener { get; set; }
     private static CheckpointColliderListener _checkpointColliderListener { get; set; }
-
-    private static DialogueManager _dialogueManager { get; set; }
-
     private Delegator Delegator { get; set; }
 
 
@@ -32,7 +29,6 @@ public class SceneSingleton : MonoBehaviour, IRequest<SceneSingleton>
         _entitiesToResetActionListener = FindFirstObjectByType<EntitiesToResetActionListener>();
         _checkpointActionListener = FindFirstObjectByType<CheckPointActionListener>();
         _checkpointColliderListener = FindFirstObjectByType<CheckpointColliderListener>();
-        _dialogueManager = FindFirstObjectByType<DialogueManager>();
     }
 
     public InventoryManager GetInventoryManager()
@@ -43,11 +39,6 @@ public class SceneSingleton : MonoBehaviour, IRequest<SceneSingleton>
     public PlayerActionRelayer GetPlayerHelperClassObject()
     {
         return _playerHelperClassForOtherPurposes;
-    }
-
-    public DialogueManager GetDialogueManager()
-    {
-        return _dialogueManager;
     }
     public EntitiesToResetActionListener GetEntitiesToResetListenerObject()
     {
