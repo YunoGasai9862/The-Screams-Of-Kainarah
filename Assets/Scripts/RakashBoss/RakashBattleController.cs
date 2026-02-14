@@ -1,10 +1,11 @@
+using Assets.Annotations;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>
+[Observer(ObserverType = typeof(RakashBattleController), SubjectType = typeof(RakashManager), ContextType = typeof(Health))]
+public class RakashBattleController : MonoBehaviour, INotify<Health>, IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>
 {
     [SerializeField]
     GameObject rakashDeadBodyPrefab;
@@ -13,7 +14,7 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
 
     private List<RakashAttack> BlockingAttacks { get; set; }
 
-    private HealthDelegator HealthDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private const float HEALTH_DEPLETED_MARK = 0;
 
@@ -25,7 +26,7 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
     {
         AnimationUtility = new AnimationUtility();
 
-        HealthDelegator = await Helper.GetDelegator<HealthDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
         BlockingAttacks = new List<RakashAttack>()
         {
@@ -34,12 +35,12 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
            RakashAttack.ATTACK_02
         };
 
-        HealthDelegator.NotifySubjectWrapper(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<Health>()
         {
             Instance = gameObject,
             SubjectType = typeof(RakashManager)
 
-        }, CancellationToken.None);
+        }, this);
     }
 
     private IEnumerator Attack(AttackAnimationPackage value)
@@ -146,8 +147,10 @@ public class RakashBattleController : MonoBehaviour, IObserver<Health>, IReceive
 
     }
 
-    public void OnNotify(Health data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(Health value)
     {
-        RakashHealth = data;
+        RakashHealth = value;
+
+        yield return null;
     }
 }

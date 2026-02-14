@@ -1,28 +1,29 @@
-using System.Threading;
-using System.Threading.Tasks;
+using Assets.Annotations;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthBar : MonoBehaviour, IObserver<IEntityHealth>
+[Observer(ObserverType = typeof(HealthBar), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityHealth))]
+public class HealthBar : MonoBehaviour, INotify<IEntityHealth>
 {
 
     [SerializeField] Image Fill;
     [SerializeField] Slider slide;
     [SerializeField] Gradient gr;
 
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private Health PlayerHealth { get; set; }
 
     private async void Start()
     {
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<IEntityHealth>()
         {
             Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, CancellationToken.None);
+        }, this);
 
         Fill.color = gr.Evaluate(slide.value);
     }
@@ -44,8 +45,10 @@ public class HealthBar : MonoBehaviour, IObserver<IEntityHealth>
         Fill.color = gr.Evaluate(slide.value / 100.0f);
     }
 
-    public void OnNotify(IEntityHealth data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(IEntityHealth value)
     {
-        PlayerHealth = data.Health;
+        PlayerHealth = value.Health;
+
+        yield return null;
     }
 }

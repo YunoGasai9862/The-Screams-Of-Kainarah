@@ -1,13 +1,33 @@
-using System.Threading;
-using System.Threading.Tasks;
+using Assets.Annotations;
+using System.Collections;
 using UnityEngine;
-using UnityEngineInternal;
-public class OpenWares : MonoBehaviour, IObserver<GenericStateBundle<GameStateBundle>>, INotify<bool>
+
+[Observer(SubjectType = typeof(PickableItems), ObserverType = typeof(OpenWares), ContextType = typeof(bool))]
+[Observer(SubjectType = typeof(GameStateConsumer), ObserverType = typeof(OpenWares), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+
+public class OpenWares : MonoBehaviour, INotify<GenericStateBundle<GameStateBundle>>, INotify<bool>
 {
     [SerializeField] GameObject MagicCircle;
     [SerializeField] GameObject WaresPanel;
     [SerializeField] GameStateEvent gameStateEvent;
     private GenericStateBundle<GameStateBundle> GameStateBundle { get; set; } = new GenericStateBundle<GameStateBundle>();
+
+    private Delegator Delegator { get; set; }
+
+    private async void Awake()
+    {
+        Delegator = await Helper.GetDelegator<Delegator>();
+    }
+
+    private void Start()
+    {
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<GameStateBundle>>()
+        {
+            Instance = gameObject,
+            EntityType = typeof(OpenWares),
+            SubjectType = typeof(GameStateConsumer)
+        }, this));
+    }
 
     private void OnMouseDown()
     {
@@ -21,23 +41,26 @@ public class OpenWares : MonoBehaviour, IObserver<GenericStateBundle<GameStateBu
         }
     }
 
-    public void OnNotify(GenericStateBundle<GameStateBundle> data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-        GameStateBundle = data;
-
-        if (GameStateBundle.StateBundle.GameState.CurrentState.Equals(GameState.FREE_MOVEMENT))
-        {
-            WaresPanel.SetActive(false);
-        }
-    }
-
-    public Task Notify(bool value)
+    //not sure as of yet!!!
+    public IEnumerator Notify(bool value)
     {
         if (value)
         {
             MagicCircle.SetActive(true);
         }
 
-        return Task.CompletedTask;
+        yield return null;
+    }
+
+    public IEnumerator Notify(GenericStateBundle<GameStateBundle> value)
+    {
+        GameStateBundle = value;
+
+        if (GameStateBundle.StateBundle.GameState.CurrentState.Equals(GameState.FREE_MOVEMENT))
+        {
+            WaresPanel.SetActive(false);
+        }
+
+        yield return null;
     }
 }

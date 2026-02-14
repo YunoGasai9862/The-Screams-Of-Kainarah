@@ -1,19 +1,23 @@
 
+using Assets.Annotations;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System;
-using System.Threading;
+using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PickableItems", menuName = "Scriptable Pickable Items")]
 [Asset(Asset.SCRIPTABLE_OBJECT, "PickableItems", InstantiationOrder = 2)]
-public class PickableItems : ScriptableObject, ISubject<ScriptableObject>, IDelegate
+[Subject(SubjectType = typeof(PickableItems), ContextType = typeof(ScriptableObject))]
+public class PickableItems : ScriptableObject, IRequest<ScriptableObject>, IDelegate
 {
-    private ScriptableObjectDelegator ScriptableObjectDelegator { get; set; }
+    private Delegator Delegator { get; set; }
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
 
     private void OnEnable()
     {
         InvokeCustomMethod += SetupAsSubject;
     }
+
 
     [Serializable]
     public class PickableEntities
@@ -25,19 +29,20 @@ public class PickableItems : ScriptableObject, ISubject<ScriptableObject>, IDele
 
     public PickableEntities[] pickableEntities;
 
-    public void OnNotifySubject(IObserver<ScriptableObject> observer, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
-    {
-        ScriptableObjectDelegator.NotifyObjectWrapper(observer, (PickableItems) this, new ObserverContext()
-        {
-            SubjectType = typeof(PickableItems),
-
-        }, CancellationToken.None);
-    }
-
     public async void SetupAsSubject()
     {
-        ScriptableObjectDelegator = await Helper.GetDelegator<ScriptableObjectDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
+    }
 
-        ScriptableObjectDelegator.AddToSubjectsDict(typeof(PickableItems).ToString(), typeof(PickableItems).ToString(), new Subject<ScriptableObject>(this, typeof(ScriptableObject)));
+    public IEnumerator Request()
+    {
+       Delegator.NotifyObserversWrapper(new SubjectContext<ScriptableObject>()
+        {
+            EntityType = typeof(PickableItems),
+            Data = (PickableItems)this
+
+        }, this);
+
+        yield return null;
     }
 }

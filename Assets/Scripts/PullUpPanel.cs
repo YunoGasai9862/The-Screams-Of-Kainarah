@@ -1,8 +1,9 @@
+using Assets.Annotations;
 using System.Collections;
-using System.Threading;
 using UnityEngine;
 
-public class PullUpPanel : MonoBehaviour, IObserver<bool>
+[Observer(ObserverType = typeof(PullUpPanel), SubjectType = typeof(TriggerHandler), ContextType = typeof(bool))]
+public class PullUpPanel : MonoBehaviour, INotify<bool>
 {
     private const string SUFFICIENT_FUNDS_ANIMATION_CONDITION = "SufficientFunds";
 
@@ -10,18 +11,22 @@ public class PullUpPanel : MonoBehaviour, IObserver<bool>
 
     private Animator m_anim;
 
-    [SerializeField]
-    private FlagDelegator flagDelegator;
+    private Delegator Delegator { get; set; }
+
+    private async void Awake()
+    {
+        Delegator = await Helper.GetDelegator<Delegator>();
+    }
 
     void Start()
     {
         m_anim = GetComponent<Animator>();
 
-        StartCoroutine(flagDelegator.NotifySubject(this, new ObserverContext() {
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<bool>() {
             Instance = gameObject,
             SubjectType = typeof(TriggerHandler)
 
-        }, CancellationToken.None));
+        }, this));
     }
 
     IEnumerator RunAnimation(bool data, float waitingTime)
@@ -33,13 +38,13 @@ public class PullUpPanel : MonoBehaviour, IObserver<bool>
         m_anim.SetBool(SUFFICIENT_FUNDS_ANIMATION_CONDITION, !data);
     }
 
-    public void OnNotify(bool data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(bool value)
     {
-        if (data)
+        if (value)
         {
-            return;
+            yield return null;
         }
 
-        StartCoroutine(RunAnimation(data, WAITING_TIME));
+        yield return StartCoroutine(RunAnimation(value, WAITING_TIME));
     }
 }

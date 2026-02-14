@@ -1,16 +1,19 @@
+using Assets.Annotations;
 using System;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
+[Observer(ObserverType = typeof(MoonMovement), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
+public class MoonMovement : MonoBehaviour, INotify<IEntityTransform>
 {
     [Header("Custom Variables")]
     [SerializeField] float moonSpeed;
     [SerializeField] float XOffset, YOffset, ZOffset;
     [SerializeField] float distanceBetweenPlayerAndMoon;
 
-    private PlayerAttributesDelegator PlayerAttributesDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
     private CancellationTokenSource cancellationTokenSource;
@@ -23,13 +26,13 @@ public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
 
-        PlayerAttributesDelegator = await Helper.GetDelegator<PlayerAttributesDelegator>();
+        Delegator = await Helper.GetDelegator<Delegator>();
 
-        PlayerAttributesDelegator.NotifySubjectWrapper(this, new ObserverContext()
+        Delegator.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
         {
             Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, CancellationToken.None);
+        }, this);
     }
     async void Update()
     {
@@ -73,8 +76,10 @@ public class MoonMovement : MonoBehaviour, IObserver<IEntityTransform>
         semaphoreSlim.Release();
     }
 
-    public void OnNotify(IEntityTransform data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(IEntityTransform value)
     {
-        PlayerTransform = data.Transform;
+        PlayerTransform = value.Transform;
+
+        yield return null;
     }
 }

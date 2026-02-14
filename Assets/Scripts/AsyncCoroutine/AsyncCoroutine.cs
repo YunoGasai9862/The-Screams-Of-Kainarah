@@ -1,18 +1,18 @@
+using Assets.Annotations;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 [Asset(Asset.MONOBEHAVIOR,  "AsyncCoroutine", InstantiationOrder = 5)]
-public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IAsyncCoroutine<WaitUntil>, ISubject<AsyncCoroutine>
+[Subject(SubjectType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
+public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IAsyncCoroutine<WaitUntil>, IRequest<AsyncCoroutine>
 {
-    private AsyncCoroutineDelegator m_asyncCoroutineDelegator;
+    private Delegator Delegator { get; set; }
     private async void Start()
     {
-        m_asyncCoroutineDelegator = await Helper.GetDelegator<AsyncCoroutineDelegator>();
-
-        m_asyncCoroutineDelegator.AddToSubjectsDict(typeof(AsyncCoroutine).ToString(), name, new Subject<AsyncCoroutine>(this, typeof(AsyncCoroutine)));
+        Delegator = await Helper.GetDelegator<Delegator>();
     }
 
     public async Task ExecuteAsyncCoroutine(IAsyncEnumerator<WaitForSeconds> asyncCoroutine)
@@ -31,8 +31,8 @@ public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IA
         }
     }
 
-    public void OnNotifySubject(IObserver<AsyncCoroutine> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public IEnumerator Request()
     {
-        StartCoroutine(m_asyncCoroutineDelegator.NotifyObserver(data, this, context, cancellationToken: cancellationToken));
+       yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<AsyncCoroutine>() { Data = this, EntityType = typeof(AsyncCoroutine) }, this));
     }
 }

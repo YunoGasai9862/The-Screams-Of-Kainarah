@@ -1,17 +1,18 @@
-using System;
+using Assets.Annotations;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<ILightPreprocess>
+
+[Subject(SubjectType = typeof(LightFlicker), ContextType = typeof(LightFlicker))]
+public class LightFlicker : MonoBehaviour, ILightPreprocess, IRequest<ILightPreprocess>
 {
-    private LightPreprocessDelegator LightPreprocessDelegator { get; set; }
+    private Delegator Delegator { get; set; }
 
     private async void Start()
     {
-        LightPreprocessDelegator = await Helper.GetDelegator<LightPreprocessDelegator>();
-
-        LightPreprocessDelegator.AddToSubjectsDict(typeof(LightFlicker).ToString(), gameObject.name, new Subject<ILightPreprocess>(this, typeof(LightFlicker)));
+        Delegator = await Helper.GetDelegator<Delegator>();
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0)
@@ -30,16 +31,15 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, ISubject<ILightPrep
 
     public Task<float> GenerateLightIntensityAsync(float minIntensity, float maxIntensity)
     {
-        return Task.FromResult(UnityEngine.Random.Range(minIntensity, maxIntensity));
+        return Task.FromResult(Random.Range(minIntensity, maxIntensity));
     }
     public Task<float> GenerateLightRadia(float minRadia, float maxRadia)
     {
-        return Task.FromResult(UnityEngine.Random.Range(minRadia, maxRadia));
+        return Task.FromResult(Random.Range(minRadia, maxRadia));
     }
 
-
-    public void OnNotifySubject(IObserver<ILightPreprocess> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public IEnumerator Request()
     {
-        StartCoroutine(LightPreprocessDelegator.NotifyObserver(data, this, context, cancellationToken, semaphoreSlim));
+        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<LightFlicker>() { Data = this, EntityType = typeof(LightFlicker)}, this));
     }
 }
