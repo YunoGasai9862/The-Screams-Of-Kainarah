@@ -28,7 +28,7 @@ public abstract class BaseState<T>: MonoBehaviour, IRequest<GenericStateBundle<T
 
         foreach (INotify<GenericStateBundle<T>> listener in StateListeners)
         {
-            Delegator.NotifyObserverWrapper(new SubjectContext<GenericStateBundle<T, Z>>()
+            Delegator.NotifyObserverWrapper(new SubjectContext<GenericStateBundle<T>>()
             {
 
                 EntityType = typeof(BaseState<T>),

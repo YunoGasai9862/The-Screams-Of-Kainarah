@@ -1,10 +1,9 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV2;
+using Assets.Scripts.Interfaces.Mediator.Base;
 using Assets.Scripts.ScenePersistence.Models;
 using PlayerHittableItemsNS;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -25,6 +24,7 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
     [SerializeField] string[] checkpointTags;
     [SerializeField] float playerHealth;
     [SerializeField] MainThreadDispatcherEvent mainThreadDispatcherEvent;
+    [SerializeField] EntitiesToReset entitiesToReset;
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
@@ -49,19 +49,19 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
             Debug.Log($"Exception: {ex.StackTrace}");
         }
 
-        StartCoroutine(Delegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
         {
             Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
 
-        }, CancellationToken.None));
+        }, this));
 
-        StartCoroutine(Delegator.NotifySubject(this, new ObserverContext()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<ScriptableObject>()
         {
             Instance = gameObject,
             SubjectType = typeof(PickableItems)
 
-        }, CancellationToken.None));
+        }, this));
     }
     private async void Awake()
     {
@@ -80,13 +80,13 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
         {
             anim.SetBool(PlayerAnimationField.Death.ToString(), true);
 
-            SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<EntitiesToReset>(PlayerObserverListenerHelper.EntitiesToReset, SceneSingleton.EntitiesToReset);
-
-            if (!_cancellationTokenSource.IsCancellationRequested)
+            Delegator.NotifyObserversWrapper(new SubjectContext<EntitiesToReset>()
             {
-                SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, lockingThread : GetCheckPointSemaphore);
-
-            }
+                Data = entitiesToReset,
+                EntityType = typeof(PlayerActionRelayer),
+            }, this);
+            
+             SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, lockingThread : GetCheckPointSemaphore);
         }
         
     }
@@ -180,9 +180,11 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
             if (shouldBedisabled)
                 collision.gameObject.SetActive(false);
 
-            bool shouldMusicBePlayed = true;
-
-            await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<bool>(PlayerObserverListenerHelper.BoolSubjects, shouldMusicBePlayed);
+            Delegator.NotifyObserversWrapper(new SubjectContext<bool>()
+            {
+                Data = true,
+                EntityType = typeof(PlayerActionRelayer),
+            }, this);
         }
 
         await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<Collider2D>(PlayerObserverListenerHelper.ColliderSubjects, collision);
@@ -270,26 +272,6 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
         Player = value;
 
         yield return null;
-    }
-
-    public IEnumerator<DialoguesAndOptions.DialogueSystem> Request()
-    {
-        throw new NotImplementedException();
-    }
-
-    IEnumerator<EntitiesToReset> IRequest<EntitiesToReset>.Request()
-    {
-        throw new NotImplementedException();
-    }
-
-    IEnumerator<bool> IRequest<bool>.Request()
-    {
-        throw new NotImplementedException();
-    }
-
-    IEnumerator<Collider2D> IRequest<Collider2D>.Request()
-    {
-        throw new NotImplementedException();
     }
 }
 

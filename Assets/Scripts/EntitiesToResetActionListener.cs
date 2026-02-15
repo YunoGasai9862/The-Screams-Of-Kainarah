@@ -1,20 +1,13 @@
+using Assets.Annotations;
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
-public class EntitiesToResetActionListener : MonoBehaviour, IObserver<EntitiesToReset>
+[Observer(ObserverType = typeof(EntitiesToResetActionListener), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(EntitiesToReset))]
+public class EntitiesToResetActionListener : MonoBehaviour, INotify<EntitiesToReset>
 {
-    private void OnEnable()
-    {
-        PlayerObserverListenerHelper.EntitiesToReset.AddObserver(this);
-    }
-    private void OnDisable()
-    {
-        PlayerObserverListenerHelper.EntitiesToReset.RemoveOberver(this);
-    }
-    private Task ResetAttributes(EntitiesToReset Data)
+    private IEnumerator ResetAttributes(EntitiesToReset Data)
     {
         foreach(var entity in Data.entitiesToReset)
         {
@@ -22,14 +15,12 @@ public class EntitiesToResetActionListener : MonoBehaviour, IObserver<EntitiesTo
 
             entity.absractEntity.Health.CurrentHealth = entity.absractEntity.Health.MaxHealth; //reset health
         }
-        return Task.CompletedTask;
+        
+        yield return null;  
     }
 
-    public async void OnNotify(EntitiesToReset data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(EntitiesToReset value)
     {
-        if (data != null)
-        {
-            await ResetAttributes(data);
-        }
+        yield return StartCoroutine(ResetAttributes(value));
     }
 }

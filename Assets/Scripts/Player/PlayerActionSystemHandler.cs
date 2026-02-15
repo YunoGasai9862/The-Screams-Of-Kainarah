@@ -84,21 +84,6 @@ public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INo
         return Task.CompletedTask;
     }
 
-    private void OnEnable()
-    {
-        PlayerObserverListenerHelper.ColliderSubjects.AddObserver(this); //Add PlayerActionSystem as an observer
-    }
-
-    private void OnDisable()
-    {
-        PlayerObserverListenerHelper.ColliderSubjects.RemoveOberver(this); //Remove PlayerActionSystem as an observer when an event is handled/or the observer is no longer needed
-    }
-
-    public void OnNotify(Collider2D data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-      
-    }
-
     public IEnumerator Notify(Collider2D value)
     {
         if (_playerActionHandlerDic.TryGetValue(value.tag, out var invokeFunc))

@@ -1,8 +1,10 @@
-using System.Threading;
+using Assets.Annotations;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MusicManager : MonoBehaviour, IObserver<bool>
+[Observer(ObserverType = typeof(MusicManager), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(bool))]
+public class MusicManager : MonoBehaviour, INotify<bool>
 {
     [SerializeField] Toggle menuToggleSound;
     [SerializeField] AudioSource _bgGameMusic;
@@ -11,22 +13,25 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
     GlobalEnums.GameMusicState _gameState;
 
     private bool shouldPlayPickUpAudio;
+
+    private Delegator Delegator { get; set; }
+
+    private async void Awake()
+    {
+         Delegator = await Helper.GetDelegator<Delegator>();
+
+         Delegator.NotifySubjectWrapper(new ObserverContext<bool>()
+        {
+            Instance = gameObject,
+            SubjectType = typeof(PlayerActionRelayer),
+        }, this);
+    }
     void Start()
     {
         _gameState = GlobalEnums.GameMusicState.BACKGROUNDMUSIC;
         ChannelMusic(_gameState);
     }
 
-    private void OnEnable()
-    {
-        PlayerObserverListenerHelper.BoolSubjects.AddObserver(this);
-    }
-
-    private void OnDisable()
-    {
-        PlayerObserverListenerHelper.BoolSubjects.RemoveOberver(this);
-    }
-    // Update is called once per frame
     void Update()
     {
         if (menuToggleSound.isOn)
@@ -91,9 +96,10 @@ public class MusicManager : MonoBehaviour, IObserver<bool>
 
     }
 
-
-    void IObserver<bool>.OnNotify(bool data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(bool value)
     {
-        shouldPlayPickUpAudio = true;
+        shouldPlayPickUpAudio = value;
+
+        yield return null;
     }
 }
