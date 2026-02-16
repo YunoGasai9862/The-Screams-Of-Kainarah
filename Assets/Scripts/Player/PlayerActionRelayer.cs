@@ -4,7 +4,6 @@ using Assets.Scripts.ScenePersistence.Models;
 using PlayerHittableItemsNS;
 using System;
 using System.Collections;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,16 +24,15 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
     [SerializeField] float playerHealth;
     [SerializeField] MainThreadDispatcherEvent mainThreadDispatcherEvent;
     [SerializeField] EntitiesToReset entitiesToReset;
+    [SerializeField] DialoguesAndOptions dialoguesAndOptions;
+    [SerializeField] PlayerHittableItemsScriptableObject playerHittableItemsScriptableObject
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
     private bool pickedUp;
     private PickableItemsUtility _pickableItemsUtility;
-    private DialoguesAndOptions.DialogueSystem DialogueSystemFetched { get; set; }
 
     private Player Player { get; set; } = new Player();
-
-    private bool InSight { get; set; }
 
     private Delegator Delegator { get; set; }
 
@@ -99,36 +97,33 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
             GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
 
-        await IsGameObjectInSightForDialogueTrigger(SceneSingleton.DialogueAndOptions, _cancellationToken, GetSemaphore);
+        DialoguesAndOptions.DialogueSystem dialogueSystem = GetDialogueSystem(dialoguesAndOptions);
 
-        if (InSight && DialogueSystemFetched != null && !DialogueSystemFetched.DialogueSettings.DialogueConcluded)
+        if (dialogueSystem != null && !dialogueSystem.DialogueSettings.DialogueConcluded)
         {
-          await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<DialogueSystem>(PlayerObserverListenerHelper.DialogueSystem, DialogueSystemFetched);
+            Delegator.NotifyObserversWrapper(new SubjectContext<DialoguesAndOptions.DialogueSystem>()
+            {
+                Data = dialogueSystem,
+                EntityType = typeof(PlayerActionRelayer),
+            }, this);
         }
 
     }
-    private Task IsGameObjectInSightForDialogueTrigger(DialoguesAndOptions dialogueAndOptions, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim)
+    private DialoguesAndOptions.DialogueSystem GetDialogueSystem(DialoguesAndOptions dialogueAndOptions)
     {
-        InSight = false;
-        DialogueSystemFetched = null;
-
         foreach (var item in dialogueAndOptions.exchange)
         {
-            if (!cancellationToken.IsCancellationRequested && FindingObjects.CastRayToFindObject(gameObject, item.DialogueTriggeringEntity.EntityTag, 3f))
+            if (FindingObjects.CastRayToFindObject(gameObject, item.DialogueTriggeringEntity.EntityTag, 3f))
             {
-                InSight = true;
-                DialogueSystemFetched = item;
-                break;
+                return item;
             }
         }
 
-        semaphoreSlim.Release();
-
-        return Task.CompletedTask;
+        return null;
     }
     private async void OnCollisionEnter2D(Collision2D collision) //FIX THIS TOO
     {
-        if (await CanPlayerBeAttacked(SceneSingleton.PlayerHittableItems, collision.collider))
+        if (await CanPlayerBeAttacked(playerHittableItemsScriptableObject, collision.collider))
         {
             Player.Health.CurrentHealth -= ENEMYATTACK;
         }

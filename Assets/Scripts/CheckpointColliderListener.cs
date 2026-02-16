@@ -1,25 +1,12 @@
+using Assets.Annotations;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
-public class CheckpointColliderListener : MonoBehaviour, IObserver<GameObject>
+[Observer(SubjectType = typeof(PlayerActionRelayer), ObserverType = typeof(CheckpointColliderListener), ContextType = typeof(GameObject))]
+public class CheckpointColliderListener : MonoBehaviour, INotify<GameObject>
 {
-    private CancellationTokenSource _cancellationTokenSource;
-    private CancellationToken _cancellationToken;
-
-    private void OnEnable()
-    {
-        PlayerObserverListenerHelper.MainPlayerListener.AddObserver(this);
-    }
-
-    private void OnDisable()
-    {
-        PlayerObserverListenerHelper.MainPlayerListener.RemoveOberver(this);
-    }
-
-    private async Task RespawnPlayer(GameObject playerObject, CheckPoints checkPointsScriptableObjectFetch, SemaphoreSlim lockingThread)
+    private IEnumerator RespawnPlayer(GameObject playerObject, CheckPoints checkPointsScriptableObjectFetch)
     {
         foreach (var cp in checkPointsScriptableObjectFetch.checkpoints)
         {
@@ -29,15 +16,20 @@ public class CheckpointColliderListener : MonoBehaviour, IObserver<GameObject>
                 _cancellationToken = _cancellationTokenSource.Token;
                 //TODO for the reset animation/Material
                 //await SceneSingleton.PlayerSpawn().ResetAnimationAndMaterialProperties(playerObject, _cancellationToken);
-                await GameStateManager.instance.LoadLastCheckPoint(GameStateManager.instance.GetFileLocationToLoad, lockingThread); //make sure it happens only once
+                GameStateManager.instance.LoadLastCheckPoint(GameStateManager.instance.GetFileLocationToLoad, lockingThread); //make sure it happens only once
             }
         }
+
+        yield return null;
     }
 
     public async void OnNotify(GameObject data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
     {
-        SemaphoreSlim lockingThread = optional[0] as SemaphoreSlim;
 
-        await RespawnPlayer(data, SceneSingleton.CheckPoints, lockingThread);
+    }
+
+    public IEnumerator Notify(GameObject value)
+    {
+        yield return RespawnPlayer(value, SceneSingleton.CheckPoints);
     }
 }
