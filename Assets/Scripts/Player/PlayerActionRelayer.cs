@@ -25,7 +25,7 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
     [SerializeField] MainThreadDispatcherEvent mainThreadDispatcherEvent;
     [SerializeField] EntitiesToReset entitiesToReset;
     [SerializeField] DialoguesAndOptions dialoguesAndOptions;
-    [SerializeField] PlayerHittableItemsScriptableObject playerHittableItemsScriptableObject
+    [SerializeField] PlayerHittableItemsScriptableObject playerHittableItemsScriptableObject;
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
@@ -185,40 +185,40 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
         await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<Collider2D>(PlayerObserverListenerHelper.ColliderSubjects, collision);
 
     }
-    private async Task CheckpointCollisionHandler(Collider2D collision)
+    private void CheckpointCollisionHandler(Collider2D collision)
     {
-        if (await GetOneOfTheCheckPoints(collision.tag, checkpointTags))
+        if (GetOneOfTheCheckPoints(collision.tag, checkpointTags))
         {
             //call checkpoint replacement 
-            CheckPoints.Checkpoint checkpoint = await GetCheckPointFromScriptableObject(SceneSingleton.CheckPoints, collision.tag);
+            CheckPoints.Checkpoint checkpoint = GetCheckPointFromScriptableObject(SceneSingleton.CheckPoints, collision.tag);
 
             collision.gameObject.SetActive(false); //turn it off
 
-            await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<>(PlayerObserverListenerHelper.CheckPointsObserver, checkpoint);
+            SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<>(PlayerObserverListenerHelper.CheckPointsObserver, checkpoint);
 
         }
     }
 
-    private Task<CheckPoints.Checkpoint> GetCheckPointFromScriptableObject(CheckPoints checkpointsScriptableObject, string tag)
+    private CheckPoints.Checkpoint GetCheckPointFromScriptableObject(CheckPoints checkpointsScriptableObject, string tag)
     {
         foreach(var cp in checkpointsScriptableObject.checkpoints)
         {
             if(string.Compare(tag, cp.checkpoint.transform.tag, true)==0)
             {
-                return Task.FromResult(cp);
+                return cp;
             }
         }
         return null;
     }
 
-    private Task<bool> GetOneOfTheCheckPoints(string tag, string[] tags)
+    private bool GetOneOfTheCheckPoints(string tag, string[] tags)
     { 
         foreach(var cpTag in tags)
         {
             if(cpTag==tag)
-                return Task.FromResult(true);
+                return true;
         }
-        return Task.FromResult(false);
+        return false;
     }
 
 

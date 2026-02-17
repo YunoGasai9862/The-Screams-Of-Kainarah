@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
 [Asset(Asset.SCRIPTABLE_OBJECT, "CheckPoints", InstantiationOrder = 3)]
-[CreateAssetMenu(fileName = "CheckpointsScriptableObject", menuName ="Checkpoints Scriptable Object")]
+[CreateAssetMenu(fileName = "CheckpointsScriptableObject", menuName = "Checkpoints Scriptable Object")]
+
 public class CheckPoints : ScriptableObject {
 
     [Serializable]

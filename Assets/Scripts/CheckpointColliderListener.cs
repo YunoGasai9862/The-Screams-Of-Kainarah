@@ -12,20 +12,13 @@ public class CheckpointColliderListener : MonoBehaviour, INotify<GameObject>
         {
             if (cp.shouldRespawn)
             {
-                _cancellationTokenSource = new CancellationTokenSource();
-                _cancellationToken = _cancellationTokenSource.Token;
                 //TODO for the reset animation/Material
-                //await SceneSingleton.PlayerSpawn().ResetAnimationAndMaterialProperties(playerObject, _cancellationToken);
+                await SceneSingleton.PlayerSpawn().ResetAnimationAndMaterialProperties(playerObject, _cancellationToken);
                 GameStateManager.instance.LoadLastCheckPoint(GameStateManager.instance.GetFileLocationToLoad, lockingThread); //make sure it happens only once
             }
         }
 
         yield return null;
-    }
-
-    public async void OnNotify(GameObject data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
-    {
-
     }
 
     public IEnumerator Notify(GameObject value)

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Threading;
 
-public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, ISubject<EntityPoolManager>
+public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IRequest<EntityPoolManager>
 {
     private Dictionary<string, List<EntityPool>> EntityPoolDict { get; set; } = new Dictionary<string, List<EntityPool>>();
 
