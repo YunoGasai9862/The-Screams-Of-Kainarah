@@ -13,8 +13,8 @@ using UnityEngine.SceneManagement;
 [Subject(SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(DialoguesAndOptions.DialogueSystem))]
 [Subject(SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(EntitiesToReset))]
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
-[Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(PickableItems), ContextType = typeof(ScriptableObject))]
-public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHandler, INotify<ScriptableObject>, IRequest<Collider2D>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<EntitiesToReset>
+[Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHandler, INotify<EntityPoolManager>, IRequest<Collider2D>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>
 {
     private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
 
@@ -26,6 +26,7 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
     [SerializeField] EntitiesToReset entitiesToReset;
     [SerializeField] DialoguesAndOptions dialoguesAndOptions;
     [SerializeField] PlayerHittableItemsScriptableObject playerHittableItemsScriptableObject;
+    [SerializeField] CheckPoints checkpoints;
 
     private Animator anim;
     private float ENEMYATTACK = 5f;
@@ -54,7 +55,7 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
 
         }, this));
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<ScriptableObject>()
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<PickableItems>()
         {
             Instance = gameObject,
             SubjectType = typeof(PickableItems)
@@ -190,11 +191,15 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
         if (GetOneOfTheCheckPoints(collision.tag, checkpointTags))
         {
             //call checkpoint replacement 
-            CheckPoints.Checkpoint checkpoint = GetCheckPointFromScriptableObject(SceneSingleton.CheckPoints, collision.tag);
+            CheckPoints.Checkpoint checkpoint = GetCheckPointFromScriptableObject(checkpoints, collision.tag);
 
             collision.gameObject.SetActive(false); //turn it off
 
-            SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<>(PlayerObserverListenerHelper.CheckPointsObserver, checkpoint);
+            Delegator.NotifyObserversWrapper(new SubjectContext<CheckPoints.Checkpoint>()
+            {
+                Data = checkpoint,
+                EntityType = typeof(PlayerActionRelayer),
+            }, this);
 
         }
     }
@@ -255,9 +260,9 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
         data.AddToObjectsToPersist(playerData);
     }
 
-    public IEnumerator Notify(ScriptableObject value)
+    public IEnumerator Notify(PickableItems value)
     {
-        _pickableItemsUtility = new PickableItemsUtility((PickableItems)value);
+        _pickableItemsUtility = new PickableItemsUtility(value);
 
         yield return null;
     }

@@ -2,18 +2,21 @@ using Assets.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using static CheckPoints;
 
-[Observer(ObserverType = typeof(CheckPointActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof({))]
-public class CheckPointActionListener : MonoBehaviour, IObserver<CheckPoints.Checkpoint>, INotify<EntityPoolManager>
+[Observer(ObserverType = typeof(CheckPointActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+[Observer(ObserverType = typeof(CheckPointActionListener), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(CheckPoints.Checkpoint))]
+public class CheckPointActionListener : MonoBehaviour, INotify<CheckPoints.Checkpoint>, INotify<EntityPoolManager>
 {
+    private static string CHECKPOINTS_KEY = "CheckPoints";  
+
     [SerializeField]
     public string saveFileName;
 
     private CheckPoints CheckpointsSO { get; set; }
+
+    private EntityPoolManager EntityPoolManagerInstance { get; set; }
 
     private Delegator Delegator { get; set; }
 
@@ -25,7 +28,7 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<CheckPoints.Che
     {
         Delegator = await Helper.GetDelegator<Delegator>();
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<CheckPoints>()
+        Delegator.NotifySubjectWrapper(new ObserverContext<CheckPoints.Checkpoint>()
         {
             Instance = gameObject,
             SubjectType = typeof(EntityPoolManager)
@@ -62,7 +65,7 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<CheckPoints.Che
         await Task.Delay(TimeSpan.FromSeconds(0));
     }
 
-    private Task<Checkpoint> SetAsCurrentRespawnCheckPoint(CheckPoints.Checkpoint value, bool shouldRespawn)
+    private Task<CheckPoints.Checkpoint> SetAsCurrentRespawnCheckPoint(CheckPoints.Checkpoint value, bool shouldRespawn)
     {
         CheckPoints.Checkpoint newValue = new CheckPoints.Checkpoint
         {
@@ -92,23 +95,34 @@ public class CheckPointActionListener : MonoBehaviour, IObserver<CheckPoints.Che
 
     }
 
-    public void OnNotify(CheckPoints.Checkpoint data, ObserverContext context, SemaphoreSlim semaphoreSlim, CancellationToken cancellationToken, params object[] optional)
+    public IEnumerator Notify(EntityPoolManager value)
     {
-        if (CheckpointDict.TryGetValue(data.checkpoint.tag, out Func<Checkpoint, CheckPoints, Task> value))
-        {
-            value.Invoke(data, SceneSingleton.CheckPoints); //invokes that particular function to reset checkpoints 
+        EntityPoolManagerInstance = value;
 
-            GameStateManager.instance.SaveCheckPoint(saveFileName);
+        List<EntityPool> entityPools = EntityPoolManagerInstance.GetPooledEntity(CHECKPOINTS_KEY);
+
+        if (entityPools.Count == 0)
+        {
+            Debug.LogError("No CheckPoints Scriptable Object found in the Entity Pool Manager. Please add one during the preloading process!");
+
+            yield break;
         }
+
+        CheckpointsSO = (CheckPoints) EntityPoolManagerInstance.GetPooledEntity(CHECKPOINTS_KEY)[0].Entity;
+            
+        PrefillCheckPointsDict(CheckpointsSO);
 
         yield return null;
     }
 
-    public IEnumerator Notify(CheckPoints value)
+    public IEnumerator Notify(CheckPoints.Checkpoint value)
     {
-        CheckpointsSO = value;
+        if (CheckpointDict.TryGetValue(value.checkpoint.tag, out Func<CheckPoints.Checkpoint, CheckPoints, Task> val))
+        {
+            val.Invoke(value, CheckpointsSO); //invokes that particular function to reset checkpoints 
 
-        PrefillCheckPointsDict(CheckpointsSO);
+            GameStateManager.instance.SaveCheckPoint(saveFileName);
+        }
 
         yield return null;
     }

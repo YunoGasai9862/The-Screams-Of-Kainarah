@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Observer(ObserverType = typeof(PlayerActionSystemHandler), SubjectType = typeof(PickableItems), ContextType = typeof(Collider2D))]
-[Observer(ObserverType = typeof(PlayerActionSystemHandler), SubjectType = typeof(PickableItems), ContextType = typeof(ScriptableObject))]
-public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INotify<ScriptableObject>
+[Observer(ObserverType = typeof(PlayerActionSystemHandler), SubjectType = typeof(PickableItems), ContextType = typeof(PickableItems))]
+[Observer(ObserverType = typeof(PlayerActionSystemHandler), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INotify<EntityPoolManager>
 {
     [SerializeField] PlayerPowerUpModeEvent playerPowerUpModeEvent;
     [SerializeField] CrystalUIIncrementEvent crystalUIIncrementEvent;
@@ -33,7 +34,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INo
              { "Dagger" , value => OnDaggerPickup(value) }
         };
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<ScriptableObject>()
+        Delegator.NotifySubjectWrapper(new ObserverContext<PickableItems>()
         {
             Instance = gameObject,
             SubjectType = typeof(PickableItems)

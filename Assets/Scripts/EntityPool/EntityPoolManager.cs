@@ -1,7 +1,10 @@
-using UnityEngine;
+using Assets.Annotations;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
+using UnityEngine;
 
+[Subject(SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IRequest<EntityPoolManager>
 {
     private Dictionary<string, List<EntityPool>> EntityPoolDict { get; set; } = new Dictionary<string, List<EntityPool>>();
@@ -72,8 +75,8 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IR
         Delegator = await Helper.GetDelegator<Delegator>();
     }
 
-    public void OnNotifySubject(IObserver<EntityPoolManager> data, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim, params object[] optional)
+    public IEnumerator Request()
     {
-        StartCoroutine(EntityPoolManagerDelegator.NotifyObserver(data, this, context, cancellationToken, semaphoreSlim));
+       yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<EntityPoolManager>() { Data = this, EntityType = typeof(EntityPoolManager)}, this));
     }
 }
