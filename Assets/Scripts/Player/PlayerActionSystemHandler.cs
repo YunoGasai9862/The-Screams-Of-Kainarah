@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Observer(ObserverType = typeof(PlayerActionSystemHandler), SubjectType = typeof(PickableItems), ContextType = typeof(Collider2D))]
-[Observer(ObserverType = typeof(PlayerActionSystemHandler), SubjectType = typeof(PickableItems), ContextType = typeof(PickableItems))]
 [Observer(ObserverType = typeof(PlayerActionSystemHandler), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INotify<EntityPoolManager>
 {
@@ -15,11 +14,19 @@ public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INo
     [SerializeField] CrystalUIIncrementEvent crystalUIIncrementEvent;
 
     private Dictionary<String, Func<Collider2D, Task >> _playerActionHandlerDic;
+
+    private const string PICKABLE_ITEMS_KEY = "PickableItems";
+
     private PickableItemsUtility PickableItemsUtility { get; set; }
+
+    private EntityPoolManager EntityPoolManagerInstance { get; set; }
+
+    private PickableItems PickableItemsSO { get; set; }
 
     private InstantiateUtility InstantiateUtilityInstannce { get; set; } = new InstantiateUtility();
 
     private Delegator Delegator { get; set; }
+
     private float DIAMOND_PICK_UP_VALUE { get; set; } = 20f;
     private int CRYSTAL_UI_INCREMENT_VALUE { get; set; } = 1;
 
@@ -33,13 +40,6 @@ public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INo
              { "Health" , value => OnHealthPickup(value) },
              { "Dagger" , value => OnDaggerPickup(value) }
         };
-
-        Delegator.NotifySubjectWrapper(new ObserverContext<PickableItems>()
-        {
-            Instance = gameObject,
-            SubjectType = typeof(PickableItems)
-
-        }, this);
     }
     private Task<bool> OnDaggerPickup(Collider2D collider)
     {
@@ -98,6 +98,17 @@ public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INo
     public IEnumerator Notify(ScriptableObject value)
     {
         PickableItemsUtility = new PickableItemsUtility((PickableItems)value);
+
+        yield return null;
+    }
+
+    public IEnumerator Notify(EntityPoolManager value)
+    {
+        EntityPoolManagerInstance = value;
+
+        PickableItemsSO = Helper.GetFromEntityPoolManager<PickableItems>(EntityPoolManagerInstance, PICKABLE_ITEMS_KEY);
+
+        PickableItemsUtility = new PickableItemsUtility(PickableItemsSO);
 
         yield return null;
     }

@@ -46,6 +46,20 @@ public class Helper: MonoBehaviour
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
+    public static T GetFromEntityPoolManager<T>(EntityPoolManager entityPoolManager, string key) where T : ScriptableObject
+    {
+        List<EntityPool> entityPools = entityPoolManager.GetPooledEntity(key);
+
+        if (entityPools.Count == 0)
+        {
+            Debug.LogError($"No {key} Scriptable Object found in the Entity Pool Manager. Please add one during the preloading process!");
+
+            return null;
+        }
+
+        return (T)entityPools[0].Entity;
+    }
+
     public static async Task<T> GetCustomEvent<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
     {
         for (int i = 0; i < retryLimit; i++)

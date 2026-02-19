@@ -16,8 +16,6 @@ using UnityEngine.SceneManagement;
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHandler, INotify<EntityPoolManager>, IRequest<Collider2D>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>
 {
-    private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
-
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
     [SerializeField] string[] checkpointTags;
@@ -26,16 +24,30 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
     [SerializeField] EntitiesToReset entitiesToReset;
     [SerializeField] DialoguesAndOptions dialoguesAndOptions;
     [SerializeField] PlayerHittableItemsScriptableObject playerHittableItemsScriptableObject;
-    [SerializeField] CheckPoints checkpoints;
 
     private Animator anim;
-    private float ENEMYATTACK = 5f;
+
     private bool pickedUp;
-    private PickableItemsUtility _pickableItemsUtility;
+
+    private const float ENEMY_ATTACK = 5f;
+
+    private const int CRYSTAL_UI_INCREMENT_COUNTER = 1;
+
+    private const string PICKABLE_ITEMS_KEY = "PickableItems";
+
+    private const string CHECKPOINTS_KEY = "CheckPoints";
 
     private Player Player { get; set; } = new Player();
 
     private Delegator Delegator { get; set; }
+
+    private EntityPoolManager EntityPoolManagerInstance { get; set; }
+
+    private PickableItems PickableItemsSO { get; set; }
+
+    private CheckPoints CheckPointsSO { get; set; }
+
+    private PickableItemsUtility PickableItemsUtility { get; set; }
 
     private void Start()
     {
@@ -52,13 +64,6 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
         {
             Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
-
-        }, this));
-
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<PickableItems>()
-        {
-            Instance = gameObject,
-            SubjectType = typeof(PickableItems)
 
         }, this));
     }
@@ -126,7 +131,7 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
     {
         if (await CanPlayerBeAttacked(playerHittableItemsScriptableObject, collision.collider))
         {
-            Player.Health.CurrentHealth -= ENEMYATTACK;
+            Player.Health.CurrentHealth -= ENEMY_ATTACK;
         }
     }
 
@@ -158,20 +163,20 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
         return health == 0;
     }
 
-    private async void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        await ItemCollisionHandler(collision);
-        await CheckpointCollisionHandler(collision);
+        ItemCollisionHandler(collision);
 
+        CheckpointCollisionHandler(collision);
     }
 
-    private async Task ItemCollisionHandler(Collider2D collision)
+    private void ItemCollisionHandler(Collider2D collision)
     {
-        pickedUp = _pickableItemsUtility.IsPickableItem(collision.tag);
+        pickedUp = PickableItemsUtility.IsPickableItem(collision.tag);
 
         if (pickedUp)
         {
-            bool shouldBedisabled = _pickableItemsUtility.ShouldThisItemBeDisabled(collision.tag);
+            bool shouldBedisabled = PickableItemsUtility.ShouldThisItemBeDisabled(collision.tag);
 
             if (shouldBedisabled)
                 collision.gameObject.SetActive(false);
@@ -191,7 +196,7 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
         if (GetOneOfTheCheckPoints(collision.tag, checkpointTags))
         {
             //call checkpoint replacement 
-            CheckPoints.Checkpoint checkpoint = GetCheckPointFromScriptableObject(checkpoints, collision.tag);
+            CheckPoints.Checkpoint checkpoint = GetCheckPointFromScriptableObject(CheckPointsSO, collision.tag);
 
             collision.gameObject.SetActive(false); //turn it off
 
@@ -262,7 +267,6 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
 
     public IEnumerator Notify(PickableItems value)
     {
-        _pickableItemsUtility = new PickableItemsUtility(value);
 
         yield return null;
     }
@@ -273,6 +277,20 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
 
         yield return null;
     }
+
+    public IEnumerator Notify(EntityPoolManager value)
+    {
+        EntityPoolManagerInstance = value;
+
+        PickableItemsSO = Helper.GetFromEntityPoolManager<PickableItems>(EntityPoolManagerInstance, PICKABLE_ITEMS_KEY);
+
+        PickableItemsUtility = new PickableItemsUtility(PickableItemsSO);
+
+        CheckPointsSO = Helper.GetFromEntityPoolManager<CheckPoints>(EntityPoolManagerInstance, CHECKPOINTS_KEY);
+
+        yield return null;
+    }
+
 }
 
 
