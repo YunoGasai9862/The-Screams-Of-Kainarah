@@ -1,11 +1,16 @@
 using Assets.Annotations;
 using System.Collections;
-using System.Threading;
 using UnityEngine;
 
+[Observer(ObserverType = typeof(CheckpointColliderListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(SubjectType = typeof(PlayerActionRelayer), ObserverType = typeof(CheckpointColliderListener), ContextType = typeof(GameObject))]
-public class CheckpointColliderListener : MonoBehaviour, INotify<GameObject>
+public class CheckpointColliderListener : MonoBehaviour, INotify<GameObject>, INotify<EntityPoolManager>
 {
+    private static string CHECKPOINTS_KEY = "CheckPoints";
+    private EntityPoolManager EntityPoolManagerInstance { get; set; }
+
+    private CheckPoints CheckPointsSO { get; set; }
+
     private IEnumerator RespawnPlayer(GameObject playerObject, CheckPoints checkPointsScriptableObjectFetch)
     {
         foreach (var cp in checkPointsScriptableObjectFetch.checkpoints)
@@ -23,6 +28,21 @@ public class CheckpointColliderListener : MonoBehaviour, INotify<GameObject>
 
     public IEnumerator Notify(GameObject value)
     {
-        yield return RespawnPlayer(value, SceneSingleton.CheckPoints);
+        if (CheckPointsSO == null || EntityPoolManagerInstance == null)
+        {
+            Debug.LogError("Either the CheckPointsSO is null or the EntityPoolManagerInstance  - please get this rectified/looked into!");
+            yield return null;
+        }
+
+        yield return RespawnPlayer(value, CheckPointsSO);
+    }
+
+    public IEnumerator Notify(EntityPoolManager value)
+    {
+        EntityPoolManagerInstance = value;
+
+        CheckPointsSO = Helper.GetFromEntityPoolManager<CheckPoints>(EntityPoolManagerInstance, CHECKPOINTS_KEY);
+
+        yield return null;
     }
 }

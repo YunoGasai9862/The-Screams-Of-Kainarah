@@ -8,8 +8,9 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.UIElements;
 using Assets.Scripts.ScenePersistence.Models;
+using Amazon.Runtime.Internal;
 
-public class GameStateManager : MonoBehaviour, IGameState
+public class GameStateManager : MonoBehaviour, IGameState, IRequest<IGameStateHandler>
 {
     private SceneData _sceneData;
     private string _fileName;

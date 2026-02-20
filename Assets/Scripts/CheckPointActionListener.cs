@@ -99,16 +99,7 @@ public class CheckPointActionListener : MonoBehaviour, INotify<CheckPoints.Check
     {
         EntityPoolManagerInstance = value;
 
-        List<EntityPool> entityPools = EntityPoolManagerInstance.GetPooledEntity(CHECKPOINTS_KEY);
-
-        if (entityPools.Count == 0)
-        {
-            Debug.LogError("No CheckPoints Scriptable Object found in the Entity Pool Manager. Please add one during the preloading process!");
-
-            yield break;
-        }
-
-        CheckpointsSO = (CheckPoints) EntityPoolManagerInstance.GetPooledEntity(CHECKPOINTS_KEY)[0].Entity;
+        CheckpointsSO = Helper.GetFromEntityPoolManager<CheckPoints>(EntityPoolManagerInstance, CHECKPOINTS_KEY);
             
         PrefillCheckPointsDict(CheckpointsSO);
 

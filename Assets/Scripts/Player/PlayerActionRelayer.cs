@@ -14,7 +14,7 @@ using UnityEngine.SceneManagement;
 [Subject(SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(EntitiesToReset))]
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHandler, INotify<EntityPoolManager>, IRequest<Collider2D>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>
+public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHandler, INotify<EntityPoolManager>, IRequest<Collider2D>, IRequest<GameObject>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>
 {
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
@@ -89,8 +89,12 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
                 Data = entitiesToReset,
                 EntityType = typeof(PlayerActionRelayer),
             }, this);
-            
-             SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<GameObject>(PlayerObserverListenerHelper.MainPlayerListener, gameObject, lockingThread : GetCheckPointSemaphore);
+
+            Delegator.NotifyObserversWrapper(new SubjectContext<GameObject>()
+            {
+                Data = gameObject,
+                EntityType = typeof(PlayerActionRelayer),
+            }, this);
         }
         
     }
@@ -188,9 +192,13 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
             }, this);
         }
 
-        await SceneSingleton.GetEntityListenerDelegator().ListenerDelegator<Collider2D>(PlayerObserverListenerHelper.ColliderSubjects, collision);
-
+        Delegator.NotifyObserversWrapper(new SubjectContext<bool>()
+        {
+            Data = collision,
+            EntityType = typeof(PlayerActionRelayer),
+        }, this);
     }
+
     private void CheckpointCollisionHandler(Collider2D collision)
     {
         if (GetOneOfTheCheckPoints(collision.tag, checkpointTags))

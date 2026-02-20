@@ -7,7 +7,8 @@ using UnityEngine;
 [Observer(SubjectType = typeof(PlayerStateConsumer), ObserverType = typeof(PlayerAttackController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
 [Observer(SubjectType = typeof(GameStateConsumer), ObserverType = typeof(PlayerAttackController), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 [Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerAttackController), ContextType = typeof(Player))]
-public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<PlayerAttackController, ControllerPackage<AttackingExecutionState, AttackingDetails>>, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<GenericStateBundle<GameStateBundle>>, INotify<Player>
+[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(InventoryManager), ContextType = typeof(InventoryManager))]
+public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<PlayerAttackController, ControllerPackage<AttackingExecutionState, AttackingDetails>>, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<GenericStateBundle<GameStateBundle>>, INotify<InventoryManager>, INotify<Player>
 {
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
 
@@ -25,6 +26,8 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
     private PlayerBoostAttackEvent PlayerBoostAttackEvent { get; set; }
+
+    private InventoryManager InventoryManagerInstance { get; set; }
 
     private MouseClickDto MouseClickDto { get; set; }
 
@@ -159,7 +162,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         }
 
 
-        bool isInventoryOpen = SceneSingleton.GetInventoryManager().IsPouchOpen;
+        bool isInventoryOpen = InventoryManagerInstance == null ? false : InventoryManagerInstance.IsPouchOpen;
 
         return CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.FREE_MOVEMENT) &&
                !CurrentGameState.StateBundle.GameState.IsConcluded &&
@@ -253,6 +256,13 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
         Player = value;
 
         PlayerAttackStateMachine = new PlayerAttackStateMachine(Player.Animator);
+
+        yield return null;
+    }
+
+    public IEnumerator Notify(InventoryManager value)
+    {
+        InventoryManagerInstance = value;
 
         yield return null;
     }
