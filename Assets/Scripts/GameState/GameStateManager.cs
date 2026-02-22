@@ -1,3 +1,7 @@
+using Assets.Annotations;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Assets.Scripts.ScenePersistence.Models;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -5,12 +9,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 using UnityEngine.UIElements;
-using Assets.Scripts.ScenePersistence.Models;
-using Amazon.Runtime.Internal;
 
-public class GameStateManager : MonoBehaviour, IGameState, IRequest<IGameStateHandler>
+[Subject(SubjectType = typeof(GameStateManager), ContextType = typeof(IGameStateHandler))]
+public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<IGameStateHandler>, IRequest<GameStateManager>
 {
     private SceneData _sceneData;
     private string _fileName;
@@ -20,13 +22,14 @@ public class GameStateManager : MonoBehaviour, IGameState, IRequest<IGameStateHa
     [SerializeField]
     public string fileName;
     public ProgressBar progressBar;
-    public static GameStateManager instance { get; private set; }
 
     public CheckPointEvent onCheckpointSaveEvent; //checkpoint event
 
     public List<string> jsonSerializedData = new List<string>();
 
-    public List<IGameStateHandler> gameStateHandlerObjects;
+    public List<IGameStateHandler> GameStateHandlerObjects { get; set; } = new List<IGameStateHandler>();
+
+    private Delegator Delegator { get; set; }
 
     public string GetFileLocationToLoad { get => _fileName; set => _fileName = value; }
 
@@ -36,16 +39,16 @@ public class GameStateManager : MonoBehaviour, IGameState, IRequest<IGameStateHa
     }
     private async void Awake()
     {
-        if(instance == null) //so only instance is there
-            instance = this;
-
-        if (this._sceneData == null)
+        if (_sceneData == null)
         {
             Debug.Log("No data found, initializing everything to default");
             await NewGame();
         }
         _mainCamera = Camera.main;
         _mainCameraOldPosition = _mainCamera.transform.position;
+
+        Delegator = await Helper.GetDelegator<Delegator>();
+
         /*
         _mainCamera.transform.position = new Vector3(_mainCamera.transform.position.x, _mainCamera.transform.position.y, -100);
          */
@@ -171,8 +174,7 @@ public class GameStateManager : MonoBehaviour, IGameState, IRequest<IGameStateHa
     {
         try
         {
-            gameStateHandlerObjects = SceneSingleton.GameStateHandlerObjects(); //get all the objects
-            await InvokeListeners(gameStateHandlerObjects);
+            await InvokeListeners(GameStateHandlerObjects);
 
             foreach (var objectToSave in this._sceneData.ObjectsToPersit)
             {
@@ -210,5 +212,17 @@ public class GameStateManager : MonoBehaviour, IGameState, IRequest<IGameStateHa
             _mainCamera.transform.position = _mainCameraOldPosition;
             yield return null; //fix this tomorrow
         }
+    }
+
+    public IEnumerator Request()
+    {
+        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<GameStateManager>() { Data = this, EntityType = typeof(GameStateManager) }, this));
+    }
+
+    public IEnumerator<IGameStateHandler> Request(INotify<IGameStateHandler> obsever)
+    {
+        GameStateHandlerObjects.Add((IGameStateHandler) obsever);
+
+        yield return null;
     }
 }

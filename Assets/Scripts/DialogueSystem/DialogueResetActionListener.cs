@@ -1,18 +1,21 @@
+using Assets.Annotations;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using static DialoguesAndOptions;
 
-public class DialogueResetActionListener : MonoBehaviour, IObserver<DialoguesAndOptions>
+[Observer(ObserverType = typeof(DialogueResetActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+public class DialogueResetActionListener : MonoBehaviour, INotify<EntityPoolManager>
 {
-    private void OnEnable()
-    {
-        ResetNotifierSubjects.DialogueAndOptions.AddObserver(this);
-    }
+    private const string DIALOGUES_AND_OPTIONS_KEY = "DialoguesAndOptions";
 
-    private void OnDisable()
+    private DialoguesAndOptions DialoguesAndOptionsSO { get; set; }
+
+    private EntityPoolManager EntityPoolManagerInstance { get; set; }
+
+    private async void OnDisable()
     {
-        ResetNotifierSubjects.DialogueAndOptions.RemoveOberver(this);
+        await ResetDialogueSystem(DialoguesAndOptionsSO);
     }
 
     private Task ResetDialogueSystem(DialoguesAndOptions Data)
@@ -31,5 +34,14 @@ public class DialogueResetActionListener : MonoBehaviour, IObserver<DialoguesAnd
         {
             await ResetDialogueSystem(data);
         }
+    }
+
+    public IEnumerator Notify(EntityPoolManager value)
+    {
+        EntityPoolManagerInstance = value;
+
+        DialoguesAndOptionsSO = Helper.GetFromEntityPoolManager<DialoguesAndOptions>(EntityPoolManagerInstance, DIALOGUES_AND_OPTIONS_KEY);
+
+        yield return null;
     }
 }
