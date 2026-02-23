@@ -2,6 +2,7 @@ using Assets.Annotations;
 using CoreCode;
 using System.Collections;
 using UnityEngine;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 
 [Observer(ObserverType = typeof(ThrowingProjectileController), SubjectType = typeof(PickableItems), ContextType = typeof(ScriptableObject))]
 public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, INotify<ScriptableObject>

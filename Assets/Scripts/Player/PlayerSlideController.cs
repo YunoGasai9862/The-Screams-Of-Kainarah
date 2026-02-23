@@ -1,7 +1,7 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV2;
 using CoreCode;
 using System.Collections;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -9,7 +9,7 @@ using UnityEngine;
 [Observer(ObserverType = typeof(PlayerSlideController), SubjectType = typeof(PlayerAnimationController), ContextType = typeof(AnimationDetails))]
 [Observer(ObserverType = typeof(PlayerSlideController), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Subject(SubjectType = typeof(PlayerSlideController), ContextType = typeof(CharacterVelocity))]
-public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<PlayerSlideController, PlayerStateBundle>, INotify<AnimationDetails>, IRequest<CharacterVelocity>, INotify<Player>
+public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<PlayerSlideController, PlayerStateBundle>, INotify<AnimationDetails>, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<CharacterVelocity>, INotify<Player>
 {
     private const float MAX_ANIMATION_TIME = 0.6f;
 

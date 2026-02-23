@@ -1,7 +1,6 @@
 using Assets.Annotations;
 using System.Collections;
-using System.Threading.Tasks;
-using Unity.Android.Gradle.Manifest;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 
 [Observer(ObserverType = typeof(EntitiesToResetActionListener), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(EntitiesToReset))]

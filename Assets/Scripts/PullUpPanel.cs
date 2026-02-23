@@ -1,6 +1,7 @@
 using Assets.Annotations;
 using System.Collections;
 using UnityEngine;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 
 [Observer(ObserverType = typeof(PullUpPanel), SubjectType = typeof(TriggerHandler), ContextType = typeof(bool))]
 public class PullUpPanel : MonoBehaviour, INotify<bool>

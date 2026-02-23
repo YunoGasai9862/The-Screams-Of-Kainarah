@@ -2,6 +2,7 @@ using Assets.Annotations;
 using Assets.Scripts.Models.Reset;
 using PlayerAnimationHandler;
 using System.Collections;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 
 [Observer(ObserverType = typeof(ResetController), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]

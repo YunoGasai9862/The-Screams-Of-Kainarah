@@ -2,6 +2,7 @@ using Assets.Annotations;
 using EnemyHittable;
 using System.Collections;
 using System.Threading.Tasks;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 
 [Observer(ObserverType = typeof(RakashStateMachine), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]

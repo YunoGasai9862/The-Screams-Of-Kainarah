@@ -1,4 +1,4 @@
-using Assets.Scripts.Interfaces.Mediator.EnhancedV4;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class CelestialBodiesLightPackageGenerator : MonoBehaviour, INotify<ILightPreprocess>, IRequest<LightPackage>, ILightPackageGenerator
+public class CelestialBodiesLightPackageGenerator : MonoBehaviour, INotify<ILightPreprocess>, Assets.Scripts.Interfaces.Mediator.EnhancedV4.IRequest<LightPackage>, ILightPackageGenerator
 {
     private Delegator Delegator { get; set; }
 

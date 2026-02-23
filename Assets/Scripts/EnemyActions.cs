@@ -5,6 +5,7 @@ using PlayerAnimationHandler;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 
 [Observer(SubjectType = typeof(EnemyScript), ObserverType = typeof(EnemyActions), ContextType = typeof(EnemyActionBundle))]

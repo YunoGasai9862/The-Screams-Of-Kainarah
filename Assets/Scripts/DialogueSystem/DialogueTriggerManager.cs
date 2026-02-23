@@ -2,6 +2,7 @@ using Assets.Annotations;
 using System.Collections;
 using System.Threading;
 using UnityEngine;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 
 [Observer(ObserverType = typeof(DialogueTriggerManager), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 [Observer(ObserverType = typeof(DialogueTriggerManager), SubjectType = typeof(DialogueManager), ContextType = typeof(DialogueManager))]

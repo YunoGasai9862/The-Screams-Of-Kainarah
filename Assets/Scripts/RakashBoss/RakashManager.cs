@@ -1,10 +1,9 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Assets.Scripts.ScenePersistence.Models;
 using System.Collections;
 
 [Subject(SubjectType = typeof(RakashManager), ContextType = typeof(Health))]
-public class RakashManager : AbstractEntity, IGameStateHandler, IRequest<Health>
+public class RakashManager : AbstractEntity, IGameStateHandler, IRequest<Health>, INotify<IGameStateHandler>
 {
     private Delegator Delegator { get; set; }
 
@@ -23,8 +22,6 @@ public class RakashManager : AbstractEntity, IGameStateHandler, IRequest<Health>
     private async void Start()
     {
         Delegator = await Helper.GetDelegator<Delegator>();
-
-        SceneSingleton.InsertIntoGameStateHandlerList(this);
     }
 
     public override void GameStateHandler(SceneData data)
@@ -43,4 +40,5 @@ public class RakashManager : AbstractEntity, IGameStateHandler, IRequest<Health>
 
         yield return null;
     }
+
 }

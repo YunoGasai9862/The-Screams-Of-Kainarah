@@ -1,6 +1,7 @@
 using Assets.Annotations;
 using System.Collections;
 using System.Threading.Tasks;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 
 [Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerShadow), ContextType = typeof(Player))]

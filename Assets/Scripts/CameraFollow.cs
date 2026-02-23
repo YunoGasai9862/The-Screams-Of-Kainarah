@@ -1,6 +1,7 @@
 using Assets.Annotations;
 using System.Collections;
 using UnityEngine;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 
 [Observer(ObserverType = typeof(CameraFollow), SubjectType = typeof(CameraShake), ContextType = typeof(bool))]
 [Observer(ObserverType = typeof(CameraFollow), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]

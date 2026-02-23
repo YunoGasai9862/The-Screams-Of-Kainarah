@@ -1,16 +1,16 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV3;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 [Subject(SubjectType = typeof(CandleLightPackageGenerator), ContextType = typeof(LightPackage))]
 [Observer(ObserverType = typeof(CandleLightPackageGenerator), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Observer(ObserverType = typeof(CandleLightPackageGenerator), SubjectType = typeof(LightFlicker), ContextType = typeof(ILightPreprocess))]
-public class CandleLightPackageGenerator : MonoBehaviour, IRequest<LightPackage>, INotify<ILightPreprocess>, INotify<Player>, ILightPackageGenerator
+public class CandleLightPackageGenerator : MonoBehaviour, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<LightPackage>, INotify<ILightPreprocess>, INotify<Player>, ILightPackageGenerator
 {
     [SerializeField]
     LightProperties lightProperties;

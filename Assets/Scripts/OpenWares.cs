@@ -1,5 +1,6 @@
 using Assets.Annotations;
 using System.Collections;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 
 [Observer(SubjectType = typeof(PickableItems), ObserverType = typeof(OpenWares), ContextType = typeof(bool))]

@@ -1,6 +1,7 @@
 
 using Assets.Annotations;
 using System.Collections;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 
 [Observer(ObserverType = typeof(WaterCameraAndTextureFollow), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
