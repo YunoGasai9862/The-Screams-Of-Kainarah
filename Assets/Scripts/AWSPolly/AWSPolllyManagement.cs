@@ -4,10 +4,10 @@ using Amazon.Polly;
 using Amazon.Polly.Model;
 using Amazon.Runtime;
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV2;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -17,7 +17,7 @@ using UnityEngine;
 [Observer(ObserverType = typeof(AWSPolllyManagement), SubjectType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
 [Subject(SubjectType = typeof(AWSPolllyManagement), ContextType = typeof(IAWSPolly))]
 
-public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, INotify<FirebaseStorageManager>, INotify<AsyncCoroutine>, IRequest<IAWSPolly>
+public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, INotify<FirebaseStorageManager>, INotify<AsyncCoroutine>, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<IAWSPolly>
 {
     //gs://the-screams-of-kainarah.appspot.com
     //AWSKeys.txt

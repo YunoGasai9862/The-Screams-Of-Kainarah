@@ -15,6 +15,8 @@ public class OpenWares : MonoBehaviour, INotify<GenericStateBundle<GameStateBund
 
     private Delegator Delegator { get; set; }
 
+    private bool IsInventoryOpen { get; set; }
+
     private async void Awake()
     {
         Delegator = await Helper.GetDelegator<Delegator>();
@@ -32,7 +34,7 @@ public class OpenWares : MonoBehaviour, INotify<GenericStateBundle<GameStateBund
 
     private void OnMouseDown()
     {
-        if (GameStateBundle.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE) && !SceneSingleton.GetInventoryManager().IsPouchOpen)
+        if (GameStateBundle.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE) && !IsInventoryOpen)
         {
             WaresPanel.SetActive(true);
 
@@ -42,10 +44,11 @@ public class OpenWares : MonoBehaviour, INotify<GenericStateBundle<GameStateBund
         }
     }
 
-    //not sure as of yet!!!
     public IEnumerator Notify(bool value)
     {
-        if (value)
+        IsInventoryOpen = value;
+
+        if (IsInventoryOpen)
         {
             MagicCircle.SetActive(true);
         }

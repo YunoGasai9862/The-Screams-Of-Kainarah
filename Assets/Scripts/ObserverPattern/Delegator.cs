@@ -1,6 +1,5 @@
 using Assets.Annotations;
 using Assets.Exceptions;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Assets.Scripts.ObserverPattern.interfaces;
 using Assets.Scripts.ObserverPattern.models;
 using System;
@@ -21,37 +20,17 @@ public class Delegator : MonoBehaviour, IDelegator
         BuildRegistry();
     }
 
-    public void NotifyObserverWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public void NotifyObserverWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         StartCoroutine(NotifyObserver(context, subject, observer, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
-    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         yield return null;
     }
 
-    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, IRequest<T> subject, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
-    {
-        yield return null;
-    }
-
-    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.Base.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
-    {
-        yield return StartCoroutine(NotifyObservers<T>(context, (IRequest<T>) subject, maxRetries, sleepTimeInMilliSeconds, optional));
-    }
-
-    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
-    {
-        yield return StartCoroutine(NotifyObservers<T>(context, (IRequest<T>) subject, maxRetries, sleepTimeInMilliSeconds, optional));
-    }
-
-    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
-    {
-        yield return StartCoroutine(NotifyObservers<T>(context, (IRequest<T>) subject, maxRetries, sleepTimeInMilliSeconds, optional));
-    }
-
-    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         KeyValuePair<ISubjectBundle, List<IObserverBundle>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
 
@@ -66,10 +45,10 @@ public class Delegator : MonoBehaviour, IDelegator
             Debug.LogWarning($"The subject instance is null for the subject type: {context.EntityType}. Will update the dictionary with the current instance!");
 
             //check later if the casting will work seamlessly
-            association.Key.Subject = (IRequest) subject;
+            association.Key.Subject = (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest) subject;
         }
 
-        List<INotify> cachedObserverContext = GetObserverBundles<T, SubjectContext<T>> (association, context);
+        List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> cachedObserverContext = GetObserverBundles<T, SubjectContext<T>> (association, context);
 
         if (cachedObserverContext == null || cachedObserverContext.Count == 0)
         {
@@ -83,7 +62,7 @@ public class Delegator : MonoBehaviour, IDelegator
         cachedObserverContext.ForEach(observer =>
         {
             //check later if the casting will work seamlessly
-            INotify<T> observerNotify = (INotify<T>) observer;
+            Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observerNotify = (Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T>) observer;
 
             if (observerNotify == null)
             {
@@ -96,7 +75,7 @@ public class Delegator : MonoBehaviour, IDelegator
         yield return null;
     }
 
-    public IEnumerator NotifySubject<T>(ObserverContext<T> context, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public IEnumerator NotifySubject<T>(ObserverContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         if (maxRetries == 0)
         {
@@ -119,7 +98,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
         if (cachedObserverContext.Observer == null)
         {
-            cachedObserverContext.Observer = (INotify) observer;
+            cachedObserverContext.Observer = (Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify) observer;
             Associations[association.Key].Add(cachedObserverContext);
         }
 
@@ -133,7 +112,7 @@ public class Delegator : MonoBehaviour, IDelegator
         }
 
         //see if its better to store it?? (compare letter the difference/performance)
-        IRequest<T> subjectRequest = (IRequest<T>) association.Key.Subject;
+        Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subjectRequest = (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>) association.Key.Subject;
 
         if (subjectRequest == null)
         {
@@ -144,9 +123,26 @@ public class Delegator : MonoBehaviour, IDelegator
 
         yield return null;
     }
+    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    {
+        yield return null;
+    }
 
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.Base.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    {
+        yield return StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
+    }
 
-    public void NotifyObserversWrapper<T>(SubjectContext<T> context, IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    {
+        yield return StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
+    }
+
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    {
+        yield return StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
+    }
+    public void NotifyObserversWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         StartCoroutine(NotifyObservers(context, subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
@@ -158,10 +154,10 @@ public class Delegator : MonoBehaviour, IDelegator
 
     public void NotifyObserversWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        StartCoroutine(NotifyObservers(context, (IRequest<T>) subject, maxRetries, sleepTimeInMilliSeconds, optional));
+        StartCoroutine(NotifyObservers(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>) subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
-    public void NotifySubjectWrapper<T>(ObserverContext<T> context, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    public void NotifySubjectWrapper<T>(ObserverContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         StartCoroutine(NotifySubject(context, observer, maxRetries, sleepTimeInMilliSeconds, optional));
     }
@@ -174,9 +170,9 @@ public class Delegator : MonoBehaviour, IDelegator
         {
             ExecutingAssemblyTypes = Assembly.GetExecutingAssembly().GetTypes().ToArray().ToList();
 
-            List<SubjectAttribute> subjects = Find<SubjectAttribute>(ExecutingAssemblyTypes, typeof(IRequest<>)).ToList();
+            List<SubjectAttribute> subjects = Find<SubjectAttribute>(ExecutingAssemblyTypes, typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<>)).ToList();
 
-            List<ObserverAttribute> observers = Find<ObserverAttribute>(ExecutingAssemblyTypes, typeof(INotify<>)).ToList();
+            List<ObserverAttribute> observers = Find<ObserverAttribute>(ExecutingAssemblyTypes, typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<>)).ToList();
 
             foreach (SubjectAttribute subject in subjects)
             {
@@ -235,7 +231,7 @@ public class Delegator : MonoBehaviour, IDelegator
                                                     observerContext.ObserverAttribute.SubjectType.Equals(context.SubjectType)).FirstOrDefault();
     }
 
-    private List<INotify> GetObserverBundles<T, Z>(KeyValuePair<ISubjectBundle, List<IObserverBundle>> association, Z context) where Z : SubjectContext<T>
+    private List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> GetObserverBundles<T, Z>(KeyValuePair<ISubjectBundle, List<IObserverBundle>> association, Z context) where Z : SubjectContext<T>
     {
         return association.Value.Where(observerContext => observerContext.ObserverAttribute.SubjectType.Equals(context.EntityType) && typeof(T).Name.Equals(context.Data.GetType())).Select(observer => observer.Observer).ToList();
     }

@@ -1,10 +1,9 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using System.Collections;
+using Assets.Scripts.Interfaces.Mediator.Base;
 using UnityEngine;
 
-[Subject(SubjectType = typeof(InventoryManager), ContextType = typeof(InventoryManager))]
-public class InventoryManager : MonoBehaviour, IRequest<InventoryManager>
+[Subject(SubjectType = typeof(InventoryManager), ContextType = typeof(bool))]
+public class InventoryManager : MonoBehaviour, IRequest<bool>
 {
     [SerializeField] GameObject InventoryPanel;
     [SerializeField] InventoryPouchClickEvent inventoryPouchClickEvent;
@@ -32,10 +31,7 @@ public class InventoryManager : MonoBehaviour, IRequest<InventoryManager>
     public void IsPouchPanelActive(bool isActive)
     {
         IsPouchOpen = isActive;
-    }
 
-    public IEnumerator Request()
-    {
-        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<InventoryManager>() { Data = this, EntityType = typeof(InventoryManager) }, this));
+       Delegator.NotifyObserversWrapper(new SubjectContext<bool>() { Data = isActive, EntityType = typeof(InventoryManager) }, this);
     }
 }

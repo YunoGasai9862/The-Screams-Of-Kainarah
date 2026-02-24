@@ -14,7 +14,8 @@ using UnityEngine.SceneManagement;
 [Subject(SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(EntitiesToReset))]
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHandler, INotify<EntityPoolManager>, IRequest<Collider2D>, IRequest<GameObject>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>
+public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<Player>, IGameStateHandler, INotify<EntityPoolManager>, IRequest<Collider2D>, 
+    IRequest<GameObject>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>
 {
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
@@ -51,15 +52,6 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
 
     private void Start()
     {
-        try
-        {
-            SceneSingleton.InsertIntoGameStateHandlerList(this);
-        }
-        catch (Exception ex)
-        {
-            Debug.Log($"Exception: {ex.StackTrace}");
-        }
-
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
         {
             Instance = gameObject,
@@ -298,7 +290,6 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<Player>, IGameStateHan
 
         yield return null;
     }
-
 }
 
 

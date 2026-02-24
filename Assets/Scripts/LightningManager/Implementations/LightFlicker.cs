@@ -1,12 +1,11 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Subject(SubjectType = typeof(LightFlicker), ContextType = typeof(LightFlicker))]
-public class LightFlicker : MonoBehaviour, ILightPreprocess, IRequest<ILightPreprocess>
+[Subject(SubjectType = typeof(LightFlicker), ContextType = typeof(ILightPreprocess))]
+public class LightFlicker : MonoBehaviour, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<ILightPreprocess>, ILightPreprocess
 {
     private Delegator Delegator { get; set; }
 
@@ -40,6 +39,6 @@ public class LightFlicker : MonoBehaviour, ILightPreprocess, IRequest<ILightPrep
 
     public IEnumerator Request()
     {
-        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<LightFlicker>() { Data = this, EntityType = typeof(LightFlicker)}, this));
+        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<ILightPreprocess>() { Data = this, EntityType = typeof(ILightPreprocess) }, this));
     }
 }

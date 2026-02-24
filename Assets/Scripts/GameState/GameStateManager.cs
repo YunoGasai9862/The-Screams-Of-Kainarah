@@ -153,7 +153,7 @@ public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interf
 
     public  Task InvokeListeners(List<IGameStateHandler> handlers)
     {
-        foreach (var gameObjectState in handlers)
+        foreach (IGameStateHandler gameObjectState in handlers)
         {
             try
             {

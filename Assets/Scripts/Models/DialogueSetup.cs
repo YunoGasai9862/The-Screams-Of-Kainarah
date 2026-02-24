@@ -2,6 +2,7 @@ using Amazon.Polly;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 
 
 [Serializable]
