@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine.Events;
 
 namespace Assets.Annotations
 {
@@ -6,9 +7,12 @@ namespace Assets.Annotations
     public class SubjectAttribute : Attribute
     {
         public Asset AssetType { get; set; }
+
         public Type SubjectType { get; set; }
 
         public Type ContextType { get; set; }
+
+        public Type UnityEventType { get; set; }
 
         public SubjectAttribute() { }
 

@@ -21,6 +21,7 @@ public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interf
 
     [SerializeField]
     public string fileName;
+
     public ProgressBar progressBar;
 
     public CheckPointEvent onCheckpointSaveEvent; //checkpoint event
@@ -37,6 +38,7 @@ public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interf
     {
         public List<SceneData.ObjectData> objectsToSave;
     }
+
     private async void Awake()
     {
         if (_sceneData == null)
@@ -53,7 +55,8 @@ public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interf
         _mainCamera.transform.position = new Vector3(_mainCamera.transform.position.x, _mainCamera.transform.position.y, -100);
          */
     }
-    public static void ChangeLevel(int buildIndex)
+
+    public void ChangeLevel(int buildIndex)
     {
         SceneManager.LoadScene(buildIndex + 1);
     }
@@ -81,6 +84,7 @@ public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interf
         }
         await Task.CompletedTask;
     }
+
     public async Task LoadLastCheckPoint(string saveFileName, SemaphoreSlim lockingThread)
     {
 
@@ -107,7 +111,8 @@ public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interf
         }
        
     }
-    private Task UpdateSceneData(SceneData.ObjectData gameObjectData)
+
+    public Task UpdateSceneData(SceneData.ObjectData gameObjectData)
     {
         GameObject gameObject = GameObject.FindWithTag(gameObjectData.tag);
 
@@ -121,6 +126,11 @@ public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interf
         }
            
         return Task.CompletedTask;
+    }
+
+    public async Task SaveGame()
+    {
+        await SaveGame(fileName);   
     }
 
     public async Task SaveGame(string fileName)
@@ -141,17 +151,19 @@ public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interf
 
         await Task.CompletedTask;
     }
+
     public Task NewGame()
     {
         this._sceneData = new SceneData(); //initializes the new data
         return Task.CompletedTask;
     }
+
     public async Task RestartLevel()
     {
         await SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
     }
 
-    public  Task InvokeListeners(List<IGameStateHandler> handlers)
+    public Task InvokeListeners(List<IGameStateHandler> handlers)
     {
         foreach (IGameStateHandler gameObjectState in handlers)
         {
@@ -170,6 +182,7 @@ public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interf
         }
         return Task.CompletedTask;
     }
+
     public async Task SaveCheckPoint(string fileName)
     {
         try
@@ -194,12 +207,14 @@ public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interf
         }
 
     }
+
     public Task LoadSceneAsync(int sceneIndex)
     {
         StartCoroutine(LoadScene(sceneIndex));
         return Task.CompletedTask;
     }
-    IEnumerator LoadScene(int sceneIndex)
+
+    public IEnumerator LoadScene(int sceneIndex)
     {
         AsyncOperation loadingScene = SceneManager.LoadSceneAsync(sceneIndex);
 

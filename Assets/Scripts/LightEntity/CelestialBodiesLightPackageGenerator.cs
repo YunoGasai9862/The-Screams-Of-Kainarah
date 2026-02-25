@@ -74,10 +74,11 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, INotify<ILigh
         {
             lightPackage.LightSemaphore.WaitAsync();
 
-            StartCoroutine(Delegator.NotifyObserver(observer, lightPackage, new ObserverContext()
+            StartCoroutine(Delegator.NotifyObserver(new SubjectContext<LightPackage>()
             {
-                SubjectType = typeof(CelestialBodiesLightPackageGenerator)
-            }, lightPackage.CancellationToken, lightPackage.LightSemaphore));
+                Data = lightPackage,
+                EntityType = typeof(CelestialBodiesLightPackageGenerator)
+            }, this, observer));
 
 
             yield return new WaitForSeconds(delayPerExecutionInSeconds);
