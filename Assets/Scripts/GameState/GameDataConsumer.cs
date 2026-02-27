@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Assets.Scripts.GameState
 {
-    public class GaneDataConsumer: BaseState<GameDataBundle>
+    public class GameDataConsumer: BaseState<GameDataBundle>
     {
         //UnityEventType -> check if oyu can utilize that
         private GameDataEvent GameDataEvent { get; set; }

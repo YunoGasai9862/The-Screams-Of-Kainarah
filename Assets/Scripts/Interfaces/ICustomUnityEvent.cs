@@ -13,6 +13,13 @@ public interface ICustomUnityEventWTAsync
     public Task Invoke();
 }
 
+public interface ICustomUnityEventWT
+{
+    public abstract UnityEvent GetInstance();
+    public abstract void AddListener(UnityAction action);
+    public abstract void Invoke(dynamic value);
+}
+
 public interface ICustomUnityEventWTAsync<T, Z>
 {
     public UnityEvent<T, Z> GetInstance();
@@ -28,6 +35,7 @@ public interface ICustomUnityEventWTAsync<X, Y, Z>
 
 public interface ICustomUnityEvent<T>
 {
+    void void AddListener(UnityAction<T> action);
     public UnityEvent<T> GetInstance();
     public void Invoke(T value);   
 }

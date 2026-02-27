@@ -49,3 +49,23 @@ public abstract class StateEvent<T, Z> : UnityEventWTAsync<GenericStateBundle<T,
         return Task.CompletedTask;
     }
 }
+
+public abstract class StateEvent : UnityEventWT
+{
+    private UnityEvent m_stateEvent = new UnityEvent();
+
+    public override void AddListener(UnityAction action)
+    {
+        m_stateEvent.AddListener(action);
+    }
+
+    public override UnityEvent GetInstance()
+    {
+        return m_stateEvent;
+    }
+
+    public override void Invoke(dynamic value)
+    {
+        m_stateEvent.Invoke();
+    }
+}
