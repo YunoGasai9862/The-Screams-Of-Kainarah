@@ -19,22 +19,11 @@ public abstract class UnityEventWTAsync : MonoBehaviour, ICustomUnityEventWTAsyn
 
 public abstract class UnityEventWT : MonoBehaviour, ICustomUnityEventWT
 {
-    public abstract UnityEvent GetInstance();
-    public abstract void AddListener(UnityAction action);
+    public abstract void AddListener(UnityAction<dynamic> action);
+
+    public abstract UnityEvent<dynamic> GetInstance();
+
     public abstract void Invoke(dynamic value);
-}
-
-public abstract class UnityEventWTDynamic : MonoBehaviour, ICustomUnityEvent<dynamic>
-{
-    public void Invoke(dynamic value)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    UnityEvent<dynamic> ICustomUnityEvent<dynamic>.GetInstance()
-    {
-        throw new System.NotImplementedException();
-    }
 }
 
 public abstract class UnityEventWTAsync<T, Z> : MonoBehaviour, ICustomUnityEventWTAsync<T, Z>

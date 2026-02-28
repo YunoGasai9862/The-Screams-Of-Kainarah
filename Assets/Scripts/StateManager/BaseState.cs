@@ -1,4 +1,3 @@
-using Assets.Scripts.Interfaces.Mediator.EnhancedV3;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -80,9 +79,14 @@ public abstract class BaseState<T, Z> : MonoBehaviour, Assets.Scripts.Interfaces
         PingStateListeners(GetInitialState());
     }
 
-    public void PingStateListeners(GenericStateBundle<T, Z> stateBundle)
+    public void PingStateListeners(dynamic bundle)
     {
-        StateBundle = stateBundle;
+        //GenericStateBundle<T, Z> stateBundle;
+        if (bundle is GenericStateBundle<T, Z>)
+        {
+            //more checks needed
+            StateBundle = (GenericStateBundle <T, Z>) bundle;
+        }
 
         foreach (INotify<GenericStateBundle<T, Z>> listener in StateListeners)
         {
@@ -113,7 +117,7 @@ public abstract class BaseState<T, Z> : MonoBehaviour, Assets.Scripts.Interfaces
 
     protected abstract Task AddEvent();
 
-    protected abstract UnityEvent<GenericStateBundle<T, Z>> GetEvent();
+    protected abstract UnityEvent<dynamic> GetEvent();
 
     protected abstract GenericStateBundle<T, Z> GetInitialState();
 }

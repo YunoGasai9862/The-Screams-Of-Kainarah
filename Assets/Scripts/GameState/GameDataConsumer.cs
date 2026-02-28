@@ -1,23 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 using UnityEngine.Events;
 
 namespace Assets.Scripts.GameState
 {
     public class GameDataConsumer: BaseState<GameDataBundle>
     {
-        //UnityEventType -> check if oyu can utilize that
-        private GameDataEvent GameDataEvent { get; set; }
+        private StateEvent GameDataStateEvent { get; set; }
 
         protected override async Task AddEvent()
         {
-            GameStateEvent = await Helper.GetCustomEvent<GameStateEvent>();
+            GameDataStateEvent = await Helper.GetCustomEvent<StateEvent>();
         }
 
-        protected override UnityEvent<GenericStateBundle<GameStateBundle>> GetEvent()
+        protected override UnityEvent<GameDataBundle> GetEvent()
         {
-            return GameStateEvent.GetInstance();
+
+            return GameDataStateEvent;
         }
 
         protected override GenericStateBundle<GameStateBundle> GetInitialState()

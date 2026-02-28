@@ -52,20 +52,20 @@ public abstract class StateEvent<T, Z> : UnityEventWTAsync<GenericStateBundle<T,
 
 public abstract class StateEvent : UnityEventWT
 {
-    private UnityEvent m_stateEvent = new UnityEvent();
+    private UnityEvent<dynamic> m_stateEvent = new UnityEvent<dynamic>();
 
-    public override void AddListener(UnityAction action)
+    public override void AddListener(UnityAction<dynamic> action)
     {
         m_stateEvent.AddListener(action);
     }
 
-    public override UnityEvent GetInstance()
+    public override UnityEvent<dynamic> GetInstance()
     {
         return m_stateEvent;
     }
 
     public override void Invoke(dynamic value)
     {
-        m_stateEvent.Invoke();
+        m_stateEvent.Invoke(value);
     }
 }
