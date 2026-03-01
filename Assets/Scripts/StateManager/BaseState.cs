@@ -1,8 +1,7 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using UnityEngine;
+using Assets.Exceptions;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using UnityEngine.Events;
+using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<GenericStateBundle<T>> where T : IStateBundle
 {
@@ -10,21 +9,26 @@ public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Med
 
     protected GenericStateBundle<T> StateBundle { get; set; } = new GenericStateBundle<T>();
 
+    protected StateEvent StateEvent { get; set; }
+
     private Delegator Delegator { get; set; }
     private async void Start()
     {
         Delegator = await Helper.GetDelegator<Delegator>();
 
-        await AddEvent();
+        StateEvent = await Helper.GetCustomEvent<StateEvent>();
 
-        GetEvent().AddListener(PingStateListeners);
+        StateEvent.AddListener(PingStateListeners);
 
         PingStateListeners(GetInitialState());
     }
 
-    public void PingStateListeners(GenericStateBundle<T> stateBundle)
+    public void PingStateListeners(dynamic bundle)
     {
-        StateBundle = stateBundle;
+        if (!(bundle is GenericStateBundle<T>))
+        {
+            throw new InvalidTypeException($"Bundle should be of type GenericStateBundle<T>! Incoming type: {bundle.GetType()}");
+        }
 
         foreach (INotify<GenericStateBundle<T>> listener in StateListeners)
         {
@@ -52,10 +56,6 @@ public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Med
         yield return null;
     }
 
-    protected abstract Task AddEvent();
-
-    protected abstract UnityEvent<GenericStateBundle<T>> GetEvent();
-
     protected abstract GenericStateBundle<T> GetInitialState();
 }
 
@@ -66,15 +66,17 @@ public abstract class BaseState<T, Z> : MonoBehaviour, Assets.Scripts.Interfaces
 
     protected GenericStateBundle<T, Z> StateBundle { get; set; } = new GenericStateBundle<T, Z>();
 
+    protected StateEvent StateEvent { get; set; }
+
     private Delegator Delegator { get; set; }
 
     private async void Start()
     {
         Delegator = await Helper.GetDelegator<Delegator>();
 
-        await AddEvent();
+        StateEvent = await Helper.GetCustomEvent<StateEvent>();
 
-        GetEvent().AddListener(PingStateListeners);
+        StateEvent.AddListener(PingStateListeners);
 
         PingStateListeners(GetInitialState());
     }
@@ -82,11 +84,12 @@ public abstract class BaseState<T, Z> : MonoBehaviour, Assets.Scripts.Interfaces
     public void PingStateListeners(dynamic bundle)
     {
         //GenericStateBundle<T, Z> stateBundle;
-        if (bundle is GenericStateBundle<T, Z>)
+        if (!(bundle is GenericStateBundle<T, Z>))
         {
-            //more checks needed
-            StateBundle = (GenericStateBundle <T, Z>) bundle;
+           throw new InvalidTypeException($"Bundle should be of type GenericStateBundle<T, Z>! Incoming type: {bundle.GetType()}");
         }
+
+        StateBundle = (GenericStateBundle<T, Z>)bundle;
 
         foreach (INotify<GenericStateBundle<T, Z>> listener in StateListeners)
         {
@@ -114,10 +117,6 @@ public abstract class BaseState<T, Z> : MonoBehaviour, Assets.Scripts.Interfaces
 
         yield return null;
     }
-
-    protected abstract Task AddEvent();
-
-    protected abstract UnityEvent<dynamic> GetEvent();
 
     protected abstract GenericStateBundle<T, Z> GetInitialState();
 }

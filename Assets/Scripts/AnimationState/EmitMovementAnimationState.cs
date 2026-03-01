@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class EmitMovementAnimationState : StateMachineBehaviour
 {
-    private EmitMovementAnimationStateEvent EmitMovementAnimationStateEvent { get; set; }
     private async void Awake()
     {
         EmitMovementAnimationStateEvent = await Helper.GetCustomEvent<EmitMovementAnimationStateEvent>();

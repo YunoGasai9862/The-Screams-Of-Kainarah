@@ -1,21 +1,7 @@
-using UnityEngine.Events;
 using UnityEngine;
-using System.Threading.Tasks;
 
 public class PlayerStateConsumer : BaseState<PlayerStateBundle>
 {
-     public PlayerStateEvent PlayerStateEvent { get; set; }
-
-    protected override async Task AddEvent()
-    {
-        PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
-    }
-
-    protected override UnityEvent<GenericStateBundle<PlayerStateBundle>> GetEvent()
-    {
-        return PlayerStateEvent.GetInstance();
-    }
-
     protected override GenericStateBundle<PlayerStateBundle> GetInitialState()
     {
         return new GenericStateBundle<PlayerStateBundle>()

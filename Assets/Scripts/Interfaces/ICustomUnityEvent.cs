@@ -10,7 +10,7 @@ public interface ICustomUnityEventWTAsync<T>
 
 public interface ICustomUnityEventWTAsync
 {
-    public abstract void AddListener(UnityAction action);
+    public Task AddListener(UnityAction action);
     public UnityEvent GetInstance();
     public Task Invoke();
 }
