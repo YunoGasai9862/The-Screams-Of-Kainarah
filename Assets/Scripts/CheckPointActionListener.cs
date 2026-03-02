@@ -8,7 +8,8 @@ using UnityEngine;
 
 [Observer(ObserverType = typeof(CheckPointActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(ObserverType = typeof(CheckPointActionListener), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(CheckPoints.Checkpoint))]
-public class CheckPointActionListener : MonoBehaviour, INotify<CheckPoints.Checkpoint>, INotify<EntityPoolManager>
+[Observer(ObserverType = typeof(CheckPointActionListener), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
+public class CheckPointActionListener : MonoBehaviour, INotify<CheckPoints.Checkpoint>, INotify<EntityPoolManager>, INotify<GameStateManager>
 {
     private static string CHECKPOINTS_KEY = "CheckPoints";  
 
@@ -18,6 +19,8 @@ public class CheckPointActionListener : MonoBehaviour, INotify<CheckPoints.Check
     private CheckPoints CheckpointsSO { get; set; }
 
     private EntityPoolManager EntityPoolManagerInstance { get; set; }
+
+    private GameStateManager GameStateManagerInstance { get; set; }
 
     private Delegator Delegator { get; set; }
 
@@ -33,6 +36,13 @@ public class CheckPointActionListener : MonoBehaviour, INotify<CheckPoints.Check
         {
             Instance = gameObject,
             SubjectType = typeof(EntityPoolManager)
+
+        }, this);
+
+        Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
+        {
+            Instance = gameObject,
+            SubjectType = typeof(GameStateManager)
 
         }, this);
     }
@@ -113,8 +123,17 @@ public class CheckPointActionListener : MonoBehaviour, INotify<CheckPoints.Check
         {
             val.Invoke(value, CheckpointsSO); //invokes that particular function to reset checkpoints 
 
-            GameStateManager.instance.SaveCheckPoint(saveFileName);
+            yield return new WaitUntil(() => GameStateManagerInstance != null);
+
+            GameStateManagerInstance.SaveCheckPoint(saveFileName);
         }
+
+        yield return null;
+    }
+
+    public IEnumerator Notify(GameStateManager value)
+    {
+        GameStateManagerInstance = value;
 
         yield return null;
     }

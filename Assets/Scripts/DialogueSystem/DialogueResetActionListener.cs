@@ -21,7 +21,7 @@ public class DialogueResetActionListener : MonoBehaviour, INotify<EntityPoolMana
 
     private Task ResetDialogueSystem(DialoguesAndOptions Data)
     {
-        foreach(DialogueSystem dialogueSystem in Data.exchange)
+        foreach(DialoguesAndOptions.DialogueSystem dialogueSystem in Data.exchange)
         {
             dialogueSystem.DialogueSettings.DialogueConcluded = false;
         }

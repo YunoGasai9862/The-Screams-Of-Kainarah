@@ -14,8 +14,9 @@ using UnityEngine.SceneManagement;
 [Subject(SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(EntitiesToReset))]
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+[Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
 public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<Player>, IGameStateHandler, INotify<EntityPoolManager>, IRequest<Collider2D>, 
-    IRequest<GameObject>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>
+    IRequest<GameObject>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GameStateManager>
 {
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
@@ -48,6 +49,8 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
 
     private CheckPoints CheckPointsSO { get; set; }
 
+    private GameStateManager GameStateManagerInstance { get; set; }
+
     private PickableItemsUtility PickableItemsUtility { get; set; }
 
     private void Start()
@@ -58,6 +61,13 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
             SubjectType = typeof(PlayerAttributesNotifier)
 
         }, this));
+
+        Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
+        {
+            Instance = gameObject,
+            SubjectType = typeof(GameStateManager)
+
+        }, this);
     }
     private async void Awake()
     {
@@ -96,7 +106,14 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
         {
             //Instantiate(TeleportTransition, transform.position, Quaternion.identity);
             StartCoroutine(WaiterFunction());
-            GameStateManager.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
+
+            if (GameStateManagerInstance == null)
+            {
+                Debug.Log("GameStateManagerInstance is null for [PlayerActionRelayer - FixedUpdate] - exiting!");
+                return;
+            }
+
+            GameStateManagerInstance.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
 
         DialoguesAndOptions.DialogueSystem dialogueSystem = GetDialogueSystem(dialoguesAndOptions);
@@ -287,6 +304,13 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
         PickableItemsUtility = new PickableItemsUtility(PickableItemsSO);
 
         CheckPointsSO = Helper.GetFromEntityPoolManager<CheckPoints>(EntityPoolManagerInstance, CHECKPOINTS_KEY);
+
+        yield return null;
+    }
+
+    public IEnumerator Notify(GameStateManager value)
+    {
+        GameStateManagerInstance = value;
 
         yield return null;
     }

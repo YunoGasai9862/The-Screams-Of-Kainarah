@@ -102,9 +102,9 @@ public class DialogueManager : MonoBehaviour, IRequest<DialogueManager>
         NextDialogue = value;
     }
 
-    private void PingListeners(List<INotify<bool>> dialogueListeners, bool dialogueConcluded)
+    private void PingListeners(List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<bool>> dialogueListeners, bool dialogueConcluded)
     {
-        foreach(INotify<bool> listener in dialogueListeners)
+        foreach(Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<bool> listener in dialogueListeners)
         {
             listener.Notify(dialogueConcluded);
         }

@@ -5,6 +5,7 @@ using UnityEngine;
 
 [Observer(ObserverType = typeof(CheckpointColliderListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(SubjectType = typeof(PlayerActionRelayer), ObserverType = typeof(CheckpointColliderListener), ContextType = typeof(GameObject))]
+[Observer(SubjectType = typeof(GameStateManager), ObserverType = typeof(CheckpointColliderListener), ContextType = typeof(GameStateManager))]
 public class CheckpointColliderListener : MonoBehaviour, INotify<GameObject>, INotify<EntityPoolManager>
 {
     private static string CHECKPOINTS_KEY = "CheckPoints";
@@ -20,7 +21,7 @@ public class CheckpointColliderListener : MonoBehaviour, INotify<GameObject>, IN
             {
                 //TODO for the reset animation/Material
                 await SceneSingleton.PlayerSpawn().ResetAnimationAndMaterialProperties(playerObject, _cancellationToken);
-                GameStateManager.instance.LoadLastCheckPoint(GameStateManager.instance.GetFileLocationToLoad, lockingThread); //make sure it happens only once
+                GameStateManager.LoadLastCheckPoint(GameStateManager.instance.GetFileLocationToLoad, lockingThread); //make sure it happens only once
             }
         }
 
