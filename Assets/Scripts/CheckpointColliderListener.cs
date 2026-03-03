@@ -2,33 +2,53 @@ using Assets.Annotations;
 using System.Collections;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
+using System.Threading;
 
 [Observer(ObserverType = typeof(CheckpointColliderListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(SubjectType = typeof(PlayerActionRelayer), ObserverType = typeof(CheckpointColliderListener), ContextType = typeof(GameObject))]
 [Observer(SubjectType = typeof(GameStateManager), ObserverType = typeof(CheckpointColliderListener), ContextType = typeof(GameStateManager))]
-public class CheckpointColliderListener : MonoBehaviour, INotify<GameObject>, INotify<EntityPoolManager>
+public class CheckpointColliderListener : MonoBehaviour, INotify<Player>, INotify<EntityPoolManager>, INotify<GameStateManager>
 {
     private static string CHECKPOINTS_KEY = "CheckPoints";
     private EntityPoolManager EntityPoolManagerInstance { get; set; }
 
+    private GameStateManager GameStateManagerInstance { get; set; }
+
+    private SemaphoreSlim SemaphoreSlim { get; set; }
+
     private CheckPoints CheckPointsSO { get; set; }
 
-    private IEnumerator RespawnPlayer(GameObject playerObject, CheckPoints checkPointsScriptableObjectFetch)
+    private MaterialFader MaterialFader { get; set; }
+
+    private void Awake()
+    {
+        SemaphoreSlim = new SemaphoreSlim(1, 1);
+
+        MaterialFader = new MaterialFader();
+    }
+
+    private IEnumerator RespawnPlayer(Player player, CheckPoints checkPointsScriptableObjectFetch)
     {
         foreach (var cp in checkPointsScriptableObjectFetch.checkpoints)
         {
             if (cp.shouldRespawn)
             {
                 //TODO for the reset animation/Material
-                await SceneSingleton.PlayerSpawn().ResetAnimationAndMaterialProperties(playerObject, _cancellationToken);
-                GameStateManager.LoadLastCheckPoint(GameStateManager.instance.GetFileLocationToLoad, lockingThread); //make sure it happens only once
+                MaterialFader.FadeFloat(new MaterialPropertyUpdate<float>()
+                {
+                    Material = player.DefaultRendererValue.Renderer.sharedMaterial,
+                    PropertyName = "_FadeIn",
+                    Value = 1.0f
+                }, 0.1f, 1);
+
+                GameStateManagerInstance.LoadLastCheckPoint(SemaphoreSlim);
             }
         }
 
         yield return null;
     }
 
-    public IEnumerator Notify(GameObject value)
+    public IEnumerator Notify(Player value)
     {
         if (CheckPointsSO == null || EntityPoolManagerInstance == null)
         {
@@ -44,6 +64,13 @@ public class CheckpointColliderListener : MonoBehaviour, INotify<GameObject>, IN
         EntityPoolManagerInstance = value;
 
         CheckPointsSO = Helper.GetFromEntityPoolManager<CheckPoints>(EntityPoolManagerInstance, CHECKPOINTS_KEY);
+
+        yield return null;
+    }
+
+    public IEnumerator Notify(GameStateManager value)
+    {
+        GameStateManagerInstance = value;
 
         yield return null;
     }

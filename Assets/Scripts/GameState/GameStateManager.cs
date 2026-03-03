@@ -85,6 +85,11 @@ public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interf
         await Task.CompletedTask;
     }
 
+    public async Task LoadLastCheckPoint(SemaphoreSlim lockingThread)
+    {
+        await LoadLastCheckPoint(GetFileLocationToLoad, lockingThread);
+    }
+
     public async Task LoadLastCheckPoint(string saveFileName, SemaphoreSlim lockingThread)
     {
 

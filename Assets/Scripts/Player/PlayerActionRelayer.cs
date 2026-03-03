@@ -16,7 +16,7 @@ using UnityEngine.SceneManagement;
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
 public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<Player>, IGameStateHandler, INotify<EntityPoolManager>, IRequest<Collider2D>, 
-    IRequest<GameObject>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GameStateManager>
+    IRequest<Player>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GameStateManager>
 {
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
@@ -92,9 +92,9 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
                 EntityType = typeof(PlayerActionRelayer),
             }, this);
 
-            Delegator.NotifyObserversWrapper(new SubjectContext<GameObject>()
+            Delegator.NotifyObserversWrapper(new SubjectContext<Player>()
             {
-                Data = gameObject,
+                Data = Player,
                 EntityType = typeof(PlayerActionRelayer),
             }, this);
         }
@@ -284,7 +284,6 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
 
     public IEnumerator Notify(PickableItems value)
     {
-
         yield return null;
     }
 
