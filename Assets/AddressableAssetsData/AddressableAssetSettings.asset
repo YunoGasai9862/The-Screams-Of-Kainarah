@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: b7063152c68b66041806e52030dac4d9
   m_currentHash:
     serializedVersion: 2
-    Hash: fba2575e273f20d133198eff1fe79822
+    Hash: 136318aa4406c5ef0d60c3763a7d668e
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -112,6 +112,9 @@ MonoBehaviour:
     - AWSPollyManager
     - FirebaseStorageManager
     - AttackResetConfig
+    - EventStringMapper
+    - EntitiesToReset
+    - EnemyAnimationScriptableObjectEntity
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: fddaf8095ec2d344bb5a1aeb7f9adbb1, type: 2}

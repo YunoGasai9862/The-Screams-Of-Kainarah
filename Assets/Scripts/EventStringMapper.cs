@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[Asset(Asset.SCRIPTABLE_OBJECT, "EventStringMapper", InstantiationOrder = 11)]
 [CreateAssetMenu(fileName = "EventStringMapperScriptableObjectEntity", menuName = "Event String Mapper")]
 public class EventStringMapper: ScriptableObject
 {
@@ -11,7 +12,6 @@ public class EventStringMapper: ScriptableObject
         public UnityEventWOT eventNameWithoutType;
     }
 
-    //without Type
     public EventMappingsWithoutType[] mappingsWOT;
 
     [Serializable]
@@ -21,7 +21,6 @@ public class EventStringMapper: ScriptableObject
         public UnityEventWTAsync<T> eventNameWithType;
     }
 
-    //with Type
     [Header("Unity Event (Bool)")]
     public EventMappingsWithType<bool>[] mappingWTBool;
     [Header("Unity Event (String)")]

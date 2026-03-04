@@ -41,7 +41,8 @@ MonoBehaviour:
   - m_GUID: 50c604442b511894a9160942727c4b56
     m_Address: EntitiesToReset
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - EntitiesToReset
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5b98fff53e8c1a447b69e7c347f7ef0e
     m_Address: Prefabs/RunAsyncCoroutine
@@ -52,7 +53,8 @@ MonoBehaviour:
   - m_GUID: 5d279bb17986aab498190ab6f4f2ab56
     m_Address: EnemyAnimationScriptableObjectEntity
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - EnemyAnimationScriptableObjectEntity
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 717a65d109ef0bf4fbb68f126e57dccd
     m_Address: EnemyHittableObjectsScriptableEntity
@@ -64,6 +66,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - FirebaseStorageManager
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 899a6aea60b3d104eabcaddbafb365d9
+    m_Address: EventStringMapperScriptableObjectEntity
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - EventStringMapper
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 930e2577fd067014aa992f32b4c75095
     m_Address: DelegatorsManager
