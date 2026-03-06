@@ -1,3 +1,4 @@
+using Assets.Scripts.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -46,6 +47,12 @@ public class Helper: MonoBehaviour
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
+    public Task<CoroutineResult> GetDelegatorWrapper<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
+    {
+        StartCoroutine(GetDelegator<T>(retryLimit, waitLimitInSeconds));
+
+        return Task.FromResult(coroutineValue);
+    }
 
     public static T GetFromEntityPoolManager<T>(EntityPoolManager entityPoolManager, string key) where T : ScriptableObject
     {
