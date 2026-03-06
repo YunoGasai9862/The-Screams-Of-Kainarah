@@ -27,24 +27,25 @@ public class Helper: MonoBehaviour
         yield return new WaitUntil(() => variable != null);
     }
 
-    public static async Task<T> GetDelegator<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T: UnityEngine.Object
+    public IEnumerator GetDelegator<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
     {
-        for (int i=0; i<retryLimit; i++)
+        for (int i = 0; i < retryLimit; i++)
         {
             T delegator = FindObject<T>();
 
             if (delegator == null)
             {
-                await Task.Delay(waitLimitInSeconds * 1000);
+                yield return new WaitForSeconds(waitLimitInSeconds);
 
                 continue;
             }
 
-             return delegator;
+            yield return delegator;
         }
 
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
+
 
     public static T GetFromEntityPoolManager<T>(EntityPoolManager entityPoolManager, string key) where T : ScriptableObject
     {

@@ -175,9 +175,9 @@ public class Delegator : MonoBehaviour, IDelegator
         {
             ExecutingAssemblyTypes = Assembly.GetExecutingAssembly().GetTypes().ToArray().ToList();
 
-            List<SubjectAttribute> subjects = Find<SubjectAttribute>(ExecutingAssemblyTypes, typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<>)).ToList();
+            List<SubjectAttribute> subjects = Find<SubjectAttribute>(ExecutingAssemblyTypes, typeof(Assets.Scripts.Interfaces.Mediator.Base.IRequest<>)).ToList();
 
-            List<ObserverAttribute> observers = Find<ObserverAttribute>(ExecutingAssemblyTypes, typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<>)).ToList();
+            List<ObserverAttribute> observers = Find<ObserverAttribute>(ExecutingAssemblyTypes, typeof(Assets.Scripts.Interfaces.Mediator.Base.INotify<>)).ToList();
 
             foreach (SubjectAttribute subject in subjects)
             {
@@ -199,9 +199,9 @@ public class Delegator : MonoBehaviour, IDelegator
             }
 
         }
-        catch (Exception ex)
+        catch (BaseException ex)
         {
-            Debug.Log(ex.ToString());
+            Debug.Log($"Exception: {ex.Message}");
         }
     }
 
@@ -211,11 +211,11 @@ public class Delegator : MonoBehaviour, IDelegator
 
         foreach (Type type in types)
         {
-            T attribute = type.GetCustomAttribute<T>();
+            List<T> attributes = type.GetCustomAttributes<T>().ToList();
 
-            if (attribute == null)
+            if (attributes == null || attributes.Count == 0)
             {
-                Debug.Log($"No {attribute} found for type: {type.FullName}");
+                Debug.Log($"No custom attribute found for type: {type.FullName}");
 
                 continue;
             }
@@ -224,6 +224,11 @@ public class Delegator : MonoBehaviour, IDelegator
             {
                 throw new MissingContractException($"The underlying type must implement {requiredInterfaceType}!");
             }
+
+            attributes.ForEach(attribute =>
+            {
+               foundAttributes.Add(attribute);
+            });
         }
 
         return foundAttributes;
