@@ -124,17 +124,10 @@ public class CandleLightPackageGenerator : MonoBehaviour, Assets.Scripts.Interfa
         yield return null;
     }
 
-    public IEnumerator<LightPackage> Request(INotify<LightPackage> obsever)
+    public Task<LightPackage> Request(INotify<LightPackage> obsever)
     {
         StartCoroutine(PrepareDataForCustomLightningGeneration(obsever));
 
-        yield return null;
-    }
-
-    public IEnumerator Request(INotify<LightPackage> obsever, ref CoroutineResult result)
-    {
-        result = new CoroutineResult();
-
-        yield return new WaitUntil(() => IsReadyToCustomLightningEntity());
+        return null;
     }
 }

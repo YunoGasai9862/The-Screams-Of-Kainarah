@@ -16,7 +16,7 @@ using UnityEngine.SceneManagement;
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
 public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<Player>, IGameStateHandler, INotify<EntityPoolManager>, IRequest<Collider2D>, 
-    IRequest<Player>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GameStateManager>
+    IRequest<Player>, IRequest<bool>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GameStateManager>
 {
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
@@ -24,7 +24,6 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
     [SerializeField] float playerHealth;
     [SerializeField] MainThreadDispatcherEvent mainThreadDispatcherEvent;
     [SerializeField] EntitiesToReset entitiesToReset;
-    [SerializeField] DialoguesAndOptions dialoguesAndOptions;
     [SerializeField] PlayerHittableItemsScriptableObject playerHittableItemsScriptableObject;
 
     private Animator anim;
@@ -312,6 +311,11 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
         GameStateManagerInstance = value;
 
         yield return null;
+    }
+
+    public IEnumerator Notify(DialoguesAndOptions.DialogueSystem value)
+    {
+        throw new NotImplementedException();
     }
 }
 

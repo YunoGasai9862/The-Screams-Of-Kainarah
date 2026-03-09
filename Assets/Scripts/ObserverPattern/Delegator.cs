@@ -147,7 +147,13 @@ public class Delegator : MonoBehaviour, IDelegator
     {
         yield return StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
+
     public void NotifyObserversWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    {
+        StartCoroutine(NotifyObservers(context, subject, maxRetries, sleepTimeInMilliSeconds, optional));
+    }
+
+    public void NotifyObserversWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         StartCoroutine(NotifyObservers(context, subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }

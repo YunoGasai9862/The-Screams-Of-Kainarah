@@ -1,6 +1,7 @@
 using Assets.Exceptions;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<GenericStateBundle<T>> where T : IStateBundle
@@ -42,7 +43,9 @@ public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Med
         }
     }
 
-    public IEnumerator<GenericStateBundle<T>> Request(INotify<GenericStateBundle<T>> obsever)
+    protected abstract GenericStateBundle<T> GetInitialState();
+
+    public Task<GenericStateBundle<T>> Request(INotify<GenericStateBundle<T>> obsever)
     {
         StateListeners.Add(obsever);
 
@@ -53,10 +56,8 @@ public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Med
 
         }, this));
 
-        yield return null;
+        return Task.FromResult(StateBundle);
     }
-
-    protected abstract GenericStateBundle<T> GetInitialState();
 }
 
 
@@ -104,19 +105,19 @@ public abstract class BaseState<T, Z> : MonoBehaviour, Assets.Scripts.Interfaces
         }
     }
 
-    public IEnumerator<GenericStateBundle<T, Z>> Request(INotify<GenericStateBundle<T, Z>> obsever)
+    protected abstract GenericStateBundle<T, Z> GetInitialState();
+
+    public Task<GenericStateBundle<T, Z>> Request(INotify<GenericStateBundle<T, Z>> obsever)
     {
         StateListeners.Add(obsever);
 
-        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<GenericStateBundle<T, Z>>()
+        Delegator.NotifyObserversWrapper(new SubjectContext<GenericStateBundle<T, Z>>()
         {
             EntityType = typeof(BaseState<T, Z>),
             Data = StateBundle
 
-        }, this));
+        }, this);
 
-        yield return null;
+        return Task.FromResult(StateBundle);
     }
-
-    protected abstract GenericStateBundle<T, Z> GetInitialState();
 }

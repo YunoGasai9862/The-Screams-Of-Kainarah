@@ -239,10 +239,10 @@ public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interf
         yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<GameStateManager>() { Data = this, EntityType = typeof(GameStateManager) }, this));
     }
 
-    public IEnumerator<IGameStateHandler> Request(INotify<IGameStateHandler> obsever)
+    public Task<IGameStateHandler> Request(INotify<IGameStateHandler> obsever)
     {
-        GameStateHandlerObjects.Add((IGameStateHandler) obsever);
+        GameStateHandlerObjects.Add((IGameStateHandler)obsever);
 
-        yield return null;
+        return null;
     }
 }
