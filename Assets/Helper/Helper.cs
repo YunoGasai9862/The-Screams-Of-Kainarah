@@ -28,7 +28,12 @@ public class Helper: MonoBehaviour
         yield return new WaitUntil(() => variable != null);
     }
 
-    public IEnumerator GetDelegator<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
+    public static IEnumerator Wait(int waitLimitInSeconds)
+    {
+        yield return new WaitForSeconds(waitLimitInSeconds);
+    }
+
+    public static async Task<T> GetDelegator<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
     {
         for (int i = 0; i < retryLimit; i++)
         {
@@ -36,22 +41,15 @@ public class Helper: MonoBehaviour
 
             if (delegator == null)
             {
-                yield return new WaitForSeconds(waitLimitInSeconds);
+                await Task.Delay(waitLimitInSeconds * 1000);
 
                 continue;
             }
 
-            yield return delegator;
+            return delegator;
         }
 
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
-    }
-
-    public Task<CoroutineResult> GetDelegatorWrapper<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
-    {
-        StartCoroutine(GetDelegator<T>(retryLimit, waitLimitInSeconds));
-
-        return Task.FromResult(coroutineValue);
     }
 
     public static T GetFromEntityPoolManager<T>(EntityPoolManager entityPoolManager, string key) where T : ScriptableObject

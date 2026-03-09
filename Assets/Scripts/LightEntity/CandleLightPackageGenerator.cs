@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using Assets.Scripts.Models;
 
 [Subject(SubjectType = typeof(CandleLightPackageGenerator), ContextType = typeof(LightPackage))]
 [Observer(ObserverType = typeof(CandleLightPackageGenerator), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
@@ -128,5 +129,12 @@ public class CandleLightPackageGenerator : MonoBehaviour, Assets.Scripts.Interfa
         StartCoroutine(PrepareDataForCustomLightningGeneration(obsever));
 
         yield return null;
+    }
+
+    public IEnumerator Request(INotify<LightPackage> obsever, ref CoroutineResult result)
+    {
+        result = new CoroutineResult();
+
+        yield return new WaitUntil(() => IsReadyToCustomLightningEntity());
     }
 }
