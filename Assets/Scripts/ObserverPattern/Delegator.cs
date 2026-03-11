@@ -87,12 +87,16 @@ public class Delegator : MonoBehaviour, IDelegator
             throw new MissingContextException($"Unable to fish for the subject type within the scene: {context.SubjectType}!");
         }
 
+        Debug.Log($"Incoming Context: {context.ToString()}");
+
         if (context == null || context.SubjectType == null || context.Instance == null)
         {
             throw new MissingContextException($"Either the context is null or SubjectType/Instance are missing from the instance!");
         }
 
         KeyValuePair<ISubjectBundle, List<IObserverBundle>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
+
+        Debug.Log($"Association: {association}");
 
         if (association.Value == null || association.Value.Count == 0)
         {
@@ -179,11 +183,17 @@ public class Delegator : MonoBehaviour, IDelegator
     {
         try
         {
+            Debug.Log($"Executing BuildRegistry...");
+
             ExecutingAssemblyTypes = Assembly.GetExecutingAssembly().GetTypes().ToArray().ToList();
 
             List<SubjectAttribute> subjects = Find<SubjectAttribute>(ExecutingAssemblyTypes, typeof(Assets.Scripts.Interfaces.Mediator.Base.IRequest<>)).ToList();
 
+            Debug.Log($"Subjects found: {subjects.Count}");
+
             List<ObserverAttribute> observers = Find<ObserverAttribute>(ExecutingAssemblyTypes, typeof(Assets.Scripts.Interfaces.Mediator.Base.INotify<>)).ToList();
+
+            Debug.Log($"Observers found: {observers.Count}");
 
             foreach (SubjectAttribute subject in subjects)
             {
@@ -197,6 +207,7 @@ public class Delegator : MonoBehaviour, IDelegator
                 //check if exists - append, otherwise create a new list!!!
                 if (Associations[subjectBundle] == null)
                 {
+                    Debug.Log($"Adding to association: {subjectBundle.SubjectAttribute.SubjectType} - {observerBundle.ObserverAttribute.ObserverType}");
                     Associations[subjectBundle] = new List<IObserverBundle>() { observerBundle };
                     continue;
                 }
@@ -211,7 +222,7 @@ public class Delegator : MonoBehaviour, IDelegator
         }
     }
 
-    private HashSet<T> Find<T>(List<Type> types, Type requiredInterfaceType = null) where T : Attribute
+    private HashSet<T> Find<T>(List<Type> types, List<Type> possibleInterfaceTypes = null) where T : Attribute
     {
         HashSet<T> foundAttributes = new HashSet<T>();
 
@@ -224,6 +235,13 @@ public class Delegator : MonoBehaviour, IDelegator
                 Debug.Log($"No custom attribute found for type: {type.FullName}");
 
                 continue;
+            }
+
+            Debug.Log($"Custom attributes found for type: {type.FullName} - Count: {attributes.Count} - RequiredInterfaceType: {requiredInterfaceType} - Total Interfaces: {type.GetInterfaces().Count()}");
+
+            foreach (Type interf in type.GetInterfaces())
+            {
+                Debug.Log($"Interface: {interf.FullName} - IsGeneric: {interf.IsGenericType} - GenericTypeDefinition: {(interf.IsGenericType ? interf.GetGenericTypeDefinition().FullName : "N/A")}");
             }
 
             if (!type.GetInterfaces().Any(interf => requiredInterfaceType != null && interf.IsGenericType && interf.GetGenericTypeDefinition() == requiredInterfaceType))

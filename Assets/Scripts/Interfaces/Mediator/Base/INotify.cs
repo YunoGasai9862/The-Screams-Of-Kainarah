@@ -8,7 +8,7 @@ namespace Assets.Scripts.Interfaces.Mediator.Base
     {
     }
 
-    public interface INotify<T>
+    public interface INotify<T>: INotify
     {
 
     }

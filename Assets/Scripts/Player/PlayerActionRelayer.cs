@@ -15,8 +15,8 @@ using UnityEngine.SceneManagement;
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
-public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<Player>, IGameStateHandler, INotify<EntityPoolManager>, IRequest<Collider2D>, 
-    IRequest<Player>, IRequest<bool>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GameStateManager>
+public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<Player>, IGameStateHandler, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<EntityPoolManager>, IRequest<Collider2D>, 
+    IRequest<Player>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GameStateManager>
 {
     [SerializeField] string InteractableTag;
     [SerializeField] GameObject TeleportTransition;
@@ -38,6 +38,8 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
 
     private const string CHECKPOINTS_KEY = "CheckPoints";
 
+    private const string DIALOGUES_AND_OPTIONS_KEY = "DialoguesAndOptions";
+
     private Player Player { get; set; } = new Player();
 
     private Delegator Delegator { get; set; }
@@ -47,6 +49,8 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
     private PickableItems PickableItemsSO { get; set; }
 
     private CheckPoints CheckPointsSO { get; set; }
+
+    private DialoguesAndOptions DialoguesAndOptionsSO { get; set; }
 
     private GameStateManager GameStateManagerInstance { get; set; }
 
@@ -58,6 +62,13 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
         {
             Instance = gameObject,
             SubjectType = typeof(PlayerAttributesNotifier)
+
+        }, this));
+
+        StartCoroutine(Delegator.NotifySubject(new ObserverContext<EntityPoolManager>()
+        {
+            Instance = gameObject,
+            SubjectType = typeof(EntityPoolManager)
 
         }, this));
 
@@ -115,7 +126,13 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
             GameStateManagerInstance.ChangeLevel(SceneManager.GetActiveScene().buildIndex);
         }
 
-        DialoguesAndOptions.DialogueSystem dialogueSystem = GetDialogueSystem(dialoguesAndOptions);
+        if (DialoguesAndOptionsSO == null)
+        {
+            Debug.Log("DialoguesAndOptionsSO is null for [PlayerActionRelayer - FixedUpdate] - exiting! (EntityManager must retrieve it first)");
+            return;
+        }
+
+        DialoguesAndOptions.DialogueSystem dialogueSystem = GetDialogueSystem(DialoguesAndOptionsSO);
 
         if (dialogueSystem != null && !dialogueSystem.DialogueSettings.DialogueConcluded)
         {
@@ -303,6 +320,8 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
 
         CheckPointsSO = Helper.GetFromEntityPoolManager<CheckPoints>(EntityPoolManagerInstance, CHECKPOINTS_KEY);
 
+        DialoguesAndOptionsSO = Helper.GetFromEntityPoolManager<DialoguesAndOptions>(EntityPoolManagerInstance, DIALOGUES_AND_OPTIONS_KEY);
+
         yield return null;
     }
 
@@ -311,11 +330,6 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
         GameStateManagerInstance = value;
 
         yield return null;
-    }
-
-    public IEnumerator Notify(DialoguesAndOptions.DialogueSystem value)
-    {
-        throw new NotImplementedException();
     }
 }
 
