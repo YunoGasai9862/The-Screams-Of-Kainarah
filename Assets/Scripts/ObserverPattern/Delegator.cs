@@ -2,6 +2,7 @@ using Assets.Annotations;
 using Assets.Exceptions;
 using Assets.Scripts.ObserverPattern.interfaces;
 using Assets.Scripts.ObserverPattern.models;
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -187,11 +188,30 @@ public class Delegator : MonoBehaviour, IDelegator
 
             ExecutingAssemblyTypes = Assembly.GetExecutingAssembly().GetTypes().ToArray().ToList();
 
-            List<SubjectAttribute> subjects = Find<SubjectAttribute>(ExecutingAssemblyTypes, typeof(Assets.Scripts.Interfaces.Mediator.Base.IRequest<>)).ToList();
+            List<SubjectAttribute> subjects = Find<SubjectAttribute>(
+                    ExecutingAssemblyTypes, new List<Type>() 
+                    { 
+                        typeof(Assets.Scripts.Interfaces.Mediator.Base.IRequest<>),
+                        typeof(Assets.Scripts.Interfaces.Mediator.Base.IRequest),
+                        typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<>),
+                        typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest),
+                        typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<>),
+                        typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<>),
+                        typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV4.IRequest<>),
+
+                    }
+                ).ToList();
 
             Debug.Log($"Subjects found: {subjects.Count}");
 
-            List<ObserverAttribute> observers = Find<ObserverAttribute>(ExecutingAssemblyTypes, typeof(Assets.Scripts.Interfaces.Mediator.Base.INotify<>)).ToList();
+            List<ObserverAttribute> observers = Find<ObserverAttribute>(
+                     ExecutingAssemblyTypes, new List<Type> 
+                     { 
+                         typeof(Assets.Scripts.Interfaces.Mediator.Base.INotify<>),
+                         typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<>),
+                         typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify)
+                     }
+                ).ToList();
 
             Debug.Log($"Observers found: {observers.Count}");
 
@@ -222,8 +242,13 @@ public class Delegator : MonoBehaviour, IDelegator
         }
     }
 
-    private HashSet<T> Find<T>(List<Type> types, List<Type> possibleInterfaceTypes = null) where T : Attribute
+    private HashSet<T> Find<T>(List<Type> types, List<Type> possibleInterfaceTypes) where T : Attribute
     {
+        if (possibleInterfaceTypes == null)
+        {
+            throw new MissingArgumentException($"possibleInterfaceTypes cannot be null!");
+        }
+
         HashSet<T> foundAttributes = new HashSet<T>();
 
         foreach (Type type in types)
@@ -237,16 +262,14 @@ public class Delegator : MonoBehaviour, IDelegator
                 continue;
             }
 
-            Debug.Log($"Custom attributes found for type: {type.FullName} - Count: {attributes.Count} - RequiredInterfaceType: {requiredInterfaceType} - Total Interfaces: {type.GetInterfaces().Count()}");
+            string joinedPossibleInterfaceTypes = string.Join<Type>(",", possibleInterfaceTypes.ToArray());
 
-            foreach (Type interf in type.GetInterfaces())
-            {
-                Debug.Log($"Interface: {interf.FullName} - IsGeneric: {interf.IsGenericType} - GenericTypeDefinition: {(interf.IsGenericType ? interf.GetGenericTypeDefinition().FullName : "N/A")}");
-            }
+            Debug.Log($"Custom attributes found for type: {type.FullName} - Count: {attributes.Count} - RequiredInterfaceTypes: {joinedPossibleInterfaceTypes} - Total Interfaces: {type.GetInterfaces().Count()}");
 
-            if (!type.GetInterfaces().Any(interf => requiredInterfaceType != null && interf.IsGenericType && interf.GetGenericTypeDefinition() == requiredInterfaceType))
+
+            if (!type.GetInterfaces().Any(interf => possibleInterfaceTypes.Any(possibleInterfaceType => possibleInterfaceType.GetGenericTypeDefinition() == interf.GetGenericTypeDefinition()) && interf.IsGenericType))
             {
-                throw new MissingContractException($"The underlying type must implement {requiredInterfaceType}!");
+                throw new MissingContractException($"The underlying type must implement one of the interfaces: {joinedPossibleInterfaceTypes}!");
             }
 
             attributes.ForEach(attribute =>

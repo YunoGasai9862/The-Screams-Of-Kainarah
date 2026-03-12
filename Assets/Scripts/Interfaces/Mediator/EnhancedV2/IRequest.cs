@@ -2,7 +2,7 @@
 
 namespace Assets.Scripts.Interfaces.Mediator.EnhancedV2
 {
-    public interface IRequest<T>
+    public interface IRequest<T>: Base.IRequest
     {
         public IEnumerator<T> Request();
     }

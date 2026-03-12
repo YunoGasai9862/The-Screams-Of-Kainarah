@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Assets.Scripts.Interfaces.Mediator.Base
+﻿namespace Assets.Scripts.Interfaces.Mediator.Base
 {
     public interface INotify
     {
