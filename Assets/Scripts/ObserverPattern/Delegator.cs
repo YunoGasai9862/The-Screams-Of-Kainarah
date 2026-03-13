@@ -192,13 +192,16 @@ public class Delegator : MonoBehaviour, IDelegator
                     ExecutingAssemblyTypes, new List<Type>() 
                     { 
                         typeof(Assets.Scripts.Interfaces.Mediator.Base.IRequest<>),
-                        typeof(Assets.Scripts.Interfaces.Mediator.Base.IRequest),
                         typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<>),
-                        typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest),
                         typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<>),
                         typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<>),
                         typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV4.IRequest<>),
 
+                    },
+                    new List<Type>() 
+                    { 
+                        typeof(Assets.Scripts.Interfaces.Mediator.Base.IRequest),
+                        typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest),
                     }
                 ).ToList();
 
@@ -209,6 +212,9 @@ public class Delegator : MonoBehaviour, IDelegator
                      { 
                          typeof(Assets.Scripts.Interfaces.Mediator.Base.INotify<>),
                          typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<>),
+                     },
+                     new List<Type>
+                     {
                          typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify)
                      }
                 ).ToList();
@@ -242,11 +248,11 @@ public class Delegator : MonoBehaviour, IDelegator
         }
     }
 
-    private HashSet<T> Find<T>(List<Type> types, List<Type> possibleInterfaceTypes) where T : Attribute
+    private HashSet<T> Find<T>(List<Type> types, List<Type> genericInterfaceTypes = null, List<Type> nonGenericInterfaceTyles = null) where T : Attribute
     {
-        if (possibleInterfaceTypes == null)
+        if (genericInterfaceTypes == null && nonGenericInterfaceTyles == null)
         {
-            throw new MissingArgumentException($"possibleInterfaceTypes cannot be null!");
+            throw new MissingArgumentException($"One of them must be provided : genericInterfaceTypes or nonGenericInterfaceTyles!");
         }
 
         HashSet<T> foundAttributes = new HashSet<T>();
@@ -262,15 +268,19 @@ public class Delegator : MonoBehaviour, IDelegator
                 continue;
             }
 
-            string joinedPossibleInterfaceTypes = string.Join<Type>(",", possibleInterfaceTypes.ToArray());
+            string joinedGenericInterfaceTypes = string.Join<Type>(",", genericInterfaceTypes.ToArray());
 
-            Debug.Log($"Custom attributes found for type: {type.FullName} - Count: {attributes.Count} - RequiredInterfaceTypes: {joinedPossibleInterfaceTypes} - Total Interfaces: {type.GetInterfaces().Count()}");
+            string joinedNonGenericInterfaceTypes = string.Join<Type>(",", nonGenericInterfaceTyles.ToArray());
+
+            Debug.Log($"Custom attributes found for type: {type.FullName} - Count: {attributes.Count} - joinedGenericInterfaceTypes: {joinedGenericInterfaceTypes} - joinedNonGenericInterfaceTypes: {joinedNonGenericInterfaceTypes} - Total Interfaces: {type.GetInterfaces().Count()}");
 
 
-            if (!type.GetInterfaces().Any(interf => possibleInterfaceTypes.Any(possibleInterfaceType => possibleInterfaceType.GetGenericTypeDefinition() == interf.GetGenericTypeDefinition()) && interf.IsGenericType))
+            if (!type.GetInterfaces().Any(interf => genericInterfaceTypes.Any(possibleInterfaceType => possibleInterfaceType.GetGenericTypeDefinition() == interf.GetGenericTypeDefinition()) && interf.IsGenericType))
             {
-                throw new MissingContractException($"The underlying type must implement one of the interfaces: {joinedPossibleInterfaceTypes}!");
+                throw new MissingContractException($"The underlying type must implement one of the interfaces: {joinedGenericInterfaceTypes}!");
             }
+
+            //to for the non generic one!
 
             attributes.ForEach(attribute =>
             {
