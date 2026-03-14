@@ -2,19 +2,21 @@ using Assets.Annotations;
 using Assets.Exceptions;
 using Assets.Scripts.ObserverPattern.interfaces;
 using Assets.Scripts.ObserverPattern.models;
-using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using Assets.Scripts.Enums;
 
 public class Delegator : MonoBehaviour, IDelegator
 {
     private Dictionary<ISubjectBundle, List<IObserverBundle>> Associations { get; set; } = new Dictionary<ISubjectBundle, List<IObserverBundle>>();
 
     private List<Type> ExecutingAssemblyTypes { get; set; } = new List<Type>();
+
+    private Registry RegistryState { get; set; } = Registry.IDLE;
 
     private void Awake()
     {
@@ -38,6 +40,8 @@ public class Delegator : MonoBehaviour, IDelegator
 
     public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
+        yield return new WaitUntil(() => RegistryState.Equals(Registry.REGISTRY_READY));
+
         KeyValuePair<ISubjectBundle, List<IObserverBundle>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
 
         if (association.Value == null)
@@ -83,6 +87,8 @@ public class Delegator : MonoBehaviour, IDelegator
 
     public IEnumerator NotifySubject<T>(ObserverContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
+        yield return new WaitUntil(() => RegistryState.Equals(Registry.REGISTRY_READY));
+
         if (maxRetries == 0)
         {
             throw new MissingContextException($"Unable to fish for the subject type within the scene: {context.SubjectType}!");
@@ -184,6 +190,8 @@ public class Delegator : MonoBehaviour, IDelegator
     {
         try
         {
+            RegistryState = Registry.BUILDING_REGISTRY;
+
             Debug.Log($"Executing BuildRegistry...");
 
             ExecutingAssemblyTypes = Assembly.GetExecutingAssembly().GetTypes().ToArray().ToList();
@@ -215,6 +223,7 @@ public class Delegator : MonoBehaviour, IDelegator
                      },
                      new List<Type>
                      {
+                         typeof(Assets.Scripts.Interfaces.Mediator.Base.INotify),
                          typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify)
                      }
                 ).ToList();
@@ -230,10 +239,12 @@ public class Delegator : MonoBehaviour, IDelegator
 
                 SubjectBundle subjectBundle = new SubjectBundle() { SubjectAttribute = subject };
 
+                Debug.Log("SubjectBundle: " + subjectBundle.ToString() + " " + "Observerbundle: " + observerBundle.ToString());
+
                 //check if exists - append, otherwise create a new list!!!
-                if (Associations[subjectBundle] == null)
+                if (!Associations.TryGetValue(subjectBundle, out List<IObserverBundle> observerBundles))
                 {
-                    Debug.Log($"Adding to association: {subjectBundle.SubjectAttribute.SubjectType} - {observerBundle.ObserverAttribute.ObserverType}");
+                    Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.SubjectType} - {observerBundle?.ObserverAttribute?.ObserverType}");
                     Associations[subjectBundle] = new List<IObserverBundle>() { observerBundle };
                     continue;
                 }
@@ -241,6 +252,7 @@ public class Delegator : MonoBehaviour, IDelegator
                 Associations[subjectBundle].Add(observerBundle);
             }
 
+            RegistryState = Registry.REGISTRY_READY;
         }
         catch (BaseException ex)
         {
@@ -275,15 +287,14 @@ public class Delegator : MonoBehaviour, IDelegator
             Debug.Log($"Custom attributes found for type: {type.FullName} - Count: {attributes.Count} - joinedGenericInterfaceTypes: {joinedGenericInterfaceTypes} - joinedNonGenericInterfaceTypes: {joinedNonGenericInterfaceTypes} - Total Interfaces: {type.GetInterfaces().Count()}");
 
 
-            if (!type.GetInterfaces().Any(interf => genericInterfaceTypes.Any(possibleInterfaceType => possibleInterfaceType.GetGenericTypeDefinition() == interf.GetGenericTypeDefinition()) && interf.IsGenericType))
+            if (!type.GetInterfaces().Any(interf => genericInterfaceTypes.Any(possibleInterfaceType => interf.IsGenericType && possibleInterfaceType.GetGenericTypeDefinition() == interf.GetGenericTypeDefinition())))
             {
                 throw new MissingContractException($"The underlying type must implement one of the interfaces: {joinedGenericInterfaceTypes}!");
             }
 
-            //to for the non generic one!
-
             attributes.ForEach(attribute =>
             {
+                Debug.Log($"Adding: {attribute}");
                foundAttributes.Add(attribute);
             });
         }
