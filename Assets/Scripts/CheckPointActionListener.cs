@@ -7,9 +7,8 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 
 [Observer(ObserverType = typeof(CheckPointActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-[Observer(ObserverType = typeof(CheckPointActionListener), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(CheckPoints.Checkpoint))]
 [Observer(ObserverType = typeof(CheckPointActionListener), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
-public class CheckPointActionListener : MonoBehaviour, INotify<CheckPoints.Checkpoint>, INotify<EntityPoolManager>, INotify<GameStateManager>
+public class CheckPointActionListener : MonoBehaviour, INotify<EntityPoolManager>, INotify<GameStateManager>
 {
     private static string CHECKPOINTS_KEY = "CheckPoints";  
 
@@ -31,13 +30,6 @@ public class CheckPointActionListener : MonoBehaviour, INotify<CheckPoints.Check
     private async void Awake()
     {
         Delegator = await Helper.GetDelegator<Delegator>();
-
-        Delegator.NotifySubjectWrapper(new ObserverContext<CheckPoints.Checkpoint>()
-        {
-            Instance = gameObject,
-            SubjectType = typeof(EntityPoolManager)
-
-        }, this);
 
         Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
         {

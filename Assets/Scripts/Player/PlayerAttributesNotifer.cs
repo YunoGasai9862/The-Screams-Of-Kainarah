@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Subject(SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
-public class PlayerAttributesNotifier: MonoBehaviour, IRequest<Player>
+[Subject(SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
+public class PlayerAttributesNotifier: MonoBehaviour, IRequest<Player>, IRequest<IEntityAnimator>
 {
     private Player Player { get; set; }
 
@@ -41,9 +42,16 @@ public class PlayerAttributesNotifier: MonoBehaviour, IRequest<Player>
         Delegator = await Helper.GetDelegator<Delegator>();
     }
 
-    public IEnumerator<Player> Request()
+    IEnumerator<Player> IRequest<Player>.Request()
     {
         StartCoroutine(Delegator.NotifyObservers(new SubjectContext<Player> { EntityType = typeof(PlayerAttributesNotifier), Data = Player }, this));
+
+        yield return null;
+    }
+
+    IEnumerator<IEntityAnimator> IRequest<IEntityAnimator>.Request()
+    {
+        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<IEntityTransform> { EntityType = typeof(PlayerAttributesNotifier), Data = (IEntityTransform) Player.Transform }, (Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<IEntityTransform>) this));
 
         yield return null;
     }

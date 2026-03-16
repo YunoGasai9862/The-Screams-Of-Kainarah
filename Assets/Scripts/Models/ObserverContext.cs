@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 public class ObserverContext: Context
 {
@@ -12,5 +11,9 @@ public class ObserverContext: Context
 
 public class ObserverContext<T> : ObserverContext
 {
-
+    private Type ContextType { get; set; }
+    public override string ToString()
+    {
+        return $"{base.ToString()}, ContextType: {typeof(T)}";
+    }
 }

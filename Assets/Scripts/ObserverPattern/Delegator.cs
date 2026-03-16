@@ -38,6 +38,21 @@ public class Delegator : MonoBehaviour, IDelegator
         yield return null;
     }
 
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.Base.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    {
+        yield return StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
+    }
+
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    {
+        yield return StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
+    }
+
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    {
+        yield return StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
+    }
+
     public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         yield return new WaitUntil(() => RegistryState.Equals(Registry.REGISTRY_READY));
@@ -87,7 +102,11 @@ public class Delegator : MonoBehaviour, IDelegator
 
     public IEnumerator NotifySubject<T>(ObserverContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
+        Debug.Log($"Before Registry State: {RegistryState}");
+
         yield return new WaitUntil(() => RegistryState.Equals(Registry.REGISTRY_READY));
+
+        Debug.Log($"After Registry State: {RegistryState}");
 
         if (maxRetries == 0)
         {
@@ -111,6 +130,8 @@ public class Delegator : MonoBehaviour, IDelegator
         }
 
         IObserverBundle cachedObserverContext = GetObserverBundle<T, ObserverContext>(association.Value, context);
+
+        Debug.Log($"CachecObserverBundle: {cachedObserverContext}, Incoming Context: {context}, Type: {typeof(T)}");
 
         if (cachedObserverContext.Observer == null)
         {
@@ -142,21 +163,6 @@ public class Delegator : MonoBehaviour, IDelegator
     public IEnumerator NotifyObserver<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         yield return null;
-    }
-
-    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.Base.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
-    {
-        yield return StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
-    }
-
-    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
-    {
-        yield return StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
-    }
-
-    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
-    {
-        yield return StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
     public void NotifyObserversWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
@@ -252,6 +258,8 @@ public class Delegator : MonoBehaviour, IDelegator
                 Associations[subjectBundle].Add(observerBundle);
             }
 
+            Debug.Log("Done Registering...");
+
             RegistryState = Registry.REGISTRY_READY;
         }
         catch (BaseException ex)
@@ -312,5 +320,10 @@ public class Delegator : MonoBehaviour, IDelegator
     private List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> GetObserverBundles<T, Z>(KeyValuePair<ISubjectBundle, List<IObserverBundle>> association, Z context) where Z : SubjectContext<T>
     {
         return association.Value.Where(observerContext => observerContext.ObserverAttribute.SubjectType.Equals(context.EntityType) && typeof(T).Name.Equals(context.Data.GetType())).Select(observer => observer.Observer).ToList();
+    }
+
+    internal IEnumerator NotifyObservers(SubjectContext<IEntityTransform> subjectContext, PlayerAttributesNotifier playerAttributesNotifier)
+    {
+        throw new NotImplementedException();
     }
 }
