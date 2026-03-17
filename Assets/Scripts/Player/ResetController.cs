@@ -12,7 +12,12 @@ public class ResetController : MonoBehaviour, INotify<ResetBundle>
 
     private Delegator Delegator { get; set; }
 
-    private void Awake()
+    private async void Awake()
+    {
+        Delegator = await Helper.GetDelegator<Delegator>();
+    }
+
+    private void Start()
     {
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<ResetBundle>()
         {

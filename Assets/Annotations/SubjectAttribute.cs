@@ -22,5 +22,15 @@ namespace Assets.Annotations
             SubjectType = subjectType;
             ContextType = contextType;
         }
+
+        public override string ToString()
+        {
+           return $"AssetType: {AssetType}, SubjectType: {SubjectType}, ContextType: {ContextType}, UnityEventType: {UnityEventType}";
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

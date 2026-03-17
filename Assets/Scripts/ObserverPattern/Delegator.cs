@@ -255,6 +255,8 @@ public class Delegator : MonoBehaviour, IDelegator
                     continue;
                 }
 
+                Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.SubjectType} - {observerBundle?.ObserverAttribute?.ObserverType}");
+
                 Associations[subjectBundle].Add(observerBundle);
             }
 
@@ -312,6 +314,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
     private IObserverBundle GetObserverBundle<T, Z>(List<IObserverBundle> observers, Z context) where Z: ObserverContext
     {
+        Debug.Log($"Getting observer bundle for context: {context}, Type: {typeof(T).Name}, Observer Count: {observers.Count}");
         return observers.Where(observerContext => observerContext.ObserverAttribute.ObserverType.Equals(context.EntityType) &&
                                                     typeof(T).Name.Equals(observerContext.ObserverAttribute.ContextType) && 
                                                     observerContext.ObserverAttribute.SubjectType.Equals(context.SubjectType)).FirstOrDefault();

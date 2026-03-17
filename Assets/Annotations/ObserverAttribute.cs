@@ -19,5 +19,15 @@ namespace Assets.Annotations
             SubjectType = subjectType;
             ContextType = contextType;
         }
+
+        public override string ToString()
+        {
+            return $"ObserverType: {ObserverType}, SubjectType: {SubjectType}, ContextType: {ContextType}";
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
