@@ -40,6 +40,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, INotify<ILigh
         Delegator.NotifySubjectWrapper(new ObserverContext<ILightPreprocess>()
         {
             Instance = gameObject,
+            EntityType = typeof(CelestialBodiesLightPackageGenerator),
             SubjectType = typeof(CelestialBodyLightning)
         }, this);
     }

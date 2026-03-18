@@ -24,6 +24,7 @@ public class PullUpPanel : MonoBehaviour, INotify<bool>
         m_anim = GetComponent<Animator>();
 
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<bool>() {
+            EntityType = typeof(PullUpPanel),
             Instance = gameObject,
             SubjectType = typeof(TriggerHandler)
 

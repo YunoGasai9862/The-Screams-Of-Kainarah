@@ -115,9 +115,9 @@ public class Delegator : MonoBehaviour, IDelegator
 
         Debug.Log($"Incoming Context: {context.ToString()}");
 
-        if (context == null || context.SubjectType == null || context.Instance == null)
+        if (context == null || context.SubjectType == null || context.EntityType ==null || context.Instance == null)
         {
-            throw new MissingContextException($"Either the context is null or SubjectType/Instance are missing from the instance!");
+            throw new MissingContextException($"Either the context is null or SubjectType/EntityType/Instance are missing from the instance!");
         }
 
         KeyValuePair<ISubjectBundle, List<IObserverBundle>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
@@ -323,10 +323,5 @@ public class Delegator : MonoBehaviour, IDelegator
     private List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> GetObserverBundles<T, Z>(KeyValuePair<ISubjectBundle, List<IObserverBundle>> association, Z context) where Z : SubjectContext<T>
     {
         return association.Value.Where(observerContext => observerContext.ObserverAttribute.SubjectType.Equals(context.EntityType) && typeof(T).Name.Equals(context.Data.GetType())).Select(observer => observer.Observer).ToList();
-    }
-
-    internal IEnumerator NotifyObservers(SubjectContext<IEntityTransform> subjectContext, PlayerAttributesNotifier playerAttributesNotifier)
-    {
-        throw new NotImplementedException();
     }
 }

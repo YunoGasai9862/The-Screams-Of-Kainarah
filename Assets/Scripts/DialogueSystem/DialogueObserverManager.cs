@@ -33,6 +33,7 @@ public class DialogueObserverManager : MonoBehaviour, INotify<DialogueSystem>, I
         Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>> ()
         {
             Instance = gameObject,
+            EntityType = typeof(DialogueObserverManager),
             SubjectType = typeof(GameStateConsumer)
 
         }, this);
@@ -41,6 +42,7 @@ public class DialogueObserverManager : MonoBehaviour, INotify<DialogueSystem>, I
         Delegator.NotifySubjectWrapper(new ObserverContext<DialogueSystem>()
         {
             Instance = gameObject,
+            EntityType = typeof(DialogueObserverManager),
             SubjectType = typeof(PlayerActionRelayer)
 
         }, this);

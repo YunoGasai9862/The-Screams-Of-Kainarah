@@ -22,6 +22,7 @@ public class WaterCameraAndTextureFollow : MonoBehaviour, INotify<IEntityTransfo
         Delegator.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
         {
             Instance = gameObject,
+            EntityType = typeof(WaterCameraAndTextureFollow),
             SubjectType = typeof(PlayerAttributesNotifier)
         }, this);
     }

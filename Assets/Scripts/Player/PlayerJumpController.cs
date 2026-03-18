@@ -60,12 +60,14 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<PlayerStateBundle>>()
         {
             Instance = gameObject,
+            EntityType = typeof(PlayerJumpController),
             SubjectType = typeof(PlayerStateConsumer)
         }, this));
 
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
         {
             Instance = gameObject,
+            EntityType = typeof(PlayerJumpController),
             SubjectType = typeof(PlayerAttributesNotifier)
         }, this));
     }

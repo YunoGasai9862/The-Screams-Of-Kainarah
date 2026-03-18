@@ -57,6 +57,7 @@ public class RakashStateMachine : MonoBehaviour, INotify<GenericStateBundle<Game
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {
             Instance = gameObject,
+            EntityType = typeof(RakashStateMachine),
             SubjectType = typeof(GameStateConsumer)
 
         }, this));
@@ -64,6 +65,7 @@ public class RakashStateMachine : MonoBehaviour, INotify<GenericStateBundle<Game
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<IEntityTransform>()
         {
             Instance = gameObject,
+            EntityType = typeof(RakashStateMachine),
             SubjectType = typeof(PlayerAttributesNotifier)
 
         }, this));
@@ -71,6 +73,7 @@ public class RakashStateMachine : MonoBehaviour, INotify<GenericStateBundle<Game
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<EnemyHittableManager>()
         {
             SubjectType = typeof(EnemyHittableManager),
+            EntityType = typeof(RakashStateMachine),
             Instance = gameObject,
 
         }, this));

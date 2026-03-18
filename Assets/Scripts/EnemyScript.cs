@@ -58,6 +58,7 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
         Delegator.NotifySubjectWrapper(new ObserverContext<EnemyHittableManager>()
         {
             SubjectType = typeof(EnemyHittableManager),
+            EntityType = typeof(EnemyScript),
             Instance = gameObject,
 
         }, this);

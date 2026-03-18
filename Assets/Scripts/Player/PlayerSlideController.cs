@@ -56,12 +56,14 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<AnimationDetails>()
         {
             Instance = gameObject,
+            EntityType = typeof(PlayerSlideController),
             SubjectType = typeof(PlayerAnimationController),
         }, this));
 
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
         {
             Instance = gameObject,
+            EntityType = typeof(PlayerSlideController),
             SubjectType = typeof(PlayerAttributesNotifier),
         }, this));
 

@@ -29,6 +29,7 @@ public class DialogueTriggerManager : MonoBehaviour, INotify<GenericStateBundle<
         Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {
             Instance = gameObject,
+            EntityType = typeof(DialogueTriggerManager),
             SubjectType = typeof(GameStateConsumer)
 
         }, this);
@@ -36,6 +37,7 @@ public class DialogueTriggerManager : MonoBehaviour, INotify<GenericStateBundle<
         Delegator.NotifySubjectWrapper(new ObserverContext<DialogueManager>()
         {
             Instance = gameObject,
+            EntityType = typeof(DialogueTriggerManager),
             SubjectType = typeof(DialogueManager)
 
         }, this);

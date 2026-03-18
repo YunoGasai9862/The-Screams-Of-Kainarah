@@ -21,6 +21,7 @@ public class TrackPlayer : MonoBehaviour, INotify<IEntityTransform>
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<IEntityTransform>()
         {
             Instance = gameObject,
+            EntityType = typeof(TrackPlayer),
             SubjectType = typeof(PlayerAttributesNotifier)
         }, this));
     }

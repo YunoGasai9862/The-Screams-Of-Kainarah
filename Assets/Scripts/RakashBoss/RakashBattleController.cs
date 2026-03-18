@@ -39,6 +39,7 @@ public class RakashBattleController : MonoBehaviour, INotify<Health>, IReceiver<
         Delegator.NotifySubjectWrapper(new ObserverContext<Health>()
         {
             Instance = gameObject,
+            EntityType = typeof(RakashBattleController),
             SubjectType = typeof(RakashManager)
 
         }, this);

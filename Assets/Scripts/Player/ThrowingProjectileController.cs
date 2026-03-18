@@ -36,6 +36,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, INot
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<ScriptableObject>()
         {
             Instance = gameObject,
+            EntityType = typeof(ThrowingProjectileController),
             SubjectType = typeof(PickableItems)
 
         }, this));

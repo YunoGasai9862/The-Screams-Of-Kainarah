@@ -23,12 +23,14 @@ public class CameraFollow : MonoBehaviour, INotify<bool>, INotify<IEntityTransfo
         Delegator.NotifySubjectWrapper(new ObserverContext<bool>()
         {
             Instance = gameObject,
+            EntityType = typeof(CameraFollow),
             SubjectType = typeof(CameraShake)
         }, this);
 
         Delegator.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
         {
             Instance = gameObject,
+            EntityType = typeof(CameraFollow),
             SubjectType = typeof(PlayerAttributesNotifier)
         }, this);
     }

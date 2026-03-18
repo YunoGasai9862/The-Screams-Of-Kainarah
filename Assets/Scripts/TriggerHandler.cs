@@ -35,6 +35,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {
             Instance = gameObject,
+            EntityType = typeof(TriggerHandler),
             SubjectType = typeof(GameStateConsumer)
 
         }, this);

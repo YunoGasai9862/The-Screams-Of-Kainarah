@@ -24,6 +24,7 @@ public class MusicManager : MonoBehaviour, INotify<bool>
          Delegator.NotifySubjectWrapper(new ObserverContext<bool>()
         {
             Instance = gameObject,
+            EntityType = typeof(MusicManager),
             SubjectType = typeof(PlayerActionRelayer),
         }, this);
     }

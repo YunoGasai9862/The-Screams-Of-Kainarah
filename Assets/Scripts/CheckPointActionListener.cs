@@ -34,6 +34,7 @@ public class CheckPointActionListener : MonoBehaviour, INotify<EntityPoolManager
         Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
         {
             Instance = gameObject,
+            EntityType = typeof(CheckPointActionListener),
             SubjectType = typeof(GameStateManager)
 
         }, this);

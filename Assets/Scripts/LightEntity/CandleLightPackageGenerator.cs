@@ -49,12 +49,14 @@ public class CandleLightPackageGenerator : MonoBehaviour, Assets.Scripts.Interfa
         Delegator.NotifySubjectWrapper(new ObserverContext<ILightPreprocess>()
         {
             Instance = gameObject,
+            EntityType = typeof(CandleLightPackageGenerator),
             SubjectType = typeof(LightFlicker)
         }, this);
 
         Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
+            EntityType = typeof(CandleLightPackageGenerator),
             SubjectType = typeof(PlayerAttributesNotifier)
          }, this);
     }

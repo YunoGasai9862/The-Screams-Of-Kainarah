@@ -17,6 +17,7 @@ public class Effects: MonoBehaviour, INotify<Player>
         Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
+            EntityType = typeof(Effects),
             SubjectType = typeof(PlayerAttributesNotifier),
         }, this);
     }

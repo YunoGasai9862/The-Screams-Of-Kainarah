@@ -32,6 +32,7 @@ public class MoonMovement : MonoBehaviour, INotify<IEntityTransform>
         Delegator.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
         {
             Instance = gameObject,
+            EntityType = typeof(MoonMovement),
             SubjectType = typeof(PlayerAttributesNotifier)
         }, this);
     }
