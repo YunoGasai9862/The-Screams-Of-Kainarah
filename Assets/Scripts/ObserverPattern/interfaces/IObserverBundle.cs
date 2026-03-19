@@ -1,5 +1,5 @@
 ﻿using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Assets.Scripts.Interfaces.Mediator.Base;
 
 namespace Assets.Scripts.ObserverPattern.interfaces
 {

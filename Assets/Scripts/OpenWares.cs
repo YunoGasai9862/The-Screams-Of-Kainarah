@@ -17,19 +17,16 @@ public class OpenWares : MonoBehaviour, INotify<GenericStateBundle<GameStateBund
 
     private bool IsInventoryOpen { get; set; }
 
-    private async void Awake()
+    private async void Start()
     {
         Delegator = await Helper.GetDelegator<Delegator>();
-    }
 
-    private void Start()
-    {
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<GameStateBundle>>()
+        Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {
             Instance = gameObject,
             EntityType = typeof(OpenWares),
             SubjectType = typeof(GameStateConsumer)
-        }, this));
+        }, this);
     }
 
     private void OnMouseDown()

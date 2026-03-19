@@ -73,7 +73,7 @@ public class Delegator : MonoBehaviour, IDelegator
             association.Key.Subject = (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest) subject;
         }
 
-        List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> cachedObserverContext = GetObserverBundles<T, SubjectContext<T>> (association, context);
+        List<Assets.Scripts.Interfaces.Mediator.Base.INotify> cachedObserverContext = GetObserverBundles<T, SubjectContext<T>> (association, context);
 
         if (cachedObserverContext == null || cachedObserverContext.Count == 0)
         {
@@ -131,15 +131,15 @@ public class Delegator : MonoBehaviour, IDelegator
 
         IObserverBundle cachedObserverContext = GetObserverBundle<T, ObserverContext>(association.Value, context);
 
-        Debug.Log($"CachecObserverBundle: {cachedObserverContext}, Incoming Context: {context}, Type: {typeof(T)}");
+        Debug.Log($"CachecObserverBundle: {cachedObserverContext}, Incoming Context: {context}, Type: {typeof(T)}, observer: {observer}");
 
-        if (cachedObserverContext.Observer == null)
+        if (cachedObserverContext?.Observer == null)
         {
-            cachedObserverContext.Observer = (Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify) observer;
+            cachedObserverContext.Observer = observer;
             Associations[association.Key].Add(cachedObserverContext);
         }
 
-        if (association.Key.Subject == null)
+        if (association.Key?.Subject == null)
         {
             Debug.LogWarning($"The subject instance is null for the subject type: {context.SubjectType}. Attemping a retry...");
 
@@ -312,7 +312,7 @@ public class Delegator : MonoBehaviour, IDelegator
         return foundAttributes;
     }
 
-    private IObserverBundle GetObserverBundle<T, Z>(List<IObserverBundle> observers, Z context) where Z: ObserverContext
+    private ObserverBundle GetObserverBundle<T, Z>(List<IObserverBundle> observers, Z context) where Z: ObserverContext
     {
         Debug.Log($"Getting observer bundle for context: {context}, Type: {typeof(T).Name}, Observer Count: {observers.Count}");
         return observers.Where(observerContext => observerContext.ObserverAttribute.ObserverType.Equals(context.EntityType) &&
@@ -320,7 +320,7 @@ public class Delegator : MonoBehaviour, IDelegator
                                                     observerContext.ObserverAttribute.SubjectType.Equals(context.SubjectType)).FirstOrDefault();
     }
 
-    private List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> GetObserverBundles<T, Z>(KeyValuePair<ISubjectBundle, List<IObserverBundle>> association, Z context) where Z : SubjectContext<T>
+    private List<Assets.Scripts.Interfaces.Mediator.Base.INotify> GetObserverBundles<T, Z>(KeyValuePair<ISubjectBundle, List<IObserverBundle>> association, Z context) where Z : SubjectContext<T>
     {
         return association.Value.Where(observerContext => observerContext.ObserverAttribute.SubjectType.Equals(context.EntityType) && typeof(T).Name.Equals(context.Data.GetType())).Select(observer => observer.Observer).ToList();
     }
