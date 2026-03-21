@@ -12,7 +12,7 @@ using Assets.Scripts.Enums;
 
 public class Delegator : MonoBehaviour, IDelegator
 {
-    private Dictionary<ISubjectBundle, List<IObserverBundle>> Associations { get; set; } = new Dictionary<ISubjectBundle, List<IObserverBundle>>();
+    private Dictionary<dynamic, List<dynamic>> Associations { get; set; } = new Dictionary<dynamic, List<dynamic>>();
 
     private List<Type> ExecutingAssemblyTypes { get; set; } = new List<Type>();
 
@@ -57,7 +57,7 @@ public class Delegator : MonoBehaviour, IDelegator
     {
         yield return new WaitUntil(() => RegistryState.Equals(Registry.REGISTRY_READY));
 
-        KeyValuePair<ISubjectBundle, List<IObserverBundle>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
+        KeyValuePair<dynamic, List<dynamic>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
 
         if (association.Value == null)
         {
@@ -73,7 +73,7 @@ public class Delegator : MonoBehaviour, IDelegator
             association.Key.Subject = (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest) subject;
         }
 
-        List<Assets.Scripts.Interfaces.Mediator.Base.INotify> cachedObserverContext = GetObserverBundles<T, SubjectContext<T>> (association, context);
+        List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> cachedObserverContext = GetObserverBundles<T, SubjectContext<T>> (association, context);
 
         if (cachedObserverContext == null || cachedObserverContext.Count == 0)
         {
@@ -120,7 +120,7 @@ public class Delegator : MonoBehaviour, IDelegator
             throw new MissingContextException($"Either the context is null or SubjectType/EntityType/Instance are missing from the instance!");
         }
 
-        KeyValuePair<ISubjectBundle, List<IObserverBundle>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
+        KeyValuePair<dynamic, List<dynamic>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
 
         Debug.Log($"Association: {association}");
 
@@ -135,8 +135,13 @@ public class Delegator : MonoBehaviour, IDelegator
 
         if (cachedObserverContext?.Observer == null)
         {
-            cachedObserverContext.Observer = observer;
-            Associations[association.Key].Add(cachedObserverContext);
+            ObserverBundle<T> observerBundle = new ObserverBundle<T>()
+            {
+                Observer = observer,
+                ObserverAttribute = cachedObserverContext.ObserverAttribute
+            };
+
+            Associations[association.Key].Add(observerBundle);
         }
 
         if (association.Key?.Subject == null)
@@ -248,10 +253,10 @@ public class Delegator : MonoBehaviour, IDelegator
                 Debug.Log("SubjectBundle: " + subjectBundle.ToString() + " " + "Observerbundle: " + observerBundle.ToString());
 
                 //check if exists - append, otherwise create a new list!!!
-                if (!Associations.TryGetValue(subjectBundle, out List<IObserverBundle> observerBundles))
+                if (!Associations.TryGetValue(subjectBundle, out List<dynamic> observerBundles))
                 {
                     Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.SubjectType} - {observerBundle?.ObserverAttribute?.ObserverType}");
-                    Associations[subjectBundle] = new List<IObserverBundle>() { observerBundle };
+                    Associations[subjectBundle] = new List<dynamic>() { observerBundle };
                     continue;
                 }
 
@@ -312,7 +317,7 @@ public class Delegator : MonoBehaviour, IDelegator
         return foundAttributes;
     }
 
-    private ObserverBundle GetObserverBundle<T, Z>(List<IObserverBundle> observers, Z context) where Z: ObserverContext
+    private IObserverBundle GetObserverBundle<T, Z>(List<dynamic> observers, Z context) where Z: ObserverContext
     {
         Debug.Log($"Getting observer bundle for context: {context}, Type: {typeof(T).Name}, Observer Count: {observers.Count}");
         return observers.Where(observerContext => observerContext.ObserverAttribute.ObserverType.Equals(context.EntityType) &&
@@ -320,8 +325,8 @@ public class Delegator : MonoBehaviour, IDelegator
                                                     observerContext.ObserverAttribute.SubjectType.Equals(context.SubjectType)).FirstOrDefault();
     }
 
-    private List<Assets.Scripts.Interfaces.Mediator.Base.INotify> GetObserverBundles<T, Z>(KeyValuePair<ISubjectBundle, List<IObserverBundle>> association, Z context) where Z : SubjectContext<T>
+    private List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> GetObserverBundles<T, Z>(KeyValuePair<dynamic, List<dynamic>> association, Z context) where Z : SubjectContext<T>
     {
-        return association.Value.Where(observerContext => observerContext.ObserverAttribute.SubjectType.Equals(context.EntityType) && typeof(T).Name.Equals(context.Data.GetType())).Select(observer => observer.Observer).ToList();
+        return association.Value.Where(observerContext => observerContext.ObserverAttribute.SubjectType.Equals(context.EntityType) && typeof(T).Name.Equals(context.Data.GetType())).Select(observer => (Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify)observer.Observer).ToList();
     }
 }
