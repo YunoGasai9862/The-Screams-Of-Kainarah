@@ -6,8 +6,8 @@ public class PlayerActionsModel
     public PlayerActionsModel() { }
     public bool GetJumpPressed { get; set; }
     public bool GetSlidePressed { get; set; }
-    public Vector2 CharacterVelocity { get; set; }
-    public Vector2 CharacterSpeed { get; set; }
+    public Vector2 CharacterVelocity { get; set; } = Vector2.zero;
+    public Vector2 CharacterSpeed { get; set; } = Vector2.zero;
     public bool LeftMouseButtonPressed { get; set; }
     public float TimeForMouseClickStart { get ; set; } = 0;
     public float TimeForMouseClickEnd { get; set; } = 0;

@@ -140,6 +140,13 @@ public class PlayerActions : MonoBehaviour, INotify<GenericStateBundle<PlayerSta
 
     private void FixedUpdate()
     {
+        if (Player == null)
+        {
+            Debug.Log($"Player Rigidbody reference is missing");
+
+            return;
+        }
+
         Player.Rigidbody.linearVelocity = _playerActionsModel.CharacterVelocity;
     }
 

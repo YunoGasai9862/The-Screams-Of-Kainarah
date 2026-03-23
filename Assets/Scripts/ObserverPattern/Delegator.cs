@@ -122,7 +122,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
         KeyValuePair<dynamic, List<dynamic>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
 
-        Debug.Log($"Association: {association}");
+        Debug.Log($"Association: {association}, TotalObservers: {association.Value.Count}");
 
         if (association.Value == null || association.Value.Count == 0)
         {
@@ -135,9 +135,9 @@ public class Delegator : MonoBehaviour, IDelegator
 
         if (cachedObserverContext?.Observer == null)
         {
-            ObserverBundle<T> observerBundle = new ObserverBundle<T>()
+            ObserverBundle observerBundle = new ObserverBundle()
             {
-                Observer = observer,
+                Observer = (Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify) observer,
                 ObserverAttribute = cachedObserverContext.ObserverAttribute
             };
 
@@ -243,10 +243,14 @@ public class Delegator : MonoBehaviour, IDelegator
 
             foreach (SubjectAttribute subject in subjects)
             {
-                ObserverBundle observerBundle = new ObserverBundle()
+
+                foreach (ObserverAttribute observer in observers)
                 {
-                    ObserverAttribute = observers.Find(observer => observer.SubjectType.Equals(subject.SubjectType))
-                };
+                    ObserverBundle observerBundle = new ObserverBundle()
+                    {
+                        //properly build it!!
+                    };
+                }
 
                 SubjectBundle subjectBundle = new SubjectBundle() { SubjectAttribute = subject };
 
@@ -275,14 +279,14 @@ public class Delegator : MonoBehaviour, IDelegator
         }
     }
 
-    private HashSet<T> Find<T>(List<Type> types, List<Type> genericInterfaceTypes = null, List<Type> nonGenericInterfaceTyles = null) where T : Attribute
+    private List<T> Find<T>(List<Type> types, List<Type> genericInterfaceTypes = null, List<Type> nonGenericInterfaceTyles = null) where T : Attribute
     {
         if (genericInterfaceTypes == null && nonGenericInterfaceTyles == null)
         {
             throw new MissingArgumentException($"One of them must be provided : genericInterfaceTypes or nonGenericInterfaceTyles!");
         }
 
-        HashSet<T> foundAttributes = new HashSet<T>();
+        List<T> foundAttributes = new List<T>();
 
         foreach (Type type in types)
         {
@@ -314,15 +318,28 @@ public class Delegator : MonoBehaviour, IDelegator
             });
         }
 
+        Debug.Log($"Total attributes found: {foundAttributes.Count} for the attribute type: {typeof(T).Name}");
+
         return foundAttributes;
     }
 
+    //System.Runtime.Exception ==> Reflection.TypeInfo doesnot contain Equals definition
     private IObserverBundle GetObserverBundle<T, Z>(List<dynamic> observers, Z context) where Z: ObserverContext
     {
-        Debug.Log($"Getting observer bundle for context: {context}, Type: {typeof(T).Name}, Observer Count: {observers.Count}");
-        return observers.Where(observerContext => observerContext.ObserverAttribute.ObserverType.Equals(context.EntityType) &&
-                                                    typeof(T).Name.Equals(observerContext.ObserverAttribute.ContextType) && 
-                                                    observerContext.ObserverAttribute.SubjectType.Equals(context.SubjectType)).FirstOrDefault();
+        foreach (dynamic observer in observers)
+        {
+            Debug.Log($"ObserverType: {observer.ObserverAttribute.ObserverType}, EntityType: {context.EntityType}, Type: {typeof(T)}, ContextType: {observer.ObserverAttribute.ContextType}, SubjectType: {observer.ObserverAttribute.SubjectType}, ContextSubjectType: {context.SubjectType}");
+        }
+        
+        IObserverBundle value = observers.Where(observerContext => observerContext.ObserverAttribute.ObserverType == context.EntityType &&
+                                                    typeof(T).Name == observerContext.ObserverAttribute.ContextType && 
+                                                    observerContext.ObserverAttribute.SubjectType == context.SubjectType).First();
+
+        Debug.Log($"Observer bundle found: {value}, for context: {context}, Type: {typeof(T).Name}");
+
+        return value;
+
+
     }
 
     private List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> GetObserverBundles<T, Z>(KeyValuePair<dynamic, List<dynamic>> association, Z context) where Z : SubjectContext<T>
