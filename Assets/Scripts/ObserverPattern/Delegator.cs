@@ -137,6 +137,8 @@ public class Delegator : MonoBehaviour, IDelegator
         {
             ObserverBundle observerBundle = new ObserverBundle()
             {
+                //try dynamic here? No...
+                //think of a better way
                 Observer = (Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify) observer,
                 ObserverAttribute = cachedObserverContext.ObserverAttribute
             };
@@ -243,30 +245,31 @@ public class Delegator : MonoBehaviour, IDelegator
 
             foreach (SubjectAttribute subject in subjects)
             {
+                SubjectBundle subjectBundle = new SubjectBundle() { SubjectAttribute = subject };
 
-                foreach (ObserverAttribute observer in observers)
+                List<ObserverAttribute> specificObservers = observers.Where(observer => observer.SubjectType.Equals(subject.SubjectType)).ToList();
+
+                foreach (ObserverAttribute observer in specificObservers)
                 {
                     ObserverBundle observerBundle = new ObserverBundle()
                     {
-                        //properly build it!!
+                        ObserverAttribute = observer
                     };
-                }
 
-                SubjectBundle subjectBundle = new SubjectBundle() { SubjectAttribute = subject };
+                    Debug.Log("SubjectBundle: " + subjectBundle.ToString() + " " + "Observerbundle: " + observerBundle.ToString());
 
-                Debug.Log("SubjectBundle: " + subjectBundle.ToString() + " " + "Observerbundle: " + observerBundle.ToString());
+                    //check if exists - append, otherwise create a new list!!!
+                    if (!Associations.TryGetValue(subjectBundle, out List<dynamic> observerBundles))
+                    {
+                        Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.SubjectType} - {observerBundle?.ObserverAttribute?.ObserverType}");
+                        Associations[subjectBundle] = new List<dynamic>() { observerBundle };
+                        continue;
+                    }
 
-                //check if exists - append, otherwise create a new list!!!
-                if (!Associations.TryGetValue(subjectBundle, out List<dynamic> observerBundles))
-                {
                     Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.SubjectType} - {observerBundle?.ObserverAttribute?.ObserverType}");
-                    Associations[subjectBundle] = new List<dynamic>() { observerBundle };
-                    continue;
+
+                    Associations[subjectBundle].Add(observerBundle);
                 }
-
-                Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.SubjectType} - {observerBundle?.ObserverAttribute?.ObserverType}");
-
-                Associations[subjectBundle].Add(observerBundle);
             }
 
             Debug.Log("Done Registering...");
@@ -332,7 +335,7 @@ public class Delegator : MonoBehaviour, IDelegator
         }
         
         IObserverBundle value = observers.Where(observerContext => observerContext.ObserverAttribute.ObserverType == context.EntityType &&
-                                                    typeof(T).Name == observerContext.ObserverAttribute.ContextType && 
+                                                    typeof(T) == observerContext.ObserverAttribute.ContextType && 
                                                     observerContext.ObserverAttribute.SubjectType == context.SubjectType).First();
 
         Debug.Log($"Observer bundle found: {value}, for context: {context}, Type: {typeof(T).Name}");
