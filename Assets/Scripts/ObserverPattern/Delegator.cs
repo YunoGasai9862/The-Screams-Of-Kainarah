@@ -70,7 +70,7 @@ public class Delegator : MonoBehaviour, IDelegator
             Debug.LogWarning($"The subject instance is null for the subject type: {context.EntityType}. Will update the dictionary with the current instance!");
 
             //check later if the casting will work seamlessly
-            association.Key.Subject = (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest) subject;
+            association.Key.Subject = subject;
         }
 
         List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> cachedObserverContext = GetObserverBundles<T, SubjectContext<T>> (association, context);
@@ -115,6 +115,8 @@ public class Delegator : MonoBehaviour, IDelegator
 
         Debug.Log($"Incoming Context: {context.ToString()}");
 
+
+        //might be worth checking if instance will be available at all for state machine classes since they are not monobehaviours
         if (context == null || context.SubjectType == null || context.EntityType ==null || context.Instance == null)
         {
             throw new MissingContextException($"Either the context is null or SubjectType/EntityType/Instance are missing from the instance!");
@@ -122,7 +124,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
         KeyValuePair<dynamic, List<dynamic>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
 
-        Debug.Log($"Association: {association}, TotalObservers: {association.Value.Count}");
+        Debug.Log($"Association: {association}, TotalObservers: {association.Value?.Count}");
 
         if (association.Value == null || association.Value.Count == 0)
         {
@@ -135,11 +137,11 @@ public class Delegator : MonoBehaviour, IDelegator
 
         if (cachedObserverContext?.Observer == null)
         {
-            ObserverBundle observerBundle = new ObserverBundle()
+            ObserverBundle<T> observerBundle = new ObserverBundle<T>()
             {
                 //try dynamic here? No...
                 //think of a better way
-                Observer = (Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify) observer,
+                Observer = observer,
                 ObserverAttribute = cachedObserverContext.ObserverAttribute
             };
 

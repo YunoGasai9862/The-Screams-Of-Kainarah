@@ -21,7 +21,12 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<Enti
 
     private async void OnEnable()   
     {
+        Delegator.NotifySubjectWrapper(new ObserverContext<EntityPoolManager>()
+        {
+            EntityType = typeof(PlayerActionRelayer),
+            SubjectType = typeof(EntityPoolManager)
 
+        }, this);
     }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state

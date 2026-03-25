@@ -61,6 +61,7 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
         {
             Instance = gameObject,
+            EntityType = typeof(PlayerActionRelayer),
             SubjectType = typeof(PlayerAttributesNotifier)
 
         }, this));
@@ -68,6 +69,7 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<EntityPoolManager>()
         {
             Instance = gameObject,
+            EntityType = typeof(PlayerActionRelayer),
             SubjectType = typeof(EntityPoolManager)
 
         }, this));
@@ -75,6 +77,7 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
         Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
         {
             Instance = gameObject,
+            EntityType = typeof(PlayerActionRelayer),
             SubjectType = typeof(GameStateManager)
 
         }, this);
