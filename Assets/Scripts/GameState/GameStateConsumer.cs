@@ -1,3 +1,7 @@
+
+using Assets.Annotations;
+
+[Subject(SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 public class GameStateConsumer : BaseState<GameStateBundle>
 {
     protected override GenericStateBundle<GameStateBundle> GetInitialState()

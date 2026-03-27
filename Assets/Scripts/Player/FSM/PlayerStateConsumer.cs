@@ -1,5 +1,7 @@
+using Assets.Annotations;
 using UnityEngine;
 
+[Subject(SubjectType = typeof(PlayerStateConsumer), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
 public class PlayerStateConsumer : BaseState<PlayerStateBundle>
 {
     protected override GenericStateBundle<PlayerStateBundle> GetInitialState()

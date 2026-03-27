@@ -21,6 +21,8 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<Enti
 
     private async void OnEnable()   
     {
+        Delegator = await Helper.GetDelegator<Delegator>();
+
         Delegator.NotifySubjectWrapper(new ObserverContext<EntityPoolManager>()
         {
             EntityType = typeof(PlayerActionRelayer),

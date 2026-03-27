@@ -1,4 +1,7 @@
 
+using Assets.Annotations;
+
+[Subject(SubjectType = typeof(EmitMovementAnimationStateConsumer), ContextType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>))]
 public class EmitMovementAnimationStateConsumer : BaseState<EmitAnimationStateBundle<bool>, MovementState>
 {
     protected override GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> GetInitialState()
