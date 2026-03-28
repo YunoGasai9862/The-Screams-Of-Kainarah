@@ -1,3 +1,4 @@
+using Annotations.Enums;
 using Assets.Exceptions;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Med
 
         foreach (INotify<GenericStateBundle<T>> listener in StateListeners)
         {
-            Delegator.NotifyObserverWrapper(new SubjectContext<GenericStateBundle<T>>()
+            Delegator.NotifyObserverWrapper<GenericStateBundle<T>, Asset>(new SubjectContext<GenericStateBundle<T>>()
             {
 
                 EntityType = typeof(BaseState<T>),
@@ -49,7 +50,7 @@ public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Med
     {
         StateListeners.Add(obsever);
 
-        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<GenericStateBundle<T>>()
+        StartCoroutine(Delegator.NotifyObservers<T(new SubjectContext<GenericStateBundle<T>>()
         {
             EntityType = typeof(BaseState<T>),
             Data = StateBundle

@@ -4,11 +4,12 @@ using System.Collections;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Threading.Tasks;
 using UnityEngine;
+using Annotations.Enums;
 
-[Observer(SubjectType = typeof(PlayerStateConsumer), ObserverType = typeof(PlayerAttackController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
-[Observer(SubjectType = typeof(GameStateConsumer), ObserverType = typeof(PlayerAttackController), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
-[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerAttackController), ContextType = typeof(Player))]
-[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(InventoryManager), ContextType = typeof(InventoryManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerStateConsumer), ObserverType = typeof(PlayerAttackController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(GameStateConsumer), ObserverType = typeof(PlayerAttackController), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerAttackController), ContextType = typeof(Player))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(InventoryManager), ContextType = typeof(InventoryManager))]
 public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<PlayerAttackController, ControllerPackage<AttackingExecutionState, AttackingDetails>>, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<GenericStateBundle<GameStateBundle>>, INotify<InventoryManager>, INotify<Player>
 {
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;

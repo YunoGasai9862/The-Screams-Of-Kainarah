@@ -1,6 +1,10 @@
-public enum Asset
+
+namespace Annotations.Enums
 {
-    MONOBEHAVIOR,
-    SCRIPTABLE_OBJECT,
-    PLAYER_STATE_MACHINE
+    public enum Asset
+    {
+        MONOBEHAVIOR,
+        SCRIPTABLE_OBJECT,
+        PLAYER_STATE_MACHINE
+    }
 }

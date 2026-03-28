@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Annotations.Enums;
+using System;
 
 namespace Assets.Annotations
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class ObserverAttribute : Attribute
     {
+        public Asset AssetType { get; set; }
+
         public Type ObserverType { get; set; }
 
         public Type SubjectType { get; set; }
@@ -13,8 +16,9 @@ namespace Assets.Annotations
 
         public ObserverAttribute() { }
 
-        public ObserverAttribute(Type observerType, Type subjectType, Type contextType)
+        public ObserverAttribute(Asset asset, Type observerType, Type subjectType, Type contextType)
         {
+            AssetType = asset;
             ObserverType = observerType;
             SubjectType = subjectType;
             ContextType = contextType;

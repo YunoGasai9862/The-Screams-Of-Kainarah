@@ -4,11 +4,12 @@ using Assets.Scripts.ObserverPattern.interfaces;
 using Assets.Scripts.ObserverPattern.models;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Assets.Scripts.Enums;
+using Annotations.Enums;
+using System.Collections.Generic;
 
 public class Delegator : MonoBehaviour, IDelegator
 {
@@ -25,7 +26,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
     public void NotifyObserverWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        StartCoroutine(NotifyObserver(context, subject, observer, maxRetries, sleepTimeInMilliSeconds, optional));
+        StartCoroutine(NotifyObserver<T>(context, subject, observer, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
     public IEnumerator NotifyObserver<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
@@ -38,22 +39,22 @@ public class Delegator : MonoBehaviour, IDelegator
         yield return null;
     }
 
-    public IEnumerator NotifyObservers<T, Z>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.Base.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional) where Z : Enum
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.Base.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        yield return StartCoroutine(NotifyObservers<T, Z>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
+        yield return StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
-    public IEnumerator NotifyObservers<T, Z>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional) where Z : Enum
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        yield return StartCoroutine(NotifyObservers<T, Z>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
+        yield return StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
-    public IEnumerator NotifyObservers<T, Z>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional) where Z : Enum
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        yield return StartCoroutine(NotifyObservers<T, Z>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
+        yield return StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>)subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
-    public IEnumerator NotifyObservers<T, Z>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional) where Z: Enum
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         yield return new WaitUntil(() => RegistryState.Equals(Registry.REGISTRY_READY));
 
@@ -176,22 +177,22 @@ public class Delegator : MonoBehaviour, IDelegator
 
     public void NotifyObserversWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        StartCoroutine(NotifyObservers(context, subject, maxRetries, sleepTimeInMilliSeconds, optional));
+        StartCoroutine(NotifyObservers<T>(context, subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
     public void NotifyObserversWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        StartCoroutine(NotifyObservers(context, subject, maxRetries, sleepTimeInMilliSeconds, optional));
+        StartCoroutine(NotifyObservers<T>(context, subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
     public void NotifyObserversWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.Base.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        StartCoroutine(NotifyObservers(context, subject, maxRetries, sleepTimeInMilliSeconds, optional));
+        StartCoroutine(NotifyObservers<T>(context, subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
     public void NotifyObserversWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        StartCoroutine(NotifyObservers(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>) subject, maxRetries, sleepTimeInMilliSeconds, optional));
+        StartCoroutine(NotifyObservers<T>(context, (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>) subject, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
     public void NotifySubjectWrapper<T>(ObserverContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
