@@ -1,3 +1,4 @@
+using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Enemy.Models;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
@@ -7,8 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Observer(SubjectType = typeof(EnemyHittableManager), ObserverType = typeof(EnemyScript), ContextType = typeof(EnemyHittableManager))]
-[Subject(SubjectType = typeof(EnemyScript), ContextType = typeof(EnemyActionBundle))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EnemyHittableManager), ObserverType = typeof(EnemyScript), ContextType = typeof(EnemyHittableManager))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EnemyScript), ContextType = typeof(EnemyActionBundle))]
 public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IRequest<EnemyActionBundle>
 {
     private const int RAYSARRAYSIZE= 2;

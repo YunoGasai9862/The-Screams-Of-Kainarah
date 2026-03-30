@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Observer(ObserverType = typeof(ResetController), SubjectType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
-[Observer(ObserverType = typeof(ResetController), SubjectType = typeof(EmitAttackAnimationStateConsumer), ContextType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>))]
-[Subject(SubjectType = typeof(CameraShake), ContextType = typeof(bool))]
+[Observer(AssetType = Annotations.Enums.Asset.MONOBEHAVIOR, ObserverType = typeof(ResetController), SubjectType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
+[Observer(AssetType = Annotations.Enums.Asset.MONOBEHAVIOR, ObserverType = typeof(ResetController), SubjectType = typeof(EmitAttackAnimationStateConsumer), ContextType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>))]
+[Subject(AssetType = Annotations.Enums.Asset.MONOBEHAVIOR, SubjectType = typeof(CameraShake), ContextType = typeof(bool))]
 public class CameraShake : MonoBehaviour, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<AsyncCoroutine>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>, IRequest<bool>
 {
     [Header("Target Camera")]

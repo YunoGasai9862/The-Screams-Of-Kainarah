@@ -1,10 +1,11 @@
+using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV2;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Subject(SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
-[Subject(SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
 public class PlayerAttributesNotifier: MonoBehaviour, IRequest<Player>, IRequest<IEntityAnimator>
 {
     private Player Player { get; set; }

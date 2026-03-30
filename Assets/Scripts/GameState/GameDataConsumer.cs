@@ -1,8 +1,9 @@
-﻿using Assets.Annotations;
+﻿using Annotations.Enums;
+using Assets.Annotations;
 
 namespace Assets.Scripts.GameState
 {
-    [Subject(SubjectType = typeof(GameDataConsumer), ContextType = typeof(GenericStateBundle<GameDataBundle>))]
+    [Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(GameDataConsumer), ContextType = typeof(GenericStateBundle<GameDataBundle>))]
     public class GameDataConsumer: BaseState<GameDataBundle>
     {
         protected override GenericStateBundle<GameDataBundle> GetInitialState()

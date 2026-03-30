@@ -1,3 +1,4 @@
+using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Assets.Scripts.ScenePersistence.Models;
@@ -11,7 +12,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
-[Subject(SubjectType = typeof(GameStateManager), ContextType = typeof(IGameStateHandler))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(GameStateManager), ContextType = typeof(IGameStateHandler))]
 public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<IGameStateHandler>, IRequest<GameStateManager>
 {
     private SceneData _sceneData;

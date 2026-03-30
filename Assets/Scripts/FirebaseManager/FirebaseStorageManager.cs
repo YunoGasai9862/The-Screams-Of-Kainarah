@@ -1,3 +1,4 @@
+using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Firebase.Extensions;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [AssetAttribute(Asset.MONOBEHAVIOR, "FirebaseStorageManager", InstantiationOrder = 9)]
-[Subject(SubjectType = typeof(FirebaseStorageManager), ContextType = typeof(FirebaseStorageManager))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(FirebaseStorageManager), ContextType = typeof(FirebaseStorageManager))]
 public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, IRequest<FirebaseStorageManager>
 {
     private Delegator Delegator { get; set; }

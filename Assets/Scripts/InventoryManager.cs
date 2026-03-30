@@ -1,8 +1,9 @@
+using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.Base;
 using UnityEngine;
 
-[Subject(SubjectType = typeof(InventoryManager), ContextType = typeof(bool))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(InventoryManager), ContextType = typeof(bool))]
 public class InventoryManager : MonoBehaviour, IRequest<bool>
 {
     [SerializeField] GameObject InventoryPanel;

@@ -1,4 +1,5 @@
 
+using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using EnemyHittable;
@@ -7,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Subject(SubjectType = typeof(EnemyHittableManager), ContextType = typeof(EnemyHittableManager))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EnemyHittableManager), ContextType = typeof(EnemyHittableManager))]
 public class EnemyHittableManager : MonoBehaviour, IRequest<EnemyHittableManager>
 {
    private Delegator Delegator { get; set; }

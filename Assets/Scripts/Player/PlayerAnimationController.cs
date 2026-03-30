@@ -1,3 +1,4 @@
+using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using PlayerAnimationHandler;
@@ -5,9 +6,9 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Observer(SubjectType = typeof(EmitMovementAnimationStateConsumer), ObserverType = typeof(PlayerAnimationController), ContextType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>))]
-[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerAnimationController), ContextType = typeof(IEntityAnimator))]
-[Subject(SubjectType = typeof(PlayerAnimationController), ContextType = typeof(AnimationDetails))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EmitMovementAnimationStateConsumer), ObserverType = typeof(PlayerAnimationController), ContextType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerAnimationController), ContextType = typeof(IEntityAnimator))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAnimationController), ContextType = typeof(AnimationDetails))]
 public class PlayerAnimationController : MonoBehaviour, IRequest<AnimationDetails>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>,
     INotify<IEntityAnimator>, INotify<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>>
 {

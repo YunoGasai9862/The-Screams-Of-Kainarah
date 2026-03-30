@@ -1,3 +1,4 @@
+using Annotations.Enums;
 using System;
 using UnityEngine;
 [Asset(Asset.SCRIPTABLE_OBJECT, "CheckPoints", InstantiationOrder = 3)]

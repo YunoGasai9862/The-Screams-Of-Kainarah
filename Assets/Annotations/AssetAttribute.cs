@@ -1,5 +1,5 @@
+using Annotations.Enums;
 using System;
-using System.Numerics;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public sealed class AssetAttribute: Attribute

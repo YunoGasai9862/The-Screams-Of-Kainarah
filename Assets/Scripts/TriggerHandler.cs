@@ -1,14 +1,14 @@
 using Assets.Annotations;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV2;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine.EventSystems;
+using Annotations.Enums;
 
-[Observer(ObserverType = typeof(TriggerHandler), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
-[Subject(SubjectType = typeof(TriggerHandler), ContextType = typeof(bool))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(TriggerHandler), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(TriggerHandler), ContextType = typeof(bool))]
 public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, INotify<GenericStateBundle<GameStateBundle>>, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<bool>
 {
     private const string DIAMOND_TAG = "Crystal";

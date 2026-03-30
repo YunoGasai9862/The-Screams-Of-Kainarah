@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-using Assets.Scripts.Models;
+using Annotations.Enums;
 
-[Subject(SubjectType = typeof(CandleLightPackageGenerator), ContextType = typeof(LightPackage))]
-[Observer(ObserverType = typeof(CandleLightPackageGenerator), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
-[Observer(ObserverType = typeof(CandleLightPackageGenerator), SubjectType = typeof(LightFlicker), ContextType = typeof(ILightPreprocess))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(CandleLightPackageGenerator), ContextType = typeof(LightPackage))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CandleLightPackageGenerator), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CandleLightPackageGenerator), SubjectType = typeof(LightFlicker), ContextType = typeof(ILightPreprocess))]
 public class CandleLightPackageGenerator : MonoBehaviour, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<LightPackage>, INotify<ILightPreprocess>, INotify<Player>, ILightPackageGenerator
 {
     [SerializeField]

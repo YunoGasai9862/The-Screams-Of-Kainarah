@@ -2,12 +2,12 @@
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
+using Annotations.Enums;
 using UnityEngine;
-using static DialoguesAndOptions;
 
-[Observer(ObserverType = typeof(DialogueObserverManager), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
-[Observer(ObserverType = typeof(DialogueObserverManager), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(DialogueSystem))]
-public class DialogueObserverManager : MonoBehaviour, INotify<DialogueSystem>, INotify<GenericStateBundle<GameStateBundle>>
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(DialogueObserverManager), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(DialogueObserverManager), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(DialoguesAndOptions.DialogueSystem))]
+public class DialogueObserverManager : MonoBehaviour, INotify<DialoguesAndOptions.DialogueSystem>, INotify<GenericStateBundle<GameStateBundle>>
 {
     [Header("Dialogues And Options")]
     [SerializeField] DialoguesAndOptions DialoguesAndOptions;
@@ -19,7 +19,7 @@ public class DialogueObserverManager : MonoBehaviour, INotify<DialogueSystem>, I
 
     private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
 
-    private IEnumerator TriggerDialogue(DialogueSystem dialogueSystem)
+    private IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
         dialogueTriggerEvent.Invoke(dialogueSystem);
 
@@ -39,7 +39,7 @@ public class DialogueObserverManager : MonoBehaviour, INotify<DialogueSystem>, I
         }, this);
 
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<DialogueSystem>()
+        Delegator.NotifySubjectWrapper(new ObserverContext<DialoguesAndOptions.DialogueSystem>()
         {
             Instance = gameObject,
             EntityType = typeof(DialogueObserverManager),
@@ -56,7 +56,7 @@ public class DialogueObserverManager : MonoBehaviour, INotify<DialogueSystem>, I
         yield return null;
     }
 
-    public IEnumerator Notify(DialogueSystem value)
+    public IEnumerator Notify(DialoguesAndOptions.DialogueSystem value)
     {
         if (value.DialogueSettings.ShouldTriggerDialogue && !CurrentGameState.StateBundle.GameState.CurrentState.Equals(GameState.DIALOGUE_TAKING_PLACE))
         {

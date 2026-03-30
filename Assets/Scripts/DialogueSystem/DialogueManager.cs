@@ -1,4 +1,5 @@
 
+using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.Base;
 using System;
@@ -9,7 +10,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[Subject(SubjectType = typeof(DialogueManager), ContextType = typeof(DialogueManager))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(DialogueManager), ContextType = typeof(DialogueManager))]
 public class DialogueManager : MonoBehaviour, IRequest<DialogueManager>
 { 
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";

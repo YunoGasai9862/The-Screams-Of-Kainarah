@@ -1,3 +1,4 @@
+using Annotations.Enums;
 using UnityEngine;
 
 [Asset(Asset.MONOBEHAVIOR, "DelegatorsManager", InstantiationOrder = 1)]

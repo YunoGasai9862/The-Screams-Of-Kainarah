@@ -1,10 +1,11 @@
+using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Subject(SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IRequest<EntityPoolManager>
 {
     private Dictionary<string, List<EntityPool>> EntityPoolDict { get; set; } = new Dictionary<string, List<EntityPool>>();

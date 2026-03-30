@@ -1,12 +1,13 @@
+using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Subject(SubjectType = typeof(PlayerJumpController), ContextType = typeof(CharacterVelocity))]
-[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerJumpController), ContextType = typeof(Player))]
-[Observer(SubjectType = typeof(PlayerStateConsumer), ObserverType = typeof(PlayerJumpController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerJumpController), ContextType = typeof(CharacterVelocity))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerJumpController), ContextType = typeof(Player))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerStateConsumer), ObserverType = typeof(PlayerJumpController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
 public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<PlayerJumpController, bool>, IRequest<CharacterVelocity>, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<Player>
 {
     [SerializeField] LayerMask groundLayer;
