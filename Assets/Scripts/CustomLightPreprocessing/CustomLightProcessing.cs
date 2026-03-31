@@ -2,10 +2,11 @@ using Assets.Annotations;
 using System.Collections;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
+using Annotations.Enums;
 
-[Observer(ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(LightPackage))]
-[Observer(ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(LightPackage))]
-[Observer(ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(AsyncCoroutine))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(LightPackage))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(LightPackage))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(AsyncCoroutine))]
 public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, INotify<AsyncCoroutine>, INotify<LightPackage>
 {
     private AsyncCoroutine AsyncCoroutine { get; set; }

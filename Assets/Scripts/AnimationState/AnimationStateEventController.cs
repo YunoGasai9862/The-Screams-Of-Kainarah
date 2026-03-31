@@ -3,8 +3,9 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using Annotations.Enums;
 
-[Observer(ObserverType = typeof(AnimationStateEventController), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+[Observer(AssetType = Asset.PLAYER_STATE_MACHINE, ObserverType = typeof(AnimationStateEventController), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 public class AnimationStateEventController : StateMachineBehaviour, INotify<EntityPoolManager>
 {
     private const string EVENT_STRING_MAPPER_CONFIG_KEY = "EventStringMapper";

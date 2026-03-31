@@ -1,3 +1,4 @@
+using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
@@ -5,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Observer(ObserverType = typeof(RakashBattleController), SubjectType = typeof(RakashManager), ContextType = typeof(Health))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(RakashBattleController), SubjectType = typeof(RakashManager), ContextType = typeof(Health))]
 public class RakashBattleController : MonoBehaviour, INotify<Health>, IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>
 {
     [SerializeField]

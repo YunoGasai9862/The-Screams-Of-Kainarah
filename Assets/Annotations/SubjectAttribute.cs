@@ -1,6 +1,5 @@
 ﻿using Annotations.Enums;
 using System;
-using UnityEngine.Events;
 
 namespace Assets.Annotations
 {

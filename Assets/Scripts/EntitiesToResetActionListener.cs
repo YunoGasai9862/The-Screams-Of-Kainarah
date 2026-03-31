@@ -2,8 +2,9 @@ using Assets.Annotations;
 using System.Collections;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
+using Annotations.Enums;
 
-[Observer(ObserverType = typeof(EntitiesToResetActionListener), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(EntitiesToReset))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(EntitiesToResetActionListener), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(EntitiesToReset))]
 public class EntitiesToResetActionListener : MonoBehaviour, INotify<EntitiesToReset>
 {
     private IEnumerator ResetAttributes(EntitiesToReset Data)

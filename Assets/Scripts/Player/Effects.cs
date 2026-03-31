@@ -2,8 +2,9 @@ using Assets.Annotations;
 using System.Collections;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
+using Annotations.Enums;
 
-[Observer(ObserverType = typeof(Effects), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(Effects), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 public class Effects: MonoBehaviour, INotify<Player>
 {
     private MaterialFader MaterialFader { get; set; } = new MaterialFader();

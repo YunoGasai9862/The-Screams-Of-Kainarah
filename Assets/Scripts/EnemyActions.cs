@@ -7,8 +7,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
+using Annotations.Enums;
 
-[Observer(SubjectType = typeof(EnemyScript), ObserverType = typeof(EnemyActions), ContextType = typeof(EnemyActionBundle))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EnemyScript), ObserverType = typeof(EnemyActions), ContextType = typeof(EnemyActionBundle))]
 public class EnemyActions : MonoBehaviour, INotify<EnemyActionBundle>
 {
     private enum enemyAttack

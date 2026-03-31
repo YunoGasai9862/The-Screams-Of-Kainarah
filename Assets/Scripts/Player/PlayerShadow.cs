@@ -3,8 +3,9 @@ using System.Collections;
 using System.Threading.Tasks;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
+using Annotations.Enums;
 
-[Observer(SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerShadow), ContextType = typeof(Player))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerShadow), ContextType = typeof(Player))]
 public class PlayerShadow : MonoBehaviour, INotify<Player>
 {
     private Vector2 m_Position;

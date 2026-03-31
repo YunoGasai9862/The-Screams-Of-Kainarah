@@ -1,10 +1,11 @@
+using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-[Observer(ObserverType = typeof(HealthBar), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityHealth))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(HealthBar), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityHealth))]
 public class HealthBar : MonoBehaviour, INotify<IEntityHealth>
 {
 

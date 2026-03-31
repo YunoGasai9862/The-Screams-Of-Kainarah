@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Assets.Scripts.Enums;
-using Annotations.Enums;
 using System.Collections.Generic;
 
 public class Delegator : MonoBehaviour, IDelegator
@@ -248,12 +247,24 @@ public class Delegator : MonoBehaviour, IDelegator
 
             foreach (SubjectAttribute subject in subjects)
             {
+                if (subject?.AssetType == null || subject.SubjectType == null || subject.ContextType == null)
+                {
+                    Debug.LogWarning($"Either AssetType, SubjectType or ContextType is missing for the subject attribute: {subject}. Skipping the registration for this subject!");
+                    continue;
+                }
+
                 SubjectBundle subjectBundle = new SubjectBundle() { SubjectAttribute = subject };
 
                 List<ObserverAttribute> specificObservers = observers.Where(observer => observer.SubjectType.Equals(subject.SubjectType)).ToList();
 
                 foreach (ObserverAttribute observer in specificObservers)
                 {
+                    if (observer?.AssetType == null || observer.SubjectType == null || observer.ContextType == null || observer.ObserverType == null)
+                    {
+                        Debug.LogWarning($"Either AssetType, SubjectType, ContextType, or Observertype is missing for the observer attribute: {observer}. Skipping the registration for this observer!");
+                        continue;
+                    }
+
                     ObserverBundle observerBundle = new ObserverBundle()
                     {
                         ObserverAttribute = observer

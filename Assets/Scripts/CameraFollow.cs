@@ -2,9 +2,10 @@ using Assets.Annotations;
 using System.Collections;
 using UnityEngine;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Annotations.Enums;
 
-[Observer(ObserverType = typeof(CameraFollow), SubjectType = typeof(CameraShake), ContextType = typeof(bool))]
-[Observer(ObserverType = typeof(CameraFollow), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CameraFollow), SubjectType = typeof(CameraShake), ContextType = typeof(bool))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CameraFollow), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
 public class CameraFollow : MonoBehaviour, INotify<bool>, INotify<IEntityTransform>
 {
     [Header("Camera Follow Speed")]

@@ -3,10 +3,11 @@ using System.Collections;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using System.Threading;
+using Annotations.Enums;
 
-[Observer(ObserverType = typeof(CheckpointColliderListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-[Observer(SubjectType = typeof(PlayerActionRelayer), ObserverType = typeof(CheckpointColliderListener), ContextType = typeof(GameObject))]
-[Observer(SubjectType = typeof(GameStateManager), ObserverType = typeof(CheckpointColliderListener), ContextType = typeof(GameStateManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CheckpointColliderListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActionRelayer), ObserverType = typeof(CheckpointColliderListener), ContextType = typeof(GameObject))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(GameStateManager), ObserverType = typeof(CheckpointColliderListener), ContextType = typeof(GameStateManager))]
 public class CheckpointColliderListener : MonoBehaviour, INotify<Player>, INotify<EntityPoolManager>, INotify<GameStateManager>
 {
     private static string CHECKPOINTS_KEY = "CheckPoints";
