@@ -9,6 +9,8 @@ using System.Reflection;
 using UnityEngine;
 using Assets.Scripts.Enums;
 using System.Collections.Generic;
+using UnityEditor.AddressableAssets.Build.Layout;
+using Annotations.Enums;
 
 public class Delegator : MonoBehaviour, IDelegator
 {
@@ -116,10 +118,9 @@ public class Delegator : MonoBehaviour, IDelegator
         Debug.Log($"Incoming Context: {context.ToString()}");
 
 
-        //might be worth checking if instance will be available at all for state machine classes since they are not monobehaviours
-        if (context == null || context.SubjectType == null || context.EntityType ==null || context.Instance == null)
+        if (context == null || context.SubjectType == null || context.EntityType == null)
         {
-            throw new MissingContextException($"Either the context is null or SubjectType/EntityType/Instance are missing from the instance!");
+            throw new MissingContextException($"Either the context is null or SubjectType/EntityType are missing from the context!");
         }
 
         KeyValuePair<dynamic, List<dynamic>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
@@ -133,14 +134,17 @@ public class Delegator : MonoBehaviour, IDelegator
 
         IObserverBundle cachedObserverContext = GetObserverBundle<T, ObserverContext>(association.Value, context);
 
+        if (!IsObserverValid<T>(cachedObserverContext.ObserverAttribute, context))
+        {
+            throw new MissingContractException($"The observer: {cachedObserverContext.Observer} is not valid for the context: {context}!");
+        }
+
         Debug.Log($"CachecObserverBundle: {cachedObserverContext}, Incoming Context: {context}, Type: {typeof(T)}, observer: {observer}");
 
         if (cachedObserverContext?.Observer == null)
         {
             ObserverBundle<T> observerBundle = new ObserverBundle<T>()
             {
-                //try dynamic here? No...
-                //think of a better way
                 Observer = observer,
                 ObserverAttribute = cachedObserverContext.ObserverAttribute
             };
@@ -169,6 +173,28 @@ public class Delegator : MonoBehaviour, IDelegator
 
         yield return null;
     }
+
+
+    private bool IsObserverValid<T>(ObserverAttribute observer, ObserverContext<T> context)
+    {
+        switch(observer.AssetType)
+        {
+            case Asset.NONE:
+                return false;
+
+            case Asset.MONOBEHAVIOR:
+                return typeof(MonoBehaviour).IsAssignableFrom(observer.ObserverType) && context.Instance != null;
+
+            case Asset.SCRIPTABLE_OBJECT:
+                return typeof(ScriptableObject).IsAssignableFrom(observer.ObserverType);
+
+            case Asset.PLAYER_STATE_MACHINE:
+                return typeof(StateMachineBehaviour).IsAssignableFrom(observer.ObserverType);
+        }
+
+        return false;
+    }
+
     public IEnumerator NotifyObserver<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         yield return null;
@@ -247,7 +273,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
             foreach (SubjectAttribute subject in subjects)
             {
-                if (subject?.AssetType == null || subject.SubjectType == null || subject.ContextType == null)
+                if (subject.AssetType == Asset.NONE || subject.SubjectType == null || subject.ContextType == null)
                 {
                     Debug.LogWarning($"Either AssetType, SubjectType or ContextType is missing for the subject attribute: {subject}. Skipping the registration for this subject!");
                     continue;
@@ -259,7 +285,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
                 foreach (ObserverAttribute observer in specificObservers)
                 {
-                    if (observer?.AssetType == null || observer.SubjectType == null || observer.ContextType == null || observer.ObserverType == null)
+                    if (observer.AssetType == Asset.NONE || observer.SubjectType == null || observer.ContextType == null || observer.ObserverType == null)
                     {
                         Debug.LogWarning($"Either AssetType, SubjectType, ContextType, or Observertype is missing for the observer attribute: {observer}. Skipping the registration for this observer!");
                         continue;
