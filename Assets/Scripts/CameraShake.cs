@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Observer(AssetType = Annotations.Enums.Asset.MONOBEHAVIOR, ObserverType = typeof(ResetController), SubjectType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
-[Observer(AssetType = Annotations.Enums.Asset.MONOBEHAVIOR, ObserverType = typeof(ResetController), SubjectType = typeof(EmitAttackAnimationStateConsumer), ContextType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>))]
+[Observer(AssetType = Annotations.Enums.Asset.MONOBEHAVIOR, ObserverType = typeof(CameraShake), SubjectType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
+[Observer(AssetType = Annotations.Enums.Asset.MONOBEHAVIOR, ObserverType = typeof(CameraShake), SubjectType = typeof(EmitAttackAnimationStateConsumer), ContextType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>))]
 [Subject(AssetType = Annotations.Enums.Asset.MONOBEHAVIOR, SubjectType = typeof(CameraShake), ContextType = typeof(bool))]
 public class CameraShake : MonoBehaviour, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<AsyncCoroutine>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>, IRequest<bool>
 {
@@ -36,9 +36,9 @@ public class CameraShake : MonoBehaviour, Assets.Scripts.Interfaces.Mediator.Enh
     {
         Delegator = await Helper.GetDelegator<Delegator>();
 
-        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine)), this);
+        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(CameraShake)), this);
 
-        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>(gameObject, typeof(EmitAttackAnimationStateConsumer)), this);
+        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>(gameObject, typeof(EmitAttackAnimationStateConsumer), typeof(CameraShake)), this);
     }
 
     private async IAsyncEnumerator<WaitForSeconds> ShakeCamera(Camera _mainCamera, float timeForCameraShake)

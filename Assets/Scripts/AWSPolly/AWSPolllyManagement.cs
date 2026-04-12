@@ -64,9 +64,9 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, INotify<FirebaseSto
     {
         Delegator = await Helper.GetDelegator<Delegator>();
 
-        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<FirebaseStorageManager>(gameObject, typeof(FirebaseStorageManager)), this);
+        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<FirebaseStorageManager>(gameObject, typeof(FirebaseStorageManager), typeof(AWSPolllyManagement)), this);
 
-        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine)), this);
+        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(AWSPolllyManagement)), this);
     }
 
 

@@ -183,6 +183,7 @@ public class Delegator : MonoBehaviour, IDelegator
                 return false;
 
             case Asset.MONOBEHAVIOR:
+                Debug.Log($"ASSET: {typeof(MonoBehaviour).IsAssignableFrom(observer.ObserverType)}, Instance: {context.Instance}");
                 return typeof(MonoBehaviour).IsAssignableFrom(observer.ObserverType) && context.Instance != null;
 
             case Asset.SCRIPTABLE_OBJECT:

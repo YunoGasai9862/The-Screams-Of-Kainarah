@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Annotations.Enums;
+using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(PlayerAnimationEvent), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 public class PlayerAnimationEvent : MonoBehaviour, INotify<EntityPoolManager>
 {
     [SerializeField]
@@ -23,7 +26,7 @@ public class PlayerAnimationEvent : MonoBehaviour, INotify<EntityPoolManager>
 
         PlayerBoostAttackEvent = await Helper.GetCustomEvent<PlayerBoostAttackEvent>();
 
-        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<EntityPoolManager>(gameObject, typeof(EntityPoolManager)), this);
+        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<EntityPoolManager>(gameObject, typeof(EntityPoolManager), typeof(PlayerAnimationEvent)), this);
     }
 
     public void IceTrailAnimation()

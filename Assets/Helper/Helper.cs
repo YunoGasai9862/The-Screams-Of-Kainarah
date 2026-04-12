@@ -207,20 +207,22 @@ public class Helper: MonoBehaviour
         return milliSeconds / 1000.0f;
     }
 
-    public static ObserverContext BuildNotificationContext(GameObject gameObject, Type subjectType)
+    public static ObserverContext BuildNotificationContext(GameObject gameObject, Type subjectType, Type entityType)
     {
         return new ObserverContext()
         {
             Instance = gameObject,
-            SubjectType = subjectType
+            SubjectType = subjectType,
+            EntityType = entityType
         };
     }
-    public static ObserverContext<T> BuildNotificationContext<T>(GameObject gameObject, Type subjectType)
+    public static ObserverContext<T> BuildNotificationContext<T>(GameObject gameObject, Type subjectType, Type entityType)
     {
         return new ObserverContext<T>()
         {
             Instance = gameObject,
-            SubjectType = subjectType
+            SubjectType = subjectType,
+            EntityType = entityType
         };
     }
 
