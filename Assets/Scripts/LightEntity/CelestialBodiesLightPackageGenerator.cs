@@ -1,3 +1,5 @@
+using Annotations.Enums;
+using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,6 +8,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(CelestialBodiesLightPackageGenerator), ContextType = typeof(LightPackage))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CelestialBodiesLightPackageGenerator), SubjectType = typeof(CelestialBodyLightning), ContextType = typeof(ILightPreprocess))]
 public class CelestialBodiesLightPackageGenerator : MonoBehaviour, INotify<ILightPreprocess>, Assets.Scripts.Interfaces.Mediator.EnhancedV4.IRequest<LightPackage>, ILightPackageGenerator
 {
     private Delegator Delegator { get; set; }

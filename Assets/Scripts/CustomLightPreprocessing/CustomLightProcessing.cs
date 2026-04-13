@@ -4,9 +4,9 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(LightPackage))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(LightPackage))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(AsyncCoroutine))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(CandleLightPackageGenerator), ContextType = typeof(LightPackage))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(CelestialBodiesLightPackageGenerator), ContextType = typeof(LightPackage))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(CustomLightProcessing), SubjectType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
 public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, INotify<AsyncCoroutine>, INotify<LightPackage>
 {
     private AsyncCoroutine AsyncCoroutine { get; set; }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Asset(Asset.MONOBEHAVIOR,  "AsyncCoroutine", InstantiationOrder = 5)]
-[Subject(AssetType =Asset.MONOBEHAVIOR, SubjectType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
 public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IAsyncCoroutine<WaitUntil>, IRequest<AsyncCoroutine>
 {
     private Delegator Delegator { get; set; }
