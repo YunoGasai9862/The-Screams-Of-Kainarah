@@ -1,5 +1,3 @@
-using Annotations.Enums;
-using Assets.Exceptions;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -27,9 +25,12 @@ public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Med
 
     public void PingStateListeners(dynamic bundle)
     {
-        if (!(bundle is GenericStateBundle<T>))
+        Debug.Log($"Bundle Type<T>: {bundle.GetType()} - {typeof(GenericStateBundle<T>)}");
+
+        if (bundle.GetType() != typeof(GenericStateBundle<T>))
         {
-            throw new InvalidTypeException($"Bundle should be of type GenericStateBundle<T>! Incoming type: {bundle.GetType()}");
+            Debug.Log($"Bundle should be of type GenericStateBundle<T>! Incoming type: {bundle.GetType()} - Skipping!");
+            return;
         }
 
         foreach (INotify<GenericStateBundle<T>> listener in StateListeners)
@@ -85,10 +86,10 @@ public abstract class BaseState<T, Z> : MonoBehaviour, Assets.Scripts.Interfaces
 
     public void PingStateListeners(dynamic bundle)
     {
-        //GenericStateBundle<T, Z> stateBundle;
-        if (!(bundle is GenericStateBundle<T, Z>))
+        if (bundle.GetType() != typeof(GenericStateBundle<T, Z>))
         {
-           throw new InvalidTypeException($"Bundle should be of type GenericStateBundle<T, Z>! Incoming type: {bundle.GetType()}");
+            Debug.Log($"Bundle should be of type GenericStateBundle<T, Z>! Incoming type: {bundle.GetType()} - Skipping!");
+            return;
         }
 
         StateBundle = (GenericStateBundle<T, Z>)bundle;

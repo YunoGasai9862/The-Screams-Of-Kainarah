@@ -26,9 +26,8 @@ GameObject:
   - component: {fileID: 6214167793977575340}
   - component: {fileID: 1565617423264133369}
   - component: {fileID: 7334590002577684554}
-  - component: {fileID: 1302707185863564476}
-  - component: {fileID: 304667244503565776}
   - component: {fileID: 1993116189260284583}
+  - component: {fileID: 1327057695335465894}
   m_Layer: 0
   m_Name: EventKeeper
   m_TagString: Untagged
@@ -255,30 +254,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bea27e6c04ff0374f849f3bfa2b69970, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1302707185863564476
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5908562778129772863}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e586eee859139e4f8acc4bf9ccde14c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &304667244503565776
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5908562778129772863}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eafe80fa881c3ac428ec5722381b7c25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmitMovementAnimationStateEvent
 --- !u!114 &1993116189260284583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,3 +266,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d2bb103ceb77b4989b42c5eab9c20f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBoostAttackEvent
+--- !u!114 &1327057695335465894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5908562778129772863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd834419d733ad342921e3f05d96ce08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StateEvent

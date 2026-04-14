@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
@@ -50,9 +53,12 @@ public abstract class StateEvent<T, Z> : UnityEventWTAsync<GenericStateBundle<T,
     }
 }
 
-public abstract class StateEvent : UnityEventWT
+public class StateEvent : UnityEventWT
 {
     private UnityEvent<dynamic> m_stateEvent = new UnityEvent<dynamic>();
+
+    //will need to use something like this
+    private IDictionary<Type, UnityEvent<dynamic>> m_stateEventsByType = new Dictionary<Type, UnityEvent<dynamic>>();
 
     public override void AddListener(UnityAction<dynamic> action)
     {
