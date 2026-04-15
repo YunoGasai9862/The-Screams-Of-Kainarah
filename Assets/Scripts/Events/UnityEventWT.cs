@@ -17,15 +17,6 @@ public abstract class UnityEventWTAsync : MonoBehaviour, ICustomUnityEventWTAsyn
     public abstract Task Invoke();
 }
 
-public abstract class UnityEventWT : MonoBehaviour, ICustomUnityEventWT
-{
-    public abstract void AddListener(UnityAction<dynamic> action);
-
-    public abstract UnityEvent<dynamic> GetInstance();
-
-    public abstract void Invoke(dynamic value);
-}
-
 public abstract class UnityEventWTAsync<T, Z> : MonoBehaviour, ICustomUnityEventWTAsync<T, Z>
 {
     public abstract UnityEvent<T, Z> GetInstance();

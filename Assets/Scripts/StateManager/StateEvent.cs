@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEngine;
 using UnityEngine.Events;
 
 public abstract class StateEvent<T> : UnityEventWTAsync<GenericStateBundle<T>> where T : IStateBundle
@@ -53,25 +51,33 @@ public abstract class StateEvent<T, Z> : UnityEventWTAsync<GenericStateBundle<T,
     }
 }
 
-public class StateEvent : UnityEventWT
+public class StateEvent : Assets.Scripts.Actions.UnityAction
 {
-    private UnityEvent<dynamic> m_stateEvent = new UnityEvent<dynamic>();
+    private IDictionary<Type, UnityAction<dynamic>> m_actionByType = new Dictionary<Type, UnityAction<dynamic>>();
 
-    //will need to use something like this
-    private IDictionary<Type, UnityEvent<dynamic>> m_stateEventsByType = new Dictionary<Type, UnityEvent<dynamic>>();
-
-    public override void AddListener(UnityAction<dynamic> action)
+    public override void AddListener<T>(UnityAction<dynamic> action)
     {
-        m_stateEvent.AddListener(action);
+        if (!m_actionByType.ContainsKey(typeof(T)))
+        {
+            m_actionByType.Add(typeof(T), action);
+        }
     }
 
-    public override UnityEvent<dynamic> GetInstance()
+    public override UnityAction<dynamic> GetAction<T>()
     {
-        return m_stateEvent;
+        if (m_actionByType.ContainsKey(typeof(T)))
+        {
+            return m_actionByType[typeof(T)];
+        }
+
+        return null;
     }
 
-    public override void Invoke(dynamic value)
+    public override void Invoke<T>(dynamic value)
     {
-        m_stateEvent.Invoke(value);
+        if (m_actionByType.ContainsKey(typeof(T)))
+        {
+            m_actionByType[typeof(T)].Invoke(value);
+        }
     }
 }

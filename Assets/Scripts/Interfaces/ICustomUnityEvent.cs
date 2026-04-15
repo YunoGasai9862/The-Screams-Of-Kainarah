@@ -15,13 +15,6 @@ public interface ICustomUnityEventWTAsync
     public Task Invoke();
 }
 
-public interface ICustomUnityEventWT
-{
-    public abstract UnityEvent<dynamic> GetInstance();
-    public abstract void AddListener(UnityAction<dynamic> action);
-    public abstract void Invoke(dynamic value);
-}
-
 public interface ICustomUnityEventWTAsync<T, Z>
 {
     Task AddListener(UnityAction<T, Z> action);
