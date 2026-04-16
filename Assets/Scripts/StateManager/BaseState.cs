@@ -18,12 +18,12 @@ public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Med
 
         StateEvent = await Helper.GetCustomEvent<StateEvent>();
 
-        StateEvent.AddListener(PingStateListeners);
+        StateEvent.AddListener<T>(PingStateListeners);
 
         PingStateListeners(GetInitialState());
     }
 
-    public void PingStateListeners(dynamic bundle)
+    public void PingStateListeners(GenericStateBundle<T> bundle)
     {
         Debug.Log($"Bundle Type<T>: {bundle.GetType()} - {typeof(GenericStateBundle<T>)}");
 
@@ -79,7 +79,7 @@ public abstract class BaseState<T, Z> : MonoBehaviour, Assets.Scripts.Interfaces
 
         StateEvent = await Helper.GetCustomEvent<StateEvent>();
 
-        StateEvent.AddListener<GenericStateBundle<T, Z>>(PingStateListeners);
+        StateEvent.AddListener<T, Z>(PingStateListeners);
 
         PingStateListeners(GetInitialState());
     }

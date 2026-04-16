@@ -53,9 +53,9 @@ public abstract class StateEvent<T, Z> : UnityEventWTAsync<GenericStateBundle<T,
 
 public class StateEvent : Assets.Scripts.Actions.UnityAction
 {
-    private IDictionary<Type, UnityAction<dynamic>> m_actionByType = new Dictionary<Type, UnityAction<dynamic>>();
+    private IDictionary<Type, Delegate> m_actionByType = new Dictionary<Type, Delegate>();
 
-    public override void AddListener<T>(UnityAction<dynamic> action)
+    public override void AddListener<T>(UnityAction<GenericStateBundle<T>> action)
     {
         if (!m_actionByType.ContainsKey(typeof(T)))
         {
@@ -63,21 +63,21 @@ public class StateEvent : Assets.Scripts.Actions.UnityAction
         }
     }
 
-    public override UnityAction<dynamic> GetAction<T>()
+    public override UnityAction<GenericStateBundle<T>> GetAction<T>()
     {
         if (m_actionByType.ContainsKey(typeof(T)))
         {
-            return m_actionByType[typeof(T)];
+            return (UnityAction<GenericStateBundle<T>>) m_actionByType[typeof(T)];
         }
 
         return null;
     }
 
-    public override void Invoke<T>(dynamic value)
+    public override void Invoke<T>(GenericStateBundle<T> value)
     {
         if (m_actionByType.ContainsKey(typeof(T)))
         {
-            m_actionByType[typeof(T)].Invoke(value);
+            ((UnityAction<GenericStateBundle<T>>) m_actionByType[typeof(T)]).Invoke(value);
         }
     }
 }
