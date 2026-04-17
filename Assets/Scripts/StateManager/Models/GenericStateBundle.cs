@@ -1,6 +1,10 @@
 using System;
 
-public class GenericStateBundle<StateBundleT>  where StateBundleT : IStateBundle
+public class GenericStateBundle
+{
+}
+
+public class GenericStateBundle<StateBundleT> : GenericStateBundle where StateBundleT : IStateBundle
 {
     public StateBundleT StateBundle { get; set; }
 
@@ -10,7 +14,7 @@ public class GenericStateBundle<StateBundleT>  where StateBundleT : IStateBundle
     }
 }
 
-public class GenericStateBundle<StateBundleT, SubType> where StateBundleT : IStateBundle
+public class GenericStateBundle<StateBundleT, SubType> : GenericStateBundle where StateBundleT : IStateBundle
 {
     public StateBundleT StateBundle { get; set; }
 

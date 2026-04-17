@@ -6,10 +6,10 @@ namespace Assets.Scripts.Actions
 {
     public abstract class UnityAction : MonoBehaviour, ICustomUnityAction
     {
-        public abstract void AddListener<T>(UnityAction<GenericStateBundle<T>> action) where T : IStateBundle;
+        public abstract void AddListener<T>(UnityAction<T> action) where T : GenericStateBundle;
 
-        public abstract UnityAction<GenericStateBundle<T>> GetAction<T>() where T : IStateBundle;
+        public abstract UnityAction<T> GetAction<T>() where T : GenericStateBundle;
 
-        public abstract void Invoke<T>(GenericStateBundle<T> value) where T : IStateBundle;
+        public abstract void Invoke<T>(T value) where T : GenericStateBundle;
     }
 }

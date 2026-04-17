@@ -55,7 +55,7 @@ public class StateEvent : Assets.Scripts.Actions.UnityAction
 {
     private IDictionary<Type, Delegate> m_actionByType = new Dictionary<Type, Delegate>();
 
-    public override void AddListener<T>(UnityAction<GenericStateBundle<T>> action)
+    public override void AddListener<T>(UnityAction<T> action)
     {
         if (!m_actionByType.ContainsKey(typeof(T)))
         {
@@ -63,21 +63,21 @@ public class StateEvent : Assets.Scripts.Actions.UnityAction
         }
     }
 
-    public override UnityAction<GenericStateBundle<T>> GetAction<T>()
+    public override UnityAction<T> GetAction<T>()
     {
         if (m_actionByType.ContainsKey(typeof(T)))
         {
-            return (UnityAction<GenericStateBundle<T>>) m_actionByType[typeof(T)];
+            return (UnityAction<T>) m_actionByType[typeof(T)];
         }
 
         return null;
     }
 
-    public override void Invoke<T>(GenericStateBundle<T> value)
+    public override void Invoke<T>(T value)
     {
         if (m_actionByType.ContainsKey(typeof(T)))
         {
-            ((UnityAction<GenericStateBundle<T>>) m_actionByType[typeof(T)]).Invoke(value);
+            ((UnityAction<T>) m_actionByType[typeof(T)]).Invoke(value);
         }
     }
 }

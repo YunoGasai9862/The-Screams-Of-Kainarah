@@ -59,22 +59,23 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
 
     private void Start()
     {
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
+        Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerActionRelayer),
             SubjectType = typeof(PlayerAttributesNotifier)
 
-        }, this));
+        }, this);
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<EntityPoolManager>()
+        Delegator.NotifySubjectWrapper(new ObserverContext<EntityPoolManager>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerActionRelayer),
             SubjectType = typeof(EntityPoolManager)
 
-        }, this));
+        }, this);
 
+        //just need to repeat it again if its null (think of a re-ping mechanism)
         Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
         {
             Instance = gameObject,
