@@ -5,6 +5,14 @@ public class Context
 {
     public GameObject Instance { get; set; }
     public Type EntityType { get; set; }
+
+    public FallBackAlert FallBack { get; set; } = new FallBackAlert();
+
+    public class FallBackAlert
+    {
+        public Action PingBack { get; set }
+    }
+
     public override string ToString()
     {
         return $"Instance: {Instance} EntityType: {EntityType}";

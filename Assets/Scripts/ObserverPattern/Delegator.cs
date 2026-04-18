@@ -9,7 +9,6 @@ using System.Reflection;
 using UnityEngine;
 using Assets.Scripts.Enums;
 using System.Collections.Generic;
-using UnityEditor.AddressableAssets.Build.Layout;
 using Annotations.Enums;
 
 public class Delegator : MonoBehaviour, IDelegator
@@ -104,18 +103,12 @@ public class Delegator : MonoBehaviour, IDelegator
 
     public IEnumerator NotifySubject<T>(ObserverContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
-        Debug.Log($"Before Registry State: {RegistryState}");
-
         yield return new WaitUntil(() => RegistryState.Equals(Registry.REGISTRY_READY));
-
-        Debug.Log($"After Registry State: {RegistryState}");
 
         if (maxRetries == 0)
         {
             throw new MissingContextException($"Unable to fish for the subject type within the scene: {context.SubjectType}!");
         }
-
-        Debug.Log($"Incoming Context: {context.ToString()}");
 
 
         if (context == null || context.SubjectType == null || context.EntityType == null)
@@ -124,8 +117,6 @@ public class Delegator : MonoBehaviour, IDelegator
         }
 
         KeyValuePair<dynamic, List<dynamic>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
-
-        Debug.Log($"Association: {association}, TotalObservers: {association.Value?.Count}");
 
         if (association.Value == null || association.Value.Count == 0)
         {
@@ -154,7 +145,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
         if (association.Key?.Subject == null)
         {
-            Debug.LogWarning($"The subject instance is null for the subject type: {context.SubjectType}. Attemping a retry...");
+            Debug.LogWarning($"The subject instance is null for the subject type: {context.SubjectType}. Attempting a retry...");
 
             yield return new WaitForSeconds(sleepTimeInMilliSeconds);
 
@@ -370,16 +361,9 @@ public class Delegator : MonoBehaviour, IDelegator
     //System.Runtime.Exception ==> Reflection.TypeInfo doesnot contain Equals definition
     private IObserverBundle GetObserverBundle<T, Z>(List<dynamic> observers, Z context) where Z: ObserverContext
     {
-        foreach (dynamic observer in observers)
-        {
-            Debug.Log($"ObserverType: {observer.ObserverAttribute.ObserverType}, EntityType: {context.EntityType}, Type: {typeof(T)}, ContextType: {observer.ObserverAttribute.ContextType}, SubjectType: {observer.ObserverAttribute.SubjectType}, ContextSubjectType: {context.SubjectType}");
-        }
-        
         IObserverBundle value = observers.Where(observerContext => observerContext.ObserverAttribute.ObserverType == context.EntityType &&
                                                     typeof(T) == observerContext.ObserverAttribute.ContextType && 
                                                     observerContext.ObserverAttribute.SubjectType == context.SubjectType).First();
-
-        Debug.Log($"Observer bundle found: {value}, for context: {context}, Type: {typeof(T).Name}");
 
         return value;
 
