@@ -113,6 +113,8 @@ public class Delegator : MonoBehaviour, IDelegator
 
         if (context == null || context.SubjectType == null || context.EntityType == null)
         {
+            context?.FallBack?.Alert.Invoke();
+
             throw new MissingContextException($"Either the context is null or SubjectType/EntityType are missing from the context!");
         }
 
@@ -120,6 +122,8 @@ public class Delegator : MonoBehaviour, IDelegator
 
         if (association.Value == null || association.Value.Count == 0)
         {
+            context?.FallBack?.Alert.Invoke();
+
             throw new MissingContractException($"No observer found for the subject type: {context.SubjectType}!");
         }
 
@@ -127,6 +131,8 @@ public class Delegator : MonoBehaviour, IDelegator
 
         if (!IsObserverValid<T>(cachedObserverContext.ObserverAttribute, context))
         {
+            context?.FallBack?.Alert.Invoke();
+
             throw new MissingContractException($"The observer: {cachedObserverContext.Observer} is not valid for the context: {context}!");
         }
 

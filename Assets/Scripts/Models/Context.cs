@@ -1,16 +1,16 @@
+#nullable enable
 using System;
 using UnityEngine;
-
 public class Context
 {
     public GameObject Instance { get; set; }
     public Type EntityType { get; set; }
 
-    public FallBackAlert FallBack { get; set; } = new FallBackAlert();
+    public FallBackAlert? FallBack { get; set; }
 
     public class FallBackAlert
     {
-        public Action PingBack { get; set }
+        public  Action Alert { get; set; }
     }
 
     public override string ToString()
