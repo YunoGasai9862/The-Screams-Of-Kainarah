@@ -8,6 +8,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Context;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(Collider2D))]
 [Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(bool))]
@@ -41,6 +42,8 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
 
     private const string DIALOGUES_AND_OPTIONS_KEY = "DialoguesAndOptions";
 
+    private FallBackAlert m_gameStateManagerFallBackAlert;
+
     private Player Player { get; set; } = new Player();
 
     private Delegator Delegator { get; set; }
@@ -59,6 +62,11 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
 
     private void Start()
     {
+        m_gameStateManagerFallBackAlert = new FallBackAlert()
+        {
+            Alert = GameStateManagerFallBackAlert
+        };
+
         Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
@@ -75,12 +83,12 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
 
         }, this);
 
-        //just need to repeat it again if its null (think of a re-ping mechanism)
         Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerActionRelayer),
-            SubjectType = typeof(GameStateManager)
+            SubjectType = typeof(GameStateManager),
+            FallBack = m_gameStateManagerFallBackAlert
 
         }, this);
     }
@@ -114,6 +122,19 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
             }, this);
         }
         
+    }
+
+    private void GameStateManagerFallBackAlert()
+    {
+        Debug.Log("In the GameStateManagerFallBackAlert - Pinging Again!");
+
+        Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
+        {
+            Instance = gameObject,
+            EntityType = typeof(PlayerActionRelayer),
+            SubjectType = typeof(GameStateManager),
+            FallBack = m_gameStateManagerFallBackAlert
+        }, this);
     }
     private async void FixedUpdate()
     {
