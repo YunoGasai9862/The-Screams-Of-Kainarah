@@ -15,7 +15,7 @@ public class Context
 
     public override string ToString()
     {
-        return $"Instance: {Instance} EntityType: {EntityType}";
+        return $"Instance: {Instance}, EntityType: {EntityType}, FallBack: {FallBack}";
     }
 }
 

@@ -107,14 +107,14 @@ public class Delegator : MonoBehaviour, IDelegator
 
         if (maxRetries == 0)
         {
+            context?.FallBack?.Alert.Invoke();
+
             throw new MissingContextException($"Unable to fish for the subject type within the scene: {context.SubjectType}!");
         }
 
 
         if (context == null || context.SubjectType == null || context.EntityType == null)
         {
-            context?.FallBack?.Alert.Invoke();
-
             throw new MissingContextException($"Either the context is null or SubjectType/EntityType are missing from the context!");
         }
 
@@ -122,8 +122,6 @@ public class Delegator : MonoBehaviour, IDelegator
 
         if (association.Value == null || association.Value.Count == 0)
         {
-            context?.FallBack?.Alert.Invoke();
-
             throw new MissingContractException($"No observer found for the subject type: {context.SubjectType}!");
         }
 
@@ -131,15 +129,19 @@ public class Delegator : MonoBehaviour, IDelegator
 
         if (!IsObserverValid<T>(cachedObserverContext.ObserverAttribute, context))
         {
-            context?.FallBack?.Alert.Invoke();
+            Debug.Log($"The observer: {cachedObserverContext.Observer} is not valid for the context: {context}! Retrying in case if it's a stale reference...");
 
-            throw new MissingContractException($"The observer: {cachedObserverContext.Observer} is not valid for the context: {context}!");
+            yield return new WaitForSeconds(sleepTimeInMilliSeconds);
+
+            yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
         }
 
-        Debug.Log($"CachecObserverBundle: {cachedObserverContext}, Incoming Context: {context}, Type: {typeof(T)}, observer: {observer}");
+        Debug.Log($"CachedObserverBundle: {cachedObserverContext}, Incoming Context: {context}, Type: {typeof(T)}, observer: {observer}");
 
         if (cachedObserverContext?.Observer == null)
         {
+            Debug.Log($"The observer instance is null for the context: {context}. Association Subject: {association.Key}, Creating a new observer bundle...");
+
             ObserverBundle<T> observerBundle = new ObserverBundle<T>()
             {
                 Observer = observer,
@@ -149,6 +151,7 @@ public class Delegator : MonoBehaviour, IDelegator
             Associations[association.Key].Add(observerBundle);
         }
 
+        //ahhh maybe you need to lookup that instance first? Otherwise its going to be null!!
         if (association.Key?.Subject == null)
         {
             Debug.LogWarning($"The subject instance is null for the subject type: {context.SubjectType}. Attempting a retry...");
@@ -160,6 +163,8 @@ public class Delegator : MonoBehaviour, IDelegator
 
         //see if its better to store it?? (compare letter the difference/performance)
         Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subjectRequest = (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>) association.Key.Subject;
+
+        Debug.Log($"SubjectRequest: {subjectRequest}, SubjectInstance: {association.Key.Subject}, Type: {typeof(T)}, observer: {observer}");
 
         if (subjectRequest == null)
         {
