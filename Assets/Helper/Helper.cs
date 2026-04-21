@@ -1,5 +1,5 @@
+#nullable enable
 using Annotations.Enums;
-using Assets.Scripts.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -110,6 +110,23 @@ public class Helper: MonoBehaviour
                 return (float) value;
         }
         return null;
+    }
+
+    public static T FindObject<T>(Type gameObjectType) where T: class
+    {
+        GameObject? gameObject = FindFirstObjectByType(gameObjectType) as GameObject;
+
+        if (gameObject == null)
+        {
+            throw new ApplicationException($" {gameObjectType.Name} Not Found in the Scene");
+        }
+
+        if (!(gameObject is T))
+        {
+            throw new ApplicationException($" {gameObjectType.Name} Does not Implement {typeof(T).Name}");
+        }
+
+        return gameObject as T;
     }
 
     public static async Task<TYPE> FindReceiver<TYPE, IMPLEMENTATION>(int retryLimit = 3, int waitLimitInSeconds = 3) where TYPE: MonoBehaviour

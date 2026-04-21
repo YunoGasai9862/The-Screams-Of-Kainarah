@@ -152,11 +152,19 @@ public class Delegator : MonoBehaviour, IDelegator
         }
 
         //ahhh maybe you need to lookup that instance first? Otherwise its going to be null!!
-        if (association.Key?.Subject == null)
+        if (association.Key.Subject == null)
         {
-            Debug.LogWarning($"The subject instance is null for the subject type: {context.SubjectType}. Attempting a retry...");
+            Debug.Log($"The subject instance is null for the subject type: {context.SubjectType}. Attempting a retry...");
+
+            //lets try to find it
+            
+            Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subjectInstance = Helper.FindObject<Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>>(context.SubjectType);
+
+            //continue
 
             yield return new WaitForSeconds(sleepTimeInMilliSeconds);
+
+            Debug.Log($"Slept for {sleepTimeInMilliSeconds} milliseconds");
 
             yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
         }
