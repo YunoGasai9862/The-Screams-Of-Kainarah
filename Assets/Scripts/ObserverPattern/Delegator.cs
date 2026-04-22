@@ -10,6 +10,7 @@ using UnityEngine;
 using Assets.Scripts.Enums;
 using System.Collections.Generic;
 using Annotations.Enums;
+using System.Threading.Tasks;
 
 public class Delegator : MonoBehaviour, IDelegator
 {
@@ -151,25 +152,34 @@ public class Delegator : MonoBehaviour, IDelegator
             Associations[association.Key].Add(observerBundle);
         }
 
-        //ahhh maybe you need to lookup that instance first? Otherwise its going to be null!!
         if (association.Key.Subject == null)
         {
-            Debug.Log($"The subject instance is null for the subject type: {context.SubjectType}. Attempting a retry...");
+            Debug.Log($"The subject instance could not be found for the subject type: {context.SubjectType}. Retrying...");
 
-            //lets try to find it
-            
-            Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subjectInstance = Helper.FindObject<Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>>(context.SubjectType);
+            Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest subjectInstance = Helper.FindObject<Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest>(context.SubjectType).Result;
 
-            //continue
+            if (subjectInstance == null)
+            {
+                Debug.Log($"The subject instance could not be found for the subject type: {context.SubjectType}. Retrying...");
 
-            yield return new WaitForSeconds(sleepTimeInMilliSeconds);
+                yield return new WaitForSeconds(sleepTimeInMilliSeconds);
 
-            Debug.Log($"Slept for {sleepTimeInMilliSeconds} milliseconds");
+                yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
+            }
 
-            yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
+            Associations.Remove(association.Key);
+
+            KeyValuePair<dynamic, List<dynamic>> updatedAssociation = new KeyValuePair<dynamic, List<dynamic>>(
+                new SubjectBundle() { SubjectAttribute = association.Key.SubjectAttribute, Subject = subjectInstance },
+                association.Value
+            );
+
+            Associations.Add(updatedAssociation.Key, updatedAssociation.Value);
+
+            //it must point to this new association since the key has been updated with the subject instance
+            association = updatedAssociation;
         }
 
-        //see if its better to store it?? (compare letter the difference/performance)
         Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subjectRequest = (Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T>) association.Key.Subject;
 
         Debug.Log($"SubjectRequest: {subjectRequest}, SubjectInstance: {association.Key.Subject}, Type: {typeof(T)}, observer: {observer}");

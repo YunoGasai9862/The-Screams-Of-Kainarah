@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -112,21 +113,30 @@ public class Helper: MonoBehaviour
         return null;
     }
 
-    public static T FindObject<T>(Type gameObjectType) where T: class
+    public static async Task<T> FindObject<T>(Type gameObjectType, int retryLimit = 3, int waitLimitInSeconds = 3) where T: class
     {
-        GameObject? gameObject = FindFirstObjectByType(gameObjectType) as GameObject;
-
-        if (gameObject == null)
+        for(int i = 0; i < retryLimit; i++)
         {
-            throw new ApplicationException($" {gameObjectType.Name} Not Found in the Scene");
+            GameObject? gameObject = FindFirstObjectByType(gameObjectType) as GameObject;
+
+            if (gameObject == null)
+            {
+                Debug.Log($"GameObject - {gameObjectType} not found, retrying...");
+
+                await Task.Delay(waitLimitInSeconds * 1000);
+
+                continue;
+            }
+
+            if (!(gameObject is T))
+            {
+                throw new ApplicationException($" {gameObjectType.Name} Does not Implement {typeof(T).Name}");
+            }
+
+            return gameObject as T;
         }
 
-        if (!(gameObject is T))
-        {
-            throw new ApplicationException($" {gameObjectType.Name} Does not Implement {typeof(T).Name}");
-        }
-
-        return gameObject as T;
+        throw new ApplicationException($" {gameObjectType.Name} Not Found in the Scene");
     }
 
     public static async Task<TYPE> FindReceiver<TYPE, IMPLEMENTATION>(int retryLimit = 3, int waitLimitInSeconds = 3) where TYPE: MonoBehaviour
