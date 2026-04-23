@@ -1,16 +1,17 @@
+using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Exceptions;
+using Assets.Scripts.Enums;
 using Assets.Scripts.ObserverPattern.interfaces;
 using Assets.Scripts.ObserverPattern.models;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
-using Assets.Scripts.Enums;
-using System.Collections.Generic;
-using Annotations.Enums;
 using System.Threading.Tasks;
+using UnityEngine;
+using static TMPro.Examples.TMP_ExampleScript_01;
 
 public class Delegator : MonoBehaviour, IDelegator
 {
@@ -132,7 +133,7 @@ public class Delegator : MonoBehaviour, IDelegator
         {
             Debug.Log($"The observer: {cachedObserverContext.Observer} is not valid for the context: {context}! Retrying in case if it's a stale reference...");
 
-            yield return new WaitForSeconds(sleepTimeInMilliSeconds);
+            yield return new WaitForSeconds(sleepTimeInMilliSeconds / 1000);
 
             yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
         }
@@ -156,13 +157,24 @@ public class Delegator : MonoBehaviour, IDelegator
         {
             Debug.Log($"The subject instance could not be found for the subject type: {context.SubjectType}. Retrying...");
 
-            Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest subjectInstance = Helper.FindObject<Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest>(context.SubjectType).Result;
+            GameObject? gameObject = FindFirstObjectByType(context.SubjectType) as GameObject;
+
+            if (gameObject == null)
+            {
+                Debug.Log($"GameObject - {gameObject} not found, retrying...");
+
+                yield return new WaitForSeconds(sleepTimeInMilliSeconds / 1000);
+
+                yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
+            }
+
+            Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest subjectInstance = gameObject as Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest;
 
             if (subjectInstance == null)
             {
                 Debug.Log($"The subject instance could not be found for the subject type: {context.SubjectType}. Retrying...");
 
-                yield return new WaitForSeconds(sleepTimeInMilliSeconds);
+                yield return new WaitForSeconds(sleepTimeInMilliSeconds / 1000);
 
                 yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
             }
@@ -170,7 +182,7 @@ public class Delegator : MonoBehaviour, IDelegator
             Associations.Remove(association.Key);
 
             KeyValuePair<dynamic, List<dynamic>> updatedAssociation = new KeyValuePair<dynamic, List<dynamic>>(
-                new SubjectBundle() { SubjectAttribute = association.Key.SubjectAttribute, Subject = subjectInstance },
+                new SubjectBundle() { SubjectAttribute = association.Key.SubjectAttribute, Subject = subjectInstance.Result },
                 association.Value
             );
 
@@ -194,10 +206,30 @@ public class Delegator : MonoBehaviour, IDelegator
         yield return null;
     }
 
-
     private bool IsObserverValid<T>(ObserverAttribute observer, ObserverContext<T> context)
     {
         switch(observer.AssetType)
+        {
+            case Asset.NONE:
+                return false;
+
+            case Asset.MONOBEHAVIOR:
+                Debug.Log($"ASSET: {typeof(MonoBehaviour).IsAssignableFrom(observer.ObserverType)}, Instance: {context.Instance}");
+                return typeof(MonoBehaviour).IsAssignableFrom(observer.ObserverType) && context.Instance != null;
+
+            case Asset.SCRIPTABLE_OBJECT:
+                return typeof(ScriptableObject).IsAssignableFrom(observer.ObserverType);
+
+            case Asset.PLAYER_STATE_MACHINE:
+                return typeof(StateMachineBehaviour).IsAssignableFrom(observer.ObserverType);
+        }
+
+        return false;
+    }
+
+    private bool IsSubjectValid<T>(SubjectAttribute observer, SubjectContext<T> context)
+    {
+        switch (observer.AssetType)
         {
             case Asset.NONE:
                 return false;

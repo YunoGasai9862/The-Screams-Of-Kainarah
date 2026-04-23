@@ -113,7 +113,7 @@ public class Helper: MonoBehaviour
         return null;
     }
 
-    public static async Task<T> FindObject<T>(Type gameObjectType, int retryLimit = 3, int waitLimitInSeconds = 3) where T: class
+    public static async Task<T> FindObjectAsync<T>(Type gameObjectType, int retryLimit = 3, int waitLimitInSeconds = 3) where T: class
     {
         for(int i = 0; i < retryLimit; i++)
         {
