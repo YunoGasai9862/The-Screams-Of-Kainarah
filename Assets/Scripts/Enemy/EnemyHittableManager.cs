@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EnemyHittableManager), ContextType = typeof(EnemyHittableManager))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EnemyHittableManager), ContextType = typeof(EnemyHittableManager))]
 public class EnemyHittableManager : MonoBehaviour, IRequest<EnemyHittableManager>
 {
    private Delegator Delegator { get; set; }

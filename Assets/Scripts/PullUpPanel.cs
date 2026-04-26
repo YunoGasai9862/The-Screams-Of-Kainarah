@@ -4,7 +4,7 @@ using UnityEngine;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(PullUpPanel), SubjectType = typeof(TriggerHandler), ContextType = typeof(bool))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PullUpPanel), EntityType = typeof(TriggerHandler), ContextType = typeof(bool))]
 public class PullUpPanel : MonoBehaviour, INotify<bool>
 {
     private const string SUFFICIENT_FUNDS_ANIMATION_CONDITION = "SufficientFunds";

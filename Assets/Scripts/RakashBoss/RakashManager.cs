@@ -4,7 +4,7 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
 using Annotations.Enums;
 
-[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(RakashManager), ContextType = typeof(Health))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(RakashManager), ContextType = typeof(Health))]
 public class RakashManager : AbstractEntity, IGameStateHandler, IRequest<Health>, Assets.Scripts.Interfaces.Mediator.Base.INotify<IGameStateHandler>
 {
     private Delegator Delegator { get; set; }

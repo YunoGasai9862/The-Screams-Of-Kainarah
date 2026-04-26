@@ -5,8 +5,8 @@ using System.Collections;
 using Annotations.Enums;
 using UnityEngine;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(DialogueObserverManager), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(DialogueObserverManager), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(DialoguesAndOptions.DialogueSystem))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(DialogueObserverManager), EntityType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(DialogueObserverManager), EntityType = typeof(PlayerActionRelayer), ContextType = typeof(DialoguesAndOptions.DialogueSystem))]
 public class DialogueObserverManager : MonoBehaviour, INotify<DialoguesAndOptions.DialogueSystem>, INotify<GenericStateBundle<GameStateBundle>>
 {
     [Header("Dialogues And Options")]

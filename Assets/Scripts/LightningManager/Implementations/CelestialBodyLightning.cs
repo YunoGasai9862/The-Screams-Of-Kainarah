@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(CelestialBodyLightning), ContextType = typeof(ILightPreprocess))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CelestialBodyLightning), ContextType = typeof(ILightPreprocess))]
 public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, IRequest<ILightPreprocess>
 {
     private Delegator Delegator { get; set; }

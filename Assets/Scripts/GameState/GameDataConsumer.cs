@@ -3,7 +3,7 @@ using Assets.Annotations;
 
 namespace Assets.Scripts.GameState
 {
-    [Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(GameDataConsumer), ContextType = typeof(GenericStateBundle<GameDataBundle>))]
+    [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameDataConsumer), ContextType = typeof(GenericStateBundle<GameDataBundle>))]
     public class GameDataConsumer: BaseState<GameDataBundle>
     {
         protected override GenericStateBundle<GameDataBundle> GetInitialState()

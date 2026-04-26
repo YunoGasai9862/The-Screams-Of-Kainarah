@@ -9,8 +9,8 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(AudioPreload), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(AudioPreload), SubjectType = typeof(AWSPolllyManagement), ContextType = typeof(IAWSPolly))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(AudioPreload), EntityType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(AudioPreload), EntityType = typeof(AWSPolllyManagement), ContextType = typeof(IAWSPolly))]
 [Asset(Asset.MONOBEHAVIOR, "Audio", InstantiationOrder = 6)]
 public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate, INotify<EntityPoolManager>, INotify<IAWSPolly>
 {

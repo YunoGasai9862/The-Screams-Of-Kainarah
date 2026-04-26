@@ -5,8 +5,8 @@ using UnityEngine;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(DialogueTriggerManager), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(DialogueTriggerManager), SubjectType = typeof(DialogueManager), ContextType = typeof(DialogueManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(DialogueTriggerManager), EntityType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(DialogueTriggerManager), EntityType = typeof(DialogueManager), ContextType = typeof(DialogueManager))]
 public class DialogueTriggerManager : MonoBehaviour, INotify<GenericStateBundle<GameStateBundle>>, INotify<DialogueManager>
 {
     [SerializeField]

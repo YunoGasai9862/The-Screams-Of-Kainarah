@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(DialogueResetActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(DialogueResetActionListener), EntityType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 public class DialogueResetActionListener : MonoBehaviour, INotify<EntityPoolManager>
 {
     private const string DIALOGUES_AND_OPTIONS_KEY = "DialoguesAndOptions";

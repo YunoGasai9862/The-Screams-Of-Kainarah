@@ -8,7 +8,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "PickableItems", menuName = "Scriptable Pickable Items")]
 [Asset(Asset.SCRIPTABLE_OBJECT, "PickableItems", InstantiationOrder = 2)]
-[Subject(AssetType = Asset.SCRIPTABLE_OBJECT, SubjectType = typeof(PickableItems), ContextType = typeof(ScriptableObject))]
+[Subject(AssetType = Asset.SCRIPTABLE_OBJECT, EntityType = typeof(PickableItems), ContextType = typeof(ScriptableObject))]
 public class PickableItems : ScriptableObject, IRequest<ScriptableObject>, IDelegate
 {
     private Delegator Delegator { get; set; }

@@ -2,7 +2,7 @@
 using Annotations.Enums;
 using Assets.Annotations;
 
-[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 public class GameStateConsumer : BaseState<GameStateBundle>
 {
     protected override GenericStateBundle<GameStateBundle> GetInitialState()

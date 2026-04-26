@@ -10,13 +10,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Context;
 
-[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(Collider2D))]
-[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(bool))]
-[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(DialoguesAndOptions.DialogueSystem))]
-[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(EntitiesToReset))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(PlayerActionRelayer), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), ContextType = typeof(Collider2D))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), ContextType = typeof(bool))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), ContextType = typeof(DialoguesAndOptions.DialogueSystem))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), ContextType = typeof(EntitiesToReset))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActionRelayer), EntityType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActionRelayer), EntityType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActionRelayer), EntityType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
 public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<Player>, IGameStateHandler, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<EntityPoolManager>, IRequest<Collider2D>, 
     IRequest<Player>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GameStateManager>
 {

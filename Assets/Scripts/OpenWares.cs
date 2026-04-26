@@ -4,8 +4,8 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PickableItems), ObserverType = typeof(OpenWares), ContextType = typeof(bool))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(GameStateConsumer), ObserverType = typeof(OpenWares), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PickableItems), SubjectType = typeof(OpenWares), ContextType = typeof(bool))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameStateConsumer), SubjectType = typeof(OpenWares), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 
 public class OpenWares : MonoBehaviour, INotify<GenericStateBundle<GameStateBundle>>, INotify<bool>
 {

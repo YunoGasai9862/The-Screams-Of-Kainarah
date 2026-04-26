@@ -14,9 +14,9 @@ using UnityEngine;
 using Annotations.Enums;
 
 [AssetAttribute(Asset.MONOBEHAVIOR, "AWSPollyManager", InstantiationOrder = 6)]
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(AWSPolllyManagement), SubjectType = typeof(FirebaseStorageManager), ContextType = typeof(FirebaseStorageManager))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(AWSPolllyManagement), SubjectType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
-[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(AWSPolllyManagement), ContextType = typeof(IAWSPolly))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(AWSPolllyManagement), EntityType = typeof(FirebaseStorageManager), ContextType = typeof(FirebaseStorageManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(AWSPolllyManagement), EntityType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(AWSPolllyManagement), ContextType = typeof(IAWSPolly))]
 
 public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, INotify<FirebaseStorageManager>, INotify<AsyncCoroutine>, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<IAWSPolly>
 {

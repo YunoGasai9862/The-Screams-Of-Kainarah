@@ -5,7 +5,7 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(WaterCameraAndTextureFollow), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(WaterCameraAndTextureFollow), EntityType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
 public class WaterCameraAndTextureFollow : MonoBehaviour, INotify<IEntityTransform>
 {
     [SerializeField]

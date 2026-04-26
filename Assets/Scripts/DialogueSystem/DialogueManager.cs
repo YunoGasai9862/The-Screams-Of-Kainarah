@@ -10,7 +10,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(DialogueManager), ContextType = typeof(DialogueManager))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueManager), ContextType = typeof(DialogueManager))]
 public class DialogueManager : MonoBehaviour, IRequest<DialogueManager>
 { 
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";

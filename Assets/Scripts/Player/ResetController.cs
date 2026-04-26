@@ -6,7 +6,7 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, ObserverType = typeof(ResetController), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(ResetController), EntityType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
 public class ResetController : MonoBehaviour, INotify<ResetBundle>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }

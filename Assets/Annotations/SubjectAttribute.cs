@@ -8,7 +8,7 @@ namespace Assets.Annotations
     {
         public Asset AssetType { get; set; }
 
-        public Type SubjectType { get; set; }
+        public Type EntityType { get; set; }
 
         public Type ContextType { get; set; }
 
@@ -16,16 +16,16 @@ namespace Assets.Annotations
 
         public SubjectAttribute() { }
 
-        public SubjectAttribute(Asset assetType, Type subjectType, Type contextType)
+        public SubjectAttribute(Asset assetType, Type entityType, Type contextType)
         {
             AssetType = assetType;
-            SubjectType = subjectType;
+            EntityType = entityType;
             ContextType = contextType;
         }
 
         public override string ToString()
         {
-           return $"AssetType: {AssetType}, SubjectType: {SubjectType}, ContextType: {ContextType}, UnityEventType: {UnityEventType}";
+           return $"AssetType: {AssetType}, SubjectType: {EntityType}, ContextType: {ContextType}, UnityEventType: {UnityEventType}";
         }
 
         public override int GetHashCode()

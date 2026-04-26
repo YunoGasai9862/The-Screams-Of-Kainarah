@@ -76,6 +76,15 @@ public class Delegator : MonoBehaviour, IDelegator
             association.Key.Subject = subject;
         }
 
+        if (!IsSubjectValid<T>(association.Key))
+        {
+            Debug.Log($"The subject: {association.Key} is not valid.");
+
+            yield return new WaitForSeconds(sleepTimeInMilliSeconds / 1000);
+
+            yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
+        }
+
         List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> cachedObserverContext = GetObserverBundles<T, SubjectContext<T>> (association, context);
 
         if (cachedObserverContext == null || cachedObserverContext.Count == 0)
@@ -168,6 +177,8 @@ public class Delegator : MonoBehaviour, IDelegator
                 yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
             }
 
+
+
             Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest subjectInstance = gameObject as Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest;
 
             if (subjectInstance == null)
@@ -182,7 +193,7 @@ public class Delegator : MonoBehaviour, IDelegator
             Associations.Remove(association.Key);
 
             KeyValuePair<dynamic, List<dynamic>> updatedAssociation = new KeyValuePair<dynamic, List<dynamic>>(
-                new SubjectBundle() { SubjectAttribute = association.Key.SubjectAttribute, Subject = subjectInstance.Result },
+                new SubjectBundle() { SubjectAttribute = association.Key.SubjectAttribute, Subject = subjectInstance },
                 association.Value
             );
 
@@ -206,7 +217,7 @@ public class Delegator : MonoBehaviour, IDelegator
         yield return null;
     }
 
-    private bool IsObserverValid<T>(ObserverAttribute observer, ObserverContext<T> context)
+    private bool IsObserverValid<T>(ObserverAttribute observer, ObserverContext<T> context = null)
     {
         switch(observer.AssetType)
         {
@@ -214,35 +225,37 @@ public class Delegator : MonoBehaviour, IDelegator
                 return false;
 
             case Asset.MONOBEHAVIOR:
-                Debug.Log($"ASSET: {typeof(MonoBehaviour).IsAssignableFrom(observer.ObserverType)}, Instance: {context.Instance}");
-                return typeof(MonoBehaviour).IsAssignableFrom(observer.ObserverType) && context.Instance != null;
+                Debug.Log($"IsObserverValid(MonoBehavior): {typeof(MonoBehaviour).IsAssignableFrom(observer.SubjectType)}, Instance: {context.Instance}");
+                bool isMonoBehavior = typeof(MonoBehaviour).IsAssignableFrom(context.SubjectType);
+                return context == null ? isMonoBehavior : isMonoBehavior && context.Instance != null;
 
             case Asset.SCRIPTABLE_OBJECT:
-                return typeof(ScriptableObject).IsAssignableFrom(observer.ObserverType);
+                return typeof(ScriptableObject).IsAssignableFrom(observer.SubjectType);
 
             case Asset.PLAYER_STATE_MACHINE:
-                return typeof(StateMachineBehaviour).IsAssignableFrom(observer.ObserverType);
+                return typeof(StateMachineBehaviour).IsAssignableFrom(observer.SubjectType);
         }
 
         return false;
     }
 
-    private bool IsSubjectValid<T>(SubjectAttribute observer, SubjectContext<T> context)
+    private bool IsSubjectValid<T, W>(SubjectAttribute subject, SubjectContext<T> context = null) where T: SubjectAttribute, ObserverAttribute
     {
-        switch (observer.AssetType)
+        switch (subject.AssetType)
         {
             case Asset.NONE:
                 return false;
 
             case Asset.MONOBEHAVIOR:
-                Debug.Log($"ASSET: {typeof(MonoBehaviour).IsAssignableFrom(observer.ObserverType)}, Instance: {context.Instance}");
-                return typeof(MonoBehaviour).IsAssignableFrom(observer.ObserverType) && context.Instance != null;
+                Debug.Log($"IsSubjectValid(MonoBehavior):: {typeof(MonoBehaviour).IsAssignableFrom(subject.EntityType)}");
+                bool isMonoBehavior = typeof(MonoBehaviour).IsAssignableFrom(subject.EntityType);
+                return context == null ? isMonoBehavior : isMonoBehavior && context.Instance != null;
 
             case Asset.SCRIPTABLE_OBJECT:
-                return typeof(ScriptableObject).IsAssignableFrom(observer.ObserverType);
+                return typeof(ScriptableObject).IsAssignableFrom(subject.EntityType);
 
             case Asset.PLAYER_STATE_MACHINE:
-                return typeof(StateMachineBehaviour).IsAssignableFrom(observer.ObserverType);
+                return typeof(StateMachineBehaviour).IsAssignableFrom(subject.EntityType);
         }
 
         return false;
@@ -326,7 +339,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
             foreach (SubjectAttribute subject in subjects)
             {
-                if (subject.AssetType == Asset.NONE || subject.SubjectType == null || subject.ContextType == null)
+                if (subject.AssetType == Asset.NONE || subject.EntityType == null || subject.ContextType == null)
                 {
                     Debug.LogWarning($"Either AssetType, SubjectType or ContextType is missing for the subject attribute: {subject}. Skipping the registration for this subject!");
                     continue;
@@ -334,11 +347,11 @@ public class Delegator : MonoBehaviour, IDelegator
 
                 SubjectBundle subjectBundle = new SubjectBundle() { SubjectAttribute = subject };
 
-                List<ObserverAttribute> specificObservers = observers.Where(observer => observer.SubjectType.Equals(subject.SubjectType)).ToList();
+                List<ObserverAttribute> specificObservers = observers.Where(observer => observer.EntityType.Equals(subject.EntityType)).ToList();
 
                 foreach (ObserverAttribute observer in specificObservers)
                 {
-                    if (observer.AssetType == Asset.NONE || observer.SubjectType == null || observer.ContextType == null || observer.ObserverType == null)
+                    if (observer.AssetType == Asset.NONE || observer.EntityType == null || observer.ContextType == null || observer.SubjectType == null)
                     {
                         Debug.LogWarning($"Either AssetType, SubjectType, ContextType, or Observertype is missing for the observer attribute: {observer}. Skipping the registration for this observer!");
                         continue;
@@ -354,12 +367,12 @@ public class Delegator : MonoBehaviour, IDelegator
                     //check if exists - append, otherwise create a new list!!!
                     if (!Associations.TryGetValue(subjectBundle, out List<dynamic> observerBundles))
                     {
-                        Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.SubjectType} - {observerBundle?.ObserverAttribute?.ObserverType}");
+                        Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.EntityType} - {observerBundle?.ObserverAttribute?.SubjectType}");
                         Associations[subjectBundle] = new List<dynamic>() { observerBundle };
                         continue;
                     }
 
-                    Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.SubjectType} - {observerBundle?.ObserverAttribute?.ObserverType}");
+                    Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.EntityType} - {observerBundle?.ObserverAttribute?.SubjectType}");
 
                     Associations[subjectBundle].Add(observerBundle);
                 }

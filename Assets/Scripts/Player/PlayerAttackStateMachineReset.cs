@@ -6,8 +6,8 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-[Subject(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EntityPoolManager), ObserverType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(EntityPoolManager))]
+[Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EntityPoolManager), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(EntityPoolManager))]
 public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<EntityPoolManager>, IRequest<ResetBundle>
 {
     [SerializeField]

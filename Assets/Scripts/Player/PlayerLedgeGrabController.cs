@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), ObserverType = typeof(PlayerLedgeGrabController), ContextType = typeof(Player))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerStateConsumer), ObserverType = typeof(PlayerLedgeGrabController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAttributesNotifier), SubjectType = typeof(PlayerLedgeGrabController), ContextType = typeof(Player))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerStateConsumer), SubjectType = typeof(PlayerLedgeGrabController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
 public class PlayerLedgeGrabController : MonoBehaviour, IReceiverEnhancedAsync<PlayerLedgeGrabController, PlayerStateBundle>, INotify<Player>, INotify<GenericStateBundle<PlayerStateBundle>>
 {
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
