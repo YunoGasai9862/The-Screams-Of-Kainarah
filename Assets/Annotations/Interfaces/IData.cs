@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Annotations.Enums;
+using System;
 
 namespace Assets.Annotations.Interfaces
 {
-    internal interface IData
+    public interface IData
     {
+        public Asset AssetType { get; set; }
+
+        public Type EntityType { get; set; }
+
+        public Type ContextType { get; set; }
     }
 }

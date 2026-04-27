@@ -1,10 +1,11 @@
 ﻿using Annotations.Enums;
+using Assets.Annotations.Interfaces;
 using System;
 
 namespace Assets.Annotations
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class ObserverAttribute : Attribute
+    public class ObserverAttribute : Attribute, IData
     {
         public Asset AssetType { get; set; }
 

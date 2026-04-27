@@ -1,5 +1,6 @@
 using Annotations.Enums;
 using Assets.Annotations;
+using Assets.Annotations.Interfaces;
 using Assets.Exceptions;
 using Assets.Scripts.Enums;
 using Assets.Scripts.ObserverPattern.interfaces;
@@ -76,13 +77,13 @@ public class Delegator : MonoBehaviour, IDelegator
             association.Key.Subject = subject;
         }
 
-        if (!IsSubjectValid<T>(association.Key))
+        if (!IsValid(association.Key, context))
         {
             Debug.Log($"The subject: {association.Key} is not valid.");
 
             yield return new WaitForSeconds(sleepTimeInMilliSeconds / 1000);
 
-            yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
+            yield return StartCoroutine(NotifyObservers<T>(context, subject, maxRetries - 1, sleepTimeInMilliSeconds, optional));
         }
 
         List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> cachedObserverContext = GetObserverBundles<T, SubjectContext<T>> (association, context);
@@ -138,7 +139,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
         IObserverBundle cachedObserverContext = GetObserverBundle<T, ObserverContext>(association.Value, context);
 
-        if (!IsObserverValid<T>(cachedObserverContext.ObserverAttribute, context))
+        if (!IsValid(cachedObserverContext.ObserverAttribute, context))
         {
             Debug.Log($"The observer: {cachedObserverContext.Observer} is not valid for the context: {context}! Retrying in case if it's a stale reference...");
 
@@ -176,8 +177,6 @@ public class Delegator : MonoBehaviour, IDelegator
 
                 yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
             }
-
-
 
             Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest subjectInstance = gameObject as Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest;
 
@@ -217,45 +216,45 @@ public class Delegator : MonoBehaviour, IDelegator
         yield return null;
     }
 
-    private bool IsObserverValid<T>(ObserverAttribute observer, ObserverContext<T> context = null)
+    private bool IsValid<Z, W>(W data, Z context = null) where W: IData where Z: Context
     {
-        switch(observer.AssetType)
+        switch (data.AssetType)
         {
             case Asset.NONE:
                 return false;
 
             case Asset.MONOBEHAVIOR:
-                Debug.Log($"IsObserverValid(MonoBehavior): {typeof(MonoBehaviour).IsAssignableFrom(observer.SubjectType)}, Instance: {context.Instance}");
-                bool isMonoBehavior = typeof(MonoBehaviour).IsAssignableFrom(context.SubjectType);
+                Debug.Log($"IData(MonoBehavior) - data:: {typeof(MonoBehaviour).IsAssignableFrom(data.EntityType)}");
+                bool isMonoBehavior = typeof(MonoBehaviour).IsAssignableFrom(data.EntityType);
                 return context == null ? isMonoBehavior : isMonoBehavior && context.Instance != null;
 
             case Asset.SCRIPTABLE_OBJECT:
-                return typeof(ScriptableObject).IsAssignableFrom(observer.SubjectType);
+                return typeof(ScriptableObject).IsAssignableFrom(data.EntityType);
 
             case Asset.PLAYER_STATE_MACHINE:
-                return typeof(StateMachineBehaviour).IsAssignableFrom(observer.SubjectType);
+                return typeof(StateMachineBehaviour).IsAssignableFrom(data.EntityType);
         }
 
         return false;
     }
 
-    private bool IsSubjectValid<T, W>(SubjectAttribute subject, SubjectContext<T> context = null) where T: SubjectAttribute, ObserverAttribute
+    private bool IsInterfacePresent(GameObject gameObject, Type typeToSearch)
     {
-        switch (subject.AssetType)
+        switch ()
         {
             case Asset.NONE:
                 return false;
 
             case Asset.MONOBEHAVIOR:
-                Debug.Log($"IsSubjectValid(MonoBehavior):: {typeof(MonoBehaviour).IsAssignableFrom(subject.EntityType)}");
-                bool isMonoBehavior = typeof(MonoBehaviour).IsAssignableFrom(subject.EntityType);
+                Debug.Log($"IData(MonoBehavior) - data:: {typeof(MonoBehaviour).IsAssignableFrom(data.EntityType)}");
+                bool isMonoBehavior = typeof(MonoBehaviour).IsAssignableFrom(data.EntityType);
                 return context == null ? isMonoBehavior : isMonoBehavior && context.Instance != null;
 
             case Asset.SCRIPTABLE_OBJECT:
-                return typeof(ScriptableObject).IsAssignableFrom(subject.EntityType);
+                return typeof(ScriptableObject).IsAssignableFrom(data.EntityType);
 
             case Asset.PLAYER_STATE_MACHINE:
-                return typeof(StateMachineBehaviour).IsAssignableFrom(subject.EntityType);
+                return typeof(StateMachineBehaviour).IsAssignableFrom(data.EntityType);
         }
 
         return false;
