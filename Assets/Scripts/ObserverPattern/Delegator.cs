@@ -10,9 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using UnityEngine;
-using static TMPro.Examples.TMP_ExampleScript_01;
 
 public class Delegator : MonoBehaviour, IDelegator
 {
@@ -61,11 +59,11 @@ public class Delegator : MonoBehaviour, IDelegator
     {
         yield return new WaitUntil(() => RegistryState.Equals(Registry.REGISTRY_READY));
 
-        KeyValuePair<dynamic, List<dynamic>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.EntityType).FirstOrDefault();
+        KeyValuePair<dynamic, List<dynamic>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.EntityType == context.EntityType).FirstOrDefault();
 
         if (association.Value == null)
         {
-            throw new MissingContractException($"No observer found for the subject type: {association.Key.SubjectAttribute.SubjectType}!");
+            throw new MissingContractException($"No observer found for the subject type: {association.Key.SubjectAttribute.EntityType}!");
         }
 
 
@@ -130,7 +128,7 @@ public class Delegator : MonoBehaviour, IDelegator
             throw new MissingContextException($"Either the context is null or SubjectType/EntityType are missing from the context!");
         }
 
-        KeyValuePair<dynamic, List<dynamic>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.SubjectType == context.SubjectType).FirstOrDefault();
+        KeyValuePair<dynamic, List<dynamic>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.EntityType == context.SubjectType).FirstOrDefault();
 
         if (association.Value == null || association.Value.Count == 0)
         {
@@ -178,11 +176,18 @@ public class Delegator : MonoBehaviour, IDelegator
                 yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
             }
 
-            Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest subjectInstance = gameObject as Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest;
+            if (!Helper.IsInterfacePresent(gameObject, typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest)))
+            {
+                Debug.Log($"The subject instance does not implement the IRequest interface for the subject type: {context.SubjectType}. Exiting...");
+
+                yield return null;
+            }
+
+            Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest subjectInstance = gameObject.GetComponent<Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest>(); 
 
             if (subjectInstance == null)
             {
-                Debug.Log($"The subject instance could not be found for the subject type: {context.SubjectType}. Retrying...");
+                Debug.Log($"EnhancedV1.Request could not be found for: {context.SubjectType}. Retrying...");
 
                 yield return new WaitForSeconds(sleepTimeInMilliSeconds / 1000);
 
@@ -219,28 +224,6 @@ public class Delegator : MonoBehaviour, IDelegator
     private bool IsValid<Z, W>(W data, Z context = null) where W: IData where Z: Context
     {
         switch (data.AssetType)
-        {
-            case Asset.NONE:
-                return false;
-
-            case Asset.MONOBEHAVIOR:
-                Debug.Log($"IData(MonoBehavior) - data:: {typeof(MonoBehaviour).IsAssignableFrom(data.EntityType)}");
-                bool isMonoBehavior = typeof(MonoBehaviour).IsAssignableFrom(data.EntityType);
-                return context == null ? isMonoBehavior : isMonoBehavior && context.Instance != null;
-
-            case Asset.SCRIPTABLE_OBJECT:
-                return typeof(ScriptableObject).IsAssignableFrom(data.EntityType);
-
-            case Asset.PLAYER_STATE_MACHINE:
-                return typeof(StateMachineBehaviour).IsAssignableFrom(data.EntityType);
-        }
-
-        return false;
-    }
-
-    private bool IsInterfacePresent(GameObject gameObject, Type typeToSearch)
-    {
-        switch ()
         {
             case Asset.NONE:
                 return false;
@@ -434,7 +417,8 @@ public class Delegator : MonoBehaviour, IDelegator
     //System.Runtime.Exception ==> Reflection.TypeInfo doesnot contain Equals definition
     private IObserverBundle GetObserverBundle<T, Z>(List<dynamic> observers, Z context) where Z: ObserverContext
     {
-        IObserverBundle value = observers.Where(observerContext => observerContext.ObserverAttribute.ObserverType == context.EntityType &&
+
+        IObserverBundle value = observers.Where(observerContext => observerContext.ObserverAttribute.EntityType == context.EntityType &&
                                                     typeof(T) == observerContext.ObserverAttribute.ContextType && 
                                                     observerContext.ObserverAttribute.SubjectType == context.SubjectType).First();
 
@@ -445,6 +429,6 @@ public class Delegator : MonoBehaviour, IDelegator
 
     private List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> GetObserverBundles<T, Z>(KeyValuePair<dynamic, List<dynamic>> association, Z context) where Z : SubjectContext<T>
     {
-        return association.Value.Where(observerContext => observerContext.ObserverAttribute.SubjectType.Equals(context.EntityType) && typeof(T).Name.Equals(context.Data.GetType())).Select(observer => (Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify)observer.Observer).ToList();
+        return association.Value.Where(observerContext => observerContext.ObserverAttribute.SubjectType == context.EntityType && typeof(T).Name.Equals(context.Data.GetType())).Select(observer => (Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify)observer.Observer).ToList();
     }
 }

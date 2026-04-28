@@ -139,6 +139,11 @@ public class Helper: MonoBehaviour
         throw new ApplicationException($" {gameObjectType.Name} Not Found in the Scene");
     }
 
+    public static bool IsInterfacePresent(GameObject gameObject, Type typeToSearch)
+    {
+        return typeToSearch.IsAssignableFrom(gameObject.GetType());
+    }
+
     public static async Task<TYPE> FindReceiver<TYPE, IMPLEMENTATION>(int retryLimit = 3, int waitLimitInSeconds = 3) where TYPE: MonoBehaviour
     {
 
