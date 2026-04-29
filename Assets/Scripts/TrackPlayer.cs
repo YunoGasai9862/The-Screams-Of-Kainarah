@@ -5,7 +5,7 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(TrackPlayer), EntityType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(TrackPlayer), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
 public class TrackPlayer : MonoBehaviour, INotify<IEntityTransform>
 {
     private Transform PlayerTransform { get; set; }

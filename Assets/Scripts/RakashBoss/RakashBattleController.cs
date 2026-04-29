@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(RakashBattleController), EntityType = typeof(RakashManager), ContextType = typeof(Health))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(RakashBattleController), SubjectType = typeof(RakashManager), ContextType = typeof(Health))]
 public class RakashBattleController : MonoBehaviour, INotify<Health>, IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>
 {
     [SerializeField]

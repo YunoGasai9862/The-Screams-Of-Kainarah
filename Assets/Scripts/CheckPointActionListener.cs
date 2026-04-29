@@ -7,8 +7,8 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(CheckPointActionListener), EntityType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(CheckPointActionListener), EntityType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CheckPointActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CheckPointActionListener), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
 public class CheckPointActionListener : MonoBehaviour, INotify<EntityPoolManager>, INotify<GameStateManager>
 {
     private static string CHECKPOINTS_KEY = "CheckPoints";  

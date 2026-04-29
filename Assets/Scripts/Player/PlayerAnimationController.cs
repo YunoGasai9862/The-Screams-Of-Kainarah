@@ -6,8 +6,8 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EmitMovementAnimationStateConsumer), SubjectType = typeof(PlayerAnimationController), ContextType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAttributesNotifier), SubjectType = typeof(PlayerAnimationController), ContextType = typeof(IEntityAnimator))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EmitMovementAnimationStateConsumer), EntityType = typeof(PlayerAnimationController), ContextType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), EntityType = typeof(PlayerAnimationController), ContextType = typeof(IEntityAnimator))]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAnimationController), ContextType = typeof(AnimationDetails))]
 public class PlayerAnimationController : MonoBehaviour, IRequest<AnimationDetails>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>,
     INotify<IEntityAnimator>, INotify<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>>

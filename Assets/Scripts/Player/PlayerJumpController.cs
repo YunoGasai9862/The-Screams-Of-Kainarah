@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerJumpController), ContextType = typeof(CharacterVelocity))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAttributesNotifier), SubjectType = typeof(PlayerJumpController), ContextType = typeof(Player))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerStateConsumer), SubjectType = typeof(PlayerJumpController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), EntityType = typeof(PlayerJumpController), ContextType = typeof(Player))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerStateConsumer), EntityType = typeof(PlayerJumpController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
 public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<PlayerJumpController, bool>, IRequest<CharacterVelocity>, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<Player>
 {
     [SerializeField] LayerMask groundLayer;

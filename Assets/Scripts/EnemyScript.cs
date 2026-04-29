@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EnemyHittableManager), SubjectType = typeof(EnemyScript), ContextType = typeof(EnemyHittableManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EnemyHittableManager), EntityType = typeof(EnemyScript), ContextType = typeof(EnemyHittableManager))]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EnemyScript), ContextType = typeof(EnemyActionBundle))]
 public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IRequest<EnemyActionBundle>
 {

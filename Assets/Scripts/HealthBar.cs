@@ -5,7 +5,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(HealthBar), EntityType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityHealth))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(HealthBar), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityHealth))]
 public class HealthBar : MonoBehaviour, INotify<IEntityHealth>
 {
 

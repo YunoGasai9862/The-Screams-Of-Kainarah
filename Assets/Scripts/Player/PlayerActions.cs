@@ -6,11 +6,11 @@ using UnityEngine.InputSystem;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActions), EntityType = typeof(PlayerStateConsumer), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActions), EntityType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActions), EntityType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActions), EntityType = typeof(PlayerSlideController), ContextType = typeof(CharacterVelocity))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActions), EntityType = typeof(PlayerJumpController), ContextType = typeof(CharacterVelocity))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(PlayerStateConsumer), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(PlayerSlideController), ContextType = typeof(CharacterVelocity))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(PlayerJumpController), ContextType = typeof(CharacterVelocity))]
 public class PlayerActions : MonoBehaviour, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<Player>, INotify<GenericStateBundle<GameStateBundle>>, INotify<CharacterVelocity>, IDelegate
 {
     [SerializeField] float _characterSpeed = 10f;

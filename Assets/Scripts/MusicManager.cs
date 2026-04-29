@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(MusicManager), EntityType = typeof(PlayerActionRelayer), ContextType = typeof(bool))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(MusicManager), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(bool))]
 public class MusicManager : MonoBehaviour, INotify<bool>
 {
     [SerializeField] Toggle menuToggleSound;

@@ -17,16 +17,9 @@ namespace Assets.Annotations
 
         public SubjectAttribute() { }
 
-        public SubjectAttribute(Asset assetType, Type entityType, Type contextType)
-        {
-            AssetType = assetType;
-            EntityType = entityType;
-            ContextType = contextType;
-        }
-
         public override string ToString()
         {
-           return $"AssetType: {AssetType}, SubjectType: {EntityType}, ContextType: {ContextType}, UnityEventType: {UnityEventType}";
+           return $"AssetType: {AssetType}, EntityType: {EntityType}, ContextType: {ContextType}, UnityEventType: {UnityEventType}";
         }
 
         public override int GetHashCode()

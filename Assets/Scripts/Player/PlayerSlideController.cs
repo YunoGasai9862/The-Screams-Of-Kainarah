@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerSlideController), EntityType = typeof(PlayerAnimationController), ContextType = typeof(AnimationDetails))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerSlideController), EntityType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerSlideController), SubjectType = typeof(PlayerAnimationController), ContextType = typeof(AnimationDetails))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerSlideController), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerSlideController), ContextType = typeof(CharacterVelocity))]
 public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<PlayerSlideController, PlayerStateBundle>, INotify<AnimationDetails>, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<CharacterVelocity>, INotify<Player>
 {

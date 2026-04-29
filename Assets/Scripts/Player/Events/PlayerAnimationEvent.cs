@@ -6,7 +6,7 @@ using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAnimationEvent), EntityType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAnimationEvent), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 public class PlayerAnimationEvent : MonoBehaviour, INotify<EntityPoolManager>
 {
     [SerializeField]

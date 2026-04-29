@@ -329,11 +329,11 @@ public class Delegator : MonoBehaviour, IDelegator
 
                 SubjectBundle subjectBundle = new SubjectBundle() { SubjectAttribute = subject };
 
-                List<ObserverAttribute> specificObservers = observers.Where(observer => observer.EntityType.Equals(subject.EntityType)).ToList();
+                List<ObserverAttribute> specificObservers = observers.Where(observer => observer.SubjectType.Equals(subject.EntityType)).ToList();
 
                 foreach (ObserverAttribute observer in specificObservers)
                 {
-                    if (observer.AssetType == Asset.NONE || observer.EntityType == null || observer.ContextType == null || observer.SubjectType == null)
+                    if (observer.AssetType == Asset.NONE || observer.SubjectType == null || observer.ContextType == null || observer.EntityType == null)
                     {
                         Debug.LogWarning($"Either AssetType, SubjectType, ContextType, or Observertype is missing for the observer attribute: {observer}. Skipping the registration for this observer!");
                         continue;
@@ -349,12 +349,12 @@ public class Delegator : MonoBehaviour, IDelegator
                     //check if exists - append, otherwise create a new list!!!
                     if (!Associations.TryGetValue(subjectBundle, out List<dynamic> observerBundles))
                     {
-                        Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.EntityType} - {observerBundle?.ObserverAttribute?.SubjectType}");
+                        Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.EntityType} - {observerBundle?.ObserverAttribute?.EntityType}");
                         Associations[subjectBundle] = new List<dynamic>() { observerBundle };
                         continue;
                     }
 
-                    Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.EntityType} - {observerBundle?.ObserverAttribute?.SubjectType}");
+                    Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.EntityType} - {observerBundle?.ObserverAttribute?.EntityType}");
 
                     Associations[subjectBundle].Add(observerBundle);
                 }
@@ -417,6 +417,10 @@ public class Delegator : MonoBehaviour, IDelegator
     //System.Runtime.Exception ==> Reflection.TypeInfo doesnot contain Equals definition
     private IObserverBundle GetObserverBundle<T, Z>(List<dynamic> observers, Z context) where Z: ObserverContext
     {
+        foreach (var observer in observers)
+        {
+            Debug.Log($"Observer: {observer}, ObserverAttribute: {observer.ObserverAttribute}, Context: {context}, Type: {typeof(T)}");
+        }
 
         IObserverBundle value = observers.Where(observerContext => observerContext.ObserverAttribute.EntityType == context.EntityType &&
                                                     typeof(T) == observerContext.ObserverAttribute.ContextType && 

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActionSystemHandler), EntityType = typeof(PickableItems), ContextType = typeof(Collider2D))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActionSystemHandler), EntityType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionSystemHandler), SubjectType = typeof(PickableItems), ContextType = typeof(Collider2D))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionSystemHandler), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INotify<EntityPoolManager>
 {
     [SerializeField] PlayerPowerUpModeEvent playerPowerUpModeEvent;

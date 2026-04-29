@@ -9,7 +9,7 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EnemyScript), SubjectType = typeof(EnemyActions), ContextType = typeof(EnemyActionBundle))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EnemyScript), EntityType = typeof(EnemyActions), ContextType = typeof(EnemyActionBundle))]
 public class EnemyActions : MonoBehaviour, INotify<EnemyActionBundle>
 {
     private enum enemyAttack

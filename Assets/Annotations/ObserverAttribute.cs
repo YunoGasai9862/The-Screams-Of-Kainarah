@@ -9,25 +9,17 @@ namespace Assets.Annotations
     {
         public Asset AssetType { get; set; }
 
-        public Type SubjectType { get; set; }
-
         public Type EntityType { get; set; }
+
+        public Type SubjectType { get; set; }
 
         public Type ContextType { get; set; }
 
         public ObserverAttribute() { }
 
-        public ObserverAttribute(Asset asset, Type subjectType, Type entityType, Type contextType)
-        {
-            AssetType = asset;
-            SubjectType = subjectType;
-            EntityType = entityType;
-            ContextType = contextType;
-        }
-
         public override string ToString()
         {
-            return $"SubjectType: {SubjectType}, ObserverType: {EntityType}, ContextType: {ContextType}";
+            return $"EntityType: {EntityType}, SubjectType: {SubjectType}, ContextType: {ContextType}";
         }
 
         public override int GetHashCode()

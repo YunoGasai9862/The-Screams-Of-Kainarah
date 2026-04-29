@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(MoonMovement), EntityType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(MoonMovement), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
 public class MoonMovement : MonoBehaviour, INotify<IEntityTransform>
 {
     [Header("Custom Variables")]

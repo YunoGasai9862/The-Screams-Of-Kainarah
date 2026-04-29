@@ -6,9 +6,9 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
 
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(RakashStateMachine), EntityType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(RakashStateMachine), EntityType = typeof(EnemyHittableManager), ContextType = typeof(EnemyHittableManager))]
-[Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(RakashStateMachine), EntityType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(RakashStateMachine), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(RakashStateMachine), SubjectType = typeof(EnemyHittableManager), ContextType = typeof(EnemyHittableManager))]
+[Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(RakashStateMachine), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 public class RakashStateMachine : MonoBehaviour, INotify<GenericStateBundle<GameStateBundle>>, INotify<IEntityTransform>, INotify<EnemyHittableManager>
 {
     public const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
