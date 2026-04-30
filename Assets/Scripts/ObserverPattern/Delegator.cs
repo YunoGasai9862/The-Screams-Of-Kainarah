@@ -163,9 +163,16 @@ public class Delegator : MonoBehaviour, IDelegator
 
         if (association.Key.Subject == null)
         {
-            Debug.Log($"The subject instance could not be found for the subject type: {context.SubjectType}. Retrying...");
+            Debug.Log($"The subject instance could not be found for the subject type: {context.SubjectType}. Trying to find in the scene");
 
-            GameObject? gameObject = FindFirstObjectByType(context.SubjectType) as GameObject;
+            foreach(var objectInScene in FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+            {
+                Debug.Log($"GameObject in scene: {objectInScene} - type: {objectInScene.GetType()} {objectInScene.}");
+            }
+
+            GameObject gameObject = FindObjectOfType(context.SubjectType) as GameObject;
+
+            Debug.Log($"In Scene: {gameObject} - type: {context.SubjectType}");
 
             if (gameObject == null)
             {
