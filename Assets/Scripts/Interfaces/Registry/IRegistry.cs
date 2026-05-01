@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
+using System;
 
 namespace Assets.Scripts.Interfaces.Registry
 {
     public interface IRegistry
     {
-        void Register();
+        public void Decommission(Int32 instanceId);
 
-        void Decommission();
+        public void Register<T>(T value);
     }
 }
