@@ -97,17 +97,17 @@ public class PreloaderManager : MonoBehaviour
         {
             case Asset.SCRIPTABLE_OBJECT:
                 return (ScriptableObject)await GameLoad.PreloadAsset<ScriptableObject>(
-                    new PreloadPackage()
+                    new EntityMetaData()
                     {
-                        AddressableLable = attribute.AddressLabel,
+                        AddressableLabel = attribute.AddressLabel,
                         AssetType = attribute.AssetType
                     }
                 );
                     
             case Asset.MONOBEHAVIOR:
-                return (GameObject)await GameLoad.PreloadAsset<GameObject>(new PreloadPackage()
+                return (GameObject)await GameLoad.PreloadAsset<GameObject>(new EntityMetaData()
                     {
-                        AddressableLable = attribute.AddressLabel,
+                        AddressableLabel = attribute.AddressLabel,
                         AssetType = attribute.AssetType,
                         InstantiateAt = new Vector3(attribute.InitialPositionX, attribute.InitialPositionY, attribute.InitialPositionZ)
                     }

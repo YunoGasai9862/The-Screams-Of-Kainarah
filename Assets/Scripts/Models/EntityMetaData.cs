@@ -2,9 +2,9 @@
 using Annotations.Enums;
 using UnityEngine;
 
-public class PreloadPackage
+public class EntityMetaData
 {
-    public string AddressableLable { get; set; }
+    public string AddressableLabel { get; set; }
 
     public Asset AssetType { get; set; }
 

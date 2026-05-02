@@ -4,14 +4,15 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using Annotations.Enums;
+using Assets.Annotations;
 
+[Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameLoad), ContextType = typeof(GameLoad))]
 public class GameLoad : MonoBehaviour, IGameLoad
 {
-    public async Task<UnityEngine.Object> PreloadAsset<T>(PreloadPackage preloadPackage) where T : UnityEngine.Object
+    public async Task<Object> PreloadAsset<T>(EntityMetaData enttityMetaData) where T : Object
     {
-        AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(preloadPackage.AddressableLable);
+        AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(enttityMetaData.AddressableLabel);
 
         await handler.Task;
 
@@ -19,26 +20,26 @@ public class GameLoad : MonoBehaviour, IGameLoad
 
         Debug.Log($"loadedAsset: {loadedAsset}");
 
-        UnityEngine.Object preloadedObject = await ProcessPreloadedAsset<T>(loadedAsset, preloadPackage);
+        Object preloadedObject = await ProcessPreloadedAsset<T>(loadedAsset, enttityMetaData);
 
         Addressables.Release(handler);
 
         return preloadedObject;
     }
 
-    public async Task<List<UnityEngine.Object>> PreloadAssets<Z>(Z label, PreloadPackage preloadPackage)
+    public async Task<List<Object>> PreloadAssets<Z>(Z label, EntityMetaData enttityMetaData)
     {
-        List<UnityEngine.Object> assets = new List<UnityEngine.Object>();
+        List<Object> assets = new List<Object>();
 
-        AsyncOperationHandle<IList<UnityEngine.Object>> handler = Addressables.LoadAssetsAsync<UnityEngine.Object>(label, null);
+        AsyncOperationHandle<IList<Object>> handler = Addressables.LoadAssetsAsync<Object>(label, null);
 
         await handler.Task;
 
-        IList<UnityEngine.Object> loadedAsset = handler.Result.ToList();
+        IList<Object> loadedAsset = handler.Result.ToList();
 
-        foreach(UnityEngine.Object asset in loadedAsset)
+        foreach(Object asset in loadedAsset)
         {
-           assets.Append(await ProcessPreloadedAsset(asset, preloadPackage));
+           assets.Append(await ProcessPreloadedAsset(asset, enttityMetaData));
         }
 
         Addressables.Release(handler);
@@ -46,21 +47,20 @@ public class GameLoad : MonoBehaviour, IGameLoad
         return assets;
     }
 
-    public Task<UnityEngine.Object> ProcessPreloadedAsset<T>(T loadedAsset, PreloadPackage preloadPackage) where T : UnityEngine.Object
+    public Task<Object> ProcessPreloadedAsset<T>(T loadedAsset, EntityMetaData enttityMetaData) where T : Object
     {
-        switch (preloadPackage.AssetType)
+        switch (enttityMetaData.AssetType)
         {
             case Asset.MONOBEHAVIOR:
-                return Task.FromResult((UnityEngine.Object) Instantiate(loadedAsset as GameObject, preloadPackage.InstantiateAt, Quaternion.identity));
+                return Task.FromResult((Object) Instantiate(loadedAsset as GameObject, enttityMetaData.InstantiateAt, Quaternion.identity));
 
             case Asset.SCRIPTABLE_OBJECT:
-                return Task.FromResult((UnityEngine.Object)(loadedAsset as ScriptableObject));
+                return Task.FromResult((Object)(loadedAsset as ScriptableObject));
 
             default:
                 break;
-
         }
 
-        return Task.FromResult(new UnityEngine.Object());
+        return Task.FromResult(new Object());
     }
 } 

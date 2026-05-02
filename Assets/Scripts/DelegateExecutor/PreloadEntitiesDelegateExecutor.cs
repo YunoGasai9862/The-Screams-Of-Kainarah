@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,14 +13,7 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
         preloadedEntitiesEvent.AddListener(PreloadEntitiesEventListener);
     }
 
-    public Task ExecuteDelegateMethod(IDelegate delegateMethod)
-    {
-        delegateMethod.InvokeCustomMethod();
-
-        return Task.CompletedTask;
-    }
-
-    private async Task ExecuteDelegates(List<UnityEngine.Object> preloadedEntities)
+    public async Task ExecuteDelegates(List<UnityEngine.Object> preloadedEntities)
     {
         await ExecuteDelegatesForScriptableObjects(preloadedEntities.Where(pe => pe is ScriptableObject).Cast<ScriptableObject>().ToList()); //casting is needed
 
@@ -34,7 +26,7 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
         {
             if (scriptableObject is IDelegate)
             {
-                await ExecuteDelegateMethod((IDelegate)scriptableObject);
+                ((IDelegate)scriptableObject).InvokeCustomMethod();
             }
         }
     }
@@ -51,7 +43,7 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
 
             foreach (IDelegate del in iDelegates)
             {
-                await ExecuteDelegateMethod(del);
+                del.InvokeCustomMethod();
             }
         }
     }
