@@ -8,6 +8,6 @@ namespace Assets.Scripts.Interfaces.Registry
     {
         void Decommission(Int32 instanceId);
 
-        void Register<T>(T value, Asset assetType);
+        bool Register<T>(T value, Asset assetType) where T : UnityEngine.Object;
     }
 }
