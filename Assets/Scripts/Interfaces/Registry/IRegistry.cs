@@ -6,7 +6,7 @@ namespace Assets.Scripts.Interfaces.Registry
 {
     public interface IRegistry
     {
-        void Decommission(Int32 instanceId);
+        bool Decmission(Int32 instanceId, Asset assetType);
 
         bool Register<T>(T value, Asset assetType) where T : UnityEngine.Object;
     }

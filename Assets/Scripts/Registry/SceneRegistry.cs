@@ -25,9 +25,17 @@ public class SceneRegistry : MonoBehaviour, IRegistry
         }
     }
 
-    public void Decommission(Int32 instanceId)
-    {
-        
+    public bool Decmission(Int32 instanceId, Asset assetType)
+    { 
+        switch (assetType)
+        {
+            case Asset.MONOBEHAVIOR: return RegisteredGameObjects.Remove(instanceId);
+            case Asset.SCRIPTABLE_OBJECT: return RegisteredScriptObjects.Remove(instanceId);
+            case Asset.NONE: break;
+            case Asset.PLAYER_STATE_MACHINE: break;
+        }
+
+        throw new ApplicationException($"Asset type {assetType} is not supported for registration in {nameof(SceneRegistry)}");
     }
 
     public bool Register<T>(T value, Asset assetType) where T: UnityEngine.Object
@@ -36,7 +44,8 @@ public class SceneRegistry : MonoBehaviour, IRegistry
         {
             case Asset.MONOBEHAVIOR:
                 return RegisteredGameObjects.TryAdd(value.GetInstanceID(), value as GameObject);
-            case Asset.SCRIPTABLE_OBJECT: break;
+            case Asset.SCRIPTABLE_OBJECT:
+                return RegisteredScriptObjects.TryAdd(value.GetInstanceID(), value as ScriptableObject);
             case Asset.NONE: break;
             case Asset.PLAYER_STATE_MACHINE: break;
         }

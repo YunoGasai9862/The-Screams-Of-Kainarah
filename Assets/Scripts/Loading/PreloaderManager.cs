@@ -55,6 +55,11 @@ public class PreloaderManager : MonoBehaviour
             Debug.Log(ex.ToString());   
         }
 
+        if (assetAttributes.GroupBy(asset => asset.InstantiationOrder).Any(group => group.Count() > 1))
+        {
+            throw new ApplicationException($"Multiple assets found with the same instantiation order. Please ensure all assets have a unique instantiation order.");
+        }
+
         return assetAttributes.OrderBy(asset => asset.InstantiationOrder).ToList();
     }
 
