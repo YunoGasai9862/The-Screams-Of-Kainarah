@@ -1,7 +1,7 @@
 using Annotations.Enums;
 using System;
 using UnityEngine;
-[Asset(Asset.SCRIPTABLE_OBJECT, "CheckPoints", InstantiationOrder = 3)]
+[Asset(Asset.SCRIPTABLE_OBJECT, "CheckPoints", InstantiationOrder = 6)]
 [CreateAssetMenu(fileName = "CheckpointsScriptableObject", menuName = "Checkpoints Scriptable Object")]
 
 public class CheckPoints : ScriptableObject {

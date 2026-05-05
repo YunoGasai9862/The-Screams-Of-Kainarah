@@ -17,5 +17,5 @@ public interface IDelegator
 
     public IEnumerator NotifySubject<T>(ObserverContext<T> context, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional);
 
-    public void BuildRegistry();
+    public void BuildDelegatorRegistry();
 }

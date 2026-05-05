@@ -1,5 +1,6 @@
 #nullable enable
 using Annotations.Enums;
+using Assets.Exceptions;
 using ObserverPattern;
 using System;
 using System.Collections;
@@ -112,6 +113,50 @@ public class Helper: MonoBehaviour
                 return (float) value;
         }
         return null;
+    }
+
+    public static List<T> GetAttribute<T>(List<Type> types, List<Type> genericInterfaceTypes = null, List<Type> nonGenericInterfaceTyles = null) where T : Attribute
+    {
+        if (genericInterfaceTypes == null && nonGenericInterfaceTyles == null)
+        {
+            throw new MissingArgumentException($"One of them must be provided : genericInterfaceTypes or nonGenericInterfaceTyles!");
+        }
+
+        List<T> foundAttributes = new List<T>();
+
+        foreach (Type type in types)
+        {
+            List<T> attributes = type.GetCustomAttributes<T>().ToList();
+
+            if (attributes == null || attributes.Count == 0)
+            {
+                Debug.Log($"No custom attribute found for type: {type.FullName}");
+
+                continue;
+            }
+
+            string joinedGenericInterfaceTypes = string.Join<Type>(",", genericInterfaceTypes.ToArray());
+
+            string joinedNonGenericInterfaceTypes = string.Join<Type>(",", nonGenericInterfaceTyles.ToArray());
+
+            Debug.Log($"Custom attributes found for type: {type.FullName} - Count: {attributes.Count} - joinedGenericInterfaceTypes: {joinedGenericInterfaceTypes} - joinedNonGenericInterfaceTypes: {joinedNonGenericInterfaceTypes} - Total Interfaces: {type.GetInterfaces().Count()}");
+
+
+            if (!type.GetInterfaces().Any(interf => genericInterfaceTypes.Any(possibleInterfaceType => interf.IsGenericType && possibleInterfaceType.GetGenericTypeDefinition() == interf.GetGenericTypeDefinition())))
+            {
+                throw new MissingContractException($"The underlying type must implement one of the interfaces: {joinedGenericInterfaceTypes}!");
+            }
+
+            attributes.ForEach(attribute =>
+            {
+                Debug.Log($"Adding: {attribute}");
+                foundAttributes.Add(attribute);
+            });
+        }
+
+        Debug.Log($"Total attributes found: {foundAttributes.Count} for the attribute type: {typeof(T).Name}");
+
+        return foundAttributes;
     }
 
     public static async Task<T> FindObjectAsync<T>(Type gameObjectType, int retryLimit = 3, int waitLimitInSeconds = 3) where T: class

@@ -22,7 +22,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
     private void Awake()
     {
-        BuildRegistry();
+        BuildDelegatorRegistry();
     }
 
     public void NotifyObserverWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
@@ -277,7 +277,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
     //we should check on generic interface assignment since we wouldn't know concrete implementation during reflection.
     //in order to do that, get interfaces first and then check on IsGenericFlag and TypeDefinition
-    public void BuildRegistry()
+    public void BuildDelegatorRegistry()
     {
         try
         {
@@ -287,7 +287,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
             ExecutingAssemblyTypes = Assembly.GetExecutingAssembly().GetTypes().ToArray().ToList();
 
-            List<SubjectAttribute> subjects = Find<SubjectAttribute>(
+            List<SubjectAttribute> subjects = Helper.GetAttribute<SubjectAttribute>(
                     ExecutingAssemblyTypes, new List<Type>() 
                     { 
                         typeof(Assets.Scripts.Interfaces.Mediator.Base.IRequest<>),
@@ -306,7 +306,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
             Debug.Log($"Subjects found: {subjects.Count}");
 
-            List<ObserverAttribute> observers = Find<ObserverAttribute>(
+            List<ObserverAttribute> observers = Helper.GetAttribute<ObserverAttribute>(
                      ExecutingAssemblyTypes, new List<Type> 
                      { 
                          typeof(Assets.Scripts.Interfaces.Mediator.Base.INotify<>),
@@ -370,50 +370,6 @@ public class Delegator : MonoBehaviour, IDelegator
         {
             Debug.Log($"Exception: {ex.Message}");
         }
-    }
-
-    private List<T> Find<T>(List<Type> types, List<Type> genericInterfaceTypes = null, List<Type> nonGenericInterfaceTyles = null) where T : Attribute
-    {
-        if (genericInterfaceTypes == null && nonGenericInterfaceTyles == null)
-        {
-            throw new MissingArgumentException($"One of them must be provided : genericInterfaceTypes or nonGenericInterfaceTyles!");
-        }
-
-        List<T> foundAttributes = new List<T>();
-
-        foreach (Type type in types)
-        {
-            List<T> attributes = type.GetCustomAttributes<T>().ToList();
-
-            if (attributes == null || attributes.Count == 0)
-            {
-                Debug.Log($"No custom attribute found for type: {type.FullName}");
-
-                continue;
-            }
-
-            string joinedGenericInterfaceTypes = string.Join<Type>(",", genericInterfaceTypes.ToArray());
-
-            string joinedNonGenericInterfaceTypes = string.Join<Type>(",", nonGenericInterfaceTyles.ToArray());
-
-            Debug.Log($"Custom attributes found for type: {type.FullName} - Count: {attributes.Count} - joinedGenericInterfaceTypes: {joinedGenericInterfaceTypes} - joinedNonGenericInterfaceTypes: {joinedNonGenericInterfaceTypes} - Total Interfaces: {type.GetInterfaces().Count()}");
-
-
-            if (!type.GetInterfaces().Any(interf => genericInterfaceTypes.Any(possibleInterfaceType => interf.IsGenericType && possibleInterfaceType.GetGenericTypeDefinition() == interf.GetGenericTypeDefinition())))
-            {
-                throw new MissingContractException($"The underlying type must implement one of the interfaces: {joinedGenericInterfaceTypes}!");
-            }
-
-            attributes.ForEach(attribute =>
-            {
-                Debug.Log($"Adding: {attribute}");
-               foundAttributes.Add(attribute);
-            });
-        }
-
-        Debug.Log($"Total attributes found: {foundAttributes.Count} for the attribute type: {typeof(T).Name}");
-
-        return foundAttributes;
     }
 
     //System.Runtime.Exception ==> Reflection.TypeInfo doesnot contain Equals definition
