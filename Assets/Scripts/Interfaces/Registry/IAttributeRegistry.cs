@@ -4,10 +4,10 @@ namespace Assets.Scripts.Interfaces.Registry
 {
     public interface IAttributeRegistry
     {
-        void CacheAssemblies();
+        List<Type> CacheAssemblies();
 
         bool DecomissionAttribute<T>(T attribute);
 
-        bool GetAttributes<T>(List<Type> filteringTypes, List<Type> nonGenericInterfaceFilteringTypes = null, List<Type> genericInterfaceFilteringType = null) where T : Attribute;
+        List<T> GetAttributes<T>(List<Type> nonGenericTypes = null, List<Type> genericTypes = null) where T : Attribute;
     }
 }

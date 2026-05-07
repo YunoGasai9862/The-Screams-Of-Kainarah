@@ -115,9 +115,9 @@ public class Helper: MonoBehaviour
         return null;
     }
 
-    public static List<T> GetAttribute<T>(List<Type> types, List<Type> genericInterfaceTypes = null, List<Type> nonGenericInterfaceTyles = null) where T : Attribute
+    public static List<T> GetAttribute<T>(List<Type> types, List<Type> genericType = null, List<Type> nonGenericType = null) where T : Attribute
     {
-        if (genericInterfaceTypes == null && nonGenericInterfaceTyles == null)
+        if (genericType == null && nonGenericType == null)
         {
             throw new MissingArgumentException($"One of them must be provided : genericInterfaceTypes or nonGenericInterfaceTyles!");
         }
@@ -135,16 +135,21 @@ public class Helper: MonoBehaviour
                 continue;
             }
 
-            string joinedGenericInterfaceTypes = string.Join<Type>(",", genericInterfaceTypes.ToArray());
+            string joinedGenericType = string.Join<Type>(",", genericType?.ToArray());
 
-            string joinedNonGenericInterfaceTypes = string.Join<Type>(",", nonGenericInterfaceTyles.ToArray());
+            string joinedNonGenericType = string.Join<Type>(",", nonGenericType?.ToArray());
 
-            Debug.Log($"Custom attributes found for type: {type.FullName} - Count: {attributes.Count} - joinedGenericInterfaceTypes: {joinedGenericInterfaceTypes} - joinedNonGenericInterfaceTypes: {joinedNonGenericInterfaceTypes} - Total Interfaces: {type.GetInterfaces().Count()}");
+            Debug.Log($"Custom attributes found for type: {type.FullName} - Count: {attributes.Count} - joinedGenericInterfaceTypes: {joinedGenericType} - joinedNonGenericInterfaceTypes: {joinedNonGenericType} - Total Interfaces: {type.GetInterfaces().Count()}");
 
 
-            if (!type.GetInterfaces().Any(interf => genericInterfaceTypes.Any(possibleInterfaceType => interf.IsGenericType && possibleInterfaceType.GetGenericTypeDefinition() == interf.GetGenericTypeDefinition())))
+            if (genericType!=null && !type.GetInterfaces().Any(interf => genericType.Any(possibleInterfaceType => interf.IsGenericType && possibleInterfaceType.GetGenericTypeDefinition() == interf.GetGenericTypeDefinition())))
             {
-                throw new MissingContractException($"The underlying type must implement one of the interfaces: {joinedGenericInterfaceTypes}!");
+                throw new MissingContractException($"The underlying type must implement one of the interfaces: {joinedGenericType}!");
+            }
+
+            if (nonGenericType != null && !type.GetInterfaces().Any(interf => nonGenericType.Any(possibleInterfaceType => possibleInterfaceType == interf)))
+            {
+                throw new MissingContractException($"The underlying type must implement one of the interfaces: {joinedNonGenericType}!");
             }
 
             attributes.ForEach(attribute =>
