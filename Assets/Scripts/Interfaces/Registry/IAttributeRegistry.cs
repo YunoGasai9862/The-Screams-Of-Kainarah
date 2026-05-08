@@ -6,7 +6,9 @@ namespace Assets.Scripts.Interfaces.Registry
     {
         List<Type> CacheAssemblies();
 
-        bool DecomissionAttribute<T>(T attribute);
+        void DecommissionAssemblies();
+
+        Dictionary<Type, List<Attribute>> BuildAttributeRegistry(List<Type> assemblies);
 
         List<T> GetAttributes<T>(List<Type> nonGenericTypes = null, List<Type> genericTypes = null) where T : Attribute;
     }

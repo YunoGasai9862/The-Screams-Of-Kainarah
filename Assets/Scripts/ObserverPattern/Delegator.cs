@@ -5,6 +5,7 @@ using Assets.Exceptions;
 using Assets.Scripts.Enums;
 using Assets.Scripts.ObserverPattern.interfaces;
 using Assets.Scripts.ObserverPattern.models;
+using Assets.Scripts.Registry;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,13 +17,15 @@ public class Delegator : MonoBehaviour, IDelegator
 {
     private Dictionary<dynamic, List<dynamic>> Associations { get; set; } = new Dictionary<dynamic, List<dynamic>>();
 
-    private List<Type> ExecutingAssemblyTypes { get; set; } = new List<Type>();
-
     private Registry RegistryState { get; set; } = Registry.IDLE;
+
+    private AttributeRegistry AttributeRegistry { get; set; };
 
     private void Awake()
     {
         BuildDelegatorRegistry();
+
+        AttributeRegistry = Helper.FindObject<AttributeRegistry>();
     }
 
     public void NotifyObserverWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
@@ -285,29 +288,26 @@ public class Delegator : MonoBehaviour, IDelegator
 
             Debug.Log($"Executing BuildRegistry...");
 
-            ExecutingAssemblyTypes = Assembly.GetExecutingAssembly().GetTypes().ToArray().ToList();
-
-            List<SubjectAttribute> subjects = Helper.GetAttribute<SubjectAttribute>(
-                    ExecutingAssemblyTypes, new List<Type>() 
+            List<SubjectAttribute> subjects = AttributeRegistry.GetAttributes<SubjectAttribute>(
+                    new List<Type>() 
                     { 
                         typeof(Assets.Scripts.Interfaces.Mediator.Base.IRequest<>),
                         typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<>),
                         typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<>),
                         typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<>),
                         typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV4.IRequest<>),
-
                     },
                     new List<Type>() 
                     { 
                         typeof(Assets.Scripts.Interfaces.Mediator.Base.IRequest),
                         typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest),
                     }
-                ).ToList();
+                );
 
             Debug.Log($"Subjects found: {subjects.Count}");
 
-            List<ObserverAttribute> observers = Helper.GetAttribute<ObserverAttribute>(
-                     ExecutingAssemblyTypes, new List<Type> 
+            List<ObserverAttribute> observers = AttributeRegistry.GetAttributes<ObserverAttribute>( 
+                     new List<Type> 
                      { 
                          typeof(Assets.Scripts.Interfaces.Mediator.Base.INotify<>),
                          typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<>),
