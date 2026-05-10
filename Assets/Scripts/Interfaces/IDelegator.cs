@@ -1,6 +1,7 @@
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 public interface IDelegator<T>
 {
@@ -11,11 +12,11 @@ public interface IDelegator<T>
 
 public interface IDelegator
 {
-    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional);
+    IEnumerator NotifyObservers<T>(SubjectContext<T> context, IRequest<T> subject, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional);
 
-    public IEnumerator NotifyObserver<T>(SubjectContext<T> context, IRequest<T> subject, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional);
+    IEnumerator NotifyObserver<T>(SubjectContext<T> context, IRequest<T> subject, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional);
 
-    public IEnumerator NotifySubject<T>(ObserverContext<T> context, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional);
+    IEnumerator NotifySubject<T>(ObserverContext<T> context, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional);
 
-    public void BuildDelegatorRegistry();
+    Dictionary<dynamic, List<dynamic>> BuildDelegatorRegistry();
 }

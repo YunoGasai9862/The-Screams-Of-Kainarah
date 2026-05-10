@@ -11,7 +11,7 @@ using Annotations.Enums;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(AudioPreload), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(AudioPreload), SubjectType = typeof(AWSPolllyManagement), ContextType = typeof(IAWSPolly))]
-[Asset(Asset.MONOBEHAVIOR, "Audio", InstantiationOrder = 7)]
+[Asset(Asset.MONOBEHAVIOR, "Audio", InstantiationOrder = 8)]
 public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, IDelegate, INotify<EntityPoolManager>, INotify<IAWSPolly>
 {
     private string PersistencePath { get; set; }

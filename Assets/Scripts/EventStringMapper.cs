@@ -2,7 +2,7 @@ using Annotations.Enums;
 using System;
 using UnityEngine;
 
-[Asset(Asset.SCRIPTABLE_OBJECT, "EventStringMapper", InstantiationOrder = 11)]
+[Asset(Asset.SCRIPTABLE_OBJECT, "EventStringMapper", InstantiationOrder = 12)]
 [CreateAssetMenu(fileName = "EventStringMapperScriptableObjectEntity", menuName = "Event String Mapper")]
 public class EventStringMapper: ScriptableObject
 {

@@ -10,7 +10,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 public class Delegator : MonoBehaviour, IDelegator
@@ -19,13 +18,31 @@ public class Delegator : MonoBehaviour, IDelegator
 
     private Registry RegistryState { get; set; } = Registry.IDLE;
 
-    private AttributeRegistry AttributeRegistry { get; set; };
+    private AttributeRegistry AttributeRegistry { get; set; }
+
+    private SceneRegistry SceneRegistry { get; set; }
 
     private void Awake()
     {
-        BuildDelegatorRegistry();
-
         AttributeRegistry = Helper.FindObject<AttributeRegistry>();
+
+        if (AttributeRegistry == null)
+        {
+            Debug.Log($"[CRITICAL] Attribute Regsitry is null...");
+
+            throw new MissingEntityException($"Attribute Registry could not be found in the scene! Please ensure that there is an active game object with the AttributeRegistry component attached to it in the scene.");
+        }
+
+        SceneRegistry = Helper.FindObject<SceneRegistry>();
+
+        if (SceneRegistry == null)
+        {
+            Debug.Log($"[CRITICAL] SceneRegistry Regsitry is null...");
+
+            throw new MissingEntityException($"SceneRegistry Registry could not be found in the scene! Please ensure that there is an active game object with the SceneRegistry component attached to it in the scene.");
+        }
+
+        Associations = BuildDelegatorRegistry();
     }
 
     public void NotifyObserverWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
@@ -280,14 +297,16 @@ public class Delegator : MonoBehaviour, IDelegator
 
     //we should check on generic interface assignment since we wouldn't know concrete implementation during reflection.
     //in order to do that, get interfaces first and then check on IsGenericFlag and TypeDefinition
-    public void BuildDelegatorRegistry()
+    public Dictionary<dynamic, List<dynamic>> BuildDelegatorRegistry()
     {
+        Dictionary<dynamic, List<dynamic>> associations = new Dictionary<dynamic, List<dynamic>>();
+
+        RegistryState = Registry.BUILDING_REGISTRY;
+
+        Debug.Log($"Executing BuildRegistry...");
+
         try
         {
-            RegistryState = Registry.BUILDING_REGISTRY;
-
-            Debug.Log($"Executing BuildRegistry...");
-
             List<SubjectAttribute> subjects = AttributeRegistry.GetAttributes<SubjectAttribute>(
                     new List<Type>() 
                     { 
@@ -321,55 +340,19 @@ public class Delegator : MonoBehaviour, IDelegator
 
             Debug.Log($"Observers found: {observers.Count}");
 
-            foreach (SubjectAttribute subject in subjects)
-            {
-                if (subject.AssetType == Asset.NONE || subject.EntityType == null || subject.ContextType == null)
-                {
-                    Debug.LogWarning($"Either AssetType, SubjectType or ContextType is missing for the subject attribute: {subject}. Skipping the registration for this subject!");
-                    continue;
-                }
-
-                SubjectBundle subjectBundle = new SubjectBundle() { SubjectAttribute = subject };
-
-                List<ObserverAttribute> specificObservers = observers.Where(observer => observer.SubjectType.Equals(subject.EntityType)).ToList();
-
-                foreach (ObserverAttribute observer in specificObservers)
-                {
-                    if (observer.AssetType == Asset.NONE || observer.SubjectType == null || observer.ContextType == null || observer.EntityType == null)
-                    {
-                        Debug.LogWarning($"Either AssetType, SubjectType, ContextType, or Observertype is missing for the observer attribute: {observer}. Skipping the registration for this observer!");
-                        continue;
-                    }
-
-                    ObserverBundle observerBundle = new ObserverBundle()
-                    {
-                        ObserverAttribute = observer
-                    };
-
-                    Debug.Log("SubjectBundle: " + subjectBundle.ToString() + " " + "Observerbundle: " + observerBundle.ToString());
-
-                    //check if exists - append, otherwise create a new list!!!
-                    if (!Associations.TryGetValue(subjectBundle, out List<dynamic> observerBundles))
-                    {
-                        Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.EntityType} - {observerBundle?.ObserverAttribute?.EntityType}");
-                        Associations[subjectBundle] = new List<dynamic>() { observerBundle };
-                        continue;
-                    }
-
-                    Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.EntityType} - {observerBundle?.ObserverAttribute?.EntityType}");
-
-                    Associations[subjectBundle].Add(observerBundle);
-                }
-            }
+            associations = BuildAssociations(subjects, observers);
 
             Debug.Log("Done Registering...");
 
             RegistryState = Registry.REGISTRY_READY;
+
         }
         catch (BaseException ex)
         {
             Debug.Log($"Exception: {ex.Message}");
         }
+
+        return associations;
     }
 
     //System.Runtime.Exception ==> Reflection.TypeInfo doesnot contain Equals definition
@@ -383,14 +366,59 @@ public class Delegator : MonoBehaviour, IDelegator
         IObserverBundle value = observers.Where(observerContext => observerContext.ObserverAttribute.EntityType == context.EntityType &&
                                                     typeof(T) == observerContext.ObserverAttribute.ContextType && 
                                                     observerContext.ObserverAttribute.SubjectType == context.SubjectType).First();
-
         return value;
-
-
     }
 
     private List<Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify> GetObserverBundles<T, Z>(KeyValuePair<dynamic, List<dynamic>> association, Z context) where Z : SubjectContext<T>
     {
         return association.Value.Where(observerContext => observerContext.ObserverAttribute.SubjectType == context.EntityType && typeof(T).Name.Equals(context.Data.GetType())).Select(observer => (Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify)observer.Observer).ToList();
+    }
+
+    private Dictionary<dynamic, List<dynamic>> BuildAssociations(List<SubjectAttribute> subjectAttributes, List<ObserverAttribute> observerAttributes)
+    {
+        Dictionary<dynamic, List<dynamic>> associations = new Dictionary<dynamic, List<dynamic>>();
+
+        foreach (SubjectAttribute subject in subjectAttributes)
+        {
+            if (subject.AssetType == Asset.NONE || subject.EntityType == null || subject.ContextType == null)
+            {
+                Debug.LogWarning($"Either AssetType, SubjectType or ContextType is missing for the subject attribute: {subject}. Skipping the registration for this subject!");
+                continue;
+            }
+
+            SubjectBundle subjectBundle = new SubjectBundle() { SubjectAttribute = subject };
+
+            List<ObserverAttribute> specificObservers = observerAttributes.Where(observer => observer.SubjectType.Equals(subject.EntityType)).ToList();
+
+            foreach (ObserverAttribute observer in specificObservers)
+            {
+                if (observer.AssetType == Asset.NONE || observer.SubjectType == null || observer.ContextType == null || observer.EntityType == null)
+                {
+                    Debug.LogWarning($"Either AssetType, SubjectType, ContextType, or Observertype is missing for the observer attribute: {observer}. Skipping the registration for this observer!");
+                    continue;
+                }
+
+                ObserverBundle observerBundle = new ObserverBundle()
+                {
+                    ObserverAttribute = observer
+                };
+
+                Debug.Log("SubjectBundle: " + subjectBundle.ToString() + " " + "Observerbundle: " + observerBundle.ToString());
+
+                //check if exists - append, otherwise create a new list!!!
+                if (!associations.TryGetValue(subjectBundle, out List<dynamic> observerBundles))
+                {
+                    Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.EntityType} - {observerBundle?.ObserverAttribute?.EntityType}");
+                    associations[subjectBundle] = new List<dynamic>() { observerBundle };
+                    continue;
+                }
+
+                Debug.Log($"Adding to association: {subjectBundle?.SubjectAttribute?.EntityType} - {observerBundle?.ObserverAttribute?.EntityType}");
+
+                associations[subjectBundle].Add(observerBundle);
+            }
+        }
+
+        return associations;
     }
 }

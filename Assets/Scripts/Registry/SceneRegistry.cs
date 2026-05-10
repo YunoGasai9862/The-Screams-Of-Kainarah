@@ -25,7 +25,7 @@ public class SceneRegistry : MonoBehaviour, IRegistry
         }
     }
 
-    public bool Decmission(Int32 instanceId, Asset assetType)
+    public bool Decommission(Int32 instanceId, Asset assetType)
     { 
         switch (assetType)
         {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Asset(Asset.SCRIPTABLE_OBJECT, "DialoguesAndOptions", InstantiationOrder = 5)]
+[Asset(Asset.SCRIPTABLE_OBJECT, "DialoguesAndOptions", InstantiationOrder = 6)]
 [CreateAssetMenu(fileName = "Dialogues And Options", menuName = "Dialogue And Options")]
 [Serializable]
 public class DialoguesAndOptions: ScriptableObject

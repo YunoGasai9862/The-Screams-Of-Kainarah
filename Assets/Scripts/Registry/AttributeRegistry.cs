@@ -1,4 +1,5 @@
 ﻿
+using Annotations.Enums;
 using Assets.Scripts.Interfaces.Registry;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Registry
 {
+    [Asset(Asset.MONOBEHAVIOR, "AttributeRegistry", InstantiationOrder = 2)]
     public class AttributeRegistry : MonoBehaviour, IAttributeRegistry
     {
         private List<Type> Assemblies { get; set; } = new List<Type>();
