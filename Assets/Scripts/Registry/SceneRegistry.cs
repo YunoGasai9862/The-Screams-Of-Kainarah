@@ -1,6 +1,7 @@
 using Annotations.Enums;
 using Assets.Scripts.Interfaces.Registry;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -66,5 +67,15 @@ public class SceneRegistry : MonoBehaviour, IRegistry
         }
 
         return gameLoadInstance;
+    }
+
+    public IEnumerator ScanScene(int scanIntervalInSeconds = 60)
+    {
+        FindObjectsByType<GameObject>(FindObjectsSortMode.None).ToList().ForEach(go => RegisteredGameObjects.Add(go.GetInstanceID(), go));
+
+        yield return new WaitForSeconds(scanIntervalInSeconds);
+
+        //see if you can augment it
+        StartCoroutine(ScanScene(scanIntervalInSeconds));
     }
 }
