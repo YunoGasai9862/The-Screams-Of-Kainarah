@@ -16,7 +16,7 @@ public class SceneRegistry : MonoBehaviour, IRegistry
     private GameLoad GameLoad { get; set; }
     void Start()
     {
-        FindObjectsByType<GameObject>(FindObjectsSortMode.None).ToList().ForEach(go => RegisteredGameObjects.Add(go.GetInstanceID(), go));
+        StartCoroutine(ScanScene());
 
         GameLoad = GetGameLoad(RegisteredGameObjects);
 
@@ -75,7 +75,14 @@ public class SceneRegistry : MonoBehaviour, IRegistry
 
         yield return new WaitForSeconds(scanIntervalInSeconds);
 
-        //see if you can augment it
         StartCoroutine(ScanScene(scanIntervalInSeconds));
+    }
+
+    private void OnDisable()
+    {
+        RegisteredGameObjects.Clear();
+        RegisteredScriptObjects.Clear();
+
+        StopAllCoroutines();
     }
 }
