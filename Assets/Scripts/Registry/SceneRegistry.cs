@@ -1,5 +1,6 @@
 using Annotations.Enums;
 using Assets.Scripts.Interfaces.Registry;
+using Assets.Scripts.Polling.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Linq;
 using UnityEngine;
 
 [Asset(Asset.MONOBEHAVIOR, "SceneRegistry", InstantiationOrder = 1)]
-public class SceneRegistry : MonoBehaviour, IRegistry
+public class SceneRegistry : MonoBehaviour, IRegistry, IPoller
 {
     private Dictionary<Int32, GameObject> RegisteredGameObjects { get; set; } = new Dictionary<Int32, GameObject>();
 
@@ -16,7 +17,7 @@ public class SceneRegistry : MonoBehaviour, IRegistry
     private GameLoad GameLoad { get; set; }
     void Start()
     {
-        StartCoroutine(ScanScene());
+        FindObjectsByType<GameObject>(FindObjectsSortMode.None).ToList().ForEach(go => RegisteredGameObjects.Add(go.GetInstanceID(), go));
 
         GameLoad = GetGameLoad(RegisteredGameObjects);
 
@@ -73,9 +74,7 @@ public class SceneRegistry : MonoBehaviour, IRegistry
     {
         FindObjectsByType<GameObject>(FindObjectsSortMode.None).ToList().ForEach(go => RegisteredGameObjects.Add(go.GetInstanceID(), go));
 
-        yield return new WaitForSeconds(scanIntervalInSeconds);
-
-        StartCoroutine(ScanScene(scanIntervalInSeconds));
+        yield return null;
     }
 
     private void OnDisable()
@@ -84,5 +83,10 @@ public class SceneRegistry : MonoBehaviour, IRegistry
         RegisteredScriptObjects.Clear();
 
         StopAllCoroutines();
+    }
+
+    public IEnumerator Poll()
+    {
+        yield return StartCoroutine(ScanScene());
     }
 }
