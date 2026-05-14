@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Polling.Interfaces;
+﻿using Assets.Scripts.Polling.Configuration;
+using Assets.Scripts.Polling.Interfaces;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,9 @@ namespace Assets.Scripts.Polling
     public class PollOrchestrator : MonoBehaviour, IPollOrchestrator
     {
         List<IPoller> Pollers { get; set; } = new List<IPoller>();
+
+        [SerializeField]
+        public PollOrchestratorConfiguration PollOrchestratorConfiguration { get; set; }
 
         public void DecommissionPoller(IPoller poller)
         {
