@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: b7063152c68b66041806e52030dac4d9
   m_SerializeEntries:
+  - m_GUID: 1b3a4c00f9be82d46823d4fa367d4f87
+    m_Address: Assets/Resources_moved/PollOrchestratorConfiguration.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 399be5f2e16fa6147acdfdb4b6cf785b
     m_Address: Assets/Resources_moved/Dialogues And Options.asset
     m_ReadOnly: 0
