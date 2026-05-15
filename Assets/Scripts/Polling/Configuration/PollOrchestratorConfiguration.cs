@@ -7,10 +7,16 @@ namespace Assets.Scripts.Polling.Configuration
     [Serializable]
     public class PollOrchestratorConfiguration: ScriptableObject
     {
-        [SerializeField]
-        public string RegistryKey;
+        [Serializable]
+        public class Orchestrator
+        {
+            [SerializeField]
+            public string registryKey;
 
-        [SerializeField]
-        public float PollingIntervalInSecondds;
+            [SerializeField]
+            public float pollingIntervalInSecondds;
+        }
+
+        public Orchestrator[] orchestrators;   
     }
 }

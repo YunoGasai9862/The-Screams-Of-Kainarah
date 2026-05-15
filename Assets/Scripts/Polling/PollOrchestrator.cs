@@ -10,7 +10,7 @@ namespace Assets.Scripts.Polling
         List<IPoller> Pollers { get; set; } = new List<IPoller>();
 
         [SerializeField]
-        public PollOrchestratorConfiguration PollOrchestratorConfiguration { get; set; }
+        public PollOrchestratorConfiguration pollOrchestratorConfiguration;
 
         public void DecommissionPoller(IPoller poller)
         {
