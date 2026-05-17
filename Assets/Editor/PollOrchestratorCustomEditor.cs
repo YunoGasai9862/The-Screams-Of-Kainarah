@@ -24,11 +24,11 @@ public class PollOrchestratorCustomEditor : Editor
         {
             SerializedProperty orchestratorElement = serializedObject.FindProperty("orchestrators").GetArrayElementAtIndex(i);
 
-            SerializedProperty registryKey = orchestratorElement.FindPropertyRelative("registryKey");
-            SerializedProperty pollingIntervalInSecondds = orchestratorElement.FindPropertyRelative("pollingIntervalInSecondds");
+            SerializedProperty registryObject = orchestratorElement.FindPropertyRelative("registryObject");
+            SerializedProperty pollingIntervalInSeconds = orchestratorElement.FindPropertyRelative("pollingIntervalInSeconds");
 
-            EditorGUILayout.PropertyField(registryKey);
-            EditorGUILayout.PropertyField(pollingIntervalInSecondds);
+            EditorGUILayout.PropertyField(registryObject);
+            EditorGUILayout.PropertyField(pollingIntervalInSeconds);
 
             EditorGUILayout.Space();
         }

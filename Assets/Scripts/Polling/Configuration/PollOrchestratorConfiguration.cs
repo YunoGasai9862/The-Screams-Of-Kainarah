@@ -11,10 +11,10 @@ namespace Assets.Scripts.Polling.Configuration
         public class Orchestrator
         {
             [SerializeField]
-            public string registryKey;
+            public UnityEngine.Object registryObject;
 
             [SerializeField]
-            public float pollingIntervalInSecondds;
+            public float pollingIntervalInSeconds;
         }
 
         public Orchestrator[] orchestrators;   
