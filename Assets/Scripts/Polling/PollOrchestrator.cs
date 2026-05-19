@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Polling.Configuration;
 using Assets.Scripts.Polling.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace Assets.Scripts.Polling
                 return;
             }
 
-            if (!Pollers.Contains(poller))
+            if (!Pollers.TryGetValue(poller, out PollOrchestratorConfiguration.Orchestrator orchestrator))
             {
                 Debug.Log($"The poller {poller} is not registered - Please register the poller first!");
                 return;
@@ -30,7 +31,7 @@ namespace Assets.Scripts.Polling
             Pollers.Remove(poller);
         }
 
-        public void RegisterPoller(IPoller poller)
+        public void RegisterPoller(IPoller poller, PollOrchestratorConfiguration.Orchestrator orchestrator)
         {
           
             if (poller == null)
@@ -39,18 +40,18 @@ namespace Assets.Scripts.Polling
                 return;
             }
 
-            if (Pollers.Contains(poller))
+            if (Pollers.TryGetValue(poller, out PollOrchestratorConfiguration.Orchestrator existingOrchestrator))
             {
                 Debug.Log($"The poller {poller} is already registered to the PollOrchestrator!! - Duplicate entry will not be entertained!");
                 return;
             }
 
-            Pollers.Add(poller);
+            Pollers.TryAdd(poller, pollOrchestratorConfiguration.orchestrators.FirstOrDefault(o => o.registryObject == poller));
         }
 
-        public List<IPoller> BuildPollerRegistry(PollOrchestratorConfiguration pollOrchestratorConfiguration)
+        public Dictionary<IPoller, PollOrchestratorConfiguration.Orchestrator> BuildPollerRegistry(PollOrchestratorConfiguration pollOrchestratorConfiguration)
         {
-            List<IPoller> pollers = new List<IPoller>();
+            Dictionary<IPoller, PollOrchestratorConfiguration.Orchestrator> pollers = new Dictionary<IPoller, PollOrchestratorConfiguration.Orchestrator>();
 
             foreach (PollOrchestratorConfiguration.Orchestrator orchestrator in pollOrchestratorConfiguration.orchestrators)
             {
@@ -61,7 +62,7 @@ namespace Assets.Scripts.Polling
                     continue;
                 }
 
-               pollers.Add(orchestrator.registryObject as IPoller);
+               pollers.Add(orchestrator.registryObject as IPoller, orchestrator);
             }
 
             return pollers;
@@ -69,11 +70,11 @@ namespace Assets.Scripts.Polling
 
         private async void Update()
         {
-            foreach (IPoller poller in Pollers)
+            foreach (KeyValuePair<IPoller, PollOrchestratorConfiguration.Orchestrator> poller in Pollers)
             {
-                StartCoroutine(poller.Poll());
+                StartCoroutine(poller.Key.Poll());
 
-                //await Task.Delay(poller.)
+                await Task.Delay((int)poller.Value.pollingIntervalInSeconds);
             }
         }
     }

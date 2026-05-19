@@ -7,10 +7,10 @@ namespace Assets.Scripts.Polling.Interfaces
 {
     public interface IPollOrchestrator
     {
-         List<IPoller> BuildPollerRegistry(PollOrchestratorConfiguration pollOrchestratorConfiguration);
+         Dictionary<IPoller, PollOrchestratorConfiguration.Orchestrator> BuildPollerRegistry(PollOrchestratorConfiguration pollOrchestratorConfiguration);
 
-         void RegisterPoller(IPoller poller);
+         void RegisterPoller(IPoller poller, PollOrchestratorConfiguration.Orchestrator orchestrator);
 
-        void DecommissionPoller(IPoller poller);
+         void DecommissionPoller(IPoller poller);
     }
 }
