@@ -72,10 +72,10 @@ namespace Assets.Scripts.Polling
         {
             foreach (KeyValuePair<IPoller, PollOrchestratorConfiguration.Orchestrator> poller in Pollers)
             {
-                StartCoroutine(poller.Key.Poll());
-
-                await Task.Delay((int)poller.Value.pollingIntervalInSeconds);
+                StartCoroutine(poller.Key.Poll(poller.Value.pollingIntervalInSeconds));
             }
+
+            await Task.Delay(pollOrchestratorConfiguration.pollOrchestratorIntervalInSeconds * 1000);
         }
     }
 }

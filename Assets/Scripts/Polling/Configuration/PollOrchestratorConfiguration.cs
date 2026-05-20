@@ -14,8 +14,10 @@ namespace Assets.Scripts.Polling.Configuration
             public UnityEngine.Object registryObject;
 
             [SerializeField]
-            public float pollingIntervalInSeconds;
+            public int pollingIntervalInSeconds;
         }
+
+        public int pollOrchestratorIntervalInSeconds;
 
         public Orchestrator[] orchestrators;   
     }

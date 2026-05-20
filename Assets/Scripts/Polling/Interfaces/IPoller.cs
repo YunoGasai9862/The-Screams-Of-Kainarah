@@ -4,6 +4,6 @@ namespace Assets.Scripts.Polling.Interfaces
 {
     public interface IPoller
     {
-        IEnumerator Poll();
+        IEnumerator Poll(int pollingIntervalInSeconds);
     }
 }

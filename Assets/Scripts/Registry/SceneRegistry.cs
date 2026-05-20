@@ -14,16 +14,16 @@ public class SceneRegistry : MonoBehaviour, IRegistry, IPoller
 
     private Dictionary<Int32, ScriptableObject> RegisteredScriptObjects { get; set; } = new Dictionary<Int32, ScriptableObject>();
 
-    private GameLoad GameLoad { get; set; }
+    private EntityPoolManager EntityPoolManagerInstance { get; set; }
     void Start()
     {
         FindObjectsByType<GameObject>(FindObjectsSortMode.None).ToList().ForEach(go => RegisteredGameObjects.Add(go.GetInstanceID(), go));
 
-        GameLoad = GetGameLoad(RegisteredGameObjects);
+        EntityPoolManagerInstance = GetEntityPoolManager(RegisteredGameObjects);
 
-        if (GameLoad == null)
+        if (EntityPoolManagerInstance == null)
         {
-            throw new ApplicationException($"GameLoad is null...");
+            throw new ApplicationException($"EntityPoolManager is null...");
         }
     }
 
@@ -55,26 +55,26 @@ public class SceneRegistry : MonoBehaviour, IRegistry, IPoller
         throw new ApplicationException($"Asset type {assetType} is not supported for registration in {nameof(SceneRegistry)}");
     }
 
-    private GameLoad GetGameLoad(Dictionary<Int32, GameObject> registeredGameObjects)
+    private EntityPoolManager GetEntityPoolManager(Dictionary<Int32, GameObject> registeredGameObjects)
     {
-        GameLoad gameLoadInstance = null;
+        EntityPoolManager entityPoolManager = null;
 
         foreach (KeyValuePair<Int32, GameObject> item in registeredGameObjects)
         {
-            if (item.Value.TryGetComponent(out GameLoad gameload))
+            if (item.Value.TryGetComponent(out EntityPoolManager entityPoolManagerInstance))
             {
-                gameLoadInstance = gameload;
+                entityPoolManager = entityPoolManagerInstance;
             }
         }
 
-        return gameLoadInstance;
+        return entityPoolManager;
     }
 
-    public IEnumerator ScanScene(int scanIntervalInSeconds = 60)
+    public IEnumerator ScanScene(int pollingIntervalInSeconds)
     {
         FindObjectsByType<GameObject>(FindObjectsSortMode.None).ToList().ForEach(go => RegisteredGameObjects.Add(go.GetInstanceID(), go));
 
-        yield return null;
+        yield return new WaitForSeconds(pollingIntervalInSeconds);
     }
 
     private void OnDisable()
@@ -85,8 +85,8 @@ public class SceneRegistry : MonoBehaviour, IRegistry, IPoller
         StopAllCoroutines();
     }
 
-    public IEnumerator Poll()
+    public IEnumerator Poll(int pollingIntervalInSeconds)
     {
-        yield return StartCoroutine(ScanScene());
+        yield return StartCoroutine(ScanScene(pollingIntervalInSeconds));
     }
 }

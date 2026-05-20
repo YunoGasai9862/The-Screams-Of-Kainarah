@@ -15,7 +15,12 @@ public class PollOrchestratorCustomEditor : Editor
 
         SerializedProperty arraySize = serializedObject.FindProperty("orchestrators"); //gets the array
 
-        if(GUILayout.Button("Add Orchestrator"))
+        SerializedProperty pollOrchestratorIntervalInSeconds = serializedObject.FindProperty("pollOrchestratorIntervalInSeconds");
+        EditorGUILayout.PropertyField(pollOrchestratorIntervalInSeconds);
+
+        EditorGUILayout.Space();
+
+        if (GUILayout.Button("Add Orchestrator"))
         {
             arraySize.arraySize++;
         }
