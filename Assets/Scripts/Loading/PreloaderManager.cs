@@ -71,26 +71,26 @@ public class PreloaderManager : MonoBehaviour
         {
             dynamic preloadedAsset = await PreloadOnAssetType(asset);
 
-            preloadedEntities.Add(await AddToPool(preloadedAsset, entityPoolManager));
+            preloadedEntities.Add(await AddToPool(preloadedAsset, asset.AssetType, entityPoolManager));
         }
 
         return preloadedEntities;
     }
 
 
-    private async Task<UnityEngine.Object> AddToPool(dynamic entity, EntityPoolManager entityPoolManager)
+    private async Task<UnityEngine.Object> AddToPool(dynamic entity, Asset assetType, EntityPoolManager entityPoolManager)
     {
-        if (entity is GameObject)
+        switch(assetType)
         {
-           GameObject goEntity = (GameObject)entity;
-           entityPoolManager.Pool(await EntityPool.From(goEntity.name, goEntity.tag, goEntity.gameObject));
-           return goEntity;
+            case Asset.SCRIPTABLE_OBJECT:
+                ScriptableObject soEntity = (ScriptableObject)entity;
+                entityPoolManager.Pool(await EntityPool.From(soEntity.name, soEntity.name, assetType, soEntity));
+                return soEntity;
 
-        }else if (entity is ScriptableObject)
-        {
-            ScriptableObject soEntity = (ScriptableObject)entity;
-            entityPoolManager.Pool(await EntityPool.From(soEntity.name, soEntity.name, soEntity));
-            return soEntity;
+            case Asset.MONOBEHAVIOR:
+                GameObject goEntity = (GameObject)entity;
+                entityPoolManager.Pool(await EntityPool.From(goEntity.name, goEntity.tag, assetType, goEntity.gameObject));
+                return goEntity;
         }
 
         return new UnityEngine.Object();
@@ -138,7 +138,7 @@ public class PreloaderManager : MonoBehaviour
     {
         foreach (PreloadDto item in poolObjects)
         {
-            await AddToPool(item.Entity, entityPoolManager);
+            await AddToPool(item.Entity, item.AssetType, entityPoolManager);
         }
     }
 

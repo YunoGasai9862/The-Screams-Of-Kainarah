@@ -66,6 +66,11 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IR
         }
     }
 
+    public List<EntityPool> GetPooledEntitiesWithAssetType(Asset assetType)
+    {
+       
+    }
+
     public List<EntityPool> GetPooledEntity(string tag)
     {
         return EntityPoolDict.GetValueOrDefault(tag, new List<EntityPool>());

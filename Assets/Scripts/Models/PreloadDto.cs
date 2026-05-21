@@ -1,3 +1,4 @@
+using Annotations.Enums;
 using System;
 using UnityEngine;
 
@@ -8,9 +9,13 @@ public class PreloadDto
     private GameObject entity;
 
     [SerializeField]
-    private PreloadEntityType reloadEntityType;
+    private PreloadEntityType preloadEntityType;
+
+    [SerializeField] private Asset assetType;
 
     public GameObject Entity { get { return entity; } }
 
-    public PreloadEntityType PreloadEntityType { get { return reloadEntityType; } }
+    public PreloadEntityType PreloadEntityType { get { return preloadEntityType; } }
+
+    public Asset AssetType { get { return assetType; } }
 }
