@@ -1,5 +1,6 @@
 using Annotations.Enums;
 using System.Collections.Generic;
+
 public interface IEntityPoolManager
 {
     public void Pool(EntityPool entityPool);
