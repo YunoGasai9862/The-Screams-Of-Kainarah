@@ -3,6 +3,7 @@ using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
@@ -66,9 +67,14 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IR
         }
     }
 
+    public List<EntityPool> GetPooledEntitiesWithAssetType(string tag, Asset assetType)
+    {
+        return EntityPoolDict.Where(kvp => kvp.Key == tag).SingleOrDefault().Value.Where(entityPool => entityPool.AssetType == assetType).ToList();
+    }
+
     public List<EntityPool> GetPooledEntitiesWithAssetType(Asset assetType)
     {
-       
+        return EntityPoolDict.SelectMany(kvp => kvp.Value.Where(entityPool => entityPool.AssetType == assetType)).ToList();
     }
 
     public List<EntityPool> GetPooledEntity(string tag)
