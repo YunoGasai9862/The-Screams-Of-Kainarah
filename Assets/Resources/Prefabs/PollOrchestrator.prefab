@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78cad34163d232247abad7112cccb0e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Polling.PollOrchestrator
-  pollOrchestratorConfiguration: {fileID: 0}
+  pollOrchestratorConfiguration: {fileID: 11400000, guid: 1b3a4c00f9be82d46823d4fa367d4f87, type: 2}

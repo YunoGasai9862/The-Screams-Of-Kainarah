@@ -55,6 +55,7 @@ TagManager:
   - FirebaseStoreManager
   - AsyncCoroutine
   - IceSecondary
+  - EntityPoolManager
   layers:
   - Default
   - TransparentFX

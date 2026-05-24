@@ -84,6 +84,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - DelegatorsManager
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c9d2c54e0a22404db5d35605b0ed75c
+    m_Address: Prefabs/SceneRegistry
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SceneRegistry
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b3b15cce297a58c428a52063bce83689
     m_Address: CheckpointsScriptableObject
     m_ReadOnly: 0

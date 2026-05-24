@@ -25,6 +25,8 @@ public class SceneRegistry : MonoBehaviour, IRegistry, IPoller
         {
             throw new ApplicationException($"EntityPoolManager is null...");
         }
+
+        EntityPoolManagerInstance.GetPooledEntitiesWithAssetType(Asset.SCRIPTABLE_OBJECT).ForEach(so => RegisteredScriptObjects.Add(so.Entity.GetInstanceID(), so.Entity as ScriptableObject));
     }
 
     public bool Decommission(Int32 instanceId, Asset assetType)
@@ -72,7 +74,9 @@ public class SceneRegistry : MonoBehaviour, IRegistry, IPoller
 
     public IEnumerator ScanScene(int pollingIntervalInSeconds)
     {
-        FindObjectsByType<GameObject>(FindObjectsSortMode.None).ToList().ForEach(go => RegisteredGameObjects.Add(go.GetInstanceID(), go));
+        FindObjectsByType<GameObject>(FindObjectsSortMode.None).ToList().ForEach(go => RegisteredGameObjects.TryAdd(go.GetInstanceID(), go));
+
+        EntityPoolManagerInstance.GetPooledEntitiesWithAssetType(Asset.SCRIPTABLE_OBJECT).ForEach(so => RegisteredScriptObjects.TryAdd(so.Entity.GetInstanceID(), so.Entity as ScriptableObject));
 
         yield return new WaitForSeconds(pollingIntervalInSeconds);
     }

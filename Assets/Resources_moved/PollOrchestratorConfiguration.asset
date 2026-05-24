@@ -12,9 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce64f1d3f6b9d374a890d74b5102430a, type: 3}
   m_Name: PollOrchestratorConfiguration
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.Polling.Configuration.PollOrchestratorConfiguration
-  pollOrchestratorIntervalInSeconds: 0
+  pollOrchestratorIntervalInSeconds: 60
   orchestrators:
-  - registryObject: {fileID: 0}
-    pollingIntervalInSeconds: 0
-  - registryObject: {fileID: 0}
-    pollingIntervalInSeconds: 0
+  - registryObject: {fileID: 2457201992623324548, guid: 9c9d2c54e0a22404db5d35605b0ed75c, type: 3}
+    pollingIntervalInSeconds: 60

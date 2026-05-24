@@ -44,4 +44,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63e034b9414a8924ca224e8907934f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityPoolManagerDelegator: {fileID: 0}

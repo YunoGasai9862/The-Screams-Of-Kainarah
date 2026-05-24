@@ -69,6 +69,7 @@ public class PreloaderManager : MonoBehaviour
 
         foreach (AssetAttribute asset in assets)
         {
+            Debug.Log($"Asset: {asset}");
             dynamic preloadedAsset = await PreloadOnAssetType(asset);
 
             preloadedEntities.Add(await AddToPool(preloadedAsset, asset.AssetType, entityPoolManager));
@@ -114,7 +115,7 @@ public class PreloaderManager : MonoBehaviour
                     {
                         AddressableLabel = attribute.AddressLabel,
                         AssetType = attribute.AssetType,
-                        InstantiateAt = new Vector3(attribute.InitialPositionX, attribute.InitialPositionY, attribute.InitialPositionZ)
+                        InstantiateAt = new Vector3(attribute?.InitialPositionX ?? 0.0f, attribute?.InitialPositionY ?? 0.0f, attribute?.InitialPositionZ ?? 0.0f)
                     }
                 ); 
 

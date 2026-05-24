@@ -46,12 +46,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dependencies:
   - entity: {fileID: 1209952798196197149, guid: 059364ee1a310464fa7b85373891d09d, type: 3}
-    reloadEntityType: 0
+    preloadEntityType: 0
+    assetType: 1
   - entity: {fileID: 0}
-    reloadEntityType: 1
+    preloadEntityType: 1
+    assetType: 1
   poolObjects:
   - entity: {fileID: 6942044088278875987, guid: 05dace05c5d30104880353dab19e2674, type: 3}
-    reloadEntityType: 2
+    preloadEntityType: 2
+    assetType: 1
   - entity: {fileID: 1326094510711206718, guid: f87dcd0b34fb626439aac4d24529af72, type: 3}
-    reloadEntityType: 2
+    preloadEntityType: 2
+    assetType: 1
   preloadedEntitiesEvent: {fileID: 0}
