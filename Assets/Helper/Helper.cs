@@ -128,6 +128,8 @@ public class Helper: MonoBehaviour
         {
             List<T> attributes = type.GetCustomAttributes<T>().ToList();
 
+            Debug.Log($"Length: {attributes.Count} for type: {type.FullName} - Total Interfaces: {type.GetInterfaces().Count()}");
+
             if (attributes == null || attributes.Count == 0)
             {
                 Debug.Log($"No custom attribute found for type: {type.FullName}");

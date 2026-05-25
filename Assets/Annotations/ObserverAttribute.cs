@@ -19,7 +19,7 @@ namespace Assets.Annotations
 
         public override string ToString()
         {
-            return $"EntityType: {EntityType}, SubjectType: {SubjectType}, ContextType: {ContextType}";
+            return $"AssetType: {AssetType}, EntityType: {EntityType}, SubjectType: {SubjectType}, ContextType: {ContextType}";
         }
 
         public override int GetHashCode()

@@ -29,6 +29,16 @@ public class SceneRegistry : MonoBehaviour, IRegistry, IPoller
         EntityPoolManagerInstance.GetPooledEntitiesWithAssetType(Asset.SCRIPTABLE_OBJECT).ForEach(so => RegisteredScriptObjects.Add(so.Entity.GetInstanceID(), so.Entity as ScriptableObject));
     }
 
+    public Dictionary<Int32, GameObject> GetRegisteredGameObjects()
+    {
+        return RegisteredGameObjects;
+    }
+
+    public Dictionary<Int32, ScriptableObject> GetRegisteredScriptObjects()
+    {
+        return RegisteredScriptObjects;
+    }
+
     public bool Decommission(Int32 instanceId, Asset assetType)
     { 
         switch (assetType)

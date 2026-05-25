@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: b7063152c68b66041806e52030dac4d9
   m_currentHash:
     serializedVersion: 2
-    Hash: 6593ee3f669ae0898121bc5a888d18bd
+    Hash: 01feb7d83f3283211568a8a0627850b7
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -116,6 +116,7 @@ MonoBehaviour:
     - EntitiesToReset
     - EnemyAnimationScriptableObjectEntity
     - SceneRegistry
+    - AttributeRegistry
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: fddaf8095ec2d344bb5a1aeb7f9adbb1, type: 2}

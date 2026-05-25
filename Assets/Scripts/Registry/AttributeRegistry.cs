@@ -23,7 +23,7 @@ namespace Assets.Scripts.Registry
             Attributes = BuildAttributeRegistry(Assemblies);
         }
 
-        public List<T> GetAttributes<T>(List<Type> nonGenericTypes = null, List<Type> genericTypes = null) where T : Attribute
+        public List<T> GetAttributes<T>(List<Type> genericTypes = null, List<Type> nonGenericTypes = null) where T : Attribute
         {
             try
             {
@@ -69,7 +69,7 @@ namespace Assets.Scripts.Registry
 
         public void DecommissionAssemblies()
         {
-            Assemblies = new List<Type>();
+            Assemblies.Clear();
         }
     }
 }
