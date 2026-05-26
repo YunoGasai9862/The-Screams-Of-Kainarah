@@ -103,4 +103,43 @@ public class SceneRegistry : MonoBehaviour, IRegistry, IPoller
     {
         yield return StartCoroutine(ScanScene(pollingIntervalInSeconds));
     }
+
+    public UnityEngine.Object GetRegisteredObject(Asset assetType, string objectName)
+    {
+        switch(assetType)
+        {
+            case Asset.MONOBEHAVIOR:
+                if (RegisteredGameObjects.Count == 0)
+                {
+                    throw new ApplicationException($"No game objects found in the registry: {nameof(SceneRegistry)}");
+                }
+
+                List<GameObject> gameObjects = RegisteredGameObjects.Where(go => go.Value.name.Equals(objectName, StringComparison.OrdinalIgnoreCase)).Select(kvp => kvp.Value).ToList();
+
+                if (gameObjects.Count > 0)
+                {
+                    throw new ApplicationException($"Multiple game object instances found with the name {objectName} in the registry: {nameof(SceneRegistry)}");
+                }
+
+                return gameObjects.FirstOrDefault();
+            case Asset.SCRIPTABLE_OBJECT:
+                if (RegisteredScriptObjects.Count == 0)
+                {
+                    throw new ApplicationException($"No scriptable objects found in the registry: {nameof(SceneRegistry)}");
+                }
+
+                List<ScriptableObject> scriptableObjects = RegisteredScriptObjects.Where(go => go.Value.name.Equals(objectName, StringComparison.OrdinalIgnoreCase)).Select(kvp => kvp.Value).ToList();
+
+                if (scriptableObjects.Count > 0)
+                {
+                    throw new ApplicationException($"Multiple scriptableObjects found with the name {objectName} in the registry: {nameof(SceneRegistry)}");
+                }
+
+                return scriptableObjects.FirstOrDefault();
+            default:
+                throw new ApplicationException($"Type {assetType} is not supported for retrieval in {nameof(SceneRegistry)}");
+        }
+
+ 
+    }
 }

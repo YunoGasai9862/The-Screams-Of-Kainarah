@@ -185,7 +185,7 @@ public class Delegator : MonoBehaviour, IDelegator
         {
             Debug.Log($"The subject instance could not be found for the subject type: {context.SubjectType}. Trying to find in the scene");
 
-            GameObject gameObject = SceneRegistry.GetRegisteredGameObjects(); FindObjectOfType(context.SubjectType) as GameObject;
+            GameObject gameObject = SceneRegistry.GetRegisteredObject(Asset.MONOBEHAVIOR, context.Instance.name) as GameObject;
 
             Debug.Log($"In Scene: {gameObject} - type: {context.SubjectType}");
 

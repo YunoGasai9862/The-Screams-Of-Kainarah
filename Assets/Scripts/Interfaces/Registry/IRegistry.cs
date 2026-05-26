@@ -2,6 +2,7 @@
 using Annotations.Enums;
 using System;
 using System.Collections;
+using UnityEngine;
 
 namespace Assets.Scripts.Interfaces.Registry
 {
@@ -12,5 +13,7 @@ namespace Assets.Scripts.Interfaces.Registry
         bool Register<T>(T value, Asset assetType) where T : UnityEngine.Object;
 
         IEnumerator ScanScene(int scanIntervalInSeconds = 60);
+
+        UnityEngine.Object GetRegisteredObject(Asset assetType, string objectName);
     }
 }
