@@ -37,11 +37,13 @@ public class Helper: MonoBehaviour
         yield return new WaitForSeconds(waitLimitInSeconds);
     }
 
-    public static async Task<T> GetDelegator<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
+    public static async Task<T> GetDelegator<T>(int retryLimit = 3, int waitLimitInSeconds = 6) where T : UnityEngine.Object
     {
         for (int i = 0; i < retryLimit; i++)
         {
             T delegator = FindObject<T>();
+
+            Debug.Log($"Delegator: {delegator}, Type: {typeof(T).Name}");
 
             if (delegator == null)
             {
@@ -51,6 +53,27 @@ public class Helper: MonoBehaviour
             }
 
             return delegator;
+        }
+
+        throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
+    }
+
+    public static IEnumerator GetDelegator<T>(Action<T> callback, int retryLimit = 3, int waitLimitInSeconds = 6) where T : UnityEngine.Object
+    {
+        for (int i = 0; i < retryLimit; i++)
+        {
+            T delegator = FindObject<T>();
+
+            Debug.Log($"Delegator: {delegator}, Type: {typeof(T).Name}");
+
+            if (delegator == null)
+            {
+                yield return new WaitForSeconds(waitLimitInSeconds);
+
+                continue;
+            }
+
+            callback.Invoke(delegator);
         }
 
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
@@ -128,8 +151,6 @@ public class Helper: MonoBehaviour
         {
             List<T> attributes = type.GetCustomAttributes<T>().ToList();
 
-            Debug.Log($"Length: {attributes.Count} for type: {type.FullName} - Total Interfaces: {type.GetInterfaces().Count()}");
-
             if (attributes == null || attributes.Count == 0)
             {
                 Debug.Log($"No custom attribute found for type: {type.FullName}");
@@ -142,7 +163,6 @@ public class Helper: MonoBehaviour
             string joinedNonGenericType = string.Join<Type>(",", nonGenericType?.ToArray());
 
             Debug.Log($"Custom attributes found for type: {type.FullName} - Count: {attributes.Count} - joinedGenericInterfaceTypes: {joinedGenericType} - joinedNonGenericInterfaceTypes: {joinedNonGenericType} - Total Interfaces: {type.GetInterfaces().Count()}");
-
 
             if (genericType!=null && !type.GetInterfaces().Any(interf => genericType.Any(possibleInterfaceType => interf.IsGenericType && possibleInterfaceType.GetGenericTypeDefinition() == interf.GetGenericTypeDefinition())))
             {

@@ -33,8 +33,6 @@ public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INo
 
     private async void Awake()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
-
         _playerActionHandlerDic = new Dictionary<String, Func<Collider2D, Task>>
         {
              { "Crystal", value => OnCrystalPickup(value)},
@@ -42,6 +40,17 @@ public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INo
              { "Dagger" , value => OnDaggerPickup(value) }
         };
     }
+
+    private void Start()
+    {
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+    }
+
+    private void OnDelegatorFound(Delegator delegator)
+    {
+        Delegator = delegator;
+    }
+
     private Task<bool> OnDaggerPickup(Collider2D collider)
     {
         GameObject temp = PickableItemsUtility.GetGameObject(collider.tag);
