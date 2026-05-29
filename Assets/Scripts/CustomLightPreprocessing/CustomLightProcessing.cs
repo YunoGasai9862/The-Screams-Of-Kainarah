@@ -20,7 +20,7 @@ public class CustomLightProcessing : MonoBehaviour, ICustomLightPreprocessing, I
 
     private async void Start()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(CustomLightProcessing)), this);
         Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<LightPackage>(gameObject, typeof(CandleLightPackageGenerator), typeof(CustomLightProcessing)), this);

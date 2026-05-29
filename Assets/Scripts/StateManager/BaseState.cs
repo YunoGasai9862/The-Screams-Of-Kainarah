@@ -14,7 +14,7 @@ public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Med
     private Delegator Delegator { get; set; }
     private async void Start()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+        Delegator = StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         StateEvent = await Helper.GetCustomEvent<StateEvent>();
 
@@ -75,7 +75,7 @@ public abstract class BaseState<T, Z> : MonoBehaviour, Assets.Scripts.Interfaces
 
     private async void Start()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+        Delegator = StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         StateEvent = await Helper.GetCustomEvent<StateEvent>();
 

@@ -12,7 +12,7 @@ public class CelestialBodyLightning : MonoBehaviour, ILightPreprocess, IRequest<
 
     private async void Start()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+        Delegator = StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0)

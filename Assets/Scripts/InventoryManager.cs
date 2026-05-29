@@ -20,7 +20,7 @@ public class InventoryManager : MonoBehaviour, IRequest<bool>
 
     private async void Awake()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
     }
     public bool IsPouchOpen { get; set; } = false;
 

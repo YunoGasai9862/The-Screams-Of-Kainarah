@@ -84,7 +84,7 @@ public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IR
 
     private async void SetEntityPoolManagerDelegator()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
     }
 
     public IEnumerator Request()

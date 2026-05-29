@@ -40,7 +40,7 @@ public class RakashStateMachine : MonoBehaviour, INotify<GenericStateBundle<Game
 
     private async void Awake()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         Animator = GetComponent<Animator>();
 

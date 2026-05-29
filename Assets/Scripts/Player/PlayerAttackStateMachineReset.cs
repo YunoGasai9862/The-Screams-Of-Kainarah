@@ -22,7 +22,7 @@ public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<Enti
 
     private async void OnEnable()   
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<EntityPoolManager>()
         {

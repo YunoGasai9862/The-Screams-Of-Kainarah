@@ -30,7 +30,7 @@ public class TriggerHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         m_funds = GameObject.FindGameObjectWithTag(FUNDS_TEXT_TAG).GetComponent<TMPro.TextMeshProUGUI>();
 
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {

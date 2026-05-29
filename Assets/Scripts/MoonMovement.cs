@@ -28,7 +28,7 @@ public class MoonMovement : MonoBehaviour, INotify<IEntityTransform>
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
 
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
         {

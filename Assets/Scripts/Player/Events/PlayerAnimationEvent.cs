@@ -22,7 +22,7 @@ public class PlayerAnimationEvent : MonoBehaviour, INotify<EntityPoolManager>
 
     private async void Start()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         PlayerBoostAttackEvent = await Helper.GetCustomEvent<PlayerBoostAttackEvent>();
 

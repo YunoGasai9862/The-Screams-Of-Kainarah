@@ -19,7 +19,7 @@ public class HealthBar : MonoBehaviour, INotify<IEntityHealth>
 
     private async void Start()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<IEntityHealth>()
         {

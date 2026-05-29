@@ -47,7 +47,7 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
 
     private async void Start()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         Health = new Health()
         {

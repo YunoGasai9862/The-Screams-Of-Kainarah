@@ -40,7 +40,7 @@ public class PlayerAttributesNotifier: MonoBehaviour, IRequest<Player>, IRequest
             Health = PlayerHealth,
         };
 
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
     }
 
     IEnumerator<Player> IRequest<Player>.Request()

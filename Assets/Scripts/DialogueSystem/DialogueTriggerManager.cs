@@ -25,7 +25,7 @@ public class DialogueTriggerManager : MonoBehaviour, INotify<GenericStateBundle<
     {
         await dialogueTriggerEvent.AddListener(TriggerCoroutine);
 
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {

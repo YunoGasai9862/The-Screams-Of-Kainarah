@@ -30,7 +30,7 @@ public class CheckPointActionListener : MonoBehaviour, INotify<EntityPoolManager
 
     private async void Awake()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+        Delegator = StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
         {

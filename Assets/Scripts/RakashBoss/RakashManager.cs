@@ -23,7 +23,7 @@ public class RakashManager : AbstractEntity, IGameStateHandler, IRequest<Health>
 
     private async void Start()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
     }
 
     public override void GameStateHandler(SceneData data)

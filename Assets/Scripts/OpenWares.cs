@@ -20,7 +20,7 @@ public class OpenWares : MonoBehaviour, INotify<GenericStateBundle<GameStateBund
 
     private async void Start()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+        Delegator = StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {

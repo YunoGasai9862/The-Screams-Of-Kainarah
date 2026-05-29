@@ -1,6 +1,7 @@
 #nullable enable
 using Annotations.Enums;
 using Assets.Exceptions;
+using Assets.Scripts.DelegatorsManager.Models;
 using ObserverPattern;
 using System;
 using System.Collections;
@@ -74,6 +75,31 @@ public class Helper: MonoBehaviour
             }
 
             callback.Invoke(delegator);
+
+            break;
+        }
+
+        throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
+    }
+
+    public static IEnumerator GetDelegator<T>(Result<T> result, int retryLimit = 3, int waitLimitInSeconds = 6) where T : UnityEngine.Object
+    {
+        for (int i = 0; i < retryLimit; i++)
+        {
+            T delegator = FindObject<T>();
+
+            Debug.Log($"Delegator: {delegator}, Type: {typeof(T).Name}");
+
+            if (delegator == null)
+            {
+                yield return new WaitForSeconds(waitLimitInSeconds);
+
+                continue;
+            }
+
+            result.Value = delegator;
+
+            break;
         }
 
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");

@@ -94,7 +94,7 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
     }
     private async void Awake()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
     }
 
     private void Update()

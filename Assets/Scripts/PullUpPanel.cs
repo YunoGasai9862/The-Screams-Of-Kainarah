@@ -17,7 +17,7 @@ public class PullUpPanel : MonoBehaviour, INotify<bool>
 
     private async void Awake()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
     }
 
     void Start()

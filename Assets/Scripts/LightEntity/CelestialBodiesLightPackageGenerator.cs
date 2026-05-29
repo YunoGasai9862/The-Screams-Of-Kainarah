@@ -39,7 +39,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, INotify<ILigh
 
         await SetupCancellationTokens();
 
-        Delegator = await Helper.GetDelegator<Delegator>();
+        Delegator = StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<ILightPreprocess>()
         {

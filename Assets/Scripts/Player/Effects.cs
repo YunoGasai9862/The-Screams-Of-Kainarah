@@ -13,7 +13,7 @@ public class Effects: MonoBehaviour, INotify<Player>
 
     private async void Awake()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
         {

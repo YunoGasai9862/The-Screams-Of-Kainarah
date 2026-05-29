@@ -19,7 +19,7 @@ public class CameraFollow : MonoBehaviour, INotify<bool>, INotify<IEntityTransfo
 
     private async void Start()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<bool>()
         {

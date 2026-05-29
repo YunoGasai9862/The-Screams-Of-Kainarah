@@ -15,7 +15,7 @@ public class ResetController : MonoBehaviour, INotify<ResetBundle>
 
     private async void Awake()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
     }
 
     private void Start()

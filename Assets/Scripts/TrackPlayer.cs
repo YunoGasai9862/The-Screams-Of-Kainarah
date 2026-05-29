@@ -14,7 +14,7 @@ public class TrackPlayer : MonoBehaviour, INotify<IEntityTransform>
 
     private async void Awake()
     {
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
     }
 
     private void Start()

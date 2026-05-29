@@ -50,7 +50,7 @@ public class GameStateManager : MonoBehaviour, IGameState, Assets.Scripts.Interf
         _mainCamera = Camera.main;
         _mainCameraOldPosition = _mainCamera.transform.position;
 
-        Delegator = await Helper.GetDelegator<Delegator>();
+       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
 
         /*
         _mainCamera.transform.position = new Vector3(_mainCamera.transform.position.x, _mainCamera.transform.position.y, -100);
