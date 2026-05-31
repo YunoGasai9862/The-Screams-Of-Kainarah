@@ -39,7 +39,7 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     }
     private async void Start()
     {
-        Delegator = StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
 
         m_audioGeneratedEvent = await Helper.GetCustomEvent<AudioGeneratedEvent>();
 

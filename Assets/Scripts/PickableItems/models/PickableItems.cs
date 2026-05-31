@@ -32,7 +32,7 @@ public class PickableItems : ScriptableObject, IRequest<ScriptableObject>, IDele
 
     public async void SetupAsSubject()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+       Delegator = await Helper.GetDelegator<Delegator>();
     }
 
     public IEnumerator Request()

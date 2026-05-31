@@ -23,7 +23,7 @@ public class PlayerShadow : MonoBehaviour, INotify<Player>
     {
         m_Position = new Vector2(transform.position.x + initialoffsetX, transform.position.y + initialoffsetY);
 
-       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));   
+       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));   
 
         Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
         {

@@ -28,7 +28,7 @@ public class DialogueObserverManager : MonoBehaviour, INotify<DialoguesAndOption
 
     private async void Start()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>> ()
         {

@@ -28,7 +28,7 @@ public class RakashBattleController : MonoBehaviour, INotify<Health>, IReceiver<
     {
         AnimationUtility = new AnimationUtility();
 
-       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
 
         BlockingAttacks = new List<RakashAttack>()
         {

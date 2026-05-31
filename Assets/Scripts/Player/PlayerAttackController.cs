@@ -58,7 +58,7 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
         PlayerAttackStateInt = 0;
 
-       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
 
         PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 

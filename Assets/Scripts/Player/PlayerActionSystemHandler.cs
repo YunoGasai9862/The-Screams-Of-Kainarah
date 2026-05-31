@@ -43,7 +43,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INo
 
     private void Start()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
     }
 
     private void OnDelegatorFound(Delegator delegator)

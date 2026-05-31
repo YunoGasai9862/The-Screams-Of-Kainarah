@@ -12,7 +12,7 @@ public class LightFlicker : MonoBehaviour, Assets.Scripts.Interfaces.Mediator.En
 
     private async void Start()
     {
-        Delegator = StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+        StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0)

@@ -48,7 +48,7 @@ public class PlayerJumpController : MonoBehaviour, IReceiverEnhancedAsync<Player
     {
         _movementHelperClass = new MovementHelperClass();
 
-       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
 
         PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 

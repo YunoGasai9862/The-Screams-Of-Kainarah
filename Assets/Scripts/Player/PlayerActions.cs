@@ -153,7 +153,7 @@ public class PlayerActions : MonoBehaviour, INotify<GenericStateBundle<PlayerSta
 
     private async void NotifySubjects()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
     }
 
 

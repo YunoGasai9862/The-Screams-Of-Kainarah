@@ -26,7 +26,7 @@ public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, IRequest<
 
     private async void Start()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
 
         InitializeFirebaseStorage();
 

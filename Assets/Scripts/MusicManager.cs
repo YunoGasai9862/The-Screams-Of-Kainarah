@@ -20,7 +20,7 @@ public class MusicManager : MonoBehaviour, INotify<bool>
 
     private async void Awake()
     {
-         Delegator = StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+        StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
 
          Delegator.NotifySubjectWrapper(new ObserverContext<bool>()
         {

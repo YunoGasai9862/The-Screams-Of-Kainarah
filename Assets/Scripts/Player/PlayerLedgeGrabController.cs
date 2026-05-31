@@ -60,9 +60,9 @@ public class PlayerLedgeGrabController : MonoBehaviour, IReceiverEnhancedAsync<P
     {
         _helperFunc = new MovementHelperClass();
 
-       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
 
-       StartCoroutine(Helper.GetDelegator<Delegator>(OnDelegatorFound));
+       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
 
         PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
 
