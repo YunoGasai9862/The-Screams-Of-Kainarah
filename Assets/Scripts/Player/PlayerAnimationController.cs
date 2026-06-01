@@ -23,7 +23,7 @@ public class PlayerAnimationController : MonoBehaviour, IRequest<AnimationDetail
     private PlayerStateBundle InternalPlayerStateBundle { get; set; } = new PlayerStateBundle();
     private async void Awake()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         if (Delegator == null)
         {

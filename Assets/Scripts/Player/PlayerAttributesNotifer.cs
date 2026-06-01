@@ -40,7 +40,7 @@ public class PlayerAttributesNotifier: MonoBehaviour, IRequest<Player>, IRequest
             Health = PlayerHealth,
         };
 
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
     }
 
     IEnumerator<Player> IRequest<Player>.Request()

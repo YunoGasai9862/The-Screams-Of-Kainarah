@@ -27,7 +27,7 @@ namespace Assets.Scripts.Registry
         {
             try
             {
-                return Helper.GetAttribute<T>(Assemblies, genericTypes, nonGenericTypes).ToList();
+                return SceneUtils.GetAttribute<T>(Assemblies, genericTypes, nonGenericTypes).ToList();
             }
             catch (BaseException ex)
             {

@@ -47,9 +47,9 @@ public class PlayerSlideController : MonoBehaviour, IReceiverEnhancedAsync<Playe
 
     private async void Awake()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
-        PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>(); 
+        PlayerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>(); 
     }
 
     void Start()

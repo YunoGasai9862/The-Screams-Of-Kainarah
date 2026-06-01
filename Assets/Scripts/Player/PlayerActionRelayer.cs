@@ -94,7 +94,7 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
     }
     private async void Awake()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
     }
 
     private void Update()
@@ -298,7 +298,7 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
         Vector2 pos = transform.position;
 
         //make it better
-        int sign = await Helper.PlayerFlipped(transform);
+        int sign = await SceneUtils.PlayerFlipped(transform);
 
         pos.x = transform.position.x + sign;
 
@@ -340,13 +340,13 @@ public class PlayerActionRelayer : MonoBehaviour, INotify<IGameStateHandler>, As
     {
         EntityPoolManagerInstance = value;
 
-        PickableItemsSO = Helper.GetFromEntityPoolManager<PickableItems>(EntityPoolManagerInstance, PICKABLE_ITEMS_KEY);
+        PickableItemsSO = SceneUtils.GetFromEntityPoolManager<PickableItems>(EntityPoolManagerInstance, PICKABLE_ITEMS_KEY);
 
         PickableItemsUtility = new PickableItemsUtility(PickableItemsSO);
 
-        CheckPointsSO = Helper.GetFromEntityPoolManager<CheckPoints>(EntityPoolManagerInstance, CHECKPOINTS_KEY);
+        CheckPointsSO = SceneUtils.GetFromEntityPoolManager<CheckPoints>(EntityPoolManagerInstance, CHECKPOINTS_KEY);
 
-        DialoguesAndOptionsSO = Helper.GetFromEntityPoolManager<DialoguesAndOptions>(EntityPoolManagerInstance, DIALOGUES_AND_OPTIONS_KEY);
+        DialoguesAndOptionsSO = SceneUtils.GetFromEntityPoolManager<DialoguesAndOptions>(EntityPoolManagerInstance, DIALOGUES_AND_OPTIONS_KEY);
 
         yield return null;
     }

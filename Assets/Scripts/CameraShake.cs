@@ -34,11 +34,11 @@ public class CameraShake : MonoBehaviour, Assets.Scripts.Interfaces.Mediator.Enh
 
     private async void Start()
     {
-        StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
-        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(CameraShake)), this);
+        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(CameraShake)), this);
 
-        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>(gameObject, typeof(EmitAttackAnimationStateConsumer), typeof(CameraShake)), this);
+        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>(gameObject, typeof(EmitAttackAnimationStateConsumer), typeof(CameraShake)), this);
     }
 
     private async IAsyncEnumerator<WaitForSeconds> ShakeCamera(Camera _mainCamera, float timeForCameraShake)

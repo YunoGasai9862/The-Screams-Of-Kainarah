@@ -28,7 +28,7 @@ public class RakashBattleController : MonoBehaviour, INotify<Health>, IReceiver<
     {
         AnimationUtility = new AnimationUtility();
 
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         BlockingAttacks = new List<RakashAttack>()
         {
@@ -137,14 +137,14 @@ public class RakashBattleController : MonoBehaviour, INotify<Health>, IReceiver<
 
     private Task<ActionExecuted> DestroyOnDefeatAction(List<GameObject> objectsToDestroy, float delay) {
 
-        Helper.DestroyMultipleGameObjects(objectsToDestroy, delay);
+        SceneUtils.DestroyMultipleGameObjects(objectsToDestroy, delay);
 
         return Task.FromResult(new ActionExecuted()); 
     }
 
     private async Task<ActionExecuted<GameObject>> EntityDefeatedAction(GameObject deadBodyPrefab) {
 
-        GameObject instantiatedObject = await Helper.InstantiatePrefabAt(transform.position, deadBodyPrefab);
+        GameObject instantiatedObject = await SceneUtils.InstantiatePrefabAt(transform.position, deadBodyPrefab);
 
        return new ActionExecuted<GameObject>(instantiatedObject);
 

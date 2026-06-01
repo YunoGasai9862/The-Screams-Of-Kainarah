@@ -42,7 +42,7 @@ public class DialogueResetActionListener : MonoBehaviour, INotify<EntityPoolMana
     {
         EntityPoolManagerInstance = value;
 
-        DialoguesAndOptionsSO = Helper.GetFromEntityPoolManager<DialoguesAndOptions>(EntityPoolManagerInstance, DIALOGUES_AND_OPTIONS_KEY);
+        DialoguesAndOptionsSO = SceneUtils.GetFromEntityPoolManager<DialoguesAndOptions>(EntityPoolManagerInstance, DIALOGUES_AND_OPTIONS_KEY);
 
         yield return null;
     }

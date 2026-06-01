@@ -39,15 +39,15 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
     }
     private async void Start()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
-        m_audioGeneratedEvent = await Helper.GetCustomEvent<AudioGeneratedEvent>();
+        m_audioGeneratedEvent = await SceneUtils.GetCustomEvent<AudioGeneratedEvent>();
 
         await m_audioGeneratedEvent.AddListener(AudioGeneratedListener);
 
-        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<EntityPoolManager>(gameObject, typeof(EntityPoolManager), typeof(AudioPreload)), this);
+        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<EntityPoolManager>(gameObject, typeof(EntityPoolManager), typeof(AudioPreload)), this);
 
-        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<IAWSPolly>(gameObject, typeof(AWSPolllyManagement), typeof(AudioPreload)), this);
+        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<IAWSPolly>(gameObject, typeof(AWSPolllyManagement), typeof(AudioPreload)), this);
     }
 
     public IEnumerator PreloadAudio(DialoguesAndOptions dialogueAndOptions)
@@ -66,7 +66,7 @@ public class AudioPreload : MonoBehaviour, IPreloadAudio<DialoguesAndOptions>, I
 
                 dialogues.Dialogues[i].AudioInfo.AudioPath = audioPath;
 
-                if (Helper.DoesFileExist(audioPath))
+                if (SceneUtils.DoesFileExist(audioPath))
                 {
                     continue;
                 }

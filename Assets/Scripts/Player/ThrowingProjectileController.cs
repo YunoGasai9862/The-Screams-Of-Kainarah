@@ -32,7 +32,7 @@ public class ThrowingProjectileController : MonoBehaviour, IReceiver<bool>, INot
     {
         onThrowEvent.AddListener(CanPlayerThrowProjectile);
 
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<ScriptableObject>()
         {

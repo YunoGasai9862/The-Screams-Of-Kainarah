@@ -40,7 +40,7 @@ public class RakashStateMachine : MonoBehaviour, INotify<GenericStateBundle<Game
 
     private async void Awake()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         Animator = GetComponent<Animator>();
 
@@ -93,7 +93,7 @@ public class RakashStateMachine : MonoBehaviour, INotify<GenericStateBundle<Game
             return;
         }
 
-        if (Player != null && Helper.CheckDistance(animator.transform, Player.Transform, MAX_DISTANCE_BETWEEN_PLAYER, MIN_DISTANCE_BETWEEN_PLAYER))
+        if (Player != null && SceneUtils.CheckDistance(animator.transform, Player.Transform, MAX_DISTANCE_BETWEEN_PLAYER, MIN_DISTANCE_BETWEEN_PLAYER))
         {
 
             RakashMovementCommandController.Execute(new MovementActionDelegatePackage

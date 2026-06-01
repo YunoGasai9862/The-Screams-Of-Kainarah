@@ -23,7 +23,7 @@ public class PlayerShadow : MonoBehaviour, INotify<Player>
     {
         m_Position = new Vector2(transform.position.x + initialoffsetX, transform.position.y + initialoffsetY);
 
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));   
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));   
 
         Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
         {
@@ -56,7 +56,7 @@ public class PlayerShadow : MonoBehaviour, INotify<Player>
     {
         Vector2 result = new(0, 0);
 
-        result = Helper.FlipTheObjectToFaceParent(ref spriteRenderer, parentPos, position, offsetx);
+        result = SceneUtils.FlipTheObjectToFaceParent(ref spriteRenderer, parentPos, position, offsetx);
 
         await Task.Delay(delyForShadowInMiliseconds); //why making it zero fix the issue of getting the null exception (debug tomorrow)
 

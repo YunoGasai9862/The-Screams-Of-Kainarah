@@ -33,13 +33,13 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, INotify<ILigh
     {
         LightSource = GetComponent<Light2D>();
 
-        Helper.ValidateLightSourcePresence(LightSource);
+        SceneUtils.ValidateLightSourcePresence(LightSource);
 
         SemaphoreSlim = new SemaphoreSlim(1, 1);
 
         await SetupCancellationTokens();
 
-        StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<ILightPreprocess>()
         {
@@ -92,7 +92,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviour, INotify<ILigh
 
     private bool IsReadyToCustomLightningEntity()
     {
-        return !Helper.AreObjectsNull(new List<UnityEngine.Object>
+        return !SceneUtils.AreObjectsNull(new List<UnityEngine.Object>
         {
             Delegator
         })

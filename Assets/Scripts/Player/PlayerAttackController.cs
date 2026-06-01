@@ -58,11 +58,11 @@ public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<Play
 
         PlayerAttackStateInt = 0;
 
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
-        PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
+        PlayerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>();
 
-        PlayerBoostAttackEvent = await Helper.GetCustomEvent<PlayerBoostAttackEvent>();
+        PlayerBoostAttackEvent = await SceneUtils.GetCustomEvent<PlayerBoostAttackEvent>();
     }
 
     private void Start()

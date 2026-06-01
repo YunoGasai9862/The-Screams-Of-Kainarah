@@ -62,11 +62,11 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, INotify<FirebaseSto
 
     private async void Start()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
-        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<FirebaseStorageManager>(gameObject, typeof(FirebaseStorageManager), typeof(AWSPolllyManagement)), this);
+        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<FirebaseStorageManager>(gameObject, typeof(FirebaseStorageManager), typeof(AWSPolllyManagement)), this);
 
-        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(AWSPolllyManagement)), this);
+        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(AWSPolllyManagement)), this);
     }
 
 
@@ -76,7 +76,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, INotify<FirebaseSto
 
         TextAsset keys = await FirebaseStorageManagerInstance.DownloadMedia<TextAsset>(FileType.TEXT, AWSKeysfileNameOnFireBase);
 
-        string[] splitKeys = await Helper.SplitStringOnSeparator(keys.text, "|");
+        string[] splitKeys = await SceneUtils.SplitStringOnSeparator(keys.text, "|");
 
         return new AWSAccessResource(splitKeys[AWS_ACCESS_KEY_INDEX], splitKeys[SECRET_AWS_ASCCESS_KEY_INDEX]);
     }
@@ -162,7 +162,7 @@ public class AWSPolllyManagement : MonoBehaviour, IAWSPolly, INotify<FirebaseSto
 
     public IEnumerator<WaitUntil> OffloadExecutionToAsyncRunner(AWSPollyAudioPacket awsPollyAudioPacket)
     {
-        yield return new WaitUntil(() => !Helper.IsObjectNull(AsyncCoroutine) && !Helper.IsObjectNull(AmazonPollyClient));
+        yield return new WaitUntil(() => !SceneUtils.IsObjectNull(AsyncCoroutine) && !SceneUtils.IsObjectNull(AmazonPollyClient));
 
         AsyncCoroutine.ExecuteAsyncCoroutine(GenerateAudioAsync(AmazonPollyClient, awsPollyAudioPacket));
 

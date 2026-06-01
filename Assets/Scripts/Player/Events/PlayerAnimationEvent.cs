@@ -22,11 +22,11 @@ public class PlayerAnimationEvent : MonoBehaviour, INotify<EntityPoolManager>
 
     private async void Start()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
-        PlayerBoostAttackEvent = await Helper.GetCustomEvent<PlayerBoostAttackEvent>();
+        PlayerBoostAttackEvent = await SceneUtils.GetCustomEvent<PlayerBoostAttackEvent>();
 
-        Delegator.NotifySubjectWrapper(Helper.BuildNotificationContext<EntityPoolManager>(gameObject, typeof(EntityPoolManager), typeof(PlayerAnimationEvent)), this);
+        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<EntityPoolManager>(gameObject, typeof(EntityPoolManager), typeof(PlayerAnimationEvent)), this);
     }
 
     public void IceTrailAnimation()

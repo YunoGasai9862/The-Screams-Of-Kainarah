@@ -30,7 +30,7 @@ public class CheckPointActionListener : MonoBehaviour, INotify<EntityPoolManager
 
     private async void Awake()
     {
-        StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
         {
@@ -104,7 +104,7 @@ public class CheckPointActionListener : MonoBehaviour, INotify<EntityPoolManager
     {
         EntityPoolManagerInstance = value;
 
-        CheckpointsSO = Helper.GetFromEntityPoolManager<CheckPoints>(EntityPoolManagerInstance, CHECKPOINTS_KEY);
+        CheckpointsSO = SceneUtils.GetFromEntityPoolManager<CheckPoints>(EntityPoolManagerInstance, CHECKPOINTS_KEY);
             
         PrefillCheckPointsDict(CheckpointsSO);
 

@@ -13,7 +13,7 @@ public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IA
     private Delegator Delegator { get; set; }
     private async void Start()
     {
-        StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
     }
 
     public async Task ExecuteAsyncCoroutine(IAsyncEnumerator<WaitForSeconds> asyncCoroutine)

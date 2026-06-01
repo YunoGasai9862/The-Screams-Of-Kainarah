@@ -60,11 +60,11 @@ public class PlayerLedgeGrabController : MonoBehaviour, IReceiverEnhancedAsync<P
     {
         _helperFunc = new MovementHelperClass();
 
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
-        PlayerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
+        PlayerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>();
 
         if (Delegator == null)
         {
@@ -159,7 +159,7 @@ public class PlayerLedgeGrabController : MonoBehaviour, IReceiverEnhancedAsync<P
             return;
         }
 
-        int sign = await Helper.PlayerFlipped(Player.Transform);
+        int sign = await SceneUtils.PlayerFlipped(Player.Transform);
 
         await GrabLedge(Player.Animator, Player.Rigidbody);
 

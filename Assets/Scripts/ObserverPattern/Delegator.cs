@@ -24,7 +24,7 @@ public class Delegator : MonoBehaviour, IDelegator
 
     private void Awake()
     {
-        AttributeRegistry = Helper.FindObject<AttributeRegistry>();
+        AttributeRegistry = SceneUtils.FindObject<AttributeRegistry>();
 
         if (AttributeRegistry == null)
         {
@@ -33,7 +33,7 @@ public class Delegator : MonoBehaviour, IDelegator
             throw new MissingEntityException($"Attribute Registry could not be found in the scene! Please ensure that there is an active game object with the AttributeRegistry component attached to it in the scene.");
         }
 
-        SceneRegistry = Helper.FindObject<SceneRegistry>();
+        SceneRegistry = SceneUtils.FindObject<SceneRegistry>();
 
         if (SceneRegistry == null)
         {
@@ -198,7 +198,7 @@ public class Delegator : MonoBehaviour, IDelegator
                 yield return StartCoroutine(NotifySubject<T>(context, observer, maxRetries - 1, sleepTimeInMilliSeconds, optional));
             }
 
-            if (!Helper.IsInterfacePresent(gameObject, typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest)))
+            if (!SceneUtils.IsInterfacePresent(gameObject, typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest)))
             {
                 Debug.Log($"The subject instance does not implement the IRequest interface for the subject type: {context.SubjectType}. Exiting...");
 

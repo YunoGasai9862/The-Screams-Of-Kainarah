@@ -8,15 +8,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class Helper: MonoBehaviour
+public class SceneUtils: MonoBehaviour
 {
-    public static Task<string[]> SplitStringOnSeparator(string text, string separator)
+    private Delegator Delegator { get; set; }
+
+    private void Awake()
+   {
+        StartCoroutine(GetDelegator<Delegator>(value => Delegator = value));
+    }
+    public Task<string[]> SplitStringOnSeparator(string text, string separator)
     {
         const int EMPTY_STRING_ARRAY_SIZE = 0;
         string[] separatedText = text.Split(separator); 
@@ -28,17 +33,17 @@ public class Helper: MonoBehaviour
         return Task.FromResult(new string[EMPTY_STRING_ARRAY_SIZE]);
     }
 
-    public static IEnumerator WaitUntilVariableIsNonNull<T>(T variable)
+    public IEnumerator WaitUntilVariableIsNonNull<T>(T variable)
     {
         yield return new WaitUntil(() => variable != null);
     }
 
-    public static IEnumerator Wait(int waitLimitInSeconds)
+    public IEnumerator Wait(int waitLimitInSeconds)
     {
         yield return new WaitForSeconds(waitLimitInSeconds);
     }
 
-    public static async Task<T> GetDelegator<T>(int retryLimit = 3, int waitLimitInSeconds = 6) where T : UnityEngine.Object
+    public async Task<T> GetDelegator<T>(int retryLimit = 3, int waitLimitInSeconds = 6) where T : UnityEngine.Object
     {
         for (int i = 0; i < retryLimit; i++)
         {
@@ -59,7 +64,7 @@ public class Helper: MonoBehaviour
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
-    public static IEnumerator GetDelegator<T>(Action<T> callback, int retryLimit = 3, int waitLimitInSeconds = 6) where T : UnityEngine.Object
+    public IEnumerator GetDelegator<T>(Action<T> callback, int retryLimit = 3, int waitLimitInSeconds = 6) where T : UnityEngine.Object
     {
         for (int i = 0; i < retryLimit; i++)
         {
@@ -82,7 +87,14 @@ public class Helper: MonoBehaviour
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
-    public static IEnumerator GetDelegator<T>(Result<T> result, int retryLimit = 3, int waitLimitInSeconds = 6) where T : UnityEngine.Object
+    public IEnumerator NotifySubjectWrapper<T>(ObserverContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer)
+    {
+        yield return new WaitUntil(() =>Delegator != null);
+
+        Delegator.NotifySubjectWrapper(context, observer);
+    }
+
+    public IEnumerator GetDelegator<T>(Result<T> result, int retryLimit = 3, int waitLimitInSeconds = 6) where T : UnityEngine.Object
     {
         for (int i = 0; i < retryLimit; i++)
         {
@@ -105,7 +117,7 @@ public class Helper: MonoBehaviour
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
-    public static T GetFromEntityPoolManager<T>(EntityPoolManager entityPoolManager, string key) where T : ScriptableObject
+    public T GetFromEntityPoolManager<T>(EntityPoolManager entityPoolManager, string key) where T : ScriptableObject
     {
         List<EntityPool> entityPools = entityPoolManager.GetPooledEntity(key);
 
@@ -119,7 +131,7 @@ public class Helper: MonoBehaviour
         return (T)entityPools[0].Entity;
     }
 
-    public static async Task<T> GetCustomEvent<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
+    public async Task<T> GetCustomEvent<T>(int retryLimit = 3, int waitLimitInSeconds = 3) where T : UnityEngine.Object
     {
         for (int i = 0; i < retryLimit; i++)
         {
@@ -138,7 +150,7 @@ public class Helper: MonoBehaviour
         throw new CustomEventNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
-    public static dynamic Convert(AnimatorControllerParameterType type, dynamic value)
+    public dynamic Convert(AnimatorControllerParameterType type, dynamic value)
     {
         switch (type)
         {
@@ -164,7 +176,7 @@ public class Helper: MonoBehaviour
         return null;
     }
 
-    public static List<T> GetAttribute<T>(List<Type> types, List<Type> genericType = null, List<Type> nonGenericType = null) where T : Attribute
+    public List<T> GetAttribute<T>(List<Type> types, List<Type> genericType = null, List<Type> nonGenericType = null) where T : Attribute
     {
         if (genericType == null && nonGenericType == null)
         {
@@ -212,7 +224,7 @@ public class Helper: MonoBehaviour
         return foundAttributes;
     }
 
-    public static async Task<T> FindObjectAsync<T>(Type gameObjectType, int retryLimit = 3, int waitLimitInSeconds = 3) where T: class
+    public async Task<T> FindObjectAsync<T>(Type gameObjectType, int retryLimit = 3, int waitLimitInSeconds = 3) where T: class
     {
         for(int i = 0; i < retryLimit; i++)
         {
@@ -238,12 +250,12 @@ public class Helper: MonoBehaviour
         throw new ApplicationException($" {gameObjectType.Name} Not Found in the Scene");
     }
 
-    public static bool IsInterfacePresent(GameObject gameObject, Type typeToSearch)
+    public bool IsInterfacePresent(GameObject gameObject, Type typeToSearch)
     {
         return typeToSearch.IsAssignableFrom(gameObject.GetType());
     }
 
-    public static async Task<TYPE> FindReceiver<TYPE, IMPLEMENTATION>(int retryLimit = 3, int waitLimitInSeconds = 3) where TYPE: MonoBehaviour
+    public async Task<TYPE> FindReceiver<TYPE, IMPLEMENTATION>(int retryLimit = 3, int waitLimitInSeconds = 3) where TYPE: MonoBehaviour
     {
 
         for (int i = 0; i < retryLimit; i++)
@@ -268,18 +280,18 @@ public class Helper: MonoBehaviour
         throw new ReceiverNotFounderException($" {typeof(TYPE).Name} Not Found in the Scene");
     }
 
-    public static TYPE FindObject<TYPE>() where TYPE : UnityEngine.Object
+    public TYPE FindObject<TYPE>() where TYPE : UnityEngine.Object
     {
         return (TYPE)(UnityEngine.Object)FindFirstObjectByType<TYPE>();
     }
 
 
-    public static Task<int> PlayerFlipped(Transform transform)
+    public Task<int> PlayerFlipped(Transform transform)
     {
         return transform.localScale.x < 0 ? Task.FromResult(-1) : Task.FromResult(1);
     }
 
-    public static async Task<List<T>> GetGameObjectsWithCustomAttributes<T>() where T: System.Attribute
+    public async Task<List<T>> GetGameObjectsWithCustomAttributes<T>() where T: System.Attribute
     {
         List<T> objectsWithCustomAttributes = new List<T>();
 
@@ -300,7 +312,7 @@ public class Helper: MonoBehaviour
         return objectsWithCustomAttributes;
     }
 
-    public static bool DoesFileExist(string path)
+    public bool DoesFileExist(string path)
     {
         if (path == null)
         {
@@ -310,17 +322,17 @@ public class Helper: MonoBehaviour
         return new FileInfo(path).Exists;
     }
 
-    public static bool IsSubjectNull<T>(Subject<T> subject)
+    public bool IsSubjectNull<T>(Subject<T> subject)
     {
         return subject == null || subject.ISubject == null;
     }
 
-    public static bool IsObjectNull(System.Object obj)
+    public bool IsObjectNull(System.Object obj)
     {
         return obj == null;
     }
 
-    public static bool AreObjectsNull(List<UnityEngine.Object> objects)
+    public bool AreObjectsNull(List<UnityEngine.Object> objects)
     {
         foreach (UnityEngine.Object obj in objects)
         {
@@ -333,12 +345,12 @@ public class Helper: MonoBehaviour
         return false;
     }
 
-    public static float GetSecondsFromMilliSeconds(int milliSeconds)
+    public float GetSecondsFromMilliSeconds(int milliSeconds)
     {
         return milliSeconds / 1000.0f;
     }
 
-    public static ObserverContext BuildNotificationContext(GameObject gameObject, Type subjectType, Type entityType)
+    public ObserverContext BuildNotificationContext(GameObject gameObject, Type subjectType, Type entityType)
     {
         return new ObserverContext()
         {
@@ -347,7 +359,7 @@ public class Helper: MonoBehaviour
             EntityType = entityType
         };
     }
-    public static ObserverContext<T> BuildNotificationContext<T>(GameObject gameObject, Type subjectType, Type entityType)
+    public ObserverContext<T> BuildNotificationContext<T>(GameObject gameObject, Type subjectType, Type entityType)
     {
         return new ObserverContext<T>()
         {
@@ -357,7 +369,7 @@ public class Helper: MonoBehaviour
         };
     }
 
-    public static void ValidateLightSourcePresence(Light2D light2D)
+    public void ValidateLightSourcePresence(Light2D light2D)
     {
         if (light2D == null)
         {
@@ -365,12 +377,12 @@ public class Helper: MonoBehaviour
         }
     }
 
-    public static float CalculateScreenWidth(Camera _mainCamera)
+    public float CalculateScreenWidth(Camera _mainCamera)
     {
         return _mainCamera.aspect * _mainCamera.orthographicSize;
     }
 
-    public static IEnumerator TuneDownIntensityToZero(Light2D _light)
+    public IEnumerator TuneDownIntensityToZero(Light2D _light)
     {
         while (_light.intensity > 0f)
         {
@@ -380,7 +392,7 @@ public class Helper: MonoBehaviour
         }
 
     }
-    public static Vector2 FlipTheObjectToFaceParent(ref SpriteRenderer spriteRenderer, Vector2 parentPos, Vector2 position, float offsetX)
+    public Vector2 FlipTheObjectToFaceParent(ref SpriteRenderer spriteRenderer, Vector2 parentPos, Vector2 position, float offsetX)
     {
         Vector2 flipped = Vector2.zero;
 
@@ -396,24 +408,24 @@ public class Helper: MonoBehaviour
         return flipped;
     }
 
-    public static bool CheckDistance(Transform firstEntityTransform, Transform secondEntityTransform, float distanceLessThan, float distanceGreaterThan)
+    public bool CheckDistance(Transform firstEntityTransform, Transform secondEntityTransform, float distanceLessThan, float distanceGreaterThan)
     {
         return Vector3.Distance(secondEntityTransform.position, firstEntityTransform.position) <= distanceLessThan && Vector3.Distance(secondEntityTransform.position, firstEntityTransform.position) >= distanceGreaterThan;
     }
 
-    public static bool IsEntityMonobehavior(Asset assetType)
+    public bool IsEntityMonobehavior(Asset assetType)
     {
         return assetType.Equals(Asset.MONOBEHAVIOR);
     }
 
-    public static Task SetAsParent(GameObject child, GameObject parent)
+    public Task SetAsParent(GameObject child, GameObject parent)
     {
         child.transform.parent = parent.transform;
 
         return Task.CompletedTask;
     }
 
-    public static Task DestroyMultipleGameObjects(List<GameObject> gameObjects, float destroyInSeconds)
+    public Task DestroyMultipleGameObjects(List<GameObject> gameObjects, float destroyInSeconds)
     {
         foreach (var gameObject in gameObjects)
         {
@@ -422,7 +434,7 @@ public class Helper: MonoBehaviour
         return Task.CompletedTask;
     }
 
-    public static Task<GameObject> InstantiatePrefabAt(Vector3 position, GameObject prefab)
+    public Task<GameObject> InstantiatePrefabAt(Vector3 position, GameObject prefab)
     {
         return Task.FromResult(Instantiate(prefab, position, Quaternion.identity));
     }

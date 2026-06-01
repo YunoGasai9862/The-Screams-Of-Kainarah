@@ -72,17 +72,17 @@ public class PlayerActions : MonoBehaviour, INotify<GenericStateBundle<PlayerSta
 
         _playerActionsModel = new PlayerActionsModel();
 
-        _jumpReceiver = await Helper.FindReceiver<PlayerJumpController, IReceiverBase<bool>>();
+        _jumpReceiver = await SceneUtils.FindReceiver<PlayerJumpController, IReceiverBase<bool>>();
 
-        _slideReceiver = await Helper.FindReceiver<PlayerSlideController, IReceiverBase<PlayerStateBundle>>();
+        _slideReceiver = await SceneUtils.FindReceiver<PlayerSlideController, IReceiverBase<PlayerStateBundle>>();
 
-        _ledgeGrabReceiver = await Helper.FindReceiver<PlayerLedgeGrabController, IReceiverBase<PlayerStateBundle>>();
+        _ledgeGrabReceiver = await SceneUtils.FindReceiver<PlayerLedgeGrabController, IReceiverBase<PlayerStateBundle>>();
 
-        _attackReceiver = await Helper.FindReceiver<PlayerAttackController, IReceiverBase<ControllerPackage<AttackingExecutionState, AttackingDetails>>>();
+        _attackReceiver = await SceneUtils.FindReceiver<PlayerAttackController, IReceiverBase<ControllerPackage<AttackingExecutionState, AttackingDetails>>>();
 
-        _throwingProjectileReceiver = await  Helper.FindReceiver<ThrowingProjectileController, IReceiverBase<bool>>();
+        _throwingProjectileReceiver = await  SceneUtils.FindReceiver<ThrowingProjectileController, IReceiverBase<bool>>();
 
-        _animationReceiver = await Helper.FindReceiver<PlayerAnimationController, IReceiverBase<ControllerPackage<AnimationExecutionState, PlayerStateBundle>>>();
+        _animationReceiver = await SceneUtils.FindReceiver<PlayerAnimationController, IReceiverBase<ControllerPackage<AnimationExecutionState, PlayerStateBundle>>>();
 
         _attackCommand = new CommandAsyncEnhanced<PlayerAttackController, ControllerPackage<AttackingExecutionState, AttackingDetails>>(_attackReceiver);
 
@@ -98,7 +98,7 @@ public class PlayerActions : MonoBehaviour, INotify<GenericStateBundle<PlayerSta
 
         _playerActionsModel.CharacterSpeed = new Vector2(_characterSpeed, 0f);
 
-        _playerStateEvent = await Helper.GetCustomEvent<PlayerStateEvent>();
+        _playerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>();
 
         _rocky2DActions.PlayerMovement.Movement.started += MovementBegin;
 
@@ -153,7 +153,7 @@ public class PlayerActions : MonoBehaviour, INotify<GenericStateBundle<PlayerSta
 
     private async void NotifySubjects()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
     }
 
 

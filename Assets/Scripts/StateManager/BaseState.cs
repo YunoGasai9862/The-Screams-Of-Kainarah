@@ -14,9 +14,9 @@ public abstract class BaseState<T>: MonoBehaviour, Assets.Scripts.Interfaces.Med
     private Delegator Delegator { get; set; }
     private async void Start()
     {
-        StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
-        StateEvent = await Helper.GetCustomEvent<StateEvent>();
+        StateEvent = await SceneUtils.GetCustomEvent<StateEvent>();
 
         StateEvent.AddListener<GenericStateBundle<T>>(PingStateListeners);
 
@@ -75,9 +75,9 @@ public abstract class BaseState<T, Z> : MonoBehaviour, Assets.Scripts.Interfaces
 
     private async void Start()
     {
-        StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
-        StateEvent = await Helper.GetCustomEvent<StateEvent>();
+        StateEvent = await SceneUtils.GetCustomEvent<StateEvent>();
 
         StateEvent.AddListener<GenericStateBundle<T, Z>>(PingStateListeners);
 

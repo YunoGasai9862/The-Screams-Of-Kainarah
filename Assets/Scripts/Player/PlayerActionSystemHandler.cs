@@ -43,7 +43,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INo
 
     private void Start()
     {
-       StartCoroutine(Helper.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
     }
 
     private void OnDelegatorFound(Delegator delegator)
@@ -116,7 +116,7 @@ public class PlayerActionSystemHandler : MonoBehaviour, INotify<Collider2D>, INo
     {
         EntityPoolManagerInstance = value;
 
-        PickableItemsSO = Helper.GetFromEntityPoolManager<PickableItems>(EntityPoolManagerInstance, PICKABLE_ITEMS_KEY);
+        PickableItemsSO = SceneUtils.GetFromEntityPoolManager<PickableItems>(EntityPoolManagerInstance, PICKABLE_ITEMS_KEY);
 
         PickableItemsUtility = new PickableItemsUtility(PickableItemsSO);
 
