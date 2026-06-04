@@ -3,7 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 
-public class SwitchScript : MonoBehaviour
+public class SwitchScript : Scene
 {
     private Toggle _toggle;
     [SerializeField] RectTransform _uiHandler;

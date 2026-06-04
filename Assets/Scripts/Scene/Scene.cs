@@ -1,7 +1,5 @@
 ﻿using Assets.Scripts.Scene.Interface;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Assets.Scripts.Scene

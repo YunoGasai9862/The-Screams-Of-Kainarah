@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Annotations.Enums;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(MusicManager), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(bool))]
-public class MusicManager : MonoBehaviour, INotify<bool>
+public class MusicManager : Scene, INotify<bool>
 {
     [SerializeField] Toggle menuToggleSound;
     [SerializeField] AudioSource _bgGameMusic;

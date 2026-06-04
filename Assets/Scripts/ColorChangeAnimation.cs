@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ColorChangeAnimation : MonoBehaviour
+public class ColorChangeAnimation : Scene
 {
     private Image _PanelImage;
     private Color _Color;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SmokeGenerator : MonoBehaviour
+public class SmokeGenerator : Scene
 {
     [SerializeField] GameObject smokeFlare;
     [SerializeField] int numberOfFlares;

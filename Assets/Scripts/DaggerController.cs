@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DaggerController : MonoBehaviour
+public class DaggerController : Scene
 {
 
     private float _daggerSpeed = 20f;

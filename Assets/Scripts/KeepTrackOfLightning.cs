@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KeepTrackOfLightning : MonoBehaviour
+public class KeepTrackOfLightning : Scene
 {
    
     void Update()

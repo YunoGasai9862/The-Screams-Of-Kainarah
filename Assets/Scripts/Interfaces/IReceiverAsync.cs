@@ -16,7 +16,7 @@ public interface IReceiverBase<VALUE>
     }
 }
 
-public interface IReceiverEnhancedAsync<TYPE, VALUE> : IReceiverBase<VALUE> where TYPE: MonoBehaviour
+public interface IReceiverEnhancedAsync<TYPE, VALUE> : IReceiverBase<VALUE> where TYPE: Scene
 {
     Task<ActionExecuted> PerformAction(VALUE value = default);
     Task<ActionExecuted> CancelAction(VALUE value = default);

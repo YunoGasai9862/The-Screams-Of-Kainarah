@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ControlPanelTrigger : MonoBehaviour
+public class ControlPanelTrigger : Scene
 {
     [SerializeField] GameObject currentSettingsPanel;
     [SerializeField] GameObject controlPanel;

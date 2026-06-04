@@ -8,7 +8,7 @@ using Annotations.Enums;
 using Assets.Annotations;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameLoad), ContextType = typeof(GameLoad))]
-public class GameLoad : MonoBehaviour, IGameLoad
+public class GameLoad : Scene, IGameLoad
 {
     public async Task<Object> PreloadAsset<T>(EntityMetaData enttityMetaData) where T : Object
     {

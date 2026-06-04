@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class MainThreadDispatcher : MonoBehaviour, IMainThreadDispatcher
+public class MainThreadDispatcher : Scene, IMainThreadDispatcher
 {
     private SemaphoreSlim DispatcherSemaphore { get; set; } = new SemaphoreSlim(1);
 

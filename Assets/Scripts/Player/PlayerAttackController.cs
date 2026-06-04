@@ -10,7 +10,7 @@ using Annotations.Enums;
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(GameStateConsumer), EntityType = typeof(PlayerAttackController), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), EntityType = typeof(PlayerAttackController), ContextType = typeof(Player))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), EntityType = typeof(InventoryManager), ContextType = typeof(InventoryManager))]
-public class PlayerAttackController : MonoBehaviour, IReceiverEnhancedAsync<PlayerAttackController, ControllerPackage<AttackingExecutionState, AttackingDetails>>, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<GenericStateBundle<GameStateBundle>>, INotify<InventoryManager>, INotify<Player>
+public class PlayerAttackController : Scene, IReceiverEnhancedAsync<PlayerAttackController, ControllerPackage<AttackingExecutionState, AttackingDetails>>, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<GenericStateBundle<GameStateBundle>>, INotify<InventoryManager>, INotify<Player>
 {
     private const float COLLIDER_DISTANCE_FROM_THE_LAYER = 0.05f;
 

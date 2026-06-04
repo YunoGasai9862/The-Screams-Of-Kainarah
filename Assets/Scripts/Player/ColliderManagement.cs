@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ColliderManagement : MonoBehaviour
+public class ColliderManagement : Scene
 {
     [SerializeField] public Collider2D _collider;
     private SpriteRenderer _sr;

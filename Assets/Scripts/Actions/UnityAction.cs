@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace Assets.Scripts.Actions
 {
-    public abstract class UnityAction : MonoBehaviour, ICustomUnityAction
+    public abstract class UnityAction : Scene, ICustomUnityAction
     {
         public abstract void AddListener<T>(UnityAction<T> action) where T : GenericStateBundle;
 

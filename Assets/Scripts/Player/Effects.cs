@@ -5,7 +5,7 @@ using UnityEngine;
 using Annotations.Enums;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(Effects), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
-public class Effects: MonoBehaviour, INotify<Player>
+public class Effects: Scene, INotify<Player>
 {
     private MaterialFader MaterialFader { get; set; } = new MaterialFader();
 

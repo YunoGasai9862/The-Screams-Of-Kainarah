@@ -11,7 +11,7 @@ using Annotations.Enums;
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CandleLightPackageGenerator), ContextType = typeof(LightPackage))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CandleLightPackageGenerator), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CandleLightPackageGenerator), SubjectType = typeof(LightFlicker), ContextType = typeof(ILightPreprocess))]
-public class CandleLightPackageGenerator : MonoBehaviour, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<LightPackage>, INotify<ILightPreprocess>, INotify<Player>, ILightPackageGenerator
+public class CandleLightPackageGenerator : Scene, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<LightPackage>, INotify<ILightPreprocess>, INotify<Player>, ILightPackageGenerator
 {
     [SerializeField]
     LightProperties lightProperties;

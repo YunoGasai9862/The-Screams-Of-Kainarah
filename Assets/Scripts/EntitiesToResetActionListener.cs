@@ -5,7 +5,7 @@ using UnityEngine;
 using Annotations.Enums;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EntitiesToResetActionListener), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(EntitiesToReset))]
-public class EntitiesToResetActionListener : MonoBehaviour, INotify<EntitiesToReset>
+public class EntitiesToResetActionListener : Scene, INotify<EntitiesToReset>
 {
     private IEnumerator ResetAttributes(EntitiesToReset Data)
     {

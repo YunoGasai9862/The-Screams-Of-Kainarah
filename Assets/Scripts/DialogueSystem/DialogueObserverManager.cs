@@ -7,7 +7,7 @@ using UnityEngine;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueObserverManager), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueObserverManager), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(DialoguesAndOptions.DialogueSystem))]
-public class DialogueObserverManager : MonoBehaviour, INotify<DialoguesAndOptions.DialogueSystem>, INotify<GenericStateBundle<GameStateBundle>>
+public class DialogueObserverManager : Scene, INotify<DialoguesAndOptions.DialogueSystem>, INotify<GenericStateBundle<GameStateBundle>>
 {
     [Header("Dialogues And Options")]
     [SerializeField] DialoguesAndOptions DialoguesAndOptions;

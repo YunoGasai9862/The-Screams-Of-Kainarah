@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FindingObjects : MonoBehaviour
+public class FindingObjects : Scene
 {
     public static bool CastRayToFindObject(GameObject source, string tag, float rayCastLength)
     {

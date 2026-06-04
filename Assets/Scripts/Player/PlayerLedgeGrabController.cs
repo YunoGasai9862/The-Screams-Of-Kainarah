@@ -8,7 +8,7 @@ using Annotations.Enums;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), EntityType = typeof(PlayerLedgeGrabController), ContextType = typeof(Player))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerStateConsumer), EntityType = typeof(PlayerLedgeGrabController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
-public class PlayerLedgeGrabController : MonoBehaviour, IReceiverEnhancedAsync<PlayerLedgeGrabController, PlayerStateBundle>, INotify<Player>, INotify<GenericStateBundle<PlayerStateBundle>>
+public class PlayerLedgeGrabController : Scene, IReceiverEnhancedAsync<PlayerLedgeGrabController, PlayerStateBundle>, INotify<Player>, INotify<GenericStateBundle<PlayerStateBundle>>
 {
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
 

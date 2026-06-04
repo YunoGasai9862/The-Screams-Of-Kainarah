@@ -1,16 +1,25 @@
 ﻿using Assets.Scripts.Broadcaster.Interface;
-using System;
+using Assets.Scripts.Scene;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Assets.Scripts.Broadcaster
 {
-    public class Broadcaster : MonoBehaviour, IBroadcaster
+    public class Broadcaster : Assets.Scripts.Scene.Scene, IBroadcaster
     {
+        private SceneRegistry SceneRegistryInstance { get; set; }
+
+        private void Awake()
+        {
+            SceneRegistryInstance = SceneUtils.FindObject<SceneRegistry>();
+        }
+
         public void Broadcast<T>(T value)
         {
-            throw new NotImplementedException();
+            foreach (KeyValuePair<int, GameObject> item in SceneRegistryInstance.GetRegisteredGameObjects())
+            {
+                item.Value.GetComponent<Scene.Scene>().Broadcast(value);
+            }
         }
     }
 }

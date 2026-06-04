@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PreloadEntitiesDelegateExecutor: MonoBehaviour, IDelegateExecutor
+public class PreloadEntitiesDelegateExecutor: Scene, IDelegateExecutor
 {
     [SerializeField]
     PreloadedEntitiesEvent preloadedEntitiesEvent;

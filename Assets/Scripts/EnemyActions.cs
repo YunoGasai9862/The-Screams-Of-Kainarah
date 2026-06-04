@@ -10,7 +10,7 @@ using UnityEngine;
 using Annotations.Enums;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EnemyScript), EntityType = typeof(EnemyActions), ContextType = typeof(EnemyActionBundle))]
-public class EnemyActions : MonoBehaviour, INotify<EnemyActionBundle>
+public class EnemyActions : Scene, INotify<EnemyActionBundle>
 {
     private enum enemyAttack
     {

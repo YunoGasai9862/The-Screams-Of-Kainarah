@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Annotations.Enums;
 
-public class PreloaderManager : MonoBehaviour
+public class PreloaderManager : Scene
 {
     [SerializeField]
     List<PreloadDto> dependencies;

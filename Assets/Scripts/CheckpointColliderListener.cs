@@ -8,7 +8,7 @@ using Annotations.Enums;
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CheckpointColliderListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerActionRelayer), EntityType = typeof(CheckpointColliderListener), ContextType = typeof(GameObject))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(GameStateManager), EntityType = typeof(CheckpointColliderListener), ContextType = typeof(GameStateManager))]
-public class CheckpointColliderListener : MonoBehaviour, INotify<Player>, INotify<EntityPoolManager>, INotify<GameStateManager>
+public class CheckpointColliderListener : Scene, INotify<Player>, INotify<EntityPoolManager>, INotify<GameStateManager>
 {
     private static string CHECKPOINTS_KEY = "CheckPoints";
     private EntityPoolManager EntityPoolManagerInstance { get; set; }

@@ -7,7 +7,7 @@ using System.Linq;
 using UnityEngine;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-public class EntityPoolManager: MonoBehaviour, IDelegate, IEntityPoolManager, IRequest<EntityPoolManager>
+public class EntityPoolManager: Scene, IDelegate, IEntityPoolManager, IRequest<EntityPoolManager>
 {
     private Dictionary<string, List<EntityPool>> EntityPoolDict { get; set; } = new Dictionary<string, List<EntityPool>>();
 

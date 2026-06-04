@@ -8,7 +8,7 @@ using UnityEngine;
 
 [Asset(Asset.MONOBEHAVIOR,  "AsyncCoroutine", InstantiationOrder = 9)]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
-public class AsyncCoroutine : MonoBehaviour, IAsyncCoroutine<WaitForSeconds>, IAsyncCoroutine<WaitUntil>, IRequest<AsyncCoroutine>
+public class AsyncCoroutine : Scene, IAsyncCoroutine<WaitForSeconds>, IAsyncCoroutine<WaitUntil>, IRequest<AsyncCoroutine>
 {
     private Delegator Delegator { get; set; }
     private async void Start()

@@ -7,7 +7,7 @@ using Annotations.Enums;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueTriggerManager), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueTriggerManager), SubjectType = typeof(DialogueManager), ContextType = typeof(DialogueManager))]
-public class DialogueTriggerManager : MonoBehaviour, INotify<GenericStateBundle<GameStateBundle>>, INotify<DialogueManager>
+public class DialogueTriggerManager : Scene, INotify<GenericStateBundle<GameStateBundle>>, INotify<DialogueManager>
 {
     [SerializeField]
     public DialogueTriggerEvent dialogueTriggerEvent;

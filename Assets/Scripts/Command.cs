@@ -38,7 +38,7 @@ public class Command<T, Z> : ICommand<T, Z>
     }
 }
 
-public class CommandAsyncEnhanced<T, Z> : ICommandAsyncEnhanced<T, Z> where T: MonoBehaviour
+public class CommandAsyncEnhanced<T, Z> : ICommandAsyncEnhanced<T, Z> where T: Scene
 {
     private IReceiverEnhancedAsync<T, Z> _receiver;
 

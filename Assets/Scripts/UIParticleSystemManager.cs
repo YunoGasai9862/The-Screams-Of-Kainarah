@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class UIParticleSystemManager : MonoBehaviour
+public class UIParticleSystemManager : Scene
 {
     [SerializeField] ParticleSystemForceField particleSystemForceField; //play with it (customize it)
     [SerializeField] UIParticleSystemEvent uiParticleSystemEvent;

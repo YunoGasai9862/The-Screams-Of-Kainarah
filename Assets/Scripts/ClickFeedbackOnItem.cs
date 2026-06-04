@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ClickFeedbackOnItem : MonoBehaviour, IPointerUpHandler, ISerializableFeildsHelper
+public class ClickFeedbackOnItem : Scene, IPointerUpHandler, ISerializableFeildsHelper
 {
     [SerializeField] string slotTag;
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PauseManager : MonoBehaviour
+public class PauseManager : Scene
 {
     [SerializeField] GameObject PausePanel;
     [SerializeField] GameObject SettingsPanel;

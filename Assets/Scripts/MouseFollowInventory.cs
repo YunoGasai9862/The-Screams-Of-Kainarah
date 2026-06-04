@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MouseFollowInventory : MonoBehaviour
+public class MouseFollowInventory : Scene
 {
     [SerializeField] GameObject starAura;
     [SerializeField] Camera otherCamera;

@@ -10,7 +10,7 @@ using UnityEngine;
 [Observer(AssetType = Annotations.Enums.Asset.MONOBEHAVIOR, EntityType = typeof(CameraShake), SubjectType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
 [Observer(AssetType = Annotations.Enums.Asset.MONOBEHAVIOR, EntityType = typeof(CameraShake), SubjectType = typeof(EmitAttackAnimationStateConsumer), ContextType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>))]
 [Subject(AssetType = Annotations.Enums.Asset.MONOBEHAVIOR, EntityType = typeof(CameraShake), ContextType = typeof(bool))]
-public class CameraShake : MonoBehaviour, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<AsyncCoroutine>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>, IRequest<bool>
+public class CameraShake : Scene, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<AsyncCoroutine>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>, IRequest<bool>
 {
     [Header("Target Camera")]
     [SerializeField] Camera mainCamera;

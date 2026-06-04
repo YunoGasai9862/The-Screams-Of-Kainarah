@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryPouchManager : MonoBehaviour
+public class InventoryPouchManager : Scene
 {
     [SerializeField] InventoryPouchPanelEvent inventoryPouchPanelEvent;
 

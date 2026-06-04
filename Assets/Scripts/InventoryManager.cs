@@ -4,7 +4,7 @@ using Assets.Scripts.Interfaces.Mediator.Base;
 using UnityEngine;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(InventoryManager), ContextType = typeof(bool))]
-public class InventoryManager : MonoBehaviour, IRequest<bool>
+public class InventoryManager : Scene, IRequest<bool>
 {
     [SerializeField] GameObject InventoryPanel;
     [SerializeField] InventoryPouchClickEvent inventoryPouchClickEvent;

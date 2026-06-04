@@ -7,7 +7,7 @@ using UnityEngine;
 using Annotations.Enums;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(ResetController), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
-public class ResetController : MonoBehaviour, INotify<ResetBundle>
+public class ResetController : Scene, INotify<ResetBundle>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
 

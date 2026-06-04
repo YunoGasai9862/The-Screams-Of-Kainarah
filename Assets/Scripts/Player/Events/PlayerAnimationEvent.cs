@@ -7,7 +7,7 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAnimationEvent), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-public class PlayerAnimationEvent : MonoBehaviour, INotify<EntityPoolManager>
+public class PlayerAnimationEvent : Scene, INotify<EntityPoolManager>
 {
     [SerializeField]
     private string iceTrailTag;

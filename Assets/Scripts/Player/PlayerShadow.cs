@@ -6,7 +6,7 @@ using UnityEngine;
 using Annotations.Enums;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), EntityType = typeof(PlayerShadow), ContextType = typeof(Player))]
-public class PlayerShadow : MonoBehaviour, INotify<Player>
+public class PlayerShadow : Scene, INotify<Player>
 {
     private Vector2 m_Position;
     private Vector2 m_newPosition;

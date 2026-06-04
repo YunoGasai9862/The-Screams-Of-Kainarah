@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class InventoryManagementSystem : MonoBehaviour
+public class InventoryManagementSystem : Scene
 {
     [SerializeField] private InventorySystem inventorySystem;
 

@@ -11,7 +11,7 @@ using UnityEngine;
 
 [AssetAttribute(Asset.MONOBEHAVIOR, "FirebaseStorageManager", InstantiationOrder = 10)]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(FirebaseStorageManager), ContextType = typeof(FirebaseStorageManager))]
-public class FirebaseStorageManager : MonoBehaviour, IFirebaseStorage, IRequest<FirebaseStorageManager>
+public class FirebaseStorageManager : Scene, IFirebaseStorage, IRequest<FirebaseStorageManager>
 {
     private Delegator Delegator { get; set; }
 

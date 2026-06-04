@@ -4,7 +4,7 @@ using Pathfinding;
 using System.Threading.Tasks;
 using System.Threading;
 
-public class EnemyAI : MonoBehaviour
+public class EnemyAI : Scene
 {
     public const float FORCEUPPERLIMIT = 400f;
 

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class HealingEffectScript : MonoBehaviour
+public class HealingEffectScript : Scene
 {
     private void Start()
     {

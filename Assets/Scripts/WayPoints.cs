@@ -6,7 +6,7 @@ namespace WayPointsObject
 
     [Serializable]
     //implement custom editor
-    public class WayPoints : MonoBehaviour
+    public class WayPoints : Scene
     {
         [SerializeField] public Transform wayPoint;
         public bool leftWayPoint;

@@ -1,6 +1,6 @@
 using TMPro;
 using UnityEngine;
-public class IncreaseCrystal : MonoBehaviour
+public class IncreaseCrystal : Scene
 {
     private TextMeshProUGUI m_diamondText;
 

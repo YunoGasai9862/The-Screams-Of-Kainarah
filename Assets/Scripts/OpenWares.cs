@@ -7,7 +7,7 @@ using Annotations.Enums;
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PickableItems), EntityType = typeof(OpenWares), ContextType = typeof(bool))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(GameStateConsumer), EntityType = typeof(OpenWares), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 
-public class OpenWares : MonoBehaviour, INotify<GenericStateBundle<GameStateBundle>>, INotify<bool>
+public class OpenWares : Scene, INotify<GenericStateBundle<GameStateBundle>>, INotify<bool>
 {
     [SerializeField] GameObject MagicCircle;
     [SerializeField] GameObject WaresPanel;
