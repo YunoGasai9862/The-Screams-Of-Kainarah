@@ -2,6 +2,7 @@
 using Annotations.Enums;
 using Assets.Exceptions;
 using Assets.Scripts.DelegatorsManager.Models;
+using Assets.Scripts.Scene;
 using ObserverPattern;
 using System;
 using System.Collections;

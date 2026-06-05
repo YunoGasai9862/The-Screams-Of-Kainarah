@@ -6,9 +6,12 @@ namespace Assets.Scripts.Scene
 {
     public class Scene : MonoBehaviour, IScene
     {
-        public void Broadcast<T>(T value)
+        public virtual void Broadcast(dynamic value)
         {
-            throw new NotImplementedException();
+        }
+
+        public virtual void Broadcast<T>(T value)
+        {
         }
     }
 }

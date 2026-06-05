@@ -5,13 +5,17 @@ using UnityEngine;
 
 namespace Assets.Scripts.Broadcaster
 {
-    public class Broadcaster : Assets.Scripts.Scene.Scene, IBroadcaster
+    public class Broadcaster : Scene.Scene, IBroadcaster
     {
         private SceneRegistry SceneRegistryInstance { get; set; }
 
+        private SceneUtils SceneUtilsInstance { get; set; }
+
         private void Awake()
         {
-            SceneRegistryInstance = SceneUtils.FindObject<SceneRegistry>();
+            SceneUtilsInstance = FindFirstObjectByType<SceneUtils>();
+
+            SceneRegistryInstance = SceneUtilsInstance.FindObject<SceneRegistry>();
         }
 
         public void Broadcast<T>(T value)
