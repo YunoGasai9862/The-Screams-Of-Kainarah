@@ -4,6 +4,7 @@ using System.Collections;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(WaterCameraAndTextureFollow), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
 public class WaterCameraAndTextureFollow : Scene, INotify<IEntityTransform>

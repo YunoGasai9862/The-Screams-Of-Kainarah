@@ -7,6 +7,7 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CandleLightPackageGenerator), ContextType = typeof(LightPackage))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CandleLightPackageGenerator), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CheckPointActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CheckPointActionListener), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]

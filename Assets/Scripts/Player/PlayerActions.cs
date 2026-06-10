@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(PlayerStateConsumer), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]

@@ -1,3 +1,4 @@
+using Assets.Scripts.Scene;
 using UnityEngine;
 
 public class ControlPanelTrigger : Scene

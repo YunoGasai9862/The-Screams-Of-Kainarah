@@ -1,3 +1,4 @@
+using Assets.Scripts.Scene;
 using DG.Tweening;
 using System.Threading;
 using System.Threading.Tasks;

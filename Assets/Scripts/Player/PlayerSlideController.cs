@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerSlideController), SubjectType = typeof(PlayerAnimationController), ContextType = typeof(AnimationDetails))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerSlideController), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]

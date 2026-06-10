@@ -6,6 +6,7 @@ using UnityEngine;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine.EventSystems;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(TriggerHandler), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(TriggerHandler), ContextType = typeof(bool))]
