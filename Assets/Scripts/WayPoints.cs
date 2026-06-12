@@ -1,6 +1,7 @@
 
 namespace WayPointsObject
 {
+    using Assets.Scripts.Scene;
     using System;
     using UnityEngine;
 

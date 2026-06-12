@@ -3,6 +3,7 @@ using System.Collections;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PickableItems), EntityType = typeof(OpenWares), ContextType = typeof(bool))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(GameStateConsumer), EntityType = typeof(OpenWares), ContextType = typeof(GenericStateBundle<GameStateBundle>))]

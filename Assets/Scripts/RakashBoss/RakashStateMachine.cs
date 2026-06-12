@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(RakashStateMachine), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(RakashStateMachine), SubjectType = typeof(EnemyHittableManager), ContextType = typeof(EnemyHittableManager))]

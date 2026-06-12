@@ -1,4 +1,5 @@
 
+using Assets.Scripts.Scene;
 using Assets.Scripts.ScenePersistence.Models;
 using UnityEngine;
 

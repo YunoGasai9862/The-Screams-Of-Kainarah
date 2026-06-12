@@ -6,6 +6,7 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(MoonMovement), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
 public class MoonMovement : Scene, INotify<IEntityTransform>

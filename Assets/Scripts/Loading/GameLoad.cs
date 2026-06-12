@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Annotations.Enums;
 using Assets.Annotations;
+using Assets.Scripts.Scene;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameLoad), ContextType = typeof(GameLoad))]
 public class GameLoad : Scene, IGameLoad

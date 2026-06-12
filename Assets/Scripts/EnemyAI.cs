@@ -3,6 +3,7 @@ using UnityEngine;
 using Pathfinding;
 using System.Threading.Tasks;
 using System.Threading;
+using Assets.Scripts.Scene;
 
 public class EnemyAI : Scene
 {

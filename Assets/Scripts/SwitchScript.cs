@@ -2,6 +2,7 @@
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using Assets.Scripts.Scene;
 
 public class SwitchScript : Scene
 {
