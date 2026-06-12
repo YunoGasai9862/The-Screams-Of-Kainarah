@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Assets.Scripts.Scene;
 using UnityEngine;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAnimationEvent), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]

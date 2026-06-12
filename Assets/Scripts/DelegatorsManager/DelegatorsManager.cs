@@ -1,4 +1,5 @@
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 using UnityEngine;
 
 [Asset(Asset.MONOBEHAVIOR, "DelegatorsManager", InstantiationOrder = 3)]

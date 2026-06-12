@@ -4,6 +4,7 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
 using Annotations.Enums;
 using UnityEngine;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueObserverManager), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueObserverManager), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(DialoguesAndOptions.DialogueSystem))]

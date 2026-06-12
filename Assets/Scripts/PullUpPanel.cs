@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PullUpPanel), SubjectType = typeof(TriggerHandler), ContextType = typeof(bool))]
 public class PullUpPanel : Scene, INotify<bool>

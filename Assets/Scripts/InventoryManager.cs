@@ -1,6 +1,7 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.Base;
+using Assets.Scripts.Scene;
 using UnityEngine;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(InventoryManager), ContextType = typeof(bool))]

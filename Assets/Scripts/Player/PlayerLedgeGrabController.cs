@@ -5,6 +5,7 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), EntityType = typeof(PlayerLedgeGrabController), ContextType = typeof(Player))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerStateConsumer), EntityType = typeof(PlayerLedgeGrabController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]

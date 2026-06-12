@@ -3,6 +3,7 @@ using System.Collections;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EntitiesToResetActionListener), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(EntitiesToReset))]
 public class EntitiesToResetActionListener : Scene, INotify<EntitiesToReset>

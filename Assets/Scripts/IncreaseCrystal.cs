@@ -1,3 +1,4 @@
+using Assets.Scripts.Scene;
 using TMPro;
 using UnityEngine;
 public class IncreaseCrystal : Scene

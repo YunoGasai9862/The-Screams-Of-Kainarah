@@ -3,6 +3,7 @@ using System.Collections;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CustomLightProcessing), SubjectType = typeof(CandleLightPackageGenerator), ContextType = typeof(LightPackage))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CustomLightProcessing), SubjectType = typeof(CelestialBodiesLightPackageGenerator), ContextType = typeof(LightPackage))]

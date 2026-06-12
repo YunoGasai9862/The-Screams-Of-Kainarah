@@ -1,13 +1,13 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.Base;
+using Assets.Scripts.Scene;
 using Assets.Scripts.ScenePersistence.Models;
 using PlayerHittableItemsNS;
 using System;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using static Context;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), ContextType = typeof(Collider2D))]

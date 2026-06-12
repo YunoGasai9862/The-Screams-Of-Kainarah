@@ -5,6 +5,7 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueResetActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 public class DialogueResetActionListener : Scene, INotify<EntityPoolManager>

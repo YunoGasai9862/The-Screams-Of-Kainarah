@@ -1,6 +1,7 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Assets.Scripts.Scene;
 using Assets.Scripts.ScenePersistence.Models;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameStateManager), ContextType = typeof(IGameStateHandler))]

@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [AssetAttribute(Asset.MONOBEHAVIOR, "AWSPollyManager", InstantiationOrder = 13)]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(AWSPolllyManagement), SubjectType = typeof(FirebaseStorageManager), ContextType = typeof(FirebaseStorageManager))]

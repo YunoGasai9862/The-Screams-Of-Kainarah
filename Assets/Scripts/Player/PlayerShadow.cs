@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
+using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), EntityType = typeof(PlayerShadow), ContextType = typeof(Player))]
 public class PlayerShadow : Scene, INotify<Player>

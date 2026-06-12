@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using Newtonsoft.Json;
+using Assets.Scripts.Scene;
 
 public class FirebaseDatabaseManager : Scene, IFirebaseDatabase
 {

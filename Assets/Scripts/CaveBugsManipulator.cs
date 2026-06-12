@@ -1,3 +1,4 @@
+using Assets.Scripts.Scene;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
