@@ -30,7 +30,9 @@ public class AudioPreload : Scene, IPreloadAudio<DialoguesAndOptions>, IDelegate
     private Delegator Delegator { get; set; }
 
     private AudioGeneratedEvent m_audioGeneratedEvent;
-   
+
+    private SceneUtils SceneUtils { get; set; }
+
 
     private void Awake()
     {
@@ -133,6 +135,14 @@ public class AudioPreload : Scene, IPreloadAudio<DialoguesAndOptions>, IDelegate
         AWSPollyManager = value;
 
         yield return null;
+    }
+
+    public override void Broadcast(dynamic value)
+    {
+        if (value is SceneUtils && SceneUtils == null)
+        {
+            SceneUtils = value as SceneUtils;
+        }
     }
 }
 

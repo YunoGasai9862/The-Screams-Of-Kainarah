@@ -1,11 +1,12 @@
 ﻿using Assets.Scripts.Broadcaster.Interface;
-using Assets.Scripts.Scene;
+using Assets.Scripts.Polling.Interfaces;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Broadcaster
 {
-    public class Broadcaster : Scene.Scene, IBroadcaster
+    public class Broadcaster : Scene.Scene, IBroadcaster, IPoller
     {
         private SceneRegistry SceneRegistryInstance { get; set; }
 
@@ -16,6 +17,8 @@ namespace Assets.Scripts.Broadcaster
             SceneUtilsInstance = FindFirstObjectByType<SceneUtils>();
 
             SceneRegistryInstance = SceneUtilsInstance.FindObject<SceneRegistry>();
+
+            Broadcast(SceneUtilsInstance);
         }
 
         public void Broadcast<T>(T value)
@@ -24,6 +27,13 @@ namespace Assets.Scripts.Broadcaster
             {
                 item.Value.GetComponent<Scene.Scene>().Broadcast(value);
             }
+        }
+
+        public IEnumerator Poll(int pollingIntervalInSeconds)
+        {
+            Broadcast(SceneUtilsInstance);
+
+            yield return new WaitForSeconds(pollingIntervalInSeconds);
         }
     }
 }
