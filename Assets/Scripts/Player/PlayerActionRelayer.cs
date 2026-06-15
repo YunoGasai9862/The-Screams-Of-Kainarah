@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static Context;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), ContextType = typeof(Collider2D))]
@@ -17,7 +18,7 @@ using static Context;
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
-public class PlayerActionRelayer : Scene, INotify<IGameStateHandler>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<Player>, IGameStateHandler, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<EntityPoolManager>, IRequest<Collider2D>, 
+public class PlayerActionRelayer : Assets.Scripts.Scene.Scene, INotify<IGameStateHandler>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<Player>, IGameStateHandler, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<EntityPoolManager>, IRequest<Collider2D>, 
     IRequest<Player>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GameStateManager>
 {
     [SerializeField] string InteractableTag;
@@ -340,7 +341,7 @@ public class PlayerActionRelayer : Scene, INotify<IGameStateHandler>, Assets.Scr
     {
         EntityPoolManagerInstance = value;
 
-        PickableItemsSO = SceneUtils.GetFromEntityPoolManager<PickableItems>(EntityPoolManagerInstance, PICKABLE_ITEMS_KEY);
+        PickableItemsSO = base.SceneUtils.GetFromEntityPoolManager<PickableItems>(EntityPoolManagerInstance, PICKABLE_ITEMS_KEY);
 
         PickableItemsUtility = new PickableItemsUtility(PickableItemsSO);
 

@@ -1,4 +1,5 @@
 
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,6 +11,6 @@ public interface IGameState
     Task  RestartLevel();
     Task LoadLastCheckPoint(string saveFileName, SemaphoreSlim lockingThread);
     Task NewGame();
-    Task LoadSceneAsync(int sceneIndex);
+    IEnumerator LoadSceneAsync(int sceneIndex);
 
 }

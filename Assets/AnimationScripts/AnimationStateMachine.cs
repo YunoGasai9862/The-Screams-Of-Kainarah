@@ -1,61 +1,49 @@
 
-using NUnit.Framework;
+using Assets.Scripts.Scene;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.Random;
 namespace PlayerAnimationHandler
 {
-    public class AnimationStateMachine
+    public class AnimationStateMachine: Scene
     {
-        private Animator _animator;
-
-        public AnimationStateMachine(Animator animator)
-        {
-            if (animator == null)
-            {
-                throw new System.Exception("Animator is null - can't initalize the AnimationStateMachine!");
-            }
-
-            _animator = animator;
-        }
-        public void SetAnimation<T>(string stateName, T value)
+        public void SetAnimation<T>(Animator animator, string stateName, T value)
         {
 
             switch (value)
             {
                 case bool val:
-                    _animator.SetBool(stateName, val);
+                    animator.SetBool(stateName, val);
                     break;
                 case float val:
-                    _animator.SetFloat(stateName, val);
+                    animator.SetFloat(stateName, val);
                     break;
                 case int val:
-                    _animator.SetInteger(stateName, val);
+                    animator.SetInteger(stateName, val);
                     break;
             }
         }
 
-        public void ResetParameters()
+        public void ResetParameters(Animator animator)
         {
-            foreach (AnimatorControllerParameter parameter in _animator.parameters)
+            foreach (AnimatorControllerParameter parameter in animator.parameters)
             {
                 switch (parameter.type)
                 {
                     case AnimatorControllerParameterType.Float:
-                        _animator.SetFloat(parameter.name, 0f);
+                        animator.SetFloat(parameter.name, 0f);
                         break;
 
                     case AnimatorControllerParameterType.Bool:
-                        _animator.SetBool(parameter.name, false);
+                        animator.SetBool(parameter.name, false);
                         break;
 
                     case AnimatorControllerParameterType.Int:
-                        _animator.SetInteger(parameter.name, 0);
+                        animator.SetInteger(parameter.name, 0);
                         break;
 
                     case AnimatorControllerParameterType.Trigger:
-                        _animator.ResetTrigger(_animator.GetInteger(parameter.name));
+                        animator.ResetTrigger(animator.GetInteger(parameter.name));
                         break;
 
                     default:
@@ -64,9 +52,9 @@ namespace PlayerAnimationHandler
             }
         }
 
-        public void ResetParameters(List<Reset> resetParameters, ResetState state)
+        public void ResetParameters( Animator animator, List<Reset> resetParameters, ResetState state)
         {
-            AnimatorControllerParameter[] animatorControllerParameters = _animator.parameters.ToArray();
+            AnimatorControllerParameter[] animatorControllerParameters = animator.parameters.ToArray();
 
             foreach (Reset reset in resetParameters)
             {
@@ -81,22 +69,22 @@ namespace PlayerAnimationHandler
                 switch (reset.m_val.m_type)
                 {
                     case AnimatorControllerParameterType.Float:
-                        _animator.SetFloat(reset.m_key, state.Equals(ResetState.REVERT) ? (float) SceneUtils.Convert(reset.m_val.m_type, reset.m_val.m_oldValue) : 
+                        animator.SetFloat(reset.m_key, state.Equals(ResetState.REVERT) ? (float) SceneUtils.Convert(reset.m_val.m_type, reset.m_val.m_oldValue) : 
                             (float) SceneUtils.Convert(reset.m_val.m_type, reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Bool:
-                        _animator.SetBool(reset.m_key, state.Equals(ResetState.REVERT) ? (bool) SceneUtils.Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
+                        animator.SetBool(reset.m_key, state.Equals(ResetState.REVERT) ? (bool) SceneUtils.Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
                             (bool) SceneUtils.Convert(reset.m_val.m_type, reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Int:
-                        _animator.SetInteger(reset.m_key, state.Equals(ResetState.REVERT) ? (int) SceneUtils.Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
+                        animator.SetInteger(reset.m_key, state.Equals(ResetState.REVERT) ? (int) SceneUtils.Convert(reset.m_val.m_type, reset.m_val.m_oldValue) :
                             (int) SceneUtils.Convert(reset.m_val.m_type, reset.m_val.m_newValue));
                         break;
 
                     case AnimatorControllerParameterType.Trigger:
-                        _animator.ResetTrigger(_animator.GetInteger(reset.m_key));
+                        animator.ResetTrigger(animator.GetInteger(reset.m_key));
                         break;
 
                     default:

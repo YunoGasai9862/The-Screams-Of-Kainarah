@@ -6,9 +6,9 @@ namespace Assets.Scripts.Scene
 {
     public class Scene : MonoBehaviour, IScene
     {
-        private dynamic Value { get; set; }
+        protected dynamic Value { get; set; }
 
-        private SceneUtils SceneUtils { get; set; }
+        protected SceneUtils SceneUtils { get; set; }
 
         public virtual void Broadcast(dynamic value)
         {

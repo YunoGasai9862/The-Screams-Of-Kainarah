@@ -59,7 +59,7 @@ public class GameStateManager : Scene, IGameState, Assets.Scripts.Interfaces.Med
 
     public void ChangeLevel(int buildIndex)
     {
-        SceneManager.LoadScene(buildIndex + 1);
+        LoadScene(buildIndex + 1);
     }
 
     public async Task LoadGame(string saveFileName, SemaphoreSlim lockingThread) //implement LoadGame with Json etc by saving states
@@ -166,7 +166,7 @@ public class GameStateManager : Scene, IGameState, Assets.Scripts.Interfaces.Med
 
     public async Task RestartLevel()
     {
-        await SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+        await LoadSceneAsync(GetActiveScene().name);
     }
 
     public Task InvokeListeners(List<IGameStateHandler> handlers)
@@ -214,15 +214,14 @@ public class GameStateManager : Scene, IGameState, Assets.Scripts.Interfaces.Med
 
     }
 
-    public Task LoadSceneAsync(int sceneIndex)
+    public IEnumerator LoadSceneAsync(int sceneIndex)
     {
-        StartCoroutine(LoadScene(sceneIndex));
-        return Task.CompletedTask;
+        yield return StartCoroutine(LoadScene(sceneIndex));
     }
 
     public IEnumerator LoadScene(int sceneIndex)
     {
-        AsyncOperation loadingScene = SceneManager.LoadSceneAsync(sceneIndex);
+        AsyncOperation loadingScene = await LoadSceneAsync(sceneIndex);
 
         //show it on the UI (percentage bar)
         float loadPercentage = loadingScene.progress;
