@@ -30,6 +30,8 @@ public class PlayerAnimationController : Scene, IRequest<AnimationDetails>, IRec
         {
             throw new DelegatorNotFoundException("Delegator not found!!");
         }
+
+        AnimationStateMachine = new AnimationStateMachine(SceneUtils);
     }
 
     private void Start()
@@ -68,20 +70,20 @@ public class PlayerAnimationController : Scene, IRequest<AnimationDetails>, IRec
 
         EmitMovementAnimationStateBundle.StateBundle.PreviousAnimation.PreviousAnimationHash = EmitMovementAnimationStateBundle.StateBundle.CurrentAnimation.CurrentAnimatorStateInfo.shortNameHash;
 
-        AnimationStateMachine.SetAnimation(PlayerAnimationField.OverallState.ToString(), (int) executionState);
-        AnimationStateMachine.SetAnimation(PlayerAnimationField.Speed.ToString(), bundle.PlayerMovementState.CurrentValue.CharacterSpeed.x);
+        AnimationStateMachine.SetAnimation(PlayerAnimator, PlayerAnimationField.OverallState.ToString(), (int) executionState);
+        AnimationStateMachine.SetAnimation(PlayerAnimator, PlayerAnimationField.Speed.ToString(), bundle.PlayerMovementState.CurrentValue.CharacterSpeed.x);
     }
 
     private void JumpAnimation(PlayerStateBundle bundle, AnimationExecutionState executionState)
     {
-        AnimationStateMachine.SetAnimation(PlayerAnimationField.OverallState.ToString(), (int) executionState);
-        AnimationStateMachine.SetAnimation(PlayerAnimationField.LeapState.ToString(), (int) bundle.PlayerLeapState.CurrentState); 
+        AnimationStateMachine.SetAnimation(PlayerAnimator, PlayerAnimationField.OverallState.ToString(), (int) executionState);
+        AnimationStateMachine.SetAnimation(PlayerAnimator, PlayerAnimationField.LeapState.ToString(), (int) bundle.PlayerLeapState.CurrentState); 
     }
 
     private void SlidingAnimation(PlayerStateBundle bundle, AnimationExecutionState executionState)
     {
-        AnimationStateMachine.SetAnimation(PlayerAnimationField.OverallState.ToString(), (int) executionState);
-        AnimationStateMachine.SetAnimation(PlayerAnimationField.Sliding.ToString(), (int) bundle.PlayerMovementState.CurrentState);
+        AnimationStateMachine.SetAnimation(PlayerAnimator, PlayerAnimationField.OverallState.ToString(), (int) executionState);
+        AnimationStateMachine.SetAnimation(PlayerAnimator, PlayerAnimationField.Sliding.ToString(), (int) bundle.PlayerMovementState.CurrentState);
     }
 
     private float ReturnCurrentAnimation()

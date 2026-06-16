@@ -26,4 +26,27 @@ namespace Assets.Scripts.Scene
             }
         }
     }
+
+    public class StateMachineScene : StateMachineBehaviour, IScene
+    {
+        protected dynamic Value { get; set; }
+
+        protected SceneUtils SceneUtils { get; set; }
+
+        public virtual void Broadcast(dynamic value)
+        {
+            if (value is SceneUtils && SceneUtils == null)
+            {
+                SceneUtils = value;
+            }
+        }
+
+        public virtual void Broadcast<T>(T value)
+        {
+            if (value is SceneUtils && SceneUtils == null)
+            {
+                SceneUtils = value as SceneUtils;
+            }
+        }
+    }
 }

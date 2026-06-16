@@ -1,12 +1,24 @@
 
 using Assets.Scripts.Scene;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 namespace PlayerAnimationHandler
 {
-    public class AnimationStateMachine: Scene
+    public class AnimationStateMachine
     {
+        private SceneUtils SceneUtils { get; set; }
+        public AnimationStateMachine(SceneUtils sceneUtils)
+        {
+            if (sceneUtils == null)
+            {
+                throw new ApplicationException($"SceneUtils is null in {nameof(AnimationStateMachine)}!!");
+            }
+
+            SceneUtils = sceneUtils;
+        }
+
         public void SetAnimation<T>(Animator animator, string stateName, T value)
         {
 
@@ -52,7 +64,7 @@ namespace PlayerAnimationHandler
             }
         }
 
-        public void ResetParameters( Animator animator, List<Reset> resetParameters, ResetState state)
+        public void ResetParameters(Animator animator, List<Reset> resetParameters, ResetState state)
         {
             AnimatorControllerParameter[] animatorControllerParameters = animator.parameters.ToArray();
 
