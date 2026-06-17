@@ -40,12 +40,13 @@ public class GameStateManager : Scene, IGameState, Assets.Scripts.Interfaces.Med
         public List<SceneData.ObjectData> objectsToSave;
     }
 
-    private async void Awake()
+    private void Awake()
     {
         if (_sceneData == null)
         {
             Debug.Log("No data found, initializing everything to default");
-            await NewGame();
+
+            StartCoroutine(NewGame());
         }
         _mainCamera = Camera.main;
         _mainCameraOldPosition = _mainCamera.transform.position;
@@ -62,36 +63,12 @@ public class GameStateManager : Scene, IGameState, Assets.Scripts.Interfaces.Med
         LoadScene(buildIndex + 1);
     }
 
-    public async Task LoadGame(string saveFileName, SemaphoreSlim lockingThread) //implement LoadGame with Json etc by saving states
+    public IEnumerator LoadLastCheckPoint()
     {
-        //load the whole scene
-        string saveFileLocation = Path.Combine(Application.persistentDataPath, saveFileName);
-        var jsonData = File.ReadAllText(saveFileLocation);
-        ObjectDataWrapperClass wrapper = JsonUtility.FromJson<ObjectDataWrapperClass>(jsonData);
-        var objectsToLoad = wrapper.objectsToSave;
-        foreach (var objectToLoad in objectsToLoad)
-        {
-            var foundObject = GameObject.Find(objectToLoad.name);
-            if (foundObject==null)
-            {
-                var prefab = Resources.Load<GameObject>(objectToLoad.name); //load the prefab
-                GameObject go = Instantiate(prefab, objectToLoad.transform.position, objectToLoad.rotation); //instantiate it
-                Debug.Log(go);
-            }
-            else
-            {
-                foundObject.transform.position = objectToLoad.transform.position;
-            }
-        }
-        await Task.CompletedTask;
+         yield return StartCoroutine(LoadLastCheckPoint(GetFileLocationToLoad));
     }
 
-    public async Task LoadLastCheckPoint(SemaphoreSlim lockingThread)
-    {
-        await LoadLastCheckPoint(GetFileLocationToLoad, lockingThread);
-    }
-
-    public async Task LoadLastCheckPoint(string saveFileName, SemaphoreSlim lockingThread)
+    public IEnumerator LoadLastCheckPoint(string saveFileName)
     {
 
         var saveFilePath = Path.Combine(Application.persistentDataPath, saveFileName);
@@ -104,21 +81,19 @@ public class GameStateManager : Scene, IGameState, Assets.Scripts.Interfaces.Med
             List<SceneData.ObjectData> savedData = wrapper.objectsToSave;
             foreach (var gameObjectData in savedData)
             {
-                await UpdateSceneData(gameObjectData);
+                UpdateSceneData(gameObjectData);
             }
         }
         catch (System.Exception ex)
         {
             Debug.Log(ex.Message);
         }
-        finally
-        {
-            lockingThread.Release();
-        }
-       
+
+        yield return null;
+
     }
 
-    public Task UpdateSceneData(SceneData.ObjectData gameObjectData)
+    public IEnumerator UpdateSceneData(SceneData.ObjectData gameObjectData)
     {
         GameObject gameObject = GameObject.FindWithTag(gameObjectData.tag);
 
@@ -130,16 +105,16 @@ public class GameStateManager : Scene, IGameState, Assets.Scripts.Interfaces.Med
         {
             gameObject.GetComponent<AbstractEntity>().Health = gameObjectData.health;
         }
-           
-        return Task.CompletedTask;
+
+        yield return null;
     }
 
-    public async Task SaveGame()
+    public IEnumerator SaveGame()
     {
-        await SaveGame(fileName);   
+        yield return StartCoroutine(SaveGame(fileName));
     }
 
-    public async Task SaveGame(string fileName)
+    public IEnumerator SaveGame(string fileName)
     {
         GameObject[] allGameObjectsInTheScene = FindObjectsByType<GameObject>(FindObjectsSortMode.None).Where(o=>o.transform == o.transform.root).ToArray(); //only parent objects
         List<SceneData.ObjectData> gameData = new List<SceneData.ObjectData>(); //different approach
@@ -155,13 +130,14 @@ public class GameStateManager : Scene, IGameState, Assets.Scripts.Interfaces.Med
         GetFileLocationToLoad = location;
         File.WriteAllText(location, completeJson);
 
-        await Task.CompletedTask;
+        yield return null;
     }
 
-    public Task NewGame()
+    public IEnumerator NewGame()
     {
-        this._sceneData = new SceneData(); //initializes the new data
-        return Task.CompletedTask;
+        _sceneData = new SceneData(); //initializes the new data
+
+        yield return null;
     }
 
     public async Task RestartLevel()
@@ -189,29 +165,20 @@ public class GameStateManager : Scene, IGameState, Assets.Scripts.Interfaces.Med
         return Task.CompletedTask;
     }
 
-    public async Task SaveCheckPoint(string fileName)
+    public IEnumerator SaveCheckPoint(string fileName)
     {
-        try
+        yield return StartCoroutine(InvokeListeners(GameStateHandlerObjects));
+
+        foreach (var objectToSave in this._sceneData.ObjectsToPersit)
         {
-            await InvokeListeners(GameStateHandlerObjects);
-
-            foreach (var objectToSave in this._sceneData.ObjectsToPersit)
-            {
-                var jsonObject = JsonUtility.ToJson(objectToSave);
-                jsonSerializedData.Add(jsonObject);
-            }
-            var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file
-            string localFilename = Path.Combine(Application.persistentDataPath, fileName);
-            GetFileLocationToLoad = localFilename;
-            File.WriteAllText(localFilename, completeJson);
-            jsonSerializedData.Clear(); //remove old data
+            var jsonObject = JsonUtility.ToJson(objectToSave);
+            jsonSerializedData.Add(jsonObject);
         }
-        catch (System.Exception e)
-        {
-            Debug.Log(e.Message);
-
-        }
-
+        var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file
+        string localFilename = Path.Combine(Application.persistentDataPath, fileName);
+        GetFileLocationToLoad = localFilename;
+        File.WriteAllText(localFilename, completeJson);
+        jsonSerializedData.Clear(); //remove old data
     }
 
     public IEnumerator LoadSceneAsync(int sceneIndex)
@@ -244,5 +211,30 @@ public class GameStateManager : Scene, IGameState, Assets.Scripts.Interfaces.Med
         GameStateHandlerObjects.Add((IGameStateHandler)obsever);
 
         return null;
+    }
+
+    public IEnumerator LoadGame(string saveFileName)
+    {
+        //load the whole scene
+        string saveFileLocation = Path.Combine(Application.persistentDataPath, saveFileName);
+        var jsonData = File.ReadAllText(saveFileLocation);
+        ObjectDataWrapperClass wrapper = JsonUtility.FromJson<ObjectDataWrapperClass>(jsonData);
+        var objectsToLoad = wrapper.objectsToSave;
+        foreach (var objectToLoad in objectsToLoad)
+        {
+            var foundObject = GameObject.Find(objectToLoad.name);
+            if (foundObject == null)
+            {
+                var prefab = Resources.Load<GameObject>(objectToLoad.name); //load the prefab
+                GameObject go = Instantiate(prefab, objectToLoad.transform.position, objectToLoad.rotation); //instantiate it
+                Debug.Log(go);
+            }
+            else
+            {
+                foundObject.transform.position = objectToLoad.transform.position;
+            }
+        }
+
+        yield return null;
     }
 }
