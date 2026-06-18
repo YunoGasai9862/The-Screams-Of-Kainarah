@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PowerMode : Scene
+public class PowerMode : MonoBehaviorScene
 {
     [SerializeField] public Image fill;
     [SerializeField] public Slider slider;

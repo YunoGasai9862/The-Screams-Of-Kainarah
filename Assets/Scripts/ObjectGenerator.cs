@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-public class ObjectGenerator : Scene
+public class ObjectGenerator : MonoBehaviorScene
 {
     [HideInInspector]
     [SerializeField] Tilemap tiles;

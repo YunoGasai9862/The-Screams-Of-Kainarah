@@ -1,19 +1,18 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using Assets.Scripts.Scene;
 using Assets.Scripts.ScenePersistence.Models;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameStateManager), ContextType = typeof(IGameStateHandler))]
-public class GameStateManager : Scene, IGameState, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<IGameStateHandler>, IRequest<GameStateManager>
+public class GameStateManager : Assets.Scripts.Scene.MonoBehaviorScene, IGameState, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<IGameStateHandler>, IRequest<GameStateManager>
 {
     private SceneData _sceneData;
     private string _fileName;
@@ -140,11 +139,6 @@ public class GameStateManager : Scene, IGameState, Assets.Scripts.Interfaces.Med
         yield return null;
     }
 
-    public async Task RestartLevel()
-    {
-        await LoadSceneAsync(GetActiveScene().name);
-    }
-
     public Task InvokeListeners(List<IGameStateHandler> handlers)
     {
         foreach (IGameStateHandler gameObjectState in handlers)
@@ -236,5 +230,10 @@ public class GameStateManager : Scene, IGameState, Assets.Scripts.Interfaces.Med
         }
 
         yield return null;
+    }
+
+    IEnumerator IGameState.RestartLevel()
+    {
+        yield return StartCoroutine(LoadSceneAsync(SceneManager.GetActiveScene().buildIndex));
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(HealthBar), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityHealth))]
-public class HealthBar : Scene, INotify<IEntityHealth>
+public class HealthBar : MonoBehaviorScene, INotify<IEntityHealth>
 {
 
     [SerializeField] Image Fill;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RakashControllerMovement : Scene, IReceiver<MovementActionDelegatePackage, Task<ActionExecuted>>
+public class RakashControllerMovement : MonoBehaviorScene, IReceiver<MovementActionDelegatePackage, Task<ActionExecuted>>
 {
     private const float OVER_GROUND = 1.5f;
 

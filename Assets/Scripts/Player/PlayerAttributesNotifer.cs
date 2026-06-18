@@ -7,7 +7,7 @@ using UnityEngine;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
-public class PlayerAttributesNotifier: Scene, IRequest<Player>, IRequest<IEntityAnimator>
+public class PlayerAttributesNotifier: MonoBehaviorScene, IRequest<Player>, IRequest<IEntityAnimator>
 {
     private Player Player { get; set; }
 

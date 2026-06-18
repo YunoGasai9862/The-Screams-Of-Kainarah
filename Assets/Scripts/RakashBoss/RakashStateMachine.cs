@@ -10,7 +10,7 @@ using Assets.Scripts.Scene;
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(RakashStateMachine), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(RakashStateMachine), SubjectType = typeof(EnemyHittableManager), ContextType = typeof(EnemyHittableManager))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(RakashStateMachine), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
-public class RakashStateMachine : Scene, INotify<GenericStateBundle<GameStateBundle>>, INotify<IEntityTransform>, INotify<EnemyHittableManager>
+public class RakashStateMachine : MonoBehaviorScene, INotify<GenericStateBundle<GameStateBundle>>, INotify<IEntityTransform>, INotify<EnemyHittableManager>
 {
     public const float TIME_SPAN_BETWEEN_EACH_ATTACK = 0.5f;
 

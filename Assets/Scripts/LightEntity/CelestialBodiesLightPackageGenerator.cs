@@ -11,7 +11,7 @@ using UnityEngine.Rendering.Universal;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CelestialBodiesLightPackageGenerator), ContextType = typeof(LightPackage))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CelestialBodiesLightPackageGenerator), SubjectType = typeof(CelestialBodyLightning), ContextType = typeof(ILightPreprocess))]
-public class CelestialBodiesLightPackageGenerator : Scene, INotify<ILightPreprocess>, Assets.Scripts.Interfaces.Mediator.EnhancedV4.IRequest<LightPackage>, ILightPackageGenerator
+public class CelestialBodiesLightPackageGenerator : MonoBehaviorScene, INotify<ILightPreprocess>, Assets.Scripts.Interfaces.Mediator.EnhancedV4.IRequest<LightPackage>, ILightPackageGenerator
 {
     private Delegator Delegator { get; set; }
 

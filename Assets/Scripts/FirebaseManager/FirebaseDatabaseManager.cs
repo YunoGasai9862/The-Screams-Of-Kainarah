@@ -6,7 +6,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using Assets.Scripts.Scene;
 
-public class FirebaseDatabaseManager : Scene, IFirebaseDatabase
+public class FirebaseDatabaseManager : MonoBehaviorScene, IFirebaseDatabase
 {
     //use this later if ever required to use Firebase Database for inventory/user logins (quickly prototyping it for now)
     private DatabaseReference FirebaseDatabaseReference { get; set; }

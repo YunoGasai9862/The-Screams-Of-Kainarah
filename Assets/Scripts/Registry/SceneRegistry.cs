@@ -9,7 +9,7 @@ using System.Linq;
 using UnityEngine;
 
 [Asset(Asset.MONOBEHAVIOR, "SceneRegistry", InstantiationOrder = 1)]
-public class SceneRegistry : Scene, IRegistry, IPoller
+public class SceneRegistry : MonoBehaviorScene, IRegistry, IPoller
 {
     private Dictionary<Int32, GameObject> RegisteredGameObjects { get; set; } = new Dictionary<Int32, GameObject>();
 

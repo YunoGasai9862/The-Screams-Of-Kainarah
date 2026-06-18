@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public abstract class BaseState<T>: Scene, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<GenericStateBundle<T>> where T : IStateBundle
+public abstract class BaseState<T>: MonoBehaviorScene, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<GenericStateBundle<T>> where T : IStateBundle
 {
     protected List<INotify<GenericStateBundle<T>>> StateListeners { get; set; } = new List<INotify<GenericStateBundle<T>>> { };
 
@@ -64,7 +64,7 @@ public abstract class BaseState<T>: Scene, Assets.Scripts.Interfaces.Mediator.En
 }
 
 
-public abstract class BaseState<T, Z> : Scene, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<GenericStateBundle<T, Z>> where T : IStateBundle
+public abstract class BaseState<T, Z> : MonoBehaviorScene, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<GenericStateBundle<T, Z>> where T : IStateBundle
 {
     protected List<INotify<GenericStateBundle<T, Z>>> StateListeners { get; set; } = new List<INotify<GenericStateBundle<T, Z>>> { };
 

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Assets.Scripts.Scene;
 
-public class EnemyAI : Scene
+public class EnemyAI : MonoBehaviorScene
 {
     public const float FORCEUPPERLIMIT = 400f;
 

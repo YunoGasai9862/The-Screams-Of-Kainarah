@@ -9,7 +9,7 @@ using Annotations.Enums;
 using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(MoonMovement), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
-public class MoonMovement : Scene, INotify<IEntityTransform>
+public class MoonMovement : MonoBehaviorScene, INotify<IEntityTransform>
 {
     [Header("Custom Variables")]
     [SerializeField] float moonSpeed;

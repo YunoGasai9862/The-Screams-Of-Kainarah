@@ -2,7 +2,7 @@ using Assets.Scripts.Scene;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AudioManager: Scene
+public class AudioManager: MonoBehaviorScene
 {
     [SerializeField]
     AudioSource audioSource;

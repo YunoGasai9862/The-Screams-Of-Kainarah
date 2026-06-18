@@ -8,14 +8,18 @@ using Annotations.Enums;
 using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(ResetController), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
-public class ResetController : Scene, INotify<ResetBundle>
+public class ResetController : MonoBehaviorScene, INotify<ResetBundle>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
+
+    private Animator Animator { get; set; }
 
     private Delegator Delegator { get; set; }
 
     private async void Awake()
     {
+        Animator = GetComponent<Animator>();
+
        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
     }
 
@@ -40,12 +44,12 @@ public class ResetController : Scene, INotify<ResetBundle>
         switch (resetSystem.State)
         {
             case ResetState.COMPLETE_RESET:
-                AnimationStateMachine.ResetParameters();
+                AnimationStateMachine.ResetParameters(Animator);
                 break;
 
             case ResetState.PARTIAL_RESET:
             case ResetState.REVERT:
-                AnimationStateMachine.ResetParameters(resetSystem.ResetParameters, resetSystem.State);
+                AnimationStateMachine.ResetParameters(Animator, resetSystem.ResetParameters, resetSystem.State);
                 break;
         }
 

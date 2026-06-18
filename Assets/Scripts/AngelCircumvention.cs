@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AngelCircumvention : Scene
+public class AngelCircumvention : MonoBehaviorScene
 {
     [Header("Custom Variables")]
     [SerializeField] Vector2 centerPoint;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
-public class GenerateBoxes : Scene
+public class GenerateBoxes : MonoBehaviorScene
 {
     // Start is called before the first frame update
     private int _count = 0;

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class MoveCrystal : Scene
+public class MoveCrystal : MonoBehaviorScene
 {
     private const string DIAMONG_TAG = "Diamond";
     private const float DELAY_DURATION = 10f;

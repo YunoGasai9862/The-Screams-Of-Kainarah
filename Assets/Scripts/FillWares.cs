@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FillWares : Scene
+public class FillWares : MonoBehaviorScene
 {
     [Header("Fill Wares with Items")]
     [SerializeField] List<GameObject> wareObjects;

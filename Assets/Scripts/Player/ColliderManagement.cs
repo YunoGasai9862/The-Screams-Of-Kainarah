@@ -1,7 +1,7 @@
 using Assets.Scripts.Scene;
 using UnityEngine;
 
-public class ColliderManagement : Scene
+public class ColliderManagement : MonoBehaviorScene
 {
     [SerializeField] public Collider2D _collider;
     private SpriteRenderer _sr;

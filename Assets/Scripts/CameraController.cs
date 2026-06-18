@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class CameraController : Scene
+public class CameraController : MonoBehaviorScene
 {
     private Camera _waterCamera;
     [Header("Aspect Ratio:")]

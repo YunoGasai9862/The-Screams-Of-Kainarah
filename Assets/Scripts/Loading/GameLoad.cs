@@ -9,7 +9,7 @@ using Assets.Annotations;
 using Assets.Scripts.Scene;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameLoad), ContextType = typeof(GameLoad))]
-public class GameLoad : Scene, IGameLoad
+public class GameLoad : MonoBehaviorScene, IGameLoad
 {
     public async Task<Object> PreloadAsset<T>(EntityMetaData enttityMetaData) where T : Object
     {

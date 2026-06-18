@@ -3,7 +3,7 @@ using Assets.Scripts.Scene;
 using System.Threading;
 using UnityEngine;
 
-public class WaresReturn : Scene, IStateBundle
+public class WaresReturn : MonoBehaviorScene, IStateBundle
 {
     [SerializeField] GameObject panel;
     [SerializeField] GameStateEvent gameStateEvent;
