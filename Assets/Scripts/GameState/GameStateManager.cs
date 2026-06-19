@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -235,5 +236,47 @@ public class GameStateManager : Assets.Scripts.Scene.MonoBehaviorScene, IGameSta
     IEnumerator IGameState.RestartLevel()
     {
         yield return StartCoroutine(LoadSceneAsync(SceneManager.GetActiveScene().buildIndex));
+    }
+
+    public Task LoadGameAsync(string saveFileName, CancellationToken cancellationToken)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task SaveGameAsync(string fileName, CancellationToken cancellationToken)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task SaveCheckPointAsync(string saveFileName, CancellationToken cancellationToken)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task RestartLevelAsync(CancellationToken cancellationToken)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task LoadLastCheckPointAsync(string saveFileName, CancellationToken cancellationToken)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task NewGameAsync(CancellationToken cancellationToken)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    async Task IGameState.LoadSceneAsync(int sceneIndex)
+    {
+        AsyncOperation loadingScene = SceneManager.LoadSceneAsync(sceneIndex);
+
+        progressBar.value = loadingScene.progress;
+
+        if (loadingScene.isDone)
+        {
+            _mainCamera.transform.position = _mainCameraOldPosition;
+        }
     }
 }

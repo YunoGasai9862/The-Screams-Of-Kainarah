@@ -30,12 +30,14 @@ public class EnemyActions : MonoBehaviorScene, INotify<EnemyActionBundle>
     private InstantiateUtility _gameObjectCreator;
     private GameObject _enemyGameObject;
     private int animationPosInTheObject;
+    private Animator _animator;
 
     public GameObject enemyGameObject { get => _enemyGameObject; set=>_enemyGameObject = value;}
 
     private void Awake()
     {
-        _stateTracker = new AnimationStateMachine(animator);
+        _stateTracker = new AnimationStateMachine(SceneUtils);
+        _animator = GetComponent<Animator>();
         _gameObjectCreator = new InstantiateUtility(Hit);
         enemyActionDictionary = new Dictionary<string, System.Action<object, object>>() //object is required here
         {
@@ -49,14 +51,14 @@ public class EnemyActions : MonoBehaviorScene, INotify<EnemyActionBundle>
     private void PlayHitAnimation(object animName, object value)
     {
         AnimationFinder(_enemyAnimationScriptableObject, (string)animName, value);
-        _stateTracker.SetAnimation((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
+        _stateTracker.SetAnimation(_animator, (string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
         HandleGameObjectCreation();
  
     }
     private void AttackLogicInitiation(object animName, object value)
     {
         AnimationFinder(_enemyAnimationScriptableObject, (string)animName, value);
-        _stateTracker.SetAnimation((string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
+        _stateTracker.SetAnimation(_animator, (string)animName, _enemyAnimationScriptableObject.eachAnimation[animationPosInTheObject].valueBool);
 
     }
     private async void HandleGameObjectCreation()
