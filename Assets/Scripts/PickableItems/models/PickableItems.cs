@@ -2,6 +2,7 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Assets.Scripts.Scene;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -9,7 +10,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PickableItems", menuName = "Scriptable Pickable Items")]
 [Asset(Asset.SCRIPTABLE_OBJECT, "PickableItems", InstantiationOrder = 4)]
 [Subject(AssetType = Asset.SCRIPTABLE_OBJECT, EntityType = typeof(PickableItems), ContextType = typeof(ScriptableObject))]
-public class PickableItems : ScriptableObject, IRequest<ScriptableObject>, IDelegate
+public class PickableItems : ScriptableObjectScene, IRequest<ScriptableObject>, IDelegate
 {
     private Delegator Delegator { get; set; }
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }

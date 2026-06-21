@@ -1,6 +1,7 @@
+using Assets.Scripts.Scene;
 using UnityEngine;
 
-public class PlayerStateMachineReset: StateMachineBehaviour
+public class PlayerStateMachineReset: StateMachineScene
 {
     private PlayerStateEvent PlayerStateEvent { get; set; }
     private async void Awake()

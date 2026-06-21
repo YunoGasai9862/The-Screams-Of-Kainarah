@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class NextDialogue : MonoBehaviorScene, IPointerClickHandler
+public class NextDialogue : Scene, IPointerClickHandler
 {
     [SerializeField]
     NextDialogueTriggerEvent nextDialogueTriggerEvent;

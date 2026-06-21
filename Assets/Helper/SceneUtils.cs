@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class SceneUtils: MonoBehaviorScene
+public class SceneUtils: Scene
 {
     private Delegator Delegator { get; set; }
 
@@ -256,7 +256,7 @@ public class SceneUtils: MonoBehaviorScene
         return typeToSearch.IsAssignableFrom(gameObject.GetType());
     }
 
-    public async Task<TYPE> FindReceiver<TYPE, IMPLEMENTATION>(int retryLimit = 3, int waitLimitInSeconds = 3) where TYPE: MonoBehaviorScene
+    public async Task<TYPE> FindReceiver<TYPE, IMPLEMENTATION>(int retryLimit = 3, int waitLimitInSeconds = 3) where TYPE: Scene
     {
 
         for (int i = 0; i < retryLimit; i++)

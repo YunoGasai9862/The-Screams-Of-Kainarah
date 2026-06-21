@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class ActionExecutor : MonoBehaviorScene, IAction
+public class ActionExecutor : Scene, IAction
 {
     public Task ExecuteAction<T>(Action<T> action, T value)
     {

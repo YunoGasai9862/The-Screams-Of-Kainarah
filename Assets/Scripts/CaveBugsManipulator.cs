@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
 
-public class CaveBugsManipulator : MonoBehaviorScene
+public class CaveBugsManipulator : Scene
 {
     [Header("Particle System")]
     [SerializeField] ParticleSystem _ps;

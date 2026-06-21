@@ -8,7 +8,7 @@ using Assets.Scripts.Scene;
 using UnityEngine;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAnimationEvent), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-public class PlayerAnimationEvent : MonoBehaviorScene, INotify<EntityPoolManager>
+public class PlayerAnimationEvent : Scene, INotify<EntityPoolManager>
 {
     [SerializeField]
     private string iceTrailTag;

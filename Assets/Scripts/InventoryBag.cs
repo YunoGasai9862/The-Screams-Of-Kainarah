@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventoryBag : MonoBehaviorScene, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class InventoryBag : Scene, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     private const float HIGHLIGHT_COLOR_R = 166;
     private const float HIGHLIGHT_COLOR_G = 161;

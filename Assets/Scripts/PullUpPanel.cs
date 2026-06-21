@@ -6,7 +6,7 @@ using Annotations.Enums;
 using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PullUpPanel), SubjectType = typeof(TriggerHandler), ContextType = typeof(bool))]
-public class PullUpPanel : MonoBehaviorScene, INotify<bool>
+public class PullUpPanel : Scene, INotify<bool>
 {
     private const string SUFFICIENT_FUNDS_ANIMATION_CONDITION = "SufficientFunds";
 

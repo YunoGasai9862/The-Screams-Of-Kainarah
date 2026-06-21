@@ -7,7 +7,7 @@ using Annotations.Enums;
 using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(TrackPlayer), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
-public class TrackPlayer : MonoBehaviorScene, INotify<IEntityTransform>
+public class TrackPlayer : Scene, INotify<IEntityTransform>
 {
     private Transform PlayerTransform { get; set; }
 

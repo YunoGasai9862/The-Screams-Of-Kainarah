@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(LightFlicker), ContextType = typeof(ILightPreprocess))]
-public class LightFlicker : MonoBehaviorScene, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<ILightPreprocess>, ILightPreprocess
+public class LightFlicker : Scene, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<ILightPreprocess>, ILightPreprocess
 {
     private Delegator Delegator { get; set; }
 

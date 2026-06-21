@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Broadcaster
 {
-    public class Broadcaster : Scene.MonoBehaviorScene, IBroadcaster, IPoller
+    public class Broadcaster : Scene.Scene, IBroadcaster, IPoller
     {
         private SceneRegistry SceneRegistryInstance { get; set; }
 
@@ -25,7 +25,7 @@ namespace Assets.Scripts.Broadcaster
         {
             foreach (KeyValuePair<int, GameObject> item in SceneRegistryInstance.GetRegisteredGameObjects())
             {
-                item.Value.GetComponent<Scene.MonoBehaviorScene>().Broadcast(value);
+                item.Value.GetComponent<Scene.Scene>().Broadcast(value);
             }
         }
 

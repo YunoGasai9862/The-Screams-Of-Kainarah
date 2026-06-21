@@ -8,7 +8,7 @@ using Annotations.Enums;
 using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueResetActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-public class DialogueResetActionListener : MonoBehaviorScene, INotify<EntityPoolManager>
+public class DialogueResetActionListener : Scene, INotify<EntityPoolManager>
 {
     private const string DIALOGUES_AND_OPTIONS_KEY = "DialoguesAndOptions";
 

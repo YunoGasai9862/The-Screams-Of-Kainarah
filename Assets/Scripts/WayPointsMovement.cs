@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using WayPointsObject;
 
-public class WayPointsMovement : MonoBehaviorScene
+public class WayPointsMovement : Scene
 {
     [SerializeField] WayPoints[] Waypoints;
     [SerializeField] float MovementSpeed;

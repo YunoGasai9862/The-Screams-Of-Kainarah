@@ -13,7 +13,7 @@ using Assets.Scripts.Scene;
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(AudioPreload), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(AudioPreload), SubjectType = typeof(AWSPolllyManagement), ContextType = typeof(IAWSPolly))]
 [Asset(Asset.MONOBEHAVIOR, "Audio", InstantiationOrder = 8)]
-public class AudioPreload : MonoBehaviorScene, IPreloadAudio<DialoguesAndOptions>, IDelegate, INotify<EntityPoolManager>, INotify<IAWSPolly>
+public class AudioPreload : Scene, IPreloadAudio<DialoguesAndOptions>, IDelegate, INotify<EntityPoolManager>, INotify<IAWSPolly>
 {
     private string PersistencePath { get; set; }
 

@@ -2,13 +2,14 @@ using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Assets.Scripts.Models.Reset;
+using Assets.Scripts.Scene;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EntityPoolManager), EntityType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(EntityPoolManager))]
-public class PlayerAttackStateMachineReset : StateMachineBehaviour, INotify<EntityPoolManager>, IRequest<ResetBundle>
+public class PlayerAttackStateMachineReset : StateMachineScene, INotify<EntityPoolManager>, IRequest<ResetBundle>
 {
     [SerializeField]
     public string resetConfigEntityName;

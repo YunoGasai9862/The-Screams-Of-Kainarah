@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Scene
 {
-    public class MonoBehaviorScene : MonoBehaviour, IScene
+    public class Scene : MonoBehaviour, IScene
     {
         protected dynamic Value { get; set; }
 

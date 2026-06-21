@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PreloadEntitiesDelegateExecutor: MonoBehaviorScene, IDelegateExecutor
+public class PreloadEntitiesDelegateExecutor: Scene, IDelegateExecutor
 {
     [SerializeField]
     PreloadedEntitiesEvent preloadedEntitiesEvent;

@@ -1,7 +1,8 @@
+using Assets.Scripts.Scene;
 using System.Threading;
 using UnityEngine;
 
-public class EmitAttackAnimationState : StateMachineBehaviour
+public class EmitAttackAnimationState : StateMachineScene
 {
     private StateEvent StateEvent { get; set; }
     private async void Awake()

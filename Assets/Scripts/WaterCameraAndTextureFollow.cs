@@ -7,7 +7,7 @@ using Annotations.Enums;
 using Assets.Scripts.Scene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(WaterCameraAndTextureFollow), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
-public class WaterCameraAndTextureFollow : MonoBehaviorScene, INotify<IEntityTransform>
+public class WaterCameraAndTextureFollow : Scene, INotify<IEntityTransform>
 {
     [SerializeField]
     public float WaterCamerSpeed;

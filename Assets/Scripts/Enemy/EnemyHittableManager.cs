@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EnemyHittableManager), ContextType = typeof(EnemyHittableManager))]
-public class EnemyHittableManager : MonoBehaviorScene, IRequest<EnemyHittableManager>
+public class EnemyHittableManager : Scene, IRequest<EnemyHittableManager>
 {
    private Delegator Delegator { get; set; }
 

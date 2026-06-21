@@ -3,7 +3,7 @@ using Assets.Scripts.Scene;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class HealingEffectScript : MonoBehaviorScene
+public class HealingEffectScript : Scene
 {
     private void Start()
     {

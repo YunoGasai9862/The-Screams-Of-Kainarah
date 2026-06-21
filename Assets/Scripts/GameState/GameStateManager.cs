@@ -13,7 +13,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameStateManager), ContextType = typeof(IGameStateHandler))]
-public class GameStateManager : Assets.Scripts.Scene.MonoBehaviorScene, IGameState, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<IGameStateHandler>, IRequest<GameStateManager>
+public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<IGameStateHandler>, IRequest<GameStateManager>
 {
     private SceneData _sceneData;
     private string _fileName;
@@ -24,8 +24,6 @@ public class GameStateManager : Assets.Scripts.Scene.MonoBehaviorScene, IGameSta
     public string fileName;
 
     public ProgressBar progressBar;
-
-    public CheckPointEvent onCheckpointSaveEvent; //checkpoint event
 
     public List<string> jsonSerializedData = new List<string>();
 
@@ -140,24 +138,22 @@ public class GameStateManager : Assets.Scripts.Scene.MonoBehaviorScene, IGameSta
         yield return null;
     }
 
-    public Task InvokeListeners(List<IGameStateHandler> handlers)
+    public IEnumerator InvokeListeners(List<IGameStateHandler> handlers)
     {
         foreach (IGameStateHandler gameObjectState in handlers)
         {
             try
             {
-                onCheckpointSaveEvent.AddListener(gameObjectState.GameStateHandler); //we subscribe to the game object
-                onCheckpointSaveEvent.Invoke(_sceneData); //gathering all the current state of the object implementing IGameStateHandler
-                onCheckpointSaveEvent.RemoveListener(gameObjectState.GameStateHandler); //we de-subscribe until next point
+                gameObjectState.GameStateHandler(_sceneData); //we gather the current state of the object implementing IGameStateHandler)
             }
             catch (System.Exception e)
             {
                 Debug.Log(e.Message);
 
             }
-
         }
-        return Task.CompletedTask;
+
+        yield return null;
     }
 
     public IEnumerator SaveCheckPoint(string fileName)
@@ -176,24 +172,11 @@ public class GameStateManager : Assets.Scripts.Scene.MonoBehaviorScene, IGameSta
         jsonSerializedData.Clear(); //remove old data
     }
 
-    public IEnumerator LoadSceneAsync(int sceneIndex)
-    {
-        yield return StartCoroutine(LoadScene(sceneIndex));
-    }
-
     public IEnumerator LoadScene(int sceneIndex)
     {
-        AsyncOperation loadingScene = await LoadSceneAsync(sceneIndex);
+        SceneManager.LoadScene(sceneIndex);
 
-        //show it on the UI (percentage bar)
-        float loadPercentage = loadingScene.progress;
-        progressBar.value = loadPercentage;
-        Debug.Log(loadPercentage);
-        if (loadingScene.isDone)
-        {
-            _mainCamera.transform.position = _mainCameraOldPosition;
-            yield return null; //fix this tomorrow
-        }
+        yield return null;
     }
 
     public IEnumerator Request()
@@ -235,7 +218,7 @@ public class GameStateManager : Assets.Scripts.Scene.MonoBehaviorScene, IGameSta
 
     IEnumerator IGameState.RestartLevel()
     {
-        yield return StartCoroutine(LoadSceneAsync(SceneManager.GetActiveScene().buildIndex));
+        yield return StartCoroutine(LoadScene(SceneManager.GetActiveScene().buildIndex));
     }
 
     public Task LoadGameAsync(string saveFileName, CancellationToken cancellationToken)

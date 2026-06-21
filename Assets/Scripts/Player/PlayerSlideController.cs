@@ -11,7 +11,7 @@ using Assets.Scripts.Scene;
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerSlideController), SubjectType = typeof(PlayerAnimationController), ContextType = typeof(AnimationDetails))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerSlideController), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerSlideController), ContextType = typeof(CharacterVelocity))]
-public class PlayerSlideController : MonoBehaviorScene, IReceiverEnhancedAsync<PlayerSlideController, PlayerStateBundle>, INotify<AnimationDetails>, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<CharacterVelocity>, INotify<Player>
+public class PlayerSlideController : Scene, IReceiverEnhancedAsync<PlayerSlideController, PlayerStateBundle>, INotify<AnimationDetails>, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<CharacterVelocity>, INotify<Player>
 {
     private const float MAX_ANIMATION_TIME = 0.6f;
 

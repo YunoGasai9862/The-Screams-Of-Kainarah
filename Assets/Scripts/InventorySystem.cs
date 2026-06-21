@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class InventorySystem : MonoBehaviorScene
+public class InventorySystem : Scene
 {
     private const string QUANITY = "QUANTITY";
 

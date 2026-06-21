@@ -1,7 +1,7 @@
 using Assets.Scripts.Scene;
 using UnityEngine;
 
-public class ControlPanelTrigger : MonoBehaviorScene
+public class ControlPanelTrigger : Scene
 {
     [SerializeField] GameObject currentSettingsPanel;
     [SerializeField] GameObject controlPanel;

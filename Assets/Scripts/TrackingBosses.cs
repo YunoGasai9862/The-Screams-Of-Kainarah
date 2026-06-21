@@ -1,7 +1,7 @@
 using Assets.Scripts.Scene;
 using UnityEngine;
 
-public class TrackingBosses : MonoBehaviorScene
+public class TrackingBosses : Scene
 {
     private float camHeight, CamWidth;
     [SerializeField] float CameraMinSize;

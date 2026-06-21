@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Delegator : MonoBehaviorScene, IDelegator
+public class Delegator : Scene, IDelegator
 {
     private Dictionary<dynamic, List<dynamic>> Associations { get; set; } = new Dictionary<dynamic, List<dynamic>>();
 
