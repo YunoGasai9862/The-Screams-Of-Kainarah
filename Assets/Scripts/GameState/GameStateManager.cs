@@ -221,9 +221,24 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         yield return StartCoroutine(LoadScene(SceneManager.GetActiveScene().buildIndex));
     }
 
-    public Task LoadGameAsync(string saveFileName, CancellationToken cancellationToken)
+    public async Task LoadGameAsync(string saveFileName, CancellationToken cancellationToken)
     {
-        throw new System.NotImplementedException();
+        var jsonData = await File.ReadAllTextAsync(Path.Combine(Application.persistentDataPath, saveFileName));
+        ObjectDataWrapperClass wrapper = JsonUtility.FromJson<ObjectDataWrapperClass>(jsonData);
+        foreach (SceneData.ObjectData objectToLoad in wrapper.objectsToSave)
+        {
+            var foundObject = SceneUtils.Find(objectToLoad.name, false);
+            if (foundObject == null)
+            {
+                GameObject prefab = (GameObject) Resources.LoadAsync<GameObject>(objectToLoad.name).asset; //load the prefab
+                GameObject go = Instantiate(prefab, objectToLoad.transform.position, objectToLoad.rotation); //instantiate it
+                Debug.Log($"Instantiated From [LoadGameAsync]: {go.name}");
+            }
+            else
+            {
+                foundObject.transform.position = objectToLoad.transform.position;
+            }
+        }
     }
 
     public Task SaveGameAsync(string fileName, CancellationToken cancellationToken)

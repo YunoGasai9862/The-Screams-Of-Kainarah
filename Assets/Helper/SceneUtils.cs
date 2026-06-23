@@ -256,6 +256,19 @@ public class SceneUtils: Scene
         return typeToSearch.IsAssignableFrom(gameObject.GetType());
     }
 
+
+    public GameObject Find(string name, bool throwException = true)
+    {
+        GameObject gameObject = GameObject.Find(name);
+
+        if (gameObject == null && throwException)
+        {
+            throw new ApplicationException($"Gameobject with name {name} does not exist in the scene!");
+        }
+
+        return gameObject;
+    }
+
     public async Task<TYPE> FindReceiver<TYPE, IMPLEMENTATION>(int retryLimit = 3, int waitLimitInSeconds = 3) where TYPE: Scene
     {
 
