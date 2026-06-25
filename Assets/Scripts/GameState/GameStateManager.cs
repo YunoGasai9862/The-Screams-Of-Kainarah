@@ -4,6 +4,7 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Assets.Scripts.ScenePersistence.Models;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using static UnityEditor.FilePathAttribute;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameStateManager), ContextType = typeof(IGameStateHandler))]
 public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<IGameStateHandler>, IRequest<GameStateManager>
@@ -23,8 +25,6 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
     public string fileName;
 
     public ProgressBar progressBar;
-
-    public List<string> jsonSerializedData = new List<string>();
 
     public List<IGameStateHandler> GameStateHandlerObjects { get; set; } = new List<IGameStateHandler>();
 
@@ -40,6 +40,11 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         public string Location { get; set; }
 
         public string JsonBlob { get; set; }
+
+        public override string ToString()
+        {
+            return $"Location: {Location}, JsonBlob: {JsonBlob}";
+        }
     }
 
     private void Awake()
@@ -108,18 +113,9 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
 
     public IEnumerator SaveGame(string fileName)
     {
-        GameObject[] allGameObjectsInTheScene = FindObjectsByType<GameObject>(FindObjectsSortMode.None).Where(o=>o.transform == o.transform.root).ToArray(); //only parent objects
-        List<SceneData.ObjectData> gameData = new List<SceneData.ObjectData>(); //different approach
+        GameStateManagerDto gameStateManagerDto = SaveGame();
 
-        foreach (var gameObject in allGameObjectsInTheScene)
-        {
-            var gameObjectForSerializedData = JsonUtility.ToJson(new SceneData.ObjectData(gameObject.name, gameObject.tag, gameObject.transform.position, gameObject.transform.rotation));
-            jsonSerializedData.Add(gameObjectForSerializedData);
-        }
-        var completeJson = "{\"objectsToSave\": [" + string.Join(",", jsonSerializedData) + "]}";
-        Debug.Log(completeJson);
-        string location = Path.Combine(Application.persistentDataPath, fileName);
-        File.WriteAllText(location, completeJson);
+        File.WriteAllText(gameStateManagerDto.Location, gameStateManagerDto.JsonBlob);
 
         yield return null;
     }
@@ -131,7 +127,7 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         yield return null;
     }
 
-    public IEnumerator InvokeListeners(List<IGameStateHandler> handlers)
+    public void InvokeListeners(List<IGameStateHandler> handlers)
     {
         foreach (IGameStateHandler gameObjectState in handlers)
         {
@@ -145,24 +141,38 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
 
             }
         }
-
-        yield return null;
     }
 
     public IEnumerator SaveCheckPoint(string fileName)
     {
-        yield return StartCoroutine(InvokeListeners(GameStateHandlerObjects));
+        GameStateManagerDto gameStateManagerDto = GetCheckpointData(fileName);
 
-        foreach (var objectToSave in this._sceneData.ObjectsToPersit)
+        File.WriteAllText(gameStateManagerDto.Location, gameStateManagerDto.JsonBlob);
+
+        yield return null;
+    }
+
+    private GameStateManagerDto GetCheckpointData(string filaName)
+    {
+        List<string> jsonSerializedData = new List<string>();
+
+        InvokeListeners(GameStateHandlerObjects);
+
+        foreach (var objectToSave in _sceneData.ObjectsToPersit)
         {
             var jsonObject = JsonUtility.ToJson(objectToSave);
             jsonSerializedData.Add(jsonObject);
         }
+
         var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file
+
         string localFilename = Path.Combine(Application.persistentDataPath, fileName);
-        GetFileLocationToLoad = localFilename;
-        File.WriteAllText(localFilename, completeJson);
-        jsonSerializedData.Clear(); //remove old data
+
+        return new GameStateManagerDto
+        {
+            JsonBlob = completeJson,
+            Location = localFilename
+        };
     }
 
     public IEnumerator LoadScene(int sceneIndex)
@@ -234,24 +244,16 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         }
     }
 
-    public async Task<string> SaveGameAsync(string fileName, CancellationToken cancellationToken)
+    public async Task SaveGameAsync(string fileName, CancellationToken cancellationToken)
     {
-        GameObject[] allGameObjectsInTheScene = FindObjectsByType<GameObject>(FindObjectsSortMode.None).Where(o => o.transform == o.transform.root).ToArray(); //only parent objects
-        List<SceneData.ObjectData> gameData = new List<SceneData.ObjectData>(); //different approach
+        GameStateManagerDto gameStateManagerDto = SaveGame();
 
-        foreach (var gameObject in allGameObjectsInTheScene)
-        {
-            var gameObjectForSerializedData = JsonUtility.ToJson(new SceneData.ObjectData(gameObject.name, gameObject.tag, gameObject.transform.position, gameObject.transform.rotation));
-            jsonSerializedData.Add(gameObjectForSerializedData);
-        }
-        var completeJson = "{\"objectsToSave\": [" + string.Join(",", jsonSerializedData) + "]}";
-        Debug.Log(completeJson);
-
-        await File.WriteAllTextAsync(location, completeJson);
+        await File.WriteAllTextAsync(gameStateManagerDto.Location, gameStateManagerDto.JsonBlob);
     }
 
-    private string SaveGame()
+    private GameStateManagerDto SaveGame()
     {
+        List<string> jsonSerializedData = new List<string>();
         List<SceneData.ObjectData> gameData = new List<SceneData.ObjectData>(); //different approach
         GameObject[] allGameObjectsInTheScene = FindObjectsByType<GameObject>(FindObjectsSortMode.None).Where(o => o.transform == o.transform.root).ToArray(); //only parent objects
 
@@ -262,12 +264,16 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         }
 
         var completeJson = "{\"objectsToSave\": [" + string.Join(",", jsonSerializedData) + "]}";
-
-        Debug.Log(completeJson);
 
         string location = Path.Combine(Application.persistentDataPath, fileName);
 
         File.WriteAllText(location, completeJson);
+
+        return new GameStateManagerDto
+        {
+            JsonBlob = completeJson,
+            Location = location
+        };
 
     }
 
