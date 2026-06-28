@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Scripts.ScenePersistence.Models
+namespace Assets.Scripts.GameState.Models
 {
     [Serializable]
     public class SceneData

@@ -1,10 +1,13 @@
 using Annotations.Enums;
 using Assets.Annotations;
+using Assets.Scripts.Checkpoint.Models;
+using Assets.Scripts.GameState.Models;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using Assets.Scripts.ScenePersistence.Models;
+using Newtonsoft.Json;
+using Pathfinding.Util;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -12,7 +15,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
-using static UnityEditor.FilePathAttribute;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameStateManager), ContextType = typeof(IGameStateHandler))]
 public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<IGameStateHandler>, IRequest<GameStateManager>
@@ -21,31 +23,11 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
     private Camera _mainCamera;
     private Vector3 _mainCameraOldPosition;
 
-    [SerializeField]
-    public string fileName;
-
     public ProgressBar progressBar;
 
     public List<IGameStateHandler> GameStateHandlerObjects { get; set; } = new List<IGameStateHandler>();
 
     private Delegator Delegator { get; set; }
-
-    public class ObjectDataWrapperClass
-    {
-        public List<SceneData.ObjectData> objectsToSave;
-    }
-
-    public class GameStateManagerDto
-    {
-        public string Location { get; set; }
-
-        public string JsonBlob { get; set; }
-
-        public override string ToString()
-        {
-            return $"Location: {Location}, JsonBlob: {JsonBlob}";
-        }
-    }
 
     private void Awake()
     {
@@ -111,9 +93,9 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         yield return null;
     }
 
-    public IEnumerator SaveGame(string fileName)
+    public IEnumerator SaveGame(Guid id)
     {
-        GameStateManagerDto gameStateManagerDto = SaveGame();
+        GameStateManagerDto gameStateManagerDto = SaveGame(id);
 
         File.WriteAllText(gameStateManagerDto.Location, gameStateManagerDto.JsonBlob);
 
@@ -244,15 +226,32 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         }
     }
 
-    public async Task SaveGameAsync(string fileName, CancellationToken cancellationToken)
+    public async Task SaveGameAsync(System.Guid id, CancellationToken cancellationToken)
     {
-        GameStateManagerDto gameStateManagerDto = SaveGame();
+        GameStateManagerDto gameStateManagerDto = SaveGame(id);
 
         await File.WriteAllTextAsync(gameStateManagerDto.Location, gameStateManagerDto.JsonBlob);
     }
 
-    private GameStateManagerDto SaveGame()
+    private GameStateManagerDto SaveGame(System.Guid id)
     {
+        string path = Path.Combine(Application.persistentDataPath, id.ToString());
+
+        if (File.Exists(path))
+        {
+            using (StreamReader reader = new StreamReader(Path.Combine(Application.persistentDataPath, id.ToString()), false))
+            {
+               CheckPointMetaData metaData = JsonConvert.DeserializeObject<CheckPointMetaData>(reader.ReadToEnd());
+            }
+
+        } else
+        {
+
+        }  
+
+
+        CheckPointMetaData checkPointMetaData = 
+
         List<string> jsonSerializedData = new List<string>();
         List<SceneData.ObjectData> gameData = new List<SceneData.ObjectData>(); //different approach
         GameObject[] allGameObjectsInTheScene = FindObjectsByType<GameObject>(FindObjectsSortMode.None).Where(o => o.transform == o.transform.root).ToArray(); //only parent objects
@@ -265,7 +264,7 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
 
         var completeJson = "{\"objectsToSave\": [" + string.Join(",", jsonSerializedData) + "]}";
 
-        string location = Path.Combine(Application.persistentDataPath, fileName);
+        string location = Path.Combine(Application.persistentDataPath, id.ToString());
 
         File.WriteAllText(location, completeJson);
 

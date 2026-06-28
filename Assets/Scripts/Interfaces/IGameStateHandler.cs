@@ -1,5 +1,5 @@
 
-using Assets.Scripts.ScenePersistence.Models;
+using Assets.Scripts.GameState.Models;
 
 public interface IGameStateHandler
 {

@@ -1,8 +1,8 @@
 using Annotations.Enums;
 using Assets.Annotations;
+using Assets.Scripts.GameState.Models;
 using Assets.Scripts.Interfaces.Mediator.Base;
 using Assets.Scripts.Scene;
-using Assets.Scripts.ScenePersistence.Models;
 using PlayerHittableItemsNS;
 using System;
 using System.Collections;

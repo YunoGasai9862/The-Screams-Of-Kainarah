@@ -1,6 +1,6 @@
 
+using Assets.Scripts.GameState.Models;
 using Assets.Scripts.Scene;
-using Assets.Scripts.ScenePersistence.Models;
 using UnityEngine;
 
 public abstract class AbstractEntity : Scene, IGameStateHandler

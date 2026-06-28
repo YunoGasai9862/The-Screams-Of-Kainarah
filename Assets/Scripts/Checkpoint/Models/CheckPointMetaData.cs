@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Assets.Scripts.Checkpoint.Models
 {
@@ -16,7 +14,7 @@ namespace Assets.Scripts.Checkpoint.Models
 
         public string SceneVersion { get; set; }
 
-        public List<string> RegisteredObjects { get; set; } = new List<string>();
+        public ObjectDataWrapperClass ObjectDataWrapper { get; set; }
 
         public CheckPointMetaData()
         {

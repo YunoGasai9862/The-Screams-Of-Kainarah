@@ -1,8 +1,8 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Enemy.Models;
+using Assets.Scripts.GameState.Models;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using Assets.Scripts.ScenePersistence.Models;
 using EnemyHittable;
 using System.Collections;
 using System.Collections.Generic;

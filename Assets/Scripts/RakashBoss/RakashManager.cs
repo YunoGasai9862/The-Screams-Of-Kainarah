@@ -1,8 +1,8 @@
 using Assets.Annotations;
-using Assets.Scripts.ScenePersistence.Models;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
 using Annotations.Enums;
+using Assets.Scripts.GameState.Models;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(RakashManager), ContextType = typeof(Health))]
 public class RakashManager : AbstractEntity, IGameStateHandler, IRequest<Health>, Assets.Scripts.Interfaces.Mediator.Base.INotify<IGameStateHandler>
