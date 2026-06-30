@@ -233,24 +233,23 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         await File.WriteAllTextAsync(gameStateManagerDto.Location, gameStateManagerDto.JsonBlob);
     }
 
-    private GameStateManagerDto SaveGame(System.Guid id)
+    private GameStateManagerDto SaveGame(System.Guid id, string sceneName, string sceneVersion, string fileLocation)
     {
         string path = Path.Combine(Application.persistentDataPath, id.ToString());
+
+        CheckPointMetaData metaData = null;
 
         if (File.Exists(path))
         {
             using (StreamReader reader = new StreamReader(Path.Combine(Application.persistentDataPath, id.ToString()), false))
             {
-               CheckPointMetaData metaData = JsonConvert.DeserializeObject<CheckPointMetaData>(reader.ReadToEnd());
+               metaData = JsonConvert.DeserializeObject<CheckPointMetaData>(reader.ReadToEnd());
             }
 
         } else
         {
-
+            metaData = new CheckPointMetaData(id, sceneName, sceneVersion, fileLocation);
         }  
-
-
-        CheckPointMetaData checkPointMetaData = 
 
         List<string> jsonSerializedData = new List<string>();
         List<SceneData.ObjectData> gameData = new List<SceneData.ObjectData>(); //different approach
@@ -262,16 +261,16 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
             jsonSerializedData.Add(gameObjectForSerializedData);
         }
 
-        var completeJson = "{\"objectsToSave\": [" + string.Join(",", jsonSerializedData) + "]}";
+        metaData.ObjectDataWrapper = new ObjectDataWrapperClass { objectsToSave = gameData };
 
-        string location = Path.Combine(Application.persistentDataPath, id.ToString());
+        string completeJson = JsonUtility.ToJson(metaData);
 
-        File.WriteAllText(location, completeJson);
+        File.WriteAllText(path, completeJson);
 
         return new GameStateManagerDto
         {
             JsonBlob = completeJson,
-            Location = location
+            Location = path
         };
 
     }

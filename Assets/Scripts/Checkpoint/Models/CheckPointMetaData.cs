@@ -21,5 +21,14 @@ namespace Assets.Scripts.Checkpoint.Models
             Uuid = Guid.NewGuid();
             TimeStamp = DateTime.UtcNow;
         }
+
+        public CheckPointMetaData(Guid uid, string sceneName, string sceneVersion, string location)
+        {
+            Uuid = Guid.NewGuid();
+            Location = location;
+            SceneName = sceneName;
+            SceneVersion = sceneVersion;
+            TimeStamp = DateTime.UtcNow;
+        }
     }
 }
