@@ -5,25 +5,25 @@ using System.Threading.Tasks;
 
 public interface IGameState
 {
-    IEnumerator LoadGame(string saveFileName);
+    IEnumerator LoadGame(System.Guid id);
 
-    Task LoadGameAsync(string saveFileName, CancellationToken cancellationToken);
+    Task LoadGameAsync(System.Guid id, CancellationToken cancellationToken);
 
-    IEnumerator SaveGame(string fileName);
+    IEnumerator SaveGame(System.Guid id, string sceneVersion);
 
-    Task SaveGameAsync(string fileName, CancellationToken cancellationToken);
+    Task SaveGameAsync(System.Guid id, string sceneVersion, CancellationToken cancellationToken);
 
-    IEnumerator SaveCheckPoint(string saveFileName);
+    IEnumerator SaveCheckPoint(System.Guid id, string sceneVersion);
 
-    Task SaveCheckPointAsync(string saveFileName, CancellationToken cancellationToken);
+    Task SaveCheckPointAsync(System.Guid id, string sceneVersion, CancellationToken cancellationToken);
 
     IEnumerator RestartLevel();
 
     Task RestartLevelAsync(CancellationToken cancellationToken);
 
-    IEnumerator LoadLastCheckPoint(string saveFileName);
+    IEnumerator LoadLastCheckPoint(System.Guid id);
 
-    Task LoadLastCheckPointAsync(string saveFileName, CancellationToken cancellationToken);
+    Task LoadLastCheckPointAsync(System.Guid id, CancellationToken cancellationToken);
 
     IEnumerator NewGame();
 

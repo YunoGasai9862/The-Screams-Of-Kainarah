@@ -18,7 +18,7 @@ public class SceneRegistry : Scene, IRegistry, IPoller
     private EntityPoolManager EntityPoolManagerInstance { get; set; }
     void Start()
     {
-        FindObjectsByType<GameObject>(FindObjectsSortMode.None).ToList().ForEach(go => RegisteredGameObjects.Add(go.GetInstanceID(), go));
+        FindObjectsByType<GameObject>(FindObjectsSortMode.None).Select(o => o.transform.root).ToList().ForEach(go => RegisteredGameObjects.Add(go.GetInstanceID(), go.gameObject));
 
         EntityPoolManagerInstance = GetEntityPoolManager(RegisteredGameObjects);
 

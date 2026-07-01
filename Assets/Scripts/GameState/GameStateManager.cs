@@ -1,5 +1,6 @@
 using Annotations.Enums;
 using Assets.Annotations;
+using Assets.Exceptions;
 using Assets.Scripts.Checkpoint.Models;
 using Assets.Scripts.GameState.Models;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
@@ -20,7 +21,9 @@ using UnityEngine.UIElements;
 public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<IGameStateHandler>, IRequest<GameStateManager>
 {
     private SceneData _sceneData;
+
     private Camera _mainCamera;
+
     private Vector3 _mainCameraOldPosition;
 
     public ProgressBar progressBar;
@@ -29,8 +32,19 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
 
     private Delegator Delegator { get; set; }
 
+    private SceneRegistry SceneRegistry { get; set; }
+
     private void Awake()
     {
+        SceneRegistry = SceneUtils.FindObject<SceneRegistry>();
+
+        if (SceneRegistry == null)
+        {
+            Debug.Log($"[CRITICAL] SceneRegistry Regsitry is null...");
+
+            throw new MissingEntityException($"SceneRegistry Registry could not be found in the scene! Please ensure that there is an active game object with the SceneRegistry component attached to it in the scene.");
+        }
+
         if (_sceneData == null)
         {
             Debug.Log("No data found, initializing everything to default");
@@ -93,9 +107,9 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         yield return null;
     }
 
-    public IEnumerator SaveGame(Guid id)
+    public IEnumerator SaveGame(System.Guid id, string sceneVersion)
     {
-        GameStateManagerDto gameStateManagerDto = SaveGame(id);
+        GameStateManagerDto gameStateManagerDto = SaveSceneSnapshot(id, SceneManager.GetActiveScene().name, sceneVersion, Path.Combine(Application.persistentDataPath, id.ToString()));
 
         File.WriteAllText(gameStateManagerDto.Location, gameStateManagerDto.JsonBlob);
 
@@ -226,20 +240,18 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         }
     }
 
-    public async Task SaveGameAsync(System.Guid id, CancellationToken cancellationToken)
+    public async Task SaveGameAsync(System.Guid id, string sceneVersion, CancellationToken cancellationToken)
     {
-        GameStateManagerDto gameStateManagerDto = SaveGame(id);
+        GameStateManagerDto gameStateManagerDto = SaveSceneSnapshot(id, SceneManager.GetActiveScene().name, sceneVersion, Path.Combine(Application.persistentDataPath, id.ToString()));
 
         await File.WriteAllTextAsync(gameStateManagerDto.Location, gameStateManagerDto.JsonBlob);
     }
 
-    private GameStateManagerDto SaveGame(System.Guid id, string sceneName, string sceneVersion, string fileLocation)
+    private GameStateManagerDto SaveSceneSnapshot(System.Guid id, string sceneName, string sceneVersion, string fileLocation)
     {
-        string path = Path.Combine(Application.persistentDataPath, id.ToString());
-
         CheckPointMetaData metaData = null;
 
-        if (File.Exists(path))
+        if (File.Exists(fileLocation))
         {
             using (StreamReader reader = new StreamReader(Path.Combine(Application.persistentDataPath, id.ToString()), false))
             {
@@ -253,11 +265,11 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
 
         List<string> jsonSerializedData = new List<string>();
         List<SceneData.ObjectData> gameData = new List<SceneData.ObjectData>(); //different approach
-        GameObject[] allGameObjectsInTheScene = FindObjectsByType<GameObject>(FindObjectsSortMode.None).Where(o => o.transform == o.transform.root).ToArray(); //only parent objects
 
-        foreach (var gameObject in allGameObjectsInTheScene)
+        foreach (var gameObject in SceneRegistry.GetRegisteredGameObjects().Values.ToList())
         {
             var gameObjectForSerializedData = JsonUtility.ToJson(new SceneData.ObjectData(gameObject.name, gameObject.tag, gameObject.transform.position, gameObject.transform.rotation));
+
             jsonSerializedData.Add(gameObjectForSerializedData);
         }
 
@@ -265,12 +277,12 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
 
         string completeJson = JsonUtility.ToJson(metaData);
 
-        File.WriteAllText(path, completeJson);
+        File.WriteAllText(fileLocation, completeJson);
 
         return new GameStateManagerDto
         {
             JsonBlob = completeJson,
-            Location = path
+            Location = fileLocation
         };
 
     }

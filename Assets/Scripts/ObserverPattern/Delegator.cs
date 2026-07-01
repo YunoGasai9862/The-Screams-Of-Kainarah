@@ -23,11 +23,9 @@ public class Delegator : Scene, IDelegator
 
     private SceneRegistry SceneRegistry { get; set; }
     
-    private SceneUtils SceneUtilsInstance { get; set; }
-
     private void Awake()
     {
-        AttributeRegistry = SceneUtilsInstance.FindObject<AttributeRegistry>();
+        AttributeRegistry = SceneUtils.FindObject<AttributeRegistry>();
 
         if (AttributeRegistry == null)
         {
@@ -36,7 +34,7 @@ public class Delegator : Scene, IDelegator
             throw new MissingEntityException($"Attribute Registry could not be found in the scene! Please ensure that there is an active game object with the AttributeRegistry component attached to it in the scene.");
         }
 
-        SceneRegistry = SceneUtilsInstance.FindObject<SceneRegistry>();
+        SceneRegistry = SceneUtils.FindObject<SceneRegistry>();
 
         if (SceneRegistry == null)
         {
@@ -423,14 +421,5 @@ public class Delegator : Scene, IDelegator
         }
 
         return associations;
-    }
-
-    public override void Broadcast(dynamic value)
-    {
-        //check if you can do anything better?
-        if (value is SceneUtils)
-        {
-            SceneUtilsInstance = (SceneUtils)value;
-        } 
     }
 }
