@@ -7,10 +7,11 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
 using Assets.Scripts.Scene;
+using UnityEngine.SceneManagement;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CheckPointActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CheckPointActionListener), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
-public class CheckPointActionListener : Scene, INotify<EntityPoolManager>, INotify<GameStateManager>
+public class CheckPointActionListener : Assets.Scripts.Scene.Scene, INotify<EntityPoolManager>, INotify<GameStateManager>
 {
     private static string CHECKPOINTS_KEY = "CheckPoints";  
 
@@ -73,13 +74,7 @@ public class CheckPointActionListener : Scene, INotify<EntityPoolManager>, INoti
 
     private Task<CheckPoints.Checkpoint> SetAsCurrentRespawnCheckPoint(CheckPoints.Checkpoint value, bool shouldRespawn)
     {
-        CheckPoints.Checkpoint newValue = new CheckPoints.Checkpoint
-        {
-            checkpoint = value.checkpoint,
-            finishLevelCheckpoint = value.finishLevelCheckpoint,
-            shouldResetPlayerAttributes = value.shouldResetPlayerAttributes,
-            shouldRespawn = shouldRespawn
-        };
+        CheckPoints.Checkpoint newValue = new CheckPoints.Checkpoint(value.guid, value.checkpoint, value.shouldResetPlayerAttributes, value.shouldRespawn, value.finishLevelCheckpoint);
 
         return Task.FromResult(newValue);
     }
@@ -120,7 +115,7 @@ public class CheckPointActionListener : Scene, INotify<EntityPoolManager>, INoti
 
             yield return new WaitUntil(() => GameStateManagerInstance != null);
 
-            GameStateManagerInstance.SaveCheckPoint(saveFileName);
+            GameStateManagerInstance.SaveCheckPoint(value.guid, "1.0");
         }
 
         yield return null;

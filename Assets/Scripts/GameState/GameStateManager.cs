@@ -66,10 +66,10 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         LoadScene(buildIndex + 1);
     }
 
-    public IEnumerator LoadLastCheckPoint(string saveFileName)
+    public IEnumerator LoadLastCheckPoint(System.Guid id)
     {
 
-        var saveFilePath = Path.Combine(Application.persistentDataPath, saveFileName);
+        var saveFilePath = Path.Combine(Application.persistentDataPath, id.ToString());
         var jsonData = File.ReadAllText(saveFilePath);
         var wrappedJsonData = "{\"objectsToSave\":" + jsonData + "}"; //for deserializing
         Debug.Log($"Wrapped JsonData: {wrappedJsonData}");
@@ -139,16 +139,16 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         }
     }
 
-    public IEnumerator SaveCheckPoint(string fileName)
+    public IEnumerator SaveCheckPoint(System.Guid id, string sceneVersion)
     {
-        GameStateManagerDto gameStateManagerDto = GetCheckpointData(fileName);
+        GameStateManagerDto gameStateManagerDto = GetCheckpointData(id);
 
         File.WriteAllText(gameStateManagerDto.Location, gameStateManagerDto.JsonBlob);
 
         yield return null;
     }
 
-    private GameStateManagerDto GetCheckpointData(string filaName)
+    private GameStateManagerDto GetCheckpointData(System.Guid id)
     {
         List<string> jsonSerializedData = new List<string>();
 
@@ -162,7 +162,7 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
 
         var completeJson = "[" + string.Join(",", jsonSerializedData) + "]"; //joing them in a single file
 
-        string localFilename = Path.Combine(Application.persistentDataPath, fileName);
+        string localFilename = Path.Combine(Application.persistentDataPath, id.ToString());
 
         return new GameStateManagerDto
         {
@@ -190,10 +190,10 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         return null;
     }
 
-    public IEnumerator LoadGame(string saveFileName)
+    public IEnumerator LoadGame(System.Guid id)
     {
         //load the whole scene
-        string saveFileLocation = Path.Combine(Application.persistentDataPath, saveFileName);
+        string saveFileLocation = Path.Combine(Application.persistentDataPath, id.ToString());
         var jsonData = File.ReadAllText(saveFileLocation);
         ObjectDataWrapperClass wrapper = JsonUtility.FromJson<ObjectDataWrapperClass>(jsonData);
         var objectsToLoad = wrapper.objectsToSave;
@@ -220,9 +220,9 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         yield return StartCoroutine(LoadScene(SceneManager.GetActiveScene().buildIndex));
     }
 
-    public async Task LoadGameAsync(string saveFileName, CancellationToken cancellationToken)
+    public async Task LoadGameAsync(System.Guid id,CancellationToken cancellationToken)
     {
-        var jsonData = await File.ReadAllTextAsync(Path.Combine(Application.persistentDataPath, saveFileName));
+        var jsonData = await File.ReadAllTextAsync(Path.Combine(Application.persistentDataPath, id.ToString()));
         ObjectDataWrapperClass wrapper = JsonUtility.FromJson<ObjectDataWrapperClass>(jsonData);
         foreach (SceneData.ObjectData objectToLoad in wrapper.objectsToSave)
         {
@@ -287,7 +287,7 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
 
     }
 
-    public Task SaveCheckPointAsync(string saveFileName, CancellationToken cancellationToken)
+    public Task SaveCheckPointAsync(System.Guid id, string sceneVersion, CancellationToken cancellationToken)
     {
         throw new System.NotImplementedException();
     }
@@ -297,7 +297,7 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
         throw new System.NotImplementedException();
     }
 
-    public Task LoadLastCheckPointAsync(string saveFileName, CancellationToken cancellationToken)
+    public Task LoadLastCheckPointAsync(System.Guid id, CancellationToken cancellationToken)
     {
         throw new System.NotImplementedException();
     }
@@ -322,10 +322,5 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
     public string GetSaveFileLocation(string fileName)
     {
         return Path.Combine(Application.persistentDataPath, fileName);
-    }
-
-    Task IGameState.SaveGameAsync(string fileName, CancellationToken cancellationToken)
-    {
-        return SaveGameAsync(fileName, cancellationToken);
     }
 }

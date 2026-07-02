@@ -31,7 +31,7 @@ public class CheckpointColliderListener : Scene, INotify<Player>, INotify<Entity
 
     private IEnumerator RespawnPlayer(Player player, CheckPoints checkPointsScriptableObjectFetch)
     {
-        foreach (var cp in checkPointsScriptableObjectFetch.checkpoints)
+        foreach (CheckPoints.Checkpoint cp in checkPointsScriptableObjectFetch.checkpoints)
         {
             if (cp.shouldRespawn)
             {
@@ -43,7 +43,7 @@ public class CheckpointColliderListener : Scene, INotify<Player>, INotify<Entity
                     Value = 1.0f
                 }, 0.1f, 1);
                 
-                StartCoroutine(GameStateManagerInstance.LoadLastCheckPoint());
+                StartCoroutine(GameStateManagerInstance.LoadLastCheckPoint(cp.guid));
             }
         }
 
