@@ -56,6 +56,9 @@ public class PreloaderManager : Scene
             Debug.Log(ex.ToString());   
         }
 
+        List<AssetAttribute> untitledAssets = assetAttributes.Where(attribute => attribute.InstantiationOrder == 0).ToList();
+        //do the instantiation for those here at last!
+
         if (assetAttributes.GroupBy(asset => asset.InstantiationOrder).Any(group => group.Count() > 1))
         {
             throw new ApplicationException($"Multiple assets found with the same instantiation order. Please ensure all assets have a unique instantiation order.");
