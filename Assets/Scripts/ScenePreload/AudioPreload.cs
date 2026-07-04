@@ -31,9 +31,6 @@ public class AudioPreload : Scene, IPreloadAudio<DialoguesAndOptions>, IDelegate
 
     private AudioGeneratedEvent m_audioGeneratedEvent;
 
-    private SceneUtils SceneUtils { get; set; }
-
-
     private void Awake()
     {
         PersistencePath = Application.persistentDataPath;

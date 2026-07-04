@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Broadcaster.Interface;
+﻿using Annotations.Enums;
+using Assets.Scripts.Broadcaster.Interface;
 using Assets.Scripts.Polling.Interfaces;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Broadcaster
 {
+    [AssetAttribute(Asset.MONOBEHAVIOR, "Broadcaster")]
     public class Broadcaster : Scene.Scene, IBroadcaster, IPoller
     {
         private SceneRegistry SceneRegistryInstance { get; set; }
@@ -15,6 +17,14 @@ namespace Assets.Scripts.Broadcaster
         private void Awake()
         {
             SceneUtilsInstance = FindFirstObjectByType<SceneUtils>();
+
+            Debug.Log($"[Broadcaster]SceneUtilsInstance: {SceneUtilsInstance}");
+
+            if (SceneUtilsInstance == null)
+            {
+                Debug.Log($"[Broadcaster]SceneUtils is null!");
+                return;
+            }
 
             SceneRegistryInstance = SceneUtilsInstance.FindObject<SceneRegistry>();
 
