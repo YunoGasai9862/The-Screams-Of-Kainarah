@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Annotations.Enums;
 using Assets.Scripts.Scene;
+using Assets.Scripts.Loading.Models;
 
 public class PreloaderManager : Scene
 {
@@ -31,7 +32,7 @@ public class PreloaderManager : Scene
         await PreloadEntities(EntityPoolManager);
     }
 
-    private async Task<List<AssetAttribute>> GetAssetAttributesForPreloading()
+    private async Task<AssetAttributeDto> GetAssetAttributesForPreloading()
     {
         List<AssetAttribute> assetAttributes = new List<AssetAttribute>();
 
@@ -57,14 +58,20 @@ public class PreloaderManager : Scene
         }
 
         List<AssetAttribute> untitledAssets = assetAttributes.Where(attribute => attribute.InstantiationOrder == 0).ToList();
+
+        List<AssetAttribute> titledAssets = assetAttributes.Where(attribute => attribute.InstantiationOrder > 0).ToList();
         //do the instantiation for those here at last!
 
-        if (assetAttributes.GroupBy(asset => asset.InstantiationOrder).Any(group => group.Count() > 1))
+        if (titledAssets.GroupBy(asset => asset.InstantiationOrder).Any(group => group.Count() > 1))
         {
             throw new ApplicationException($"Multiple assets found with the same instantiation order. Please ensure all assets have a unique instantiation order.");
         }
 
-        return assetAttributes.OrderBy(asset => asset.InstantiationOrder).ToList();
+        return new AssetAttributeDto
+        {
+            TitledAssets = titledAssets.OrderBy(asset => asset.InstantiationOrder).ToList(),
+            UntitledAssets = untitledAssets
+        };
     }
 
     private async Task<List<UnityEngine.Object>> PreloadAssets(List<AssetAttribute> assets, EntityPoolManager entityPoolManager)
