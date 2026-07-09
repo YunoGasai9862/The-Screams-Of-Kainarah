@@ -29,7 +29,8 @@ MonoBehaviour:
   - m_GUID: 2d5bcd8106441254a81c6eedd56a8401
     m_Address: Prefabs/SceneUtils
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - SceneUtils
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 399be5f2e16fa6147acdfdb4b6cf785b
     m_Address: Assets/Resources_moved/Dialogues And Options.asset
@@ -110,7 +111,8 @@ MonoBehaviour:
   - m_GUID: cdec62bb204f39040919254756aa9830
     m_Address: Prefabs/Broadcaster
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Broadcaster
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d67ed17dd6bdb8c43a1e3480997656df
     m_Address: Prefabs/AWSPollyManager

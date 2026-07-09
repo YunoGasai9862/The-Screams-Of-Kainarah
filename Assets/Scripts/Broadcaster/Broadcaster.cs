@@ -28,6 +28,8 @@ namespace Assets.Scripts.Broadcaster
 
             SceneRegistryInstance = SceneUtilsInstance.FindObject<SceneRegistry>();
 
+            Debug.Log($"[Broadcaster]SceneRegistryInstance: {SceneRegistryInstance}");
+
             Broadcast(SceneUtilsInstance);
         }
 

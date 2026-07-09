@@ -139,9 +139,11 @@ public class PreloaderManager : Scene
 
     private async Task PreloadEntities(EntityPoolManager entityPoolManager)
     {
-        List<AssetAttribute> assetsToPreload =  await GetAssetAttributesForPreloading();
+        AssetAttributeDto assetAttributeDto =  await GetAssetAttributesForPreloading();
 
-        PreloadedEntities.AddRange(await PreloadAssets(assetsToPreload, entityPoolManager));
+        PreloadedEntities.AddRange(await PreloadAssets(assetAttributeDto.UntitledAssets, entityPoolManager));
+
+        PreloadedEntities.AddRange(await PreloadAssets(assetAttributeDto.TitledAssets, entityPoolManager));
 
         await preloadedEntitiesEvent.Invoke(PreloadedEntities);
     }
