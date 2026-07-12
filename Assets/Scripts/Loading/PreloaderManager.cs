@@ -1,12 +1,13 @@
+using Annotations.Enums;
+using Assets.Scripts.Loading.Models;
+using Assets.Scripts.Scene;
 using System;
-using System.Threading.Tasks;
-using System.Reflection;
-using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using Annotations.Enums;
-using Assets.Scripts.Scene;
-using Assets.Scripts.Loading.Models;
+using System.Reflection;
+using System.Threading.Tasks;
+using UnityEditor.AddressableAssets.Build.Layout;
+using UnityEngine;
 
 public class PreloaderManager : Scene
 {
@@ -25,7 +26,15 @@ public class PreloaderManager : Scene
 
     private async void Start()
     {
-        await InstantiateDependencies(dependencies);
+        //we should split and instantiate hte pool objects later. The core objects must be loaded/preloaded first
+        List<PreloadDto> pooledObjects = dependencies.Where(dependency => dependency.PreloadEntityType == PreloadEntityType.POOL_OBJECT).ToList();
+
+        List<PreloadDto> coreDependencies = dependencies.Where(dependency => dependency.PreloadEntityType != PreloadEntityType.POOL_OBJECT).ToList();
+
+        foreach(List<PreloadDto> preloadDtos in new List<List<PreloadDto>>(){ coreDependencies, pooledObjects })
+        {
+            await InstantiateDependencies(preloadDtos);
+        }
 
         await PoolEntites(poolObjects, EntityPoolManager);
 
@@ -167,6 +176,13 @@ public class PreloaderManager : Scene
                     break;
                 case PreloadEntityType.ENTITYPOOL_MANAGER:
                     EntityPoolManager = await InstantiateDependency<EntityPoolManager>(dependency.Entity);
+                    break;
+                case PreloadEntityType.POOL_OBJECT:
+                    if (EntityPoolManager == null)
+                    {
+                        throw new ApplicationException($"EntityPoolManager is null!");
+                    }
+                    EntityPoolManager.Pool(await EntityPool.From(dependency.Entity.name, dependency.Entity.tag, dependency.AssetType, dependency.Entity.gameObject));
                     break;
                 default:
                     throw new ApplicationException($"Unknown dependency type found: {dependency.PreloadEntityType}");
