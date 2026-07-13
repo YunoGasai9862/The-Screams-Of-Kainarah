@@ -52,7 +52,7 @@ MonoBehaviour:
     preloadEntityType: 1
     assetType: 1
   - entity: {fileID: 6791688176416995157, guid: cdec62bb204f39040919254756aa9830, type: 3}
-    preloadEntityType: 2
+    preloadEntityType: 3
     assetType: 1
   poolObjects:
   - entity: {fileID: 6942044088278875987, guid: 05dace05c5d30104880353dab19e2674, type: 3}

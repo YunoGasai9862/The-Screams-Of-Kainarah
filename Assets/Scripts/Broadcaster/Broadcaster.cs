@@ -20,21 +20,31 @@ namespace Assets.Scripts.Broadcaster
 
             Debug.Log($"[Broadcaster]SceneUtilsInstance: {SceneUtilsInstance}");
 
-            if (SceneUtilsInstance == null)
+            SceneRegistryInstance = GetSceneRegistryInstance(SceneUtilsInstance);
+
+            if (SceneRegistryInstance == null)
             {
-                Debug.Log($"[Broadcaster]SceneUtils is null!");
+                Debug.Log($"[Broadcaster]SceneRegistryInstance is null...");
                 return;
             }
-
-            SceneRegistryInstance = SceneUtilsInstance.FindObject<SceneRegistry>();
-
-            Debug.Log($"[Broadcaster]SceneRegistryInstance: {SceneRegistryInstance}");
 
             Broadcast(SceneUtilsInstance);
         }
 
         public void Broadcast<T>(T value)
         {
+            if (SceneRegistryInstance == null)
+            {
+                //try fetching it again!
+                SceneRegistryInstance = GetSceneRegistryInstance(SceneUtilsInstance);
+
+                if (SceneRegistryInstance == null)
+                {
+                    Debug.Log($"[Broadcaster]SceneRegistryInstance is null...");
+                    return;
+                }
+            }
+
             foreach (KeyValuePair<int, GameObject> item in SceneRegistryInstance.GetRegisteredGameObjects())
             {
                 item.Value.GetComponent<Scene.Scene>().Broadcast(value);
@@ -46,6 +56,21 @@ namespace Assets.Scripts.Broadcaster
             Broadcast(SceneUtilsInstance);
 
             yield return new WaitForSeconds(pollingIntervalInSeconds);
+        }
+
+        private SceneRegistry GetSceneRegistryInstance(SceneUtils sceneUtils)
+        {
+            if (sceneUtils == null)
+            {
+                Debug.Log($"[Broadcaster]SceneUtils is null!");
+                return null;
+            }
+
+            SceneRegistry sceneRegistry = sceneUtils.FindObject<SceneRegistry>();
+
+            Debug.Log($"[Broadcaster]SceneRegistryInstance: {sceneRegistry}");
+
+           return sceneRegistry;
         }
     }
 }
