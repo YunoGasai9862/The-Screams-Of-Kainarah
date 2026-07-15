@@ -20,31 +20,12 @@ namespace Assets.Scripts.Broadcaster
 
             Debug.Log($"[Broadcaster]SceneUtilsInstance: {SceneUtilsInstance}");
 
-            SceneRegistryInstance = GetSceneRegistryInstance(SceneUtilsInstance);
-
-            if (SceneRegistryInstance == null)
-            {
-                Debug.Log($"[Broadcaster]SceneRegistryInstance is null...");
-                return;
-            }
-
-            Broadcast(SceneUtilsInstance);
+            //use IEnumerator and wait!
+            StartCoroutine(Broadcast(SceneUtilsInstance, 5));
         }
 
         public void Broadcast<T>(T value)
         {
-            if (SceneRegistryInstance == null)
-            {
-                //try fetching it again!
-                SceneRegistryInstance = GetSceneRegistryInstance(SceneUtilsInstance);
-
-                if (SceneRegistryInstance == null)
-                {
-                    Debug.Log($"[Broadcaster]SceneRegistryInstance is null...");
-                    return;
-                }
-            }
-
             foreach (KeyValuePair<int, GameObject> item in SceneRegistryInstance.GetRegisteredGameObjects())
             {
                 item.Value.GetComponent<Scene.Scene>().Broadcast(value);
@@ -58,19 +39,27 @@ namespace Assets.Scripts.Broadcaster
             yield return new WaitForSeconds(pollingIntervalInSeconds);
         }
 
-        private SceneRegistry GetSceneRegistryInstance(SceneUtils sceneUtils)
+        private IEnumerator Broadcast(SceneUtils sceneUtils, int retryLimit = 3, int retryDelay = 3)
         {
-            if (sceneUtils == null)
+            if (retryLimit == 0)
             {
-                Debug.Log($"[Broadcaster]SceneUtils is null!");
-                return null;
+                yield return null;
             }
 
             SceneRegistry sceneRegistry = sceneUtils.FindObject<SceneRegistry>();
 
-            Debug.Log($"[Broadcaster]SceneRegistryInstance: {sceneRegistry}");
+            if (sceneRegistry == null)
+            {
+                Debug.Log($"[Broadcaster]SceneRegistryInstance is null, retrying in {retryDelay} seconds...");
 
-           return sceneRegistry;
+                yield return new WaitForSeconds(retryDelay);
+
+                Broadcast(sceneUtils, retryLimit - 1, retryDelay);
+            }
+
+            SceneRegistryInstance = sceneRegistry;
+
+            Broadcast(SceneUtils);
         }
     }
 }
