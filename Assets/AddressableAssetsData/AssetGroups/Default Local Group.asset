@@ -132,6 +132,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Audio
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3a6d78a0f4124340a6fec02508507c0
+    m_Address: Prefabs/GameStateManager
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - GameStateManager
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fef3506b385aa3447b9c5b4fa352768d
     m_Address: LightManager
     m_ReadOnly: 0

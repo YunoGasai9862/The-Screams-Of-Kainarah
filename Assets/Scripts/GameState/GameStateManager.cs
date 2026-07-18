@@ -18,6 +18,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameStateManager), ContextType = typeof(IGameStateHandler))]
+[Asset(Asset.MONOBEHAVIOR, "GameStateManager", InstantiationOrder = 15)]
 public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<IGameStateHandler>, IRequest<GameStateManager>
 {
     private SceneData _sceneData;

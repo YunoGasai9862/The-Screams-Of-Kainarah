@@ -44,8 +44,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bfc78f797c8b704fa59895ccf67fc31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileName: 
-  onCheckpointSaveEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  jsonSerializedData: []

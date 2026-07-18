@@ -1,12 +1,13 @@
 ﻿using Assets.Scripts.Scene.Interface;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Scene
 {
     public class Scene : MonoBehaviour, IScene
     {
-        protected SceneUtils SceneUtils { get; set; }
+        private SceneUtils SceneUtils { get; set; }
 
         public virtual void Broadcast(dynamic value)
         {
@@ -26,6 +27,23 @@ namespace Assets.Scripts.Scene
             {
                 SceneUtils = value as SceneUtils;
             }
+        }
+
+        public async Task<SceneUtils> GetSceneAsync(int retry, int delay = 3)
+        {
+            for(int i=0; i<retry; i++)
+            {
+                if (SceneUtils == null)
+                {
+                    await Task.Delay(delay);
+
+                    return await GetSceneAsync(i, delay);
+                }
+
+                return SceneUtils;
+            }
+
+            return null;
         }
     }
 

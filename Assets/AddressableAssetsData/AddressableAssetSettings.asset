@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: b7063152c68b66041806e52030dac4d9
   m_currentHash:
     serializedVersion: 2
-    Hash: 2462e36a173fd784cfc305bb35d4d449
+    Hash: 3a8cbd7a0052a92a5f17562c25d71455
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -119,6 +119,7 @@ MonoBehaviour:
     - AttributeRegistry
     - Broadcaster
     - SceneUtils
+    - GameStateManager
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: fddaf8095ec2d344bb5a1aeb7f9adbb1, type: 2}
