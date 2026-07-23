@@ -5,9 +5,10 @@ using UnityEngine;
 public class EmitAttackAnimationState : StateMachineScene
 {
     private StateEvent StateEvent { get; set; }
+
     private async void Awake()
     {
-        StateEvent = await SceneUtils.GetCustomEvent<StateEvent>();
+        StateEvent = await (await BaseScene.GetSceneUtilsAsync()).GetCustomEvent<StateEvent>();
     }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state

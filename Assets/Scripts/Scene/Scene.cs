@@ -8,7 +8,7 @@ namespace Assets.Scripts.Scene
     {
         private SceneUtils SceneUtils { get; set; }
 
-        public async Task<SceneUtils> GetSceneUtilsAsync(int retry, int delay = 3)
+        public async Task<SceneUtils> GetSceneUtilsAsync(int retry = 5, int delay = 3)
         {
             for (int i = 0; i < retry; i++)
             {
@@ -44,25 +44,20 @@ namespace Assets.Scripts.Scene
                 SceneUtils = value as SceneUtils;
             }
         }
-        
-        public SceneUtils GetSceneUtils()
-        {
-            return SceneUtils;
-        }
     }
 
     public class Scene : MonoBehaviour
     {
-        protected BaseScene BaseScene { get; set; } = new BaseScene();
+        public BaseScene BaseScene { get; set; } = new BaseScene();
     }
 
     public class StateMachineScene : StateMachineBehaviour
     {
-        protected BaseScene BaseScene { get; set; } = new BaseScene();
+        public BaseScene BaseScene { get; set; } = new BaseScene();
     }
 
     public class ScriptableObjectScene : ScriptableObject
     {
-        protected BaseScene BaseScene { get; set; } = new BaseScene();
+        public BaseScene BaseScene { get; set; } = new BaseScene();
     }
 }

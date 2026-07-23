@@ -28,7 +28,7 @@ namespace Assets.Scripts.Broadcaster
         {
             foreach (KeyValuePair<int, GameObject> item in SceneRegistryInstance.GetRegisteredGameObjects())
             {
-                item.Value.GetComponent<Scene.Scene>().Broadcast(value);
+                item.Value.GetComponent<Scene.Scene>().BaseScene.Broadcast(value);
             }
         }
 

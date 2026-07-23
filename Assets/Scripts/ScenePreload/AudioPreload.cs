@@ -133,13 +133,5 @@ public class AudioPreload : Scene, IPreloadAudio<DialoguesAndOptions>, IDelegate
 
         yield return null;
     }
-
-    public override void Broadcast(dynamic value)
-    {
-        if (value is SceneUtils && SceneUtils == null)
-        {
-            SceneUtils = value as SceneUtils;
-        }
-    }
 }
 
