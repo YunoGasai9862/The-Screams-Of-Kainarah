@@ -22,9 +22,13 @@ public class Delegator : Scene, IDelegator
     private AttributeRegistry AttributeRegistry { get; set; }
 
     private SceneRegistry SceneRegistry { get; set; }
+
+    private SceneUtils SceneUtils { get; set; }
     
-    private void Awake()
+    private async void Awake()
     {
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
         AttributeRegistry = SceneUtils.FindObject<AttributeRegistry>();
 
         if (AttributeRegistry == null)

@@ -15,7 +15,7 @@ public class TrackPlayer : Scene, INotify<IEntityTransform>
 
     private async void Awake()
     {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
     }
 
     private void Start()

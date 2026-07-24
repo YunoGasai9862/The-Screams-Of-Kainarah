@@ -27,9 +27,13 @@ public class TriggerHandler : Scene, IPointerEnterHandler, IPointerExitHandler, 
 
     private Delegator Delegator { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Start()
     {
         m_funds = GameObject.FindGameObjectWithTag(FUNDS_TEXT_TAG).GetComponent<TMPro.TextMeshProUGUI>();
+
+       SceneUtils = await BaseScene.GetSceneUtilsAsync();
 
        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 

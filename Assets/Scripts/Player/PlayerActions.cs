@@ -50,6 +50,8 @@ public class PlayerActions : Scene, INotify<GenericStateBundle<PlayerStateBundle
 
     private PlayerActionsModel _playerActionsModel;
 
+    private SceneUtils SceneUtils {  get; set; }
+
     private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>()
     {
         StateBundle = new GameStateBundle()
@@ -69,6 +71,8 @@ public class PlayerActions : Scene, INotify<GenericStateBundle<PlayerStateBundle
     //Force = -2m * sqrt (g * h)
     private async void Awake()
     {
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
 
         _playerActionsModel = new PlayerActionsModel();

@@ -34,6 +34,8 @@ public class PlayerAttackController : Scene, IReceiverEnhancedAsync<PlayerAttack
 
     private MouseClickDto MouseClickDto { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private Player Player { get; set; }
         
     [SerializeField] LayerMask Ground;
@@ -58,6 +60,8 @@ public class PlayerAttackController : Scene, IReceiverEnhancedAsync<PlayerAttack
         _movementHelper = new MovementHelperClass();
 
         PlayerAttackStateInt = 0;
+
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
 
        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 

@@ -25,9 +25,13 @@ public class RakashBattleController : Scene, INotify<Health>, IReceiver<BattleAc
 
     private Health RakashHealth { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Start()
     {
         AnimationUtility = new AnimationUtility();
+
+        SceneUtils = (await BaseScene.GetSceneUtilsAsync());
 
        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 

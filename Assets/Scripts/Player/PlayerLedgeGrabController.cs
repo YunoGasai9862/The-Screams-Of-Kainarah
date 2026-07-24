@@ -57,9 +57,13 @@ public class PlayerLedgeGrabController : Scene, IReceiverEnhancedAsync<PlayerLed
 
     private Player Player { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Awake()
     {
         _helperFunc = new MovementHelperClass();
+
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
 
        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 

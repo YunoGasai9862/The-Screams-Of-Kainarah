@@ -29,6 +29,8 @@ public class PlayerActionSystemHandler : Scene, INotify<Collider2D>, INotify<Ent
 
     private Delegator Delegator { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private float DIAMOND_PICK_UP_VALUE { get; set; } = 20f;
     private int CRYSTAL_UI_INCREMENT_VALUE { get; set; } = 1;
 
@@ -40,6 +42,8 @@ public class PlayerActionSystemHandler : Scene, INotify<Collider2D>, INotify<Ent
              { "Health" , value => OnHealthPickup(value) },
              { "Dagger" , value => OnDaggerPickup(value) }
         };
+
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
     }
 
     private void Start()

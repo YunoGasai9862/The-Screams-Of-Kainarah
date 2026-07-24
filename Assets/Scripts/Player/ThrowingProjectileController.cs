@@ -33,7 +33,7 @@ public class ThrowingProjectileController : Scene, IReceiver<bool>, INotify<Scri
     {
         onThrowEvent.AddListener(CanPlayerThrowProjectile);
 
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
 
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<ScriptableObject>()
         {

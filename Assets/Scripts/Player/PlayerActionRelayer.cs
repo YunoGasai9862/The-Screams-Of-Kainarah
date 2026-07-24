@@ -61,8 +61,12 @@ public class PlayerActionRelayer : Assets.Scripts.Scene.Scene, INotify<IGameStat
 
     private PickableItemsUtility PickableItemsUtility { get; set; }
 
-    private void Start()
+    private SceneUtils SceneUtils { get; set; }
+
+    private async void Start()
     {
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
         m_gameStateManagerFallBackAlert = new FallBackAlert()
         {
             Alert = GameStateManagerFallBackAlert

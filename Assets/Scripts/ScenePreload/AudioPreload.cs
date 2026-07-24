@@ -30,6 +30,8 @@ public class AudioPreload : Scene, IPreloadAudio<DialoguesAndOptions>, IDelegate
     private Delegator Delegator { get; set; }
 
     private AudioGeneratedEvent m_audioGeneratedEvent;
+    
+    private SceneUtils SceneUtils { get; set; }
 
     private void Awake()
     {
@@ -39,6 +41,8 @@ public class AudioPreload : Scene, IPreloadAudio<DialoguesAndOptions>, IDelegate
     }
     private async void Start()
     {
+       SceneUtils = (await BaseScene.GetSceneUtilsAsync());
+
        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         m_audioGeneratedEvent = await SceneUtils.GetCustomEvent<AudioGeneratedEvent>();
