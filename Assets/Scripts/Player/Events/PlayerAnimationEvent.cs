@@ -21,9 +21,13 @@ public class PlayerAnimationEvent : Scene, INotify<EntityPoolManager>
 
     private List<GameObject> PooledIceTrails { get; set; } = new List<GameObject>();
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Start()
     {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         PlayerBoostAttackEvent = await SceneUtils.GetCustomEvent<PlayerBoostAttackEvent>();
 

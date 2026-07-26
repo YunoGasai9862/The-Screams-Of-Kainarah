@@ -22,9 +22,14 @@ public class PlayerAnimationController : Scene, IRequest<AnimationDetails>, IRec
     private Animator PlayerAnimator { get; set; }
 
     private PlayerStateBundle InternalPlayerStateBundle { get; set; } = new PlayerStateBundle();
+
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Awake()
     {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         if (Delegator == null)
         {

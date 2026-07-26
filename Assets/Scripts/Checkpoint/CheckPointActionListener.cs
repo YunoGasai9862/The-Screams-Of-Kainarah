@@ -30,8 +30,12 @@ public class CheckPointActionListener : Assets.Scripts.Scene.Scene, INotify<Enti
 
     public Dictionary<string, Func<CheckPoints.Checkpoint, CheckPoints, Task>> CheckpointDict { get => _checkpointsDict; set => _checkpointsDict = value; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Awake()
     {
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()

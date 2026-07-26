@@ -31,10 +31,14 @@ public class CameraShake : Scene, Assets.Scripts.Interfaces.Mediator.EnhancedV1.
 
     private AsyncCoroutine AsyncCoroutine { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState> StateBundle { get; set; } = new GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>();
 
     private async void Start()
     {
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(CameraShake)), this);

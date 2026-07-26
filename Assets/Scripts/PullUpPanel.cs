@@ -16,9 +16,13 @@ public class PullUpPanel : Scene, INotify<bool>
 
     private Delegator Delegator { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Awake()
     {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
     }
 
     void Start()

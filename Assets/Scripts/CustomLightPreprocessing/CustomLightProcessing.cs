@@ -19,9 +19,13 @@ public class CustomLightProcessing : Scene, ICustomLightPreprocessing, INotify<A
 
     private Delegator Delegator { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Start()
     {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(CustomLightProcessing)), this);
         Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<LightPackage>(gameObject, typeof(CandleLightPackageGenerator), typeof(CustomLightProcessing)), this);

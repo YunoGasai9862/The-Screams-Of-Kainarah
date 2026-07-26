@@ -345,7 +345,7 @@ public class PlayerActionRelayer : Assets.Scripts.Scene.Scene, INotify<IGameStat
     {
         EntityPoolManagerInstance = value;
 
-        PickableItemsSO = base.SceneUtils.GetFromEntityPoolManager<PickableItems>(EntityPoolManagerInstance, PICKABLE_ITEMS_KEY);
+        PickableItemsSO = SceneUtils.GetFromEntityPoolManager<PickableItems>(EntityPoolManagerInstance, PICKABLE_ITEMS_KEY);
 
         PickableItemsUtility = new PickableItemsUtility(PickableItemsSO);
 

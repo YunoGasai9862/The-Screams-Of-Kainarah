@@ -13,7 +13,7 @@ public class LightFlicker : Scene, Assets.Scripts.Interfaces.Mediator.EnhancedV1
 
     private async void Start()
     {
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0)

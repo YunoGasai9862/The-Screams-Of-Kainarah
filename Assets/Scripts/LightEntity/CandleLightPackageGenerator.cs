@@ -1,13 +1,14 @@
+using Annotations.Enums;
 using Assets.Annotations;
+using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
+using Assets.Scripts.Scene;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-using Annotations.Enums;
-using Assets.Scripts.Scene;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CandleLightPackageGenerator), ContextType = typeof(LightPackage))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CandleLightPackageGenerator), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
@@ -35,11 +36,20 @@ public class CandleLightPackageGenerator : Scene, Assets.Scripts.Interfaces.Medi
 
     private CancellationTokenSource CancellationTokenSource { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Start()
     {
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
         LightSource = GetComponent<Light2D>();
 
-        SceneUtils.ValidateLightSourcePresence(LightSource);
+        bool isValid = SceneUtils.IsLightSourceValid(LightSource);
+
+        if (!isValid)
+        {
+            throw new ApplicationException("LightSource is not Present!");
+        }
 
         SemaphoreSlim = new SemaphoreSlim(1, 1);
 

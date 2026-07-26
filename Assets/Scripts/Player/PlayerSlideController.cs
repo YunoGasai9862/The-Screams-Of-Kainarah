@@ -46,9 +46,13 @@ public class PlayerSlideController : Scene, IReceiverEnhancedAsync<PlayerSlideCo
 
     private bool IS_SLIDING { get; set; } = false;
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Awake()
     {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         PlayerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>(); 
     }

@@ -12,16 +12,16 @@ namespace Assets.Scripts.Broadcaster
     {
         private SceneRegistry SceneRegistryInstance { get; set; }
 
-        private SceneUtils SceneUtilsInstance { get; set; }
+        private SceneUtils SceneUtils { get; set; }
 
         private void Awake()
         {
-            SceneUtilsInstance = FindFirstObjectByType<SceneUtils>();
+            SceneUtils = FindFirstObjectByType<SceneUtils>();
 
-            Debug.Log($"[Broadcaster]SceneUtilsInstance: {SceneUtilsInstance}");
+            Debug.Log($"[Broadcaster]SceneUtilsInstance: {SceneUtils}");
 
             //use IEnumerator and wait!
-            StartCoroutine(Broadcast(SceneUtilsInstance, 5));
+            StartCoroutine(Broadcast(SceneUtils, 5));
         }
 
         public void Broadcast<T>(T value)
@@ -34,7 +34,7 @@ namespace Assets.Scripts.Broadcaster
 
         public IEnumerator Poll(int pollingIntervalInSeconds)
         {
-            Broadcast(SceneUtilsInstance);
+            Broadcast(SceneUtils);
 
             yield return new WaitForSeconds(pollingIntervalInSeconds);
         }

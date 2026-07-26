@@ -2,6 +2,7 @@ using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Assets.Scripts.Scene;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -30,11 +31,21 @@ public class CelestialBodiesLightPackageGenerator : Scene, INotify<ILightPreproc
 
     private CancellationTokenSource CancellationTokenSource { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Start()
     {
+
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
         LightSource = GetComponent<Light2D>();
 
-        SceneUtils.ValidateLightSourcePresence(LightSource);
+        bool isValid = SceneUtils.IsLightSourceValid(LightSource);
+
+        if (!isValid)
+        {
+            throw new ApplicationException("LightSource is not Present!");
+        }
 
         SemaphoreSlim = new SemaphoreSlim(1, 1);
 

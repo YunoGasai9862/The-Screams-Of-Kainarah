@@ -20,7 +20,7 @@ public class ResetController : Scene, INotify<ResetBundle>
     {
         Animator = GetComponent<Animator>();
 
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
     }
 
     private void Start()

@@ -41,7 +41,7 @@ public class PlayerAttributesNotifier: Scene, IRequest<Player>, IRequest<IEntity
             Health = PlayerHealth,
         };
 
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
     }
 
     IEnumerator<Player> IRequest<Player>.Request()

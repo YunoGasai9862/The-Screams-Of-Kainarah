@@ -21,7 +21,7 @@ public class MusicManager : Scene, INotify<bool>
 
     private async void Awake()
     {
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
 
          Delegator.NotifySubjectWrapper(new ObserverContext<bool>()
         {

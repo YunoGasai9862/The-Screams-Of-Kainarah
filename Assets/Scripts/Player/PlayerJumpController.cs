@@ -45,8 +45,12 @@ public class PlayerJumpController : Scene, IReceiverEnhancedAsync<PlayerJumpCont
 
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle> { StateBundle = new PlayerStateBundle() };
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Awake()
     {
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
         _movementHelperClass = new MovementHelperClass();
 
        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));

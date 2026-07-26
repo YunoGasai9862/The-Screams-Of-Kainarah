@@ -36,12 +36,16 @@ public class RakashStateMachine : Scene, INotify<GenericStateBundle<GameStateBun
 
     private Animator Animator { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     [SerializeField]
     EnemyHittableObjects enemyHittableObjects;
 
     private async void Awake()
     {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         Animator = GetComponent<Animator>();
 

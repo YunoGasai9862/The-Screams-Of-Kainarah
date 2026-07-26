@@ -383,12 +383,9 @@ public class SceneUtils: Scene
         };
     }
 
-    public void ValidateLightSourcePresence(Light2D light2D)
+    public bool IsLightSourceValid(Light2D light2D)
     {
-        if (light2D == null)
-        {
-            throw new ApplicationException("LightSource is not Present!");
-        }
+        return light2D == null ? false : true;
     }
 
     public float CalculateScreenWidth(Camera _mainCamera)

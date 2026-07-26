@@ -20,11 +20,15 @@ public class PlayerShadow : Scene, INotify<Player>
 
     private Player Player { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Awake()
     {
         m_Position = new Vector2(transform.position.x + initialoffsetX, transform.position.y + initialoffsetY);
 
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));   
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));   
 
         Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
         {

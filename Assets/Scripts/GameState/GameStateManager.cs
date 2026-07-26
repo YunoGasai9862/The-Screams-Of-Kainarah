@@ -35,8 +35,12 @@ public class GameStateManager : Assets.Scripts.Scene.Scene, IGameState, Assets.S
 
     private SceneRegistry SceneRegistry { get; set; }
 
-    private void Awake()
+    private SceneUtils SceneUtils { get; set; }
+
+    private async void Awake()
     {
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
         SceneRegistry = SceneUtils.FindObject<SceneRegistry>();
 
         if (SceneRegistry == null)

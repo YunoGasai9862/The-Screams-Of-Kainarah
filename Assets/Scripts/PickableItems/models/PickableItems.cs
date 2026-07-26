@@ -33,7 +33,7 @@ public class PickableItems : ScriptableObjectScene, IRequest<ScriptableObject>, 
 
     public async void SetupAsSubject()
     {
-       Delegator = await SceneUtils.GetDelegator<Delegator>();
+       Delegator = await (await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>();
     }
 
     public IEnumerator Request()

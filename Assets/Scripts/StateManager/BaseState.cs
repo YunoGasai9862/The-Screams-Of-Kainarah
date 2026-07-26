@@ -78,8 +78,12 @@ public abstract class BaseState<T, Z> : Scene, Assets.Scripts.Interfaces.Mediato
 
     private Delegator Delegator { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Start()
     {
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         StateEvent = await SceneUtils.GetCustomEvent<StateEvent>();

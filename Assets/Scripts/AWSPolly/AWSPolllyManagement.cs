@@ -47,6 +47,8 @@ public class AWSPolllyManagement : Scene, IAWSPolly, INotify<FirebaseStorageMana
 
     private Delegator Delegator { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     [SerializeField]
     string FirebaseStorageURL;
     [SerializeField]
@@ -54,7 +56,7 @@ public class AWSPolllyManagement : Scene, IAWSPolly, INotify<FirebaseStorageMana
     [SerializeField]
     AudioGeneratedEvent audioGeneratedEvent;
 
-    private void Awake()
+    private async void Awake()
     {
         CancellationTokenSource = new CancellationTokenSource();
 
@@ -63,7 +65,9 @@ public class AWSPolllyManagement : Scene, IAWSPolly, INotify<FirebaseStorageMana
 
     private async void Start()
     {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<FirebaseStorageManager>(gameObject, typeof(FirebaseStorageManager), typeof(AWSPolllyManagement)), this);
 

@@ -19,6 +19,8 @@ public class DialogueObserverManager : Scene, INotify<DialoguesAndOptions.Dialog
     private Delegator Delegator { get; set; }
 
     private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
+    
+    private SceneUtils SceneUtils { get; set; }
 
     private IEnumerator TriggerDialogue(DialoguesAndOptions.DialogueSystem dialogueSystem)
     {
@@ -29,7 +31,9 @@ public class DialogueObserverManager : Scene, INotify<DialoguesAndOptions.Dialog
 
     private async void Start()
     {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>> ()
         {
