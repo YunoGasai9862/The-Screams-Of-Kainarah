@@ -5,8 +5,8 @@ using UnityEngine.Rendering.Universal;
 
 public class HealingEffectScript : Scene
 {
-    private void Start()
+    private async void Start()
     {
-        StartCoroutine(SceneUtils.TuneDownIntensityToZero(GetComponent<Light2D>()));
+        StartCoroutine((await BaseScene.GetSceneUtilsAsync()).TuneDownIntensityToZero(GetComponent<Light2D>()));
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
 using Assets.Scripts.Scene;
+using System.Collections.Generic;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueResetActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 public class DialogueResetActionListener : Scene, INotify<EntityPoolManager>
@@ -43,7 +44,9 @@ public class DialogueResetActionListener : Scene, INotify<EntityPoolManager>
     {
         EntityPoolManagerInstance = value;
 
-        DialoguesAndOptionsSO = SceneUtils.GetFromEntityPoolManager<DialoguesAndOptions>(EntityPoolManagerInstance, DIALOGUES_AND_OPTIONS_KEY);
+        yield return StartCoroutine(BaseScene.WaitForSceneUtils());
+
+        DialoguesAndOptionsSO = (BaseScene.GetSceneUtils()).GetFromEntityPoolManager<DialoguesAndOptions>(EntityPoolManagerInstance, DIALOGUES_AND_OPTIONS_KEY);
 
         yield return null;
     }

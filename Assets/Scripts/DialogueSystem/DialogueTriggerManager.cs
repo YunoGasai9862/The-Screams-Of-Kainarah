@@ -26,7 +26,7 @@ public class DialogueTriggerManager : Scene, INotify<GenericStateBundle<GameStat
     {
         await dialogueTriggerEvent.AddListener(TriggerCoroutine);
 
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {

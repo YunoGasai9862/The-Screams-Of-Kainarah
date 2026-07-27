@@ -27,7 +27,7 @@ public class FirebaseStorageManager : Scene, IFirebaseStorage, IRequest<Firebase
 
     private async void Start()
     {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
 
         InitializeFirebaseStorage();
 

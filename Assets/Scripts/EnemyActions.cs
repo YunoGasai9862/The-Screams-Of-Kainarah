@@ -34,8 +34,12 @@ public class EnemyActions : Scene, INotify<EnemyActionBundle>
 
     public GameObject enemyGameObject { get => _enemyGameObject; set=>_enemyGameObject = value;}
 
-    private void Awake()
+    private SceneUtils SceneUtils { get; set; }
+
+    private async void Awake()
     {
+         SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
         _stateTracker = new AnimationStateMachine(SceneUtils);
         _animator = GetComponent<Animator>();
         _gameObjectCreator = new InstantiateUtility(Hit);

@@ -20,7 +20,7 @@ public class HealthBar : Scene, INotify<IEntityHealth>
 
     private async void Start()
     {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<IEntityHealth>()
         {

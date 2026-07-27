@@ -1,10 +1,11 @@
 ﻿using Assets.Scripts.Scene.Interface;
+using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Scene
 {
-    public class BaseScene : IScene
+    public class BaseScene : MonoBehaviour, IScene
     {
         private SceneUtils SceneUtils { get; set; }
 
@@ -24,6 +25,25 @@ namespace Assets.Scripts.Scene
 
             return null;
         }
+
+        public IEnumerator WaitForSceneUtils(int retry = 5, int delay = 3)
+        {
+            for (int i = 0; i < retry; i++)
+            {
+                if (SceneUtils == null)
+                {
+                    yield return new WaitForSeconds(delay);
+
+                    yield return StartCoroutine(WaitForSceneUtils(i, delay));
+                }
+            }
+        }
+
+        public SceneUtils GetSceneUtils()
+        {
+            return SceneUtils;
+        }
+
 
         public virtual void Broadcast(dynamic value)
         {
