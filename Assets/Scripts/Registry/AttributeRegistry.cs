@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Registry
@@ -23,11 +24,11 @@ namespace Assets.Scripts.Registry
             Attributes = BuildAttributeRegistry(Assemblies);
         }
 
-        public List<T> GetAttributes<T>(List<Type> genericTypes = null, List<Type> nonGenericTypes = null) where T : Attribute
+        public async Task<List<T>> GetAttributes<T>(List<Type> genericTypes = null, List<Type> nonGenericTypes = null) where T : Attribute
         {
             try
             {
-                return SceneUtils.GetAttribute<T>(Assemblies, genericTypes, nonGenericTypes).ToList();
+                return (await BaseScene.GetSceneUtilsAsync()).GetAttribute<T>(Assemblies, genericTypes, nonGenericTypes).ToList();
             }
             catch (BaseException ex)
             {

@@ -65,7 +65,9 @@ public class CheckpointColliderListener : Scene, INotify<Player>, INotify<Entity
     {
         EntityPoolManagerInstance = value;
 
-        CheckPointsSO = SceneUtils.GetFromEntityPoolManager<CheckPoints>(EntityPoolManagerInstance, CHECKPOINTS_KEY);
+        StartCoroutine(BaseScene.WaitForSceneUtils());
+
+        CheckPointsSO = BaseScene.GetSceneUtils().GetFromEntityPoolManager<CheckPoints>(EntityPoolManagerInstance, CHECKPOINTS_KEY);
 
         yield return null;
     }

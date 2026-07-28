@@ -11,6 +11,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class Delegator : Scene, IDelegator
@@ -47,7 +48,7 @@ public class Delegator : Scene, IDelegator
             throw new MissingEntityException($"SceneRegistry Registry could not be found in the scene! Please ensure that there is an active game object with the SceneRegistry component attached to it in the scene.");
         }
 
-        Associations = BuildDelegatorRegistry();
+        Associations = await BuildDelegatorRegistry();
     }
 
     public void NotifyObserverWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
@@ -302,7 +303,7 @@ public class Delegator : Scene, IDelegator
 
     //we should check on generic interface assignment since we wouldn't know concrete implementation during reflection.
     //in order to do that, get interfaces first and then check on IsGenericFlag and TypeDefinition
-    public Dictionary<dynamic, List<dynamic>> BuildDelegatorRegistry()
+    public async Task<Dictionary<dynamic, List<dynamic>>> BuildDelegatorRegistry()
     {
         Dictionary<dynamic, List<dynamic>> associations = new Dictionary<dynamic, List<dynamic>>();
 
@@ -312,7 +313,7 @@ public class Delegator : Scene, IDelegator
 
         try
         {
-            List<SubjectAttribute> subjects = AttributeRegistry.GetAttributes<SubjectAttribute>(
+            List<SubjectAttribute> subjects = await AttributeRegistry.GetAttributes<SubjectAttribute>(
                     new List<Type>() 
                     { 
                         typeof(Assets.Scripts.Interfaces.Mediator.Base.IRequest<>),
@@ -330,9 +331,9 @@ public class Delegator : Scene, IDelegator
 
             Debug.Log($"Subjects found: {subjects.Count}");
 
-            List<ObserverAttribute> observers = AttributeRegistry.GetAttributes<ObserverAttribute>( 
-                     new List<Type> 
-                     { 
+            List<ObserverAttribute> observers = await AttributeRegistry.GetAttributes<ObserverAttribute>(
+                     new List<Type>
+                     {
                          typeof(Assets.Scripts.Interfaces.Mediator.Base.INotify<>),
                          typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<>),
                      },
@@ -341,7 +342,7 @@ public class Delegator : Scene, IDelegator
                          typeof(Assets.Scripts.Interfaces.Mediator.Base.INotify),
                          typeof(Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify)
                      }
-                ).ToList();
+                );
 
             Debug.Log($"Observers found: {observers.Count}");
 

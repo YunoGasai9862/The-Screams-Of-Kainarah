@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 public interface IDelegator<T>
 {
     public IEnumerator NotifyObserver(IObserver<T> observer, T value, ObserverContext context, CancellationToken cancellationToken, SemaphoreSlim semaphoreSlim = null, params object[] optional);
@@ -18,5 +19,5 @@ public interface IDelegator
 
     IEnumerator NotifySubject<T>(ObserverContext<T> context, INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional);
 
-    Dictionary<dynamic, List<dynamic>> BuildDelegatorRegistry();
+    Task<Dictionary<dynamic, List<dynamic>>> BuildDelegatorRegistry();
 }

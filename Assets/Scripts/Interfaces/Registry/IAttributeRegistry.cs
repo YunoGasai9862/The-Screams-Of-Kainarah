@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 namespace Assets.Scripts.Interfaces.Registry
 {
     public interface IAttributeRegistry
@@ -10,6 +11,6 @@ namespace Assets.Scripts.Interfaces.Registry
 
         Dictionary<Type, List<Attribute>> BuildAttributeRegistry(List<Type> assemblies);
 
-        List<T> GetAttributes<T>(List<Type> nonGenericTypes = null, List<Type> genericTypes = null) where T : Attribute;
+        Task<List<T>> GetAttributes<T>(List<Type> nonGenericTypes = null, List<Type> genericTypes = null) where T : Attribute;
     }
 }
