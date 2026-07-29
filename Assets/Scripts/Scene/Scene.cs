@@ -9,6 +9,16 @@ namespace Assets.Scripts.Scene
     {
         private SceneUtils SceneUtils { get; set; }
 
+        public static BaseScene BaseSceneReference { get; set; }
+
+        private void Awake()
+        {
+            if (BaseSceneReference == null)
+            {
+                BaseSceneReference = GetComponent<BaseScene>();
+            }
+        }
+
         public async Task<SceneUtils> GetSceneUtilsAsync(int retry = 5, int delay = 3)
         {
             for (int i = 0; i < retry; i++)
@@ -68,16 +78,19 @@ namespace Assets.Scripts.Scene
 
     public class Scene : MonoBehaviour
     {
-        public BaseScene BaseScene { get; set; } = new BaseScene();
+        //check for null reference and assign BaseSceneReference if null
+        public BaseScene BaseScene { get; set; } = BaseScene.BaseSceneReference;
     }
 
     public class StateMachineScene : StateMachineBehaviour
     {
-        public BaseScene BaseScene { get; set; } = new BaseScene();
+        //check for null reference and assign BaseSceneReference if null
+        public BaseScene BaseScene { get; set; } = BaseScene.BaseSceneReference;
     }
 
     public class ScriptableObjectScene : ScriptableObject
     {
-        public BaseScene BaseScene { get; set; } = new BaseScene();
+        //check for null reference and assign BaseSceneReference if null
+        public BaseScene BaseScene { get; set; } = BaseScene.BaseSceneReference;
     }
 }
