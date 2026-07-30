@@ -3,6 +3,7 @@ using Annotations.Enums;
 using Assets.Exceptions;
 using Assets.Scripts.DelegatorsManager.Models;
 using Assets.Scripts.Scene;
+using NUnit.Framework;
 using ObserverPattern;
 using System;
 using System.Collections;
@@ -65,7 +66,7 @@ public class SceneUtils: Scene
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
-    public IEnumerator GetDelegator<T>(Action<T> callback, int retryLimit = 3, int waitLimitInSeconds = 6) where T : UnityEngine.Object
+    public IEnumerator GetDelegator<T>(Action<T> callback, int retryLimit = 5, int waitLimitInSeconds = 6) where T : UnityEngine.Object
     {
         for (int i = 0; i < retryLimit; i++)
         {
@@ -151,7 +152,7 @@ public class SceneUtils: Scene
         throw new CustomEventNotFoundException($" {typeof(T).Name} Not Found in the Scene");
     }
 
-    public dynamic Convert(AnimatorControllerParameterType type, dynamic value)
+    public dynamic? Convert(AnimatorControllerParameterType type, dynamic value)
     {
         switch (type)
         {
@@ -174,6 +175,7 @@ public class SceneUtils: Scene
                 }
                 return (float) value;
         }
+
         return null;
     }
 
@@ -225,7 +227,7 @@ public class SceneUtils: Scene
         return foundAttributes;
     }
 
-    public async Task<T> FindObjectAsync<T>(Type gameObjectType, int retryLimit = 3, int waitLimitInSeconds = 3) where T: class
+    public async Task<T?> FindObjectAsync<T>(Type gameObjectType, int retryLimit = 3, int waitLimitInSeconds = 3) where T: class
     {
         for(int i = 0; i < retryLimit; i++)
         {

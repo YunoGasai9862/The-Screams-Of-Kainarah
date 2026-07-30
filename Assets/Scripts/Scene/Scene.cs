@@ -42,6 +42,8 @@ namespace Assets.Scripts.Scene
             {
                 if (SceneUtils == null)
                 {
+                    Debug.Log("SceneUtils is null, waiting for it to be assigned...");
+
                     yield return new WaitForSeconds(delay);
 
                     yield return StartCoroutine(WaitForSceneUtils(i, delay));
@@ -79,7 +81,16 @@ namespace Assets.Scripts.Scene
     public class Scene : MonoBehaviour
     {
         //check for null reference and assign BaseSceneReference if null
-        public BaseScene BaseScene { get; set; } = BaseScene.BaseSceneReference;
+        public BaseScene BaseScene { get 
+            {  
+                if (BaseScene.BaseSceneReference == null) 
+                {
+                    BaseScene.BaseSceneReference = GetComponent<BaseScene>();
+                }
+
+                return BaseScene.BaseSceneReference;
+             } 
+        }
     }
 
     public class StateMachineScene : StateMachineBehaviour

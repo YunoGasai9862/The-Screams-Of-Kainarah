@@ -16,15 +16,18 @@ public class ResetController : Scene, INotify<ResetBundle>
 
     private Delegator Delegator { get; set; }
 
-    private async void Awake()
+    private SceneUtils SceneUtils { get; set; }
+
+    private async void Start()
     {
         Animator = GetComponent<Animator>();
 
-       StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
-    }
+        Debug.Log($"Base Scene: {BaseScene}");
 
-    private void Start()
-    {
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<ResetBundle>()
         {
             Instance = gameObject,

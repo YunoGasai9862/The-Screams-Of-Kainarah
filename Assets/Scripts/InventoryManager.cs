@@ -13,6 +13,8 @@ public class InventoryManager : Scene, IRequest<bool>
 
     private Delegator Delegator { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private void Start()
     {
         inventoryPouchClickEvent.AddListener(ShouldInventoryBeVisible);
@@ -21,7 +23,9 @@ public class InventoryManager : Scene, IRequest<bool>
 
     private async void Awake()
     {
-       StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
     }
     public bool IsPouchOpen { get; set; } = false;
 

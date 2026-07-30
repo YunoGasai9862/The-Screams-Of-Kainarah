@@ -32,7 +32,7 @@ public class CheckPointActionListener : Assets.Scripts.Scene.Scene, INotify<Enti
 
     private SceneUtils SceneUtils { get; set; }
 
-    private async void Awake()
+    private async void Start()
     {
         SceneUtils = await BaseScene.GetSceneUtilsAsync();
 

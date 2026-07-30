@@ -42,13 +42,13 @@ public class PlayerActionSystemHandler : Scene, INotify<Collider2D>, INotify<Ent
              { "Health" , value => OnHealthPickup(value) },
              { "Dagger" , value => OnDaggerPickup(value) }
         };
-
-        SceneUtils = await BaseScene.GetSceneUtilsAsync();
     }
 
-    private void Start()
+    private async void Start()
     {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
     }
 
     private void OnDelegatorFound(Delegator delegator)
