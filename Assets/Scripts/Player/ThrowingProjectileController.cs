@@ -4,10 +4,10 @@ using System.Collections;
 using UnityEngine;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Annotations.Enums;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(ThrowingProjectileController), SubjectType = typeof(PickableItems), ContextType = typeof(ScriptableObject))]
-public class ThrowingProjectileController : Scene, IReceiver<bool>, INotify<ScriptableObject>
+public class ThrowingProjectileController : MonoBehaviorScene, IReceiver<bool>, INotify<ScriptableObject>
 {
     private const string DAGGER_ITEM_NAME = "Dagger";
 

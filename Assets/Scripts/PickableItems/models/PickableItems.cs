@@ -2,7 +2,7 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System;
 using System.Collections;
 using UnityEngine;

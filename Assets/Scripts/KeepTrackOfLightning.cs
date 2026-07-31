@@ -1,7 +1,7 @@
 
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 
-public class KeepTrackOfLightning : Scene
+public class KeepTrackOfLightning : MonoBehaviorScene
 {
    
     void Update()

@@ -2,7 +2,7 @@ using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.GameState.Models;
 using Assets.Scripts.Interfaces.Mediator.Base;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using PlayerHittableItemsNS;
 using System;
 using System.Collections;
@@ -18,7 +18,7 @@ using static Context;
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
-public class PlayerActionRelayer : Assets.Scripts.Scene.Scene, INotify<IGameStateHandler>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<Player>, IGameStateHandler, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<EntityPoolManager>, IRequest<Collider2D>, 
+public class PlayerActionRelayer : Assets.Scripts.BaseScene.MonoBehaviorScene, INotify<IGameStateHandler>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<Player>, IGameStateHandler, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<EntityPoolManager>, IRequest<Collider2D>, 
     IRequest<Player>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GameStateManager>
 {
     [SerializeField] string InteractableTag;

@@ -1,6 +1,6 @@
 using Annotations.Enums;
 using Assets.Scripts.Loading.Models;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using UnityEditor.AddressableAssets.Build.Layout;
 using UnityEngine;
 
-public class PreloaderManager : Scene
+public class PreloaderManager : MonoBehaviorScene
 {
     [SerializeField]
     List<PreloadDto> dependencies;

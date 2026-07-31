@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.Scene.Interface
+﻿namespace Assets.Scripts.BaseScene.Interface
 {
     public interface IScene
     {

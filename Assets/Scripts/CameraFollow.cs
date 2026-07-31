@@ -3,11 +3,11 @@ using System.Collections;
 using UnityEngine;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Annotations.Enums;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CameraFollow), SubjectType = typeof(CameraShake), ContextType = typeof(bool))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CameraFollow), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
-public class CameraFollow : Scene, INotify<bool>, INotify<IEntityTransform>
+public class CameraFollow : MonoBehaviorScene, INotify<bool>, INotify<IEntityTransform>
 {
     [Header("Camera Follow Speed")]
     [SerializeField] float _cameraFollowSpeed;

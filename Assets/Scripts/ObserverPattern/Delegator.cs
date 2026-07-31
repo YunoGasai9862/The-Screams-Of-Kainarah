@@ -6,7 +6,7 @@ using Assets.Scripts.Enums;
 using Assets.Scripts.ObserverPattern.interfaces;
 using Assets.Scripts.ObserverPattern.models;
 using Assets.Scripts.Registry;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class Delegator : Scene, IDelegator
+public class Delegator : MonoBehaviorScene, IDelegator
 {
     private Dictionary<dynamic, List<dynamic>> Associations { get; set; } = new Dictionary<dynamic, List<dynamic>>();
 
@@ -193,7 +193,7 @@ public class Delegator : Scene, IDelegator
 
             GameObject gameObject = SceneRegistry.GetRegisteredObject(Asset.MONOBEHAVIOR, context.Instance.name) as GameObject;
 
-            Debug.Log($"In Scene: {gameObject} - type: {context.SubjectType}");
+            Debug.Log($"In MonoBehaviorScene: {gameObject} - type: {context.SubjectType}");
 
             if (gameObject == null)
             {

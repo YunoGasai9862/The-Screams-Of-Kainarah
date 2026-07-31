@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EnemyScript), EntityType = typeof(EnemyActions), ContextType = typeof(EnemyActionBundle))]
-public class EnemyActions : Scene, INotify<EnemyActionBundle>
+public class EnemyActions : MonoBehaviorScene, INotify<EnemyActionBundle>
 {
     private enum enemyAttack
     {

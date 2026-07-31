@@ -1,13 +1,13 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CelestialBodyLightning), ContextType = typeof(ILightPreprocess))]
-public class CelestialBodyLightning : Scene, ILightPreprocess, IRequest<ILightPreprocess>
+public class CelestialBodyLightning : MonoBehaviorScene, ILightPreprocess, IRequest<ILightPreprocess>
 {
     private Delegator Delegator { get; set; }
 

@@ -1,11 +1,11 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class InventoryManagementSystem : Scene
+public class InventoryManagementSystem : MonoBehaviorScene
 {
     [SerializeField] private InventorySystem inventorySystem;
 

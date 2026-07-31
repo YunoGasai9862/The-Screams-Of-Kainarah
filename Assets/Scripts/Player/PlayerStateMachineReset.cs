@@ -1,4 +1,4 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using UnityEngine;
 
 public class PlayerStateMachineReset: StateMachineScene

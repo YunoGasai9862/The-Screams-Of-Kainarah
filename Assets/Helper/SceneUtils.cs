@@ -2,7 +2,7 @@
 using Annotations.Enums;
 using Assets.Exceptions;
 using Assets.Scripts.DelegatorsManager.Models;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using NUnit.Framework;
 using ObserverPattern;
 using System;
@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class SceneUtils: Scene
+public class SceneUtils: MonoBehaviorScene
 {
     private Delegator Delegator { get; set; }
 
@@ -63,7 +63,7 @@ public class SceneUtils: Scene
             return delegator;
         }
 
-        throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
+        throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the MonoBehaviorScene");
     }
 
     public IEnumerator GetDelegator<T>(Action<T> callback, int retryLimit = 5, int waitLimitInSeconds = 6) where T : UnityEngine.Object
@@ -86,7 +86,7 @@ public class SceneUtils: Scene
             break;
         }
 
-        throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
+        throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the MonoBehaviorScene");
     }
 
     public IEnumerator NotifySubjectWrapper<T>(ObserverContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer)
@@ -116,7 +116,7 @@ public class SceneUtils: Scene
             break;
         }
 
-        throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the Scene");
+        throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the MonoBehaviorScene");
     }
 
     public T GetFromEntityPoolManager<T>(EntityPoolManager entityPoolManager, string key) where T : ScriptableObject
@@ -149,7 +149,7 @@ public class SceneUtils: Scene
             return customEvent;
         }
 
-        throw new CustomEventNotFoundException($" {typeof(T).Name} Not Found in the Scene");
+        throw new CustomEventNotFoundException($" {typeof(T).Name} Not Found in the MonoBehaviorScene");
     }
 
     public dynamic? Convert(AnimatorControllerParameterType type, dynamic value)
@@ -250,7 +250,7 @@ public class SceneUtils: Scene
             return gameObject as T;
         }
 
-        throw new ApplicationException($" {gameObjectType.Name} Not Found in the Scene");
+        throw new ApplicationException($" {gameObjectType.Name} Not Found in the MonoBehaviorScene");
     }
 
     public bool IsInterfacePresent(GameObject gameObject, Type typeToSearch)
@@ -271,7 +271,7 @@ public class SceneUtils: Scene
         return gameObject;
     }
 
-    public async Task<TYPE> FindReceiver<TYPE, IMPLEMENTATION>(int retryLimit = 3, int waitLimitInSeconds = 3) where TYPE: Scene
+    public async Task<TYPE> FindReceiver<TYPE, IMPLEMENTATION>(int retryLimit = 3, int waitLimitInSeconds = 3) where TYPE: MonoBehaviorScene
     {
 
         for (int i = 0; i < retryLimit; i++)
@@ -293,7 +293,7 @@ public class SceneUtils: Scene
             return receiver;
         }
 
-        throw new ReceiverNotFounderException($" {typeof(TYPE).Name} Not Found in the Scene");
+        throw new ReceiverNotFounderException($" {typeof(TYPE).Name} Not Found in the MonoBehaviorScene");
     }
 
     public TYPE FindObject<TYPE>() where TYPE : UnityEngine.Object

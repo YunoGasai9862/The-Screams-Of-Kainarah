@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 // Cartoon FX  - (c) 2015 Jean Moreno
 //
-// Script handling looped effect in the Demo Scene, so that they eventually stop
+// Script handling looped effect in the Demo MonoBehaviorScene, so that they eventually stop
 
 [RequireComponent(typeof(ParticleSystem))]
 public class CFX_AutoStopLoopedEffect : MonoBehaviour

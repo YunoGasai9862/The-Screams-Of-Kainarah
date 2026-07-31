@@ -1,14 +1,14 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(RakashBattleController), SubjectType = typeof(RakashManager), ContextType = typeof(Health))]
-public class RakashBattleController : Scene, INotify<Health>, IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>
+public class RakashBattleController : MonoBehaviorScene, INotify<Health>, IReceiver<BattleActionDelegatePackage, Task<ActionExecuted>>
 {
     [SerializeField]
     GameObject rakashDeadBodyPrefab;

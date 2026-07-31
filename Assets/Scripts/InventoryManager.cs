@@ -1,11 +1,11 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.Base;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using UnityEngine;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(InventoryManager), ContextType = typeof(bool))]
-public class InventoryManager : Scene, IRequest<bool>
+public class InventoryManager : MonoBehaviorScene, IRequest<bool>
 {
     [SerializeField] GameObject InventoryPanel;
     [SerializeField] InventoryPouchClickEvent inventoryPouchClickEvent;
@@ -15,18 +15,16 @@ public class InventoryManager : Scene, IRequest<bool>
 
     private SceneUtils SceneUtils { get; set; }
 
-    private void Start()
+    private async void Start()
     {
-        inventoryPouchClickEvent.AddListener(ShouldInventoryBeVisible);
-        inventoryPouchPanelEvent.AddListener(IsPouchPanelActive);
-    }
+        await inventoryPouchClickEvent.AddListener(ShouldInventoryBeVisible);
+        await inventoryPouchPanelEvent.AddListener(IsPouchPanelActive);
 
-    private async void Awake()
-    {
         SceneUtils = await BaseScene.GetSceneUtilsAsync();
 
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
     }
+
     public bool IsPouchOpen { get; set; } = false;
 
     public void ShouldInventoryBeVisible(bool visible)

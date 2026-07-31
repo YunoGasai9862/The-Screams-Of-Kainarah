@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Assets.Scripts.Broadcaster
 {
     [AssetAttribute(Asset.MONOBEHAVIOR, "Broadcaster")]
-    public class Broadcaster : Scene.Scene, IBroadcaster, IPoller
+    public class Broadcaster : BaseScene.MonoBehaviorScene, IBroadcaster, IPoller
     {
         private SceneRegistry SceneRegistryInstance { get; set; }
 
@@ -28,7 +28,7 @@ namespace Assets.Scripts.Broadcaster
         {
             foreach (KeyValuePair<int, GameObject> item in SceneRegistryInstance.GetRegisteredGameObjects())
             {
-                item.Value.GetComponent<Scene.Scene>().BaseScene.Broadcast(value);
+                item.Value.GetComponent<BaseScene.MonoBehaviorScene>().BaseScene.Broadcast(value);
             }
         }
 

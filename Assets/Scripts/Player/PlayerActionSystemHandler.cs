@@ -6,11 +6,11 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionSystemHandler), SubjectType = typeof(PickableItems), ContextType = typeof(Collider2D))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionSystemHandler), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-public class PlayerActionSystemHandler : Scene, INotify<Collider2D>, INotify<EntityPoolManager>
+public class PlayerActionSystemHandler : MonoBehaviorScene, INotify<Collider2D>, INotify<EntityPoolManager>
 {
     [SerializeField] PlayerPowerUpModeEvent playerPowerUpModeEvent;
     [SerializeField] CrystalUIIncrementEvent crystalUIIncrementEvent;

@@ -11,7 +11,7 @@ using UnityEngine;
 namespace Assets.Scripts.Registry
 {
     [Asset(Asset.MONOBEHAVIOR, "AttributeRegistry", InstantiationOrder = 2)]
-    public class AttributeRegistry : Scene.Scene, IAttributeRegistry
+    public class AttributeRegistry : BaseScene.MonoBehaviorScene, IAttributeRegistry
     {
         private List<Type> Assemblies { get; set; } = new List<Type>();
 

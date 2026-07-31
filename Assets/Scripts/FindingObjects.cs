@@ -1,7 +1,7 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using UnityEngine;
 
-public class FindingObjects : Scene
+public class FindingObjects : MonoBehaviorScene
 {
     public static bool CastRayToFindObject(GameObject source, string tag, float rayCastLength)
     {

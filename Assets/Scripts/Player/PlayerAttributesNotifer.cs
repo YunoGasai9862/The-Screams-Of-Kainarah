@@ -1,13 +1,13 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV2;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System.Collections.Generic;
 using UnityEngine;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityTransform))]
-public class PlayerAttributesNotifier: Scene, IRequest<Player>, IRequest<IEntityAnimator>
+public class PlayerAttributesNotifier: MonoBehaviorScene, IRequest<Player>, IRequest<IEntityAnimator>
 {
     private Player Player { get; set; }
 

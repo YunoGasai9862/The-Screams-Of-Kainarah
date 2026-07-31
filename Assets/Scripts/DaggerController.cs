@@ -1,7 +1,7 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using UnityEngine;
 
-public class DaggerController : Scene
+public class DaggerController : MonoBehaviorScene
 {
 
     private float _daggerSpeed = 20f;

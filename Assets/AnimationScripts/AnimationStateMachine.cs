@@ -1,5 +1,5 @@
 
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System;
 using System.Collections.Generic;
 using System.Linq;

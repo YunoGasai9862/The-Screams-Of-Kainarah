@@ -1,10 +1,10 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PreloadEntitiesDelegateExecutor: Scene, IDelegateExecutor
+public class PreloadEntitiesDelegateExecutor: MonoBehaviorScene, IDelegateExecutor
 {
     [SerializeField]
     PreloadedEntitiesEvent preloadedEntitiesEvent;

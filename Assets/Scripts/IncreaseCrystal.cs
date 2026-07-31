@@ -1,7 +1,7 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using TMPro;
 using UnityEngine;
-public class IncreaseCrystal : Scene
+public class IncreaseCrystal : MonoBehaviorScene
 {
     private TextMeshProUGUI m_diamondText;
 

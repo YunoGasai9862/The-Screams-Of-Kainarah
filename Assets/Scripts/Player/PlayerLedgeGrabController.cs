@@ -5,11 +5,11 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), EntityType = typeof(PlayerLedgeGrabController), ContextType = typeof(Player))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerStateConsumer), EntityType = typeof(PlayerLedgeGrabController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
-public class PlayerLedgeGrabController : Scene, IReceiverEnhancedAsync<PlayerLedgeGrabController, PlayerStateBundle>, INotify<Player>, INotify<GenericStateBundle<PlayerStateBundle>>
+public class PlayerLedgeGrabController : MonoBehaviorScene, IReceiverEnhancedAsync<PlayerLedgeGrabController, PlayerStateBundle>, INotify<Player>, INotify<GenericStateBundle<PlayerStateBundle>>
 {
     private const float MAXIMUM_VELOCITY_Y_FORCE = 12f;
 

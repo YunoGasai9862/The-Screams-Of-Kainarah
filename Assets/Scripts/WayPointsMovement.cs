@@ -1,4 +1,4 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using WayPointsObject;
 
-public class WayPointsMovement : Scene
+public class WayPointsMovement : MonoBehaviorScene
 {
     [SerializeField] WayPoints[] Waypoints;
     [SerializeField] float MovementSpeed;

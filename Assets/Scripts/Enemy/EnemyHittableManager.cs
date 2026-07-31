@@ -2,7 +2,7 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using EnemyHittable;
 using System.Collections;
 using System.Threading;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EnemyHittableManager), ContextType = typeof(EnemyHittableManager))]
-public class EnemyHittableManager : Scene, IRequest<EnemyHittableManager>
+public class EnemyHittableManager : MonoBehaviorScene, IRequest<EnemyHittableManager>
 {
    private Delegator Delegator { get; set; }
 

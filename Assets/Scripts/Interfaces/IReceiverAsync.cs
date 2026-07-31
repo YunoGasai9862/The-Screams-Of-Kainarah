@@ -1,4 +1,4 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -17,7 +17,7 @@ public interface IReceiverBase<VALUE>
     }
 }
 
-public interface IReceiverEnhancedAsync<TYPE, VALUE> : IReceiverBase<VALUE> where TYPE: Scene
+public interface IReceiverEnhancedAsync<TYPE, VALUE> : IReceiverBase<VALUE> where TYPE: MonoBehaviorScene
 {
     Task<ActionExecuted> PerformAction(VALUE value = default);
     Task<ActionExecuted> CancelAction(VALUE value = default);

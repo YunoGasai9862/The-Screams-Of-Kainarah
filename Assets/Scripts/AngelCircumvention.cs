@@ -1,4 +1,4 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AngelCircumvention : Scene
+public class AngelCircumvention : MonoBehaviorScene
 {
     [Header("Custom Variables")]
     [SerializeField] Vector2 centerPoint;

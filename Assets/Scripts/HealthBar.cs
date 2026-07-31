@@ -1,13 +1,13 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(HealthBar), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(IEntityHealth))]
-public class HealthBar : Scene, INotify<IEntityHealth>
+public class HealthBar : MonoBehaviorScene, INotify<IEntityHealth>
 {
 
     [SerializeField] Image Fill;

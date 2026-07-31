@@ -1,7 +1,7 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using PlayerAnimationHandler;
 using System.Collections;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ using UnityEngine;
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EmitMovementAnimationStateConsumer), EntityType = typeof(PlayerAnimationController), ContextType = typeof(GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), EntityType = typeof(PlayerAnimationController), ContextType = typeof(IEntityAnimator))]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerAnimationController), ContextType = typeof(AnimationDetails))]
-public class PlayerAnimationController : Scene, IRequest<AnimationDetails>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>,
+public class PlayerAnimationController : MonoBehaviorScene, IRequest<AnimationDetails>, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>,
     INotify<IEntityAnimator>, INotify<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }

@@ -3,10 +3,10 @@ using System.Collections;
 using UnityEngine;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Annotations.Enums;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PullUpPanel), SubjectType = typeof(TriggerHandler), ContextType = typeof(bool))]
-public class PullUpPanel : Scene, INotify<bool>
+public class PullUpPanel : MonoBehaviorScene, INotify<bool>
 {
     private const string SUFFICIENT_FUNDS_ANIMATION_CONDITION = "SufficientFunds";
 

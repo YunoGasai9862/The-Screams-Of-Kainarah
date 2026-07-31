@@ -1,10 +1,10 @@
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public abstract class BaseState<T>: Scene, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<GenericStateBundle<T>> where T : IStateBundle
+public abstract class BaseState<T>: MonoBehaviorScene, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<GenericStateBundle<T>> where T : IStateBundle
 {
     protected List<INotify<GenericStateBundle<T>>> StateListeners { get; set; } = new List<INotify<GenericStateBundle<T>>> { };
 
@@ -18,6 +18,8 @@ public abstract class BaseState<T>: Scene, Assets.Scripts.Interfaces.Mediator.En
     private async void Start()
     {
         SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        Debug.Log($"SceneUtils in BaseState: {SceneUtils}");
 
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
@@ -68,7 +70,7 @@ public abstract class BaseState<T>: Scene, Assets.Scripts.Interfaces.Mediator.En
 }
 
 
-public abstract class BaseState<T, Z> : Scene, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<GenericStateBundle<T, Z>> where T : IStateBundle
+public abstract class BaseState<T, Z> : MonoBehaviorScene, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<GenericStateBundle<T, Z>> where T : IStateBundle
 {
     protected List<INotify<GenericStateBundle<T, Z>>> StateListeners { get; set; } = new List<INotify<GenericStateBundle<T, Z>>> { };
 
@@ -83,6 +85,8 @@ public abstract class BaseState<T, Z> : Scene, Assets.Scripts.Interfaces.Mediato
     private async void Start()
     {
         SceneUtils = await BaseScene.GetSceneUtilsAsync();
+
+        Debug.Log($"SceneUtils in BaseState<T, Z>: {SceneUtils}");
 
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 

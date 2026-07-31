@@ -1,8 +1,8 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ClickFeedbackOnItem : Scene, IPointerUpHandler, ISerializableFeildsHelper
+public class ClickFeedbackOnItem : MonoBehaviorScene, IPointerUpHandler, ISerializableFeildsHelper
 {
     [SerializeField] string slotTag;
 

@@ -2,7 +2,7 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.Base;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueManager), ContextType = typeof(DialogueManager))]
-public class DialogueManager : Scene, IRequest<DialogueManager>
+public class DialogueManager : MonoBehaviorScene, IRequest<DialogueManager>
 { 
     private const string DIALOGUE_ANIMATION_NAME = "IsOpen";
     private const float ANIMATION_DELAY = 0.05f;

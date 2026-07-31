@@ -1,7 +1,7 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -9,7 +9,7 @@ using UnityEngine;
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerJumpController), ContextType = typeof(CharacterVelocity))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerAttributesNotifier), EntityType = typeof(PlayerJumpController), ContextType = typeof(Player))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(PlayerStateConsumer), EntityType = typeof(PlayerJumpController), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
-public class PlayerJumpController : Scene, IReceiverEnhancedAsync<PlayerJumpController, bool>, IRequest<CharacterVelocity>, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<Player>
+public class PlayerJumpController : MonoBehaviorScene, IReceiverEnhancedAsync<PlayerJumpController, bool>, IRequest<CharacterVelocity>, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<Player>
 {
     [SerializeField] LayerMask groundLayer;
 

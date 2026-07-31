@@ -1,4 +1,4 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class InventorySystem : Scene
+public class InventorySystem : MonoBehaviorScene
 {
     private const string QUANITY = "QUANTITY";
 

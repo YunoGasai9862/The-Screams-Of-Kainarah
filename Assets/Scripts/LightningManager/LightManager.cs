@@ -1,9 +1,9 @@
 using Annotations.Enums;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using UnityEngine;
 
 [Asset(Asset.MONOBEHAVIOR, "LightManager", InstantiationOrder = 11)]
-public class LightManager: Scene
+public class LightManager: MonoBehaviorScene
 {
 
 }

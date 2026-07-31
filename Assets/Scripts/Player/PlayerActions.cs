@@ -5,14 +5,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Annotations.Enums;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(PlayerStateConsumer), ContextType = typeof(GenericStateBundle<PlayerStateBundle>))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(PlayerSlideController), ContextType = typeof(CharacterVelocity))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(PlayerJumpController), ContextType = typeof(CharacterVelocity))]
-public class PlayerActions : Scene, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<Player>, INotify<GenericStateBundle<GameStateBundle>>, INotify<CharacterVelocity>, IDelegate
+public class PlayerActions : MonoBehaviorScene, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<Player>, INotify<GenericStateBundle<GameStateBundle>>, INotify<CharacterVelocity>, IDelegate
 {
     [SerializeField] float _characterSpeed = 10f;
 

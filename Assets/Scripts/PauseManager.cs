@@ -1,7 +1,7 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using UnityEngine;
 
-public class PauseManager : Scene
+public class PauseManager : MonoBehaviorScene
 {
     [SerializeField] GameObject PausePanel;
     [SerializeField] GameObject SettingsPanel;

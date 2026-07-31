@@ -1,11 +1,11 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
 
-public class CaveBugsManipulator : Scene
+public class CaveBugsManipulator : MonoBehaviorScene
 {
     [Header("Particle System")]
     [SerializeField] ParticleSystem _ps;

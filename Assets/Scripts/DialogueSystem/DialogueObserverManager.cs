@@ -4,11 +4,11 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Collections;
 using Annotations.Enums;
 using UnityEngine;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueObserverManager), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueObserverManager), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(DialoguesAndOptions.DialogueSystem))]
-public class DialogueObserverManager : Scene, INotify<DialoguesAndOptions.DialogueSystem>, INotify<GenericStateBundle<GameStateBundle>>
+public class DialogueObserverManager : MonoBehaviorScene, INotify<DialoguesAndOptions.DialogueSystem>, INotify<GenericStateBundle<GameStateBundle>>
 {
     [Header("Dialogues And Options")]
     [SerializeField] DialoguesAndOptions DialoguesAndOptions;

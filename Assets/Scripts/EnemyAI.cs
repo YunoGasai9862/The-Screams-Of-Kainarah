@@ -3,9 +3,9 @@ using UnityEngine;
 using Pathfinding;
 using System.Threading.Tasks;
 using System.Threading;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 
-public class EnemyAI : Scene
+public class EnemyAI : MonoBehaviorScene
 {
     public const float FORCEUPPERLIMIT = 400f;
 

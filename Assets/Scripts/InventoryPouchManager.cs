@@ -1,9 +1,9 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryPouchManager : Scene
+public class InventoryPouchManager : MonoBehaviorScene
 {
     [SerializeField] InventoryPouchPanelEvent inventoryPouchPanelEvent;
 

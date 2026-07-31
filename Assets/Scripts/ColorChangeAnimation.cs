@@ -1,10 +1,10 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ColorChangeAnimation : Scene
+public class ColorChangeAnimation : MonoBehaviorScene
 {
     private Image _PanelImage;
     private Color _Color;

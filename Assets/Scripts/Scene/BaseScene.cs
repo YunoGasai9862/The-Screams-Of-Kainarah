@@ -1,9 +1,9 @@
-﻿using Assets.Scripts.Scene.Interface;
+﻿using Assets.Scripts.BaseScene.Interface;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.Scripts.Scene
+namespace Assets.Scripts.BaseScene
 {
     public class BaseScene : MonoBehaviour, IScene
     {
@@ -11,7 +11,7 @@ namespace Assets.Scripts.Scene
 
         public static BaseScene BaseSceneReference { get; set; }
 
-        private void Awake()
+        private void Start()
         {
             if (BaseSceneReference == null)
             {
@@ -26,14 +26,13 @@ namespace Assets.Scripts.Scene
                 if (SceneUtils == null)
                 {
                     await Task.Delay(delay);
-
-                    return await GetSceneUtilsAsync(i, delay);
+                }else
+                {
+                    break;
                 }
-
-                return SceneUtils;
             }
 
-            return null;
+            return SceneUtils;
         }
 
         public IEnumerator WaitForSceneUtils(int retry = 5, int delay = 3)
@@ -78,14 +77,16 @@ namespace Assets.Scripts.Scene
         }
     }
 
-    public class Scene : MonoBehaviour
+    public class MonoBehaviorScene : MonoBehaviour
     {
         //check for null reference and assign BaseSceneReference if null
         public BaseScene BaseScene { get 
             {  
                 if (BaseScene.BaseSceneReference == null) 
                 {
+                    Debug.Log("BaseSceneReference is null, assigning it now...");
                     BaseScene.BaseSceneReference = GetComponent<BaseScene>();
+                    Debug.Log($"BaseSceneReference.BaseSceneReference : {BaseScene.BaseSceneReference}");
                 }
 
                 return BaseScene.BaseSceneReference;

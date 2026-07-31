@@ -1,9 +1,9 @@
 using Annotations.Enums;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using UnityEngine;
 
 [Asset(Asset.MONOBEHAVIOR, "DelegatorsManager", InstantiationOrder = 3)]
-public class DelegatorsManager: Scene
+public class DelegatorsManager: MonoBehaviorScene
 {
 
 }

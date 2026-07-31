@@ -1,9 +1,9 @@
 
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class HealingEffectScript : Scene
+public class HealingEffectScript : MonoBehaviorScene
 {
     private async void Start()
     {

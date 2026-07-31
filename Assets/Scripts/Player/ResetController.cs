@@ -5,10 +5,10 @@ using System.Collections;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(ResetController), SubjectType = typeof(PlayerAttackStateMachineReset), ContextType = typeof(ResetBundle))]
-public class ResetController : Scene, INotify<ResetBundle>
+public class ResetController : MonoBehaviorScene, INotify<ResetBundle>
 {
     private AnimationStateMachine AnimationStateMachine { get; set; }
 
@@ -22,7 +22,7 @@ public class ResetController : Scene, INotify<ResetBundle>
     {
         Animator = GetComponent<Animator>();
 
-        Debug.Log($"Base Scene: {BaseScene}");
+        Debug.Log($"Base MonoBehaviorScene: {BaseScene}");
 
         SceneUtils = await BaseScene.GetSceneUtilsAsync();
 

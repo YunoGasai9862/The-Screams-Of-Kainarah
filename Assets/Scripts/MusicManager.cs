@@ -4,10 +4,10 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using UnityEngine.UI;
 using Annotations.Enums;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(MusicManager), SubjectType = typeof(PlayerActionRelayer), ContextType = typeof(bool))]
-public class MusicManager : Scene, INotify<bool>
+public class MusicManager : MonoBehaviorScene, INotify<bool>
 {
     [SerializeField] Toggle menuToggleSound;
     [SerializeField] AudioSource _bgGameMusic;

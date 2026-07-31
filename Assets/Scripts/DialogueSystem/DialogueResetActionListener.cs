@@ -5,11 +5,11 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using System.Threading.Tasks;
 using UnityEngine;
 using Annotations.Enums;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System.Collections.Generic;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(DialogueResetActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
-public class DialogueResetActionListener : Scene, INotify<EntityPoolManager>
+public class DialogueResetActionListener : MonoBehaviorScene, INotify<EntityPoolManager>
 {
     private const string DIALOGUES_AND_OPTIONS_KEY = "DialoguesAndOptions";
 

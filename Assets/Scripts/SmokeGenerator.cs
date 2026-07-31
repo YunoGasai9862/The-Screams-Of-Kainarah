@@ -1,9 +1,9 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SmokeGenerator : Scene
+public class SmokeGenerator : MonoBehaviorScene
 {
     [SerializeField] GameObject smokeFlare;
     [SerializeField] int numberOfFlares;

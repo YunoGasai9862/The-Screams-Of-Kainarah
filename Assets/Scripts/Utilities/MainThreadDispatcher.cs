@@ -1,4 +1,4 @@
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class MainThreadDispatcher : Scene, IMainThreadDispatcher
+public class MainThreadDispatcher : MonoBehaviorScene, IMainThreadDispatcher
 {
     private SemaphoreSlim DispatcherSemaphore { get; set; } = new SemaphoreSlim(1);
 

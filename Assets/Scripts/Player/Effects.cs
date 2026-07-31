@@ -3,10 +3,10 @@ using System.Collections;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using UnityEngine;
 using Annotations.Enums;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(Effects), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
-public class Effects: Scene, INotify<Player>
+public class Effects: MonoBehaviorScene, INotify<Player>
 {
     private MaterialFader MaterialFader { get; set; } = new MaterialFader();
 

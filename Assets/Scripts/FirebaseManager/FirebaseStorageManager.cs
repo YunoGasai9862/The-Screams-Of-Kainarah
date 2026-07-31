@@ -1,7 +1,7 @@
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
-using Assets.Scripts.Scene;
+using Assets.Scripts.BaseScene;
 using Firebase.Extensions;
 using Firebase.Storage;
 using System;
@@ -12,7 +12,7 @@ using UnityEngine;
 
 [AssetAttribute(Asset.MONOBEHAVIOR, "FirebaseStorageManager", InstantiationOrder = 10)]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(FirebaseStorageManager), ContextType = typeof(FirebaseStorageManager))]
-public class FirebaseStorageManager : Scene, IFirebaseStorage, IRequest<FirebaseStorageManager>
+public class FirebaseStorageManager : MonoBehaviorScene, IFirebaseStorage, IRequest<FirebaseStorageManager>
 {
     private Delegator Delegator { get; set; }
 

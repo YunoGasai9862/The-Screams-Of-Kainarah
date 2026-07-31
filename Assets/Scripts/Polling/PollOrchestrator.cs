@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Polling
 {
-    public class PollOrchestrator : Scene.Scene, IPollOrchestrator
+    public class PollOrchestrator : BaseScene.MonoBehaviorScene, IPollOrchestrator
     {
         Dictionary<IPoller, PollOrchestratorConfiguration.Orchestrator> Pollers { get; set; } = new Dictionary<IPoller, PollOrchestratorConfiguration.Orchestrator>();
 
