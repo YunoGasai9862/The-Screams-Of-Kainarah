@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using UnityEditor.AddressableAssets.Build.Layout;
 using UnityEngine;
 
 public class PreloaderManager : MonoBehaviorScene
@@ -27,9 +26,9 @@ public class PreloaderManager : MonoBehaviorScene
     private async void Start()
     {
         //we should split and instantiate hte pool objects later. The core objects must be loaded/preloaded first
-        List<PreloadDto> pooledObjects = dependencies.Where(dependency => dependency.PreloadEntityType == PreloadEntityType.POOL_OBJECT).ToList();
+        List<PreloadDto> pooledObjects = dependencies.Where(dependency => dependency.PreloadEntityType == PreloadEntityType.INITIALIZE_AND_POOL).ToList();
 
-        List<PreloadDto> coreDependencies = dependencies.Where(dependency => dependency.PreloadEntityType != PreloadEntityType.POOL_OBJECT).ToList();
+        List<PreloadDto> coreDependencies = dependencies.Where(dependency => dependency.PreloadEntityType != PreloadEntityType.INITIALIZE_AND_POOL).ToList();
 
         foreach(List<PreloadDto> preloadDtos in new List<List<PreloadDto>>(){ coreDependencies, pooledObjects })
         {
@@ -177,12 +176,13 @@ public class PreloaderManager : MonoBehaviorScene
                 case PreloadEntityType.ENTITYPOOL_MANAGER:
                     EntityPoolManager = await InstantiateDependency<EntityPoolManager>(dependency.Entity);
                     break;
-                case PreloadEntityType.POOL_OBJECT:
+                case PreloadEntityType.INITIALIZE_AND_POOL:
                     if (EntityPoolManager == null)
                     {
                         throw new ApplicationException($"EntityPoolManager is null!");
                     }
-                    EntityPoolManager.Pool(await EntityPool.From(dependency.Entity.name, dependency.Entity.tag, dependency.AssetType, dependency.Entity.gameObject));
+                    GameObject objectInstance = await InstantiateDependency<GameObject>(dependency.Entity);
+                    EntityPoolManager.Pool(await EntityPool.From(dependency.Entity.name, dependency.Entity.tag, dependency.AssetType, objectInstance));
                     break;
                 default:
                     throw new ApplicationException($"Unknown dependency type found: {dependency.PreloadEntityType}");

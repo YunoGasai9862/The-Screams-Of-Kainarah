@@ -85,8 +85,8 @@ namespace Assets.Scripts.BaseScene
                 if (BaseScene.BaseSceneReference == null) 
                 {
                     Debug.Log("BaseSceneReference is null, assigning it now...");
-                    BaseScene.BaseSceneReference = GetComponent<BaseScene>();
-                    Debug.Log($"BaseSceneReference.BaseSceneReference : {BaseScene.BaseSceneReference}");
+                    BaseScene.BaseSceneReference = GameObject.FindFirstObjectByType<BaseScene>();
+                    Debug.Log($"Object: {name}, IsBaseScene: {gameObject.GetType().IsAssignableFrom(typeof(BaseScene))}  BaseSceneReference.BaseSceneReference : {BaseScene.BaseSceneReference}");
                 }
 
                 return BaseScene.BaseSceneReference;

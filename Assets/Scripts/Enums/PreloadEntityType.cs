@@ -2,5 +2,5 @@ public enum PreloadEntityType
 {
     GAMELOAD,
     ENTITYPOOL_MANAGER,
-    POOL_OBJECT
+    INITIALIZE_AND_POOL
 }

@@ -108,6 +108,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - CheckPoints
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2d944a940463634995fe2a5bdeab95f
+    m_Address: Prefabs/BaseScene
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - BaseScene
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cdec62bb204f39040919254756aa9830
     m_Address: Prefabs/Broadcaster
     m_ReadOnly: 0

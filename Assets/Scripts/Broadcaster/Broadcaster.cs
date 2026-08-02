@@ -1,5 +1,4 @@
-﻿using Annotations.Enums;
-using Assets.Scripts.Broadcaster.Interface;
+﻿using Assets.Scripts.Broadcaster.Interface;
 using Assets.Scripts.Polling.Interfaces;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +6,6 @@ using UnityEngine;
 
 namespace Assets.Scripts.Broadcaster
 {
-    [AssetAttribute(Asset.MONOBEHAVIOR, "Broadcaster")]
     public class Broadcaster : BaseScene.MonoBehaviorScene, IBroadcaster, IPoller
     {
         private SceneRegistry SceneRegistryInstance { get; set; }

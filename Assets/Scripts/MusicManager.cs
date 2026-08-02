@@ -19,19 +19,17 @@ public class MusicManager : MonoBehaviorScene, INotify<bool>
 
     private Delegator Delegator { get; set; }
 
-    private async void Awake()
+    async void Start()
     {
         StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
 
-         Delegator.NotifySubjectWrapper(new ObserverContext<bool>()
+        Delegator.NotifySubjectWrapper(new ObserverContext<bool>()
         {
             Instance = gameObject,
             EntityType = typeof(MusicManager),
             SubjectType = typeof(PlayerActionRelayer),
         }, this);
-    }
-    void Start()
-    {
+
         _gameState = GlobalEnums.GameMusicState.BACKGROUNDMUSIC;
         ChannelMusic(_gameState);
     }
