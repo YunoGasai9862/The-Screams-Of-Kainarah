@@ -7,6 +7,6 @@ public class HealingEffectScript : MonoBehaviorScene
 {
     private async void Start()
     {
-        StartCoroutine((await BaseScene.GetSceneUtilsAsync()).TuneDownIntensityToZero(GetComponent<Light2D>()));
+        StartCoroutine((await GetBaseScene().GetSceneUtilsAsync()).TuneDownIntensityToZero(GetComponent<Light2D>()));
     }
 }

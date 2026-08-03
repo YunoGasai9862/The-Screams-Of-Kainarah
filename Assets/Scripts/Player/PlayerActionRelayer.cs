@@ -18,7 +18,7 @@ using static Context;
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), SubjectType = typeof(PlayerAttributesNotifier), ContextType = typeof(Player))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActionRelayer), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
-public class PlayerActionRelayer : Assets.Scripts.BaseScene.MonoBehaviorScene, INotify<IGameStateHandler>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<Player>, IGameStateHandler, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<EntityPoolManager>, IRequest<Collider2D>, 
+public class PlayerActionRelayer : Assets.Scripts.GetBaseScene().MonoBehaviorScene, INotify<IGameStateHandler>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<Player>, IGameStateHandler, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<EntityPoolManager>, IRequest<Collider2D>, 
     IRequest<Player>, IRequest<bool>, IRequest<DialoguesAndOptions.DialogueSystem>, IRequest<CheckPoints.Checkpoint>, IRequest<EntitiesToReset>, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<GameStateManager>
 {
     [SerializeField] string InteractableTag;
@@ -65,7 +65,7 @@ public class PlayerActionRelayer : Assets.Scripts.BaseScene.MonoBehaviorScene, I
 
     private async void Start()
     {
-        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
 
         m_gameStateManagerFallBackAlert = new FallBackAlert()
         {

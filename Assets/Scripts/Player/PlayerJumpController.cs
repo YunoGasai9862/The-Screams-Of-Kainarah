@@ -49,7 +49,7 @@ public class PlayerJumpController : MonoBehaviorScene, IReceiverEnhancedAsync<Pl
 
     private async void Awake()
     {
-        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
 
         _movementHelperClass = new MovementHelperClass();
 

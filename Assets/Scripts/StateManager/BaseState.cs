@@ -17,7 +17,7 @@ public abstract class BaseState<T>: MonoBehaviorScene, Assets.Scripts.Interfaces
     private SceneUtils SceneUtils { get; set; }
     private async void Start()
     {
-        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
 
         Debug.Log($"SceneUtils in BaseState: {SceneUtils}");
 
@@ -84,7 +84,7 @@ public abstract class BaseState<T, Z> : MonoBehaviorScene, Assets.Scripts.Interf
 
     private async void Start()
     {
-        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
 
         Debug.Log($"SceneUtils in BaseState<T, Z>: {SceneUtils}");
 

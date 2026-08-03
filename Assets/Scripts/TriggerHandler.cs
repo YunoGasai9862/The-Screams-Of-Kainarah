@@ -33,7 +33,7 @@ public class TriggerHandler : MonoBehaviorScene, IPointerEnterHandler, IPointerE
     {
         m_funds = GameObject.FindGameObjectWithTag(FUNDS_TEXT_TAG).GetComponent<TMPro.TextMeshProUGUI>();
 
-       SceneUtils = await BaseScene.GetSceneUtilsAsync();
+       SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
 
        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 

@@ -46,7 +46,7 @@ public class PlayerActionSystemHandler : MonoBehaviorScene, INotify<Collider2D>,
 
     private async void Start()
     {
-        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
 
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
     }

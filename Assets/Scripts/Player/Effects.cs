@@ -14,7 +14,7 @@ public class Effects: MonoBehaviorScene, INotify<Player>
 
     private async void Awake()
     {
-       StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine((await GetBaseScene().GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
         {

@@ -40,7 +40,7 @@ public class CandleLightPackageGenerator : MonoBehaviorScene, Assets.Scripts.Int
 
     private async void Start()
     {
-        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
 
         LightSource = GetComponent<Light2D>();
 

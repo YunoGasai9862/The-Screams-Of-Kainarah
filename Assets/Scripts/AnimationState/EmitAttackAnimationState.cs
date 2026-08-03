@@ -8,7 +8,7 @@ public class EmitAttackAnimationState : StateMachineScene
 
     private async void Awake()
     {
-        StateEvent = await (await BaseScene.GetSceneUtilsAsync()).GetCustomEvent<StateEvent>();
+        StateEvent = await (await GetBaseScene().GetSceneUtilsAsync()).GetCustomEvent<StateEvent>();
     }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state

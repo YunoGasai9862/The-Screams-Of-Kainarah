@@ -19,7 +19,7 @@ public class WaterCameraAndTextureFollow : MonoBehaviorScene, INotify<IEntityTra
 
     private async void Start()
     {
-       StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine((await GetBaseScene().GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
         {

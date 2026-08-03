@@ -21,7 +21,7 @@ public class OpenWares : MonoBehaviorScene, INotify<GenericStateBundle<GameState
 
     private async void Start()
     {
-       StartCoroutine((await BaseScene.GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine((await GetBaseScene().GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {

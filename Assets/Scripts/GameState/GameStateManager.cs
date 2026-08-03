@@ -19,7 +19,7 @@ using UnityEngine.UIElements;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameStateManager), ContextType = typeof(IGameStateHandler))]
 [Asset(Asset.MONOBEHAVIOR, "GameStateManager", InstantiationOrder = 15)]
-public class GameStateManager : Assets.Scripts.BaseScene.MonoBehaviorScene, IGameState, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<IGameStateHandler>, IRequest<GameStateManager>
+public class GameStateManager : Assets.Scripts.GetBaseScene().MonoBehaviorScene, IGameState, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<IGameStateHandler>, IRequest<GameStateManager>
 {
     private SceneData _sceneData;
 
@@ -39,7 +39,7 @@ public class GameStateManager : Assets.Scripts.BaseScene.MonoBehaviorScene, IGam
 
     private async void Awake()
     {
-        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
 
         SceneRegistry = SceneUtils.FindObject<SceneRegistry>();
 

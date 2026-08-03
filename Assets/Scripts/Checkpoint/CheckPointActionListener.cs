@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CheckPointActionListener), SubjectType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CheckPointActionListener), SubjectType = typeof(GameStateManager), ContextType = typeof(GameStateManager))]
-public class CheckPointActionListener : Assets.Scripts.BaseScene.MonoBehaviorScene, INotify<EntityPoolManager>, INotify<GameStateManager>
+public class CheckPointActionListener : Assets.Scripts.GetBaseScene().MonoBehaviorScene, INotify<EntityPoolManager>, INotify<GameStateManager>
 {
     private static string CHECKPOINTS_KEY = "CheckPoints";  
 
@@ -34,7 +34,7 @@ public class CheckPointActionListener : Assets.Scripts.BaseScene.MonoBehaviorSce
 
     private async void Start()
     {
-        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
 
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 

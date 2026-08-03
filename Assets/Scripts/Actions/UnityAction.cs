@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 namespace Assets.Scripts.Actions
 {
-    public abstract class UnityAction : BaseScene.MonoBehaviorScene, ICustomUnityAction
+    public abstract class UnityAction : GetBaseScene().MonoBehaviorScene, ICustomUnityAction
     {
         public abstract void AddListener<T>(UnityAction<T> action) where T : GenericStateBundle;
 

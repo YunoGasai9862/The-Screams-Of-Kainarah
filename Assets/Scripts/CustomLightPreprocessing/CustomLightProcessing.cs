@@ -23,7 +23,7 @@ public class CustomLightProcessing : MonoBehaviorScene, ICustomLightPreprocessin
 
     private async void Start()
     {
-        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
 
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 

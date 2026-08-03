@@ -63,7 +63,7 @@ public class PlayerLedgeGrabController : MonoBehaviorScene, IReceiverEnhancedAsy
     {
         _helperFunc = new MovementHelperClass();
 
-        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
 
        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 

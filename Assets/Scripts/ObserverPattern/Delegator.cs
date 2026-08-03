@@ -28,7 +28,7 @@ public class Delegator : MonoBehaviorScene, IDelegator
     
     private async void Awake()
     {
-        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
 
         AttributeRegistry = SceneUtils.FindObject<AttributeRegistry>();
 

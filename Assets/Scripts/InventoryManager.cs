@@ -20,7 +20,7 @@ public class InventoryManager : MonoBehaviorScene, IRequest<bool>
         await inventoryPouchClickEvent.AddListener(ShouldInventoryBeVisible);
         await inventoryPouchPanelEvent.AddListener(IsPouchPanelActive);
 
-        SceneUtils = await BaseScene.GetSceneUtilsAsync();
+        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
 
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
     }
