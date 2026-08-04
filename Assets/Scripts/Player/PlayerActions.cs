@@ -71,7 +71,7 @@ public class PlayerActions : MonoBehaviorScene, INotify<GenericStateBundle<Playe
     //Force = -2m * sqrt (g * h)
     private async void Awake()
     {
-        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
+        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
 

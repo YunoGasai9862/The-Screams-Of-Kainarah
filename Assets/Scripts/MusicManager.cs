@@ -21,7 +21,7 @@ public class MusicManager : MonoBehaviorScene, INotify<bool>
 
     async void Start()
     {
-        StartCoroutine((await GetBaseScene().GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
+        StartCoroutine((await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
 
         Delegator.NotifySubjectWrapper(new ObserverContext<bool>()
         {

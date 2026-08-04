@@ -26,7 +26,7 @@ public class PlayerShadow : MonoBehaviorScene, INotify<Player>
     {
         m_Position = new Vector2(transform.position.x + initialoffsetX, transform.position.y + initialoffsetY);
 
-        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
+        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));   
 

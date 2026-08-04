@@ -41,7 +41,7 @@ public class PlayerAttributesNotifier: MonoBehaviorScene, IRequest<Player>, IReq
             Health = PlayerHealth,
         };
 
-       StartCoroutine((await GetBaseScene().GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
+       StartCoroutine((await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
     }
 
     IEnumerator<Player> IRequest<Player>.Request()

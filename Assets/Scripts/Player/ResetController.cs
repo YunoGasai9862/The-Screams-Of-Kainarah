@@ -24,7 +24,7 @@ public class ResetController : MonoBehaviorScene, INotify<ResetBundle>
 
         Debug.Log($"Base MonoBehaviorScene: {BaseScene}");
 
-        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
+        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 

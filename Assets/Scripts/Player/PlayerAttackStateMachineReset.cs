@@ -23,7 +23,7 @@ public class PlayerAttackStateMachineReset : StateMachineScene, INotify<EntityPo
 
     private async void OnEnable()   
     {
-       Delegator = await (await GetBaseScene().GetSceneUtilsAsync()).GetDelegator<Delegator>();
+       Delegator = await (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator<Delegator>();
 
         Delegator.NotifySubjectWrapper(new ObserverContext<EntityPoolManager>()
         {

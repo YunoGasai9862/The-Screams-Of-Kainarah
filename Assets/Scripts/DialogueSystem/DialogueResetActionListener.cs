@@ -44,9 +44,9 @@ public class DialogueResetActionListener : MonoBehaviorScene, INotify<EntityPool
     {
         EntityPoolManagerInstance = value;
 
-        yield return StartCoroutine(GetBaseScene().WaitForSceneUtils());
+        yield return StartCoroutine(GetBaseSceneSync().WaitForSceneUtils());
 
-        DialoguesAndOptionsSO = (GetBaseScene().GetSceneUtils()).GetFromEntityPoolManager<DialoguesAndOptions>(EntityPoolManagerInstance, DIALOGUES_AND_OPTIONS_KEY);
+        DialoguesAndOptionsSO = (GetBaseSceneSync().GetSceneUtils()).GetFromEntityPoolManager<DialoguesAndOptions>(EntityPoolManagerInstance, DIALOGUES_AND_OPTIONS_KEY);
 
         yield return null;
     }

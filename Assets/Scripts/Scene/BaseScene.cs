@@ -9,16 +9,6 @@ namespace Assets.Scripts.BaseScene
     {
         private SceneUtils SceneUtils { get; set; }
 
-        public static BaseScene BaseSceneReference { get; set; }
-
-        private void Start()
-        {
-            if (BaseSceneReference == null)
-            {
-                BaseSceneReference = GetComponent<BaseScene>();
-            }
-        }
-
         public async Task<SceneUtils> GetSceneUtilsAsync(int retry = 5, int delay = 3)
         {
             for (int i = 0; i < retry; i++)
@@ -79,30 +69,81 @@ namespace Assets.Scripts.BaseScene
 
     public class MonoBehaviorScene : MonoBehaviour
     {
-        //check for null reference and assign BaseSceneReference if null
-        public BaseScene BaseScene { get 
-            {  
-                if (BaseScene.BaseSceneReference == null) 
-                {
-                    Debug.Log("BaseSceneReference is null, assigning it now...");
-                    BaseScene.BaseSceneReference = GameObject.FindFirstObjectByType<BaseScene>();
-                    Debug.Log($"Object: {name}, IsBaseScene: {gameObject.GetType().IsAssignableFrom(typeof(BaseScene))}  BaseSceneReference.BaseSceneReference : {BaseScene.BaseSceneReference}");
-                }
+        public async Task<BaseScene> GetBaseScene()
+        {
+            BaseScene scene = null ;
 
-                return BaseScene.BaseSceneReference;
-             } 
+            scene = await GetComponentAsync<BaseScene>();
+
+            Debug.Log($"Object: {name}, BaseSceneReference.BaseSceneReference : {scene}");
+
+            return scene;
         }
+
+        public BaseScene GetBaseSceneSync()
+        {
+            BaseScene scene = null;
+
+            scene = GetComponent<BaseScene>();
+
+            Debug.Log($"Object: {name}, BaseSceneReference.BaseSceneReference : {scene}");
+
+            return scene;
+        }
+
+        public async Task<T> GetComponentAsync<T>(int retry = 5, int delay = 3) where T: class
+        {
+            T component = null;
+
+            for (int i = 0; i < retry; i++)
+            {
+
+                component = GetComponent<T>();
+
+                if (component == null)
+                {
+                    await Task.Delay(delay);
+
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return component;
+        }
+
     }
 
     public class StateMachineScene : StateMachineBehaviour
     {
-        //check for null reference and assign BaseSceneReference if null
-        public BaseScene BaseScene { get; set; } = BaseScene.BaseSceneReference;
+        //think of this!
+        public BaseScene GetBaseSceneSync()
+        {
+            BaseScene scene = null;
+
+            scene = GetComponent<BaseScene>();
+
+            Debug.Log($"Object: {name}, BaseSceneReference.BaseSceneReference : {scene}");
+
+            return scene;
+        }
     }
 
     public class ScriptableObjectScene : ScriptableObject
     {
-        //check for null reference and assign BaseSceneReference if null
-        public BaseScene BaseScene { get; set; } = BaseScene.BaseSceneReference;
+        //think of this!
+        public BaseScene GetBaseSceneSync()
+        {
+            BaseScene scene = null;
+
+            scene = GetComponent<BaseScene>();
+
+            Debug.Log($"Object: {name}, BaseSceneReference.BaseSceneReference : {scene}");
+
+            return scene;
+        }
     }
 }

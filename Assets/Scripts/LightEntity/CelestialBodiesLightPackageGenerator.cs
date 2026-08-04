@@ -36,7 +36,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviorScene, INotify<I
     private async void Start()
     {
 
-        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
+        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
         LightSource = GetComponent<Light2D>();
 

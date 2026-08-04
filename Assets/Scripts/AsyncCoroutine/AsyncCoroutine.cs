@@ -14,7 +14,7 @@ public class AsyncCoroutine : MonoBehaviorScene, IAsyncCoroutine<WaitForSeconds>
     private Delegator Delegator { get; set; }
     private async void Start()
     {
-        StartCoroutine((await GetBaseScene().GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
+        StartCoroutine((await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
     }
 
     public async Task ExecuteAsyncCoroutine(IAsyncEnumerator<WaitForSeconds> asyncCoroutine)

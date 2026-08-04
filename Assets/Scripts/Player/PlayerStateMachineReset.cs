@@ -6,7 +6,7 @@ public class PlayerStateMachineReset: StateMachineScene
     private PlayerStateEvent PlayerStateEvent { get; set; }
     private async void Awake()
     {
-        PlayerStateEvent = await (await GetBaseScene().GetSceneUtilsAsync()).GetCustomEvent<PlayerStateEvent>();
+        PlayerStateEvent = await (await (await GetBaseScene()).GetSceneUtilsAsync()).GetCustomEvent<PlayerStateEvent>();
     }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state

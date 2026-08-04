@@ -7,7 +7,7 @@ public class EmitMovementAnimationState : StateMachineScene
     private StateEvent StateEvent { get; set; }
     private async void Awake()
     {
-        StateEvent = await (await GetBaseScene().GetSceneUtilsAsync()).GetCustomEvent<StateEvent>();
+        StateEvent = await (await (await GetBaseScene()).GetSceneUtilsAsync()).GetCustomEvent<StateEvent>();
     }
 
 

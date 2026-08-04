@@ -61,7 +61,7 @@ public class PlayerAttackController : MonoBehaviorScene, IReceiverEnhancedAsync<
 
         PlayerAttackStateInt = 0;
 
-        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
+        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 

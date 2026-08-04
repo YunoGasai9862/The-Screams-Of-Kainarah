@@ -31,7 +31,7 @@ public class RakashBattleController : MonoBehaviorScene, INotify<Health>, IRecei
     {
         AnimationUtility = new AnimationUtility();
 
-        SceneUtils = (await GetBaseScene().GetSceneUtilsAsync());
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 

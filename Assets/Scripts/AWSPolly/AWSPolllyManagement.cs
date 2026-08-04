@@ -65,7 +65,7 @@ public class AWSPolllyManagement : MonoBehaviorScene, IAWSPolly, INotify<Firebas
 
     private async void Start()
     {
-        SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
+        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 

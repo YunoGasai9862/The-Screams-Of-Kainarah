@@ -38,7 +38,7 @@ public class EnemyActions : MonoBehaviorScene, INotify<EnemyActionBundle>
 
     private async void Awake()
     {
-         SceneUtils = await GetBaseScene().GetSceneUtilsAsync();
+         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
         _stateTracker = new AnimationStateMachine(SceneUtils);
         _animator = GetComponent<Animator>();
