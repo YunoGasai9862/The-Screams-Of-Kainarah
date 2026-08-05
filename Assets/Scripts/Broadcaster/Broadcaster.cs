@@ -22,11 +22,11 @@ namespace Assets.Scripts.Broadcaster
             StartCoroutine(Broadcast(SceneUtils, 5));
         }
 
-        public void Broadcast<T>(T value)
+        public async void Broadcast<T>(T value)
         {
             foreach (KeyValuePair<int, GameObject> item in SceneRegistryInstance.GetRegisteredGameObjects())
             {
-                item.Value.GetComponent<BaseScene.MonoBehaviorScene>().BaseScene.Broadcast(value);
+                (await item.Value.GetComponent<BaseScene.MonoBehaviorScene>().GetBaseScene()).Broadcast(value);
             }
         }
 

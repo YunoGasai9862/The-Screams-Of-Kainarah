@@ -120,30 +120,78 @@ namespace Assets.Scripts.BaseScene
     public class StateMachineScene : StateMachineBehaviour
     {
         //think of this!
-        public BaseScene GetBaseSceneSync()
+        public async Task<BaseScene> GetBaseScene()
         {
             BaseScene scene = null;
 
-            scene = GetComponent<BaseScene>();
+            scene = await FindFirstObjectByTypeAsync<BaseScene>();
 
             Debug.Log($"Object: {name}, BaseSceneReference.BaseSceneReference : {scene}");
 
             return scene;
+        }
+
+        public async Task<T> FindFirstObjectByTypeAsync<T>(int retry = 5, int delay = 3) where T : UnityEngine.Object
+        {
+            T component = null;
+
+            for (int i = 0; i < retry; i++)
+            {
+
+                component = GameObject.FindFirstObjectByType<T>();
+
+                if (component == null)
+                {
+                    await Task.Delay(delay);
+
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return component;
         }
     }
 
     public class ScriptableObjectScene : ScriptableObject
     {
         //think of this!
-        public BaseScene GetBaseSceneSync()
+        public async Task<BaseScene> GetBaseScene()
         {
             BaseScene scene = null;
 
-            scene = GetComponent<BaseScene>();
+            scene = await FindFirstObjectByTypeAsync<BaseScene>();
 
             Debug.Log($"Object: {name}, BaseSceneReference.BaseSceneReference : {scene}");
 
             return scene;
+        }
+
+        public async Task<T> FindFirstObjectByTypeAsync<T>(int retry = 5, int delay = 3) where T : UnityEngine.Object
+        {
+            T component = null;
+
+            for (int i = 0; i < retry; i++)
+            {
+
+                component = GameObject.FindFirstObjectByType<T>();
+
+                if (component == null)
+                {
+                    await Task.Delay(delay);
+
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return component;
         }
     }
 }
