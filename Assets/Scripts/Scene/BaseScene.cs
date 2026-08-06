@@ -15,7 +15,8 @@ namespace Assets.Scripts.BaseScene
             {
                 if (SceneUtils == null)
                 {
-                    await Task.Delay(delay);
+                    Debug.Log($"[BaseScene] SceneUtils is null, waiting for it to be assigned... Attempt {i + 1} of {retry}");
+                    await Task.Delay(delay * 1000);
                 }else
                 {
                     break;
@@ -31,7 +32,7 @@ namespace Assets.Scripts.BaseScene
             {
                 if (SceneUtils == null)
                 {
-                    Debug.Log("SceneUtils is null, waiting for it to be assigned...");
+                    Debug.Log($"[BaseScene] SceneUtils is null, waiting for it to be assigned... Attempt {i + 1} of {retry}");
 
                     yield return new WaitForSeconds(delay);
 
@@ -73,7 +74,7 @@ namespace Assets.Scripts.BaseScene
         {
             BaseScene scene = null ;
 
-            scene = await GetComponentAsync<BaseScene>();
+            scene = await FindFirstObjectByTypeAsync<BaseScene>();
 
             Debug.Log($"Object: {name}, BaseSceneReference.BaseSceneReference : {scene}");
 
@@ -91,18 +92,18 @@ namespace Assets.Scripts.BaseScene
             return scene;
         }
 
-        public async Task<T> GetComponentAsync<T>(int retry = 5, int delay = 3) where T: class
+        public async Task<T> FindFirstObjectByTypeAsync<T>(int retry = 5, int delay = 3) where T : UnityEngine.Object
         {
             T component = null;
 
             for (int i = 0; i < retry; i++)
             {
 
-                component = GetComponent<T>();
+                component = GameObject.FindFirstObjectByType<T>();
 
                 if (component == null)
                 {
-                    await Task.Delay(delay);
+                    await Task.Delay(delay * 1000);
 
                     continue;
                 }
@@ -142,7 +143,7 @@ namespace Assets.Scripts.BaseScene
 
                 if (component == null)
                 {
-                    await Task.Delay(delay);
+                    await Task.Delay(delay * 1000);
 
                     continue;
                 }
@@ -181,7 +182,7 @@ namespace Assets.Scripts.BaseScene
 
                 if (component == null)
                 {
-                    await Task.Delay(delay);
+                    await Task.Delay(delay * 1000);
 
                     continue;
                 }
