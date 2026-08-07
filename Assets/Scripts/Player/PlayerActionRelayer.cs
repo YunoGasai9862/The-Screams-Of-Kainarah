@@ -67,6 +67,8 @@ public class PlayerActionRelayer : Assets.Scripts.BaseScene.MonoBehaviorScene, I
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+
         m_gameStateManagerFallBackAlert = new FallBackAlert()
         {
             Alert = GameStateManagerFallBackAlert
@@ -96,10 +98,6 @@ public class PlayerActionRelayer : Assets.Scripts.BaseScene.MonoBehaviorScene, I
             FallBack = m_gameStateManagerFallBackAlert
 
         }, this);
-    }
-    private async void Awake()
-    {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
     }
 
     private void Update()
@@ -143,6 +141,12 @@ public class PlayerActionRelayer : Assets.Scripts.BaseScene.MonoBehaviorScene, I
     }
     private async void FixedUpdate()
     {
+        if (SceneUtils == null)
+        {
+            Debug.Log("SceneUtils is null for [PlayerActionRelayer - FixedUpdate] - exiting!");
+            return;
+        }
+
         if (await IfPortalExists("Portal"))
         {
             //Instantiate(TeleportTransition, transform.position, Quaternion.identity);

@@ -47,22 +47,20 @@ public class PlayerJumpController : MonoBehaviorScene, IReceiverEnhancedAsync<Pl
 
     private SceneUtils SceneUtils { get; set; }
 
-    private async void Awake()
+    private async void Start()
     {
-        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
+        SceneUtils = await(await GetBaseScene()).GetSceneUtilsAsync();
 
         _movementHelperClass = new MovementHelperClass();
 
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         PlayerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>();
 
         _animationReceiver = await SceneUtils.FindReceiver<PlayerAnimationController, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>>();
 
         _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>(_animationReceiver);
-    }
-    private void Start()
-    {
+
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<PlayerStateBundle>>()
         {
             Instance = gameObject,

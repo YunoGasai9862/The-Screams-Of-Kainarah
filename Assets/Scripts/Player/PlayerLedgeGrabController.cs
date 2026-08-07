@@ -59,15 +59,13 @@ public class PlayerLedgeGrabController : MonoBehaviorScene, IReceiverEnhancedAsy
 
     private SceneUtils SceneUtils { get; set; }
 
-    private async void Awake()
+    public async void Start()
     {
         _helperFunc = new MovementHelperClass();
 
-        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
+        SceneUtils = await(await GetBaseScene()).GetSceneUtilsAsync();
 
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
-
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         PlayerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>();
 
@@ -80,9 +78,7 @@ public class PlayerLedgeGrabController : MonoBehaviorScene, IReceiverEnhancedAsy
         {
             throw new CustomEventNotFoundException("PlayerStateEvent not found!!");
         }
-    }
-    public void Start()
-    {
+
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
         {
             Instance = gameObject,

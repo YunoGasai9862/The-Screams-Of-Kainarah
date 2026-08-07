@@ -48,17 +48,15 @@ public class PlayerSlideController : MonoBehaviorScene, IReceiverEnhancedAsync<P
 
     private SceneUtils SceneUtils { get; set; }
 
-    private async void Awake()
+
+    async void Start()
     {
-        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
+        SceneUtils = await(await GetBaseScene()).GetSceneUtilsAsync();
 
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
-        PlayerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>(); 
-    }
+        PlayerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>();
 
-    void Start()
-    {
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<AnimationDetails>()
         {
             Instance = gameObject,

@@ -25,9 +25,9 @@ public class PlayerAnimationController : MonoBehaviorScene, IRequest<AnimationDe
 
     private SceneUtils SceneUtils { get; set; }
 
-    private async void Awake()
+    private async void Start()
     {
-        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
+        SceneUtils = await(await GetBaseScene()).GetSceneUtilsAsync();
 
         StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
@@ -37,10 +37,7 @@ public class PlayerAnimationController : MonoBehaviorScene, IRequest<AnimationDe
         }
 
         AnimationStateMachine = new AnimationStateMachine(SceneUtils);
-    }
 
-    private void Start()
-    {
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<IEntityAnimator>()
         {
             Instance = gameObject,

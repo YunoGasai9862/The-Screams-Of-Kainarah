@@ -30,10 +30,12 @@ namespace Assets.Scripts.Broadcaster
 
             foreach (KeyValuePair<int, GameObject> item in SceneRegistryInstance.GetRegisteredGameObjects())
             {
-                //need to fix this!!
-                Debug.Log($"Value: {item.Value} - {item.Value.GetComponent<BaseScene.MonoBehaviorScene>()}");
+                if (item.Value.TryGetComponent<BaseScene.MonoBehaviorScene>(out BaseScene.MonoBehaviorScene component)) {
 
-                (await item.Value.GetComponent<BaseScene.MonoBehaviorScene>().GetBaseScene()).Broadcast(value);
+                    Debug.Log($"Value: {item.Value} - {component}");
+
+                    (await item.Value.GetComponent<BaseScene.MonoBehaviorScene>().GetBaseScene()).Broadcast(value);
+                }
             }
         }
 

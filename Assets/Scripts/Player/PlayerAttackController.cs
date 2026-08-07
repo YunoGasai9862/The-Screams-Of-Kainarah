@@ -54,24 +54,20 @@ public class PlayerAttackController : MonoBehaviorScene, IReceiverEnhancedAsync<
 
     [SerializeField] PowerUpBarFillEvent powerUpBarFillEvent;
 
-
-    private async void Awake()
+    private async void Start()
     {
         _movementHelper = new MovementHelperClass();
 
         PlayerAttackStateInt = 0;
 
-        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
+        SceneUtils = await(await GetBaseScene()).GetSceneUtilsAsync();
 
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
 
         PlayerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>();
 
         PlayerBoostAttackEvent = await SceneUtils.GetCustomEvent<PlayerBoostAttackEvent>();
-    }
 
-    private void Start()
-    {
         StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {
             Instance = gameObject,
@@ -95,9 +91,9 @@ public class PlayerAttackController : MonoBehaviorScene, IReceiverEnhancedAsync<
             SubjectType = typeof(PlayerAttributesNotifier)
         }, this));
 
-        PlayerBoostAttackEvent.AddListener(SetAttackBoostMode);
+        await PlayerBoostAttackEvent.AddListener(SetAttackBoostMode);
 
-        powerUpBarFillEvent.AddListener(PowerUpFillMode);
+        await powerUpBarFillEvent.AddListener(PowerUpFillMode);
     }
 
     private void InitiatePlayerAttack(bool leftMouseButtonPressed)
