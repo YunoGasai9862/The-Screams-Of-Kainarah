@@ -19,10 +19,11 @@ public class SceneUtils: MonoBehaviorScene
 {
     private Delegator Delegator { get; set; }
 
-    private void Awake()
-   {
+    private void Start()
+    {
         StartCoroutine(GetDelegator<Delegator>(value => Delegator = value));
     }
+
     public Task<string[]> SplitStringOnSeparator(string text, string separator)
     {
         const int EMPTY_STRING_ARRAY_SIZE = 0;
@@ -45,28 +46,7 @@ public class SceneUtils: MonoBehaviorScene
         yield return new WaitForSeconds(waitLimitInSeconds);
     }
 
-    public async Task<T> GetDelegator<T>(int retryLimit = 3, int waitLimitInSeconds = 6) where T : UnityEngine.Object
-    {
-        for (int i = 0; i < retryLimit; i++)
-        {
-            T delegator = FindObject<T>();
-
-            Debug.Log($"Delegator: {delegator}, Type: {typeof(T).Name}");
-
-            if (delegator == null)
-            {
-                await Task.Delay(waitLimitInSeconds * 1000);
-
-                continue;
-            }
-
-            return delegator;
-        }
-
-        throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the MonoBehaviorScene");
-    }
-
-    public IEnumerator GetDelegator<T>(Action<T> callback, int retryLimit = 5, int waitLimitInSeconds = 6) where T : UnityEngine.Object
+    private IEnumerator GetDelegator<T>(Action<T> callback, int retryLimit = 5, int waitLimitInSeconds = 6) where T : UnityEngine.Object
     {
         for (int i = 0; i < retryLimit; i++)
         {
@@ -88,35 +68,22 @@ public class SceneUtils: MonoBehaviorScene
 
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the MonoBehaviorScene");
     }
+    
+    public Delegator GetDelegator()
+    {
+        if (Delegator == null)
+        {
+            throw new DelegatorNotFoundException($"Delegator is null in the MonoBehaviorScene");
+        }
+
+        return Delegator;
+    }
 
     public IEnumerator NotifySubjectWrapper<T>(ObserverContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer)
     {
         yield return new WaitUntil(() =>Delegator != null);
 
         Delegator.NotifySubjectWrapper(context, observer);
-    }
-
-    public IEnumerator GetDelegator<T>(Result<T> result, int retryLimit = 3, int waitLimitInSeconds = 6) where T : UnityEngine.Object
-    {
-        for (int i = 0; i < retryLimit; i++)
-        {
-            T delegator = FindObject<T>();
-
-            Debug.Log($"Delegator: {delegator}, Type: {typeof(T).Name}");
-
-            if (delegator == null)
-            {
-                yield return new WaitForSeconds(waitLimitInSeconds);
-
-                continue;
-            }
-
-            result.Value = delegator;
-
-            break;
-        }
-
-        throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the MonoBehaviorScene");
     }
 
     public T GetFromEntityPoolManager<T>(EntityPoolManager entityPoolManager, string key) where T : ScriptableObject

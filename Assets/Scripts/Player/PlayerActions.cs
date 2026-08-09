@@ -69,9 +69,9 @@ public class PlayerActions : MonoBehaviorScene, INotify<GenericStateBundle<Playe
     private Delegator Delegator { get; set; }
 
     //Force = -2m * sqrt (g * h)
-    private async void Awake()
+    private async void Start()
     {
-        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
+        SceneUtils = await(await GetBaseScene()).GetSceneUtilsAsync();
 
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
 
@@ -85,7 +85,7 @@ public class PlayerActions : MonoBehaviorScene, INotify<GenericStateBundle<Playe
 
         _attackReceiver = await SceneUtils.FindReceiver<PlayerAttackController, IReceiverBase<ControllerPackage<AttackingExecutionState, AttackingDetails>>>();
 
-        _throwingProjectileReceiver = await  SceneUtils.FindReceiver<ThrowingProjectileController, IReceiverBase<bool>>();
+        _throwingProjectileReceiver = await SceneUtils.FindReceiver<ThrowingProjectileController, IReceiverBase<bool>>();
 
         _animationReceiver = await SceneUtils.FindReceiver<PlayerAnimationController, IReceiverBase<ControllerPackage<AnimationExecutionState, PlayerStateBundle>>>();
 
@@ -129,11 +129,9 @@ public class PlayerActions : MonoBehaviorScene, INotify<GenericStateBundle<Playe
 
         _rocky2DActions.PlayerAttack.BoostAttack.canceled += HandleBoostAttackCancel;
 
-    }
-
-    private void Start()
-    {
         InvokeCustomMethod += NotifySubjects;
+
+        Debug.Log($"Rocky 2D Actions: {_rocky2DActions}, {_rocky2DActions.PlayerMovement}");
 
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
 
