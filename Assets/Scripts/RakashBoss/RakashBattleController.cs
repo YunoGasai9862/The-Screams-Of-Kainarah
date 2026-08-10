@@ -33,7 +33,7 @@ public class RakashBattleController : MonoBehaviorScene, INotify<Health>, IRecei
 
         SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+       Delegator = SceneUtils.GetDelegator();
 
         BlockingAttacks = new List<RakashAttack>()
         {

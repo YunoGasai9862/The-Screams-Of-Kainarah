@@ -16,7 +16,7 @@ public class EnemyHittableManager : MonoBehaviorScene, IRequest<EnemyHittableMan
 
     private async void Start()
     {
-       StartCoroutine((await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
+       Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
     }
 
     public Task<bool> IsEntityAnAttackObject(Collider2D collider, EnemyHittableObjects objects)

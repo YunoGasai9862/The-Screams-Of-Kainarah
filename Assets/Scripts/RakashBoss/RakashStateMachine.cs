@@ -45,7 +45,7 @@ public class RakashStateMachine : MonoBehaviorScene, INotify<GenericStateBundle<
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = SceneUtils.GetDelegator();
 
         Animator = GetComponent<Animator>();
 

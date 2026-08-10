@@ -22,7 +22,7 @@ public class InventoryManager : MonoBehaviorScene, IRequest<bool>
 
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = SceneUtils.GetDelegator();
     }
 
     public bool IsPouchOpen { get; set; } = false;

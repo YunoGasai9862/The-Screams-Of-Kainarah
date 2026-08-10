@@ -35,7 +35,7 @@ public class TriggerHandler : MonoBehaviorScene, IPointerEnterHandler, IPointerE
 
        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+       Delegator = SceneUtils.GetDelegator();
 
         Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {

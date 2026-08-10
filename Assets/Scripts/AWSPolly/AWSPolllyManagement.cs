@@ -67,7 +67,7 @@ public class AWSPolllyManagement : MonoBehaviorScene, IAWSPolly, INotify<Firebas
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = SceneUtils.GetDelegator();
 
         Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<FirebaseStorageManager>(gameObject, typeof(FirebaseStorageManager), typeof(AWSPolllyManagement)), this);
 

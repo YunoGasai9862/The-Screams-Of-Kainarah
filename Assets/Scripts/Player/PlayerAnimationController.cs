@@ -29,7 +29,7 @@ public class PlayerAnimationController : MonoBehaviorScene, IRequest<AnimationDe
     {
         SceneUtils = await(await GetBaseScene()).GetSceneUtilsAsync();
 
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = SceneUtils.GetDelegator();
 
         if (Delegator == null)
         {

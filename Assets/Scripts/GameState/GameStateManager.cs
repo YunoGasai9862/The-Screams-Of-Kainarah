@@ -59,7 +59,7 @@ public class GameStateManager : Assets.Scripts.BaseScene.MonoBehaviorScene, IGam
         _mainCamera = Camera.main;
         _mainCameraOldPosition = _mainCamera.transform.position;
 
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = SceneUtils.GetDelegator();
 
         /*
         _mainCamera.transform.position = new Vector3(_mainCamera.transform.position.x, _mainCamera.transform.position.y, -100);

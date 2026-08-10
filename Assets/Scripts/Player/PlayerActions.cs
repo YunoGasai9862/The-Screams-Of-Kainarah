@@ -156,7 +156,7 @@ public class PlayerActions : MonoBehaviorScene, INotify<GenericStateBundle<Playe
 
     private async void NotifySubjects()
     {
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+       Delegator = SceneUtils.GetDelegator();
     }
 
 

@@ -25,7 +25,7 @@ public class CustomLightProcessing : MonoBehaviorScene, ICustomLightPreprocessin
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = SceneUtils.GetDelegator();
 
         Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(CustomLightProcessing)), this);
         Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<LightPackage>(gameObject, typeof(CandleLightPackageGenerator), typeof(CustomLightProcessing)), this);

@@ -85,7 +85,7 @@ public class EntityPoolManager: MonoBehaviorScene, IDelegate, IEntityPoolManager
 
     private async void SetEntityPoolManagerDelegator()
     {
-       StartCoroutine((await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
+       Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
     }
 
     public IEnumerator Request()

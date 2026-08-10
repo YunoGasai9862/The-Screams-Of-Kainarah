@@ -36,7 +36,7 @@ public class CheckPointActionListener : Assets.Scripts.BaseScene.MonoBehaviorSce
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = SceneUtils.GetDelegator();
 
         Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
         {

@@ -43,7 +43,7 @@ public class AudioPreload : MonoBehaviorScene, IPreloadAudio<DialoguesAndOptions
     {
        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
-       StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+       Delegator = SceneUtils.GetDelegator();
 
         m_audioGeneratedEvent = await SceneUtils.GetCustomEvent<AudioGeneratedEvent>();
 

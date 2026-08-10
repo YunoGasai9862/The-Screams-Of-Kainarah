@@ -69,11 +69,18 @@ public class SceneUtils: MonoBehaviorScene
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the MonoBehaviorScene");
     }
     
-    public Delegator GetDelegator()
+    public Delegator GetDelegator(int retryLimit = 5, int waitLimitInSeconds = 6)
     {
+        if (retryLimit == 0)
+        {
+            throw new DelegatorNotFoundException($"Delegator Not Found in the MonoBehaviorScene after {retryLimit} attempts with {waitLimitInSeconds} seconds wait time!");
+        }
+
         if (Delegator == null)
         {
-            throw new DelegatorNotFoundException($"Delegator is null in the MonoBehaviorScene");
+            StartCoroutine(GetDelegator<Delegator>(value => Delegator = value));
+
+            GetDelegator(retryLimit - 1, waitLimitInSeconds);
         }
 
         return Delegator;

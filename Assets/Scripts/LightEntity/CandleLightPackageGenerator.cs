@@ -55,7 +55,7 @@ public class CandleLightPackageGenerator : MonoBehaviorScene, Assets.Scripts.Int
 
         await SetupCancellationTokens();
 
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = SceneUtils.GetDelegator();
 
         Delegator.NotifySubjectWrapper(new ObserverContext<ILightPreprocess>()
         {

@@ -13,7 +13,7 @@ public class LightFlicker : MonoBehaviorScene, Assets.Scripts.Interfaces.Mediato
 
     private async void Start()
     {
-        StartCoroutine((await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0)

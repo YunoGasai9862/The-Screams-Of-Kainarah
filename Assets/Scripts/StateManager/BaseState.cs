@@ -21,7 +21,7 @@ public abstract class BaseState<T>: MonoBehaviorScene, Assets.Scripts.Interfaces
 
         Debug.Log($"SceneUtils in BaseState: {SceneUtils}");
 
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = SceneUtils.GetDelegator();
 
         StateEvent = await SceneUtils.GetCustomEvent<StateEvent>();
 
@@ -88,7 +88,7 @@ public abstract class BaseState<T, Z> : MonoBehaviorScene, Assets.Scripts.Interf
 
         Debug.Log($"SceneUtils in BaseState<T, Z>: {SceneUtils}");
 
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = SceneUtils.GetDelegator();
 
         StateEvent = await SceneUtils.GetCustomEvent<StateEvent>();
 

@@ -15,7 +15,7 @@ public class TrackPlayer : MonoBehaviorScene, INotify<IEntityTransform>
 
     private async void Awake()
     {
-       StartCoroutine((await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator<Delegator>(value => Delegator = value));
+       Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
     }
 
     private void Start()

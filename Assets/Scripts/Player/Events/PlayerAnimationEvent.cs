@@ -27,7 +27,7 @@ public class PlayerAnimationEvent : MonoBehaviorScene, INotify<EntityPoolManager
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = SceneUtils.GetDelegator();
 
         PlayerBoostAttackEvent = await SceneUtils.GetCustomEvent<PlayerBoostAttackEvent>();
 

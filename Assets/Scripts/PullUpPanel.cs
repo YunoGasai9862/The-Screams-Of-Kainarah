@@ -22,7 +22,7 @@ public class PullUpPanel : MonoBehaviorScene, INotify<bool>
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = SceneUtils.GetDelegator();
     }
 
     void Start()

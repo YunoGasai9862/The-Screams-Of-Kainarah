@@ -39,7 +39,7 @@ public class CameraShake : MonoBehaviorScene, Assets.Scripts.Interfaces.Mediator
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        StartCoroutine(SceneUtils.GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = SceneUtils.GetDelegator();
 
         Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(CameraShake)), this);
 
