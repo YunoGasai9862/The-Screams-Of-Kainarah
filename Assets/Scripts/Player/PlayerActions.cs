@@ -12,7 +12,7 @@ using Assets.Scripts.BaseScene;
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(GameStateConsumer), ContextType = typeof(GenericStateBundle<GameStateBundle>))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(PlayerSlideController), ContextType = typeof(CharacterVelocity))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(PlayerActions), SubjectType = typeof(PlayerJumpController), ContextType = typeof(CharacterVelocity))]
-public class PlayerActions : MonoBehaviorScene, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<Player>, INotify<GenericStateBundle<GameStateBundle>>, INotify<CharacterVelocity>, IDelegate
+public class PlayerActions : MonoBehaviorScene, INotify<GenericStateBundle<PlayerStateBundle>>, INotify<Player>, INotify<GenericStateBundle<GameStateBundle>>, INotify<CharacterVelocity>
 {
     [SerializeField] float _characterSpeed = 10f;
 
@@ -64,14 +64,14 @@ public class PlayerActions : MonoBehaviorScene, INotify<GenericStateBundle<Playe
 
     private ThrowingProjectileController ThrowingProjectileController { get => GetComponent<ThrowingProjectileController>(); } //implement all the actions together
 
-    public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
-
     private Delegator Delegator { get; set; }
 
     //Force = -2m * sqrt (g * h)
     private async void Start()
     {
         SceneUtils = await(await GetBaseScene()).GetSceneUtilsAsync();
+
+        Delegator = SceneUtils.GetDelegator();
 
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
 
@@ -129,8 +129,6 @@ public class PlayerActions : MonoBehaviorScene, INotify<GenericStateBundle<Playe
 
         _rocky2DActions.PlayerAttack.BoostAttack.canceled += HandleBoostAttackCancel;
 
-        InvokeCustomMethod += NotifySubjects;
-
         Debug.Log($"Rocky 2D Actions: {_rocky2DActions}, {_rocky2DActions.PlayerMovement}");
 
         _rocky2DActions.PlayerMovement.Enable(); //enables that actionMap =>Movement
@@ -153,12 +151,6 @@ public class PlayerActions : MonoBehaviorScene, INotify<GenericStateBundle<Playe
 
         Player.Rigidbody.linearVelocity = _playerActionsModel.CharacterVelocity;
     }
-
-    private async void NotifySubjects()
-    {
-       Delegator = SceneUtils.GetDelegator();
-    }
-
 
     #region Controller Mechnism
     private async void MovementBegin(InputAction.CallbackContext context)

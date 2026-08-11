@@ -1,9 +1,7 @@
 #nullable enable
 using Annotations.Enums;
 using Assets.Exceptions;
-using Assets.Scripts.DelegatorsManager.Models;
 using Assets.Scripts.BaseScene;
-using NUnit.Framework;
 using ObserverPattern;
 using System;
 using System.Collections;
@@ -19,9 +17,9 @@ public class SceneUtils: MonoBehaviorScene
 {
     private Delegator Delegator { get; set; }
 
-    private void Start()
+    private async void Start()
     {
-        StartCoroutine(GetDelegator<Delegator>(value => Delegator = value));
+        Delegator = await GetDelegator<Delegator>();
     }
 
     public Task<string[]> SplitStringOnSeparator(string text, string separator)
@@ -46,43 +44,31 @@ public class SceneUtils: MonoBehaviorScene
         yield return new WaitForSeconds(waitLimitInSeconds);
     }
 
-    private IEnumerator GetDelegator<T>(Action<T> callback, int retryLimit = 5, int waitLimitInSeconds = 6) where T : UnityEngine.Object
+    private async Task<T> GetDelegator<T>(int retryLimit = 5, int waitLimitInSeconds = 6) where T : UnityEngine.Object
     {
         for (int i = 0; i < retryLimit; i++)
         {
-            T delegator = FindObject<T>();
+            T delegator = FindFirstObjectByType<T>();
 
             Debug.Log($"Delegator: {delegator}, Type: {typeof(T).Name}");
 
             if (delegator == null)
             {
-                yield return new WaitForSeconds(waitLimitInSeconds);
+                Debug.Log($"Delegator of type {typeof(T).Name} not found, retrying... Attempt {i + 1} of {retryLimit}");
+
+                await Task.Delay(waitLimitInSeconds * 1000);
 
                 continue;
             }
 
-            callback.Invoke(delegator);
-
-            break;
+            return delegator;
         }
 
         throw new DelegatorNotFoundException($" {typeof(T).Name} Not Found in the MonoBehaviorScene");
     }
     
-    public Delegator GetDelegator(int retryLimit = 5, int waitLimitInSeconds = 6)
+    public Delegator GetDelegator()
     {
-        if (retryLimit == 0)
-        {
-            throw new DelegatorNotFoundException($"Delegator Not Found in the MonoBehaviorScene after {retryLimit} attempts with {waitLimitInSeconds} seconds wait time!");
-        }
-
-        if (Delegator == null)
-        {
-            StartCoroutine(GetDelegator<Delegator>(value => Delegator = value));
-
-            GetDelegator(retryLimit - 1, waitLimitInSeconds);
-        }
-
         return Delegator;
     }
 

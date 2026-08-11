@@ -44,7 +44,9 @@ public class PreloadEntitiesDelegateExecutor: MonoBehaviorScene, IDelegateExecut
 
             foreach (IDelegate del in iDelegates)
             {
-                del.InvokeCustomMethod();
+                Debug.Log($"Delegate in ExecuteDelegatesForGameObjects: {del}");
+
+                del?.InvokeCustomMethod();
             }
         }
     }
