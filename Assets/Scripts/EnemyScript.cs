@@ -5,7 +5,6 @@ using Assets.Scripts.GameState.Models;
 using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using EnemyHittable;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [Observer(AssetType = Asset.MONOBEHAVIOR, SubjectType = typeof(EnemyHittableManager), EntityType = typeof(EnemyScript), ContextType = typeof(EnemyHittableManager))]
@@ -32,11 +31,11 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
     [Header("Enter Attack Anim Param name")]
     [SerializeField] string animationAttackParam;
     [SerializeField] string[] extraAnimations;
-    private Delegator Delegator { get; set; }
-
     public override Health Health { get; set; }
 
     private EnemyHittableManager EnemyHittableManager { get; set; }
+
+    private SceneUtils SceneUtils { get; set; }
 
     private void Awake()
     {
@@ -47,7 +46,7 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
 
     private async void Start()
     {
-        Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
         Health = new Health()
         {
@@ -56,13 +55,13 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
             EntityName = name
         };
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<EnemyHittableManager>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<EnemyHittableManager>()
         {
             SubjectType = typeof(EnemyHittableManager),
             EntityType = typeof(EnemyScript),
             Instance = gameObject,
 
-        }, this);
+        }, this));
     }
 
     private void Update()
@@ -79,7 +78,7 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
                 return;
             }
 
-            StartCoroutine(Delegator.NotifyObservers(new SubjectContext<EnemyActionBundle>()
+            StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<EnemyActionBundle>()
             {
                     EntityType = typeof(EnemyActionBundle),
                     Data = new EnemyActionBundle() { Target = playerCollider, ActionName = animationAttackParam, ActionValue = true  }

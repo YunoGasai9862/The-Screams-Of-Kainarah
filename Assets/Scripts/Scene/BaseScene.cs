@@ -23,6 +23,8 @@ namespace Assets.Scripts.BaseScene
                 }
             }
 
+            Debug.Log($"Returning SceneUtils: {SceneUtils}");
+
             return SceneUtils;
         }
 

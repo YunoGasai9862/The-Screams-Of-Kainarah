@@ -21,22 +21,22 @@ public class PlayerAttackStateMachineReset : StateMachineScene, INotify<EntityPo
 
     private ResetBundle CurrentResetBundle { get; set; }
 
-    private async void OnEnable()   
-    {
-        Delegator =  Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
-
-        Delegator.NotifySubjectWrapper(new ObserverContext<EntityPoolManager>()
-        {
-            EntityType = typeof(PlayerActionRelayer),
-            SubjectType = typeof(EntityPoolManager)
-
-        }, this);
-    }
-
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    override public async void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (Delegator == null)
+        {
+            Delegator = (await(await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
 
+            Debug.Log($"Delegator in the PlayerAttackStateMachineReset: {Delegator}");
+
+            Delegator.NotifySubjectWrapper(new ObserverContext<EntityPoolManager>()
+            {
+                EntityType = typeof(PlayerActionRelayer),
+                SubjectType = typeof(EntityPoolManager)
+
+            }, this);
+        }
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
