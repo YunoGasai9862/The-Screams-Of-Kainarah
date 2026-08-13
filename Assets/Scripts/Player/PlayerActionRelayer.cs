@@ -47,8 +47,6 @@ public class PlayerActionRelayer : Assets.Scripts.BaseScene.MonoBehaviorScene, I
 
     private Player Player { get; set; } = new Player();
 
-    private Delegator Delegator { get; set; }
-
     private EntityPoolManager EntityPoolManagerInstance { get; set; }
 
     private PickableItems PickableItemsSO { get; set; }
@@ -67,37 +65,34 @@ public class PlayerActionRelayer : Assets.Scripts.BaseScene.MonoBehaviorScene, I
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        Delegator = SceneUtils.GetDelegator();
-
         m_gameStateManagerFallBackAlert = new FallBackAlert()
         {
             Alert = GameStateManagerFallBackAlert
         };
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerActionRelayer),
             SubjectType = typeof(PlayerAttributesNotifier)
 
-        }, this);
+        }, this));
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<EntityPoolManager>()
-        {
-            Instance = gameObject,
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<EntityPoolManager>()
+        {            Instance = gameObject,
             EntityType = typeof(PlayerActionRelayer),
             SubjectType = typeof(EntityPoolManager)
 
-        }, this);
+        }, this));
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerActionRelayer),
             SubjectType = typeof(GameStateManager),
             FallBack = m_gameStateManagerFallBackAlert
 
-        }, this);
+        }, this));
     }
 
     private void Update()
@@ -112,17 +107,17 @@ public class PlayerActionRelayer : Assets.Scripts.BaseScene.MonoBehaviorScene, I
         {
             anim.SetBool(PlayerAnimationField.Death.ToString(), true);
 
-            Delegator.NotifyObserversWrapper(new SubjectContext<EntitiesToReset>()
+            StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<EntitiesToReset>()
             {
                 Data = entitiesToReset,
                 EntityType = typeof(PlayerActionRelayer),
-            }, this);
+            }, this));
 
-            Delegator.NotifyObserversWrapper(new SubjectContext<Player>()
+            StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<Player>()
             {
                 Data = Player,
                 EntityType = typeof(PlayerActionRelayer),
-            }, this);
+            }, this));
         }
         
     }
@@ -131,13 +126,13 @@ public class PlayerActionRelayer : Assets.Scripts.BaseScene.MonoBehaviorScene, I
     {
         Debug.Log("In the GameStateManagerFallBackAlert - Pinging Again!");
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerActionRelayer),
             SubjectType = typeof(GameStateManager),
             FallBack = m_gameStateManagerFallBackAlert
-        }, this);
+        }, this));
     }
     private async void FixedUpdate()
     {
@@ -171,11 +166,11 @@ public class PlayerActionRelayer : Assets.Scripts.BaseScene.MonoBehaviorScene, I
 
         if (dialogueSystem != null && !dialogueSystem.DialogueSettings.DialogueConcluded)
         {
-            Delegator.NotifyObserversWrapper(new SubjectContext<DialoguesAndOptions.DialogueSystem>()
+            StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<DialoguesAndOptions.DialogueSystem>()
             {
                 Data = dialogueSystem,
                 EntityType = typeof(PlayerActionRelayer),
-            }, this);
+            }, this));
         }
 
     }
@@ -245,18 +240,18 @@ public class PlayerActionRelayer : Assets.Scripts.BaseScene.MonoBehaviorScene, I
             if (shouldBedisabled)
                 collision.gameObject.SetActive(false);
 
-            Delegator.NotifyObserversWrapper(new SubjectContext<bool>()
+            StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<bool>()
             {
                 Data = true,
                 EntityType = typeof(PlayerActionRelayer),
-            }, this);
+            }, this));
         }
 
-        Delegator.NotifyObserversWrapper(new SubjectContext<bool>()
+        StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<bool>()
         {
             Data = collision,
             EntityType = typeof(PlayerActionRelayer),
-        }, this);
+        }, this));
     }
 
     private void CheckpointCollisionHandler(Collider2D collision)
@@ -268,11 +263,11 @@ public class PlayerActionRelayer : Assets.Scripts.BaseScene.MonoBehaviorScene, I
 
             collision.gameObject.SetActive(false); //turn it off
 
-            Delegator.NotifyObserversWrapper(new SubjectContext<CheckPoints.Checkpoint>()
+            StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<CheckPoints.Checkpoint>()
             {
                 Data = checkpoint,
                 EntityType = typeof(PlayerActionRelayer),
-            }, this);
+            }, this));
 
         }
     }

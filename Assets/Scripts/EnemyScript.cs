@@ -93,7 +93,7 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
                 return;
             }
 
-            StartCoroutine(Delegator.NotifyObservers(new SubjectContext<EnemyActionBundle>()
+            StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<EnemyActionBundle>()
             {
                 EntityType = typeof(EnemyActionBundle),
                 Data = new EnemyActionBundle() { Target = tempCollider, ActionName = animationAttackParam, ActionValue = false }
@@ -138,11 +138,11 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
         {
             Health.CurrentHealth -= HITPOINTS;
 
-            Delegator.NotifyObserversWrapper(new SubjectContext<EnemyActionBundle>()
+            StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<EnemyActionBundle>()
             {
                 EntityType = typeof(EnemyActionBundle),
                 Data = new EnemyActionBundle() { Target = collision, ActionName = animationHitParam, ActionValue = true }
-            }, this);
+            }, this));
         }
     }
     private async void OnTriggerExit2D(Collider2D collision)
@@ -155,12 +155,11 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
 
         if (gameObject != null && await EnemyHittableManager.IsEntityAnAttackObject(collision, _enemyHittableObjects))
         {
-            Delegator.NotifyObserversWrapper(new SubjectContext<EnemyActionBundle>()
+            StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<EnemyActionBundle>()
             {
                 EntityType = typeof(EnemyActionBundle),
                 Data = new EnemyActionBundle() { Target = collision, ActionName = animationHitParam, ActionValue = false }
-            }, this);
-
+            }, this));
         }
     }
 
@@ -185,12 +184,10 @@ public class EnemyScript : AbstractEntity, INotify<EnemyHittableManager>, IReque
 
     public IEnumerator Request()
     {
-        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<EnemyActionBundle>()
+        yield return StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<EnemyActionBundle>()
         {
             EntityType = typeof(EnemyActionBundle),
-            Data = new EnemyActionBundle() { Target = tempCollider, ActionName = animationAttackParam, ActionValue = false }
+            Data = new EnemyActionBundle() { Target = tempCollider, ActionName = animationAttackParam, ActionValue = true }
         }, this));
-
-        yield return null;
     }
 }

@@ -81,12 +81,20 @@ public class SceneUtils: MonoBehaviorScene
         Delegator.NotifySubjectWrapper(context, observer);
     }
 
-    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.Base.IRequest<T> request)
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.Base.IRequest<T> subject)
     {
         yield return new WaitUntil(() => Delegator != null);
 
-        Delegator.NotifyObservers(context, request);
+        Delegator.NotifyObservers(context, subject);
     }
+
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject)
+    {
+        yield return new WaitUntil(() => Delegator != null);
+
+        Delegator.NotifyObservers(context, subject);
+    }
+
 
     public T GetFromEntityPoolManager<T>(EntityPoolManager entityPoolManager, string key) where T : ScriptableObject
     {
