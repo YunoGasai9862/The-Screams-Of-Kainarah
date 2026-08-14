@@ -64,14 +64,10 @@ public class PlayerActions : MonoBehaviorScene, INotify<GenericStateBundle<Playe
 
     private ThrowingProjectileController ThrowingProjectileController { get => GetComponent<ThrowingProjectileController>(); } //implement all the actions together
 
-    private Delegator Delegator { get; set; }
-
     //Force = -2m * sqrt (g * h)
     private async void Start()
     {
         SceneUtils = await(await GetBaseScene()).GetSceneUtilsAsync();
-
-        Delegator = SceneUtils.GetDelegator();
 
         _rocky2DActions = new Rocky2DActions();// initializes the script of Rockey2Dactions
 

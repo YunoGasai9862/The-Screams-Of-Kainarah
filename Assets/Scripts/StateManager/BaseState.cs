@@ -78,8 +78,6 @@ public abstract class BaseState<T, Z> : MonoBehaviorScene, Assets.Scripts.Interf
 
     protected StateEvent StateEvent { get; set; }
 
-    private Delegator Delegator { get; set; }
-
     private SceneUtils SceneUtils { get; set; }
 
     private async void Start()
@@ -87,8 +85,6 @@ public abstract class BaseState<T, Z> : MonoBehaviorScene, Assets.Scripts.Interf
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
         Debug.Log($"SceneUtils in BaseState<T, Z>: {SceneUtils}");
-
-        Delegator = SceneUtils.GetDelegator();
 
         StateEvent = await SceneUtils.GetCustomEvent<StateEvent>();
 
@@ -110,7 +106,7 @@ public abstract class BaseState<T, Z> : MonoBehaviorScene, Assets.Scripts.Interf
         foreach (INotify<GenericStateBundle<T, Z>> listener in StateListeners)
         {
             //single one (fix this later in the base)
-             Delegator.NotifyObserverWrapper(new SubjectContext<GenericStateBundle<T, Z>>()
+             SceneUtils.NotifyObserverWrapper(new SubjectContext<GenericStateBundle<T, Z>>()
              {
 
                  EntityType = typeof(BaseState<T, Z>),
@@ -126,7 +122,7 @@ public abstract class BaseState<T, Z> : MonoBehaviorScene, Assets.Scripts.Interf
     {
         StateListeners.Add(obsever);
 
-        Delegator.NotifyObserversWrapper(new SubjectContext<GenericStateBundle<T, Z>>()
+        SceneUtils.NotifyObserversWrapper(new SubjectContext<GenericStateBundle<T, Z>>()
         {
             EntityType = typeof(BaseState<T, Z>),
             Data = StateBundle

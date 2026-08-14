@@ -53,8 +53,6 @@ public class PlayerLedgeGrabController : MonoBehaviorScene, IReceiverEnhancedAsy
 
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
-    private Delegator Delegator { get; set; }
-
     private Player Player { get; set; }
 
     private SceneUtils SceneUtils { get; set; }
@@ -65,35 +63,28 @@ public class PlayerLedgeGrabController : MonoBehaviorScene, IReceiverEnhancedAsy
 
         SceneUtils = await(await GetBaseScene()).GetSceneUtilsAsync();
 
-        Delegator = SceneUtils.GetDelegator();
-
         PlayerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>();
-
-        if (Delegator == null)
-        {
-            throw new DelegatorNotFoundException("Delegator not found!!");
-        }
 
         if (PlayerStateEvent == null)
         {
             throw new CustomEventNotFoundException("PlayerStateEvent not found!!");
         }
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerLedgeGrabController),
             SubjectType = typeof(PlayerAttributesNotifier)
         }, this));
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<PlayerStateBundle>>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<PlayerStateBundle>>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerLedgeGrabController),
             SubjectType = typeof(PlayerStateConsumer)
         }, this));
 
-        ledgradeAnimationEvent.AddListener(LedgeGrabEventAnimationKeeperListener);
+        await ledgradeAnimationEvent.AddListener(LedgeGrabEventAnimationKeeperListener);
     }
 
     //SNCE ITS A CONTROLLER - IT SHOULD NOT BE RNNNING IN UPDATE!! FIX IT!

@@ -85,17 +85,30 @@ public class SceneUtils: MonoBehaviorScene
     {
         yield return new WaitUntil(() => Delegator != null);
 
-        Delegator.NotifyObservers(context, subject);
+        StartCoroutine(Delegator.NotifyObservers(context, subject));
     }
 
     public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject)
     {
         yield return new WaitUntil(() => Delegator != null);
 
-        Delegator.NotifyObservers(context, subject);
+        StartCoroutine(Delegator.NotifyObservers(context, subject));
     }
 
+    public IEnumerator NotifyObserversWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject)
+    {
+        yield return new WaitUntil(() => Delegator != null);
 
+       Delegator.NotifyObserversWrapper(context, subject);
+    }
+
+    public IEnumerator NotifyObserverWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer)
+    {
+        yield return new WaitUntil(() => Delegator != null);
+
+        Delegator.NotifyObserverWrapper(context, subject, observer);
+    }
+    
     public T GetFromEntityPoolManager<T>(EntityPoolManager entityPoolManager, string key) where T : ScriptableObject
     {
         List<EntityPool> entityPools = entityPoolManager.GetPooledEntity(key);
