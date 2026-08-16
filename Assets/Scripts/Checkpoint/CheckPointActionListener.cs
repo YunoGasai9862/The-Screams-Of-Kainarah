@@ -22,8 +22,6 @@ public class CheckPointActionListener : Assets.Scripts.BaseScene.MonoBehaviorSce
 
     private GameStateManager GameStateManagerInstance { get; set; }
 
-    private Delegator Delegator { get; set; }
-
     private Dictionary<string, Func<CheckPoints.Checkpoint, CheckPoints, Task>> _checkpointsDict = new Dictionary<string, Func<CheckPoints.Checkpoint, CheckPoints, Task>>();
 
     public Dictionary<string, Func<CheckPoints.Checkpoint, CheckPoints, Task>> CheckpointDict { get => _checkpointsDict; set => _checkpointsDict = value; }
@@ -34,15 +32,13 @@ public class CheckPointActionListener : Assets.Scripts.BaseScene.MonoBehaviorSce
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        Delegator = SceneUtils.GetDelegator();
-
-        Delegator.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<GameStateManager>()
         {
             Instance = gameObject,
             EntityType = typeof(CheckPointActionListener),
             SubjectType = typeof(GameStateManager)
 
-        }, this);
+        }, this));
     }
 
     private Dictionary<string, Func<CheckPoints.Checkpoint, CheckPoints, Task>> PrefillCheckPointsDict(CheckPoints checkPointsScriptableObjectFetch)

@@ -16,8 +16,6 @@ public class PlayerShadow : MonoBehaviorScene, INotify<Player>
     public float initialoffsetY;
     public float initialoffsetX;
 
-    private Delegator Delegator { get; set; }
-
     private Player Player { get; set; }
 
     private SceneUtils SceneUtils { get; set; }
@@ -28,14 +26,12 @@ public class PlayerShadow : MonoBehaviorScene, INotify<Player>
 
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        Delegator = SceneUtils.GetDelegator();   
-
-        Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerShadow),
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, this);
+        }, this));
 
     }
     // Update is called once per frame

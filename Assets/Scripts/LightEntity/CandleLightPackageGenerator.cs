@@ -22,8 +22,6 @@ public class CandleLightPackageGenerator : MonoBehaviorScene, Assets.Scripts.Int
     [SerializeField]
     float delayBetweenExecution;
 
-    private Delegator Delegator { get; set; }
-
     private ILightPreprocess LightPreprocess { get; set; }
 
     private Light2D LightSource { get; set; }
@@ -55,21 +53,19 @@ public class CandleLightPackageGenerator : MonoBehaviorScene, Assets.Scripts.Int
 
         await SetupCancellationTokens();
 
-        Delegator = SceneUtils.GetDelegator();
-
-        Delegator.NotifySubjectWrapper(new ObserverContext<ILightPreprocess>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<ILightPreprocess>()
         {
             Instance = gameObject,
             EntityType = typeof(CandleLightPackageGenerator),
             SubjectType = typeof(LightFlicker)
-        }, this);
+        }, this));
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
             EntityType = typeof(CandleLightPackageGenerator),
             SubjectType = typeof(PlayerAttributesNotifier)
-         }, this);
+         }, this));
     }
 
     public IEnumerator PingCustomLightning(LightPackage lightPackage, INotify<LightPackage> observer, float delayPerExecutionInSeconds = 1)
@@ -80,7 +76,7 @@ public class CandleLightPackageGenerator : MonoBehaviorScene, Assets.Scripts.Int
 
             lightPackage.LightProperties.ShouldLightPulse = Vector2.Distance(Player.Transform.position, gameObject.transform.position) < minDistanceFromPlayerForLightFlicker ? true : false;
 
-            StartCoroutine(Delegator.NotifyObserver(new SubjectContext<LightPackage>() { Data = lightPackage, EntityType = typeof(CandleLightPackageGenerator) }, this, observer));
+            StartCoroutine(SceneUtils.NotifyObserverWrapper(new SubjectContext<LightPackage>() { Data = lightPackage, EntityType = typeof(CandleLightPackageGenerator) }, this, observer));
 
             //unscaled yield (realTime) - waitForSeconds is scaled (RealTime wont stop if we set time.timeScale = 0)
             yield return new WaitForSeconds(delayPerExecutionInSeconds/2);
@@ -115,12 +111,7 @@ public class CandleLightPackageGenerator : MonoBehaviorScene, Assets.Scripts.Int
 
     private bool IsReadyToCustomLightningEntity()
     {
-        return !SceneUtils.AreObjectsNull(new List<UnityEngine.Object>
-        {
-            Delegator
-        })
-            && LightPreprocess != null
-            && Player != null;
+        return LightPreprocess != null && Player != null;
     }
 
     public IEnumerator Notify(ILightPreprocess value)

@@ -11,10 +11,10 @@ using UnityEngine;
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
 public class AsyncCoroutine : MonoBehaviorScene, IAsyncCoroutine<WaitForSeconds>, IAsyncCoroutine<WaitUntil>, IRequest<AsyncCoroutine>
 {
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
     private async void Start()
     {
-        Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
     }
 
     public async Task ExecuteAsyncCoroutine(IAsyncEnumerator<WaitForSeconds> asyncCoroutine)
@@ -35,6 +35,6 @@ public class AsyncCoroutine : MonoBehaviorScene, IAsyncCoroutine<WaitForSeconds>
 
     public IEnumerator Request()
     {
-       yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<AsyncCoroutine>() { Data = this, EntityType = typeof(AsyncCoroutine) }, this));
+       yield return StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<AsyncCoroutine>() { Data = this, EntityType = typeof(AsyncCoroutine) }, this));
     }
 }

@@ -16,8 +16,6 @@ public class DialogueObserverManager : MonoBehaviorScene, INotify<DialoguesAndOp
     [Header("Triggering Event")]
     [SerializeField] DialogueTriggerEvent dialogueTriggerEvent;
 
-    private Delegator Delegator { get; set; }
-
     private GenericStateBundle<GameStateBundle> CurrentGameState { get; set; } = new GenericStateBundle<GameStateBundle>();
     
     private SceneUtils SceneUtils { get; set; }
@@ -33,24 +31,22 @@ public class DialogueObserverManager : MonoBehaviorScene, INotify<DialoguesAndOp
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        Delegator = SceneUtils.GetDelegator();
-
-        Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>> ()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>> ()
         {
             Instance = gameObject,
             EntityType = typeof(DialogueObserverManager),
             SubjectType = typeof(GameStateConsumer)
 
-        }, this);
+        }, this));
 
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<DialoguesAndOptions.DialogueSystem>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<DialoguesAndOptions.DialogueSystem>()
         {
             Instance = gameObject,
             EntityType = typeof(DialogueObserverManager),
             SubjectType = typeof(PlayerActionRelayer)
 
-        }, this);
+        }, this));
 
     }
 

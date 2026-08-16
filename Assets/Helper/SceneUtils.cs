@@ -88,6 +88,13 @@ public class SceneUtils: MonoBehaviorScene
         StartCoroutine(Delegator.NotifyObservers(context, subject));
     }
 
+    public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<T> subject)
+    {
+        yield return new WaitUntil(() => Delegator != null);
+
+        StartCoroutine(Delegator.NotifyObservers(context, subject));
+    }
+
     public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject)
     {
         yield return new WaitUntil(() => Delegator != null);

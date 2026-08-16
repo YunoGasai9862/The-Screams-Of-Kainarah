@@ -45,8 +45,6 @@ public class AWSPolllyManagement : MonoBehaviorScene, IAWSPolly, INotify<Firebas
 
     private AsyncCoroutine AsyncCoroutine { get; set; }
 
-    private Delegator Delegator { get; set; }
-
     private SceneUtils SceneUtils { get; set; }
 
     [SerializeField]
@@ -67,11 +65,9 @@ public class AWSPolllyManagement : MonoBehaviorScene, IAWSPolly, INotify<Firebas
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        Delegator = SceneUtils.GetDelegator();
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<FirebaseStorageManager>(gameObject, typeof(FirebaseStorageManager), typeof(AWSPolllyManagement)), this));
 
-        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<FirebaseStorageManager>(gameObject, typeof(FirebaseStorageManager), typeof(AWSPolllyManagement)), this);
-
-        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(AWSPolllyManagement)), this);
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(AWSPolllyManagement)), this));
     }
 
 
@@ -212,7 +208,7 @@ public class AWSPolllyManagement : MonoBehaviorScene, IAWSPolly, INotify<Firebas
 
     public IEnumerator<IAWSPolly> Request()
     {
-        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<IAWSPolly>
+        StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<IAWSPolly>
         {
             Data = this,
             EntityType = typeof(AWSPolllyManagement)

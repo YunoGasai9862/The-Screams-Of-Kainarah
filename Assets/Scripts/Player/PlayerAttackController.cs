@@ -24,8 +24,6 @@ public class PlayerAttackController : MonoBehaviorScene, IReceiverEnhancedAsync<
     private bool PowerUpBarFilled { get; set; } = false;
     private PlayerAttackStateMachine PlayerAttackStateMachine { get; set; }
 
-    private Delegator Delegator { get; set; }
-
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
     private PlayerBoostAttackEvent PlayerBoostAttackEvent { get; set; }
@@ -62,13 +60,11 @@ public class PlayerAttackController : MonoBehaviorScene, IReceiverEnhancedAsync<
 
         SceneUtils = await(await GetBaseScene()).GetSceneUtilsAsync();
 
-        Delegator = SceneUtils.GetDelegator();
-
         PlayerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>();
 
         PlayerBoostAttackEvent = await SceneUtils.GetCustomEvent<PlayerBoostAttackEvent>();
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<GameStateBundle>>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerAttackController),
@@ -76,7 +72,7 @@ public class PlayerAttackController : MonoBehaviorScene, IReceiverEnhancedAsync<
 
         }, this));
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<PlayerStateBundle>>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<PlayerStateBundle>>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerAttackController),
@@ -84,7 +80,7 @@ public class PlayerAttackController : MonoBehaviorScene, IReceiverEnhancedAsync<
         }, this));
 
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerAttackController),

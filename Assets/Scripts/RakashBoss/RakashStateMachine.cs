@@ -22,8 +22,6 @@ public class RakashStateMachine : MonoBehaviorScene, INotify<GenericStateBundle<
 
     private Player Player { get; set; }
 
-    private Delegator Delegator { get; set; }
-
     private RakashControllerMovement RakashControllerMovement { get; set; }
 
     private RakashBattleController RakashBattleController { get; set; }
@@ -34,8 +32,6 @@ public class RakashStateMachine : MonoBehaviorScene, INotify<GenericStateBundle<
 
     private Command<BattleActionDelegatePackage, Task<ActionExecuted>> RakashBattleCommandController { get; set; }
 
-    private Animator Animator { get; set; }
-
     private SceneUtils SceneUtils { get; set; }
 
     [SerializeField]
@@ -44,10 +40,6 @@ public class RakashStateMachine : MonoBehaviorScene, INotify<GenericStateBundle<
     private async void Awake()
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
-
-        Delegator = SceneUtils.GetDelegator();
-
-        Animator = GetComponent<Animator>();
 
         RakashControllerMovement = GetComponent<RakashControllerMovement>();
 
@@ -60,7 +52,7 @@ public class RakashStateMachine : MonoBehaviorScene, INotify<GenericStateBundle<
 
     private void Start()
     {
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<GameStateBundle>>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {
             Instance = gameObject,
             EntityType = typeof(RakashStateMachine),
@@ -68,7 +60,7 @@ public class RakashStateMachine : MonoBehaviorScene, INotify<GenericStateBundle<
 
         }, this));
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<IEntityTransform>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
         {
             Instance = gameObject,
             EntityType = typeof(RakashStateMachine),
@@ -76,7 +68,7 @@ public class RakashStateMachine : MonoBehaviorScene, INotify<GenericStateBundle<
 
         }, this));
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<EnemyHittableManager>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<EnemyHittableManager>()
         {
             SubjectType = typeof(EnemyHittableManager),
             EntityType = typeof(RakashStateMachine),
