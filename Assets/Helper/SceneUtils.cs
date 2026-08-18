@@ -81,6 +81,11 @@ public class SceneUtils: MonoBehaviorScene
         Delegator.NotifySubjectWrapper(context, observer);
     }
 
+    public void NotifySubject<T>(ObserverContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer)
+    {
+        Delegator.NotifySubjectWrapper(context, observer);
+    }
+
     public IEnumerator NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.Base.IRequest<T> subject)
     {
         yield return new WaitUntil(() => Delegator != null);
@@ -107,6 +112,18 @@ public class SceneUtils: MonoBehaviorScene
         yield return new WaitUntil(() => Delegator != null);
 
        Delegator.NotifyObserversWrapper(context, subject);
+    }
+
+    public IEnumerator NotifyObserversWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject)
+    {
+        yield return new WaitUntil(() => Delegator != null);
+
+        Delegator.NotifyObserversWrapper(context, subject);
+    }
+
+    public void NotifyObservers<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject)
+    {
+        Delegator.NotifyObserversWrapper(context, subject);
     }
 
     public IEnumerator NotifyObserverWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer)

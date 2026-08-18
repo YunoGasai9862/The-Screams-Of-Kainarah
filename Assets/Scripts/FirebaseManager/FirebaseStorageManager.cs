@@ -14,7 +14,7 @@ using UnityEngine;
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(FirebaseStorageManager), ContextType = typeof(FirebaseStorageManager))]
 public class FirebaseStorageManager : MonoBehaviorScene, IFirebaseStorage, IRequest<FirebaseStorageManager>
 {
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
 
     FirebaseStorage FirebaseStorage { get; set; }
     StorageReference MediaStorageReference { get; set; }
@@ -27,7 +27,7 @@ public class FirebaseStorageManager : MonoBehaviorScene, IFirebaseStorage, IRequ
 
     private async void Start()
     {
-        Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
         InitializeFirebaseStorage();
 
@@ -130,6 +130,6 @@ public class FirebaseStorageManager : MonoBehaviorScene, IFirebaseStorage, IRequ
 
     public IEnumerator Request()
     {
-       yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<FirebaseStorageManager> { EntityType = typeof(FirebaseStorageManager), Data = this}, this));
+       yield return StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<FirebaseStorageManager> { EntityType = typeof(FirebaseStorageManager), Data = this}, this));
     }
 }

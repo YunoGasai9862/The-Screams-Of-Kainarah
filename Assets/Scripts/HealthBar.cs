@@ -14,20 +14,20 @@ public class HealthBar : MonoBehaviorScene, INotify<IEntityHealth>
     [SerializeField] Slider slide;
     [SerializeField] Gradient gr;
 
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
 
     private Health PlayerHealth { get; set; }
 
     private async void Start()
     {
-        Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<IEntityHealth>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<IEntityHealth>()
         {
             Instance = gameObject,
             EntityType = typeof(HealthBar),
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, this);
+        }, this));
 
         Fill.color = gr.Evaluate(slide.value);
     }

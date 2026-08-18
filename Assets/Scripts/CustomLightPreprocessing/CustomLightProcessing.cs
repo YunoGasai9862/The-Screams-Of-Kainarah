@@ -17,19 +17,15 @@ public class CustomLightProcessing : MonoBehaviorScene, ICustomLightPreprocessin
     public float maxIntensity;
     public float minIntensity;
 
-    private Delegator Delegator { get; set; }
-
     private SceneUtils SceneUtils { get; set; }
 
     private async void Start()
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        Delegator = SceneUtils.GetDelegator();
-
-        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(CustomLightProcessing)), this);
-        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<LightPackage>(gameObject, typeof(CandleLightPackageGenerator), typeof(CustomLightProcessing)), this);
-        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<LightPackage>(gameObject, typeof(CelestialBodiesLightPackageGenerator), typeof(CustomLightProcessing)), this);
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(CustomLightProcessing)), this));
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<LightPackage>(gameObject, typeof(CandleLightPackageGenerator), typeof(CustomLightProcessing)), this));
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<LightPackage>(gameObject, typeof(CelestialBodiesLightPackageGenerator), typeof(CustomLightProcessing)), this));
     }
 
     public IEnumerator ExecuteLightningLogic(LightPackage lightPackage)

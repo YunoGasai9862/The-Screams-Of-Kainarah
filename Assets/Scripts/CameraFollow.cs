@@ -12,7 +12,7 @@ public class CameraFollow : MonoBehaviorScene, INotify<bool>, INotify<IEntityTra
     [Header("Camera Follow Speed")]
     [SerializeField] float _cameraFollowSpeed;
 
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
 
     private bool ShouldFollowPlayer { get; set; }
 
@@ -20,21 +20,21 @@ public class CameraFollow : MonoBehaviorScene, INotify<bool>, INotify<IEntityTra
 
     private async void Start()
     {
-        Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<bool>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<bool>()
         {
             Instance = gameObject,
             EntityType = typeof(CameraFollow),
             SubjectType = typeof(CameraShake)
-        }, this);
+        }, this));
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
         {
             Instance = gameObject,
             EntityType = typeof(CameraFollow),
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, this);
+        }, this));
     }
 
     void Update()

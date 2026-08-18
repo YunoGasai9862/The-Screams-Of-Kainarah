@@ -17,20 +17,20 @@ public class PlayerAttackStateMachineReset : StateMachineScene, INotify<EntityPo
 
     private EntityPoolManager EntityPoolManager { get; set; }
 
-    private Delegator Delegator { get; set; }
-
     private ResetBundle CurrentResetBundle { get; set; }
+
+    private SceneUtils SceneUtils { get; set; }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public async void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (Delegator == null)
+        if (SceneUtils == null)
         {
-            Delegator = (await(await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+            SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
-            Debug.Log($"Delegator in the PlayerAttackStateMachineReset: {Delegator}");
+            Debug.Log($"SceneUtils in the PlayerAttackStateMachineReset: {SceneUtils}");
 
-            Delegator.NotifySubjectWrapper(new ObserverContext<EntityPoolManager>()
+            SceneUtils.NotifySubject(new ObserverContext<EntityPoolManager>()
             {
                 EntityType = typeof(PlayerActionRelayer),
                 SubjectType = typeof(EntityPoolManager)
@@ -66,7 +66,7 @@ public class PlayerAttackStateMachineReset : StateMachineScene, INotify<EntityPo
                 }     
         };
 
-        Delegator.NotifyObserversWrapper(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, EntityType = typeof(PlayerAttackStateMachineReset) }, this);
+        SceneUtils.NotifyObservers(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, EntityType = typeof(PlayerAttackStateMachineReset) }, this);
     }
 
 
@@ -81,7 +81,7 @@ public class PlayerAttackStateMachineReset : StateMachineScene, INotify<EntityPo
 
     public IEnumerator Request()
     {
-        Delegator.NotifyObserversWrapper(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, EntityType = typeof(PlayerAttackStateMachineReset) }, this);
+        SceneUtils.NotifyObservers(new SubjectContext<ResetBundle> { Data = CurrentResetBundle, EntityType = typeof(PlayerAttackStateMachineReset) }, this);
 
         yield return null;
     }

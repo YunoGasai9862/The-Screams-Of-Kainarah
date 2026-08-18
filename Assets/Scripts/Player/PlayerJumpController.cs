@@ -39,8 +39,6 @@ public class PlayerJumpController : MonoBehaviorScene, IReceiverEnhancedAsync<Pl
 
     public float TimeEclipsed { get; set; }
 
-    private Delegator Delegator { get; set; }
-
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
     private GenericStateBundle<PlayerStateBundle> PlayerStateBundle { get; set; } = new GenericStateBundle<PlayerStateBundle> { StateBundle = new PlayerStateBundle() };
@@ -53,22 +51,20 @@ public class PlayerJumpController : MonoBehaviorScene, IReceiverEnhancedAsync<Pl
 
         _movementHelperClass = new MovementHelperClass();
 
-        Delegator = SceneUtils.GetDelegator();
-
         PlayerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>();
 
         _animationReceiver = await SceneUtils.FindReceiver<PlayerAnimationController, IReceiverEnhancedAsync<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>>();
 
         _animationCommand = new CommandAsyncEnhanced<PlayerAnimationController, ControllerPackage<AnimationExecutionState, PlayerStateBundle>>(_animationReceiver);
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<PlayerStateBundle>>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<PlayerStateBundle>>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerJumpController),
             SubjectType = typeof(PlayerStateConsumer)
         }, this));
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerJumpController),
@@ -86,7 +82,7 @@ public class PlayerJumpController : MonoBehaviorScene, IReceiverEnhancedAsync<Pl
 
             CharacterVelocity.VelocityY = JumpSpeed * JUMPING_SPEED_RATIO;
 
-            Delegator.NotifyObserversWrapper(new SubjectContext<CharacterVelocity> { Data = CharacterVelocity, EntityType = typeof(PlayerJumpController) }, this);
+            StartCoroutine(SceneUtils.NotifyObserversWrapper(new SubjectContext<CharacterVelocity> { Data = CharacterVelocity, EntityType = typeof(PlayerJumpController) }, this));
 
             await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.LEAP, Value = PlayerStateBundle.StateBundle});
         }
@@ -101,7 +97,7 @@ public class PlayerJumpController : MonoBehaviorScene, IReceiverEnhancedAsync<Pl
 
             CharacterVelocity.VelocityY = (-1) * JumpSpeed * FALLING_SPPED_RATIO;
 
-            Delegator.NotifyObserversWrapper(new SubjectContext<CharacterVelocity> { Data = CharacterVelocity, EntityType = typeof(PlayerJumpController) }, this);
+            StartCoroutine(SceneUtils.NotifyObserversWrapper(new SubjectContext<CharacterVelocity> { Data = CharacterVelocity, EntityType = typeof(PlayerJumpController) }, this));
 
             await _animationCommand.Execute(new ControllerPackage<AnimationExecutionState, PlayerStateBundle>() { ExecutionState = AnimationExecutionState.LEAP, Value = PlayerStateBundle.StateBundle });
         }
@@ -135,7 +131,7 @@ public class PlayerJumpController : MonoBehaviorScene, IReceiverEnhancedAsync<Pl
     {
         CharacterVelocity.VelocityY = (-1) * JumpSpeed * FALLING_SPPED_RATIO;
 
-        Delegator.NotifyObserversWrapper(new SubjectContext<CharacterVelocity> { Data = CharacterVelocity, EntityType = typeof(PlayerJumpController) }, this);
+        StartCoroutine(SceneUtils.NotifyObserversWrapper(new SubjectContext<CharacterVelocity> { Data = CharacterVelocity, EntityType = typeof(PlayerJumpController) }, this));
 
         return new ActionExecuted() { Result = false };
     }
@@ -156,7 +152,7 @@ public class PlayerJumpController : MonoBehaviorScene, IReceiverEnhancedAsync<Pl
 
     public IEnumerator Request()
     {
-       StartCoroutine(Delegator.NotifyObservers(new SubjectContext<CharacterVelocity> { Data = CharacterVelocity, EntityType = typeof(PlayerJumpController) }, this));
+       StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<CharacterVelocity> { Data = CharacterVelocity, EntityType = typeof(PlayerJumpController) }, this));
 
         yield return null;
     }

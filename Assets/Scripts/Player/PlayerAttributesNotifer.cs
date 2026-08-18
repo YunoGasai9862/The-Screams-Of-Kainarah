@@ -13,7 +13,7 @@ public class PlayerAttributesNotifier: MonoBehaviorScene, IRequest<Player>, IReq
 
     private Health PlayerHealth { get; set; }
 
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
 
     private async void OnEnable()
     {
@@ -41,19 +41,19 @@ public class PlayerAttributesNotifier: MonoBehaviorScene, IRequest<Player>, IReq
             Health = PlayerHealth,
         };
 
-       Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
     }
 
     IEnumerator<Player> IRequest<Player>.Request()
     {
-        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<Player> { EntityType = typeof(PlayerAttributesNotifier), Data = Player }, this));
+        StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<Player> { EntityType = typeof(PlayerAttributesNotifier), Data = Player }, this));
 
         yield return null;
     }
 
     IEnumerator<IEntityAnimator> IRequest<IEntityAnimator>.Request()
     {
-        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<IEntityTransform> { EntityType = typeof(PlayerAttributesNotifier), Data = (IEntityTransform) Player.Transform }, (Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<IEntityTransform>) this));
+        StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<IEntityTransform> { EntityType = typeof(PlayerAttributesNotifier), Data = (IEntityTransform) Player.Transform }, (Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<IEntityTransform>) this));
 
         yield return null;
     }

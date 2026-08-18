@@ -12,11 +12,11 @@ using UnityEngine;
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EnemyHittableManager), ContextType = typeof(EnemyHittableManager))]
 public class EnemyHittableManager : MonoBehaviorScene, IRequest<EnemyHittableManager>
 {
-   private Delegator Delegator { get; set; }
+   private SceneUtils SceneUtils { get; set; }
 
     private async void Start()
     {
-       Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
     }
 
     public Task<bool> IsEntityAnAttackObject(Collider2D collider, EnemyHittableObjects objects)
@@ -41,7 +41,7 @@ public class EnemyHittableManager : MonoBehaviorScene, IRequest<EnemyHittableMan
 
     public IEnumerator Request()
     {
-        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<EnemyHittableManager>()
+        yield return StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<EnemyHittableManager>()
         {
             EntityType = typeof(EnemyHittableManager),
             Data = this
