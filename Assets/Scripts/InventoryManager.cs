@@ -11,8 +11,6 @@ public class InventoryManager : MonoBehaviorScene, IRequest<bool>
     [SerializeField] InventoryPouchClickEvent inventoryPouchClickEvent;
     [SerializeField] InventoryPouchPanelEvent inventoryPouchPanelEvent;
 
-    private Delegator Delegator { get; set; }
-
     private SceneUtils SceneUtils { get; set; }
 
     private async void Start()
@@ -21,8 +19,6 @@ public class InventoryManager : MonoBehaviorScene, IRequest<bool>
         await inventoryPouchPanelEvent.AddListener(IsPouchPanelActive);
 
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
-
-        Delegator = SceneUtils.GetDelegator();
     }
 
     public bool IsPouchOpen { get; set; } = false;
@@ -36,6 +32,6 @@ public class InventoryManager : MonoBehaviorScene, IRequest<bool>
     {
         IsPouchOpen = isActive;
 
-       Delegator.NotifyObserversWrapper(new SubjectContext<bool>() { Data = isActive, EntityType = typeof(InventoryManager) }, this);
+        StartCoroutine(SceneUtils.NotifyObserversWrapper(new SubjectContext<bool>() { Data = isActive, EntityType = typeof(InventoryManager) }, this));
     }
 }

@@ -10,18 +10,18 @@ public class Effects: MonoBehaviorScene, INotify<Player>
 {
     private MaterialFader MaterialFader { get; set; } = new MaterialFader();
 
-    public Delegator Delegator { get; set; }
+    public SceneUtils SceneUtils { get; set; }
 
     private async void Awake()
     {
-        Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<Player>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
             EntityType = typeof(Effects),
             SubjectType = typeof(PlayerAttributesNotifier),
-        }, this);
+        }, this));
     }
 
     public IEnumerator Notify(Player value)

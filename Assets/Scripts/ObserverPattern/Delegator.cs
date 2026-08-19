@@ -56,6 +56,11 @@ public class Delegator : MonoBehaviorScene, IDelegator
         StartCoroutine(NotifyObserver<T>(context, subject, observer, maxRetries, sleepTimeInMilliSeconds, optional));
     }
 
+    public void NotifyObserverWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV4.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
+    {
+        StartCoroutine(NotifyObserver<T>(context, subject, observer, maxRetries, sleepTimeInMilliSeconds, optional));
+    }
+
     public IEnumerator NotifyObserver<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer, int maxRetries = 3, int sleepTimeInMilliSeconds = 3000, params object[] optional)
     {
         yield return null;

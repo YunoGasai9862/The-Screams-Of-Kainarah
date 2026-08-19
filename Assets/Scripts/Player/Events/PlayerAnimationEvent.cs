@@ -17,8 +17,6 @@ public class PlayerAnimationEvent : MonoBehaviorScene, INotify<EntityPoolManager
 
     private EntityPoolManager EntityPoolManager { get; set; }
 
-    private Delegator Delegator { get; set; }
-
     private List<GameObject> PooledIceTrails { get; set; } = new List<GameObject>();
 
     private SceneUtils SceneUtils { get; set; }
@@ -27,11 +25,9 @@ public class PlayerAnimationEvent : MonoBehaviorScene, INotify<EntityPoolManager
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        Delegator = SceneUtils.GetDelegator();
-
         PlayerBoostAttackEvent = await SceneUtils.GetCustomEvent<PlayerBoostAttackEvent>();
 
-        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<EntityPoolManager>(gameObject, typeof(EntityPoolManager), typeof(PlayerAnimationEvent)), this);
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<EntityPoolManager>(gameObject, typeof(EntityPoolManager), typeof(PlayerAnimationEvent)), this));
     }
 
     public void IceTrailAnimation()

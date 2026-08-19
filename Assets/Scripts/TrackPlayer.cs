@@ -11,16 +11,16 @@ public class TrackPlayer : MonoBehaviorScene, INotify<IEntityTransform>
 {
     private Transform PlayerTransform { get; set; }
 
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
 
     private async void Awake()
     {
-       Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
     }
 
     private void Start()
     {
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<IEntityTransform>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
         {
             Instance = gameObject,
             EntityType = typeof(TrackPlayer),

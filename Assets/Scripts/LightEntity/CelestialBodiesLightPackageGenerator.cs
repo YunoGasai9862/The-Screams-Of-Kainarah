@@ -4,7 +4,6 @@ using Assets.Scripts.Interfaces.Mediator.EnhancedV1;
 using Assets.Scripts.BaseScene;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -14,8 +13,6 @@ using UnityEngine.Rendering.Universal;
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CelestialBodiesLightPackageGenerator), SubjectType = typeof(CelestialBodyLightning), ContextType = typeof(ILightPreprocess))]
 public class CelestialBodiesLightPackageGenerator : MonoBehaviorScene, INotify<ILightPreprocess>, Assets.Scripts.Interfaces.Mediator.EnhancedV4.IRequest<LightPackage>, ILightPackageGenerator
 {
-    private Delegator Delegator { get; set; }
-
     [SerializeField]
     LightProperties lightProperties;
     [SerializeField]
@@ -50,14 +47,12 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviorScene, INotify<I
 
         await SetupCancellationTokens();
 
-        Delegator = SceneUtils.GetDelegator();
-
-        Delegator.NotifySubjectWrapper(new ObserverContext<ILightPreprocess>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<ILightPreprocess>()
         {
             Instance = gameObject,
             EntityType = typeof(CelestialBodiesLightPackageGenerator),
             SubjectType = typeof(CelestialBodyLightning)
-        }, this);
+        }, this));
     }
 
 
@@ -90,7 +85,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviorScene, INotify<I
         {
             lightPackage.LightSemaphore.WaitAsync();
 
-            StartCoroutine(Delegator.NotifyObserver(new SubjectContext<LightPackage>()
+            StartCoroutine(SceneUtils.NotifyObserverWrapper(new SubjectContext<LightPackage>()
             {
                 Data = lightPackage,
                 EntityType = typeof(CelestialBodiesLightPackageGenerator)
@@ -103,11 +98,7 @@ public class CelestialBodiesLightPackageGenerator : MonoBehaviorScene, INotify<I
 
     private bool IsReadyToCustomLightningEntity()
     {
-        return !SceneUtils.AreObjectsNull(new List<UnityEngine.Object>
-        {
-            Delegator
-        })
-            && CelestialLightningLightPreprocess != null;
+        return CelestialLightningLightPreprocess != null;
     }
 
     public IEnumerator Request(INotify<LightPackage> obsever)

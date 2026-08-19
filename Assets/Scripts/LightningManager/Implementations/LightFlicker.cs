@@ -9,11 +9,11 @@ using UnityEngine;
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(LightFlicker), ContextType = typeof(ILightPreprocess))]
 public class LightFlicker : MonoBehaviorScene, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<ILightPreprocess>, ILightPreprocess
 {
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
 
     private async void Start()
     {
-        Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
     }
 
     public async IAsyncEnumerator<WaitForSeconds> GenerateCustomLighting(LightPackage lightPackage, float delayBetweenExecution = 0)
@@ -41,6 +41,6 @@ public class LightFlicker : MonoBehaviorScene, Assets.Scripts.Interfaces.Mediato
 
     public IEnumerator Request()
     {
-        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<ILightPreprocess>() { Data = this, EntityType = typeof(ILightPreprocess) }, this));
+        yield return StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<ILightPreprocess>() { Data = this, EntityType = typeof(ILightPreprocess) }, this));
     }
 }

@@ -31,8 +31,6 @@ public class GameStateManager : Assets.Scripts.BaseScene.MonoBehaviorScene, IGam
 
     public List<IGameStateHandler> GameStateHandlerObjects { get; set; } = new List<IGameStateHandler>();
 
-    private Delegator Delegator { get; set; }
-
     private SceneRegistry SceneRegistry { get; set; }
 
     private SceneUtils SceneUtils { get; set; }
@@ -58,8 +56,6 @@ public class GameStateManager : Assets.Scripts.BaseScene.MonoBehaviorScene, IGam
         }
         _mainCamera = Camera.main;
         _mainCameraOldPosition = _mainCamera.transform.position;
-
-        Delegator = SceneUtils.GetDelegator();
 
         /*
         _mainCamera.transform.position = new Vector3(_mainCamera.transform.position.x, _mainCamera.transform.position.y, -100);
@@ -185,7 +181,7 @@ public class GameStateManager : Assets.Scripts.BaseScene.MonoBehaviorScene, IGam
 
     public IEnumerator Request()
     {
-        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<GameStateManager>() { Data = this, EntityType = typeof(GameStateManager) }, this));
+        yield return StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<GameStateManager>() { Data = this, EntityType = typeof(GameStateManager) }, this));
     }
 
     public Task<IGameStateHandler> Request(INotify<IGameStateHandler> obsever)

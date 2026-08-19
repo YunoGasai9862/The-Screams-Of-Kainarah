@@ -17,18 +17,18 @@ public class MusicManager : MonoBehaviorScene, INotify<bool>
 
     private bool shouldPlayPickUpAudio;
 
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
 
     async void Start()
     {
-        Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<bool>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<bool>()
         {
             Instance = gameObject,
             EntityType = typeof(MusicManager),
             SubjectType = typeof(PlayerActionRelayer),
-        }, this);
+        }, this));
 
         _gameState = GlobalEnums.GameMusicState.BACKGROUNDMUSIC;
         ChannelMusic(_gameState);

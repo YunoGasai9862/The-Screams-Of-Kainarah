@@ -16,27 +16,27 @@ public class MoonMovement : MonoBehaviorScene, INotify<IEntityTransform>
     [SerializeField] float XOffset, YOffset, ZOffset;
     [SerializeField] float distanceBetweenPlayerAndMoon;
 
-    private Delegator Delegator { get; set; }
-
     private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
     private CancellationTokenSource cancellationTokenSource;
     private CancellationToken cancellationToken;
 
     private Transform PlayerTransform { get; set; }
 
+    private SceneUtils SceneUtils { get; set; }
+
     private async void Start()
     {
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
 
-       Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
         {
             Instance = gameObject,
             EntityType = typeof(MoonMovement),
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, this);
+        }, this));
     }
     async void Update()
     {

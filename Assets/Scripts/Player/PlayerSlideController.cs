@@ -21,8 +21,6 @@ public class PlayerSlideController : MonoBehaviorScene, IReceiverEnhancedAsync<P
 
     [SerializeField] float slidingSpeed;
 
-    private Delegator Delegator { get; set; }
-
     private PlayerStateEvent PlayerStateEvent { get; set; }
 
     private AnimationDetails AnimationDetails { get; set; }
@@ -48,23 +46,20 @@ public class PlayerSlideController : MonoBehaviorScene, IReceiverEnhancedAsync<P
 
     private SceneUtils SceneUtils { get; set; }
 
-
     async void Start()
     {
         SceneUtils = await(await GetBaseScene()).GetSceneUtilsAsync();
 
-        Delegator = SceneUtils.GetDelegator();
-
         PlayerStateEvent = await SceneUtils.GetCustomEvent<PlayerStateEvent>();
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<AnimationDetails>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<AnimationDetails>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerSlideController),
             SubjectType = typeof(PlayerAnimationController),
         }, this));
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<Player>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<Player>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerSlideController),
@@ -88,7 +83,7 @@ public class PlayerSlideController : MonoBehaviorScene, IReceiverEnhancedAsync<P
 
             //we need to also notify here intentionally so we can pass the latest updated speed
             //TODO allow the delegator to batch notify
-            Delegator.NotifyObserversWrapper(new SubjectContext<CharacterVelocity>() { EntityType = typeof(PlayerSlideController), Data = CharacterVelocity }, this);
+            StartCoroutine(SceneUtils.NotifyObserversWrapper(new SubjectContext<CharacterVelocity>() { EntityType = typeof(PlayerSlideController), Data = CharacterVelocity }, this));
 
             await PlayerStateEvent.Invoke(PlayerStateBundle);
 
@@ -128,7 +123,7 @@ public class PlayerSlideController : MonoBehaviorScene, IReceiverEnhancedAsync<P
 
         CharacterVelocity.VelocityX = 0f;
 
-        Delegator.NotifyObserversWrapper(new SubjectContext<CharacterVelocity>() { EntityType = typeof(PlayerSlideController), Data = CharacterVelocity }, this);
+        StartCoroutine(SceneUtils.NotifyObserversWrapper(new SubjectContext<CharacterVelocity>() { EntityType = typeof(PlayerSlideController), Data = CharacterVelocity }, this));
 
         await PlayerStateEvent.Invoke(PlayerStateBundle);
 
@@ -158,7 +153,7 @@ public class PlayerSlideController : MonoBehaviorScene, IReceiverEnhancedAsync<P
 
     public IEnumerator<CharacterVelocity> Request()
     {
-       StartCoroutine(Delegator.NotifyObservers(new SubjectContext<CharacterVelocity>() { EntityType = typeof(PlayerSlideController), Data = CharacterVelocity }, this));
+       StartCoroutine(SceneUtils.NotifyObserversWrapper(new SubjectContext<CharacterVelocity>() { EntityType = typeof(PlayerSlideController), Data = CharacterVelocity }, this));
 
         yield return null;
     }
