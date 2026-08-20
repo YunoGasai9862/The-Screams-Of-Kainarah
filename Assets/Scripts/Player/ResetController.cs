@@ -14,8 +14,6 @@ public class ResetController : MonoBehaviorScene, INotify<ResetBundle>
 
     private Animator Animator { get; set; }
 
-    private Delegator Delegator { get; set; }
-
     private SceneUtils SceneUtils { get; set; }
 
     private async void Start()
@@ -24,9 +22,7 @@ public class ResetController : MonoBehaviorScene, INotify<ResetBundle>
 
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        Delegator = SceneUtils.GetDelegator();
-
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<ResetBundle>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<ResetBundle>()
         {
             Instance = gameObject,
             EntityType = typeof(ResetController),

@@ -15,20 +15,20 @@ public class OpenWares : MonoBehaviorScene, INotify<GenericStateBundle<GameState
     [SerializeField] GameStateEvent gameStateEvent;
     private GenericStateBundle<GameStateBundle> GameStateBundle { get; set; } = new GenericStateBundle<GameStateBundle>();
 
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
 
     private bool IsInventoryOpen { get; set; }
 
     private async void Start()
     {
-        Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {
             Instance = gameObject,
             EntityType = typeof(OpenWares),
             SubjectType = typeof(GameStateConsumer)
-        }, this);
+        }, this));
     }
 
     private void OnMouseDown()

@@ -7,7 +7,7 @@ using Assets.Scripts.GameState.Models;
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(RakashManager), ContextType = typeof(Health))]
 public class RakashManager : AbstractEntity, IGameStateHandler, IRequest<Health>, Assets.Scripts.Interfaces.Mediator.Base.INotify<IGameStateHandler>
 {
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
 
     public override Health Health { get; set; }
 
@@ -23,7 +23,7 @@ public class RakashManager : AbstractEntity, IGameStateHandler, IRequest<Health>
 
     private async void Start()
     {
-       Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
     }
 
     public override void GameStateHandler(SceneData data)
@@ -33,7 +33,7 @@ public class RakashManager : AbstractEntity, IGameStateHandler, IRequest<Health>
 
     public IEnumerator Request()
     {
-        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<Health>()
+        StartCoroutine(SceneUtils.NotifyObservers<Health>(new SubjectContext<Health>()
         {
             EntityType = typeof(RakashManager),
             Data = Health
