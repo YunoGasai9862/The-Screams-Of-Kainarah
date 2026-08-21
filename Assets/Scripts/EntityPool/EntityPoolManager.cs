@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System.Threading.Tasks;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(EntityPoolManager), ContextType = typeof(EntityPoolManager))]
 public class EntityPoolManager: MonoBehaviorScene, IDelegate, IEntityPoolManager, IRequest<EntityPoolManager>
@@ -14,9 +15,9 @@ public class EntityPoolManager: MonoBehaviorScene, IDelegate, IEntityPoolManager
 
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
 
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
 
-    private void Start()
+    private async Task Start()
     {
         InvokeCustomMethod += SetEntityPoolManagerDelegator;
     }
@@ -85,11 +86,11 @@ public class EntityPoolManager: MonoBehaviorScene, IDelegate, IEntityPoolManager
 
     private async void SetEntityPoolManagerDelegator()
     {
-       Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
     }
 
     public IEnumerator Request()
     {
-       yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<EntityPoolManager>() { Data = this, EntityType = typeof(EntityPoolManager)}, this));
+       yield return StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<EntityPoolManager>() { Data = this, EntityType = typeof(EntityPoolManager)}, this));
     }
 }

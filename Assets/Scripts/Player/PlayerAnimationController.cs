@@ -17,8 +17,6 @@ public class PlayerAnimationController : MonoBehaviorScene, IRequest<AnimationDe
     private GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState> EmitMovementAnimationStateBundle { get; set; } = new GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>()
     { StateBundle = new EmitAnimationStateBundle<bool>() { PreviousAnimation = new EmitAnimationStateBundle<bool>.PreviousAnimationInfo() } };
 
-    private Delegator Delegator { get; set; }
-
     private Animator PlayerAnimator { get; set; }
 
     private PlayerStateBundle InternalPlayerStateBundle { get; set; } = new PlayerStateBundle();
@@ -29,23 +27,21 @@ public class PlayerAnimationController : MonoBehaviorScene, IRequest<AnimationDe
     {
         SceneUtils = await(await GetBaseScene()).GetSceneUtilsAsync();
 
-        Delegator = SceneUtils.GetDelegator();
-
-        if (Delegator == null)
+        if (SceneUtils == null)
         {
-            throw new DelegatorNotFoundException("Delegator not found!!");
+            throw new DelegatorNotFoundException("SceneUtils not found!!");
         }
 
         AnimationStateMachine = new AnimationStateMachine(SceneUtils);
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<IEntityAnimator>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<IEntityAnimator>()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerAnimationController),
             SubjectType = typeof(PlayerAttributesNotifier)
         }, this));
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>> ()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<EmitAnimationStateBundle<bool>, MovementState>> ()
         {
             Instance = gameObject,
             EntityType = typeof(PlayerAnimationController),
@@ -160,7 +156,7 @@ public class PlayerAnimationController : MonoBehaviorScene, IRequest<AnimationDe
     {
         yield return new WaitUntil(() => PlayerAnimator != null);
 
-        yield return StartCoroutine(Delegator.NotifyObservers(new SubjectContext<AnimationDetails>()
+        yield return StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<AnimationDetails>()
         {
             Data = new AnimationDetails()
             {

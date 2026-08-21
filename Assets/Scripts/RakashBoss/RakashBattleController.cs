@@ -17,8 +17,6 @@ public class RakashBattleController : MonoBehaviorScene, INotify<Health>, IRecei
 
     private List<RakashAttack> BlockingAttacks { get; set; }
 
-    private Delegator Delegator { get; set; }
-
     private const float HEALTH_DEPLETED_MARK = 0;
 
     private const float DESTROY_DELAY = 1.0f;
@@ -33,8 +31,6 @@ public class RakashBattleController : MonoBehaviorScene, INotify<Health>, IRecei
 
         SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
-       Delegator = SceneUtils.GetDelegator();
-
         BlockingAttacks = new List<RakashAttack>()
         {
            RakashAttack.ATTACK,
@@ -42,13 +38,13 @@ public class RakashBattleController : MonoBehaviorScene, INotify<Health>, IRecei
            RakashAttack.ATTACK_02
         };
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<Health>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<Health>()
         {
             Instance = gameObject,
             EntityType = typeof(RakashBattleController),
             SubjectType = typeof(RakashManager)
 
-        }, this);
+        }, this));
     }
 
     private IEnumerator Attack(AttackAnimationPackage value)

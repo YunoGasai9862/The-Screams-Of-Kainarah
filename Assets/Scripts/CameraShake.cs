@@ -26,7 +26,6 @@ public class CameraShake : MonoBehaviorScene, Assets.Scripts.Interfaces.Mediator
     [Header("Delay Between Each Shake")]
     [SerializeField] float delay; //0.05f (old)
 
-    private Delegator Delegator { get; set; }
     private Vector3 CameraOldPosition { get; set; }
 
     private AsyncCoroutine AsyncCoroutine { get; set; }
@@ -39,11 +38,10 @@ public class CameraShake : MonoBehaviorScene, Assets.Scripts.Interfaces.Mediator
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-        Delegator = SceneUtils.GetDelegator();
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(CameraShake)), this));
 
-        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<AsyncCoroutine>(gameObject, typeof(AsyncCoroutine), typeof(CameraShake)), this);
-
-        Delegator.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<GenericStateBundle<EmitAnimationStateBundle<bool>, AttackState>>(gameObject, typeof(EmitAttackAnimationStateConsumer), typeof(CameraShake)), this);
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(SceneUtils.BuildNotificationContext<GenericStateBundle<EmitAnimationStateBundle<bool>, 
+            AttackState>>(gameObject, typeof(EmitAttackAnimationStateConsumer), typeof(CameraShake)), this));
     }
 
     private async IAsyncEnumerator<WaitForSeconds> ShakeCamera(Camera _mainCamera, float timeForCameraShake)
@@ -52,7 +50,7 @@ public class CameraShake : MonoBehaviorScene, Assets.Scripts.Interfaces.Mediator
 
         CameraOldPosition = _mainCamera.transform.position;
 
-        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<bool>() { Data = true, EntityType = typeof(CameraShake) }, this));
+        StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<bool>() { Data = true, EntityType = typeof(CameraShake) }, this));
 
         while (timeSpent < timeForCameraShake)
         {
@@ -65,7 +63,7 @@ public class CameraShake : MonoBehaviorScene, Assets.Scripts.Interfaces.Mediator
 
         mainCamera.transform.position = CameraOldPosition;
 
-        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<bool>() { Data = true, EntityType = typeof(CameraShake) }, this));
+        StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<bool>() { Data = true, EntityType = typeof(CameraShake) }, this));
 
         yield return new WaitForSeconds(0f);
     }

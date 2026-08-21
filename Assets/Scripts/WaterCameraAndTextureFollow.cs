@@ -13,20 +13,20 @@ public class WaterCameraAndTextureFollow : MonoBehaviorScene, INotify<IEntityTra
     public float WaterCamerSpeed;
     public float offsetX;
 
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
 
     private Transform PlayerTransform { get; set; }
 
     private async void Start()
     {
-       Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
-        Delegator.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<IEntityTransform>()
         {
             Instance = gameObject,
             EntityType = typeof(WaterCameraAndTextureFollow),
             SubjectType = typeof(PlayerAttributesNotifier)
-        }, this);
+        }, this));
     }
 
     void Update()

@@ -12,7 +12,7 @@ using UnityEngine;
 [Subject(AssetType = Asset.SCRIPTABLE_OBJECT, EntityType = typeof(PickableItems), ContextType = typeof(ScriptableObject))]
 public class PickableItems : ScriptableObjectScene, IRequest<ScriptableObject>, IDelegate
 {
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
     public IDelegate.InvokeMethod InvokeCustomMethod { get; set; }
 
     private void OnEnable()
@@ -33,12 +33,12 @@ public class PickableItems : ScriptableObjectScene, IRequest<ScriptableObject>, 
 
     public async void SetupAsSubject()
     {
-       Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
     }
 
     public IEnumerator Request()
     {
-       Delegator.NotifyObserversWrapper(new SubjectContext<ScriptableObject>()
+        SceneUtils.NotifyObserversSyncV1(new SubjectContext<ScriptableObject>()
         {
             EntityType = typeof(PickableItems),
             Data = (PickableItems)this

@@ -13,23 +13,18 @@ public class PullUpPanel : MonoBehaviorScene, INotify<bool>
     private const float WAITING_TIME = 1.0f;
 
     private Animator m_anim;
-
-    private Delegator Delegator { get; set; }
-
     private SceneUtils SceneUtils { get; set; }
 
     private async void Awake()
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
-
-        Delegator = SceneUtils.GetDelegator();
     }
 
     void Start()
     {
         m_anim = GetComponent<Animator>();
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<bool>() {
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<bool>() {
             EntityType = typeof(PullUpPanel),
             Instance = gameObject,
             SubjectType = typeof(TriggerHandler)

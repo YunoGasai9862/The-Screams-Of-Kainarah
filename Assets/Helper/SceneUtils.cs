@@ -140,6 +140,11 @@ public class SceneUtils: MonoBehaviorScene
         Delegator.NotifyObserversWrapper(context, subject);
     }
 
+    public void NotifyObserversSyncV1<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV1.IRequest<T> subject)
+    {
+        Delegator.NotifyObserversWrapper(context, subject);
+    }
+
     public IEnumerator NotifyObserverWrapper<T>(SubjectContext<T> context, Assets.Scripts.Interfaces.Mediator.EnhancedV3.IRequest<T> subject, Assets.Scripts.Interfaces.Mediator.EnhancedV1.INotify<T> observer)
     {
         yield return new WaitUntil(() => Delegator != null);

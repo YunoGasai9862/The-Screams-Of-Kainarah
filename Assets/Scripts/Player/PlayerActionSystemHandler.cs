@@ -27,8 +27,6 @@ public class PlayerActionSystemHandler : MonoBehaviorScene, INotify<Collider2D>,
 
     private InstantiateUtility InstantiateUtilityInstannce { get; set; } = new InstantiateUtility();
 
-    private Delegator Delegator { get; set; }
-
     private SceneUtils SceneUtils { get; set; }
 
     private float DIAMOND_PICK_UP_VALUE { get; set; } = 20f;
@@ -47,13 +45,6 @@ public class PlayerActionSystemHandler : MonoBehaviorScene, INotify<Collider2D>,
     private async void Start()
     {
         SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
-
-        Delegator = SceneUtils.GetDelegator();
-    }
-
-    private void OnDelegatorFound(Delegator delegator)
-    {
-        Delegator = delegator;
     }
 
     private Task<bool> OnDaggerPickup(Collider2D collider)

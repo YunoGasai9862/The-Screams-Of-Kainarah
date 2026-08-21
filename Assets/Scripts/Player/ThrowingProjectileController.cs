@@ -19,7 +19,7 @@ public class ThrowingProjectileController : MonoBehaviorScene, IReceiver<bool>, 
 
     private PickableItemsUtility PickableItemsUtility { get; set; }
 
-    private Delegator Delegator { get; set; }
+    private SceneUtils SceneUtils { get; set; }
 
     [SerializeField] string pickableItemClassTag;
 
@@ -33,9 +33,9 @@ public class ThrowingProjectileController : MonoBehaviorScene, IReceiver<bool>, 
     {
         onThrowEvent.AddListener(CanPlayerThrowProjectile);
 
-        Delegator = (await (await GetBaseScene()).GetSceneUtilsAsync()).GetDelegator();
+        SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
-        StartCoroutine(Delegator.NotifySubject(new ObserverContext<ScriptableObject>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<ScriptableObject>()
         {
             Instance = gameObject,
             EntityType = typeof(ThrowingProjectileController),

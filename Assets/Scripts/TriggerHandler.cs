@@ -25,8 +25,6 @@ public class TriggerHandler : MonoBehaviorScene, IPointerEnterHandler, IPointerE
 
     private TMPro.TextMeshProUGUI m_funds;
 
-    private Delegator Delegator { get; set; }
-
     private SceneUtils SceneUtils { get; set; }
 
     private async void Start()
@@ -35,15 +33,13 @@ public class TriggerHandler : MonoBehaviorScene, IPointerEnterHandler, IPointerE
 
        SceneUtils = await (await GetBaseScene()).GetSceneUtilsAsync();
 
-       Delegator = SceneUtils.GetDelegator();
-
-        Delegator.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
+        StartCoroutine(SceneUtils.NotifySubjectWrapper(new ObserverContext<GenericStateBundle<GameStateBundle>>()
         {
             Instance = gameObject,
             EntityType = typeof(TriggerHandler),
             SubjectType = typeof(GameStateConsumer)
 
-        }, this);
+        }, this));
     }
 
     private void Update()
@@ -65,7 +61,7 @@ public class TriggerHandler : MonoBehaviorScene, IPointerEnterHandler, IPointerE
 
                 Debug.Log(m_isSufficientFunds);
 
-                Delegator.NotifyObserversWrapper(new SubjectContext<bool>() { Data = m_isSufficientFunds, EntityType = typeof(TriggerHandler) }, this);
+                StartCoroutine(SceneUtils.NotifyObserversWrapper(new SubjectContext<bool>() { Data = m_isSufficientFunds, EntityType = typeof(TriggerHandler) }, this));
 
                 if (m_isSufficientFunds)
                 {
@@ -127,7 +123,7 @@ public class TriggerHandler : MonoBehaviorScene, IPointerEnterHandler, IPointerE
 
     public IEnumerator<bool> Request()
     {
-        StartCoroutine(Delegator.NotifyObservers(new SubjectContext<bool>() { Data = m_isSufficientFunds, EntityType = typeof(TriggerHandler) }, this));
+        StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<bool>() { Data = m_isSufficientFunds, EntityType = typeof(TriggerHandler) }, this));
 
         yield return true;
     }
