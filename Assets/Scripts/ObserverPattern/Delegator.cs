@@ -161,9 +161,10 @@ public class Delegator : MonoBehaviorScene, IDelegator
 
         KeyValuePair<dynamic, List<dynamic>> association = Associations.Where(kvp => kvp.Key.SubjectAttribute.EntityType == context.SubjectType).FirstOrDefault();
 
+        //seems like cache issue, etc - resolve it!!!
         if (association.Value == null || association.Value.Count == 0)
         {
-            throw new MissingContractException($"No observer found for the subject type: {context.SubjectType}!");
+            throw new MissingContractException($"No observer found for the subject type! Subject in question: {context.SubjectType}, association count: {association.Value?.Count ?? 0}");
         }
 
         IObserverBundle cachedObserverContext = GetObserverBundle<T, ObserverContext>(association.Value, context);

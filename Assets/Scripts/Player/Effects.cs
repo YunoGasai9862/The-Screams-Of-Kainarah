@@ -12,7 +12,7 @@ public class Effects: MonoBehaviorScene, INotify<Player>
 
     public SceneUtils SceneUtils { get; set; }
 
-    private async void Awake()
+    private async void Start()
     {
         SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
 
