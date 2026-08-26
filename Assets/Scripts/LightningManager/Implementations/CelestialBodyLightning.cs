@@ -9,7 +9,6 @@ using UnityEngine;
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(CelestialBodyLightning), ContextType = typeof(ILightPreprocess))]
 public class CelestialBodyLightning : MonoBehaviorScene, ILightPreprocess, IRequest<ILightPreprocess>
 {
-
     private SceneUtils SceneUtils { get; set; }
     private async void Start()
     {

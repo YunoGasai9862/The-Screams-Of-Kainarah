@@ -96,11 +96,26 @@ MonoBehaviour:
     m_SerializedLabels:
     - DelegatorsManager
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93e0022474ee5f84498d81509e77c938
+    m_Address: Prefabs/CandleLightFlickering
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9848482957cfa0f449fb6cfe447e4540
+    m_Address: Prefabs/Moon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9c9d2c54e0a22404db5d35605b0ed75c
     m_Address: Prefabs/SceneRegistry
     m_ReadOnly: 0
     m_SerializedLabels:
     - SceneRegistry
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a97c105638bdf8b4a8650670310a4cd3
+    m_Address: Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Lit-Default.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b3b15cce297a58c428a52063bce83689
     m_Address: CheckpointsScriptableObject

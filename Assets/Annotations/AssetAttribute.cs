@@ -10,6 +10,8 @@ public sealed class AssetAttribute: Attribute
 
     public int InstantiationOrder { get; set; }
 
+    public int NumberOfInstancesToInitiate { get; set; }
+
     public float InitialPositionX { get; set; } = default;
 
     public float InitialPositionY { get; set; } = default;
@@ -22,18 +24,20 @@ public sealed class AssetAttribute: Attribute
         AddressLabel = addressLabel;
     }
 
-    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder) { 
+    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder, int numberOfInstancesToInitiate) { 
     
        AssetType = assetType;
        AddressLabel = addressLabel;
-       InstantiationOrder = instantiationOrder;    
+       InstantiationOrder = instantiationOrder;
+       NumberOfInstancesToInitiate = numberOfInstancesToInitiate;
     }
 
-    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder, float initialPositionX, float initialPositionY, float initialPositionZ)
+    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder, int numberOfInstancesToInitiate, float initialPositionX, float initialPositionY, float initialPositionZ)
     {
         AssetType = assetType;
         AddressLabel = addressLabel;
         InstantiationOrder = instantiationOrder;
+        NumberOfInstancesToInitiate = numberOfInstancesToInitiate;
         InitialPositionX = initialPositionX;
         InitialPositionY = initialPositionY;
         InitialPositionZ = initialPositionZ;    
@@ -42,6 +46,6 @@ public sealed class AssetAttribute: Attribute
 
     public override string ToString()
     {
-        return $"AssetAttribute: Type: {AssetType}, Label: {AddressLabel} InstantiationOrder: {InstantiationOrder}";
+        return $"AssetAttribute: Type: {AssetType}, Label: {AddressLabel} InstantiationOrder: {InstantiationOrder}, NumberOfInstancesToInitiate: {NumberOfInstancesToInitiate}";
     }
 }
