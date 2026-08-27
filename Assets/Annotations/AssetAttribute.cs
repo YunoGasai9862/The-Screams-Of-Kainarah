@@ -10,13 +10,7 @@ public sealed class AssetAttribute: Attribute
 
     public int InstantiationOrder { get; set; }
 
-    public int NumberOfInstancesToInitiate { get; set; }
-
-    public float InitialPositionX { get; set; } = default;
-
-    public float InitialPositionY { get; set; } = default;
-
-    public float InitialPositionZ { get; set; } = default;
+    public string MarkerId { get; set; }
 
     public AssetAttribute(Asset assetType, string addressLabel)
     {
@@ -24,28 +18,24 @@ public sealed class AssetAttribute: Attribute
         AddressLabel = addressLabel;
     }
 
-    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder, int numberOfInstancesToInitiate) { 
+    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder, string markerId) { 
     
        AssetType = assetType;
        AddressLabel = addressLabel;
        InstantiationOrder = instantiationOrder;
-       NumberOfInstancesToInitiate = numberOfInstancesToInitiate;
+       MarkerId = markerId;
     }
 
-    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder, int numberOfInstancesToInitiate, float initialPositionX, float initialPositionY, float initialPositionZ)
+    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder)
     {
         AssetType = assetType;
         AddressLabel = addressLabel;
-        InstantiationOrder = instantiationOrder;
-        NumberOfInstancesToInitiate = numberOfInstancesToInitiate;
-        InitialPositionX = initialPositionX;
-        InitialPositionY = initialPositionY;
-        InitialPositionZ = initialPositionZ;    
+        InstantiationOrder = instantiationOrder; 
     }
 
 
     public override string ToString()
     {
-        return $"AssetAttribute: Type: {AssetType}, Label: {AddressLabel} InstantiationOrder: {InstantiationOrder}, NumberOfInstancesToInitiate: {NumberOfInstancesToInitiate}";
+        return $"AssetAttribute: Type: {AssetType}, Label: {AddressLabel} InstantiationOrder: {InstantiationOrder}, MarkerId: {MarkerId}";
     }
 }
