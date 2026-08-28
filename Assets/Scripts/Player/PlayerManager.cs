@@ -1,7 +1,7 @@
 using Annotations.Enums;
 using Assets.Scripts.BaseScene;
-
-[Asset(Asset.MONOBEHAVIOR, "Player", InstantiationOrder = 5, InitialPositionX = -5.0f, InitialPositionY = 10.0f)]
+//-5.0fX, 10.0fY
+[Asset(Asset.MONOBEHAVIOR, "Player", InstantiationOrder = 5, MarkerIds = new string[] { "PlayerInitialPositionMarker" } )]
 public class PlayerManager: MonoBehaviorScene
 {
 

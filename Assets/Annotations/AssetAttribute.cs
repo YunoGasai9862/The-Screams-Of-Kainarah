@@ -10,7 +10,7 @@ public sealed class AssetAttribute: Attribute
 
     public int InstantiationOrder { get; set; }
 
-    public string MarkerId { get; set; }
+    public string[] MarkerIds { get; set; }
 
     public AssetAttribute(Asset assetType, string addressLabel)
     {
@@ -18,12 +18,12 @@ public sealed class AssetAttribute: Attribute
         AddressLabel = addressLabel;
     }
 
-    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder, string markerId) { 
+    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder, string[] markerId) { 
     
        AssetType = assetType;
        AddressLabel = addressLabel;
        InstantiationOrder = instantiationOrder;
-       MarkerId = markerId;
+       MarkerIds = markerId;
     }
 
     public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder)
@@ -36,6 +36,6 @@ public sealed class AssetAttribute: Attribute
 
     public override string ToString()
     {
-        return $"AssetAttribute: Type: {AssetType}, Label: {AddressLabel} InstantiationOrder: {InstantiationOrder}, MarkerId: {MarkerId}";
+        return $"AssetAttribute: Type: {AssetType}, Label: {AddressLabel} InstantiationOrder: {InstantiationOrder}, MarkerId: {string.Join(",", MarkerIds)}";
     }
 }

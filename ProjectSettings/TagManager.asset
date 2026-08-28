@@ -56,6 +56,7 @@ TagManager:
   - AsyncCoroutine
   - IceSecondary
   - EntityPoolManager
+  - Marker
   layers:
   - Default
   - TransparentFX
