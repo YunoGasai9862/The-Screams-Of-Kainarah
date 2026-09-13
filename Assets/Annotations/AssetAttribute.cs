@@ -10,12 +10,19 @@ public sealed class AssetAttribute: Attribute
 
     public int InstantiationOrder { get; set; }
 
-    public string[] MarkerIds { get; set; }
+    public string[] MarkerIds { get; set; } = new string[0];
 
     public AssetAttribute(Asset assetType, string addressLabel)
     {
         AssetType = assetType;
         AddressLabel = addressLabel;
+    }
+
+    public AssetAttribute(Asset assetType, string addressLabel, string[] markerId)
+    {
+        AssetType = assetType;
+        AddressLabel = addressLabel;
+        MarkerIds = markerId;
     }
 
     public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder, string[] markerId) { 
