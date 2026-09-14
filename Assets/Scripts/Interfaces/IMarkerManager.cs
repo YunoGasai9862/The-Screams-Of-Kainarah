@@ -8,5 +8,7 @@ namespace Assets.Scripts.Interfaces
     public interface IMarkerManager
     {
         GameObject FindMarker(string markerName, string markerTag = "");
+
+        GameObject Load(GameObject marker);
     } 
 }
