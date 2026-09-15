@@ -21,7 +21,7 @@ public class PreloaderManager : MonoBehaviorScene
 
     private List<UnityEngine.Object> PreloadedEntities { get; set; } = new List<UnityEngine.Object>();
     private EntityPoolManager EntityPoolManager { get; set; }
-    private GameLoad GameLoad { get; set; }
+    private MarkerManager MarkerManager { get; set; }
 
     private async void Start()
     {

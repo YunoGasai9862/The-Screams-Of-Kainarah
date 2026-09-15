@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Annotations.Enums;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Interfaces
@@ -9,6 +8,6 @@ namespace Assets.Scripts.Interfaces
     {
         GameObject FindMarker(string markerName, string markerTag = "");
 
-        GameObject Load(GameObject marker);
-    } 
+        async Task<GameObject> Load(Asset assetType, GameObject marker);
+    }
 }
