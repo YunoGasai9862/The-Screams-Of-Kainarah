@@ -23,7 +23,7 @@ public class MarkerManager : MonoBehaviorScene, IMarkerManager
         return marker;
     }
 
-    public async Task<GameObject> Load(Asset assetType, GameObject marker)
+    public async Task<UnityEngine.Object> Load(Asset assetType, string addressLabel, GameObject marker)
     {
         switch(assetType)
         {
@@ -31,20 +31,23 @@ public class MarkerManager : MonoBehaviorScene, IMarkerManager
                 return (ScriptableObject)await GameLoad.PreloadAsset<ScriptableObject>(
                     new EntityMetaData()
                     {
-                        AddressableLabel = attribute.AddressLabel,
-                        AssetType = attribute.AssetType
+                        AddressableLabel = addressLabel,
+                        AssetType = assetType
                     }
                 );
 
             case Asset.MONOBEHAVIOR:
+                Vector3 position = marker.gameObject.transform.position;
                 return (GameObject)await GameLoad.PreloadAsset<GameObject>(new EntityMetaData()
                 {
-                    AddressableLabel = attribute.AddressLabel,
-                    AssetType = attribute.AssetType,
-                    InstantiateAt = new Vector3(attribute?.InitialPositionX ?? 0.0f, attribute?.InitialPositionY ?? 0.0f, attribute?.InitialPositionZ ?? 0.0f)
+                    AddressableLabel = addressLabel,
+                    AssetType = assetType,
+                    InstantiateAt = new Vector3(position.x, position.y, position.z)
                 }
-                
+            );    
         }
+
+        return null;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

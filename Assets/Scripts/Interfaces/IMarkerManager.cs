@@ -8,6 +8,6 @@ namespace Assets.Scripts.Interfaces
     {
         GameObject FindMarker(string markerName, string markerTag = "");
 
-        async Task<GameObject> Load(Asset assetType, GameObject marker);
+        Task<UnityEngine.Object> Load(Asset assetType, string addressLabel, GameObject marker);
     }
 }
