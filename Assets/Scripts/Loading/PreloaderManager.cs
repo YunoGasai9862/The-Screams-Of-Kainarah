@@ -89,7 +89,8 @@ public class PreloaderManager : MonoBehaviorScene
         foreach (AssetAttribute asset in assets)
         {
             Debug.Log($"Asset: {asset}");
-            dynamic preloadedAsset = await PreloadOnAssetType(asset);
+            //find marker first
+            dynamic preloadedAsset = await MarkerManager.Load(asset.AssetType, asset.AddressLabel, ); PreloadOnAssetType(asset);
 
             preloadedEntities.Add(await AddToPool(preloadedAsset, asset.AssetType, entityPoolManager));
         }
@@ -111,35 +112,6 @@ public class PreloaderManager : MonoBehaviorScene
                 GameObject goEntity = (GameObject)entity;
                 entityPoolManager.Pool(await EntityPool.From(goEntity.name, goEntity.tag, assetType, goEntity.gameObject));
                 return goEntity;
-        }
-
-        return new UnityEngine.Object();
-    }
-
-    private async Task<dynamic> PreloadOnAssetType(AssetAttribute attribute)
-    {
-        switch (attribute.AssetType)
-        {
-            case Asset.SCRIPTABLE_OBJECT:
-                return (ScriptableObject)await GameLoad.PreloadAsset<ScriptableObject>(
-                    new EntityMetaData()
-                    {
-                        AddressableLabel = attribute.AddressLabel,
-                        AssetType = attribute.AssetType
-                    }
-                );
-                    
-            case Asset.MONOBEHAVIOR:
-                return (GameObject)await GameLoad.PreloadAsset<GameObject>(new EntityMetaData()
-                    {
-                        AddressableLabel = attribute.AddressLabel,
-                        AssetType = attribute.AssetType,
-                        InstantiateAt = new Vector3(attribute?.InitialPositionX ?? 0.0f, attribute?.InitialPositionY ?? 0.0f, attribute?.InitialPositionZ ?? 0.0f)
-                    }
-                ); 
-
-            default:
-                break;
         }
 
         return new UnityEngine.Object();
@@ -170,8 +142,8 @@ public class PreloaderManager : MonoBehaviorScene
         {
             switch(dependency.PreloadEntityType)
             {
-                case PreloadEntityType.GAMELOAD:
-                    GameLoad = await InstantiateDependency<GameLoad>(dependency.Entity);
+                case PreloadEntityType.MARKER_MANAGER:
+                    MarkerManager = await InstantiateDependency<MarkerManager>(dependency.Entity);
                     break;
                 case PreloadEntityType.ENTITYPOOL_MANAGER:
                     EntityPoolManager = await InstantiateDependency<EntityPoolManager>(dependency.Entity);
