@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 public class PreloaderManager : MonoBehaviorScene
 {
@@ -89,10 +90,25 @@ public class PreloaderManager : MonoBehaviorScene
         foreach (AssetAttribute asset in assets)
         {
             Debug.Log($"Asset: {asset}");
-            //find marker first
-            dynamic preloadedAsset = await MarkerManager.Load(asset.AssetType, asset.AddressLabel, ); PreloadOnAssetType(asset);
+            dynamic preloadedAsset = null;
+            foreach(string markerId in asset.MarkerIds)
+            {
+                GameObject marker = MarkerManager.FindMarker(markerId);
 
-            preloadedEntities.Add(await AddToPool(preloadedAsset, asset.AssetType, entityPoolManager));
+                if (marker == null)
+                {
+                    Debug.Log($"Marker with ID {markerId} not found in the scene. Skipping asset initialization for this marker");
+                    continue;
+                }
+
+                preloadedAsset = await MarkerManager.Load(asset.AssetType, asset.AddressLabel, marker);
+            }
+
+
+            if (preloadedAsset != null)
+            {
+                preloadedEntities.Add(await AddToPool(preloadedAsset, asset.AssetType, entityPoolManager));
+            }
         }
 
         return preloadedEntities;
