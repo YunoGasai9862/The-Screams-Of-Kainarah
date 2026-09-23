@@ -53,7 +53,7 @@ public class PreloaderManager : MonoBehaviorScene
             {
                 AssetAttribute attribute = type.GetCustomAttribute<AssetAttribute>();
 
-                if (attribute == null)
+                if (attribute == null && !attribute.ExternalDependency)
                 {
                     continue;
                 }

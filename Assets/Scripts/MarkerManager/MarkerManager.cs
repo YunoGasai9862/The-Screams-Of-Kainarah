@@ -5,7 +5,8 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[AssetAttribute(Asset.MONOBEHAVIOR, "MarkerManager", new string[0])]
+//for the ones marked as true, discard them from instantiation in the preloader!!
+[AssetAttribute(Asset.MONOBEHAVIOR, "MarkerManager", new string[0], true)]
 public class MarkerManager : MonoBehaviorScene, IMarkerManager
 {
     private GameLoad GameLoad { get; set; }
