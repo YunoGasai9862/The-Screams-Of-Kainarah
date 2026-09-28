@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: b7063152c68b66041806e52030dac4d9
   m_currentHash:
     serializedVersion: 2
-    Hash: 888ce3e30678a0e738639ba32a8ab11f
+    Hash: 6eb0a03f3b002425afb5213a3ab8e1ba
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -122,6 +122,7 @@ MonoBehaviour:
     - GameStateManager
     - BaseScene
     - MarkerManager
+    - GameLoad
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: fddaf8095ec2d344bb5a1aeb7f9adbb1, type: 2}

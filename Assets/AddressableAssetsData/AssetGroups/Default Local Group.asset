@@ -21,6 +21,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - MarkerManager
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 059364ee1a310464fa7b85373891d09d
+    m_Address: Prefabs/GameLoad
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - GameLoad
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 162f141788884364aa34778fb2c05781
     m_Address: Prefabs/AttributeRegistry
     m_ReadOnly: 0
