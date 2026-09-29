@@ -7,13 +7,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Timeline;
 
 public class PreloaderManager : MonoBehaviorScene
 {
-    [SerializeField]
-    List<PreloadDto> dependencies;
-
     [SerializeField]
     List<PreloadDto> poolObjects;
 
@@ -26,15 +22,9 @@ public class PreloaderManager : MonoBehaviorScene
 
     private async void Start()
     {
-        //we should split and instantiate hte pool objects later. The core objects must be loaded/preloaded first
-        List<PreloadDto> pooledObjects = dependencies.Where(dependency => dependency.PreloadEntityType == PreloadEntityType.INITIALIZE_AND_POOL).ToList();
+        EntityPoolManager = FindFirstObjectByType<EntityPoolManager>();
 
-        List<PreloadDto> coreDependencies = dependencies.Where(dependency => dependency.PreloadEntityType != PreloadEntityType.INITIALIZE_AND_POOL).ToList();
-
-        foreach(List<PreloadDto> preloadDtos in new List<List<PreloadDto>>(){ coreDependencies, pooledObjects })
-        {
-            await InstantiateDependencies(preloadDtos);
-        }
+        MarkerManager = FindFirstObjectByType<MarkerManager>();
 
         await PoolEntites(poolObjects, EntityPoolManager);
 
@@ -149,32 +139,6 @@ public class PreloaderManager : MonoBehaviorScene
         foreach (PreloadDto item in poolObjects)
         {
             await AddToPool(item.Entity, item.AssetType, entityPoolManager);
-        }
-    }
-
-    private async Task InstantiateDependencies(List<PreloadDto> dependencies)
-    {
-        foreach (PreloadDto dependency in dependencies)
-        {
-            switch(dependency.PreloadEntityType)
-            {
-                case PreloadEntityType.MARKER_MANAGER:
-                    MarkerManager = await InstantiateDependency<MarkerManager>(dependency.Entity);
-                    break;
-                case PreloadEntityType.ENTITYPOOL_MANAGER:
-                    EntityPoolManager = await InstantiateDependency<EntityPoolManager>(dependency.Entity);
-                    break;
-                case PreloadEntityType.INITIALIZE_AND_POOL:
-                    if (EntityPoolManager == null)
-                    {
-                        throw new ApplicationException($"EntityPoolManager is null!");
-                    }
-                    GameObject objectInstance = await InstantiateDependency<GameObject>(dependency.Entity);
-                    EntityPoolManager.Pool(await EntityPool.From(dependency.Entity.name, dependency.Entity.tag, dependency.AssetType, objectInstance));
-                    break;
-                default:
-                    throw new ApplicationException($"Unknown dependency type found: {dependency.PreloadEntityType}");
-            }
         }
     }
 

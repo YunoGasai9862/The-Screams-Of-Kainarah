@@ -27,6 +27,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - GameLoad
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b918580b91ddce4298cb0e3219f27dd
+    m_Address: Prefabs/EntityPoolManager
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - EntityPoolManager
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 162f141788884364aa34778fb2c05781
     m_Address: Prefabs/AttributeRegistry
     m_ReadOnly: 0
