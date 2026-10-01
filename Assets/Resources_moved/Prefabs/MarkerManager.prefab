@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3181512688897833530}
-  - component: {fileID: 3326088360999739709}
+  - component: {fileID: 1146217316712934645}
   m_Layer: 0
   m_Name: MarkerManager
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3326088360999739709
+--- !u!114 &1146217316712934645
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,6 +41,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 185020153032997511}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6976176483a92c429f107f99c84e546, type: 3}
+  m_Script: {fileID: 11500000, guid: 9561501eb62103649ad88718b97476bd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
+  m_EditorClassIdentifier: Assembly-CSharp::PositionalMarkerInstantiator

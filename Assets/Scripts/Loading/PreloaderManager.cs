@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
+using System.Collections;
 
 public class PreloaderManager : MonoBehaviorScene
 {
@@ -18,15 +19,17 @@ public class PreloaderManager : MonoBehaviorScene
 
     private List<UnityEngine.Object> PreloadedEntities { get; set; } = new List<UnityEngine.Object>();
     private EntityPoolManager EntityPoolManager { get; set; }
-    private MarkerManager MarkerManager { get; set; }
+    private PositionalMarkerInstantiator MarkerManager { get; set; }
 
     private async void Start()
     {
         EntityPoolManager = FindFirstObjectByType<EntityPoolManager>();
 
-        MarkerManager = FindFirstObjectByType<MarkerManager>();
+        MarkerManager = FindFirstObjectByType<PositionalMarkerInstantiator>();
 
-        await PoolEntites(poolObjects, EntityPoolManager);
+        List<PreloadDto> finalPoolEntities = new List<PreloadDto> { new PreloadDto(EntityPoolManager, Asset.MONOBEHAVIOR), new PreloadDto(MarkerManager, Asset.MONOBEHAVIOR) };
+
+        await PoolEntites(finalPoolEntities, EntityPoolManager);
 
         await PreloadEntities(EntityPoolManager);
     }

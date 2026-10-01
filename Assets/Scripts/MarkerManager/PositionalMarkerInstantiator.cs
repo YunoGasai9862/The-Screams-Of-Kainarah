@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 //for the ones marked as true, discard them from instantiation in the preloader!!
-[AssetAttribute(Asset.MONOBEHAVIOR, "MarkerManager", new string[0], true)]
-public class MarkerManager : MonoBehaviorScene, IMarkerManager
+[AssetAttribute(Asset.MONOBEHAVIOR, "PositionalMarkerInstantiator", new string[0], true)]
+public class PositionalMarkerInstantiator : MonoBehaviorScene, IMarkerManager
 {
     private GameLoad GameLoad { get; set; }
 
@@ -50,8 +50,6 @@ public class MarkerManager : MonoBehaviorScene, IMarkerManager
 
         return null;
     }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     void Start()
     {
