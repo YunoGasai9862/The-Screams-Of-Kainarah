@@ -27,6 +27,8 @@ public class PreloaderManager : MonoBehaviorScene
 
         MarkerManager = FindFirstObjectByType<PositionalMarkerInstantiator>();
 
+        Debug.Log($"EntityPoolManager: {EntityPoolManager}, MarkerManager: {MarkerManager}");
+
         List<PreloadDto> finalPoolEntities = new List<PreloadDto> { new PreloadDto(EntityPoolManager, Asset.MONOBEHAVIOR), new PreloadDto(MarkerManager, Asset.MONOBEHAVIOR) };
 
         await PoolEntites(finalPoolEntities, EntityPoolManager);
@@ -42,12 +44,23 @@ public class PreloaderManager : MonoBehaviorScene
         {
             Type[] types = Assembly.GetExecutingAssembly().GetTypes();
 
+            Debug.Log($"Found {types.Length} types in the assembly.");
+
             foreach (Type type in types)
             {
                 AssetAttribute attribute = type.GetCustomAttribute<AssetAttribute>();
 
-                if (attribute == null && !attribute.ExternalDependency)
+                Debug.Log($"Type: {type}, Attribute: {attribute}");
+
+                if (attribute == null)
                 {
+                    Debug.Log($"Skipping type: {type}");
+                    continue;
+                }
+
+                if (attribute.ExternalDependency)
+                {
+                    Debug.Log($"Skipping type: {type} because it's not an external dependency");
                     continue;
                 }
 
@@ -59,10 +72,11 @@ public class PreloaderManager : MonoBehaviorScene
             Debug.Log(ex.ToString());   
         }
 
+        Debug.Log($"assetAttributes: {assetAttributes.Count}"); 
+
         List<AssetAttribute> untitledAssets = assetAttributes.Where(attribute => attribute.InstantiationOrder == 0).ToList();
 
         List<AssetAttribute> titledAssets = assetAttributes.Where(attribute => attribute.InstantiationOrder > 0).ToList();
-        //do the instantiation for those here at last!
 
         if (titledAssets.GroupBy(asset => asset.InstantiationOrder).Any(group => group.Count() > 1))
         {
@@ -129,6 +143,8 @@ public class PreloaderManager : MonoBehaviorScene
     private async Task PreloadEntities(EntityPoolManager entityPoolManager)
     {
         AssetAttributeDto assetAttributeDto =  await GetAssetAttributesForPreloading();
+        
+        Debug.Log($"Untitled Assets: {assetAttributeDto.UntitledAssets.Count}, Titled Assets: {assetAttributeDto.TitledAssets.Count}");
 
         PreloadedEntities.AddRange(await PreloadAssets(assetAttributeDto.UntitledAssets, entityPoolManager));
 

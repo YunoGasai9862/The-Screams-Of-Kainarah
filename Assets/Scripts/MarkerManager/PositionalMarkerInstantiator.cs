@@ -54,6 +54,8 @@ public class PositionalMarkerInstantiator : MonoBehaviorScene, IMarkerManager
     void Start()
     {
         GameLoad = FindFirstObjectByType<GameLoad>();
+
+        Debug.Log($"GameLoad: {GameLoad} in MarkerManager");
     }
 
 }
