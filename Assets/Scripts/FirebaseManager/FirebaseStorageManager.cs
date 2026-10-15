@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[AssetAttribute(Asset.MONOBEHAVIOR, "FirebaseStorageManager", InstantiationOrder = 10)]
+[Asset(Asset.MONOBEHAVIOR, "FirebaseStorageManager", InstantiationOrder = 10)]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(FirebaseStorageManager), ContextType = typeof(FirebaseStorageManager))]
 public class FirebaseStorageManager : MonoBehaviorScene, IFirebaseStorage, IRequest<FirebaseStorageManager>
 {

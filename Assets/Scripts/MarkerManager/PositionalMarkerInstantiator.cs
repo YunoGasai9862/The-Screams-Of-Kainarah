@@ -1,12 +1,9 @@
 using Annotations.Enums;
 using Assets.Scripts.BaseScene;
 using Assets.Scripts.Interfaces;
-using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-//for the ones marked as true, discard them from instantiation in the preloader!!
-[AssetAttribute(Asset.MONOBEHAVIOR, "PositionalMarkerInstantiator", new string[0], true)]
 public class PositionalMarkerInstantiator : MonoBehaviorScene, IMarkerManager
 {
     private GameLoad GameLoad { get; set; }
@@ -26,7 +23,13 @@ public class PositionalMarkerInstantiator : MonoBehaviorScene, IMarkerManager
 
     public async Task<UnityEngine.Object> Load(Asset assetType, string addressLabel, GameObject marker)
     {
-        switch(assetType)
+        if (GameLoad == null)
+        {
+            Debug.LogError("GameLoad is null in PositionalMarkerInstantiator. Cannot load MONOBEHAVIOR asset.");
+            return null;
+        }
+
+        switch (assetType)
         {
             case Asset.SCRIPTABLE_OBJECT:
                 return (ScriptableObject)await GameLoad.PreloadAsset<ScriptableObject>(
@@ -51,11 +54,10 @@ public class PositionalMarkerInstantiator : MonoBehaviorScene, IMarkerManager
         return null;
     }
 
-    void Start()
+    private void Awake()
     {
         GameLoad = FindFirstObjectByType<GameLoad>();
 
         Debug.Log($"GameLoad: {GameLoad} in MarkerManager");
     }
-
 }

@@ -14,7 +14,7 @@ using UnityEngine;
 using Annotations.Enums;
 using Assets.Scripts.BaseScene;
 
-[AssetAttribute(Asset.MONOBEHAVIOR, "AWSPollyManager", InstantiationOrder = 13)]
+[Asset(Asset.MONOBEHAVIOR, "AWSPollyManager", InstantiationOrder = 13)]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(AWSPolllyManagement), SubjectType = typeof(FirebaseStorageManager), ContextType = typeof(FirebaseStorageManager))]
 [Observer(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(AWSPolllyManagement), SubjectType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(AWSPolllyManagement), ContextType = typeof(IAWSPolly))]
