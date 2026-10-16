@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Registry
 {
-    [Asset(Asset.MONOBEHAVIOR, "AttributeRegistry", InstantiationOrder = 2)]
+    [Asset(Asset.MONOBEHAVIOR, "AttributeRegistry", InstantiationOrder = 1)]
     public class AttributeRegistry : BaseScene.MonoBehaviorScene, IAttributeRegistry
     {
         private List<Type> Assemblies { get; set; } = new List<Type>();

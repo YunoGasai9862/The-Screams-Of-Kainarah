@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[Asset(Asset.MONOBEHAVIOR, "SceneRegistry", InstantiationOrder = 1)]
 public class SceneRegistry : MonoBehaviorScene, IRegistry, IPoller
 {
     private Dictionary<Int32, GameObject> RegisteredGameObjects { get; set; } = new Dictionary<Int32, GameObject>();
@@ -18,6 +17,7 @@ public class SceneRegistry : MonoBehaviorScene, IRegistry, IPoller
     private EntityPoolManager EntityPoolManagerInstance { get; set; }
     void Start()
     {
+        //issue here - fix it!!
         FindObjectsByType<GameObject>(FindObjectsSortMode.None).Select(o => o.transform.root).ToList().ForEach(go => RegisteredGameObjects.TryAdd(go.GetInstanceID(), go.gameObject));
 
         EntityPoolManagerInstance = GetEntityPoolManager(RegisteredGameObjects);
@@ -140,7 +140,5 @@ public class SceneRegistry : MonoBehaviorScene, IRegistry, IPoller
             default:
                 throw new ApplicationException($"Type {assetType} is not supported for retrieval in {nameof(SceneRegistry)}");
         }
-
- 
     }
 }

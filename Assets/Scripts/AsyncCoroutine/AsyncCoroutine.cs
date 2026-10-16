@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-[Asset(Asset.MONOBEHAVIOR,  "AsyncCoroutine", InstantiationOrder = 9)]
+[Asset(Asset.MONOBEHAVIOR,  "AsyncCoroutine", InstantiationOrder = 7)]
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(AsyncCoroutine), ContextType = typeof(AsyncCoroutine))]
 public class AsyncCoroutine : MonoBehaviorScene, IAsyncCoroutine<WaitForSeconds>, IAsyncCoroutine<WaitUntil>, IRequest<AsyncCoroutine>
 {

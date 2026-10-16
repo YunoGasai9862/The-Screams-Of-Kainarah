@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 
 [Serializable]
-[Asset(Asset.SCRIPTABLE_OBJECT, "AttackResetConfig", InstantiationOrder = 14)]
+[Asset(Asset.SCRIPTABLE_OBJECT, "AttackResetConfig", InstantiationOrder = 13)]
 [CreateAssetMenu(fileName = "AttackResetConfig", menuName = "Attack Reset Config")]
 [Reset(typeof(AttackState))]
 public class AttackResetConfig : ResetConfig

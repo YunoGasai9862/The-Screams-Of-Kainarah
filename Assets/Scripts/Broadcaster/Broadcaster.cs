@@ -28,6 +28,8 @@ namespace Assets.Scripts.Broadcaster
                 return;
             }
 
+            Debug.Log($"Length of Registered GameObjects: {SceneRegistryInstance.GetRegisteredGameObjects().Count}");
+
             foreach (KeyValuePair<int, GameObject> item in SceneRegistryInstance.GetRegisteredGameObjects())
             {
                 if (item.Value.TryGetComponent<BaseScene.MonoBehaviorScene>(out BaseScene.MonoBehaviorScene component)) {
