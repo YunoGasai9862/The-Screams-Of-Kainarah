@@ -20,6 +20,8 @@ public class SceneRegistry : MonoBehaviorScene, IRegistry, IPoller
         //issue here - fix it!!
         FindObjectsByType<GameObject>(FindObjectsSortMode.None).Select(o => o.transform.root).ToList().ForEach(go => RegisteredGameObjects.TryAdd(go.GetInstanceID(), go.gameObject));
 
+        Debug.Log($"Registered {RegisteredGameObjects.Count} game objects in the scene registry: {nameof(SceneRegistry)}");
+
         EntityPoolManagerInstance = GetEntityPoolManager(RegisteredGameObjects);
 
         if (EntityPoolManagerInstance == null)

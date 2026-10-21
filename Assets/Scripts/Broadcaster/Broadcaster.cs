@@ -19,7 +19,7 @@ namespace Assets.Scripts.Broadcaster
             StartCoroutine(Broadcast(SceneUtils, 5));
         }
 
-        public async void Broadcast<T>(T value)
+        public async void Broadcast<T>(T value, int retries = 5, int delay = 3)
         {
             if (SceneRegistryInstance == null)
             {
@@ -71,6 +71,18 @@ namespace Assets.Scripts.Broadcaster
                 Debug.Log("[Broadcaster]Failed to find SceneRegistryInstance after multiple attempts.");
 
                 yield break;
+            }
+
+            for (int i = 0; i < retryLimit; i++)
+            {
+               if (SceneRegistryInstance.GetRegisteredGameObjects().Count == 0)
+                {
+                    Debug.Log($"[Broadcaster]No registered GameObjects found, retrying in {retryDelay} seconds...");
+                    yield return new WaitForSeconds(retryDelay);
+                    continue;
+                }
+
+                break;
             }
 
             Broadcast(SceneUtils);
