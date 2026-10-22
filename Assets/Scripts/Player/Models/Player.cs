@@ -24,4 +24,9 @@ public class Player: IEntityTransform, IEntityHealth, IEntityRigidBody, IEntityA
     {
         public UnityEngine.Renderer Renderer { get; set; }
     }
+
+    public override string ToString()
+    {
+        return $"Player: {{ Transform: {Transform}, Health: {Health}, Rigidbody: {Rigidbody}, Collider: {Collider}, SpriteRendererValue: {SpriteRendererValue?.Renderer}, Animator: {Animator}, DefaultRendererValue: {DefaultRendererValue?.Renderer} }}";
+    }
 }

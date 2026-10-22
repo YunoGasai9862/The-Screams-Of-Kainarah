@@ -42,10 +42,14 @@ public class PlayerAttributesNotifier: MonoBehaviorScene, IRequest<Player>, IReq
         };
 
         SceneUtils = (await (await GetBaseScene()).GetSceneUtilsAsync());
+
+        Debug.Log($"PlayerData: {Player.ToString()}");
     }
 
     IEnumerator<Player> IRequest<Player>.Request()
     {
+        Debug.Log("PlayerAttributesNotifier(Player): Requesting Player Attributes");
+
         StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<Player> { EntityType = typeof(PlayerAttributesNotifier), Data = Player }, this));
 
         yield return null;
@@ -53,6 +57,8 @@ public class PlayerAttributesNotifier: MonoBehaviorScene, IRequest<Player>, IReq
 
     IEnumerator<IEntityAnimator> IRequest<IEntityAnimator>.Request()
     {
+        Debug.Log("PlayerAttributesNotifier(IEntityAnimator): Requesting Player Attributes");
+
         StartCoroutine(SceneUtils.NotifyObservers(new SubjectContext<IEntityTransform> { EntityType = typeof(PlayerAttributesNotifier), Data = (IEntityTransform) Player.Transform }, (Assets.Scripts.Interfaces.Mediator.EnhancedV2.IRequest<IEntityTransform>) this));
 
         yield return null;

@@ -19,17 +19,8 @@ namespace Assets.Scripts.Broadcaster
             StartCoroutine(Broadcast(SceneUtils, 5));
         }
 
-        public async void Broadcast<T>(T value, int retries = 5, int delay = 3)
+        public async void Broadcast<T>(T value)
         {
-            if (SceneRegistryInstance == null)
-            {
-                Debug.Log("[Broadcaster]SceneRegistryInstance is null, cannot broadcast.");
-
-                return;
-            }
-
-            Debug.Log($"Length of Registered GameObjects: {SceneRegistryInstance.GetRegisteredGameObjects().Count}");
-
             foreach (KeyValuePair<int, GameObject> item in SceneRegistryInstance.GetRegisteredGameObjects())
             {
                 if (item.Value.TryGetComponent<BaseScene.MonoBehaviorScene>(out BaseScene.MonoBehaviorScene component)) {
@@ -85,7 +76,9 @@ namespace Assets.Scripts.Broadcaster
                 break;
             }
 
-            Broadcast(SceneUtils);
+            Debug.Log($"Registered Objects: {SceneRegistryInstance.GetRegisteredGameObjects().Count}");
+
+            Broadcast<SceneUtils>(SceneUtils);
         }
     }
 }
