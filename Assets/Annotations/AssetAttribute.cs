@@ -14,6 +14,8 @@ public sealed class AssetAttribute: Attribute
 
     public bool ExternalDependency { get; set; }
 
+    public bool EnforceChildHierarchy { get; set; } = false;
+
     public AssetAttribute(Asset assetType, string addressLabel)
     {
         AssetType = assetType;
