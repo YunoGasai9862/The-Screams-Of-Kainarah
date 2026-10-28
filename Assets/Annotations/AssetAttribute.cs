@@ -22,28 +22,31 @@ public sealed class AssetAttribute: Attribute
         AddressLabel = addressLabel;
     }
 
-    public AssetAttribute(Asset assetType, string addressLabel, string[] markerId, bool externalDependency)
+    public AssetAttribute(Asset assetType, string addressLabel, string[] markerId, bool externalDependency, bool enforceChildHierarchy = false)
     {
         AssetType = assetType;
         AddressLabel = addressLabel;
         MarkerIds = markerId;
         ExternalDependency = externalDependency;
+        EnforceChildHierarchy = enforceChildHierarchy;
     }
 
-    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder, string[] markerId, bool externalDependency) { 
+    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder, string[] markerId, bool externalDependency, bool enforceChildHierarchy = false) { 
     
        AssetType = assetType;
        AddressLabel = addressLabel;
        InstantiationOrder = instantiationOrder;
        MarkerIds = markerId;
        ExternalDependency = externalDependency;
+       EnforceChildHierarchy = enforceChildHierarchy;
     }
 
-    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder)
+    public AssetAttribute(Asset assetType, string addressLabel, int instantiationOrder, bool enforceChildHierarchy = false)
     {
         AssetType = assetType;
         AddressLabel = addressLabel;
-        InstantiationOrder = instantiationOrder; 
+        InstantiationOrder = instantiationOrder;
+        EnforceChildHierarchy = enforceChildHierarchy;
     }
 
 

@@ -1,12 +1,30 @@
 using Annotations.Enums;
+using Assets.Annotations;
 using Assets.Scripts.BaseScene;
 using Assets.Scripts.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public class PositionalMarkerInstantiator : MonoBehaviorScene, IMarkerManager
 {
     private GameLoad GameLoad { get; set; }
+
+    public List<GameObject> FindChildAssets<T>(GameObject parent) where T : class
+    {
+        List<GameObject> childAssets = new List<GameObject>();
+        if (parent == null)
+        {
+            throw new ApplicationException("Parent object is null.");
+        }
+
+        //the rest of the logic!
+        MonoBehaviour[] children = parent.GetComponentsInChildren<MonoBehaviour>(true);
+
+        return childAssets;
+    }
 
     public GameObject FindMarker(string markerName, string markerTag = "")
     {
