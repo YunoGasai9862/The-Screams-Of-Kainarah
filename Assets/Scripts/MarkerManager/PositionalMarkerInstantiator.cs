@@ -5,6 +5,7 @@ using Assets.Scripts.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -20,10 +21,25 @@ public class PositionalMarkerInstantiator : MonoBehaviorScene, IMarkerManager
             throw new ApplicationException("Parent object is null.");
         }
 
-        //the rest of the logic!
         MonoBehaviour[] children = parent.GetComponentsInChildren<MonoBehaviour>(true);
 
+        children.ToList().ForEach(child =>
+        {
+            List<ChildAssetAttribute> assets = GetAssetAttributes<ChildAssetAttribute>(child);
+
+            if (assets == null || assets.Count == 0)
+            {
+                return;
+            }
+
+        });
+
         return childAssets;
+    }
+
+    public List<T> GetAssetAttributes<T>(MonoBehaviour child) where T : Attribute
+    {
+        return child.GetType().GetCustomAttributes<T>().ToList();
     }
 
     public GameObject FindMarker(string markerName, string markerTag = "")
@@ -39,7 +55,7 @@ public class PositionalMarkerInstantiator : MonoBehaviorScene, IMarkerManager
         return marker;
     }
 
-    public async Task<UnityEngine.Object> Load(Asset assetType, string addressLabel, GameObject marker)
+    public async Task<UnityEngine.Object> Load(Asset assetType, bool enforceChildHierarchy, string addressLabel, GameObject marker)
     {
         if (GameLoad == null)
         {

@@ -108,7 +108,7 @@ public class PreloaderManager : MonoBehaviorScene
                     continue;
                 }
 
-                preloadedAsset = await MarkerManager.Load(asset.AssetType, asset.AddressLabel, marker);
+                preloadedAsset = await MarkerManager.Load(asset.AssetType, asset.EnforceChildHierarchy, asset.AddressLabel, marker);
             }
 
 

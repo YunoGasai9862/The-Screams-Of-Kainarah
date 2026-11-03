@@ -9,7 +9,7 @@ namespace Assets.Scripts.Interfaces
     {
         GameObject FindMarker(string markerName, string markerTag = "");
 
-        Task<UnityEngine.Object> Load(Asset assetType, string addressLabel, GameObject marker);
+        Task<UnityEngine.Object> Load(Asset assetType, bool enforceChildHierarchy, string addressLabel, GameObject marker);
 
         List<GameObject> FindChildAssets<T>(GameObject parent) where T : class;
     }
