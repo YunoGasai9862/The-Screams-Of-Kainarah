@@ -64,4 +64,9 @@ public class GameLoad : MonoBehaviorScene, IGameLoad
 
         return Task.FromResult(new Object());
     }
+
+    public Task<object> PreloadChildAsset(ChildAssetAttribute childAssetAttribute)
+    {
+        return null;
+    }
 } 

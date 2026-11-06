@@ -13,9 +13,9 @@ public class PositionalMarkerInstantiator : MonoBehaviorScene, IMarkerManager
 {
     private GameLoad GameLoad { get; set; }
 
-    public List<GameObject> FindChildAssets<T>(GameObject parent) where T : class
+    public List<ChildAssetAttribute> FindChildAssets<T>(GameObject parent) where T : class
     {
-        List<GameObject> childAssets = new List<GameObject>();
+        List<ChildAssetAttribute> childAssets = new List<ChildAssetAttribute>();
         if (parent == null)
         {
             throw new ApplicationException("Parent object is null.");
@@ -29,8 +29,10 @@ public class PositionalMarkerInstantiator : MonoBehaviorScene, IMarkerManager
 
             if (assets == null || assets.Count == 0)
             {
-                return;
+                throw new ApplicationException($"No ChildAssetAttribute found on child {child.name} of parent {parent.name}");
             }
+
+            childAssets.AddRange(assets);
 
         });
 
@@ -76,6 +78,12 @@ public class PositionalMarkerInstantiator : MonoBehaviorScene, IMarkerManager
 
             case Asset.MONOBEHAVIOR:
                 Vector3 position = marker.gameObject.transform.position;
+                if (enforceChildHierarchy)
+                {
+                    List<ChildAssetAttribute> childAssets = FindChildAssets<ChildAssetAttribute>(marker);
+                    //you will need to initiate the child assets in the order specified and then link back to the main object
+                }
+
                 return (GameObject)await GameLoad.PreloadAsset<GameObject>(new EntityMetaData()
                 {
                     AddressableLabel = addressLabel,
