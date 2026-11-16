@@ -1,5 +1,5 @@
 ﻿using Annotations.Enums;
-using Assets.Annotations;
+using Assets.Scripts.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -12,6 +12,6 @@ namespace Assets.Scripts.Interfaces
 
         Task<UnityEngine.Object> Load(Asset assetType, bool enforceChildHierarchy, string addressLabel, GameObject marker);
 
-        List<ChildAssetAttribute> FindChildAssets<T>(GameObject parent) where T : class;
+        List<ChildAssetAttributeDto> FindChildAssets<T>(GameObject parent, Vector3 childsPosition) where T : class;
     }
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using Annotations.Enums;
 using Assets.Annotations;
 using Assets.Scripts.BaseScene;
+using Assets.Scripts.Models;
 
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameLoad), ContextType = typeof(GameLoad))]
 public class GameLoad : MonoBehaviorScene, IGameLoad
@@ -65,8 +66,10 @@ public class GameLoad : MonoBehaviorScene, IGameLoad
         return Task.FromResult(new Object());
     }
 
-    public Task<object> PreloadChildAsset(ChildAssetAttribute childAssetAttribute)
+    public Task<object> PreloadChildAsset(ChildAssetAttributeDto childAssetAttributeDto)
     {
-        return null;
+        GameObject child = Instantiate(childAssetAttributeDto.GameObject, childAssetAttributeDto.Position, Quaternion.identity);
+
+        return Task.FromResult((object)child);
     }
 } 
