@@ -12,7 +12,7 @@ using Assets.Scripts.Models;
 [Subject(AssetType = Asset.MONOBEHAVIOR, EntityType = typeof(GameLoad), ContextType = typeof(GameLoad))]
 public class GameLoad : MonoBehaviorScene, IGameLoad
 {
-    public async Task<Object> PreloadAsset<T>(EntityMetaData enttityMetaData) where T : Object
+    public async Task<Object> PreloadAsset<T>(EntityMetaData enttityMetaData, bool discardChildren = false) where T : Object
     {
         AsyncOperationHandle<T> handler = Addressables.LoadAssetAsync<T>(enttityMetaData.AddressableLabel);
 
@@ -26,7 +26,8 @@ public class GameLoad : MonoBehaviorScene, IGameLoad
 
         Addressables.Release(handler);
 
-        return preloadedObject;
+        //find a way here bilal
+        return discardChildren? preloadedObject is GameObject ? ((GameObject)preloadedObject) : preloadedObject : preloadedObject;
     }
 
     public async Task<List<Object>> PreloadAssets<Z>(Z label, EntityMetaData enttityMetaData)

@@ -14,7 +14,7 @@ public class PositionalMarkerInstantiator : MonoBehaviorScene, IMarkerManager
 {
     private GameLoad GameLoad { get; set; }
 
-    public List<ChildAssetAttributeDto> FindChildAssets<T>(GameObject parent, Vector3 childsPosition) where T : class
+    private List<ChildAssetAttributeDto> FindChildAssets<T>(GameObject parent, Vector3 childsPosition) where T : class
     {
         List<ChildAssetAttributeDto> childAssetDtos = new List<ChildAssetAttributeDto>();
         if (parent == null)
@@ -83,11 +83,15 @@ public class PositionalMarkerInstantiator : MonoBehaviorScene, IMarkerManager
                 );
 
             case Asset.MONOBEHAVIOR:
+                //MARKER IS NOT THE PARENT!!! 
+                //MAYBE INITIALIZE THE PARENT FIRST - GET THE PARENT!
                 Vector3 position = marker.gameObject.transform.position;
+                List<GameObject> childAssets = new List<GameObject>();
                 if (enforceChildHierarchy)
                 {
-                    List<ChildAssetAttributeDto> childAssets = FindChildAssets<ChildAssetAttributeDto>(marker, position);
-                    //you will need to initiate the child assets in the order specified and then link back to the main object
+                    FindChildAssets<ChildAssetAttributeDto>(marker, position)
+                        .OrderBy(ca => ca.ChildAssetAttributes.OrderBy(a => a.InstantiationOrder))
+                        .Select(async ca => childAssets.Add((GameObject)(await GameLoad.PreloadChildAsset(ca))));
                 }
 
                 return (GameObject)await GameLoad.PreloadAsset<GameObject>(new EntityMetaData()
